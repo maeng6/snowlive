@@ -3,219 +3,274 @@ import 'package:com.snowlive/model/m_crewRecordRoom.dart';
 import 'package:com.snowlive/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/routes/routes.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewDetail.dart';
+import 'package:com.snowlive/viewmodel/crew/vm_crewDetail_recordRoom.dart';
+import 'package:com.snowlive/viewmodel/crew/vm_crewMemberRankingList_recordRoom.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewRecordRoom.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_rankingCrewHistory.dart';
 import 'package:com.snowlive/viewmodel/friend/vm_friendDetail.dart';
+import 'package:com.snowlive/viewmodel/ranking/vm_rankingList_recordRoom.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
 import 'package:com.snowlive/widget/w_verticalDivider.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
 class CrewRecordRoomView extends StatelessWidget {
   final CrewRecordRoomViewModel _crewRecordRoomViewModel = Get.find<CrewRecordRoomViewModel>();
   final CrewDetailViewModel _crewDetailViewModel = Get.find<CrewDetailViewModel>();
+  final CrewDetailViewModel_recordRoom _crewDetailViewModel_recordRoom = Get.find<CrewDetailViewModel_recordRoom>();
   final RankingCrewHistoryViewModel _rankingCrewHistoryViewModel = Get.find<RankingCrewHistoryViewModel>();
   final UserViewModel _userViewModel = Get.find<UserViewModel>();
   final FriendDetailViewModel _friendDetailViewModel = Get.find<FriendDetailViewModel>();
+  final CrewRankingListViewModel_recordRoom _crewRankingListViewModel_recordRoom = Get.find<CrewRankingListViewModel_recordRoom>();
 
+  final RxBool _showAllSlopes = false.obs;
 
   @override
   Widget build(BuildContext context) {
     Size _size = MediaQuery.of(context).size;
     return Scaffold(
+      backgroundColor: SDSColor.gray50,
+      appBar: AppBar(
         backgroundColor: SDSColor.gray50,
-        appBar: AppBar(
-          backgroundColor: SDSColor.gray50,
-          surfaceTintColor: Colors.transparent,
-          toolbarHeight: 44,
-          elevation: 0.0,
-          leading: GestureDetector(
-            child: Image.asset(
-              'assets/imgs/icons/icon_snowLive_back.png',
-              scale: 4,
-              width: 26,
-              height: 26,
-            ),
-            onTap: () {
-              Get.back();
-              //_crewRecordRoomViewModel.resetTabs();
-            },
+        surfaceTintColor: Colors.transparent,
+        toolbarHeight: 44,
+        elevation: 0.0,
+        leading: GestureDetector(
+          child: Image.asset(
+            'assets/imgs/icons/icon_snowLive_back.png',
+            scale: 4,
+            width: 26,
+            height: 26,
           ),
-          centerTitle: true,
-          title: Text(
-            '기록실',
-            style: SDSTextStyle.extraBold.copyWith(
-                color: SDSColor.gray900,
-                fontSize: 18),
+          onTap: () {
+            Get.back();
+          },
+        ),
+        centerTitle: true,
+        title: Text(
+          '기록실',
+          style: SDSTextStyle.extraBold.copyWith(
+            color: SDSColor.gray900,
+            fontSize: 18,
           ),
         ),
-        body:  Obx(()=>Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: EdgeInsets.only(left: 16, right: 16, top: 12),
-              child: buildYearSelector(),  // 년도 선택 탭은 항상 고정
+      ),
+      body: Obx(() {
+        if (_crewRecordRoomViewModel.isLoading.value == true ||
+            _rankingCrewHistoryViewModel.isLoadingBeta_Crew.value == true) {
+          return Center(
+            child: Padding(
+              padding: EdgeInsets.only(bottom: 100),
+              child: CircularProgressIndicator(
+                strokeWidth: 4,
+                backgroundColor: SDSColor.gray100,
+                color: SDSColor.gray300.withOpacity(0.6),
+              ),
             ),
-            SizedBox(height: 20),
-            Expanded(
-              child: Obx(() {
-                if(_crewRecordRoomViewModel.isLoading.value == true
-                    || _rankingCrewHistoryViewModel.isLoadingBeta_Crew.value == true
-                ){
-                  return Container(
-                    height: 150,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
+          );
+        }
+
+        if (_crewRecordRoomViewModel.currentSeason.value == '2324') {
+          return _buildBetaView(MediaQuery.of(context).size);
+        }
+
+        return RefreshIndicator(
+          strokeWidth: 2,
+          edgeOffset: -40,
+          displacement: 40,
+          backgroundColor: SDSColor.snowliveBlue,
+          color: SDSColor.snowliveWhite,
+          onRefresh: () async {
+            await _crewRecordRoomViewModel.fetchCrewRidingRecords_refresh(
+              _userViewModel.user!.crew_id,
+              _crewRecordRoomViewModel.currentSeason.value,
+            );
+          },
+          child: SingleChildScrollView(
+            physics: AlwaysScrollableScrollPhysics(),
+            child: Padding(
+              padding: EdgeInsets.only(bottom: 60),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(height: 24),
+                  Padding(
+                    padding: EdgeInsets.only(left: 20, right: 20),
+                    child: Row(
                       children: [
-                        Center(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Center(
-                                child: Padding(
-                                  padding: EdgeInsets.only(bottom: 100),
-                                  child: Container(
-                                    width: 24,
-                                    height: 24,
-                                    child: CircularProgressIndicator(
-                                      strokeWidth: 4,
-                                      backgroundColor: SDSColor.gray100,
-                                      color: SDSColor.gray300.withOpacity(0.6),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
+                        Text(
+                          '크루 라이딩 통계',
+                          style: SDSTextStyle.bold.copyWith(
+                            fontSize: 15,
+                            color: SDSColor.gray900,
                           ),
+                        ),
+                        Expanded(child: SizedBox()),
+                        (_crewDetailViewModel_recordRoom.isLoading == true)
+                            ? SizedBox.shrink()
+                            : Row(
+                          children: [
+                            TextButton(
+                              onPressed: () async {
+                                Get.toNamed(AppRoutes.crewMemberRankingList_recordRoom);
+                                await _crewRankingListViewModel_recordRoom.fetchCrewRankings_recordRoom(
+                                  crewId: _crewDetailViewModel.crewDetailInfo.crewId!,
+                                  userId: _userViewModel.user.user_id!,
+                                  selected_season: _crewRecordRoomViewModel.currentSeason.value,
+                                );
+                              },
+                              style: ElevatedButton.styleFrom(
+                                shadowColor: Colors.transparent,
+                                overlayColor: Colors.transparent,
+                                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 3),
+                                minimumSize: Size(36, 32),
+                                backgroundColor: SDSColor.snowliveWhite,
+                                side: BorderSide(color: SDSColor.gray200),
+                                elevation: 0,
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+                              ),
+                              child: Text(
+                                '크루원 랭킹',
+                                style: SDSTextStyle.bold.copyWith(fontSize: 13, color: SDSColor.gray900),
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ),
-                  );
-                }
-                if(_crewRecordRoomViewModel.currentYear.value == -1) {
-                  return _buildBetaView(_size);  // 전체보기 탭을 선택했을 때 나타나는 화면
-                }
-                else {
-                  // 년도별 탭을 선택했을 때 기존 화면을 보여줌
-                  return RefreshIndicator(
-                    strokeWidth: 2,
-                    edgeOffset: -40,
-                    displacement: 40,
-                    backgroundColor: SDSColor.snowliveBlue,
-                    color: SDSColor.snowliveWhite,
-                    onRefresh: () async {
-                      await _crewRecordRoomViewModel.fetchCrewRidingRecords_refresh(
-                        _userViewModel.user!.crew_id,
-                        '${_crewRecordRoomViewModel.currentYear.value}',
-                      );
-                    },
-                    child: ListView(
-                      padding: EdgeInsets.only(left: 16, right: 16, bottom: 60),
-                      children: _buildGroupedRecords(_size),
-                    ),
-                  );
-                }
-              }),
+                  ),
+                  SizedBox(height: 6),
+                  // 랭킹 카드
+                  _buildRankingSummaryCard(context),
+                  SizedBox(height: 20),
+                  // 그래프 카드
+                  _buildGraphCard(_size),
+                  SizedBox(height: 20),
+                  // 월별 기록 리스트
+                  ..._buildGroupedRecords(MediaQuery.of(context).size),
+                ],
+              ),
             ),
-          ],
-        ),)
+          ),
+        );
+      }),
     );
   }
 
-  // 년도 선택 탭을 생성하는 함수
-  Widget buildYearSelector() {
-    int currentYear = DateTime.now().year; // 현재 연도
-    int startYear = 2024; // 시작 연도
-
-    // 시작 연도부터 현재 연도까지의 탭을 최신순으로 생성
-    List<Widget> yearTabs = [];
-
-    for (int year = currentYear; year >= startYear; year--) {
-      yearTabs.add(
-        GestureDetector(
-          onTap: () async {
-            _crewRecordRoomViewModel.setYear(year);
-            await _crewRecordRoomViewModel.fetchCrewRidingRecords(
-              _crewDetailViewModel.crewDetailInfo.crewId!, year.toString(),
-            );
-            print('시즌기록로드');
-          },
-          child: Obx(() => Container(
-            decoration: BoxDecoration(
-              color: _crewRecordRoomViewModel.currentYear.value == year
-                  ? SDSColor.snowliveBlack
-                  : SDSColor.snowliveWhite,
-              borderRadius: BorderRadius.circular(30.0),
-              border: Border.all(color: Colors.transparent, width: 1),
-            ),
-            padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-            height: 36,
-            child: Text(
-              '$year년',
-              style: SDSTextStyle.bold.copyWith(
-                color: _crewRecordRoomViewModel.currentYear.value == year
-                    ? SDSColor.snowliveWhite
-                    : SDSColor.snowliveBlack,
-                fontWeight: _crewRecordRoomViewModel.currentYear.value == year
-                    ? FontWeight.bold
-                    : FontWeight.normal,
-                fontSize: 13,
+  Widget _buildRankingSummaryCard(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 16),
+      child: Container(
+        width: MediaQuery.of(context).size.width,
+        height: 76,
+        decoration: BoxDecoration(
+          color: SDSColor.gray50,
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Expanded(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    '${_crewDetailViewModel_recordRoom.overallRank}',
+                    style: SDSTextStyle.bold.copyWith(
+                      fontSize: 18,
+                      color: SDSColor.gray900,
+                    ),
+                  ),
+                  Text(
+                    '통합 랭킹',
+                    style: SDSTextStyle.regular.copyWith(
+                      fontSize: 13,
+                      color: SDSColor.gray900.withOpacity(0.5),
+                    ),
+                  ),
+                ],
               ),
             ),
-          )),
-        ),
-      );
-      yearTabs.add(SizedBox(width: 8)); // 각 탭 사이에 여백 추가
-    }
-
-    // 커스텀 탭 추가 (예: "전체보기" 또는 다른 기능의 탭)
-    yearTabs.add(
-      GestureDetector(
-        onTap: () async{
-          _crewRecordRoomViewModel.setYear(-1);
-          await _rankingCrewHistoryViewModel.fetchRankingDataCrewBeta(
-              crewId : _crewDetailViewModel.crewDetailInfo.crewId
-          );
-          print("전체보기 탭 눌림");
-        },
-        child: Container(
-          decoration: BoxDecoration(
-            color: _crewRecordRoomViewModel.currentYear.value == -1
-                ? SDSColor.snowliveBlack
-                : SDSColor.snowliveWhite, // 탭의 배경색 설정
-            borderRadius: BorderRadius.circular(30.0),
-            border: Border.all(color: Colors.transparent, width: 1),
-          ),
-          padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-          height: 36,
-          child: Text(
-            '23/24시즌',  // 원하는 탭 이름
-            style:  SDSTextStyle.bold.copyWith(
-              color: _crewRecordRoomViewModel.currentYear.value == -1
-                  ? SDSColor.snowliveWhite
-                  : SDSColor.snowliveBlack,
-              fontWeight: _crewRecordRoomViewModel.currentYear.value == -1
-                  ? FontWeight.bold
-                  : FontWeight.normal,
-              fontSize: 13,
+            buildVerticalDivider_ranking_indi_Screen(),
+            Expanded(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    '${_crewDetailViewModel_recordRoom.overallTotalScore.toStringAsFixed(0)}',
+                    style: SDSTextStyle.bold.copyWith(
+                      fontSize: 18,
+                      color: SDSColor.gray900,
+                    ),
+                  ),
+                  Text(
+                    '총 점수',
+                    style: SDSTextStyle.regular.copyWith(
+                      fontSize: 13,
+                      color: SDSColor.gray900.withOpacity(0.5),
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
+          ],
         ),
       ),
     );
+  }
 
+
+
+
+  Widget buildSeasonSelector() {
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: yearTabs,
+        children: [
+          ...RankingFilter_season.values.map((season) {
+            return Padding(
+              padding: EdgeInsets.only(right: 8),
+              child: GestureDetector(
+                onTap: () async {
+                  _crewRecordRoomViewModel.setSeason(season);
+                  await _crewRecordRoomViewModel.fetchCrewRidingRecords(
+                    _crewDetailViewModel.crewDetailInfo.crewId!,
+                    season.dbSeason,
+                  );
+                },
+                child: Obx(() => Container(
+                  decoration: BoxDecoration(
+                    color: _crewRecordRoomViewModel.currentSeason.value == season.dbSeason
+                        ? SDSColor.snowliveBlack
+                        : SDSColor.snowliveWhite,
+                    borderRadius: BorderRadius.circular(30.0),
+                    border: Border.all(color: Colors.transparent, width: 1),
+                  ),
+                  padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  height: 36,
+                  child: Text(
+                    season.korean,
+                    style: SDSTextStyle.bold.copyWith(
+                      color: _crewRecordRoomViewModel.currentSeason.value == season.dbSeason
+                          ? SDSColor.snowliveWhite
+                          : SDSColor.snowliveBlack,
+                      fontWeight: _crewRecordRoomViewModel.currentSeason.value == season.dbSeason
+                          ? FontWeight.bold
+                          : FontWeight.normal,
+                      fontSize: 13,
+                    ),
+                  ),
+                )),
+              ),
+            );
+          }).toList(),
+        ],
       ),
     );
   }
-
 
   // 월별로 그룹화된 기록들을 표시하는 함수
   List<Widget> _buildGroupedRecords(Size size) {
@@ -381,8 +436,6 @@ class CrewRecordRoomView extends StatelessWidget {
       ),
     );
   }
-
-
 
   // 점수 카드 생성
   Widget buildScoreCard(CrewRidingRecord record) {
@@ -905,5 +958,201 @@ class CrewRecordRoomView extends StatelessWidget {
     );
   }
 
+  Widget _buildGraphCard(Size size) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Container(
+        padding: const EdgeInsets.fromLTRB(20, 20, 20, 10),
+        width: size.width,
+        decoration: BoxDecoration(
+          color: SDSColor.blue50,
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              decoration: BoxDecoration(
+                color: Color(0xFFD2DFF4).withOpacity(0.7),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 4),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: () {
+                        HapticFeedback.lightImpact();
+                        _crewDetailViewModel_recordRoom.toggleGraph();
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: _crewDetailViewModel_recordRoom.isSlopeGraph.value ? SDSColor.snowliveWhite : Colors.transparent,
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                        alignment: Alignment.center,
+                        child: Text('슬로프별', style: SDSTextStyle.regular.copyWith(fontSize: 14, fontWeight: FontWeight.bold, color: _crewDetailViewModel_recordRoom.isSlopeGraph.value ? SDSColor.gray900 : Color(0xFF809FCF).withOpacity(0.8))),
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: 10),
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: () {
+                        HapticFeedback.lightImpact();
+                        _crewDetailViewModel_recordRoom.toggleGraph();
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: !_crewDetailViewModel_recordRoom.isSlopeGraph.value ? SDSColor.snowliveWhite : Colors.transparent,
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                        alignment: Alignment.center,
+                        child: Text('시간대별', style: SDSTextStyle.regular.copyWith(fontSize: 14, fontWeight: FontWeight.bold, color: !_crewDetailViewModel_recordRoom.isSlopeGraph.value ? SDSColor.gray900 : Color(0xFF809FCF).withOpacity(0.8))),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(height: 20),
+            Text('총 라이딩 횟수', style: SDSTextStyle.regular.copyWith(fontSize: 13, color: SDSColor.gray900.withOpacity(0.5))),
+            Text('${_crewDetailViewModel_recordRoom.totalSlopeCount}', style: SDSTextStyle.extraBold.copyWith(fontSize: 30, color: SDSColor.gray900)),
+            SizedBox(height: 10),
+            Obx(() => _crewDetailViewModel_recordRoom.totalSlopeCount == 0
+                ? Center(
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: 60),
+                child: Column(
+                  children: [
+                    Image.asset('assets/imgs/imgs/img_resoreHome_nodata.png', fit: BoxFit.cover, width: 72, height: 72),
+                    Text('라이딩 기록이 없어요', style: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray600)),
+                  ],
+                ),
+              ),
+            )
+                : _crewDetailViewModel_recordRoom.isSlopeGraph.value
+                ? _buildSlopeGraph(size)
+                : _buildTimeGraph(size))
+          ],
+        ),
+      ),
+    );
+  }
 
+  Widget _buildSlopeGraph(Size size) {
+    final countInfo = _crewDetailViewModel_recordRoom.countInfo;
+    final int maxCount = countInfo.map((e) => e.count ?? 0).reduce((a, b) => a > b ? a : b);
+    final shownItems = countInfo.length <= 5 || _showAllSlopes.value ? countInfo : countInfo.sublist(0, 5);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        ...shownItems.map((slopeData) {
+          String slopeName = slopeData.slope ?? '';
+          int passCount = slopeData.count ?? 0;
+          double barWidthRatio = passCount / maxCount;
+
+          return Padding(
+            padding: const EdgeInsets.symmetric(vertical: 4),
+            child: Row(
+              children: [
+                Container(
+                  width: 44,
+                  child: Text(
+                    slopeName,
+                    style: SDSTextStyle.regular.copyWith(fontSize: 11, color: SDSColor.sBlue600),
+                  ),
+                ),
+                Container(
+                  height: 14,
+                  width: (size.width - 166) * barWidthRatio,
+                  decoration: BoxDecoration(
+                    color: slopeData == countInfo.first ? SDSColor.snowliveBlue : SDSColor.blue200,
+                    borderRadius: BorderRadius.only(topRight: Radius.circular(4), bottomRight: Radius.circular(4)),
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(left: slopeData == countInfo.first ? 6 : 2),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20),
+                      color: slopeData == countInfo.first ? SDSColor.gray900 : Colors.transparent,
+                    ),
+                    padding: EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                    child: Text(
+                      '$passCount',
+                      style: SDSTextStyle.extraBold.copyWith(fontSize: 12, fontWeight: FontWeight.bold, color: slopeData == countInfo.first ? SDSColor.snowliveWhite : SDSColor.gray900),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
+        }).toList(),
+        if (countInfo.length > 5)
+          Obx(() => TextButton(
+            onPressed: () => _showAllSlopes.toggle(),
+            child: Text(_showAllSlopes.value ? '접기 ▲' : '펼치기 ▼',
+                style: SDSTextStyle.regular.copyWith(color: SDSColor.gray600, fontSize: 13)),
+          ))
+      ],
+    );
+  }
+
+  Widget _buildTimeGraph(Size size) {
+    return _crewDetailViewModel_recordRoom.seasonRankingInfo.timeCountInfo != null
+        ? Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: _crewDetailViewModel_recordRoom.seasonRankingInfo.timeCountInfo!.entries.map<Widget>((entry) {
+        String slotName = entry.key;
+        int passCount = entry.value;
+        int maxCount = _crewDetailViewModel_recordRoom.seasonRankingInfo.timeCountInfo!.values.reduce((a, b) => a > b ? a : b);
+        double barHeightRatio = passCount / maxCount;
+
+        return Container(
+          width: 30,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              AutoSizeText(
+                passCount != 0 ? '$passCount' : '',
+                style: SDSTextStyle.bold.copyWith(fontSize: 12, color: SDSColor.gray900),
+                minFontSize: 6,
+                maxLines: 1,
+                overflow: TextOverflow.visible,
+              ),
+              Padding(
+                padding: EdgeInsets.only(top: 4),
+                child: Container(
+                  width: 16,
+                  height: 100 * barHeightRatio,
+                  decoration: BoxDecoration(
+                    color: SDSColor.blue200,
+                    borderRadius: BorderRadius.only(topRight: Radius.circular(4), topLeft: Radius.circular(4)),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 8),
+                child: Container(
+                  width: 20,
+                  child: Text(
+                    slotName,
+                    style: SDSTextStyle.regular.copyWith(fontSize: 11, color: SDSColor.sBlue600, height: 1.2),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      }).toList(),
+    )
+        : Center(child: Text('No data available'));
+  }
 }
+

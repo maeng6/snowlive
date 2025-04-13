@@ -38,10 +38,28 @@ class CrewAPI {
 
   // 크루 세부사항 조회
   Future<ApiResponse<Map<String, dynamic>>> getCrewDetails(int crewId, {String? season}) async {
-    final uri = Uri.parse('$baseUrl/303/').replace(
+    final uri = Uri.parse('$baseUrl/detail/').replace(
       queryParameters: {
         'crew_id': crewId.toString(),
         if (season != null) 'season': season,
+      },
+    );
+
+    final response = await http.get(uri);
+
+    if (response.statusCode == 200) {
+      return ApiResponse.success(json.decode(utf8.decode(response.bodyBytes)));
+    } else {
+      return ApiResponse.error(json.decode(utf8.decode(response.bodyBytes)));
+    }
+  }
+
+  // 크루 세부사항 조회 - 기록실
+  Future<ApiResponse<Map<String, dynamic>>> getCrewDetails_recordRoom(int crewId, String? selected_season) async {
+    final uri = Uri.parse('$baseUrl/detail/recordroom/').replace(
+      queryParameters: {
+        'crew_id': crewId.toString(),
+        if (selected_season != null) 'selected_season': selected_season,
       },
     );
 
@@ -223,10 +241,10 @@ class CrewAPI {
   }
 
   // 크루 일일 리포트
-  Future<ApiResponse<List<dynamic>>> getCrewDailyReport(int crewId, String year) async {
+  Future<ApiResponse<List<dynamic>>> getCrewDailyReport(int crewId, String selected_season) async {
     final uri = Uri.parse('$baseUrl/crew-daily-report/').replace(queryParameters: {
       'crew_id': crewId.toString(),
-      'year': year,
+      'selected_season': selected_season,
     });
 
     final response = await http.get(uri);
@@ -322,4 +340,31 @@ class CrewAPI {
       return ApiResponse.error(json.decode(utf8.decode(response.bodyBytes)));
     }
   }
+
+
+  // 크루 랭킹 조회 - 기록실
+  Future<ApiResponse<Map<String, dynamic>>> getCrewRanking_recordRoom({
+    required int crewId,
+    required int userId,
+    required String selected_season, // 추가된 season 파라미터
+  }) async {
+    final uri = Uri.parse('$baseUrl/crew-member-ranking/recordroom/').replace(queryParameters: {
+      'crew_id': crewId.toString(),
+      'user_id': userId.toString(),
+      'selected_season': selected_season, // season 파라미터 추가
+    });
+
+    final response = await http.get(uri);
+
+    if (response.statusCode == 200) {
+      // JSON을 Map<String, dynamic> 타입으로 반환
+      return ApiResponse.success(json.decode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>);
+    } else {
+      return ApiResponse.error(json.decode(utf8.decode(response.bodyBytes)));
+    }
+  }
+
+
+
+
 }

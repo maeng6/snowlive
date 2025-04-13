@@ -11,6 +11,7 @@ import 'package:com.snowlive/viewmodel/crew/vm_crewMemberList.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewRecordRoom.dart';
 import 'package:com.snowlive/viewmodel/friend/vm_friendDetail.dart';
 import 'package:com.snowlive/viewmodel/friend/vm_friendList.dart';
+import 'package:com.snowlive/viewmodel/ranking/vm_rankingList_recordRoom.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
 import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 import 'package:extended_image/extended_image.dart';
@@ -27,7 +28,6 @@ class MoreTabMainView extends StatelessWidget {
   final FriendDetailViewModel _friendDetailViewModel = Get.find<FriendDetailViewModel>();
   final CrewDetailViewModel _crewDetailViewModel = Get.find<CrewDetailViewModel>();
   final CrewMemberListViewModel _crewMemberListViewModel = Get.find<CrewMemberListViewModel>();
-  final CrewRecordRoomViewModel _crewRecordRoomViewModel = Get.find<CrewRecordRoomViewModel>();
 
   @override
   Widget build(BuildContext context) {
@@ -244,10 +244,7 @@ class MoreTabMainView extends StatelessWidget {
                                       _userViewModel.user.crew_id,
                                       _friendDetailViewModel.seasonDate
                                   );
-                                  await _crewRecordRoomViewModel.fetchCrewRidingRecords(
-                                      _userViewModel.user.crew_id,
-                                      '${DateTime.now().year}'
-                                  );
+
                                 } else if(_userViewModel.user.crew_id == null){
                                   Get.toNamed(AppRoutes.onBoardingCrewMain);
                                 }
@@ -259,10 +256,7 @@ class MoreTabMainView extends StatelessWidget {
                                     _userViewModel.user.crew_id,
                                     _friendDetailViewModel.seasonDate
                                 );
-                                await _crewRecordRoomViewModel.fetchCrewRidingRecords(
-                                    _userViewModel.user.crew_id,
-                                    '${DateTime.now().year}'
-                                );
+                                print(RankingFilter_season.values.first.dbSeason);
 
 
                               }

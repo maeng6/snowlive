@@ -5,6 +5,7 @@ import 'package:com.snowlive/viewmodel/crew/vm_crewDetail.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewMemberList.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewRecordRoom.dart';
 import 'package:com.snowlive/viewmodel/friend/vm_friendDetail.dart';
+import 'package:com.snowlive/viewmodel/ranking/vm_rankingList_recordRoom.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
 import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 import 'package:flutter/material.dart';
@@ -18,7 +19,6 @@ class CrewApplicationUserView extends StatelessWidget {
   final FriendDetailViewModel _friendDetailViewModel = Get.find<FriendDetailViewModel>();
   final UserViewModel _userViewModel = Get.find<UserViewModel>();
   final CrewMemberListViewModel _crewMemberListViewModel = Get.find<CrewMemberListViewModel>();
-  final CrewRecordRoomViewModel _crewRecordRoomViewModel = Get.find<CrewRecordRoomViewModel>();
 
   @override
   Widget build(BuildContext context) {
@@ -76,13 +76,6 @@ class CrewApplicationUserView extends StatelessWidget {
                                 crew.crewId!,
                                 _friendDetailViewModel.seasonDate,
                               );
-
-                              if (_userViewModel.user.crew_id == crew.crewId!) {
-                                await _crewRecordRoomViewModel.fetchCrewRidingRecords(
-                                    crew.crewId!,
-                                    '${DateTime.now().year}'
-                                );
-                              }
                             },
                             child: Row(
                               children: [
@@ -94,12 +87,6 @@ class CrewApplicationUserView extends StatelessWidget {
                                       crew.crewId!,
                                       _friendDetailViewModel.seasonDate,
                                     );
-                                    if (_userViewModel.user.crew_id == _crewDetailViewModel.crewDetailInfo.crewId!) {
-                                      await _crewRecordRoomViewModel.fetchCrewRidingRecords(
-                                          _crewDetailViewModel.crewDetailInfo.crewId!,
-                                          '${DateTime.now().year}'
-                                      );
-                                    }
                                   },
                                   child: Container(
                                     decoration: BoxDecoration(

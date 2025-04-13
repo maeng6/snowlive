@@ -1,8 +1,6 @@
 import 'dart:convert';
 import 'package:com.snowlive/api/ApiResponse.dart';
-import 'package:com.snowlive/model/m_resortModel.dart';
 import 'package:com.snowlive/routes/routes.dart';
-import 'package:com.snowlive/viewmodel/crew/vm_crewMemberList.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewNotice.dart';
 import 'package:com.snowlive/viewmodel/friend/vm_friendDetail.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
@@ -15,7 +13,6 @@ import 'package:http/http.dart' as http;
 
 class CrewDetailViewModel extends GetxController {
 
-  final CrewMemberListViewModel _crewMemberListViewModel = Get.find<CrewMemberListViewModel>();
   final CrewNoticeViewModel _crewNoticeViewModel = Get.find<CrewNoticeViewModel>();
   final UserViewModel _userViewModel = Get.find<UserViewModel>();
   final FriendDetailViewModel _friendDetailViewModel = Get.find<FriendDetailViewModel>();

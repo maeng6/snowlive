@@ -10,6 +10,7 @@ import 'package:com.snowlive/viewmodel/crew/vm_crewMemberRankingList.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewRecordRoom.dart';
 import 'package:com.snowlive/viewmodel/friend/vm_friendDetail.dart';
 import 'package:com.snowlive/viewmodel/ranking/vm_rankingList.dart';
+import 'package:com.snowlive/viewmodel/ranking/vm_rankingList_recordRoom.dart';
 import 'package:com.snowlive/viewmodel/resortHome/vm_resortHome.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
 import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
@@ -29,7 +30,6 @@ class RankingCrewView extends StatelessWidget {
   final RankingListViewModel _rankingListViewModel = Get.find<RankingListViewModel>();
   final CrewDetailViewModel _crewDetailViewModel = Get.find<CrewDetailViewModel>();
   final CrewMemberListViewModel _crewMemberListViewModel = Get.find<CrewMemberListViewModel>();
-  final CrewRecordRoomViewModel _crewRecordRoomViewModel = Get.find<CrewRecordRoomViewModel>();
   final ResortHomeViewModel _resortHomeViewModel = Get.find<ResortHomeViewModel>();
   final CrewRankingListViewModel _crewRankingListViewModel = Get.find<CrewRankingListViewModel>();
 
@@ -131,11 +131,6 @@ class RankingCrewView extends StatelessWidget {
                                                     _rankingListViewModel.rankingListCrewMy_view!.crewId!,
                                                     _friendDetailViewModel.seasonDate
                                                 );
-                                                if(_userViewModel.user.crew_id == _rankingListViewModel.rankingListCrewMy_view!.crewId!)
-                                                  await _crewRecordRoomViewModel.fetchCrewRidingRecords(
-                                                      _rankingListViewModel.rankingListCrewMy_view!.crewId!,
-                                                      '${DateTime.now().year}'
-                                                  );
                                               },
                                               child: Padding(
                                                 padding: EdgeInsets.only(left: 8.0),
@@ -1316,11 +1311,6 @@ class RankingCrewView extends StatelessWidget {
                                       _friendDetailViewModel.seasonDate
                                   );
 
-                                  if(_userViewModel.user.crew_id ==   _crewDetailViewModel.crewDetailInfo.crewId!)
-                                    await _crewRecordRoomViewModel.fetchCrewRidingRecords(
-                                        _crewDetailViewModel.crewDetailInfo.crewId!,
-                                        '${DateTime.now().year}'
-                                    );
                                 },
                                 child: Row(
                                   children: [
@@ -1563,11 +1553,6 @@ class RankingCrewView extends StatelessWidget {
                                                     _rankingListViewModel.rankingListCrewMy_view!.crewId!,
                                                     _friendDetailViewModel.seasonDate
                                                 );
-                                                if(_userViewModel.user.crew_id == _rankingListViewModel.rankingListCrewMy_view!.crewId!)
-                                                  await _crewRecordRoomViewModel.fetchCrewRidingRecords(
-                                                      _rankingListViewModel.rankingListCrewMy_view!.crewId!,
-                                                      '${DateTime.now().year}'
-                                                  );
                                               },
                                               child: Padding(
                                                 padding: EdgeInsets.only(left: 8.0),

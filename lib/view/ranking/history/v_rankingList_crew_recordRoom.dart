@@ -121,7 +121,7 @@ class RankingCrewView_recordRoom extends StatelessWidget {
                                                 if(_userViewModel.user.crew_id == _rankingListViewModel_recordRoom.rankingListCrewMy_view!.crewId!)
                                                   await _crewRecordRoomViewModel.fetchCrewRidingRecords(
                                                       _rankingListViewModel_recordRoom.rankingListCrewMy_view!.crewId!,
-                                                      '${DateTime.now().year}'
+                                                      '${RankingFilter_season.values.first.dbSeason}'
                                                   );
                                               },
                                               child: Padding(
@@ -1306,7 +1306,7 @@ class RankingCrewView_recordRoom extends StatelessWidget {
                                   if(_userViewModel.user.crew_id ==   _crewDetailViewModel.crewDetailInfo.crewId!)
                                     await _crewRecordRoomViewModel.fetchCrewRidingRecords(
                                         _crewDetailViewModel.crewDetailInfo.crewId!,
-                                        '${DateTime.now().year}'
+                                        '${RankingFilter_season.values.first.dbSeason}'
                                     );
                                 },
                                 child: Row(
@@ -1553,7 +1553,7 @@ class RankingCrewView_recordRoom extends StatelessWidget {
                                                 if(_userViewModel.user.crew_id == _rankingListViewModel_recordRoom.rankingListCrewMy_view!.crewId!)
                                                   await _crewRecordRoomViewModel.fetchCrewRidingRecords(
                                                       _rankingListViewModel_recordRoom.rankingListCrewMy_view!.crewId!,
-                                                      '${DateTime.now().year}'
+                                                      '${RankingFilter_season.values.first.dbSeason}'
                                                   );
                                               },
                                               child: Padding(

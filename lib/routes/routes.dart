@@ -7,6 +7,7 @@ import 'package:com.snowlive/view/crew/v_crewApplication_crew.dart';
 import 'package:com.snowlive/view/crew/v_crewApplication_user.dart';
 import 'package:com.snowlive/view/crew/v_crewDescription.dart';
 import 'package:com.snowlive/view/crew/v_crewMemberRanking.dart';
+import 'package:com.snowlive/view/crew/v_crewMemberRanking_recordRoom.dart';
 import 'package:com.snowlive/view/crew/v_crewMemberSettings.dart';
 import 'package:com.snowlive/view/crew/v_crewNotice.dart';
 import 'package:com.snowlive/view/crew/v_crewNoticeList.dart';
@@ -115,6 +116,7 @@ class AppRoutes {
   static const String iosSettingGuide = '/iosSettingGuide';
   static const String snowballShop = '/treasureHunt';
   static const String crewMemberRankingList = '/crewMemberRankingList';
+  static const String crewMemberRankingList_recordRoom = '/crewMemberRankingList_recordRoom';
   static const String snowballExchangeHistoryView = '/snowballExchangeHistoryView';
   static const String rewardExchangeView = '/rewardExchangeView';
   static const String forestParkHome = '/forestParkHome';
@@ -282,6 +284,7 @@ class AppRoutes {
     GetPage(
       name: crewRecordRoom,
       page: () => CrewRecordRoomView(),
+      binding: CrewRecordRoomBinding()
     ),
     GetPage(
       name: searchCrew,
@@ -366,6 +369,12 @@ class AppRoutes {
       name: crewMemberRankingList,
       page: () => CrewMemberRankingListView(),
     ),
+
+    GetPage(
+      name: crewMemberRankingList_recordRoom,
+      page: () => CrewMemberRankingListView_recordRoom(),
+    ),
+
     GetPage(
       name: snowballExchangeHistoryView,
       page: () => SnowballExchangeHistoryView(),

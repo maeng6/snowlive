@@ -1267,11 +1267,10 @@ class RankingListViewModel_recordRoom extends GetxController {
 
 enum RankingFilter_season {
   season2425("24/25시즌", "2425"),
-  season2324("23/24시즌", "2324"),
-  initial("24/25시즌","2425");
+  season2324("23/24시즌", "2324");
 
   final String korean;
-  final String english;
-  const RankingFilter_season(this.korean, this.english);
+  final String dbSeason;
+  const RankingFilter_season(this.korean, this.dbSeason);
 }
 

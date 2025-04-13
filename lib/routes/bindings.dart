@@ -5,8 +5,10 @@ import 'package:com.snowlive/viewmodel/community/vm_communityUpdate.dart';
 import 'package:com.snowlive/viewmodel/community/vm_communityUpload.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewApply.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewDetail.dart';
+import 'package:com.snowlive/viewmodel/crew/vm_crewDetail_recordRoom.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewMemberList.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewMemberRankingList.dart';
+import 'package:com.snowlive/viewmodel/crew/vm_crewMemberRankingList_recordRoom.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewNotice.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewRecordRoom.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_rankingCrewHistory.dart';
@@ -71,7 +73,6 @@ class MainHomeBinding extends Bindings {
     Get.put(CrewDetailViewModel());
     Get.put(SetCrewViewModel());
     Get.put(RankingListBetaViewModel());
-    Get.put(CrewRecordRoomViewModel());
     Get.put(RankingCrewHistoryViewModel());
     Get.put(SnowballShopViewModel());
 
@@ -204,7 +205,9 @@ class CrewHomeBinding extends Bindings {
 class CrewRecordRoomBinding extends Bindings {
   @override
   void dependencies() {
-
+    Get.put(CrewRecordRoomViewModel());
+    Get.put(CrewRankingListViewModel_recordRoom());
+    Get.put(CrewDetailViewModel_recordRoom());
   }
 }
 

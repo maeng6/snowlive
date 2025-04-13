@@ -25,7 +25,6 @@ class RankingBetaView extends StatelessWidget {
   final RankingListBetaViewModel _rankingListBetaViewModel = Get.find<RankingListBetaViewModel>();
   final CrewDetailViewModel _crewDetailViewModel = Get.find<CrewDetailViewModel>();
   final CrewMemberListViewModel _crewMemberListViewModel = Get.find<CrewMemberListViewModel>();
-  final CrewRecordRoomViewModel _crewRecordRoomViewModel = Get.find<CrewRecordRoomViewModel>();
   final RankingListViewModel_recordRoom _rankingListViewModel_recordRoom = Get.find<RankingListViewModel_recordRoom>();
 
 
@@ -115,12 +114,6 @@ class RankingBetaView extends StatelessWidget {
                                     document.crewInfo!.crewId!,
                                     _friendDetailViewModel.seasonDate,
                                   );
-
-                                  if(_userViewModel.user.crew_id == document.crewInfo!.crewId!)
-                                    await _crewRecordRoomViewModel.fetchCrewRidingRecords(
-                                        document.crewInfo!.crewId!,
-                                        '${DateTime.now().year}'
-                                    );
                                 },
                                 child: Row(
                                   children: [

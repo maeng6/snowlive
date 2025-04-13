@@ -10,6 +10,7 @@ import 'package:com.snowlive/viewmodel/crew/vm_crewMemberList.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewRecordRoom.dart';
 import 'package:com.snowlive/viewmodel/friend/vm_friendDetail.dart';
 import 'package:com.snowlive/viewmodel/friend/vm_friendDetailUpdate.dart';
+import 'package:com.snowlive/viewmodel/ranking/vm_rankingList_recordRoom.dart';
 import 'package:com.snowlive/viewmodel/resortHome/vm_alarmCenter.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
 import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
@@ -54,7 +55,6 @@ class _FriendDetailViewState extends State<FriendDetailView> {
     FriendDetailUpdateViewModel _friendDetailUpdateViewModel = Get.find<FriendDetailUpdateViewModel>();
     final CrewDetailViewModel _crewDetailViewModel = Get.find<CrewDetailViewModel>();
     final CrewMemberListViewModel _crewMemberListViewModel = Get.find<CrewMemberListViewModel>();
-    final CrewRecordRoomViewModel _crewRecordRoomViewModel = Get.find<CrewRecordRoomViewModel>();
     final AlarmCenterViewModel _alarmCenterViewModel = Get.find<AlarmCenterViewModel>();
 
     return GestureDetector(
@@ -330,11 +330,6 @@ class _FriendDetailViewState extends State<FriendDetailView> {
                                                             _friendDetailViewModel.friendDetailModel.friendUserInfo.crewId,
                                                             _friendDetailViewModel.seasonDate
                                                         );
-                                                        if(_userViewModel.user.crew_id == _friendDetailViewModel.friendDetailModel.friendUserInfo.crewId)
-                                                          await _crewRecordRoomViewModel.fetchCrewRidingRecords(
-                                                              _friendDetailViewModel.friendDetailModel.friendUserInfo.crewId,
-                                                              '${DateTime.now().year}'
-                                                          );
 
                                                       },//
                                                       child: Row(
