@@ -17,7 +17,7 @@ class Banner_moreTab extends StatefulWidget {
 class _Banner_moreTabState extends State<Banner_moreTab> {
   UserViewModel _userViewModel = Get.find<UserViewModel>();
   ResortHomeViewModel _resortHomeViewModel = Get.find<ResortHomeViewModel>();
-  CarouselController _carouselController = CarouselController();
+  CarouselSliderController _carouselController = CarouselSliderController();
   ValueNotifier<int> _currentIndexNotifier = ValueNotifier<int>(0);
 
   @override

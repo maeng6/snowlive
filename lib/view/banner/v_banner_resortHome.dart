@@ -17,7 +17,7 @@ class Banner_resortHome extends StatefulWidget {
 class _Banner_resortHomeState extends State<Banner_resortHome> {
   UserViewModel _userViewModel = Get.find<UserViewModel>();
   ResortHomeViewModel _resortHomeViewModel = Get.find<ResortHomeViewModel>();
-  CarouselController _carouselController = CarouselController();
+  CarouselSliderController _carouselController = CarouselSliderController();
   ValueNotifier<int> _currentIndexNotifier = ValueNotifier<int>(0);
 
   @override
