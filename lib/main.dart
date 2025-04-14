@@ -68,7 +68,7 @@ void main() async {
   await Get.put(NotificationController(),permanent: true);
   await Get.put(AuthCheckViewModel(), permanent: true);
   await Get.put(SplashController(),permanent: true);
-
+  await Future.delayed(const Duration(milliseconds: 400)); //
   // FCM 푸시 알림 관련 초기화
   PushNotification.init();
   // flutter_local_notifications 패키지 관련 초기화
@@ -161,64 +161,59 @@ class _MyAppState extends State<MyApp> {
             child: child!,
           );
         },
-      home: FutureBuilder(
-        future: _splashController.getSplashUrlandGotoMainHome(),
-        builder: (context, snapshot) {
-          Widget splashWidget;
-
-          if (snapshot.connectionState == ConnectionState.done) {
-            if (snapshot.hasError) {
-              splashWidget = Center(child: Text('에러 발생: ${snapshot.error}'));
-            } else {
-              splashUrl = _splashController.url;
-              gotoMainHome = _splashController.gotoMainHome;
-
-              // 여기서 바로 페이지 전환
-              WidgetsBinding.instance.addPostFrameCallback((_) {
-                if (gotoMainHome) {
-                  Get.offAllNamed(AppRoutes.mainHome);
-                } else {
-                  Get.offAllNamed(AppRoutes.login);
-                }
-              });
-
-              // 전환 전 보여줄 네트워크 splash 이미지
-              splashWidget = Image.network(
-                splashUrl,
-                fit: BoxFit.cover,
-                width: double.infinity,
-                height: double.infinity,
-              );
-            }
-          } else if (snapshot.connectionState != ConnectionState.done &&
-              _splashController.isLoadingUrl == false) {
-            splashWidget = ExtendedImage.network(
-              _splashController.url,
-              key: const ValueKey('network'),
-              fit: BoxFit.cover,
-              width: double.infinity,
-              height: double.infinity,
-              enableMemoryCache: true,
-            );
-          } else {
-            splashWidget = ExtendedImage.asset(
+      home: Obx(() {
+        return Stack(
+          children: [
+            // 로컬 스플래시 기본 이미지
+            ExtendedImage.asset(
               'assets/imgs/splash_screen/splash_logo.png',
               key: const ValueKey('asset'),
               fit: BoxFit.cover,
-              enableMemoryCache: true,
               width: double.infinity,
               height: double.infinity,
-            );
-          }
+              enableMemoryCache: true,
+                filterQuality: FilterQuality.high
+            ),
 
-          return AnimatedSwitcher(
-            duration: const Duration(milliseconds: 500),
-            switchInCurve: Curves.easeInOut,
-            switchOutCurve: Curves.easeInOut,
-            child: splashWidget,
-          );
-        },
-      ),
+            // isLoadingUrl이 끝나면 네트워크 이미지 + 로그인 체크 진행
+            if (!_splashController.isLoadingUrl.value)
+              FutureBuilder(
+                future: _splashController.userCheck(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.done) {
+                    if (snapshot.hasError) {
+                      return Center(child: Text('에러 발생: ${snapshot.error}'));
+                    } else {
+                      splashUrl = _splashController.url;
+                      gotoMainHome = _splashController.gotoMainHome;
+
+                      // 전환 후 이동
+                      WidgetsBinding.instance.addPostFrameCallback((_) {
+                        Future.delayed(const Duration(milliseconds: 300), () {
+                          if (gotoMainHome) {
+                            Get.offAllNamed(AppRoutes.mainHome);
+                          } else {
+                            Get.offAllNamed(AppRoutes.login);
+                          }
+                        });
+                      });
+                    }
+                  }
+
+                  // 로딩 중에도 네트워크 이미지 위에 올리기
+                  return ExtendedImage.network(
+                    _splashController.url,
+                    key: const ValueKey('network'),
+                    fit: BoxFit.cover,
+                    width: double.infinity,
+                    height: double.infinity,
+                    enableMemoryCache: true,
+                  );
+                },
+              ),
+          ],
+        );
+      }),
 
     );
   }

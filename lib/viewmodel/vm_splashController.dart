@@ -4,12 +4,7 @@ import 'package:get/get.dart';
 
 class SplashController extends GetxController{
 
-  @override
-  void onInit() async{
-    // TODO: implement onInit
-    super.onInit();
-    await getSplashUrlandGotoMainHome();
-  }
+
 
   final AuthCheckViewModel controller = Get.find<AuthCheckViewModel>();
 
@@ -20,16 +15,30 @@ class SplashController extends GetxController{
   bool gotoMainHome = false;
   RxBool isLoadingUrl = true.obs;
 
+  @override
+  void onInit() async{
+    // TODO: implement onInit
+    super.onInit();
+    await loadSplashImage();
+  }
 
-
-  Future<void> getSplashUrlandGotoMainHome() async{
+  Future<void> userCheck() async{
     try {
-      SplashModel splashModel = await SplashModel().getSplashImage();
-      this._url = splashModel.modelUrl;
-      this.isLoadingUrl.value = false;
       gotoMainHome = await controller.userCheck();
     }catch(e){
       this._url = 'https://i.esdrop.com/d/f/yytYSNBROy/spAvUnyvK6.png';
+    }
+  }
+
+  Future<void> loadSplashImage() async {
+    try {
+      SplashModel splashModel = await SplashModel().getSplashImage();
+      _url = splashModel.modelUrl;
+    } catch (e) {
+      _url = 'https://i.esdrop.com/d/f/yytYSNBROy/spAvUnyvK6.png';
+    } finally {
+      isLoadingUrl.value = false;
+      print('스플래시 url 다운완료');
     }
   }
 
