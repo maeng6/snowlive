@@ -1,6 +1,7 @@
+import 'dart:convert';
 import 'package:com.snowlive/data/snowliveDesignStyle.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class SlmkScreen extends StatefulWidget {
@@ -11,80 +12,144 @@ class SlmkScreen extends StatefulWidget {
 }
 
 class _SlmkScreenState extends State<SlmkScreen> {
-  late WebViewController _controller;
-  bool _isLoading = true; // ✅ 스플래시 보여줄지 여부
+  WebViewController? _controller; // ✅ nullable
+  bool _isLoading = true;
+  final String targetUrl = 'https://m.market-snowlive.kr';
+
+  @override
+  void initState() {
+    super.initState();
+    print('[SlmkScreen] initState 호출됨');
+    _initWebView();
+  }
+
+  Future<void> _initWebView() async {
+    await _setupCookies();
+
+    final tempController = WebViewController();
+
+    tempController
+      ..setJavaScriptMode(JavaScriptMode.unrestricted)
+      ..addJavaScriptChannel(
+        'SaveCookies',
+        onMessageReceived: (JavaScriptMessage message) async {
+          print('[쿠키저장] document.cookie 수신됨: ${message.message}');
+          final raw = message.message;
+          final cookieMap = <String, String>{};
+          for (var cookie in raw.split(';')) {
+            var parts = cookie.trim().split('=');
+            if (parts.length == 2) {
+              cookieMap[parts[0]] = parts[1];
+            }
+          }
+          final prefs = await SharedPreferences.getInstance();
+          await prefs.setString('shopby_cookies', jsonEncode(cookieMap));
+          print('[쿠키저장] 저장 완료: $cookieMap');
+        },
+      )
+      ..setNavigationDelegate(
+        NavigationDelegate(
+          onPageFinished: (url) async {
+            print('[WebView] 페이지 로딩 완료: $url');
+            await tempController.runJavaScript(
+                "window.SaveCookies.postMessage(document.cookie);"
+            );
+            await Future.delayed(const Duration(milliseconds: 300));
+            if (mounted) {
+              setState(() {
+                _isLoading = false;
+              });
+              print('[WebView] 스플래시 숨김');
+            }
+          },
+        ),
+      )
+      ..loadRequest(Uri.parse(targetUrl));
+
+    if (mounted) {
+      setState(() {
+        _controller = tempController; // ✅ 여기서 안전하게 할당
+      });
+    }
+  }
+
+  Future<void> _setupCookies() async {
+    final prefs = await SharedPreferences.getInstance();
+    final cookieJson = prefs.getString('shopby_cookies');
+    if (cookieJson != null) {
+      print('[쿠키복원] 저장된 쿠키 있음. 적용 시작');
+      final cookies = Map<String, String>.from(jsonDecode(cookieJson));
+      final cookieManager = WebViewCookieManager();
+      for (final entry in cookies.entries) {
+        print('[쿠키복원] ${entry.key} = ${entry.value}');
+        await cookieManager.setCookie(
+          WebViewCookie(
+            name: entry.key,
+            value: entry.value,
+            domain: Uri.parse(targetUrl).host,
+          ),
+        );
+      }
+      print('[쿠키복원] 쿠키 적용 완료');
+    } else {
+      print('[쿠키복원] 저장된 쿠키 없음');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-
     Size _size = MediaQuery.of(context).size;
 
     return WillPopScope(
       onWillPop: () async {
-        Navigator.pop(context, 0); // 홈 탭으로 복귀
+        print('[뒤로가기] SlmkScreen 닫힘');
+        Navigator.pop(context, 0);
         return false;
       },
       child: Scaffold(
         backgroundColor: const Color(0xFF2C2C2C),
         body: Stack(
           children: [
-            /// ✅ WebView (SafeArea 내부)
             AnimatedOpacity(
               opacity: _isLoading ? 0 : 1,
               duration: const Duration(milliseconds: 300),
               child: SafeArea(
-                child: WebView(
-                  initialUrl: 'https://m.market-snowlive.kr',
-                  javascriptMode: JavascriptMode.unrestricted,
-                  onWebViewCreated: (controller) => _controller = controller,
-                  onPageFinished: (_) async {
-                    await Future.delayed(const Duration(milliseconds: 300)); // ✅ 최소 1초 유지
-                    if (mounted) {
-                      setState(() {
-                        _isLoading = false;
-                      });
-                    }
-                  },
-                ),
+                child: _controller == null
+                    ? const SizedBox.shrink()
+                    : WebViewWidget(controller: _controller!), // ✅ null 체크
               ),
             ),
-
-            /// ✅ 로고 스플래시 (전체 화면 덮기)
             if (_isLoading)
               Container(
                 alignment: Alignment.center,
-                child:
-                    ClipRect(
-                      child: Image.asset(
-                        'assets/imgs/imgs/img_splash_slmk.png',
-                        width: _size.width,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
+                child: ClipRect(
+                  child: Image.asset(
+                    'assets/imgs/imgs/img_splash_slmk.png',
+                    width: _size.width,
+                    fit: BoxFit.cover,
+                  ),
+                ),
               ),
-            /// ✅ 'APP' 버튼 (WebView 위에 항상 위치)
             if (!_isLoading)
               Positioned(
-                top: MediaQuery.of(context).size.height * 0.76,
+                bottom: 174,
                 right: 16,
                 child: SizedBox(
                   width: 48,
                   height: 48,
                   child: FloatingActionButton(
                     onPressed: () {
+                      print('[버튼] APP 버튼 눌림 - SlmkScreen 닫기');
                       Navigator.pop(context, 0);
                     },
                     backgroundColor: SDSColor.snowliveBlue,
                     elevation: 0,
                     shape: const CircleBorder(),
-                    child: const Text(
-                      'APP',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 12,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      textAlign: TextAlign.center,
+                    child: Image.asset(
+                      'assets/imgs/logos/snowlive_logo_new.png',
+                      color: Colors.white,
+                      width: 36,
+                      fit: BoxFit.cover,
                     ),
                   ),
                 ),

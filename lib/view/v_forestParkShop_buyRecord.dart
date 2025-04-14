@@ -28,6 +28,9 @@ class ForestParkExchangeHistoryView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    Size _size = MediaQuery.of(context).size;
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: PreferredSize(
@@ -35,9 +38,10 @@ class ForestParkExchangeHistoryView extends StatelessWidget {
         child: AppBar(
           title: Text(
             '경품 교환 목록',
-            style: SDSTextStyle.extraBold.copyWith(
+            style: SDSTextStyle.bold.copyWith(
                 color: SDSColor.gray900,
-                fontSize: 18),
+                fontSize: 16
+            ),
           ),
           backgroundColor: SDSColor.snowliveWhite,
           surfaceTintColor: Colors.transparent,
@@ -160,7 +164,7 @@ class ForestParkExchangeHistoryView extends StatelessWidget {
 
                         Text(
                           '${_formatDate(record.uploadTime)} 교환 확정',
-                          style: SDSTextStyle.regular.copyWith(fontSize: 11, color: SDSColor.blue400,),
+                          style: SDSTextStyle.regular.copyWith(fontSize: 11, color: Color(0xFF147A23)),
                         ),
                       ],
                     ),
@@ -211,8 +215,7 @@ class ForestParkExchangeHistoryView extends StatelessWidget {
                                             ),
                                           ),
                                         ),
-
-                                        SizedBox(height: 40),
+                                        SizedBox(height: 32),
                                         Container(
                                           decoration: BoxDecoration(
                                             border: Border.all(
@@ -223,19 +226,30 @@ class ForestParkExchangeHistoryView extends StatelessWidget {
                                           child: QrImageView(
                                             data: record.recordId.toString(),
                                             version: QrVersions.auto,
-                                            size: 260,
+                                            size: _size.width - 140,
                                             backgroundColor: Colors.white,
                                           ),
                                         ),
                                         SizedBox(
-                                          height: 20,
+                                          height: 16,
+                                        ),
+                                        Text(
+                                          '상품 교환 QR',
+                                          style: SDSTextStyle.bold.copyWith(
+                                            fontSize: 16,
+                                            color: Colors.white,
+                                          ),
+                                          textAlign: TextAlign.center,
+                                        ),
+                                        SizedBox(
+                                          height: 6,
                                         ),
                                         Text(
                                           '경품 수령처에서 QR 코드를 스캔하고\n경품을 수령해 주세요!',
                                           style: TextStyle(
                                             fontSize: 13,
                                             fontWeight: FontWeight.normal,
-                                            color: SDSColor.snowliveWhite,
+                                            color: SDSColor.snowliveWhite.withOpacity(0.5),
                                           ),
                                           textAlign: TextAlign.center,
                                         ),
@@ -290,7 +304,7 @@ class ForestParkExchangeHistoryView extends StatelessWidget {
                                                   },
                                                 ),
                                               ),
-                                              SizedBox(width: 12),
+                                              SizedBox(width: 16),
                                               Expanded(
                                                 child: Column(
                                                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -298,7 +312,7 @@ class ForestParkExchangeHistoryView extends StatelessWidget {
                                                     Text(
                                                       record.leafItem?.name ?? '상품 이름',
                                                       style: SDSTextStyle.bold.copyWith(
-                                                        fontSize: 14,
+                                                        fontSize: 15,
                                                         color: Colors.white,
                                                       ),
                                                     ),
@@ -306,31 +320,34 @@ class ForestParkExchangeHistoryView extends StatelessWidget {
                                                       Text(
                                                         '초록열매 ${record.leafItem?.leafKind1Count ?? 0}개',
                                                         style: SDSTextStyle.regular.copyWith(
-                                                          fontSize: 12,
+                                                          fontSize: 13,
                                                           color: Colors.white.withOpacity(0.5),
                                                         ),
                                                       ),
                                                       Text(
                                                         ' / ',
                                                         style: SDSTextStyle.regular.copyWith(
-                                                          fontSize: 12,
+                                                          fontSize: 13,
                                                           color: Colors.white.withOpacity(0.5),
                                                         ),
                                                       ),
                                                       Text(
                                                         '황금열매 ${record.leafItem?.leafKind2Count ?? 0}개',
                                                         style: SDSTextStyle.regular.copyWith(
-                                                          fontSize: 12,
+                                                          fontSize: 13,
                                                           color: Colors.white.withOpacity(0.5),
                                                         ),
                                                       ),
-                                                    ],),
-
+                                                    ],
+                                                    ),
                                                   ],
                                                 ),
                                               ),
                                             ],
                                           ),
+                                        ),
+                                        SizedBox(
+                                          height: 16,
                                         ),
                                       ],
                                     ),
@@ -362,7 +379,27 @@ class ForestParkExchangeHistoryView extends StatelessWidget {
                     Container(
                       height: 32,
                       child: ElevatedButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          Get.snackbar(
+                            '이미 수령한 상품이에요',
+                            '새로운 상품을 교환 후 수령해주세요.',
+                            snackPosition: SnackPosition.BOTTOM, // ⬇️ 아래쪽에 표시
+                            backgroundColor: Colors.black.withOpacity(0.8),
+                            colorText: Colors.white,
+                            margin: const EdgeInsets.all(16),
+                            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+                            borderRadius: 12,
+                            duration: const Duration(seconds: 1),
+                            titleText: Text(
+                              '이미 수령한 상품이에요',
+                              style: SDSTextStyle.bold.copyWith(fontSize: 14, color: Colors.white),
+                            ),
+                            messageText: Text(
+                              '새로운 상품을 교환 후 수령해주세요.',
+                              style: SDSTextStyle.regular.copyWith(fontSize: 13, color: Colors.white.withOpacity(0.5)),
+                            ),
+                          );
+                        },
                         style: ElevatedButton.styleFrom(
                           elevation: 0,
                           foregroundColor: SDSColor.snowliveWhite,

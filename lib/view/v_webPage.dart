@@ -1,48 +1,52 @@
-import 'package:flutter/services.dart';
-import 'package:webview_flutter/webview_flutter.dart';
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 class WebPage extends StatefulWidget {
-   WebPage({this.url});
-
-   final String? url;
+  const WebPage({super.key, this.url});
+  final String? url;
 
   @override
   State<WebPage> createState() => _WebPageState();
 }
 
 class _WebPageState extends State<WebPage> {
+  late final WebViewController _controller;
 
   @override
   void initState() {
     super.initState();
-    // Enable virtual display.
-    if (Platform.isAndroid) WebView.platform = AndroidWebView();
+
+    // ✅ WebViewController 초기화 (WebView 대신)
+    _controller = WebViewController()
+      ..setJavaScriptMode(JavaScriptMode.unrestricted)
+      ..loadRequest(Uri.parse(widget.url ?? 'https://example.com'));
   }
 
   @override
   Widget build(BuildContext context) {
-
     final double _statusBarSize = MediaQuery.of(context).padding.top;
+
+    // ✅ StatusBar 스타일 설정
     SystemChrome.setEnabledSystemUIMode(
       SystemUiMode.manual,
       overlays: [SystemUiOverlay.top, SystemUiOverlay.bottom],
-    ); // 상단 StatusBar 생성
+    );
     SystemChrome.setSystemUIOverlayStyle(
-        SystemUiOverlayStyle.dark.copyWith(
-            statusBarColor: Colors.white, // Color for Android
-            statusBarIconBrightness: Brightness.dark,
-            statusBarBrightness:
-            (Platform.isAndroid)
-                ?Brightness.light
-                :Brightness.dark //ios:dark, android:light
-        ));
+      SystemUiOverlayStyle.dark.copyWith(
+        statusBarColor: Colors.white,
+        statusBarIconBrightness: Brightness.dark,
+        statusBarBrightness:
+        Platform.isAndroid ? Brightness.light : Brightness.dark,
+      ),
+    );
 
-    return Scaffold(backgroundColor: Colors.white,
+    return Scaffold(
+      backgroundColor: Colors.white,
       extendBodyBehindAppBar: true,
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(44),
+        preferredSize: const Size.fromHeight(44),
         child: AppBar(
           leading: GestureDetector(
             child: Image.asset(
@@ -62,16 +66,9 @@ class _WebPageState extends State<WebPage> {
           titleSpacing: 0,
         ),
       ),
-
       body: SafeArea(
-        child: WebView(
-          backgroundColor: Colors.white,
-          initialUrl: '${widget.url}',
-          javascriptMode: JavascriptMode.unrestricted,
-        ),
+        child: WebViewWidget(controller: _controller), // ✅ 핵심 변경!
       ),
     );
-
   }
 }
-
