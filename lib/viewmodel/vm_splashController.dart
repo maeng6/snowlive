@@ -1,6 +1,7 @@
 import 'package:com.snowlive/model/m_splash.dart';
 import 'package:com.snowlive/viewmodel/onboarding_login/vm_authcheck.dart';
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SplashController extends GetxController{
 
@@ -19,12 +20,13 @@ class SplashController extends GetxController{
   void onInit() async{
     // TODO: implement onInit
     super.onInit();
-    await loadSplashImage();
   }
 
   Future<void> userCheck() async{
     try {
+      print('2');
       gotoMainHome = await controller.userCheck();
+      print('3');
     }catch(e){
       this._url = 'https://i.esdrop.com/d/f/yytYSNBROy/spAvUnyvK6.png';
     }
@@ -34,12 +36,24 @@ class SplashController extends GetxController{
     try {
       SplashModel splashModel = await SplashModel().getSplashImage();
       _url = splashModel.modelUrl;
+
+      // SharedPreferences에 splashUrl 저장
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('splashUrl', _url);
+
     } catch (e) {
-      _url = 'https://i.esdrop.com/d/f/yytYSNBROy/spAvUnyvK6.png';
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('splashUrl', 'https://i.esdrop.com/d/f/yytYSNBROy/it36mfOyr1.png');
     } finally {
       isLoadingUrl.value = false;
       print('스플래시 url 다운완료');
     }
+  }
+
+  Future<void> loadLocalSplashUrl() async {
+    final prefs = await SharedPreferences.getInstance();
+    _url = prefs.getString('splashUrl') ?? 'https://i.esdrop.com/d/f/yytYSNBROy/spAvUnyvK6.png';
+    print('로컬에서 splashUrl 불러옴: $_url');
   }
 
 }

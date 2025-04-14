@@ -55,166 +55,53 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initializeDateFormatting('ko', null);
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
 
-  await SystemChrome.setPreferredOrientations([
-    DeviceOrientation.portraitUp,
-    DeviceOrientation.portraitDown
-  ]);
+  Get.put(UserViewModel(), permanent: true);
+  Get.put(AuthCheckViewModel(), permanent: true);
 
   HttpOverrides.global = MyHttpOverrides();
-  // Dependency Injection
-  await Get.put(UserViewModel(), permanent: true);
-  await Get.put(FriendDetailViewModel());
-  await Get.put(NotificationController(),permanent: true);
-  await Get.put(AuthCheckViewModel(), permanent: true);
-  await Get.put(SplashController(),permanent: true);
-  await Future.delayed(const Duration(milliseconds: 400)); //
-  // FCM 푸시 알림 관련 초기화
+
+  // DI + splashUrl preload
+  await Get.putAsync(() async {
+    final controller = SplashController();
+    await controller.loadLocalSplashUrl();
+    return controller;
+  }, permanent: true);
+
+  Get.put(FriendDetailViewModel());
+  Get.put(NotificationController(), permanent: true);
+
   PushNotification.init();
-  // flutter_local_notifications 패키지 관련 초기화
   PushNotification.localNotiInit();
-  // 백그라운드 알림 수신 리스너
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-
-  // 포그라운드 알림 수신 리스너
-  FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-    String payloadData = jsonEncode(message.data);
-    print('Got a message in foreground');
-    if (message.notification != null) {
-      // flutter_local_notifications 패키지 사용
-      PushNotification.showSimpleNotification(
-        title: message.notification!.title!,
-        body: message.notification!.body!,
-        payload: payloadData,
-      );
-    }
-  });
-
-  // 메시지 상호작용 함수 호출
   setupInteractedMessage();
 
-
-
   runApp(MyApp());
-
 }
 
-class MyApp extends StatefulWidget {
+class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
-
-
-  @override
-  State<MyApp> createState() => _MyAppState();
-}
-
-class _MyAppState extends State<MyApp> {
-
-  Future<void>? loadingSplashImgUrl;
-  String splashUrl='';
-  bool gotoMainHome = false;
-
-  //TODO: Dependency Injection********************************************
-  SplashController _splashController = Get.find<SplashController>();
 
   @override
   Widget build(BuildContext context) {
-
     return GetMaterialApp(
-        debugShowCheckedModeBanner: false,
-        getPages: AppRoutes.pages,
-        navigatorObservers: [
-          FirebaseAnalyticsObserver(analytics: FirebaseAnalytics.instance)
-        ],
-        theme: ThemeData(
-          primaryColor: SDSColor.snowliveBlue,
-          primaryColorLight: SDSColor.blue50,
-          primaryColorDark: SDSColor.blue700,
-          textTheme: TextTheme(
-            displayLarge: TextStyle(fontFamily: 'Pretendard', fontWeight: FontWeight.w800),
-            displayMedium: TextStyle(fontFamily: 'Pretendard', fontWeight: FontWeight.w600),
-            bodyLarge: TextStyle(fontFamily: 'Pretendard', fontWeight: FontWeight.w300),
-          ),
-          fontFamily: 'Pretendard',
-          appBarTheme: AppBarTheme(
-            iconTheme: IconThemeData(
-                size: 30,
-                color: Colors.black
-            ),
-            centerTitle: true,
-            titleTextStyle: TextStyle(
-                fontFamily: 'Pretendard',
-                fontWeight: FontWeight.bold,
-                color: Colors.black,
-                fontSize: 20
-            ),
-            backgroundColor: Colors.transparent,
-            elevation: 0.0,
-          ),
-          buttonTheme: ButtonThemeData(
-              buttonColor: Colors.transparent
-          ),
-        ),
-        builder: (context, child) {
-          // textScaleFactor를 1.0으로 고정
-          return MediaQuery(
-            data: MediaQuery.of(context).copyWith(textScaler: TextScaler.linear(1.0)),
-            child: child!,
-          );
-        },
-      home: Obx(() {
-        return Stack(
-          children: [
-            // 로컬 스플래시 기본 이미지
-            ExtendedImage.asset(
-              'assets/imgs/splash_screen/splash_logo.png',
-              key: const ValueKey('asset'),
-              fit: BoxFit.cover,
-              width: double.infinity,
-              height: double.infinity,
-              enableMemoryCache: true,
-                filterQuality: FilterQuality.high
-            ),
-
-            // isLoadingUrl이 끝나면 네트워크 이미지 + 로그인 체크 진행
-            if (!_splashController.isLoadingUrl.value)
-              FutureBuilder(
-                future: _splashController.userCheck(),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.done) {
-                    if (snapshot.hasError) {
-                      return Center(child: Text('에러 발생: ${snapshot.error}'));
-                    } else {
-                      splashUrl = _splashController.url;
-                      gotoMainHome = _splashController.gotoMainHome;
-
-                      // 전환 후 이동
-                      WidgetsBinding.instance.addPostFrameCallback((_) {
-                        Future.delayed(const Duration(milliseconds: 300), () {
-                          if (gotoMainHome) {
-                            Get.offAllNamed(AppRoutes.mainHome);
-                          } else {
-                            Get.offAllNamed(AppRoutes.login);
-                          }
-                        });
-                      });
-                    }
-                  }
-
-                  // 로딩 중에도 네트워크 이미지 위에 올리기
-                  return ExtendedImage.network(
-                    _splashController.url,
-                    key: const ValueKey('network'),
-                    fit: BoxFit.cover,
-                    width: double.infinity,
-                    height: double.infinity,
-                    enableMemoryCache: true,
-                  );
-                },
-              ),
-          ],
+      debugShowCheckedModeBanner: false,
+      getPages: AppRoutes.pages,
+      navigatorObservers: [
+        FirebaseAnalyticsObserver(analytics: FirebaseAnalytics.instance)
+      ],
+      theme: ThemeData(
+        primaryColor: SDSColor.snowliveBlue,
+        fontFamily: 'Pretendard',
+      ),
+      builder: (context, child) {
+        return MediaQuery(
+          data: MediaQuery.of(context).copyWith(textScaler: TextScaler.linear(1.0)),
+          child: child!,
         );
-      }),
-
+      },
+      home: const SplashScreenWrapper(), // ⬅️ 핵심 진입점
     );
   }
 }
