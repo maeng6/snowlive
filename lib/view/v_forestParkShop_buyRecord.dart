@@ -338,8 +338,8 @@ class ForestParkExchangeHistoryView extends StatelessWidget {
                                                           color: Colors.white.withOpacity(0.5),
                                                         ),
                                                       ),
-                                                    ],),
-
+                                                    ],
+                                                    ),
                                                   ],
                                                 ),
                                               ),
@@ -379,7 +379,27 @@ class ForestParkExchangeHistoryView extends StatelessWidget {
                     Container(
                       height: 32,
                       child: ElevatedButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          Get.snackbar(
+                            '이미 수령한 상품이에요',
+                            '새로운 상품을 교환 후 수령해주세요.',
+                            snackPosition: SnackPosition.BOTTOM, // ⬇️ 아래쪽에 표시
+                            backgroundColor: Colors.black.withOpacity(0.8),
+                            colorText: Colors.white,
+                            margin: const EdgeInsets.all(16),
+                            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+                            borderRadius: 12,
+                            duration: const Duration(seconds: 1),
+                            titleText: Text(
+                              '이미 수령한 상품이에요',
+                              style: SDSTextStyle.bold.copyWith(fontSize: 14, color: Colors.white),
+                            ),
+                            messageText: Text(
+                              '새로운 상품을 교환 후 수령해주세요.',
+                              style: SDSTextStyle.regular.copyWith(fontSize: 13, color: Colors.white.withOpacity(0.5)),
+                            ),
+                          );
+                        },
                         style: ElevatedButton.styleFrom(
                           elevation: 0,
                           foregroundColor: SDSColor.snowliveWhite,
