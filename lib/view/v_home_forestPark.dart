@@ -188,7 +188,7 @@ class _ForestParkHomeState extends State<ForestParkHome> {
                             actions: [
                               Padding(
                                 padding: EdgeInsets.only(top: 24),
-                                child: Expanded(
+                                child: SizedBox(
                                   child: Container(
                                     width: 240,
                                     height: 48,
