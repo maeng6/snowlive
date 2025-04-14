@@ -272,76 +272,92 @@ class _ForestParkShopState extends State<ForestParkShop> {
                                                                         final isNotEnough = greenShort > 0 || goldShort > 0;
 
                                                                         if (isNotEnough) {
-                                                                          String shortfallMessage = '교환에 필요한 열매가 부족해요\n';
-                                                                          if (greenShort > 0) shortfallMessage += '・ 초록열매 ${greenShort}개 부족\n';
-                                                                          if (goldShort > 0) shortfallMessage += '・ 황금열매 ${goldShort}개 부족';
+                                                                          final shortfallTitle = '교환에 필요한 열매가 부족해요.';
+                                                                          String? shortfallGreen;
+                                                                          String? shortfallGold;
+
+                                                                          if (greenShort > 0) {
+                                                                            shortfallGreen = '초록열매 ${greenShort}개 부족';
+                                                                          }
+
+                                                                          if (goldShort > 0) {
+                                                                            shortfallGold = '황금열매 ${goldShort}개 부족';
+                                                                          }
+
+                                                                          final shortfallDetails = [
+                                                                            if (shortfallGreen != null) '$shortfallGreen',
+                                                                            if (shortfallGold != null) '$shortfallGold',
+                                                                          ].join('\n');
 
                                                                           showDialog(
                                                                             context: context,
                                                                             builder: (_) => AlertDialog(
-                                                                                  backgroundColor: SDSColor.snowliveWhite,
-                                                                                  contentPadding: EdgeInsets.only(bottom: 0, left: 28, right: 28, top: 36),
-                                                                                  elevation: 0,
-                                                                                  shape: RoundedRectangleBorder(
-                                                                                      borderRadius: BorderRadius.circular(16)),
-                                                                                  buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
-                                                                                  content: Container(
-                                                                                    height: 90,
-                                                                                    child: Column(
-                                                                                      crossAxisAlignment: CrossAxisAlignment.center,
-                                                                                      children: [
-                                                                                        Text(
-                                                                                          '열매가 부족해요!',
-                                                                                          textAlign: TextAlign.center,
-                                                                                          style: SDSTextStyle.bold.copyWith(
-                                                                                              color: SDSColor.gray900,
-                                                                                              fontSize: 16
-                                                                                          ),
-                                                                                        ),
-                                                                                        SizedBox(
-                                                                                          height: 6,
-                                                                                        ),
-                                                                                        Text(
-                                                                                          shortfallMessage,
-                                                                                          textAlign: TextAlign.center,
-                                                                                          style: SDSTextStyle.regular.copyWith(
-                                                                                            color: SDSColor.gray500,
-                                                                                            fontSize: 14,
-                                                                                          ),
-                                                                                        ),
-                                                                                      ],
-                                                                                    ),
-                                                                                  ),
-                                                                                  actions: [
-                                                                                    Padding(
-                                                                                      padding: EdgeInsets.only(top: 24),
-                                                                                      child: Expanded(
-                                                                                        child: Container(
-                                                                                          width: 240,
-                                                                                          height: 48,
-                                                                                          child: ElevatedButton(
-                                                                                            onPressed: () => Navigator.of(context).pop(),
-                                                                                            style: ElevatedButton.styleFrom(
-                                                                                              elevation: 0,
-                                                                                              backgroundColor: Color(0xFF127721),
-                                                                                              foregroundColor: Colors.white,
-                                                                                              shape: RoundedRectangleBorder(
-                                                                                                borderRadius: BorderRadius.circular(6),
-                                                                                              ),
-                                                                                            ),
-                                                                                            child: Text(
-                                                                                              '확인',
-                                                                                              style: TextStyle(
-                                                                                                fontWeight: FontWeight.bold,
-                                                                                                fontSize: 15,
-                                                                                              ),
-                                                                                            ),
-                                                                                          ),
-                                                                                        ),
+                                                                              backgroundColor: SDSColor.snowliveWhite,
+                                                                              contentPadding: const EdgeInsets.only(bottom: 0, left: 28, right: 28, top: 36),
+                                                                              elevation: 0,
+                                                                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                                                                              content: Container(
+                                                                                height: 90,
+                                                                                child: Column(
+                                                                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                                                                  children: [
+                                                                                    Text(
+                                                                                      '열매가 부족해요',
+                                                                                      textAlign: TextAlign.center,
+                                                                                      style: SDSTextStyle.bold.copyWith(
+                                                                                        color: SDSColor.gray900,
+                                                                                        fontSize: 16,
                                                                                       ),
-                                                                                    )
+                                                                                    ),
+                                                                                    SizedBox(height: 6),
+                                                                                    Text(
+                                                                                      shortfallTitle,
+                                                                                      textAlign: TextAlign.center,
+                                                                                      style: SDSTextStyle.regular.copyWith(
+                                                                                        color: SDSColor.gray500,
+                                                                                        fontSize: 14,
+                                                                                      ),
+                                                                                    ),
+                                                                                    SizedBox(height: 6),
+                                                                                    Text(
+                                                                                      shortfallDetails,
+                                                                                      textAlign: TextAlign.center,
+                                                                                      style: SDSTextStyle.regular.copyWith(
+                                                                                        color: Color(0xFF0B5E2A),
+                                                                                        fontSize: 12,
+                                                                                      ),
+                                                                                    ),
                                                                                   ],
                                                                                 ),
+                                                                              ),
+                                                                              actions: [
+                                                                                Padding(
+                                                                                  padding: const EdgeInsets.only(top: 24),
+                                                                                  child: Container(
+                                                                                    width: 240,
+                                                                                    height: 48,
+                                                                                    child: ElevatedButton(
+                                                                                      onPressed: () => Navigator.of(context).pop(),
+                                                                                      style: ElevatedButton.styleFrom(
+                                                                                        elevation: 0,
+                                                                                        backgroundColor: const Color(0xFF127721),
+                                                                                        foregroundColor: Colors.white,
+                                                                                        shape: RoundedRectangleBorder(
+                                                                                          borderRadius: BorderRadius.circular(6),
+                                                                                        ),
+                                                                                      ),
+                                                                                      child: const Text(
+                                                                                        '확인',
+                                                                                        style: TextStyle(
+                                                                                          fontWeight: FontWeight.bold,
+                                                                                          fontSize: 15,
+                                                                                        ),
+                                                                                      ),
+                                                                                    ),
+                                                                                  ),
+                                                                                )
+                                                                              ],
+                                                                            ),
                                                                           );
                                                                           return;
                                                                         }
@@ -393,7 +409,7 @@ class _ForestParkShopState extends State<ForestParkShop> {
                                                                             actions: [
                                                                               Padding(
                                                                                 padding: EdgeInsets.only(top: 24),
-                                                                                child: Expanded(
+                                                                                child: SizedBox(
                                                                                   child: Container(
                                                                                     width: 240,
                                                                                     height: 48,
@@ -426,45 +442,70 @@ class _ForestParkShopState extends State<ForestParkShop> {
                                                                           // ❌ 실패 팝업 (에러 메시지 보여주기)
                                                                           Get.dialog(
                                                                             AlertDialog(
-                                                                              backgroundColor: Colors.white,
+                                                                              backgroundColor: SDSColor.snowliveWhite,
+                                                                              contentPadding: EdgeInsets.only(bottom: 0, left: 28, right: 28, top: 36),
+                                                                              elevation: 0,
                                                                               shape: RoundedRectangleBorder(
-                                                                                borderRadius: BorderRadius.circular(16),
-                                                                              ),
-                                                                              title: Center(
-                                                                                child: Text(
-                                                                                  '교환 실패',
-                                                                                  style: TextStyle(
-                                                                                    fontSize: 16,
-                                                                                    fontWeight: FontWeight.bold,
-                                                                                    color: Color(0xFF111111),
-                                                                                  ),
-                                                                                ),
-                                                                              ),
-                                                                              content: Text(
-                                                                                '일시적인 오류로 교환에 실패했어요.\n다시 시도해 주세요.',
-                                                                                textAlign: TextAlign.center,
-                                                                                style: TextStyle(fontSize: 14, color: Color(0xFF666666)),
-                                                                              ),
-                                                                              actionsPadding: EdgeInsets.only(bottom: 16),
-                                                                              actions: [
-                                                                                Center(
-                                                                                  child: ElevatedButton(
-                                                                                    onPressed: () => Get.back(),
-                                                                                    style: ElevatedButton.styleFrom(
-                                                                                      backgroundColor: Color(0xFF127721),
-                                                                                      foregroundColor: Colors.white,
-                                                                                      shape: RoundedRectangleBorder(
-                                                                                        borderRadius: BorderRadius.circular(5),
+                                                                                  borderRadius: BorderRadius.circular(16)),
+                                                                              buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+                                                                              content: Container(
+                                                                                height: 80,
+                                                                                child: Column(
+                                                                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                                                                  children: [
+                                                                                    Text(
+                                                                                      '교환 실패',
+                                                                                      textAlign: TextAlign.center,
+                                                                                      style: SDSTextStyle.bold.copyWith(
+                                                                                          color: SDSColor.gray900,
+                                                                                          fontSize: 16
                                                                                       ),
-                                                                                      minimumSize: Size(200, 44),
                                                                                     ),
-                                                                                    child: Text('확인', style: TextStyle(fontWeight: FontWeight.bold)),
-                                                                                  ),
+                                                                                    SizedBox(
+                                                                                      height: 6,
+                                                                                    ),
+                                                                                    Text(
+                                                                                      '일시적인 오류로 교환에 실패했어요.\n다시 시도해 주세요.',
+                                                                                      textAlign: TextAlign.center,
+                                                                                      style: SDSTextStyle.regular.copyWith(
+                                                                                        color: SDSColor.gray500,
+                                                                                        fontSize: 14,
+                                                                                      ),
+                                                                                    ),
+                                                                                  ],
                                                                                 ),
+                                                                              ),
+                                                                              actions: [
+                                                                                Padding(
+                                                                                  padding: EdgeInsets.only(top: 24),
+                                                                                  child: SizedBox(
+                                                                                    child: Container(
+                                                                                      width: 240,
+                                                                                      height: 48,
+                                                                                      child: ElevatedButton(
+                                                                                        onPressed: () => Get.back(),
+                                                                                        style: ElevatedButton.styleFrom(
+                                                                                          elevation: 0,
+                                                                                          backgroundColor: Color(0xFF127721),
+                                                                                          foregroundColor: Colors.white,
+                                                                                          shape: RoundedRectangleBorder(
+                                                                                            borderRadius: BorderRadius.circular(6),
+                                                                                          ),
+                                                                                        ),
+                                                                                        child: Text(
+                                                                                          '확인',
+                                                                                          style: TextStyle(
+                                                                                            fontWeight: FontWeight.bold,
+                                                                                            fontSize: 15,
+                                                                                          ),
+                                                                                        ),
+                                                                                      ),
+                                                                                    ),
+                                                                                  ),
+                                                                                )
                                                                               ],
                                                                             ),
                                                                           );
-
                                                                         }
                                                                       },
                                                                       style: ElevatedButton.styleFrom(
