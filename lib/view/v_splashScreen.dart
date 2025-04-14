@@ -1,47 +1,52 @@
 import 'package:com.snowlive/routes/routes.dart';
 import 'package:com.snowlive/viewmodel/onboarding_login/vm_authcheck.dart';
+import 'package:com.snowlive/viewmodel/vm_splashController.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-//이거 안씀이제
-class SplashScreen extends StatefulWidget {
-  final String imageUrl;
-  final bool gotoMainHome;
-
-  const SplashScreen({Key? key, required this.imageUrl, required this.gotoMainHome}) : super(key: key);
+class SplashScreenWrapper extends StatefulWidget {
+  const SplashScreenWrapper({Key? key}) : super(key: key);
 
   @override
-  _SplashScreenState createState() => _SplashScreenState();
+  State<SplashScreenWrapper> createState() => _SplashScreenWrapperState();
 }
 
-class _SplashScreenState extends State<SplashScreen> {
-  final AuthCheckViewModel controller = Get.find<AuthCheckViewModel>();
+class _SplashScreenWrapperState extends State<SplashScreenWrapper> {
+  final SplashController _splashController = Get.find<SplashController>();
+  final defaultSplashUrl = 'https://i.esdrop.com/d/f/yytYSNBROy/spAvUnyvK6.png';
 
   @override
   void initState() {
     super.initState();
-    Future.delayed(Duration(milliseconds: 500), () {
-      // 0.5초 후 화면 전환
-      if (widget.gotoMainHome) {
-        Get.offAllNamed(AppRoutes.mainHome);
-      } else {
-        Get.offAllNamed(AppRoutes.login);
-      }
+
+    // 이미지 노출한 상태에서 userCheck 실행
+    Future.microtask(() async {
+      await _splashController.userCheck();
+      final nextRoute = _splashController.gotoMainHome
+          ? AppRoutes.mainHome
+          : AppRoutes.login;
+
+      // 약간의 여유 딜레이 후 화면 전환
+      await Future.delayed(const Duration(milliseconds: 300));
+      Get.offAllNamed(nextRoute);
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: ExtendedImage.network(
-        widget.imageUrl,
-        fit: BoxFit.cover,
-        enableMemoryCache: true,
-        width: double.infinity,
-        height: double.infinity,
-      ),
+    final splashUrl = _splashController.url.isNotEmpty
+        ? _splashController.url
+        : defaultSplashUrl;
+
+    return ExtendedImage.network(
+      splashUrl,
+      fit: BoxFit.cover,
+      width: double.infinity,
+      height: double.infinity,
+      enableMemoryCache: true,
     );
   }
 }
+
 

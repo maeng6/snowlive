@@ -11,6 +11,7 @@ import 'package:com.snowlive/model/m_bestFriendListModel.dart';
 import 'package:com.snowlive/model/m_treasure_record.dart';
 import 'package:com.snowlive/model/m_weatherModel.dart';
 import 'package:com.snowlive/util/util_1.dart';
+import 'package:com.snowlive/viewmodel/vm_splashController.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
 import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 import 'package:com.snowlive/widget/w_popUp_bottomSheet.dart';
@@ -109,6 +110,7 @@ class ResortHomeViewModel extends GetxController {
 
   UserViewModel _userViewModel = Get.find<UserViewModel>();
   ScrollController scrollController_resortHome_openchat = ScrollController();
+  SplashController _splashController = Get.find<SplashController>();
 
   @override
   void onInit() async{
@@ -119,6 +121,7 @@ class ResortHomeViewModel extends GetxController {
     await fetchResortHome(_userViewModel.user.user_id!);
     await fetchWeatherModel();
     await checkForPopUp();
+    await _splashController.loadSplashImage();
   }
 
   //TODO: 라이브온 관련 메소드****************************************************
