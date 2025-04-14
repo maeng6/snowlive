@@ -38,7 +38,7 @@ class _SlmkScreenState extends State<SlmkScreen> {
                   javascriptMode: JavascriptMode.unrestricted,
                   onWebViewCreated: (controller) => _controller = controller,
                   onPageFinished: (_) async {
-                    await Future.delayed(const Duration(seconds: 1)); // ✅ 최소 1초 유지
+                    await Future.delayed(const Duration(milliseconds: 300)); // ✅ 최소 1초 유지
                     if (mounted) {
                       setState(() {
                         _isLoading = false;
