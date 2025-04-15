@@ -48,52 +48,26 @@ class RankingIndivHistoryView extends StatelessWidget {
             ],
           ),
         )
-            : Column(
-              children: [
-                Obx(() => Padding(
-                  padding: EdgeInsets.only(top: 12, bottom: 8, left: 16, right: 16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // 시즌 선택 버튼
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Padding(
-                            padding: EdgeInsets.only(right: 6),
-                            child: Stack(
-                              alignment: Alignment.centerRight,
-                              children: [
-                                ElevatedButton(
-                                  onPressed: () async {
-                                    HapticFeedback.lightImpact();
-                                    await showModalBottomSheet(
-                                      enableDrag: false,
-                                      isScrollControlled: true,
-                                      backgroundColor: Colors.transparent,
-                                      context: context,
-                                      builder: (context) => _buildSeasonModal(context),
-                                    );
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                    shadowColor: Colors.transparent,
-                                    overlayColor: Colors.transparent,
-                                    padding: EdgeInsets.only(right: 32, left: 12, top: 3, bottom: 2),
-                                    backgroundColor: SDSColor.snowliveWhite,
-                                    elevation: 0,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(50),
-                                    ),
-                                  ),
-                                  child: Text(
-                                    '${_rankingIndivHistoryViewModel.selectedCategory_season}',
-                                    style: SDSTextStyle.bold.copyWith(fontSize: 13, color: Color(0xFF111111)),
-                                  ),
-                                ),
-                                Positioned(
-                                  right: 12,
-                                  child: GestureDetector(
-                                    onTap: () async {
+            : SingleChildScrollView(
+              child: Column(
+                children: [
+                  Obx(() => Padding(
+                    padding: EdgeInsets.only(top: 10, bottom: 6, left: 16, right: 16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // 시즌 선택 버튼
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.only(right: 6),
+                              child: Stack(
+                                alignment: Alignment.centerRight,
+                                children: [
+                                  ElevatedButton(
+                                    onPressed: () async {
+                                      HapticFeedback.lightImpact();
                                       await showModalBottomSheet(
                                         enableDrag: false,
                                         isScrollControlled: true,
@@ -102,98 +76,120 @@ class RankingIndivHistoryView extends StatelessWidget {
                                         builder: (context) => _buildSeasonModal(context),
                                       );
                                     },
-                                    child: Image.asset(
-                                      'assets/imgs/icons/icon_check_round.png',
-                                      fit: BoxFit.cover,
-                                      width: 16,
-                                      height: 16,
+                                    style: ElevatedButton.styleFrom(
+                                      shadowColor: Colors.transparent,
+                                      overlayColor: Colors.transparent,
+                                      padding: EdgeInsets.only(right: 32, left: 12, top: 3, bottom: 2),
+                                      backgroundColor: SDSColor.snowliveWhite,
+                                      elevation: 0,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(50),
+                                      ),
+                                    ),
+                                    child: Text(
+                                      '${_rankingIndivHistoryViewModel.selectedCategory_season}',
+                                      style: SDSTextStyle.bold.copyWith(fontSize: 16, color: Color(0xFF111111)),
+                                    ),
+                                  ),
+                                  Positioned(
+                                    right: 12,
+                                    child: GestureDetector(
+                                      onTap: () async {
+                                        await showModalBottomSheet(
+                                          enableDrag: false,
+                                          isScrollControlled: true,
+                                          backgroundColor: Colors.transparent,
+                                          context: context,
+                                          builder: (context) => _buildSeasonModal(context),
+                                        );
+                                      },
+                                      child: Image.asset(
+                                        'assets/imgs/icons/icon_check_round.png',
+                                        fit: BoxFit.cover,
+                                        width: 18,
+                                        height: 18,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Row(
+                              children: [
+                                GestureDetector(
+                                  onTap: () {
+                                    HapticFeedback.lightImpact();
+                                    _friendDetailViewModel_recordRoom.changeRidingStaticTab(0);
+                                  },
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color: _friendDetailViewModel_recordRoom.ridingStatisticsTabName == FriendDetailViewModel_recordRoom.ridingStatisticsTabNameListConst[0]
+                                          ? SDSColor.gray900
+                                          : SDSColor.snowliveWhite,
+                                      borderRadius: BorderRadius.circular(30.0),
+                                      border: Border.all(
+                                        color: _friendDetailViewModel_recordRoom.ridingStatisticsTabName == FriendDetailViewModel_recordRoom.ridingStatisticsTabNameListConst[0]
+                                            ? SDSColor.gray900
+                                            : SDSColor.gray200,
+                                      ),
+                                    ),
+                                    padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                                    height: 32,
+                                    child: Text(
+                                      FriendDetailViewModel_recordRoom.ridingStatisticsTabNameListConst[0],
+                                      style: SDSTextStyle.bold.copyWith(
+                                        fontSize: 12,
+                                        color: _friendDetailViewModel_recordRoom.ridingStatisticsTabName == FriendDetailViewModel_recordRoom.ridingStatisticsTabNameListConst[0]
+                                            ? SDSColor.snowliveWhite
+                                            : SDSColor.gray900,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(width: 6),
+                                GestureDetector(
+                                  onTap: () {
+                                    HapticFeedback.lightImpact();
+                                    _friendDetailViewModel_recordRoom.changeRidingStaticTab(1);
+                                  },
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color: _friendDetailViewModel_recordRoom.ridingStatisticsTabName == FriendDetailViewModel_recordRoom.ridingStatisticsTabNameListConst[1]
+                                          ? SDSColor.gray900
+                                          : SDSColor.snowliveWhite,
+                                      borderRadius: BorderRadius.circular(30.0),
+                                      border: Border.all(
+                                        color: _friendDetailViewModel_recordRoom.ridingStatisticsTabName == FriendDetailViewModel_recordRoom.ridingStatisticsTabNameListConst[1]
+                                            ? SDSColor.gray900
+                                            : SDSColor.gray200,
+                                      ),
+                                    ),
+                                    padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                                    height: 32,
+                                    child: Text(
+                                      FriendDetailViewModel_recordRoom.ridingStatisticsTabNameListConst[1],
+                                      style: SDSTextStyle.bold.copyWith(
+                                        fontSize: 12,
+                                        color: _friendDetailViewModel_recordRoom.ridingStatisticsTabName == FriendDetailViewModel_recordRoom.ridingStatisticsTabNameListConst[1]
+                                            ? SDSColor.snowliveWhite
+                                            : SDSColor.gray900,
+                                      ),
                                     ),
                                   ),
                                 ),
                               ],
                             ),
-                          ),
-                          Row(
-                            children: [
-                              GestureDetector(
-                                onTap: () {
-                                  HapticFeedback.lightImpact();
-                                  _friendDetailViewModel_recordRoom.changeRidingStaticTab(0);
-                                },
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    color: _friendDetailViewModel_recordRoom.ridingStatisticsTabName == FriendDetailViewModel_recordRoom.ridingStatisticsTabNameListConst[0]
-                                        ? SDSColor.gray900
-                                        : SDSColor.snowliveWhite,
-                                    borderRadius: BorderRadius.circular(30.0),
-                                    border: Border.all(
-                                      color: _friendDetailViewModel_recordRoom.ridingStatisticsTabName == FriendDetailViewModel_recordRoom.ridingStatisticsTabNameListConst[0]
-                                          ? SDSColor.gray900
-                                          : SDSColor.gray200,
-                                    ),
-                                  ),
-                                  padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                                  height: 36,
-                                  child: Text(
-                                    FriendDetailViewModel_recordRoom.ridingStatisticsTabNameListConst[0],
-                                    style: SDSTextStyle.bold.copyWith(
-                                      fontSize: 13,
-                                      color: _friendDetailViewModel_recordRoom.ridingStatisticsTabName == FriendDetailViewModel_recordRoom.ridingStatisticsTabNameListConst[0]
-                                          ? SDSColor.snowliveWhite
-                                          : SDSColor.gray900,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              SizedBox(width: 8),
-                              GestureDetector(
-                                onTap: () {
-                                  HapticFeedback.lightImpact();
-                                  _friendDetailViewModel_recordRoom.changeRidingStaticTab(1);
-                                },
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    color: _friendDetailViewModel_recordRoom.ridingStatisticsTabName == FriendDetailViewModel_recordRoom.ridingStatisticsTabNameListConst[1]
-                                        ? SDSColor.gray900
-                                        : SDSColor.snowliveWhite,
-                                    borderRadius: BorderRadius.circular(30.0),
-                                    border: Border.all(
-                                      color: _friendDetailViewModel_recordRoom.ridingStatisticsTabName == FriendDetailViewModel_recordRoom.ridingStatisticsTabNameListConst[1]
-                                          ? SDSColor.gray900
-                                          : SDSColor.gray200,
-                                    ),
-                                  ),
-                                  padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                                  height: 36,
-                                  child: Text(
-                                    FriendDetailViewModel_recordRoom.ridingStatisticsTabNameListConst[1],
-                                    style: SDSTextStyle.bold.copyWith(
-                                      fontSize: 13,
-                                      color: _friendDetailViewModel_recordRoom.ridingStatisticsTabName == FriendDetailViewModel_recordRoom.ridingStatisticsTabNameListConst[1]
-                                          ? SDSColor.snowliveWhite
-                                          : SDSColor.gray900,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                )),
-                SingleChildScrollView(
-                          physics: AlwaysScrollableScrollPhysics(),
-                          child:
-                (_rankingIndivHistoryViewModel.selectedCategory_season=='23/24시즌')
-                    ?ranking_indiv_history_beta(_size, _statusBarHeight)
-                          :(_friendDetailViewModel_recordRoom.friendDetailModel_recordRoom.seasonRankingInfo.overallTotalCount != 0)
-                  ? Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: Column(
+                          ],
+                        ),
+                      ],
+                    ),
+                  )),
+                  (_rankingIndivHistoryViewModel.selectedCategory_season=='23/24시즌')
+                      ?ranking_indiv_history_beta(_size, _statusBarHeight)
+                            :(_friendDetailViewModel_recordRoom.friendDetailModel_recordRoom.seasonRankingInfo.overallTotalCount != 0)
+                    ? Column(
                       children: [
-                        SizedBox(height: 16),
+                        SizedBox(height: 4),
                         // 시즌 정보 상단박스 디자인
                         Padding(
                           padding: const EdgeInsets.only(left: 16, right: 16),
@@ -404,7 +400,7 @@ class RankingIndivHistoryView extends StatelessWidget {
                             ),
                           ),
                         ),
-                        SizedBox(height: 10,),
+                        SizedBox(height: 16),
 
                         // 누적통계
                         if(_friendDetailViewModel_recordRoom.ridingStatisticsTabName == FriendDetailViewModel_recordRoom.ridingStatisticsTabNameListConst[0])
@@ -861,35 +857,35 @@ class RankingIndivHistoryView extends StatelessWidget {
                         SizedBox(
                           height: 40,
                         )
-                      ],))
-                          :Padding(
-                  padding: const EdgeInsets.all(20),
-                  child: Container(
-                    height: _size.height - 570,
-                    child: Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Image.asset(
-                            'assets/imgs/icons/icon_nodata.png',
-                            width: 74,
-                          ),
-                          SizedBox(
-                            height: 4,
-                          ),
-                          Text('라이딩 기록이 없어요.',
-                            style: SDSTextStyle.regular.copyWith(
-                                fontSize: 14,
-                                color: SDSColor.gray500),),
+                      ],)
+                            :Padding(
+                    padding: const EdgeInsets.all(20),
+                    child: Container(
+                      height: _size.height - 570,
+                      child: Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Image.asset(
+                              'assets/imgs/icons/icon_nodata.png',
+                              width: 74,
+                            ),
+                            SizedBox(
+                              height: 4,
+                            ),
+                            Text('라이딩 기록이 없어요.',
+                              style: SDSTextStyle.regular.copyWith(
+                                  fontSize: 14,
+                                  color: SDSColor.gray500),),
 
-                        ],
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                          ),
-                    ),
-              ],
+                            ),
+                ],
+              ),
             ),
           ),
           ),
@@ -903,7 +899,6 @@ class RankingIndivHistoryView extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: 20),
         child: Container(
           margin: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-          height: MediaQuery.of(context).size.height * 0.6,
           padding: EdgeInsets.all(16),
           decoration: BoxDecoration(
             color: Colors.white,
