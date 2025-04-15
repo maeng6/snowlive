@@ -325,7 +325,7 @@ class _CrewDailyRecordViewState extends State<CrewDailyRecordView> {
             child: Text(
               formattedDate,
               style: SDSTextStyle.bold.copyWith(
-                fontSize: 16,
+                fontSize: 18,
                 color: dateColor, // 요일에 따른 색상 적용
                 fontWeight: dateFontWeight, // 모든 날짜는 볼드체
               ),

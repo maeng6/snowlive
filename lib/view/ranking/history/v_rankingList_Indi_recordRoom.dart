@@ -30,7 +30,7 @@ class RankingIndiView_recordRoom extends StatelessWidget {
     Size _size = MediaQuery.of(context).size;
 
     return Obx(()=>Container(
-      color: Colors.white,
+      color: Colors.transparent,
       child: SafeArea(
         child: Stack(
           children: [
@@ -97,7 +97,7 @@ class RankingIndiView_recordRoom extends StatelessWidget {
                                       season: _friendDetailViewModel.seasonDate);
                                 },
                                 child: Obx(() => Padding(
-                                  padding: EdgeInsets.only(top: 10, bottom: 12),
+                                  padding: EdgeInsets.only(top: 24, bottom: 12),
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [

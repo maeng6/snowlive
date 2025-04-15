@@ -62,31 +62,65 @@ class _Entrance_forestParkState extends State<Entrance_forestPark> {
             onTap: () async {
               Get.toNamed(AppRoutes.forestParkHome);
             },
-            child: ExtendedImage.network(
-              entranceImage,
-              width: double.infinity,
-              height: null, // 높이 비율 유지
-              fit: BoxFit.fitWidth,
-              loadStateChanged: (state) {
-                switch (state.extendedImageLoadState) {
-                  case LoadState.loading:
-                    return Container(
-                      height: 200,
-                      color: Colors.grey.shade100,
-                      alignment: Alignment.center,
-                      child: CircularProgressIndicator(),
-                    );
-                  case LoadState.failed:
-                    return Container(
-                      height: 200,
-                      color: Colors.grey.shade100,
-                      alignment: Alignment.center,
-                      child: Icon(Icons.error, color: Colors.red),
-                    );
-                  case LoadState.completed:
-                    return null;
-                }
-              },
+            child: Stack(
+              children: [
+                ExtendedImage.network(
+                  entranceImage,
+                  width: double.infinity,
+                  height: null, // 높이 비율 유지
+                  fit: BoxFit.fitWidth,
+                  loadStateChanged: (state) {
+                    switch (state.extendedImageLoadState) {
+                      case LoadState.loading:
+                        return Container(
+                          height: 200,
+                          color: Colors.grey.shade100,
+                          alignment: Alignment.center,
+                          child: CircularProgressIndicator(),
+                        );
+                      case LoadState.failed:
+                        return Container(
+                          height: 200,
+                          color: Colors.grey.shade100,
+                          alignment: Alignment.center,
+                          child: Icon(Icons.error, color: Colors.red),
+                        );
+                      case LoadState.completed:
+                        return null;
+                    }
+                  },
+                ),
+                Positioned(
+                  bottom: 24,
+                  right: 64,
+                  left: 64,
+                  child: Container(
+                    padding: EdgeInsets.symmetric(vertical: 6, horizontal: 16),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(50),
+                      color: SDSColor.snowliveWhite
+                    ),
+                    width: _size.width - 152,
+                    height: 42,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text('포레스트 파크 입장하기',
+                        style: SDSTextStyle.extraBold.copyWith(
+                          fontSize: 14,
+                          color: SDSColor.snowliveBlack
+                        ),),
+                        Image.asset(
+                          'assets/imgs/icons/icon_arrow_round_black.png',
+                          fit: BoxFit.cover,
+                          width: 18,
+                          height: 18,
+                        ),
+                      ],
+                    ),
+                  ),
+                )
+              ],
             ),
           );
         } else {

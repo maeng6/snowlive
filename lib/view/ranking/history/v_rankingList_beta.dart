@@ -64,7 +64,6 @@ class RankingBetaView extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-
                   // 크루 또는 개인 랭킹 리스트 표시
                   Expanded( // Expanded로 감싸서 남은 공간을 사용하도록 함
                     child: (_rankingListViewModel_recordRoom.tapName == '크루랭킹')
@@ -75,7 +74,6 @@ class RankingBetaView extends StatelessWidget {
                         physics: AlwaysScrollableScrollPhysics(),
                         itemCount: _rankingListBetaViewModel.rankingListCrewBetaList.length + 1,
                         itemBuilder: (context, index) {
-
                           if(index ==  _rankingListBetaViewModel.rankingListCrewBetaList.length){
                             return Obx(() => _rankingListBetaViewModel.isLoadingNextList_crew == true // 여기서 Obx 사용
                                 ? Container(
@@ -309,10 +307,8 @@ class RankingBetaView extends StatelessWidget {
                               ),
                             );
                           }
-
-
                         },
-                        padding: EdgeInsets.only(bottom: 80),
+                        padding: EdgeInsets.only(top: 20, bottom: 80),
                       ),
                     )
                         : Scrollbar(
@@ -559,7 +555,7 @@ class RankingBetaView extends StatelessWidget {
 
 
                         },
-                        padding: EdgeInsets.only(bottom: 80),
+                        padding: EdgeInsets.only(top: 20, bottom: 80),
                       ),
                     ),
                   ),

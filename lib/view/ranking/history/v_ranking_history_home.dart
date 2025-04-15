@@ -27,7 +27,6 @@ class RankingHistoryHomeView extends StatelessWidget {
     Size _size = MediaQuery.of(context).size;
 
     return Scaffold(
-
       backgroundColor: Colors.white,
       extendBodyBehindAppBar: true,
       appBar: PreferredSize(
@@ -59,234 +58,126 @@ class RankingHistoryHomeView extends StatelessWidget {
           ),
           actions: [
             Obx(()=>Padding(
-              padding: EdgeInsets.only(top: 12, bottom: 8),
-              child: Row(
-                children: [
-                  Padding(
-                    padding: EdgeInsets.only(right: 6),
-                    child: Stack(
-                      children: [
-                        ElevatedButton(
-                            onPressed: () async {
-                              HapticFeedback.lightImpact();
-                              showModalBottomSheet(
-                                  enableDrag: false,
-                                  isScrollControlled: true,
-                                  backgroundColor: Colors.transparent,
-                                  context: context,
-                                  builder: (context) {
-                                    return SafeArea(
-                                      child: Padding(
-                                        padding: const EdgeInsets.symmetric(vertical: 20),
-                                        child: Container(
-                                          margin: EdgeInsets.only(
-                                            left: 16,
-                                            right: 16,
-                                            top: 16,
-                                          ),
-                                          height: MediaQuery.of(context).size.height * 0.6,
-                                          padding: EdgeInsets.all(16),
-                                          decoration: BoxDecoration(
-                                            color: Colors.white,
-                                            borderRadius: BorderRadius.circular(16),
-                                          ),
-                                          child: Scrollbar(
-                                            child: SingleChildScrollView(
-                                              child: Wrap(
-                                                children: [
-                                                  //  24/25시즌
-                                                  ListTile(
-                                                    contentPadding: EdgeInsets.zero,
-                                                    title: Center(
-                                                      child: Text(
-                                                        '${RankingFilter_season.season2425.korean}',
-                                                        style: SDSTextStyle.bold.copyWith(
-                                                            fontSize: 15,
-                                                            color: SDSColor.gray900
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    onTap: () async {
-                                                      Navigator.pop(context);
-                                                      _rankingListViewModel_recordRoom.changeMyBoxText();
-                                                      _rankingListViewModel_recordRoom.changeTap('크루랭킹');
-                                                      _rankingListViewModel_recordRoom.changeDayOrTotal('누적');
-                                                      _rankingListViewModel_recordRoom.changeResortOrTotal('전체스키장');
-                                                      _rankingListViewModel_recordRoom.changeCategory_resort('스키장별 랭킹');
-                                                      _rankingListViewModel_recordRoom.changeCategory_fed('리그별 랭킹');
-                                                      _rankingListViewModel_recordRoom.changeResortNum(99);
-                                                      _rankingListViewModel_recordRoom.changeCategory_resort('${RankingFilter_resort.initial.korean}');
-                                                      _rankingListViewModel_recordRoom.changeCategory_season('${RankingFilter_season.season2425.korean}');
-                                                      _rankingListViewModel_recordRoom.changeMyBoxText();
-                                                      await _rankingListViewModel_recordRoom.toggleDataDayOrTotal_tapFilter();
-                                                    },
-                                                    shape: RoundedRectangleBorder(
-                                                        borderRadius:
-                                                        BorderRadius.circular(16)),
-                                                  ),
-                                                  //  23/24시즌
-                                                  ListTile(
-                                                    contentPadding: EdgeInsets.zero,
-                                                    title: Center(
-                                                      child: Text(
-                                                        '${RankingFilter_season.season2324.korean}',
-                                                        style: SDSTextStyle.bold.copyWith(
-                                                            fontSize: 15,
-                                                            color: SDSColor.gray900
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    onTap: () async {
-                                                      Navigator.pop(context);
-                                                      _rankingListViewModel_recordRoom.changeMyBoxText();
-                                                      _rankingListViewModel_recordRoom.changeTap('크루랭킹');
-                                                      _rankingListViewModel_recordRoom.changeDayOrTotal('누적');
-                                                      _rankingListViewModel_recordRoom.changeResortOrTotal('전체스키장');
-                                                      _rankingListViewModel_recordRoom.changeCategory_resort('스키장별 랭킹');
-                                                      _rankingListViewModel_recordRoom.changeCategory_fed('리그별 랭킹');
-                                                      _rankingListViewModel_recordRoom.changeResortNum(99);
-                                                      _rankingListViewModel_recordRoom.changeCategory_resort('${RankingFilter_resort.initial.korean}');
-                                                      _rankingListViewModel_recordRoom.changeCategory_season('${RankingFilter_season.season2324.korean}');
-                                                      _rankingListViewModel_recordRoom.changeMyBoxText();
-                                                      await _rankingListViewModel_recordRoom.toggleDataDayOrTotal_tapFilter();
-                                                    },
-                                                    shape: RoundedRectangleBorder(
-                                                        borderRadius:
-                                                        BorderRadius.circular(16)),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
+              padding: EdgeInsets.only(right: 14),
+              child:
+              Container(
+                decoration: BoxDecoration(
+                  color: SDSColor.snowliveWhite,
+                  borderRadius: BorderRadius.circular(50),
+                  border: Border.all(color: SDSColor.gray200, width: 1),
+                ),
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(50),
+                  onTap: () async {
+                    HapticFeedback.lightImpact();
+                    showModalBottomSheet(
+                      enableDrag: false,
+                      isScrollControlled: true,
+                      backgroundColor: Colors.transparent,
+                      context: context,
+                      builder: (context) {
+                        return SafeArea(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 20),
+                            child: Container(
+                              margin: const EdgeInsets.symmetric(horizontal: 16),
+                              padding: const EdgeInsets.all(16),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(16),
+                              ),
+                              child: SingleChildScrollView(
+                                child: Wrap(
+                                  children: [
+                                    ListTile(
+                                      contentPadding: EdgeInsets.zero,
+                                      title: Center(
+                                        child: Text(
+                                          '${RankingFilter_season.season2425.korean}',
+                                          style: SDSTextStyle.bold.copyWith(
+                                            fontSize: 15,
+                                            color: SDSColor.gray900,
                                           ),
                                         ),
                                       ),
-                                    );
-                                  });
-                            },
-                            style: ElevatedButton.styleFrom(
-                                shadowColor: Colors.transparent,
-                                overlayColor: Colors.transparent,
-                                padding: EdgeInsets.only(
-                                    right: 32, left: 12, top: 3, bottom: 2),
-                                backgroundColor: SDSColor.snowliveWhite,
-                                elevation: 0,
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(50))),
-                            child:
-                            Text('${_rankingListViewModel_recordRoom.selectedCategory_season}',
-                                style: SDSTextStyle.bold.copyWith(
-                                    fontSize: 13,
-                                    color: Color(0xFF111111)))
-                        ),
-                        Positioned(
-                          top: 10,
-                          right: 10,
-                          child: GestureDetector(
-                            onTap: () async {
-                              showModalBottomSheet(
-                                  enableDrag: false,
-                                  isScrollControlled: true,
-                                  backgroundColor: Colors.transparent,
-                                  context: context,
-                                  builder: (context) {
-                                    return SafeArea(
-                                      child: Padding(
-                                        padding: const EdgeInsets.symmetric(vertical: 20),
-                                        child: Container(
-                                          margin: EdgeInsets.only(
-                                            left: 16,
-                                            right: 16,
-                                            top: 16,
-                                          ),
-                                          height: MediaQuery.of(context).size.height * 0.5,
-                                          padding: EdgeInsets.all(16),
-                                          decoration: BoxDecoration(
-                                            color: Colors.white,
-                                            borderRadius: BorderRadius.circular(16),
-                                          ),
-                                          child: SingleChildScrollView(
-                                            child: Wrap(
-                                              children: [
-                                                //  24/25시즌
-                                                ListTile(
-                                                  contentPadding: EdgeInsets.zero,
-                                                  title: Center(
-                                                    child: Text(
-                                                      '${RankingFilter_season.season2425.korean}',
-                                                      style: SDSTextStyle.bold.copyWith(
-                                                          fontSize: 15,
-                                                          color: SDSColor.gray900
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  onTap: () async {
-                                                    Navigator.pop(context);
-                                                    _rankingListViewModel_recordRoom.changeMyBoxText();
-                                                    _rankingListViewModel_recordRoom.changeTap('크루랭킹');
-                                                    _rankingListViewModel_recordRoom.changeDayOrTotal('누적');
-                                                    _rankingListViewModel_recordRoom.changeResortOrTotal('전체스키장');
-                                                    _rankingListViewModel_recordRoom.changeCategory_resort('스키장별 랭킹');
-                                                    _rankingListViewModel_recordRoom.changeCategory_fed('리그별 랭킹');
-                                                    _rankingListViewModel_recordRoom.changeResortNum(99);
-                                                    _rankingListViewModel_recordRoom.changeCategory_resort('${RankingFilter_resort.initial.korean}');
-                                                    _rankingListViewModel_recordRoom.changeCategory_season('${RankingFilter_season.season2425.korean}');
-                                                    _rankingListViewModel_recordRoom.changeMyBoxText();
-                                                    await _rankingListViewModel_recordRoom.toggleDataDayOrTotal_tapFilter();
-                                                  },
-                                                  shape: RoundedRectangleBorder(
-                                                      borderRadius:
-                                                      BorderRadius.circular(16)),
-                                                ),
-                                                //  23/24시즌
-                                                ListTile(
-                                                  contentPadding: EdgeInsets.zero,
-                                                  title: Center(
-                                                    child: Text(
-                                                      '${RankingFilter_season.season2324.korean}',
-                                                      style: SDSTextStyle.bold.copyWith(
-                                                          fontSize: 15,
-                                                          color: SDSColor.gray900
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  onTap: () async {
-                                                    Navigator.pop(context);
-                                                    _rankingListViewModel_recordRoom.changeMyBoxText();
-                                                    _rankingListViewModel_recordRoom.changeTap('크루랭킹');
-                                                    _rankingListViewModel_recordRoom.changeDayOrTotal('누적');
-                                                    _rankingListViewModel_recordRoom.changeResortOrTotal('전체스키장');
-                                                    _rankingListViewModel_recordRoom.changeCategory_resort('스키장별 랭킹');
-                                                    _rankingListViewModel_recordRoom.changeCategory_fed('리그별 랭킹');
-                                                    _rankingListViewModel_recordRoom.changeResortNum(99);
-                                                    _rankingListViewModel_recordRoom.changeCategory_resort('${RankingFilter_resort.initial.korean}');
-                                                    _rankingListViewModel_recordRoom.changeCategory_season('${RankingFilter_season.season2324.korean}');
-                                                    _rankingListViewModel_recordRoom.changeMyBoxText();
-                                                    await _rankingListViewModel_recordRoom.toggleDataDayOrTotal_tapFilter();
-                                                  },
-                                                  shape: RoundedRectangleBorder(
-                                                      borderRadius:
-                                                      BorderRadius.circular(16)),
-                                                ),
-                                              ],
-                                            ),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(16),
+                                      ),
+                                      onTap: () async {
+                                        Navigator.pop(context);
+                                        _rankingListViewModel_recordRoom.changeMyBoxText();
+                                        _rankingListViewModel_recordRoom.changeTap('크루랭킹');
+                                        _rankingListViewModel_recordRoom.changeDayOrTotal('누적');
+                                        _rankingListViewModel_recordRoom.changeResortOrTotal('전체스키장');
+                                        _rankingListViewModel_recordRoom.changeCategory_resort('스키장별 랭킹');
+                                        _rankingListViewModel_recordRoom.changeCategory_fed('리그별 랭킹');
+                                        _rankingListViewModel_recordRoom.changeResortNum(99);
+                                        _rankingListViewModel_recordRoom.changeCategory_resort('${RankingFilter_resort.initial.korean}');
+                                        _rankingListViewModel_recordRoom.changeCategory_season('${RankingFilter_season.season2425.korean}');
+                                        _rankingListViewModel_recordRoom.changeMyBoxText();
+                                        await _rankingListViewModel_recordRoom.toggleDataDayOrTotal_tapFilter();
+                                      },
+                                    ),
+                                    ListTile(
+                                      contentPadding: EdgeInsets.zero,
+                                      title: Center(
+                                        child: Text(
+                                          '${RankingFilter_season.season2324.korean}',
+                                          style: SDSTextStyle.bold.copyWith(
+                                            fontSize: 15,
+                                            color: SDSColor.gray900,
                                           ),
                                         ),
                                       ),
-                                    );
-                                  });
-                            },
-                            child:  Image.asset(
-                              'assets/imgs/icons/icon_check_round.png',
-                              fit: BoxFit.cover,
-                              width: 16,
-                              height: 16,
-                            )
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(16),
+                                      ),
+                                      onTap: () async {
+                                        Navigator.pop(context);
+                                        _rankingListViewModel_recordRoom.changeMyBoxText();
+                                        _rankingListViewModel_recordRoom.changeTap('크루랭킹');
+                                        _rankingListViewModel_recordRoom.changeDayOrTotal('누적');
+                                        _rankingListViewModel_recordRoom.changeResortOrTotal('전체스키장');
+                                        _rankingListViewModel_recordRoom.changeCategory_resort('스키장별 랭킹');
+                                        _rankingListViewModel_recordRoom.changeCategory_fed('리그별 랭킹');
+                                        _rankingListViewModel_recordRoom.changeResortNum(99);
+                                        _rankingListViewModel_recordRoom.changeCategory_resort('${RankingFilter_resort.initial.korean}');
+                                        _rankingListViewModel_recordRoom.changeCategory_season('${RankingFilter_season.season2324.korean}');
+                                        _rankingListViewModel_recordRoom.changeMyBoxText();
+                                        await _rankingListViewModel_recordRoom.toggleDataDayOrTotal_tapFilter();
+                                      },
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
                           ),
+                        );
+                      },
+                    );
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 8, right: 4, top: 4, bottom: 4),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          '${_rankingListViewModel_recordRoom.selectedCategory_season}',
+                          style: SDSTextStyle.bold.copyWith(
+                            fontSize: 12,
+                            color: const Color(0xFF111111),
+                          ),
+                        ),
+                        const SizedBox(width: 2),
+                        Image.asset(
+                          'assets/imgs/icons/icon_check_round.png',
+                          width: 16,
+                          height: 16,
                         ),
                       ],
                     ),
                   ),
-                ],
+                ),
               ),
             )),
           ],
@@ -301,88 +192,103 @@ class RankingHistoryHomeView extends StatelessWidget {
         body: Obx(()=>SafeArea(
           child: Column(
             children: [
-              Container(
-                height: 44,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
+              Stack(
+                children: [
+                  Container(
+                    height: 44,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      border: Border(
+                        bottom: BorderSide(color: Color(0xFFececec), width: 1),
+                      ),
+                    ),
+                  ),
                     Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Padding(
-                          padding: EdgeInsets.only(left: 16, right: 12),
-                          child: ElevatedButton(
-                            onPressed: () async {
-                              HapticFeedback.lightImpact();
-                              _rankingListViewModel_recordRoom.changeMyBoxText();
-                              _rankingListViewModel_recordRoom.changeTap('크루랭킹');
-                              _rankingListViewModel_recordRoom.changeDayOrTotal('누적');
-                              _rankingListViewModel_recordRoom.changeResortOrTotal('전체스키장');
-                              _rankingListViewModel_recordRoom.changeCategory_resort('스키장별 랭킹');
-                              _rankingListViewModel_recordRoom.changeCategory_fed('리그별 랭킹');
-                              _rankingListViewModel_recordRoom.changeResortNum(99);
-                              _rankingListViewModel_recordRoom.changeCategory_resort('${RankingFilter_resort.initial.korean}');
-                              _rankingListViewModel_recordRoom.changeMyBoxText();
-                              await _rankingListViewModel_recordRoom.toggleDataDayOrTotal_tapFilter();
-                            },
-                            style: ElevatedButton.styleFrom(
-                              shadowColor: Colors.transparent,
-                              overlayColor: Colors.transparent,
-                              padding: EdgeInsets.only(top: 0),
-                              minimumSize: Size(40, 10),
-                              backgroundColor: Color(0xFFFFFFFF),
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(8)),
-                              elevation: 0,
-                            ),
-                            child: Container(
-                              child: Text(
-                                '크루랭킹',
-                                style: SDSTextStyle.extraBold.copyWith(
-                                    color: (_rankingListViewModel_recordRoom.tapName=='크루랭킹')
-                                        ? Color(0xFF111111)
-                                        : Color(0xFFC8C8C8),
-                                    fontSize: 18),
-                              ),
+                        GestureDetector(
+                          onTap: () async {
+                            HapticFeedback.lightImpact();
+                            _rankingListViewModel_recordRoom.changeTap('개인랭킹');
+                            _rankingListViewModel_recordRoom.changeDayOrTotal('누적');
+                            _rankingListViewModel_recordRoom.changeResortOrTotal('전체스키장');
+                            _rankingListViewModel_recordRoom.changeCategory_resort('스키장별 랭킹');
+                            _rankingListViewModel_recordRoom.changeCategory_fed('리그별 랭킹');
+                            _rankingListViewModel_recordRoom.changeMyBoxText();
+                            await _rankingListViewModel_recordRoom.toggleDataDayOrTotal_tapFilter();
+                          },
+                          child: Container(
+                            width: 120,
+                            height: 44,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                Text(
+                                  '개인랭킹',
+                                  style: SDSTextStyle.bold.copyWith(
+                                    fontSize: 15,
+                                    color: _rankingListViewModel_recordRoom.tapName == '개인랭킹'
+                                        ? const Color(0xFF111111)
+                                        : const Color(0xFFC8C8C8),
+                                  ),
+                                ),
+                                SizedBox(height: 8),
+                                Container(
+                                  height: 2,
+                                  width: 72,
+                                  color: _rankingListViewModel_recordRoom.tapName == '개인랭킹'
+                                      ? const Color(0xFF111111)
+                                      : Colors.transparent,
+                                ),
+                              ],
                             ),
                           ),
                         ),
-                        Padding(
-                          padding: EdgeInsets.only(right: 12),
-                          child: ElevatedButton(
-                            child: Text(
-                              '개인랭킹',
-                              style: SDSTextStyle.extraBold.copyWith(
-                                  color: (_rankingListViewModel_recordRoom.tapName=='개인랭킹')
-                                      ? Color(0xFF111111)
-                                      : Color(0xFFDEDEDE),
-                                  fontSize: 18),
-                            ),
-                            onPressed: () async {
-                              HapticFeedback.lightImpact();
-                              _rankingListViewModel_recordRoom.changeTap('개인랭킹');
-                              _rankingListViewModel_recordRoom.changeDayOrTotal('누적');
-                              _rankingListViewModel_recordRoom.changeResortOrTotal('전체스키장');
-                              _rankingListViewModel_recordRoom.changeCategory_resort('스키장별 랭킹');
-                              _rankingListViewModel_recordRoom.changeCategory_fed('리그별 랭킹');
-                              _rankingListViewModel_recordRoom.changeMyBoxText();
-                              await _rankingListViewModel_recordRoom.toggleDataDayOrTotal_tapFilter();
-                            },
-                            style: ElevatedButton.styleFrom(
-                              shadowColor: Colors.transparent,
-                              overlayColor: Colors.transparent,
-                              padding: EdgeInsets.only(top: 0),
-                              minimumSize: Size(40, 10),
-                              backgroundColor: Color(0xFFFFFFFF),
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(8)),
-                              elevation: 0,
+                        const SizedBox(width: 32),
+                        GestureDetector(
+                          onTap: () async {
+                            HapticFeedback.lightImpact();
+                            _rankingListViewModel_recordRoom.changeTap('크루랭킹');
+                            _rankingListViewModel_recordRoom.changeDayOrTotal('누적');
+                            _rankingListViewModel_recordRoom.changeResortOrTotal('전체스키장');
+                            _rankingListViewModel_recordRoom.changeCategory_resort('스키장별 랭킹');
+                            _rankingListViewModel_recordRoom.changeCategory_fed('리그별 랭킹');
+                            _rankingListViewModel_recordRoom.changeResortNum(99);
+                            _rankingListViewModel_recordRoom.changeCategory_resort('${RankingFilter_resort.initial.korean}');
+                            _rankingListViewModel_recordRoom.changeMyBoxText();
+                            await _rankingListViewModel_recordRoom.toggleDataDayOrTotal_tapFilter();
+                          },
+                          child: Container(
+                            width: 120,
+                            height: 44,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                Text(
+                                  '크루랭킹',
+                                  style: SDSTextStyle.bold.copyWith(
+                                    fontSize: 15,
+                                    color: _rankingListViewModel_recordRoom.tapName == '크루랭킹'
+                                        ? const Color(0xFF111111)
+                                        : const Color(0xFFC8C8C8),
+                                  ),
+                                ),
+                                SizedBox(height: 8),
+                                Container(
+                                  height: 2,
+                                  width: 72,
+                                  color: _rankingListViewModel_recordRoom.tapName == '크루랭킹'
+                                      ? const Color(0xFF111111)
+                                      : Colors.transparent,
+                                ),
+                              ],
                             ),
                           ),
                         ),
                       ],
                     ),
-                  ],
-                ),
+
+                ],
               ),
               if (_rankingListViewModel_recordRoom.tapName=='개인랭킹' && _rankingListViewModel_recordRoom.selectedCategory_season!='23/24시즌')
                 Expanded(
