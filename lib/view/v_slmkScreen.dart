@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'package:com.snowlive/data/snowliveDesignStyle.dart';
+import 'package:com.snowlive/viewmodel/vm_user.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
@@ -12,14 +14,18 @@ class SlmkScreen extends StatefulWidget {
 }
 
 class _SlmkScreenState extends State<SlmkScreen> {
+
+  final UserViewModel _userViewModel = Get.find<UserViewModel>();
+
   WebViewController? _controller; // ✅ nullable
   bool _isLoading = true;
-  final String targetUrl = 'https://m.market-snowlive.kr';
+  late String targetUrl; // ✅ 여기 late로 변경
 
   @override
   void initState() {
     super.initState();
     print('[SlmkScreen] initState 호출됨');
+    targetUrl = 'https://m.market-snowlive.kr/?user_id=${_userViewModel.user.user_id}';
     _initWebView();
   }
 
