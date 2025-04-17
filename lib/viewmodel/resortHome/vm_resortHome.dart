@@ -15,7 +15,6 @@ import 'package:com.snowlive/viewmodel/vm_splashController.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
 import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 import 'package:com.snowlive/widget/w_popUp_bottomSheet.dart';
-import 'package:detect_fake_location/detect_fake_location.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_background_geolocation/flutter_background_geolocation.dart';
