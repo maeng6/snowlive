@@ -451,11 +451,11 @@ class CrewHomeView extends StatelessWidget {
                                 style: ElevatedButton.styleFrom(
                                   shadowColor: Colors.transparent,
                                   overlayColor: Colors.transparent,
-                                  padding: EdgeInsets.symmetric(horizontal: 10, vertical: 3),
+                                  padding: EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                                   minimumSize: Size(36, 32),
                                   backgroundColor: SDSColor.snowliveWhite,
                                   side: BorderSide(
-                                      color: SDSColor.gray200
+                                      color: SDSColor.gray200.withOpacity(0.6)
                                   ),
                                   elevation: 0,
                                   shape: RoundedRectangleBorder(
@@ -463,14 +463,14 @@ class CrewHomeView extends StatelessWidget {
                                 ),
                                 child: Text(
                                   '크루원 랭킹',
-                                  style: SDSTextStyle.bold.copyWith(fontSize: 13, color: SDSColor.gray900),
+                                  style: SDSTextStyle.bold.copyWith(fontSize: 12, color: SDSColor.gray700),
 
                                 ),
                               ),
                               if(_userViewModel.user.crew_id == _crewDetailViewModel.crewDetailInfo.crewId)
                                 Row(
                                   children: [
-                                    SizedBox(width: 10,),
+                                    SizedBox(width: 6,),
                                     TextButton(
                                       onPressed: () async{
                                         Get.toNamed(AppRoutes.crewRecordRoom);
@@ -478,11 +478,11 @@ class CrewHomeView extends StatelessWidget {
                                       style: ElevatedButton.styleFrom(
                                         shadowColor: Colors.transparent,
                                         overlayColor: Colors.transparent,
-                                        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 3),
+                                        padding: EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                                         minimumSize: Size(36, 32),
                                         backgroundColor: SDSColor.snowliveWhite,
                                         side: BorderSide(
-                                            color: SDSColor.gray200
+                                            color: SDSColor.gray200.withOpacity(0.6)
                                         ),
                                         elevation: 0,
                                         shape: RoundedRectangleBorder(
@@ -490,7 +490,7 @@ class CrewHomeView extends StatelessWidget {
                                       ),
                                       child: Text(
                                         '시즌 기록실',
-                                        style: SDSTextStyle.bold.copyWith(fontSize: 13, color: SDSColor.gray900),
+                                        style: SDSTextStyle.bold.copyWith(fontSize: 12, color: SDSColor.gray700),
 
                                       ),
                                     ),
@@ -604,7 +604,7 @@ class CrewHomeView extends StatelessWidget {
                                               color: _crewDetailViewModel.isSlopeGraph.value
                                                   ? SDSColor.snowliveWhite
                                                   : Colors.transparent,
-                                              borderRadius: BorderRadius.circular(8),
+                                              borderRadius: BorderRadius.circular(6),
                                             ),
                                             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                                             alignment: Alignment.center,
@@ -633,7 +633,7 @@ class CrewHomeView extends StatelessWidget {
                                               color: !_crewDetailViewModel.isSlopeGraph.value
                                                   ? SDSColor.snowliveWhite
                                                   : Colors.transparent,
-                                              borderRadius: BorderRadius.circular(8),
+                                              borderRadius: BorderRadius.circular(6),
                                             ),
                                             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                                             alignment: Alignment.center,
@@ -655,47 +655,57 @@ class CrewHomeView extends StatelessWidget {
                                 ),
                                 SizedBox(height: 20),
                                 Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
-                                    Text(
-                                      '총 라이딩 횟수',
-                                      style: SDSTextStyle.regular.copyWith(
-                                          color: SDSColor.gray900.withOpacity(0.5),
-                                          fontSize: 13
-                                      ),
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          '총 라이딩 횟수',
+                                          style: SDSTextStyle.regular.copyWith(
+                                              color: SDSColor.gray900.withOpacity(0.5),
+                                              fontSize: 13
+                                          ),
+                                        ),
+                                        Text(
+                                          '${_crewDetailViewModel.totalSlopeCount}',
+                                          style: SDSTextStyle.extraBold.copyWith(
+                                              color: SDSColor.gray900,
+                                              fontSize: 30
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                     Expanded(child: SizedBox()),
-                                    TextButton(
-                                      onPressed: () async{
-                                        Get.toNamed(AppRoutes.crewDailyRecord);
-                                      },
-                                      style: ElevatedButton.styleFrom(
-                                        shadowColor: Colors.transparent,
-                                        overlayColor: Colors.transparent,
-                                        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 3),
-                                        minimumSize: Size(36, 32),
-                                        backgroundColor: SDSColor.snowliveWhite,
-                                        side: BorderSide(
-                                            color: SDSColor.gray200
+                                    Padding(
+                                      padding: EdgeInsets.only(bottom: 6),
+                                      child: TextButton(
+                                        onPressed: () async{
+                                          Get.toNamed(AppRoutes.crewDailyRecord);
+                                        },
+                                        style: ElevatedButton.styleFrom(
+                                          shadowColor: Colors.transparent,
+                                          overlayColor: Colors.transparent,
+                                          padding: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                                          minimumSize: Size(36, 32),
+                                            backgroundColor: Color(0xFFD2DFF4).withOpacity(0.7),
+                                          elevation: 0,
+                                          shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(40)),
+                                          side: BorderSide(
+                                            color: SDSColor.blue100
+                                          )
                                         ),
-                                        elevation: 0,
-                                        shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(5)),
-                                      ),
-                                      child: Text(
-                                        '일별현황',
-                                        style: SDSTextStyle.bold.copyWith(fontSize: 13, color: SDSColor.gray900),
+                                        child: Text(
+                                          '일별현황',
+                                          style: SDSTextStyle.bold.copyWith(fontSize: 12, color: SDSColor.gray900),
 
+                                        ),
                                       ),
                                     )
                                   ],
                                 ),
-                                Text(
-                                  '${_crewDetailViewModel.totalSlopeCount}',
-                                  style: SDSTextStyle.extraBold.copyWith(
-                                      color: SDSColor.gray900,
-                                      fontSize: 30
-                                  ),
-                                ),
+
                                 SizedBox(height: 10),
                                 if (_crewDetailViewModel.totalSlopeCount == 0)
                                   Center(

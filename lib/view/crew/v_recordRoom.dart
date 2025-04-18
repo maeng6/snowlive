@@ -51,7 +51,7 @@ class CrewRecordRoomView extends StatelessWidget {
         ),
         centerTitle: true,
         title: Text(
-          '기록실',
+          '시즌 기록실',
           style: SDSTextStyle.extraBold.copyWith(
             color: SDSColor.gray900,
             fontSize: 18,
@@ -59,7 +59,6 @@ class CrewRecordRoomView extends StatelessWidget {
         ),
       ),
       body:
-
       SingleChildScrollView(
         physics: AlwaysScrollableScrollPhysics(),
         child: Column(
@@ -125,59 +124,13 @@ class CrewRecordRoomView extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      SizedBox(height: 24),
-                      Padding(
-                        padding: EdgeInsets.only(left: 20, right: 20),
-                        child: Row(
-                          children: [
-                            Text(
-                              '크루 라이딩 통계',
-                              style: SDSTextStyle.bold.copyWith(
-                                fontSize: 15,
-                                color: SDSColor.gray900,
-                              ),
-                            ),
-                            Expanded(child: SizedBox()),
-                            (_crewDetailViewModel_recordRoom.isLoading == true)
-                                ? SizedBox.shrink()
-                                : Row(
-                              children: [
-                                TextButton(
-                                  onPressed: () async {
-                                    Get.toNamed(AppRoutes.crewMemberRankingList_recordRoom);
-                                    await _crewRankingListViewModel_recordRoom.fetchCrewRankings_recordRoom(
-                                      crewId: _crewDetailViewModel.crewDetailInfo.crewId!,
-                                      userId: _userViewModel.user.user_id!,
-                                      selected_season: _crewRecordRoomViewModel.currentSeason.value,
-                                    );
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                    shadowColor: Colors.transparent,
-                                    overlayColor: Colors.transparent,
-                                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 3),
-                                    minimumSize: Size(36, 32),
-                                    backgroundColor: SDSColor.snowliveWhite,
-                                    side: BorderSide(color: SDSColor.gray200),
-                                    elevation: 0,
-                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                                  ),
-                                  child: Text(
-                                    '크루원 랭킹',
-                                    style: SDSTextStyle.bold.copyWith(fontSize: 13, color: SDSColor.gray900),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                      SizedBox(height: 6),
+                      SizedBox(height: 20),
                       // 랭킹 카드
                       _buildRankingSummaryCard(context),
-                      SizedBox(height: 20),
+                      SizedBox(height: 16),
                       // 그래프 카드
                       _buildGraphCard(_size),
-                      SizedBox(height: 20),
+                      SizedBox(height: 30),
                       // 월별 기록 리스트
                       ..._buildGroupedRecords(MediaQuery.of(context).size),
                     ],
@@ -192,61 +145,106 @@ class CrewRecordRoomView extends StatelessWidget {
   }
 
   Widget _buildRankingSummaryCard(BuildContext context) {
+
+    Size _size = MediaQuery.of(context).size;
+
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 16),
       child: Container(
+        padding: EdgeInsets.only(top: 16, bottom: 4),
         width: MediaQuery.of(context).size.width,
-        height: 76,
+        height: 132,
         decoration: BoxDecoration(
-          color: SDSColor.gray50,
+          color: SDSColor.snowliveWhite,
           borderRadius: BorderRadius.circular(16),
         ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Expanded(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    '${_crewDetailViewModel_recordRoom.overallRank}',
-                    style: SDSTextStyle.bold.copyWith(
-                      fontSize: 18,
-                      color: SDSColor.gray900,
-                    ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        '${_crewDetailViewModel_recordRoom.overallRank}',
+                        style: SDSTextStyle.bold.copyWith(
+                          fontSize: 18,
+                          color: SDSColor.gray900,
+                        ),
+                      ),
+                      Text(
+                        '시즌 통합 랭킹',
+                        style: SDSTextStyle.regular.copyWith(
+                          fontSize: 13,
+                          color: SDSColor.gray900.withOpacity(0.5),
+                        ),
+                      ),
+                    ],
                   ),
-                  Text(
-                    '통합 랭킹',
-                    style: SDSTextStyle.regular.copyWith(
-                      fontSize: 13,
-                      color: SDSColor.gray900.withOpacity(0.5),
-                    ),
+                ),
+                buildVerticalDivider_ranking_indi_Screen(),
+                Expanded(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        '${_crewDetailViewModel_recordRoom.overallTotalScore.toStringAsFixed(0)}',
+                        style: SDSTextStyle.bold.copyWith(
+                          fontSize: 18,
+                          color: SDSColor.gray900,
+                        ),
+                      ),
+                      Text(
+                        '시즌 총 점수',
+                        style: SDSTextStyle.regular.copyWith(
+                          fontSize: 13,
+                          color: SDSColor.gray900.withOpacity(0.5),
+                        ),
+                      ),
+                    ],
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
-            buildVerticalDivider_ranking_indi_Screen(),
-            Expanded(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    '${_crewDetailViewModel_recordRoom.overallTotalScore.toStringAsFixed(0)}',
-                    style: SDSTextStyle.bold.copyWith(
-                      fontSize: 18,
-                      color: SDSColor.gray900,
+            (_crewDetailViewModel_recordRoom.isLoading == true)
+                ? SizedBox.shrink()
+                : Padding(
+                  padding: EdgeInsets.only(top: 10),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                  TextButton(
+                    onPressed: () async {
+                      Get.toNamed(AppRoutes.crewMemberRankingList_recordRoom);
+                      await _crewRankingListViewModel_recordRoom.fetchCrewRankings_recordRoom(
+                        crewId: _crewDetailViewModel.crewDetailInfo.crewId!,
+                        userId: _userViewModel.user.user_id!,
+                        selected_season: _crewRecordRoomViewModel.currentSeason.value,
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      shadowColor: Colors.transparent,
+                      overlayColor: Colors.transparent,
+                      minimumSize: Size(_size.width - 64, 36),
+                      backgroundColor: SDSColor.gray50,
+                      elevation: 0,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(5)),
+                    ),
+                    child: Text(
+                      '크루원 시즌 랭킹',
+                      style: SDSTextStyle.bold.copyWith(
+                          fontSize: 13,
+                          color: SDSColor.gray700
+                      ),
                     ),
                   ),
-                  Text(
-                    '총 점수',
-                    style: SDSTextStyle.regular.copyWith(
-                      fontSize: 13,
-                      color: SDSColor.gray900.withOpacity(0.5),
-                    ),
-                  ),
-                ],
-              ),
-            ),
+                                ],
+                              ),
+                ),
           ],
         ),
       ),
@@ -346,7 +344,7 @@ class CrewRecordRoomView extends StatelessWidget {
         children: [
           // 월 타이틀 추가
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
+            padding: const EdgeInsets.only(top: 24, bottom: 6, left: 24, right: 24),
             child: Text(
               _formatMonthTitle(monthKey),
               style: SDSTextStyle.bold.copyWith(
@@ -405,9 +403,9 @@ class CrewRecordRoomView extends StatelessWidget {
     FontWeight dateFontWeight = FontWeight.bold; // 모든 날짜를 볼드체로 설정
     if (date != null) {
       if (date.weekday == DateTime.saturday) {
-        dateColor = SDSColor.snowliveBlue; // 토요일은 파란색
+        dateColor = SDSColor.blue600; // 토요일은 파란색
       } else if (date.weekday == DateTime.sunday) {
-        dateColor = SDSColor.red; // 일요일은 빨간색
+        dateColor = SDSColor.red.withOpacity(0.9); // 일요일은 빨간색
       } else {
         dateColor = SDSColor.gray900; // 나머지 요일은 검정색
       }
@@ -437,11 +435,11 @@ class CrewRecordRoomView extends StatelessWidget {
           collapsedIconColor: SDSColor.gray900,
           iconColor: SDSColor.gray900,
           title: Padding(
-            padding: EdgeInsets.only(left: 6),
+            padding: EdgeInsets.only(left: 2),
             child: Text(
               formattedDate,
               style: SDSTextStyle.bold.copyWith(
-                fontSize: 18,
+                fontSize: 15,
                 color: dateColor, // 요일에 따른 색상 적용
                 fontWeight: dateFontWeight, // 모든 날짜는 볼드체
               ),
@@ -449,14 +447,14 @@ class CrewRecordRoomView extends StatelessWidget {
           ),
           children: [
             Padding(
-              padding: EdgeInsets.only(left: 20, right: 20, bottom: 24, top: 6),
+              padding: EdgeInsets.only(left: 20, right: 20, bottom: 24),
               child: Column(
                 children: [
                   buildScoreCard(record),
                   SizedBox(height: 24),
                   buildGraphs(record),
                   SizedBox(height: 16),
-                  Divider(color: SDSColor.gray100, thickness: 1, height: 32,),
+                  Divider(color: SDSColor.gray50, thickness: 1, height: 16),
                   SizedBox(height: 16),
                   buildRidingMembers(record),
                 ],
@@ -505,7 +503,7 @@ class CrewRecordRoomView extends StatelessWidget {
             label,
             style: SDSTextStyle.regular.copyWith(
               color: SDSColor.gray500,
-              fontSize: 13,
+              fontSize: 12,
             ),
           ),
         ],
@@ -523,7 +521,7 @@ class CrewRecordRoomView extends StatelessWidget {
       children: [
         Text(
           '시간대별 라이딩 횟수',
-          style: SDSTextStyle.regular.copyWith(fontSize: 13, color: SDSColor.gray900),
+          style: SDSTextStyle.bold.copyWith(fontSize: 13, color: SDSColor.gray900),
         ),
         SizedBox(height: 12),
         if (timeCountInfo.isNotEmpty)  // timeCountInfo가 비어있지 않으면 그래프 표시
@@ -619,9 +617,8 @@ class CrewRecordRoomView extends StatelessWidget {
       children: [
         Text(
           '라이딩 멤버 ${record.memberCount ?? 0}명',
-          style: SDSTextStyle.bold.copyWith(fontSize: 14, color: SDSColor.gray900),
+          style: SDSTextStyle.bold.copyWith(fontSize: 13, color: SDSColor.gray900),
         ),
-        SizedBox(height: 8),
         if (members.isNotEmpty)
           ...members.map((member) {
             return Container(
@@ -712,7 +709,7 @@ class CrewRecordRoomView extends StatelessWidget {
                 ),
                 trailing: Text(
                   '${member.totalScore!.round()}점',
-                  style: SDSTextStyle.regular.copyWith(fontSize: 16, color: SDSColor.gray900),
+                  style: SDSTextStyle.regular.copyWith(fontSize: 15, color: SDSColor.gray900),
                 ),
               ),
             );
@@ -998,7 +995,7 @@ class CrewRecordRoomView extends StatelessWidget {
         padding: const EdgeInsets.fromLTRB(20, 20, 20, 10),
         width: size.width,
         decoration: BoxDecoration(
-          color: SDSColor.blue50,
+          color: SDSColor.blue100.withOpacity(0.6),
           borderRadius: BorderRadius.circular(16),
         ),
         child: Column(
@@ -1006,7 +1003,7 @@ class CrewRecordRoomView extends StatelessWidget {
           children: [
             Container(
               decoration: BoxDecoration(
-                color: Color(0xFFD2DFF4).withOpacity(0.7),
+                color: SDSColor.blue100,
                 borderRadius: BorderRadius.circular(8),
               ),
               padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 4),
@@ -1022,11 +1019,11 @@ class CrewRecordRoomView extends StatelessWidget {
                       child: Container(
                         decoration: BoxDecoration(
                           color: _crewDetailViewModel_recordRoom.isSlopeGraph.value ? SDSColor.snowliveWhite : Colors.transparent,
-                          borderRadius: BorderRadius.circular(8),
+                          borderRadius: BorderRadius.circular(6),
                         ),
                         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                         alignment: Alignment.center,
-                        child: Text('슬로프별', style: SDSTextStyle.regular.copyWith(fontSize: 14, fontWeight: FontWeight.bold, color: _crewDetailViewModel_recordRoom.isSlopeGraph.value ? SDSColor.gray900 : Color(0xFF809FCF).withOpacity(0.8))),
+                        child: Text('슬로프별', style: SDSTextStyle.regular.copyWith(fontSize: 14, fontWeight: FontWeight.bold, color: _crewDetailViewModel_recordRoom.isSlopeGraph.value ? SDSColor.gray900 : SDSColor.blue900.withOpacity(0.6))),
                       ),
                     ),
                   ),
@@ -1040,11 +1037,11 @@ class CrewRecordRoomView extends StatelessWidget {
                       child: Container(
                         decoration: BoxDecoration(
                           color: !_crewDetailViewModel_recordRoom.isSlopeGraph.value ? SDSColor.snowliveWhite : Colors.transparent,
-                          borderRadius: BorderRadius.circular(8),
+                          borderRadius: BorderRadius.circular(6),
                         ),
                         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                         alignment: Alignment.center,
-                        child: Text('시간대별', style: SDSTextStyle.regular.copyWith(fontSize: 14, fontWeight: FontWeight.bold, color: !_crewDetailViewModel_recordRoom.isSlopeGraph.value ? SDSColor.gray900 : Color(0xFF809FCF).withOpacity(0.8))),
+                        child: Text('시간대별', style: SDSTextStyle.regular.copyWith(fontSize: 14, fontWeight: FontWeight.bold, color: !_crewDetailViewModel_recordRoom.isSlopeGraph.value ? SDSColor.gray900 : SDSColor.blue900.withOpacity(0.6))),
                       ),
                     ),
                   ),
@@ -1052,7 +1049,7 @@ class CrewRecordRoomView extends StatelessWidget {
               ),
             ),
             SizedBox(height: 20),
-            Text('총 라이딩 횟수', style: SDSTextStyle.regular.copyWith(fontSize: 13, color: SDSColor.gray900.withOpacity(0.5))),
+            Text('총 라이딩 횟수', style: SDSTextStyle.regular.copyWith(fontSize: 13, color: SDSColor.gray900.withOpacity(0.6))),
             Text('${_crewDetailViewModel_recordRoom.totalSlopeCount}', style: SDSTextStyle.extraBold.copyWith(fontSize: 30, color: SDSColor.gray900)),
             SizedBox(height: 10),
             Obx(() => _crewDetailViewModel_recordRoom.totalSlopeCount == 0
@@ -1104,7 +1101,7 @@ class CrewRecordRoomView extends StatelessWidget {
                   height: 14,
                   width: (size.width - 166) * barWidthRatio,
                   decoration: BoxDecoration(
-                    color: slopeData == countInfo.first ? SDSColor.snowliveBlue : SDSColor.blue200,
+                    color: slopeData == countInfo.first ? SDSColor.snowliveBlue : SDSColor.blue300.withOpacity(0.6),
                     borderRadius: BorderRadius.only(topRight: Radius.circular(4), bottomRight: Radius.circular(4)),
                   ),
                 ),
@@ -1118,7 +1115,7 @@ class CrewRecordRoomView extends StatelessWidget {
                     padding: EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                     child: Text(
                       '$passCount',
-                      style: SDSTextStyle.extraBold.copyWith(fontSize: 12, fontWeight: FontWeight.bold, color: slopeData == countInfo.first ? SDSColor.snowliveWhite : SDSColor.gray900),
+                      style: SDSTextStyle.bold.copyWith(fontSize: 12, fontWeight: FontWeight.bold, color: slopeData == countInfo.first ? SDSColor.snowliveWhite : SDSColor.gray900),
                     ),
                   ),
                 ),
@@ -1127,11 +1124,63 @@ class CrewRecordRoomView extends StatelessWidget {
           );
         }).toList(),
         if (countInfo.length > 5)
-          Obx(() => TextButton(
-            onPressed: () => _showAllSlopes.toggle(),
-            child: Text(_showAllSlopes.value ? '접기 ▲' : '펼치기 ▼',
-                style: SDSTextStyle.regular.copyWith(color: SDSColor.gray600, fontSize: 13)),
-          ))
+          Obx(() => Center(
+            child: Padding(
+              padding: EdgeInsets.only(top: 12),
+              child: ElevatedButton(
+                onPressed: () => _showAllSlopes.toggle(),
+                child:
+                _showAllSlopes.value
+                ? Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(50),
+                            border: Border.all(
+                                color: SDSColor.sBlue300.withOpacity(0.4),
+                                width: 1
+                            )
+                        ),
+                        width: 40,
+                        height: 40,
+                        child: Icon(
+                          Icons.keyboard_arrow_up,
+                          color: SDSColor.blue900.withOpacity(0.6),
+                          size: 30,))
+                  ],
+                )
+                : Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(50),
+                        border: Border.all(
+                            color: SDSColor.sBlue300.withOpacity(0.6),
+                          width: 1
+                        )
+                      ),
+                      width: 40,
+                        height: 40,
+                        child: Icon(
+                          Icons.keyboard_arrow_down,
+                          color: SDSColor.sBlue500,
+                          size: 30,))
+                  ],
+                ),
+                style: TextButton.styleFrom(
+                    shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(50))),
+                    splashFactory: NoSplash.splashFactory,
+                    elevation: 0,
+                    minimumSize: Size(100, 48),
+                    backgroundColor: Colors.transparent,
+
+                ),
+              ),
+            ),
+          )
+          )
       ],
     );
   }
@@ -1148,6 +1197,7 @@ class CrewRecordRoomView extends StatelessWidget {
         double barHeightRatio = passCount / maxCount;
 
         return Container(
+          padding: EdgeInsets.only(bottom: 16),
           width: 30,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.end,
@@ -1165,7 +1215,7 @@ class CrewRecordRoomView extends StatelessWidget {
                   width: 16,
                   height: 100 * barHeightRatio,
                   decoration: BoxDecoration(
-                    color: SDSColor.blue200,
+                    color: SDSColor.blue300.withOpacity(0.6),
                     borderRadius: BorderRadius.only(topRight: Radius.circular(4), topLeft: Radius.circular(4)),
                   ),
                 ),

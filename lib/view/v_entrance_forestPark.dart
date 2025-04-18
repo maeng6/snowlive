@@ -64,31 +64,34 @@ class _Entrance_forestParkState extends State<Entrance_forestPark> {
             },
             child: Stack(
               children: [
-                ExtendedImage.network(
-                  entranceImage,
-                  width: double.infinity,
-                  height: null, // 높이 비율 유지
-                  fit: BoxFit.fitWidth,
-                  loadStateChanged: (state) {
-                    switch (state.extendedImageLoadState) {
-                      case LoadState.loading:
-                        return Container(
-                          height: 200,
-                          color: Colors.grey.shade100,
-                          alignment: Alignment.center,
-                          child: CircularProgressIndicator(),
-                        );
-                      case LoadState.failed:
-                        return Container(
-                          height: 200,
-                          color: Colors.grey.shade100,
-                          alignment: Alignment.center,
-                          child: Icon(Icons.error, color: Colors.red),
-                        );
-                      case LoadState.completed:
-                        return null;
-                    }
-                  },
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(16),
+                  child: ExtendedImage.network(
+                    entranceImage,
+                    width: double.infinity,
+                    height: null, // 높이 비율 유지
+                    fit: BoxFit.fitWidth,
+                    loadStateChanged: (state) {
+                      switch (state.extendedImageLoadState) {
+                        case LoadState.loading:
+                          return Container(
+                            height: 200,
+                            color: Colors.grey.shade100,
+                            alignment: Alignment.center,
+                            child: CircularProgressIndicator(),
+                          );
+                        case LoadState.failed:
+                          return Container(
+                            height: 200,
+                            color: Colors.grey.shade100,
+                            alignment: Alignment.center,
+                            child: Icon(Icons.error, color: Colors.red),
+                          );
+                        case LoadState.completed:
+                          return null;
+                      }
+                    },
+                  ),
                 ),
                 Positioned(
                   bottom: 24,

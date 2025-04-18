@@ -335,7 +335,7 @@ class _ForestParkHomeState extends State<ForestParkHome> {
             strokeWidth: 2,
             edgeOffset: 50,
             displacement: 40,
-            backgroundColor: SDSColor.snowliveBlue,
+            backgroundColor: Color(0xFF12341E),
             color: SDSColor.snowliveWhite,
             onRefresh: () async{
               await _forestParkViewModel.fetchLeafRemain(eventDate);
@@ -381,6 +381,19 @@ class _ForestParkHomeState extends State<ForestParkHome> {
                           },
                         );
                       }),
+                      // Container(
+                      //   height: 160,
+                      //   decoration: const BoxDecoration(
+                      //     gradient: LinearGradient(
+                      //       begin: Alignment.topCenter,
+                      //       end: Alignment.bottomCenter,
+                      //       colors: [
+                      //         Color(0x40000000),
+                      //         Color(0x00000000),
+                      //       ],
+                      //     ),
+                      //   ),
+                      // ),
 
                       // ✅ 배경 위에 쌓을: 나뭇잎 현황 + 참여 버튼
                       Positioned(
@@ -391,10 +404,10 @@ class _ForestParkHomeState extends State<ForestParkHome> {
                           children: [
                             Container(
                               margin: EdgeInsets.symmetric(horizontal: 16),
-                              padding: EdgeInsets.symmetric(vertical: 12, horizontal: 32),
+                              padding: EdgeInsets.symmetric(vertical: 12, horizontal: 28),
                               height: 52,
                               decoration: BoxDecoration(
-                                color: Color(0xFF000000).withOpacity(0.3),
+                                color: Color(0xFF000000).withOpacity(0.65),
                                 borderRadius: BorderRadius.circular(16),
                               ),
                               child: Obx(() {
@@ -407,37 +420,31 @@ class _ForestParkHomeState extends State<ForestParkHome> {
                                     // 초록 나뭇잎
                                     Row(
                                       children: [
-                                        Container(
-                                          width: 16,
-                                          height: 16,
-                                          decoration: BoxDecoration(
-                                            color: Colors.greenAccent,
-                                            shape: BoxShape.circle,
-                                          ),
+                                        Image.asset(
+                                          'assets/imgs/imgs/img_forest_fruit.png',
+                                          width: 22,
+                                          height: 22,
                                         ),
-                                        SizedBox(width: 6),
-                                        Text('초록열매', style: TextStyle(color: Colors.white.withOpacity(0.6), fontSize: 13)),
+                                        SizedBox(width: 8),
+                                        Text('초록 열매', style: TextStyle(color: Colors.white.withOpacity(0.7), fontSize: 13)),
                                         SizedBox(width: 24),
                                         Text('$greenCount', style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
                                       ],
                                     ),
 
                                     // 구분선
-                                    Container(width: 1, height: 20, color: Color(0xFF000000).withOpacity(0.3)),
+                                    Container(width: 1, height: 20, color: Color(0xFFffffff).withOpacity(0.2)),
 
                                     // 황금 나뭇잎
                                     Row(
                                       children: [
-                                        Container(
-                                          width: 16,
-                                          height: 16,
-                                          decoration: BoxDecoration(
-                                            color: Colors.amberAccent,
-                                            shape: BoxShape.circle,
-                                          ),
+                                        Image.asset(
+                                          'assets/imgs/imgs/img_forest_fruit.png',
+                                          width: 22,
+                                          height: 22,
                                         ),
-                                        SizedBox(width: 6),
-                                        Text('황금열매', style: TextStyle(color: Colors.white.withOpacity(0.6), fontSize: 13)),
+                                        SizedBox(width: 8),
+                                        Text('황금 열매', style: TextStyle(color: Colors.white.withOpacity(0.7), fontSize: 13)),
                                         SizedBox(width: 24),
                                         Text('$goldCount', style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
                                       ],
