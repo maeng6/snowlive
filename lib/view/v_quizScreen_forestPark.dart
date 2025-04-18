@@ -623,6 +623,7 @@ class _QuizPageForestParkState extends State<QuizPageForestPark> {
   @override
   Widget build(BuildContext context) {
     final quiz = _forestParkViewModel.quizDetail.value;
+    Size _size = MediaQuery.of(context).size;
 
     return Scaffold(
       backgroundColor: Color(0xFF12341E),
@@ -676,136 +677,147 @@ class _QuizPageForestParkState extends State<QuizPageForestPark> {
         ),
       )
           : SafeArea(
-            child: ListView(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    children: [
-            Center(
-              child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 6), // 내부 여백
-                decoration: BoxDecoration(
-                  color: Color(0xFF132A18), // 이미지 속 배경색 (진한 초록 계열)
-                  borderRadius: BorderRadius.circular(40), // pill 형태로 둥글게
-                ),
-                child: Text(
-                  '퀴즈',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 15,
-                    fontWeight: FontWeight.bold,
+            child: Stack(
+              children: [
+                Opacity(
+                  opacity: 0.4,
+                  child: Image.asset(
+                    'assets/imgs/imgs/img_forest_quiz_bg.png',
+                    width: _size.width,
                   ),
                 ),
-              ),
-            ),
-            const SizedBox(height: 20),
-            if (quiz.imgUrl != null && quiz.imgUrl!.isNotEmpty)
-              Center(
-                child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 24),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(5),
-                    child: Image.network(quiz.imgUrl!),
-                  ),
-                ),
-              ),
-            if (quiz.imgUrl != null && quiz.imgUrl!.isNotEmpty)
-              const SizedBox(height: 30),
-            Center(
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 14),
-                child: Text(
-                  quiz.question ?? '',
-                  textAlign: TextAlign.center,
-                  style: SDSTextStyle.bold.copyWith(color: SDSColor.snowliveWhite, fontSize: 18),
-                ),
-              ),
-            ),
-            SizedBox(height: 30),
-            Center(
-              child: Text('아래 보기 중 정답을 선택 후 제출해 주세요!',
-                style: SDSTextStyle.regular.copyWith(
-                    color: Colors.white.withOpacity(0.5),
-                    fontSize: 13,
-                ),
-              ),
-            ),
-            const SizedBox(height: 16),
-            ...List.generate(4, (index) {
-              final option = [
-                quiz.option1,
-                quiz.option2,
-                quiz.option3,
-                quiz.option4
-              ][index];
-              return GestureDetector(
-                onTap: () {
-                  setState(() {
-                    _selectedIndex = index;
-                  });
-                },
-                child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 14),
+                ListView(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        children: [
+                Center(
                   child: Container(
-                    margin: const EdgeInsets.only(bottom: 12),
-                    padding: const EdgeInsets.all(16),
+                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 6), // 내부 여백
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(6),
-                      color: _selectedIndex == index
-                          ? Color(0xFF127721)
-                          : Color(0xFF0D2415),
+                      color: Color(0xFF132A18), // 이미지 속 배경색 (진한 초록 계열)
+                      borderRadius: BorderRadius.circular(40), // pill 형태로 둥글게
                     ),
                     child: Text(
-                      option ?? '',
+                      '퀴즈',
                       style: TextStyle(
-                          fontSize: 15,
-                          color: SDSColor.snowliveWhite,
-                        fontWeight: _selectedIndex == index
-                          ? FontWeight.bold
-                            : FontWeight.normal
+                        color: Colors.white,
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold,
                       ),
-                      textAlign: TextAlign.center,
                     ),
                   ),
                 ),
-              );
-            }),
-            const SizedBox(height: 25),
-            if (quiz.imgUrlAd != null && quiz.imgUrlAd!.isNotEmpty)
-              Center(
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(5),
-                  child: Image.network(
-                    quiz.imgUrlAd!,
-                    height: 90, // ✅ 띠배너 느낌
-                    width: double.infinity,
-                    fit: BoxFit.cover,
+                const SizedBox(height: 20),
+                if (quiz.imgUrl != null && quiz.imgUrl!.isNotEmpty)
+                  Center(
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 24),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(5),
+                        child: Image.network(quiz.imgUrl!),
+                      ),
+                    ),
+                  ),
+                if (quiz.imgUrl != null && quiz.imgUrl!.isNotEmpty)
+                  const SizedBox(height: 30),
+                Center(
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 14),
+                    child: Text(
+                      quiz.question ?? '',
+                      textAlign: TextAlign.center,
+                      style: SDSTextStyle.bold.copyWith(color: SDSColor.snowliveWhite, fontSize: 18),
+                    ),
                   ),
                 ),
-              ),
+                SizedBox(height: 30),
+                Center(
+                  child: Text('아래 보기 중 정답을 선택 후 제출해 주세요!',
+                    style: SDSTextStyle.regular.copyWith(
+                        color: Colors.white.withOpacity(0.5),
+                        fontSize: 13,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                ...List.generate(4, (index) {
+                  final option = [
+                    quiz.option1,
+                    quiz.option2,
+                    quiz.option3,
+                    quiz.option4
+                  ][index];
+                  return GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        _selectedIndex = index;
+                      });
+                    },
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 14),
+                      child: Container(
+                        margin: const EdgeInsets.only(bottom: 12),
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(6),
+                          color: _selectedIndex == index
+                              ? Color(0xFF127721)
+                              : Color(0xFF0D2415),
+                        ),
+                        child: Text(
+                          option ?? '',
+                          style: TextStyle(
+                              fontSize: 15,
+                              color: SDSColor.snowliveWhite,
+                            fontWeight: _selectedIndex == index
+                              ? FontWeight.bold
+                                : FontWeight.normal
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ),
+                  );
+                }),
+                const SizedBox(height: 25),
+                if (quiz.imgUrlAd != null && quiz.imgUrlAd!.isNotEmpty)
+                  Center(
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(5),
+                      child: Image.network(
+                        quiz.imgUrlAd!,
+                        height: 90, // ✅ 띠배너 느낌
+                        width: double.infinity,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ),
 
-            const SizedBox(height: 30),
-            Padding(
-              padding: EdgeInsets.only(bottom: 16),
-              child: ElevatedButton(
-                onPressed: _submitAnswer,
-                child: const Text(
-                  '정답 제출하기',
-                  style: TextStyle(
-                      color: Colors.black, // 글자색 검정
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16
+                const SizedBox(height: 30),
+                Padding(
+                  padding: EdgeInsets.only(bottom: 16),
+                  child: ElevatedButton(
+                    onPressed: _submitAnswer,
+                    child: const Text(
+                      '정답 제출하기',
+                      style: TextStyle(
+                          color: Colors.black, // 글자색 검정
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16
+                      ),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.white, // 버튼 배경 흰색
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(5), // 보더레디우스 5
+                      ),
+                    ),
                   ),
                 ),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.white, // 버튼 배경 흰색
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(5), // 보더레디우스 5
-                  ),
-                ),
-              ),
+                        ],
+                      ),
+              ],
             ),
-                    ],
-                  ),
           ),
     );
   }
