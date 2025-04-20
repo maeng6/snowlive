@@ -149,7 +149,7 @@ class _SlmkScreenState extends State<SlmkScreen> {
                       Navigator.pop(context, 0);
                     },
                     backgroundColor: Color(0xFF2C2C2C),
-                    elevation: 0,
+                    elevation: 3,
                     label: Image.asset(
                       'assets/imgs/logos/snowliveLogo_main_new_blue.png',
                       color: Colors.white,

@@ -679,12 +679,9 @@ class _QuizPageForestParkState extends State<QuizPageForestPark> {
           : SafeArea(
             child: Stack(
               children: [
-                Opacity(
-                  opacity: 0.4,
-                  child: Image.asset(
-                    'assets/imgs/imgs/img_forest_quiz_bg.png',
-                    width: _size.width,
-                  ),
+                Image.asset(
+                  'assets/imgs/imgs/img_forest_quiz_bg.png',
+                  width: _size.width,
                 ),
                 ListView(
                         padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -761,7 +758,7 @@ class _QuizPageForestParkState extends State<QuizPageForestPark> {
                           borderRadius: BorderRadius.circular(6),
                           color: _selectedIndex == index
                               ? Color(0xFF127721)
-                              : Color(0xFF0D2415),
+                              : Color(0xFF0B180F).withOpacity(0.95),
                         ),
                         child: Text(
                           option ?? '',
