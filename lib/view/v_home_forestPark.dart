@@ -421,7 +421,7 @@ class _ForestParkHomeState extends State<ForestParkHome> {
                                     Row(
                                       children: [
                                         Image.asset(
-                                          'assets/imgs/imgs/img_forest_fruit.png',
+                                          'assets/imgs/imgs/img_forest_fruit_green.png',
                                           width: 22,
                                           height: 22,
                                         ),

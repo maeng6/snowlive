@@ -56,7 +56,7 @@ class _ForestParkShopState extends State<ForestParkShop> {
                 child: AppBar(
                   elevation: 0,
                   surfaceTintColor: Colors.transparent,
-                  title: Text('열매 상점',
+                  title: Text('열매 교환소',
                     style: SDSTextStyle.bold.copyWith(
                         color: SDSColor.snowliveWhite,
                         fontSize: 16
@@ -90,7 +90,7 @@ class _ForestParkShopState extends State<ForestParkShop> {
                               Row(
                                 children: [
                                   Image.asset(
-                                    'assets/imgs/imgs/snowballShop/icon_snowballshop_whiteball.png',
+                                    'assets/imgs/imgs/img_forest_fruit_green.png',
                                     height: 16,
                                   ),
                                   SizedBox(width: 4),
@@ -107,7 +107,7 @@ class _ForestParkShopState extends State<ForestParkShop> {
                               Row(
                                 children: [
                                   Image.asset(
-                                    'assets/imgs/imgs/snowballShop/icon_snowballshop_goldball.png',
+                                    'assets/imgs/imgs/img_forest_fruit.png',
                                     height: 16,
                                   ),
                                   SizedBox(width: 4),
@@ -605,27 +605,27 @@ class _ForestParkShopState extends State<ForestParkShop> {
                                                 Row(
                                                   children: [
                                                     Image.asset(
-                                                      'assets/imgs/imgs/snowballShop/icon_snowballshop_whiteball.png',
+                                                      'assets/imgs/imgs/img_forest_fruit_green.png',
                                                       height: 12,
                                                     ),
-                                                    SizedBox(width: 5),
+                                                    SizedBox(width: 4),
                                                     Text(
                                                       '${item.leafKind1Count ?? 0}',
-                                                      style: SDSTextStyle.regular.copyWith(fontSize: 12, color: SDSColor.snowliveWhite.withOpacity(0.6),),
+                                                      style: SDSTextStyle.regular.copyWith(fontSize: 12, color: SDSColor.snowliveWhite.withOpacity(0.7),),
                                                     ),
                                                   ],
                                                 ),
-                                                SizedBox(width: 5,),
+                                                SizedBox(width: 8),
                                                 Row(
                                                   children: [
                                                     Image.asset(
-                                                      'assets/imgs/imgs/snowballShop/icon_snowballshop_goldball.png',
+                                                      'assets/imgs/imgs/img_forest_fruit.png',
                                                       height: 12,
                                                     ),
-                                                    SizedBox(width: 5),
+                                                    SizedBox(width: 4),
                                                     Text(
                                                       '${item.leafKind2Count ?? 0}',
-                                                      style: SDSTextStyle.regular.copyWith(fontSize: 12, color: SDSColor.snowliveWhite.withOpacity(0.6),),
+                                                      style: SDSTextStyle.regular.copyWith(fontSize: 12, color: SDSColor.snowliveWhite.withOpacity(0.7),),
                                                     ),
                                                   ],
                                                 ),
