@@ -138,24 +138,30 @@ class _SlmkScreenState extends State<SlmkScreen> {
               ),
             if (!_isLoading)
               Positioned(
-                bottom: 174,
-                right: 16,
+                top: MediaQuery.of(context).padding.top + 10,
+                right: 54,
                 child: SizedBox(
-                  width: 48,
-                  height: 48,
-                  child: FloatingActionButton(
+                  width: 82,
+                  height: 26,
+                  child: FloatingActionButton.extended(
                     onPressed: () {
                       print('[버튼] APP 버튼 눌림 - SlmkScreen 닫기');
                       Navigator.pop(context, 0);
                     },
-                    backgroundColor: SDSColor.snowliveBlue,
+                    backgroundColor: Color(0xFF2C2C2C),
                     elevation: 0,
-                    shape: const CircleBorder(),
-                    child: Image.asset(
-                      'assets/imgs/logos/snowlive_logo_new.png',
+                    label: Image.asset(
+                      'assets/imgs/logos/snowliveLogo_main_new_blue.png',
                       color: Colors.white,
-                      width: 36,
+                      width: 64,
                       fit: BoxFit.cover,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20), // ✅ BorderRadius
+                      side: BorderSide(
+                        color: Color(0xFF3D83ED),
+                        width: 1.5,
+                      ),
                     ),
                   ),
                 ),
