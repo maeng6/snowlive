@@ -421,7 +421,7 @@ class _ForestParkHomeState extends State<ForestParkHome> {
                                     Row(
                                       children: [
                                         Image.asset(
-                                          'assets/imgs/imgs/img_forest_fruit.png',
+                                          'assets/imgs/imgs/img_forest_fruit_green.png',
                                           width: 22,
                                           height: 22,
                                         ),
@@ -550,7 +550,7 @@ class _ForestParkHomeState extends State<ForestParkHome> {
                                 },
                                 child: Container(
                                   height: 140,
-                                  padding: EdgeInsets.all(20), // ✅ 좌상단 정렬 위한 패딩
+                                  padding: EdgeInsets.only(top: 16, left: 16),
                                   decoration: BoxDecoration(
                                     color: Color(0xFF0B5E2A),
                                     borderRadius: BorderRadius.circular(16),
@@ -560,12 +560,28 @@ class _ForestParkHomeState extends State<ForestParkHome> {
                                     ),
                                   ),
                                   alignment: Alignment.topLeft, // ✅ 좌상단 정렬
-                                  child: Text(
-                                    '황금열매 지도',
-                                    style: SDSTextStyle.bold.copyWith(
-                                        color: Colors.white,
-                                        fontSize: 15,
-                                    ),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        '황금열매 지도',
+                                        style: SDSTextStyle.bold.copyWith(
+                                            color: Colors.white,
+                                            fontSize: 15,
+                                        ),
+                                      ),
+                                      Row(
+                                        children: [
+                                          Expanded(child: SizedBox()),
+                                          Image.asset(
+                                            'assets/imgs/imgs/img_forest_map.png',
+                                            width: 120,
+                                            fit: BoxFit.cover,
+                                          ),
+                                        ],
+                                      ),
+                                    ],
                                   ),
                                 ),
                               ),
@@ -581,7 +597,7 @@ class _ForestParkHomeState extends State<ForestParkHome> {
                                 },
                                 child: Container(
                                   height: 140,
-                                  padding: EdgeInsets.all(20),
+                                  padding: EdgeInsets.only(top: 16, left: 16),
                                   decoration: BoxDecoration(
                                     color: Color(0xFF0B5E2A),
                                     borderRadius: BorderRadius.circular(16),
@@ -591,12 +607,28 @@ class _ForestParkHomeState extends State<ForestParkHome> {
                                     ),
                                   ),
                                   alignment: Alignment.topLeft,
-                                  child: Text(
-                                    '경품 교환소',
-                                    style: SDSTextStyle.bold.copyWith(
-                                      color: Colors.white,
-                                      fontSize: 15,
-                                    ),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        '열매 교환소',
+                                        style: SDSTextStyle.bold.copyWith(
+                                          color: Colors.white,
+                                          fontSize: 15,
+                                        ),
+                                      ),
+                                      Row(
+                                        children: [
+                                          Expanded(child: SizedBox()),
+                                          Image.asset(
+                                            'assets/imgs/imgs/img_forest_shop.png',
+                                            width: 120,
+                                            fit: BoxFit.cover,
+                                          ),
+                                        ],
+                                      ),
+                                    ],
                                   ),
                                 ),
                               ),
