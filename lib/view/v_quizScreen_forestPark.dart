@@ -648,7 +648,11 @@ class _QuizPageForestParkState extends State<QuizPageForestPark> {
         ),
       ),
       body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
+          ? const Center(child: CircularProgressIndicator(
+        strokeWidth: 4,
+        backgroundColor: Color(0x10FFFFFF),
+        color: Color(0xFFFFFFFF),
+      ))
           : (_forestParkViewModel.quizDetail.value.quizId == null ||
           (_forestParkViewModel.quizDetail.value.question?.isEmpty ?? true))
           ? Center(
