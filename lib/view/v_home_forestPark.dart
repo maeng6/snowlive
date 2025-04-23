@@ -19,8 +19,6 @@ class _ForestParkHomeState extends State<ForestParkHome> {
   final TextEditingController _codeController = TextEditingController();
   ScrollController _scrollController = ScrollController();
   bool _showAppBarBackground = false;
-  final RxBool isLoading = false.obs;
-
 
   final RxString _codeErrorMessage = ''.obs;
   RxBool isParticipant = false.obs;
@@ -142,9 +140,6 @@ class _ForestParkHomeState extends State<ForestParkHome> {
                         return;
                       }
 
-                      isLoading.value = true; // ✅ 로딩 시작
-
-
                       CustomFullScreenDialog.showDialog();
                       final result = await _forestParkViewModel.registerParticipant(code: code, eventDate: eventDate);
                       CustomFullScreenDialog.cancelDialog();
@@ -154,8 +149,6 @@ class _ForestParkHomeState extends State<ForestParkHome> {
                         final result = await _forestParkViewModel.checkParticipant(eventDate);
                         isParticipant.value = result;
                         CustomFullScreenDialog.cancelDialog();
-
-                        isLoading.value = false; // ✅ 로딩 종료
 
                         // ✅ 참여 성공 다이얼로그
                         Get.dialog(
@@ -228,7 +221,6 @@ class _ForestParkHomeState extends State<ForestParkHome> {
                           ),
                         );
                       } else {
-                        isLoading.value = false; // ✅ 실패 시에도 로딩 종료
                         _codeErrorMessage.value = '유효하지 않은 참여코드입니다';
                       }
                     },
@@ -263,7 +255,6 @@ class _ForestParkHomeState extends State<ForestParkHome> {
       builder: (context, snapshot) {
         if (!snapshot.hasData) return SizedBox();
 
-        isLoading.value = true;
         final data = snapshot.data!.data() as Map<String, dynamic>?;
         final int eventDate = data?['eventDate'] ?? 0;
         final String backgroundImage_closed = data?['backgroundImage_closed'] ?? '';
@@ -275,7 +266,6 @@ class _ForestParkHomeState extends State<ForestParkHome> {
           _forestParkViewModel.fetchLeafRemain(eventDate);
           _forestParkViewModel.checkParticipant(eventDate).then((result) {
             isParticipant.value = result;
-            isLoading.value = false;
           });
           _hasFetchedData = true;
         }
@@ -470,7 +460,7 @@ class _ForestParkHomeState extends State<ForestParkHome> {
 
                             Obx(() {
                               // ✅ 로딩 중: waveDots 표시
-                              if (isLoading.value) {
+                              if (_forestParkViewModel.isLoading_checkParticipant.value) {
                                 return Container(
                                   width: 110,
                                   height: 42,

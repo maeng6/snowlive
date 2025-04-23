@@ -9,6 +9,7 @@ class ForestParkViewModel extends GetxController {
   final UserViewModel _userViewModel = Get.find<UserViewModel>();
 
   var isLoading = false.obs;
+  var isLoading_checkParticipant = false.obs;
 
   // var _isLodaing_entrance = false.obs;
   // bool get loadingEntrance => _isLodaing_entrance.value;
@@ -67,6 +68,7 @@ class ForestParkViewModel extends GetxController {
 
   Future<bool> checkParticipant(int eventDate) async {
     try {
+      isLoading_checkParticipant(true); // ✅ 로딩 시작
       final response = await ForestParkAPI().checkParticipant(
         _userViewModel.user.user_id.toString(),
         eventDate,
@@ -82,8 +84,11 @@ class ForestParkViewModel extends GetxController {
     } catch (e) {
       print("❗ 예외 발생: $e");
       return false;
+    } finally {
+      isLoading_checkParticipant(false); // ✅ 로딩 종료
     }
   }
+
 
 
   Future<bool> registerParticipant({
