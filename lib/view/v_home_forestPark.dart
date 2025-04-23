@@ -238,7 +238,7 @@ class _ForestParkHomeState extends State<ForestParkHome> {
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
                     ),
                     child: Text(
-                      '이벤트 시작하기',
+                      '이벤트 참여하기',
                       style: SDSTextStyle.bold.copyWith(fontSize: 16, color: SDSColor.snowliveBlack),
                     ),
                   ),
