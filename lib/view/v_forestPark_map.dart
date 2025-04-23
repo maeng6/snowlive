@@ -42,25 +42,93 @@ class ForestParkMap extends StatelessWidget {
       ),
       backgroundColor: Color(0xFF12341E),
       body: Center(
-          child: ExtendedImage.network(
-            mapImage ?? '',
-            width: double.infinity,
-            fit: BoxFit.cover,
-            cache: true,
-            loadStateChanged: (state) {
-              if (state.extendedImageLoadState == LoadState.failed) {
-                return Column(
-                  children: [
-                    Text('지도를 불러올 수 없습니다',
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16),
+                child: GestureDetector(
+                  onTap: () {
+                    if (mapImage != null && mapImage!.isNotEmpty) {
+                      showGeneralDialog(
+                        context: context,
+                        barrierDismissible: true,
+                        barrierLabel: "ImageZoom",
+                        barrierColor: Color(0xFF12341E).withOpacity(0.85),
+                        transitionDuration: const Duration(milliseconds: 200),
+                        pageBuilder: (context, animation, secondaryAnimation) {
+                          return GestureDetector(
+                            onTap: () => Navigator.pop(context),
+                            child: Material(
+                              color: Colors.transparent,
+                              child: InteractiveViewer(
+                                panEnabled: true,
+                                minScale: 1,
+                                maxScale: 5,
+                                child: SizedBox.expand( // ✅ 전체 화면 기준으로 이미지 확대
+                                  child: ExtendedImage.network(
+                                    mapImage!,
+                                    fit: BoxFit.contain,
+                                    cache: true,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                      );
+
+                    }
+                  },
+                  child: ExtendedImage.network(
+                    mapImage ?? '',
+                    width: double.infinity,
+                    fit: BoxFit.cover,
+                    cache: true,
+                    loadStateChanged: (state) {
+                      if (state.extendedImageLoadState == LoadState.failed) {
+                        return Column(
+                          children: [
+                            Text(
+                              '지도를 불러올 수 없습니다',
+                              style: SDSTextStyle.regular.copyWith(
+                                fontSize: 13,
+                                color: SDSColor.snowliveWhite.withOpacity(0.5),
+                              ),
+                            )
+                          ],
+                        );
+                      }
+                      return null;
+                    },
+                  ),
+                ),
+
+
+              ),
+              Column(
+                children: [
+                  Padding(
+                    padding: EdgeInsets.only(top: 20),
+                    child: Text('열매가 숨겨진 위치를 열매지도에서 확인해 보세요',
+                      style: SDSTextStyle.bold.copyWith(
+                        fontSize: 16,
+                        color: SDSColor.snowliveWhite
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(top: 4, bottom: 100),
+                    child: Text('지도를 클릭하면 확대해서 확인하실 수 있어요.',
                       style: SDSTextStyle.regular.copyWith(
                           fontSize: 13,
                           color: SDSColor.snowliveWhite.withOpacity(0.5)
-                      ),)
-                  ],
-                );
-              }
-              return null;
-            },
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
           )
       ),
     );

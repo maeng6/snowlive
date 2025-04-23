@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:com.snowlive/viewmodel/forestPark/vm_forestPark.dart';
 import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class ForestParkHome extends StatefulWidget {
   @override
@@ -18,6 +19,8 @@ class _ForestParkHomeState extends State<ForestParkHome> {
   final TextEditingController _codeController = TextEditingController();
   ScrollController _scrollController = ScrollController();
   bool _showAppBarBackground = false;
+  final RxBool isLoading = false.obs;
+
 
   final RxString _codeErrorMessage = ''.obs;
   RxBool isParticipant = false.obs;
@@ -139,6 +142,9 @@ class _ForestParkHomeState extends State<ForestParkHome> {
                         return;
                       }
 
+                      isLoading.value = true; // ✅ 로딩 시작
+
+
                       CustomFullScreenDialog.showDialog();
                       final result = await _forestParkViewModel.registerParticipant(code: code, eventDate: eventDate);
                       CustomFullScreenDialog.cancelDialog();
@@ -148,6 +154,8 @@ class _ForestParkHomeState extends State<ForestParkHome> {
                         final result = await _forestParkViewModel.checkParticipant(eventDate);
                         isParticipant.value = result;
                         CustomFullScreenDialog.cancelDialog();
+
+                        isLoading.value = false; // ✅ 로딩 종료
 
                         // ✅ 참여 성공 다이얼로그
                         Get.dialog(
@@ -220,6 +228,7 @@ class _ForestParkHomeState extends State<ForestParkHome> {
                           ),
                         );
                       } else {
+                        isLoading.value = false; // ✅ 실패 시에도 로딩 종료
                         _codeErrorMessage.value = '유효하지 않은 참여코드입니다';
                       }
                     },
@@ -229,7 +238,7 @@ class _ForestParkHomeState extends State<ForestParkHome> {
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
                     ),
                     child: Text(
-                      '포레스트 파크 시작하기',
+                      '이벤트 시작하기',
                       style: SDSTextStyle.bold.copyWith(fontSize: 16, color: SDSColor.snowliveBlack),
                     ),
                   ),
@@ -254,6 +263,7 @@ class _ForestParkHomeState extends State<ForestParkHome> {
       builder: (context, snapshot) {
         if (!snapshot.hasData) return SizedBox();
 
+        isLoading.value = true;
         final data = snapshot.data!.data() as Map<String, dynamic>?;
         final int eventDate = data?['eventDate'] ?? 0;
         final String backgroundImage_closed = data?['backgroundImage_closed'] ?? '';
@@ -265,6 +275,7 @@ class _ForestParkHomeState extends State<ForestParkHome> {
           _forestParkViewModel.fetchLeafRemain(eventDate);
           _forestParkViewModel.checkParticipant(eventDate).then((result) {
             isParticipant.value = result;
+            isLoading.value = false;
           });
           _hasFetchedData = true;
         }
@@ -355,46 +366,47 @@ class _ForestParkHomeState extends State<ForestParkHome> {
                         final greenCount = _forestParkViewModel.leafRemain.value.remainGreen ?? 0;
                         final goldCount = _forestParkViewModel.leafRemain.value.remainGold ?? 0;
                         final imageUrl = greenCount > 0 || goldCount > 0 ? backgroundImage_open : backgroundImage_closed;
+
                         return ExtendedImage.network(
                           imageUrl,
                           width: double.infinity,
+                          height: _size.width * 1.53, // ✅ 높이 고정
                           fit: BoxFit.cover,
                           cache: true,
                           loadStateChanged: (state) {
-                            if (state.extendedImageLoadState == LoadState.failed) {
-                              return Column(
-                                children: [
-                                  Container(
-                                    width: double.infinity,
-                                    height: 250,
-                                    color: Colors.grey.shade300,
-                                    child: Icon(Icons.broken_image, size: 60, color: Colors.grey),
-                                  ),
-                                  Text('정보를 불러오지 못했어요! 다시 새로고침을 해주세요.',
-                                    style: SDSTextStyle.regular.copyWith(
+                            switch (state.extendedImageLoadState) {
+                              case LoadState.loading:
+                                return Container(
+                                  width: double.infinity,
+                                  height: _size.width * 1.53,
+                                  color: Colors.grey.shade100,
+                                  alignment: Alignment.center,
+                                  child: CircularProgressIndicator(),
+                                );
+                              case LoadState.failed:
+                                return Column(
+                                  children: [
+                                    Container(
+                                      width: double.infinity,
+                                      height: _size.width * 1.53,
+                                      color: Colors.grey.shade300,
+                                      child: Icon(Icons.broken_image, size: 60, color: Colors.grey),
+                                    ),
+                                    Text(
+                                      '정보를 불러오지 못했어요! 다시 새로고침을 해주세요.',
+                                      style: SDSTextStyle.regular.copyWith(
                                         fontSize: 13,
-                                        color: SDSColor.snowliveWhite.withOpacity(0.5)
-                                    ),)
-                                ],
-                              );
+                                        color: SDSColor.snowliveWhite.withOpacity(0.5),
+                                      ),
+                                    )
+                                  ],
+                                );
+                              case LoadState.completed:
+                                return null;
                             }
-                            return null;
                           },
                         );
                       }),
-                      // Container(
-                      //   height: 160,
-                      //   decoration: const BoxDecoration(
-                      //     gradient: LinearGradient(
-                      //       begin: Alignment.topCenter,
-                      //       end: Alignment.bottomCenter,
-                      //       colors: [
-                      //         Color(0x40000000),
-                      //         Color(0x00000000),
-                      //       ],
-                      //     ),
-                      //   ),
-                      // ),
 
                       // ✅ 배경 위에 쌓을: 나뭇잎 현황 + 참여 버튼
                       Positioned(
@@ -457,40 +469,62 @@ class _ForestParkHomeState extends State<ForestParkHome> {
                             SizedBox(height: 20),
 
                             Obx(() {
-                              return isParticipant.value == false
-                                  ? GestureDetector(
-                                onTap: () => _showCodeInputPopup(context, eventDate),
-                                child: Container(
-                                  width: 152,
+                              // ✅ 로딩 중: waveDots 표시
+                              if (isLoading.value) {
+                                return Container(
+                                  width: 110,
                                   height: 42,
                                   decoration: BoxDecoration(
                                     color: Colors.white,
                                     borderRadius: BorderRadius.circular(45),
                                   ),
                                   child: Center(
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        Text(
-                                          '이벤트 참여하기',
-                                          style: SDSTextStyle.bold.copyWith(
-                                            fontSize: 14,
-                                            color: SDSColor.gray900,
-                                          ),
-                                        ),
-                                        SizedBox(width: 12),
-                                        Image.asset(
-                                          'assets/imgs/icons/icon_arrow_round_black.png',
-                                          width: 18,
-                                          height: 18,
-                                        ),
-                                      ],
+                                    child: LoadingAnimationWidget.waveDots(
+                                      color: Color(0xFF1B872B),
+                                      size: 30,
                                     ),
                                   ),
-                                ),
-                              )
-                                  : GestureDetector(
-                                onTap: () {}, // 눌렀을 때 동작
+                                );
+                              }
+
+                              // ✅ 참여 전: 참여 버튼
+                              if (!isParticipant.value) {
+                                return GestureDetector(
+                                  onTap: () => _showCodeInputPopup(context, eventDate),
+                                  child: Container(
+                                    width: 152,
+                                    height: 42,
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(45),
+                                    ),
+                                    child: Center(
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Text(
+                                            '이벤트 참여하기',
+                                            style: SDSTextStyle.bold.copyWith(
+                                              fontSize: 14,
+                                              color: SDSColor.gray900,
+                                            ),
+                                          ),
+                                          SizedBox(width: 12),
+                                          Image.asset(
+                                            'assets/imgs/icons/icon_arrow_round_black.png',
+                                            width: 18,
+                                            height: 18,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              }
+
+                              // ✅ 참여 완료 상태
+                              return GestureDetector(
+                                onTap: () {},
                                 child: Container(
                                   width: 110,
                                   height: 42,
@@ -528,6 +562,8 @@ class _ForestParkHomeState extends State<ForestParkHome> {
                                 ),
                               );
                             }),
+
+
                           ],
                         ),
                       ),
