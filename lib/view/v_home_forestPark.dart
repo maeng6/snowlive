@@ -258,6 +258,7 @@ class _ForestParkHomeState extends State<ForestParkHome> {
         final int eventDate = data?['eventDate'] ?? 0;
         final String backgroundImage_closed = data?['backgroundImage_closed'] ?? '';
         final String backgroundImage_open = data?['backgroundImage_open'] ?? '';
+        final String mapImage = data?['mapImageUrl'] ?? '';
 
         // ✅ 최초 한 번만 실행
         if (!_hasFetchedData) {
@@ -370,10 +371,10 @@ class _ForestParkHomeState extends State<ForestParkHome> {
                                     child: Icon(Icons.broken_image, size: 60, color: Colors.grey),
                                   ),
                                   Text('정보를 불러오지 못했어요! 다시 새로고침을 해주세요.',
-                                  style: SDSTextStyle.regular.copyWith(
-                                    fontSize: 13,
-                                    color: SDSColor.snowliveWhite.withOpacity(0.5)
-                                  ),)
+                                    style: SDSTextStyle.regular.copyWith(
+                                        fontSize: 13,
+                                        color: SDSColor.snowliveWhite.withOpacity(0.5)
+                                    ),)
                                 ],
                               );
                             }
@@ -546,7 +547,7 @@ class _ForestParkHomeState extends State<ForestParkHome> {
                             Expanded(
                               child: GestureDetector(
                                 onTap: (){
-
+                                  Get.toNamed(AppRoutes.forestParkMap, arguments: mapImage);
                                 },
                                 child: Container(
                                   height: 140,
@@ -565,10 +566,10 @@ class _ForestParkHomeState extends State<ForestParkHome> {
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
                                       Text(
-                                        '황금열매 지도',
+                                        '열매 지도',
                                         style: SDSTextStyle.bold.copyWith(
-                                            color: Colors.white,
-                                            fontSize: 15,
+                                          color: Colors.white,
+                                          fontSize: 15,
                                         ),
                                       ),
                                       Row(
