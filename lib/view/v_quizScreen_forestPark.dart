@@ -1,9 +1,12 @@
 import 'package:com.snowlive/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/model/m_forestPark.dart';
+import 'package:com.snowlive/routes/routes.dart';
 import 'package:com.snowlive/viewmodel/forestPark/vm_forestPark.dart';
 import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:shimmer/shimmer.dart';
 
 class QuizPageForestPark extends StatefulWidget {
   @override
@@ -379,6 +382,7 @@ class _QuizPageForestParkState extends State<QuizPageForestPark> {
                   child: ElevatedButton(
                     onPressed: () {
                       Get.back(); // 팝업 닫기
+                      Get.back(); // 팝업 닫기
                     },
                     style: ElevatedButton.styleFrom(
                       elevation: 0,
@@ -623,7 +627,6 @@ class _QuizPageForestParkState extends State<QuizPageForestPark> {
   @override
   Widget build(BuildContext context) {
     final quiz = _forestParkViewModel.quizDetail.value;
-    Size _size = MediaQuery.of(context).size;
 
     return Scaffold(
       backgroundColor: Color(0xFF12341E),
@@ -648,10 +651,10 @@ class _QuizPageForestParkState extends State<QuizPageForestPark> {
         ),
       ),
       body: _isLoading
-          ? const Center(child: CircularProgressIndicator(
+          ? Center(child: CircularProgressIndicator(
         strokeWidth: 4,
-        backgroundColor: Color(0x10FFFFFF),
-        color: Color(0xFFFFFFFF),
+        backgroundColor: SDSColor.snowliveWhite.withOpacity(0.4),
+        color: SDSColor.snowliveWhite,
       ))
           : (_forestParkViewModel.quizDetail.value.quizId == null ||
           (_forestParkViewModel.quizDetail.value.question?.isEmpty ?? true))
@@ -681,145 +684,159 @@ class _QuizPageForestParkState extends State<QuizPageForestPark> {
         ),
       )
           : SafeArea(
-            child: Stack(
-              children: [
-                Image.asset(
-                  'assets/imgs/imgs/img_forest_quiz_bg.png',
-                  width: _size.width,
+        child: ListView(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          children: [
+            Center(
+              child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 6), // 내부 여백
+                decoration: BoxDecoration(
+                  color: Color(0xFF132A18), // 이미지 속 배경색 (진한 초록 계열)
+                  borderRadius: BorderRadius.circular(40), // pill 형태로 둥글게
                 ),
-                ListView(
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
-                        children: [
-                Center(
-                  child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 6), // 내부 여백
-                    decoration: BoxDecoration(
-                      color: Color(0xFF132A18), // 이미지 속 배경색 (진한 초록 계열)
-                      borderRadius: BorderRadius.circular(40), // pill 형태로 둥글게
-                    ),
-                    child: Text(
-                      '퀴즈',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 15,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
+                child: Text(
+                  '퀴즈',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
-                const SizedBox(height: 20),
-                if (quiz.imgUrl != null && quiz.imgUrl!.isNotEmpty)
-                  Center(
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 24),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(5),
-                        child: Image.network(quiz.imgUrl!),
-                      ),
-                    ),
-                  ),
-                if (quiz.imgUrl != null && quiz.imgUrl!.isNotEmpty)
-                  const SizedBox(height: 30),
-                Center(
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 14),
-                    child: Text(
-                      quiz.question ?? '',
-                      textAlign: TextAlign.center,
-                      style: SDSTextStyle.bold.copyWith(color: SDSColor.snowliveWhite, fontSize: 18),
-                    ),
-                  ),
-                ),
-                SizedBox(height: 30),
-                Center(
-                  child: Text('아래 보기 중 정답을 선택 후 제출해 주세요!',
-                    style: SDSTextStyle.regular.copyWith(
-                        color: Colors.white.withOpacity(0.5),
-                        fontSize: 13,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 16),
-                ...List.generate(4, (index) {
-                  final option = [
-                    quiz.option1,
-                    quiz.option2,
-                    quiz.option3,
-                    quiz.option4
-                  ][index];
-                  return GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        _selectedIndex = index;
-                      });
-                    },
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 14),
-                      child: Container(
-                        margin: const EdgeInsets.only(bottom: 12),
-                        padding: const EdgeInsets.all(16),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(6),
-                          color: _selectedIndex == index
-                              ? Color(0xFF127721)
-                              : Color(0xFF0B180F).withOpacity(0.95),
-                        ),
-                        child: Text(
-                          option ?? '',
-                          style: TextStyle(
-                              fontSize: 15,
-                              color: SDSColor.snowliveWhite,
-                            fontWeight: _selectedIndex == index
-                              ? FontWeight.bold
-                                : FontWeight.normal
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                    ),
-                  );
-                }),
-                const SizedBox(height: 25),
-                if (quiz.imgUrlAd != null && quiz.imgUrlAd!.isNotEmpty)
-                  Center(
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(5),
-                      child: Image.network(
-                        quiz.imgUrlAd!,
-                        height: 90, // ✅ 띠배너 느낌
-                        width: double.infinity,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                  ),
-
-                const SizedBox(height: 30),
-                Padding(
-                  padding: EdgeInsets.only(bottom: 16),
-                  child: ElevatedButton(
-                    onPressed: _submitAnswer,
-                    child: const Text(
-                      '정답 제출하기',
-                      style: TextStyle(
-                          color: Colors.black, // 글자색 검정
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16
-                      ),
-                    ),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.white, // 버튼 배경 흰색
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(5), // 보더레디우스 5
-                      ),
-                    ),
-                  ),
-                ),
-                        ],
-                      ),
-              ],
+              ),
             ),
-          ),
+            const SizedBox(height: 20),
+            if (quiz.imgUrl != null && quiz.imgUrl!.isNotEmpty)
+              Center(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 24),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(5),
+                    child: ExtendedImage.network(
+                      quiz.imgUrl ?? '',
+                      cache: true,
+                      fit: BoxFit.cover,
+                      loadStateChanged: (ExtendedImageState state) {
+                        switch (state.extendedImageLoadState) {
+                          case LoadState.loading:
+                            return Shimmer.fromColors(
+                              baseColor: SDSColor.gray200,
+                              highlightColor: SDSColor.gray50,
+                              child: Container(
+                                width: double.infinity,
+                                height: 300, // 높이 고정
+                                color: Colors.white,
+                              ),
+                            );
+                          case LoadState.completed:
+                            return state.completedWidget;
+                          case LoadState.failed:
+                            return Center(child: Text('Failed to load image'));
+                        }
+                      },
+                    ),
+                  ),
+                ),
+              ),
+            if (quiz.imgUrl != null && quiz.imgUrl!.isNotEmpty)
+              const SizedBox(height: 30),
+            Center(
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 14),
+                child: Text(
+                  quiz.question ?? '',
+                  textAlign: TextAlign.center,
+                  style: SDSTextStyle.bold.copyWith(color: SDSColor.snowliveWhite, fontSize: 18),
+                ),
+              ),
+            ),
+            SizedBox(height: 30),
+            Center(
+              child: Text('아래 보기 중 정답을 선택 후 제출해 주세요!',
+                style: SDSTextStyle.regular.copyWith(
+                  color: Colors.white.withOpacity(0.5),
+                  fontSize: 13,
+                ),
+              ),
+            ),
+            const SizedBox(height: 16),
+            ...List.generate(4, (index) {
+              final option = [
+                quiz.option1,
+                quiz.option2,
+                quiz.option3,
+                quiz.option4
+              ][index];
+              return GestureDetector(
+                onTap: () {
+                  setState(() {
+                    _selectedIndex = index;
+                  });
+                },
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 14),
+                  child: Container(
+                    margin: const EdgeInsets.only(bottom: 12),
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(6),
+                      color: _selectedIndex == index
+                          ? Color(0xFF127721)
+                          : Color(0xFF0D2415),
+                    ),
+                    child: Text(
+                      option ?? '',
+                      style: TextStyle(
+                          fontSize: 15,
+                          color: SDSColor.snowliveWhite,
+                          fontWeight: _selectedIndex == index
+                              ? FontWeight.bold
+                              : FontWeight.normal
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ),
+              );
+            }),
+            const SizedBox(height: 25),
+            if (quiz.imgUrlAd != null && quiz.imgUrlAd!.isNotEmpty)
+              Center(
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(5),
+                  child: Image.network(
+                    quiz.imgUrlAd!,
+                    height: 90, // ✅ 띠배너 느낌
+                    width: double.infinity,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
+
+            const SizedBox(height: 30),
+            Padding(
+              padding: EdgeInsets.only(bottom: 16),
+              child: ElevatedButton(
+                onPressed: _submitAnswer,
+                child: const Text(
+                  '정답 제출하기',
+                  style: TextStyle(
+                      color: Colors.black, // 글자색 검정
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16
+                  ),
+                ),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.white, // 버튼 배경 흰색
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(5), // 보더레디우스 5
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

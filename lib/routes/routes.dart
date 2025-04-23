@@ -35,6 +35,7 @@ import 'package:com.snowlive/view/resortHome/v_alarmCenter.dart';
 import 'package:com.snowlive/view/ranking/v_snowballShop.dart';
 import 'package:com.snowlive/view/v_forestParkShop.dart';
 import 'package:com.snowlive/view/v_forestParkShop_buyRecord.dart';
+import 'package:com.snowlive/view/v_forestPark_map.dart';
 import 'package:com.snowlive/view/v_home_forestPark.dart';
 import 'package:com.snowlive/view/v_profileImageScreen.dart';
 import 'package:com.snowlive/view/crew/v_crewHome.dart';
@@ -126,6 +127,7 @@ class AppRoutes {
   static const String forestParkShop = '/forestParkShop';
   static const String forestParkExchangeHistory = '/forestParkExchangeHistory';
   static const String crewDailyRecord = '/crewDailyRecord';
+  static const String forestParkMap = '/forestParkMap';
 
 
 
@@ -409,6 +411,10 @@ class AppRoutes {
     GetPage(
       name: crewDailyRecord,
       page: () => CrewDailyRecordView(),
+    ),
+    GetPage(
+      name: forestParkMap,
+      page: () => ForestParkMap(),
     ),
   ];
 }
