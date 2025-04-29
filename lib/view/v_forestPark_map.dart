@@ -9,6 +9,7 @@ class ForestParkMap extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final String? mapImage = Get.arguments as String?;
+    Size _size = MediaQuery.of(context).size;
 
     return Scaffold(
       appBar: PreferredSize(
@@ -85,26 +86,40 @@ class ForestParkMap extends StatelessWidget {
                     width: double.infinity,
                     fit: BoxFit.cover,
                     cache: true,
-                    loadStateChanged: (state) {
-                      if (state.extendedImageLoadState == LoadState.failed) {
-                        return Column(
-                          children: [
-                            Text(
-                              '지도를 불러올 수 없습니다',
-                              style: SDSTextStyle.regular.copyWith(
-                                fontSize: 13,
-                                color: SDSColor.snowliveWhite.withOpacity(0.5),
+                    loadStateChanged: (ExtendedImageState state) {
+                      switch (state.extendedImageLoadState) {
+                        case LoadState.loading:
+                          return Container(
+                            width: double.infinity,
+                            height: _size.width + 60,
+                            color: Color(0xFF12341E),
+                            alignment: Alignment.center,
+                            child: const CircularProgressIndicator(
+                              strokeWidth: 4,
+                              backgroundColor: Color.fromRGBO(0, 0, 0, 0.3),
+                              color: Colors.white,
+                            ),
+                          );
+                        case LoadState.failed:
+                          return Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                '지도를 불러올 수 없습니다',
+                                style: SDSTextStyle.regular.copyWith(
+                                  fontSize: 13,
+                                  color: SDSColor.snowliveWhite.withOpacity(0.5),
+                                ),
                               ),
-                            )
-                          ],
-                        );
+                            ],
+                          );
+                        case LoadState.completed:
+                        // 이미지 로드 완료 시엔 원본 이미지를 그대로
+                          return null;
                       }
-                      return null;
                     },
                   ),
-                ),
-
-
+              ),
               ),
               Column(
                 children: [

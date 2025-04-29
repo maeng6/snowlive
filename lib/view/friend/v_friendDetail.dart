@@ -1503,7 +1503,7 @@ class _FriendDetailViewState extends State<FriendDetailView> {
                                                   :Padding(
                                                 padding: const EdgeInsets.all(20),
                                                 child: Container(
-                                                  height: _size.height - 570,
+                                                  height: _size.height - 540,
                                                   child: Center(
                                                     child: Column(
                                                       mainAxisAlignment: MainAxisAlignment.center,
@@ -1516,10 +1516,52 @@ class _FriendDetailViewState extends State<FriendDetailView> {
                                                         SizedBox(
                                                           height: 4,
                                                         ),
-                                                        Text('라이딩 기록이 없어요.',
+                                                        Text('라이딩 기록이 없어요',
                                                           style: SDSTextStyle.regular.copyWith(
                                                               fontSize: 14,
                                                               color: SDSColor.gray500),),
+                                                        SizedBox(
+                                                          height: 24,
+                                                        ),
+                                                        TextButton(
+                                                          onPressed: () async{
+                                                            Get.toNamed(AppRoutes.rankingIndivHistoryHome);
+                                                          },
+                                                          style: ElevatedButton.styleFrom(
+                                                            shadowColor: Colors.transparent,
+                                                            overlayColor: Colors.transparent,
+                                                            padding: EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                                                            minimumSize: Size(36, 40),
+                                                            backgroundColor: SDSColor.snowliveWhite,
+                                                            side: BorderSide(
+                                                                color: SDSColor.gray200.withOpacity(0.6)
+                                                            ),
+                                                            elevation: 0,
+                                                            shape: RoundedRectangleBorder(
+                                                                borderRadius: BorderRadius.circular(50)),
+                                                          ),
+                                                          child: SizedBox(
+                                                            width: 130,
+                                                            child: Row(
+                                                              mainAxisAlignment: MainAxisAlignment.center,
+                                                              children: [
+                                                                Image.asset(
+                                                                  'assets/imgs/icons/icon_data_history.png',
+                                                                  width: 26,
+                                                                  height: 26,
+                                                                ),
+                                                                SizedBox(
+                                                                    width: 4
+                                                                ),
+                                                                Text(
+                                                                  '라이딩 기록실 보기',
+                                                                  style: SDSTextStyle.bold.copyWith(fontSize: 12, color: SDSColor.gray700),
+                                                            
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          ),
+                                                        ),
 
                                                       ],
                                                     ),

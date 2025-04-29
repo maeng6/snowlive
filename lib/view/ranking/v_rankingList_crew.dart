@@ -2734,19 +2734,21 @@ class RankingCrewView extends StatelessWidget {
                 )
 
             )
-                : Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                ExtendedImage.network(
-                  '${_resortHomeViewModel.rankingComingSoonUrl}',
-                  cache: true,
-                  enableMemoryCache: true,
-                  width: _size.width,
-                  fit: BoxFit.cover,
+                : SingleChildScrollView(
+                  child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                  ExtendedImage.network(
+                    '${_resortHomeViewModel.rankingComingSoonUrl}',
+                    cache: true,
+                    enableMemoryCache: true,
+                    width: _size.width,
+                    fit: BoxFit.cover,
+                  ),
+                                ],
+                              ),
                 ),
-              ],
-            ),
           ],
         ),
       ),

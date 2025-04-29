@@ -256,7 +256,33 @@ class _ForestParkShopState extends State<ForestParkShop> {
                                                             SizedBox(height: 40),
                                                             // 버튼들
                                                             Row(
+                                                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                                               children: [
+                                                                (item.landingUrl != null && item.landingUrl != "")
+                                                                    ?Expanded(
+                                                                  child: ElevatedButton(
+                                                                    onPressed: () async {
+                                                                      print(item.landingUrl);
+                                                                      await otherShare(contents: '${item.landingUrl}');
+                                                                    },
+                                                                    style: TextButton.styleFrom(
+                                                                        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(6))),
+                                                                        splashFactory: InkRipple.splashFactory,
+                                                                        elevation: 0,
+                                                                        minimumSize: Size(100, 48),
+                                                                        backgroundColor: Color(0xFF12341E)
+                                                                    ),
+                                                                    child: Text(
+                                                                      '상세 정보 보기',
+                                                                      style: SDSTextStyle.bold.copyWith(
+                                                                          color: SDSColor.snowliveWhite,
+                                                                          fontSize: 16),
+                                                                    ),
+                                                                  ),
+                                                                )
+                                                                    :Container(),
+                                                                (item.landingUrl != null && item.landingUrl != "")
+                                                                    ? SizedBox(width: 10) : Container(),
                                                                 Expanded(
                                                                     child: ElevatedButton(
                                                                       onPressed: () async {
@@ -372,70 +398,70 @@ class _ForestParkShopState extends State<ForestParkShop> {
                                                                         if (result) {
                                                                           // ✅ 성공 팝업
                                                                           Get.dialog(
-                                                                          AlertDialog(
-                                                                            backgroundColor: SDSColor.snowliveWhite,
-                                                                            contentPadding: EdgeInsets.only(bottom: 0, left: 28, right: 28, top: 36),
-                                                                            elevation: 0,
-                                                                            shape: RoundedRectangleBorder(
-                                                                                borderRadius: BorderRadius.circular(16)),
-                                                                            buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
-                                                                            content: Container(
-                                                                              height: 80,
-                                                                              child: Column(
-                                                                                crossAxisAlignment: CrossAxisAlignment.center,
-                                                                                children: [
-                                                                                  Text(
-                                                                                    '교환 완료!',
-                                                                                    textAlign: TextAlign.center,
-                                                                                    style: SDSTextStyle.bold.copyWith(
-                                                                                        color: SDSColor.gray900,
-                                                                                        fontSize: 16
-                                                                                    ),
-                                                                                  ),
-                                                                                  SizedBox(
-                                                                                    height: 6,
-                                                                                  ),
-                                                                                  Text(
-                                                                                    '상품 교환이 성공적으로 완료되었습니다.\n경품 수령처에서 경품을 수령해 주세요.',
-                                                                                    textAlign: TextAlign.center,
-                                                                                    style: SDSTextStyle.regular.copyWith(
-                                                                                      color: SDSColor.gray500,
-                                                                                      fontSize: 14,
-                                                                                    ),
-                                                                                  ),
-                                                                                ],
-                                                                              ),
-                                                                            ),
-                                                                            actions: [
-                                                                              Padding(
-                                                                                padding: EdgeInsets.only(top: 24),
-                                                                                child: SizedBox(
-                                                                                  child: Container(
-                                                                                    width: 240,
-                                                                                    height: 48,
-                                                                                    child: ElevatedButton(
-                                                                                      onPressed: () => Get.back(),
-                                                                                      style: ElevatedButton.styleFrom(
-                                                                                        elevation: 0,
-                                                                                        backgroundColor: Color(0xFF127721),
-                                                                                        foregroundColor: Colors.white,
-                                                                                        shape: RoundedRectangleBorder(
-                                                                                          borderRadius: BorderRadius.circular(6),
-                                                                                        ),
-                                                                                      ),
-                                                                                      child: Text(
-                                                                                        '확인',
-                                                                                        style: TextStyle(
-                                                                                          fontWeight: FontWeight.bold,
-                                                                                          fontSize: 15,
-                                                                                        ),
+                                                                            AlertDialog(
+                                                                              backgroundColor: SDSColor.snowliveWhite,
+                                                                              contentPadding: EdgeInsets.only(bottom: 0, left: 28, right: 28, top: 36),
+                                                                              elevation: 0,
+                                                                              shape: RoundedRectangleBorder(
+                                                                                  borderRadius: BorderRadius.circular(16)),
+                                                                              buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+                                                                              content: Container(
+                                                                                height: 80,
+                                                                                child: Column(
+                                                                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                                                                  children: [
+                                                                                    Text(
+                                                                                      '교환 완료!',
+                                                                                      textAlign: TextAlign.center,
+                                                                                      style: SDSTextStyle.bold.copyWith(
+                                                                                          color: SDSColor.gray900,
+                                                                                          fontSize: 16
                                                                                       ),
                                                                                     ),
-                                                                                  ),
+                                                                                    SizedBox(
+                                                                                      height: 6,
+                                                                                    ),
+                                                                                    Text(
+                                                                                      '상품 교환이 성공적으로 완료되었습니다.\n경품 수령처에서 경품을 수령해 주세요.',
+                                                                                      textAlign: TextAlign.center,
+                                                                                      style: SDSTextStyle.regular.copyWith(
+                                                                                        color: SDSColor.gray500,
+                                                                                        fontSize: 14,
+                                                                                      ),
+                                                                                    ),
+                                                                                  ],
                                                                                 ),
-                                                                              )
-                                                                            ],
-                                                                          ),
+                                                                              ),
+                                                                              actions: [
+                                                                                Padding(
+                                                                                  padding: EdgeInsets.only(top: 24),
+                                                                                  child: SizedBox(
+                                                                                    child: Container(
+                                                                                      width: 240,
+                                                                                      height: 48,
+                                                                                      child: ElevatedButton(
+                                                                                        onPressed: () => Get.back(),
+                                                                                        style: ElevatedButton.styleFrom(
+                                                                                          elevation: 0,
+                                                                                          backgroundColor: Color(0xFF127721),
+                                                                                          foregroundColor: Colors.white,
+                                                                                          shape: RoundedRectangleBorder(
+                                                                                            borderRadius: BorderRadius.circular(6),
+                                                                                          ),
+                                                                                        ),
+                                                                                        child: Text(
+                                                                                          '확인',
+                                                                                          style: TextStyle(
+                                                                                            fontWeight: FontWeight.bold,
+                                                                                            fontSize: 15,
+                                                                                          ),
+                                                                                        ),
+                                                                                      ),
+                                                                                    ),
+                                                                                  ),
+                                                                                )
+                                                                              ],
+                                                                            ),
                                                                           );
 
                                                                         } else {

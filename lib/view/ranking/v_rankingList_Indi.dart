@@ -2920,18 +2920,20 @@ class RankingIndiView extends StatelessWidget {
                 ),
               ),
             )
-                : Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                ExtendedImage.network(
-                  '${_resortHomeViewModel.rankingComingSoonUrl}',
-                  cache: true,
-                  enableMemoryCache: true,
-                  width: _size.width,
+                : SingleChildScrollView(
+                  child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  ExtendedImage.network(
+                                    '${_resortHomeViewModel.rankingComingSoonUrl}',
+                                    cache: true,
+                                    enableMemoryCache: true,
+                                    width: _size.width,
+                                  ),
+                                ],
+                              ),
                 ),
-              ],
-            ),
           ],
         ),
       ),

@@ -369,9 +369,13 @@ class _ForestParkHomeState extends State<ForestParkHome> {
                                 return Container(
                                   width: double.infinity,
                                   height: _size.width * 1.53,
-                                  color: Colors.grey.shade100,
+                                  color: Color(0xFF12341E),
                                   alignment: Alignment.center,
-                                  child: CircularProgressIndicator(),
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 4,
+                                    backgroundColor: SDSColor.snowliveBlack.withOpacity(0.3),
+                                    color: SDSColor.snowliveWhite,
+                                  ),
                                 );
                               case LoadState.failed:
                                 return Column(
