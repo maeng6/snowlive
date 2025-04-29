@@ -1554,9 +1554,8 @@ class _FriendDetailViewState extends State<FriendDetailView> {
                                                                     width: 4
                                                                 ),
                                                                 Text(
-                                                                  '라이딩 기록실 보기',
+                                                                  '시즌 기록실 보기',
                                                                   style: SDSTextStyle.bold.copyWith(fontSize: 12, color: SDSColor.gray700),
-                                                            
                                                                 ),
                                                               ],
                                                             ),
