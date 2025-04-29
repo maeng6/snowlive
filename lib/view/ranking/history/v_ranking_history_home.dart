@@ -209,45 +209,6 @@ class RankingHistoryHomeView extends StatelessWidget {
                         GestureDetector(
                           onTap: () async {
                             HapticFeedback.lightImpact();
-                            _rankingListViewModel_recordRoom.changeTap('개인랭킹');
-                            _rankingListViewModel_recordRoom.changeDayOrTotal('누적');
-                            _rankingListViewModel_recordRoom.changeResortOrTotal('전체스키장');
-                            _rankingListViewModel_recordRoom.changeCategory_resort('스키장별 랭킹');
-                            _rankingListViewModel_recordRoom.changeCategory_fed('리그별 랭킹');
-                            _rankingListViewModel_recordRoom.changeMyBoxText();
-                            await _rankingListViewModel_recordRoom.toggleDataDayOrTotal_tapFilter();
-                          },
-                          child: Container(
-                            width: 120,
-                            height: 44,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                Text(
-                                  '개인랭킹',
-                                  style: SDSTextStyle.bold.copyWith(
-                                    fontSize: 15,
-                                    color: _rankingListViewModel_recordRoom.tapName == '개인랭킹'
-                                        ? const Color(0xFF111111)
-                                        : const Color(0xFFC8C8C8),
-                                  ),
-                                ),
-                                SizedBox(height: 8),
-                                Container(
-                                  height: 2,
-                                  width: 72,
-                                  color: _rankingListViewModel_recordRoom.tapName == '개인랭킹'
-                                      ? const Color(0xFF111111)
-                                      : Colors.transparent,
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 32),
-                        GestureDetector(
-                          onTap: () async {
-                            HapticFeedback.lightImpact();
                             _rankingListViewModel_recordRoom.changeTap('크루랭킹');
                             _rankingListViewModel_recordRoom.changeDayOrTotal('누적');
                             _rankingListViewModel_recordRoom.changeResortOrTotal('전체스키장');
@@ -278,6 +239,45 @@ class RankingHistoryHomeView extends StatelessWidget {
                                   height: 2,
                                   width: 72,
                                   color: _rankingListViewModel_recordRoom.tapName == '크루랭킹'
+                                      ? const Color(0xFF111111)
+                                      : Colors.transparent,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 32),
+                        GestureDetector(
+                          onTap: () async {
+                            HapticFeedback.lightImpact();
+                            _rankingListViewModel_recordRoom.changeTap('개인랭킹');
+                            _rankingListViewModel_recordRoom.changeDayOrTotal('누적');
+                            _rankingListViewModel_recordRoom.changeResortOrTotal('전체스키장');
+                            _rankingListViewModel_recordRoom.changeCategory_resort('스키장별 랭킹');
+                            _rankingListViewModel_recordRoom.changeCategory_fed('리그별 랭킹');
+                            _rankingListViewModel_recordRoom.changeMyBoxText();
+                            await _rankingListViewModel_recordRoom.toggleDataDayOrTotal_tapFilter();
+                          },
+                          child: Container(
+                            width: 120,
+                            height: 44,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                Text(
+                                  '개인랭킹',
+                                  style: SDSTextStyle.bold.copyWith(
+                                    fontSize: 15,
+                                    color: _rankingListViewModel_recordRoom.tapName == '개인랭킹'
+                                        ? const Color(0xFF111111)
+                                        : const Color(0xFFC8C8C8),
+                                  ),
+                                ),
+                                SizedBox(height: 8),
+                                Container(
+                                  height: 2,
+                                  width: 72,
+                                  color: _rankingListViewModel_recordRoom.tapName == '개인랭킹'
                                       ? const Color(0xFF111111)
                                       : Colors.transparent,
                                 ),
