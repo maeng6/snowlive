@@ -13,6 +13,7 @@ class Quiz {
   String? option4;
   String? answer;
   int? eventDate;
+  String? hintUrl;
 
   Quiz({
     this.quizId,
@@ -29,6 +30,7 @@ class Quiz {
     this.option4,
     this.answer,
     this.eventDate,
+    this.hintUrl
   });
 
   Quiz.fromJson(Map<String, dynamic> json) {
@@ -46,6 +48,7 @@ class Quiz {
     option4 = json['option_4'];
     answer = json['answer'];
     eventDate = json['event_date'];
+    hintUrl = json['hint_url'];
   }
 
   Map<String, dynamic> toJson() {
@@ -64,6 +67,7 @@ class Quiz {
       'option_4': option4,
       'answer': answer,
       'event_date': eventDate,
+      'hintUrl' : hintUrl,
     };
   }
 }

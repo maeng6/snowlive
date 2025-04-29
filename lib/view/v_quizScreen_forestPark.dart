@@ -1,6 +1,7 @@
 import 'package:com.snowlive/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/model/m_forestPark.dart';
 import 'package:com.snowlive/routes/routes.dart';
+import 'package:com.snowlive/util/util_1.dart';
 import 'package:com.snowlive/viewmodel/forestPark/vm_forestPark.dart';
 import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 import 'package:extended_image/extended_image.dart';
@@ -813,26 +814,59 @@ class _QuizPageForestParkState extends State<QuizPageForestPark> {
               ),
 
             const SizedBox(height: 30),
-            Padding(
-              padding: EdgeInsets.only(bottom: 16),
-              child: ElevatedButton(
-                onPressed: _submitAnswer,
-                child: const Text(
-                  '정답 제출하기',
-                  style: TextStyle(
-                      color: Colors.black, // 글자색 검정
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                (quiz.hintUrl != null && quiz.hintUrl != "")
+                    ?Expanded(
+                  child: Padding(
+                    padding: EdgeInsets.only(bottom: 16),
+                    child: ElevatedButton(
+                      onPressed: () async {
+                        print(quiz.hintUrl);
+                        await otherShare(contents: '${quiz.hintUrl}');
+                      },
+                      style: TextButton.styleFrom(
+                          shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5))),
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          backgroundColor: Color(0xFF127721)
+                      ),
+                      child: Text(
+                        '힌트 보기',
+                        style: SDSTextStyle.bold.copyWith(
+                            color: SDSColor.snowliveWhite,
+                            fontSize: 16, fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                  ),
+                )
+                    :Container(),
+                (quiz.hintUrl != null && quiz.hintUrl != "")
+                    ? SizedBox(width: 10) : Container(),
+                Expanded(
+                  child: Padding(
+                    padding: EdgeInsets.only(bottom: 16),
+                    child: ElevatedButton(
+                      onPressed: _submitAnswer,
+                      child: const Text(
+                        '정답 제출하기',
+                        style: TextStyle(
+                            color: Colors.black, // 글자색 검정
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16
+                        ),
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.white, // 버튼 배경 흰색
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(5), // 보더레디우스 5
+                        ),
+                      ),
+                    ),
                   ),
                 ),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.white, // 버튼 배경 흰색
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(5), // 보더레디우스 5
-                  ),
-                ),
-              ),
+              ],
             ),
           ],
         ),
