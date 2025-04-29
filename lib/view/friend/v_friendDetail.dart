@@ -1516,7 +1516,7 @@ class _FriendDetailViewState extends State<FriendDetailView> {
                                                         SizedBox(
                                                           height: 4,
                                                         ),
-                                                        Text('라이딩 기록이 없어요',
+                                                        Text('이번 시즌 라이딩 기록이 아직 없어요',
                                                           style: SDSTextStyle.regular.copyWith(
                                                               fontSize: 14,
                                                               color: SDSColor.gray500),),

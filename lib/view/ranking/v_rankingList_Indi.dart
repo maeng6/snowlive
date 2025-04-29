@@ -2921,6 +2921,7 @@ class RankingIndiView extends StatelessWidget {
               ),
             )
                 : SingleChildScrollView(
+              physics: AlwaysScrollableScrollPhysics(),
                   child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 mainAxisAlignment: MainAxisAlignment.center,
