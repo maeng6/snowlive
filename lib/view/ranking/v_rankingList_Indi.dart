@@ -71,7 +71,6 @@ class RankingIndiView extends StatelessWidget {
                   await _rankingListViewModel.toggleDataDayOrTotal_refresh();
                 if(_rankingListViewModel.resortOrTotal=='개별스키장')
                   await _rankingListViewModel.toggleDataDayOrTotal_refresh(resortNum: _rankingListViewModel.selectedResortNum);
-
               },
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -2920,19 +2919,33 @@ class RankingIndiView extends StatelessWidget {
                 ),
               ),
             )
-                : SingleChildScrollView(
-                  child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  ExtendedImage.network(
-                                    '${_resortHomeViewModel.rankingComingSoonUrl}',
-                                    cache: true,
-                                    enableMemoryCache: true,
-                                    width: _size.width,
-                                  ),
-                                ],
-                              ),
+                : RefreshIndicator(
+              strokeWidth: 2,
+              edgeOffset: -40,
+              displacement: 40,
+              backgroundColor: SDSColor.snowliveBlue,
+              color: SDSColor.snowliveWhite,
+                  onRefresh: () async {
+                    if(_rankingListViewModel.resortOrTotal=='전체스키장')
+                      await _rankingListViewModel.toggleDataDayOrTotal_refresh();
+                    if(_rankingListViewModel.resortOrTotal=='개별스키장')
+                      await _rankingListViewModel.toggleDataDayOrTotal_refresh(resortNum: _rankingListViewModel.selectedResortNum);
+                  },
+                  child: SingleChildScrollView(
+                                physics: AlwaysScrollableScrollPhysics(),
+                    child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    ExtendedImage.network(
+                                      '${_resortHomeViewModel.rankingComingSoonUrl}',
+                                      cache: true,
+                                      enableMemoryCache: true,
+                                      width: _size.width,
+                                    ),
+                                  ],
+                                ),
+                  ),
                 ),
           ],
         ),
