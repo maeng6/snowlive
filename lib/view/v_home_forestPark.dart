@@ -520,7 +520,7 @@ class _ForestParkHomeState extends State<ForestParkHome> {
                               return GestureDetector(
                                 onTap: () {},
                                 child: Container(
-                                  width: 110,
+                                  width: 100,
                                   height: 42,
                                   decoration: BoxDecoration(
                                     color: Colors.white,
@@ -538,7 +538,7 @@ class _ForestParkHomeState extends State<ForestParkHome> {
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
                                         Text(
-                                          '참여완료',
+                                          '참여중',
                                           style: SDSTextStyle.bold.copyWith(
                                             fontSize: 14,
                                             color: SDSColor.gray900,
