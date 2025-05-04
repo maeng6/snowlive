@@ -74,7 +74,7 @@ class CrewAPI {
 
   // 크루 세부사항 업데이트
   Future<ApiResponse<Map<String, dynamic>>> updateCrewDetails(int crewId, Map<String, dynamic> updateData) async {
-    final uri = Uri.parse('$baseUrl/$crewId/');
+    final uri = Uri.parse('$baseUrl/detail/$crewId/');
     final response = await http.put(
       uri,
       body: json.encode(updateData),
@@ -90,7 +90,7 @@ class CrewAPI {
 
   // 크루 삭제
   Future<ApiResponse<void>> deleteCrew(int crewId, String userId) async {
-    final uri = Uri.parse('$baseUrl/crew-details/$crewId/').replace(queryParameters: {'user_id': userId});
+    final uri = Uri.parse('$baseUrl/detail/$crewId/').replace(queryParameters: {'user_id': userId});
 
     final response = await http.delete(uri, headers: {'Content-Type': 'application/json'});
 
