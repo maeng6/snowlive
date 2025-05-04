@@ -142,7 +142,7 @@ class _SlmkScreenState extends State<SlmkScreen> {
                   return Container(
                     width: double.infinity,
                     height: size.width + 60,
-                    color: Color(0xFF12341E),
+                    color: Color(0xFF2c2c2c),
                     alignment: Alignment.center,
                     child: const CircularProgressIndicator(
                       strokeWidth: 4,
@@ -167,10 +167,7 @@ class _SlmkScreenState extends State<SlmkScreen> {
               }
             },
           )
-              : const Text(
-            '이미지가 설정되지 않았습니다.',
-            style: TextStyle(color: Colors.white),
-          ),
+              : Container()
         )
     );
   }
