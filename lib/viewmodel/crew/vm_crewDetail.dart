@@ -244,21 +244,17 @@ class CrewDetailViewModel extends GetxController {
   }
 
   // 크루 삭제
-  Future<ApiResponse> deleteCrew(int crewId, String userId) async {
-    final uri = Uri.parse('https://snowlive-api-0eab29705c9f.herokuapp.com/api/crew/$crewId/')
-        .replace(queryParameters: {'user_id': userId.toString()});
+  Future<void> deleteCrew(int crewId, String userId) async {
 
-    final response = await http.delete(uri, headers: {'Content-Type': 'application/json'});
+    final response = await CrewAPI().deleteCrew(crewDetailInfo.crewId!, userId);
 
-    if (response.statusCode == 204) {
+    if (response.success) {
       await _userViewModel.updateUserModel_api(_userViewModel.user.user_id);
       CustomFullScreenDialog.cancelDialog();
       Get.offAllNamed(AppRoutes.mainHome);
-      return ApiResponse.success(null);
     } else {
       CustomFullScreenDialog.cancelDialog();
       Get.snackbar('삭제 실패', '크루 멤버가 있는 상태에서는 크루 삭제가 불가합니다');
-      return ApiResponse.error(json.decode(utf8.decode(response.bodyBytes)));
     }
   }
 
