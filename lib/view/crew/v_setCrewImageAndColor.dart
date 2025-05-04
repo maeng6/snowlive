@@ -435,7 +435,7 @@ class SetCrewImageAndColorView extends StatelessWidget {
                     await _setCrewViewModel.createCrew();
                     CustomFullScreenDialog.cancelDialog();
                     Get.until((route) => Get.currentRoute == AppRoutes.mainHome); // mainHome까지 pop
-                    _mainHomeViewModel.changePage(4); // 모어탭 활성화
+                    _mainHomeViewModel.changePage(3); // 모어탭 활성화
                     Get.toNamed(AppRoutes.crewMain);  // crewMain 화면으로 이동
                   }
                 },
