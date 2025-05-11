@@ -237,7 +237,75 @@ class _QuizPageForestParkState extends State<QuizPageForestPark> {
 
   Future<void> _submitAnswer() async {
     if (_selectedIndex == null) {
-      Get.snackbar('알림', '보기를 선택해주세요.');
+      Get.dialog(
+        AlertDialog(
+          backgroundColor: SDSColor.snowliveWhite,
+          contentPadding: EdgeInsets.only(bottom: 0, left: 28, right: 28, top: 36),
+          elevation: 0,
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16)),
+          buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+          content: Container(
+            height: 80,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text(
+                  '정답을 선택해 주세요!',
+                  textAlign: TextAlign.center,
+                  style: SDSTextStyle.bold.copyWith(
+                      color: SDSColor.gray900,
+                      fontSize: 16
+                  ),
+                ),
+                SizedBox(
+                  height: 6,
+                ),
+                Text(
+                  '선택된 정답이 없습니다.\n정답을 선택해 주세요!',
+                  textAlign: TextAlign.center,
+                  style: SDSTextStyle.regular.copyWith(
+                    color: SDSColor.gray500,
+                    fontSize: 14,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            Padding(
+              padding: EdgeInsets.only(top: 24),
+              child: SizedBox(
+                child: Container(
+                  width: 240,
+                  height: 48,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Get.back();
+                    },
+                    style: ElevatedButton.styleFrom(
+                      elevation: 0,
+                      backgroundColor: Color(0xFF127721),
+                      foregroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                    ),
+                    child: Text(
+                      '확인',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 15,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            )
+          ],
+        ),
+        barrierDismissible: false,
+      );
       return;
     }
 
