@@ -161,7 +161,6 @@ class ForestParkViewModel extends GetxController {
       return true;
     } else {
       print("교환 실패: ${response.error}");
-      CustomFullScreenDialog.cancelDialog();
       return false;
     }
   }
