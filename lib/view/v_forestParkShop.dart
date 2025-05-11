@@ -136,7 +136,7 @@ class _ForestParkShopState extends State<ForestParkShop> {
                       strokeWidth: 2,
                       edgeOffset: -40,
                       displacement: 40,
-                      backgroundColor: SDSColor.snowliveBlue,
+                      backgroundColor: Color(0xFF12341E),
                       color: SDSColor.snowliveWhite,
                       onRefresh: () async{
                         await _forestParkViewModel.fetchLeafItems(eventDate);
