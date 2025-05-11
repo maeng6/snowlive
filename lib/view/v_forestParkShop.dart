@@ -147,6 +147,16 @@ class _ForestParkShopState extends State<ForestParkShop> {
                         children: [
                           Column(
                             children: [
+                              Padding(
+                                padding: EdgeInsets.only(top: 10),
+                                child: Text('획득한 열매는 당일에 사용하지 않으면 모두 사라집니다',
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.bold,
+                                    color: Color(0xFF10B028)
+                                ),
+                                ),
+                              ),
                               SizedBox(height: 20),
                               GridView.builder(
                                 shrinkWrap: true,

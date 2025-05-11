@@ -810,6 +810,16 @@ class _ForestParkHomeState extends State<ForestParkHome> {
                                     ),
                                   ),
                                 ),
+                                Padding(
+                                  padding: EdgeInsets.only(top: 6),
+                                  child: Text('획득한 열매는 당일에 사용하지 않으면 모두 사라집니다',
+                                    style: TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold,
+                                        color: Color(0xFF10B028)
+                                    ),
+                                  ),
+                                ),
                               ],
                             ),
                           ),

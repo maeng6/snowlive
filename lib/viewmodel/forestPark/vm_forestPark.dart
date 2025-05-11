@@ -25,6 +25,8 @@ class ForestParkViewModel extends GetxController {
   var answerResult = ''.obs;
 
   RxBool isForestParkOpen = false.obs;
+  RxBool isForestParkOpen_toEveryone = false.obs;
+
   RxInt eventDate = 0.obs;
   StreamSubscription? _entranceStreamSub; // 🔁 스트림 중복 구독 방지용
   Rxn<Stream<DocumentSnapshot<Map<String, dynamic>>>> infoStream_forestPark_entrance = Rxn<Stream<DocumentSnapshot<Map<String, dynamic>>>>();
@@ -58,8 +60,10 @@ class ForestParkViewModel extends GetxController {
     _entranceStreamSub = stream.listen((DocumentSnapshot doc) {
       final data = doc.data() as Map<String, dynamic>?;
       isForestParkOpen.value = data?['open'] == true;
+      isForestParkOpen_toEveryone.value = data?['to_everyone'] == true;
       eventDate.value = data?['eventDate'] ?? 0; // ✅ 여기에 저장
       print('🔥 open 상태 업데이트: ${isForestParkOpen.value}');
+      print('🔥 open_crew 상태 업데이트: ${isForestParkOpen_toEveryone.value}');
       print('🔥 eventDate 업데이트: ${eventDate.value}');
     });
   }
