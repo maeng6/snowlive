@@ -1669,7 +1669,7 @@ class _ResortHomeViewState extends State<ResortHomeView> with
                               child: Entrance_forestPark(),
                             ),
                             //TODO: 오늘의 기록
-                            if(_forestParkViewModel.isForestParkOpen.value == false || (_forestParkViewModel.isForestParkOpen.value == true && _forestParkViewModel.isForestParkOpen_toEveryone.value == false))
+                            if(_forestParkViewModel.isForestParkOpen.value == false)
                               Padding(
                                   padding: EdgeInsets.only(left: 16, right: 16),
                                   child: Column(
