@@ -353,7 +353,7 @@ class ForestParkExchangeHistoryView extends StatelessWidget {
                             ),
 
                             Text(
-                              '${_formatDate(record.uploadTime)} 교환 확정',
+                              '${_formatDate(record.uploadTime)}',
                               style: SDSTextStyle.regular.copyWith(fontSize: 11, color: Color(0xFF147A23)),
                             ),
                           ],
