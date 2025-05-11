@@ -382,6 +382,7 @@ class _QuizPageForestParkState extends State<QuizPageForestPark> {
                   height: 48,
                   child: ElevatedButton(
                     onPressed: () {
+                      _forestParkViewModel.fetchLeafRemain(quiz.eventDate!);
                       Get.back(); // 팝업 닫기
                       Get.back(); // 팝업 닫기
                     },
@@ -406,6 +407,7 @@ class _QuizPageForestParkState extends State<QuizPageForestPark> {
             )
           ],
         ),
+        barrierDismissible: false, // ✅ 여기 추가
       );
 
     } else if (result == '오답') {
