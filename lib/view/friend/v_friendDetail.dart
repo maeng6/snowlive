@@ -1520,9 +1520,11 @@ class _FriendDetailViewState extends State<FriendDetailView> {
                                                           style: SDSTextStyle.regular.copyWith(
                                                               fontSize: 14,
                                                               color: SDSColor.gray500),),
-                                                        SizedBox(
+                                                        if(_userViewModel.user.user_id == _friendDetailViewModel.friendDetailModel.friendUserInfo.userId)
+                                                          SizedBox(
                                                           height: 24,
                                                         ),
+                                                        if(_userViewModel.user.user_id == _friendDetailViewModel.friendDetailModel.friendUserInfo.userId)
                                                         TextButton(
                                                           onPressed: () async{
                                                             Get.toNamed(AppRoutes.rankingIndivHistoryHome);

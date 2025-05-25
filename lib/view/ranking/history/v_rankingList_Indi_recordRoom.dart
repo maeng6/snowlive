@@ -1653,10 +1653,12 @@ class RankingIndiView_recordRoom extends StatelessWidget {
                                         children: [
                                           Container(
                                             width:
-                                            (_rankingListViewModel_recordRoom.rankingListIndivMy_view!.overallTotalScore != null
-                                                && _rankingListViewModel_recordRoom.resortOrTotal == '전체스키장' && _rankingListViewModel_recordRoom.dayOrTotal == '누적')
+                                            (_rankingListViewModel_recordRoom.rankingListIndivMy_view != null &&
+                                                _rankingListViewModel_recordRoom.rankingListIndivMy_view!.overallTotalScore != null &&
+                                                _rankingListViewModel_recordRoom.resortOrTotal == '전체스키장' &&
+                                                _rankingListViewModel_recordRoom.dayOrTotal == '누적')
                                                 ? _size.width - 124
-                                                :_size.width - 32,
+                                                : _size.width - 32,
                                             height: 80,
                                             decoration: BoxDecoration(
                                               color: SDSColor.gray50,
@@ -1722,11 +1724,15 @@ class RankingIndiView_recordRoom extends StatelessWidget {
                                               ],
                                             ),
                                           ),
-                                          if(_rankingListViewModel_recordRoom.rankingListIndivMy_view!.overallTotalScore != null
-                                              && _rankingListViewModel_recordRoom.resortOrTotal == '전체스키장' && _rankingListViewModel_recordRoom.dayOrTotal == '누적')
+                                          if (_rankingListViewModel_recordRoom.rankingListIndivMy_view != null &&
+                                              _rankingListViewModel_recordRoom.rankingListIndivMy_view!.overallTotalScore != null &&
+                                              _rankingListViewModel_recordRoom.resortOrTotal == '전체스키장' &&
+                                              _rankingListViewModel_recordRoom.dayOrTotal == '누적')
                                             SizedBox(width: 12),
-                                          if(_rankingListViewModel_recordRoom.rankingListIndivMy_view!.overallTotalScore != null
-                                              && _rankingListViewModel_recordRoom.resortOrTotal == '전체스키장' && _rankingListViewModel_recordRoom.dayOrTotal == '누적')
+                                          if (_rankingListViewModel_recordRoom.rankingListIndivMy_view != null &&
+                                              _rankingListViewModel_recordRoom.rankingListIndivMy_view!.overallTotalScore != null &&
+                                              _rankingListViewModel_recordRoom.resortOrTotal == '전체스키장' &&
+                                              _rankingListViewModel_recordRoom.dayOrTotal == '누적')
                                             Stack(
                                               children: [
                                                 Container(
