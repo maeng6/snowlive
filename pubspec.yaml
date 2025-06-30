@@ -46,7 +46,7 @@ dependencies:
   firebase_storage: ^12.1.1
   firebase_core: ^3.2.0
   extended_image: ^8.1.1
-  intl: ^0.19.0
+  intl: ^0.20.2
   shared_preferences: ^2.0.15
   google_fonts: ^4.0.3
   flutter_secure_storage: ^9.0.0
@@ -85,9 +85,9 @@ dependencies:
   shimmer: ^3.0.0
   animate_gradient: ^0.0.3
   adaptive_action_sheet: ^2.0.3
-  flutter_quill: ^10.0.0
+  flutter_quill: ^11.4.1
   dart_quill_delta: ^10.0.0
-  flutter_quill_extensions: ^10.0.0
+  flutter_quill_extensions: ^11.0.0
   bubble: ^1.2.1
   path_provider: ^2.1.4
   synchronized: ^3.1.0+1

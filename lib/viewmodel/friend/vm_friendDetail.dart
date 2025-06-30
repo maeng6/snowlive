@@ -4,14 +4,13 @@ import 'package:com.snowlive/api/api_friend.dart';
 import 'package:com.snowlive/api/api_friendDetail.dart';
 import 'package:com.snowlive/model/m_friendDetail.dart';
 import 'package:com.snowlive/model/m_friendsTalk.dart';
-import 'package:com.snowlive/viewmodel/resortHome/vm_alarmCenter.dart';
 import 'package:com.snowlive/viewmodel/util/vm_imageController.dart';
 import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_quill_extensions/services/image_picker/image_picker.dart';
 import 'package:get/get.dart';
 import 'package:get/get_rx/get_rx.dart';
 import 'package:get/get_rx/src/rx_types/rx_types.dart';
+import 'package:image_picker/image_picker.dart';
 
 class FriendDetailViewModel extends GetxController {
 
