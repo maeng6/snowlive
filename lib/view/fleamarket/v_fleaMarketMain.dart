@@ -32,7 +32,7 @@ class FleaMarketMainView extends StatelessWidget {
             title: Padding(
               padding: const EdgeInsets.only(left: 16),
               child: Text(
-                '스노우마켓',
+                '중고거래',
                 style: SDSTextStyle.extraBold.copyWith(
                     color: SDSColor.gray900,
                     fontSize: 18),
