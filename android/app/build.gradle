@@ -1,3 +1,9 @@
+plugins {
+    id "com.android.application"
+    id "kotlin-android"
+    id "dev.flutter.flutter-gradle-plugin"
+}
+
 def localProperties = new Properties()
 def localPropertiesFile = rootProject.file('local.properties')
 if (localPropertiesFile.exists()) {
@@ -21,12 +27,6 @@ if (flutterVersionName == null) {
     flutterVersionName = '3.5.7'
 }
 
-apply plugin: 'com.android.application'
-// START: FlutterFire Configuration
-apply plugin: 'com.google.gms.google-services'
-// END: FlutterFire Configuration
-apply plugin: 'kotlin-android'
-apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 Project background_geolocation = project(':flutter_background_geolocation')
 apply from: "${background_geolocation.projectDir}/background_geolocation.gradle"
 
@@ -88,7 +88,6 @@ flutter {
 dependencies {
     implementation 'com.google.android.gms:play-services-location:latest_version'
     implementation 'com.android.support:multidex:2.0.1'
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'androidx.window:window:1.1.0'
     implementation 'androidx.window:window-java:1.1.0'
 }
