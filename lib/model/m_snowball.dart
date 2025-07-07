@@ -1,3 +1,4 @@
+
 class SnowballHomeResponse {
   SnowballSummary? summary;
   List<SnowballShopItem>? goldshop;
@@ -13,8 +14,8 @@ class SnowballHomeResponse {
 
   SnowballHomeResponse.fromJson(Map<String, dynamic> json) {
     summary = json['summary'] != null ? SnowballSummary.fromJson(json['summary']) : null;
-    goldshop = (json['goldshop'] as List?)?.map((v) => SnowballShopItem.fromJson(v)).toList();
-    whiteshop = (json['whiteshop'] as List?)?.map((v) => SnowballShopItem.fromJson(v)).toList();
+    goldshop = (json['shop_3'] as List?)?.map((v) => SnowballShopItem.fromJson(v)).toList();
+    whiteshop = (json['shop'] as List?)?.map((v) => SnowballShopItem.fromJson(v)).toList();
     sponsor = (json['sponsor'] as List?)?.map((v) => SnowballSponsor.fromJson(v)).toList();
   }
 }
@@ -23,15 +24,17 @@ class SnowballSummary {
   int? white;
   int? gold;
 
-  SnowballSummary({
-    this.white,
-    this.gold,
-  });
+  SnowballSummary({this.white, this.gold});
 
   SnowballSummary.fromJson(Map<String, dynamic> json) {
     white = json['white'];
     gold = json['gold'];
   }
+
+  Map<String, dynamic> toJson() => {
+    'white': white,
+    'gold': gold,
+  };
 }
 
 class SnowballShopItem {
@@ -39,35 +42,49 @@ class SnowballShopItem {
   int? count;
   String? description;
   String? imageUrl;
-  int? snowballCount;
   int? snowballItemId;
   bool? active;
-  String? color;
   String? landingUrl;
+  List<SnowballPrice>? price;
 
   SnowballShopItem({
     this.name,
     this.count,
     this.description,
     this.imageUrl,
-    this.snowballCount,
     this.snowballItemId,
     this.active,
-    this.color,
-    this.landingUrl
+    this.landingUrl,
+    this.price,
   });
 
   SnowballShopItem.fromJson(Map<String, dynamic> json) {
     name = json['name'];
-    count = json['count'];
+    count = json['item_count'];
     description = json['description'];
     imageUrl = json['image_url'];
-    snowballCount = json['snowball_count'];
     snowballItemId = json['snowball_item_id'];
     active = json['active'];
-    color = json['color'];
     landingUrl = json['landing_url'];
+    price = (json['price'] as List?)?.map((e) => SnowballPrice.fromJson(e)).toList();
   }
+}
+
+class SnowballPrice {
+  int? snowballKindId;
+  int? snowballCount;
+
+  SnowballPrice({this.snowballKindId, this.snowballCount});
+
+  SnowballPrice.fromJson(Map<String, dynamic> json) {
+    snowballKindId = json['snowball_kind_id'];
+    snowballCount = json['snowball_count'];
+  }
+
+  Map<String, dynamic> toJson() => {
+    'snowball_kind_id': snowballKindId,
+    'snowball_count': snowballCount,
+  };
 }
 
 class SnowballSponsor {
@@ -75,54 +92,42 @@ class SnowballSponsor {
   String? logoUrl;
   String? landingUrl;
 
-  SnowballSponsor({
-    this.name,
-    this.logoUrl,
-    this.landingUrl,
-  });
+  SnowballSponsor({this.name, this.logoUrl, this.landingUrl});
 
   SnowballSponsor.fromJson(Map<String, dynamic> json) {
-
     name = json['name'];
     logoUrl = json['logo_url'];
     landingUrl = json['landing_url'];
-
   }
 }
 
 class SnowballBuyRecord {
   int? recordId;
   String? itemName;
-  String? color;
-  int? count;
-  String? userName;
-  String? phoneNumber;
-  String? address;
   String? uploadTime;
   String? imageUrl;
+  List<SnowballPrice>? price;
+  bool? isFieldGame;
+  bool? isReceived;
 
   SnowballBuyRecord({
     this.recordId,
     this.itemName,
-    this.color,
-    this.count,
-    this.userName,
-    this.phoneNumber,
-    this.address,
     this.uploadTime,
     this.imageUrl,
+    this.price,
+    this.isFieldGame,
+    this.isReceived,
   });
 
   SnowballBuyRecord.fromJson(Map<String, dynamic> json) {
     recordId = json['record_id'];
     itemName = json['item_name'];
-    color = json['color'];
-    count = json['count'];
-    userName = json['user_name'];
-    phoneNumber = json['phone_number'];
-    address = json['address'];
     uploadTime = json['upload_time'];
     imageUrl = json['image_url'];
+    isFieldGame = json['is_field_game'];
+    isReceived = json['is_received'];
+    price = (json['price'] as List?)?.map((e) => SnowballPrice.fromJson(e)).toList();
   }
 }
 
@@ -165,15 +170,13 @@ class SnowballRecord {
     slopeName = json['slope_name'];
   }
 
-  Map<String, dynamic> toJson() {
-    return {
-      'snowball_record_id': snowballRecordId,
-      'user_id': userId,
-      'pass_time': passTime,
-      'coordinates': coordinates,
-      'active': active,
-      'color': color,
-      'slope_name': slopeName,
-    };
-  }
+  Map<String, dynamic> toJson() => {
+    'snowball_record_id': snowballRecordId,
+    'user_id': userId,
+    'pass_time': passTime,
+    'coordinates': coordinates,
+    'active': active,
+    'color': color,
+    'slope_name': slopeName,
+  };
 }

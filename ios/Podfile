@@ -1,5 +1,5 @@
 # Uncomment this line to define a global platform for your project
-platform :ios, '15.5'
+platform :ios, '16.4'
 
 # CocoaPods analytics sends network stats synchronously affecting flutter build latency.
 ENV['COCOAPODS_DISABLE_STATS'] = 'true'
@@ -48,7 +48,7 @@ post_install do |installer|
 23
     target.build_configurations.each do |config|
       # iOS 최소 버전 15.0으로 설정
-      config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '15.5'
+      config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '16.4'
       config.build_settings['CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES'] = 'YES'
 
       # DT_TOOLCHAIN_DIR 치환

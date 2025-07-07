@@ -53,7 +53,7 @@ class ResortHomeViewModel extends GetxController {
   RxMap _resort_info = {}.obs;
   RxMap _weatherInfo = {}.obs;
   RxList<Map<String, dynamic>> _slope_info = <Map<String, dynamic>>[].obs;
-  RxList<Map<String, dynamic>> _treasure_hunt_info = <Map<String, dynamic>>[].obs;
+  RxList<Map<String, dynamic>> _snowball_info = <Map<String, dynamic>>[].obs;
   RxList<Map<String, dynamic>> _reset_point = <Map<String, dynamic>>[].obs;
   RxList<Map<String, dynamic>> _respawn_point = <Map<String, dynamic>>[].obs;
   RxList<FriendListModel> _bestFriendList = <FriendListModel>[].obs;
@@ -97,7 +97,7 @@ class ResortHomeViewModel extends GetxController {
   bool get isSnackbarShown => _isSnackbarShown.value;
   bool get isWeatherInfoExpanded => _isWeatherInfoExpanded.value;
   List<Map<String, dynamic>> get slope_info => _slope_info;
-  List<Map<String, dynamic>> get treasure_hunt_info => _treasure_hunt_info;
+  List<Map<String, dynamic>> get snowball_info => _snowball_info;
   List<Map<String, dynamic>> get reset_point => _reset_point;
   List<Map<String, dynamic>> get respawn_point => _respawn_point;
   List<FriendListModel> get bestFriendList => _bestFriendList;
@@ -280,7 +280,7 @@ class ResortHomeViewModel extends GetxController {
               List<Map<String, dynamic>> passPointInfos = checkPositionInAreas(
                 position,
                 _slope_info,
-                _treasure_hunt_info,
+                _snowball_info,
                 _reset_point,
                 _respawn_point,
               );
@@ -302,7 +302,7 @@ class ResortHomeViewModel extends GetxController {
                   }
                 }
 
-                if (passPointInfo['type'] == 'treasure_hunt_info') {
+                if (passPointInfo['type'] == 'snowball_info') {
                   if (resort_info['snowball'] == true) {
                     if (_lastSnowballMethodCall == null || DateTime.now().difference(_lastSnowballMethodCall!).inSeconds > 300) {
                       final response = await SnowballAPI().createSnowballRecord({
@@ -450,7 +450,7 @@ class ResortHomeViewModel extends GetxController {
           List<Map<String, dynamic>> passPointInfos = checkPositionInAreas(
             position,
             _slope_info,
-            _treasure_hunt_info,
+            _snowball_info,
             _reset_point,
             _respawn_point,
           );
@@ -472,7 +472,7 @@ class ResortHomeViewModel extends GetxController {
               }
             }
 
-            if (passPointInfo['type'] == 'treasure_hunt_info') {
+            if (passPointInfo['type'] == 'snowball_info') {
               if (resort_info['snowball'] == true) {
                 if (_lastSnowballMethodCall == null || DateTime.now().difference(_lastSnowballMethodCall!).inSeconds > 300) {
                   final response = await SnowballAPI().createSnowballRecord({
@@ -555,7 +555,7 @@ class ResortHomeViewModel extends GetxController {
     // 트레저 헌트 영역 검사
     for (var treasure in treasureHuntInfo) {
       if (_isWithinRadius(position, treasure['coordinates'], treasure['radius'])) {
-        detectedAreas.add({'type': 'treasure_hunt_info', 'id': treasure['snowball_id']});
+        detectedAreas.add({'type': 'snowball_info', 'id': treasure['snowball_id']});
       }
     }
 
@@ -618,7 +618,7 @@ class ResortHomeViewModel extends GetxController {
       if (response.success) {
         _resort_info.value = response.data['resort_info'];
         _slope_info.value = List<Map<String, dynamic>>.from(response.data['slope_info']);
-        _treasure_hunt_info.value = List<Map<String, dynamic>>.from(response.data['treasure_hunt_info']);
+        _snowball_info.value = List<Map<String, dynamic>>.from(response.data['snowball_info']);
         _reset_point.value = List<Map<String, dynamic>>.from(response.data['reset_point']);
         _respawn_point.value = List<Map<String, dynamic>>.from(response.data['respawn_point']);
         _isParticipate_treasure_hunt.value = response.data['participant'];
