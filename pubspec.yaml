@@ -42,7 +42,7 @@ dependencies:
   flutter_native_splash: ^2.4.1
   logger: ^1.1.0
   http: ^1.2.2
-  cloud_firestore: ^5.1.0
+  cloud_firestore: ^5.6.11
   firebase_storage: ^12.1.1
   firebase_core: ^3.2.0
   extended_image: ^8.1.1
@@ -67,7 +67,7 @@ dependencies:
   package_info_plus: ^8.0.2
   flutter_local_notifications: ^17.2.2
   firebase_messaging: ^15.0.3
-  firebase_analytics: ^11.2.0
+  firebase_analytics: ^11.5.2
   table_calendar: ^3.0.9
   google_maps_flutter: ^2.2.8
   location: ^6.0.2

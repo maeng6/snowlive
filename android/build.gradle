@@ -1,24 +1,29 @@
 buildscript {
+<<<<<<< HEAD
     ext.kotlin_version = '1.8.10'
     ext{
         compileSdkVersion   = 35
+=======
+    ext.kotlin_version = '2.1.0'  // ✅ Kotlin 버전 업그레이드
+
+    ext {
+        compileSdkVersion   = 35    // ✅ compileSdk, targetSdk 상향
+>>>>>>> master
         targetSdkVersion    = 35
         minSdkVersion       = 23
         appCompatVersion    = "1.4.2"
         layServicesLocationVersion = "20.0.0"
-        playServicesLocationVersion = "21.0.1"  // Replace with the desired version
-
+        playServicesLocationVersion = "21.0.1"
     }
+
     repositories {
         google()
         mavenCentral()
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:8.3.0'
-        // START: FlutterFire Configuration
+        classpath 'com.android.tools.build:gradle:8.3.0'  // ✅ AGP 업그레이드
         classpath 'com.google.gms:google-services:4.4.0'
-        // END: FlutterFire Configuration
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
@@ -34,6 +39,7 @@ allprojects {
 }
 
 rootProject.buildDir = '../build'
+
 subprojects {
     project.buildDir = "${rootProject.buildDir}/${project.name}"
 }
