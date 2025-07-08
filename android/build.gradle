@@ -1,8 +1,8 @@
 buildscript {
-    ext.kotlin_version = '1.8.0'
+    ext.kotlin_version = '1.8.10'
     ext{
-        compileSdkVersion   = 34
-        targetSdkVersion    = 34
+        compileSdkVersion   = 35
+        targetSdkVersion    = 35
         minSdkVersion       = 23
         appCompatVersion    = "1.4.2"
         layServicesLocationVersion = "20.0.0"
@@ -15,7 +15,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:8.1.1'
+        classpath 'com.android.tools.build:gradle:8.3.0'
         // START: FlutterFire Configuration
         classpath 'com.google.gms:google-services:4.4.0'
         // END: FlutterFire Configuration

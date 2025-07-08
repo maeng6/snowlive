@@ -45,6 +45,7 @@ android {
         // JavaVersion 설정을 1.8로 변경
         sourceCompatibility JavaVersion.VERSION_17
         targetCompatibility JavaVersion.VERSION_17
+        coreLibraryDesugaringEnabled true
     }
 
     kotlinOptions {
@@ -90,4 +91,5 @@ dependencies {
     implementation 'com.android.support:multidex:2.0.1'
     implementation 'androidx.window:window:1.1.0'
     implementation 'androidx.window:window-java:1.1.0'
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.0.3' // 최신 버전 확인 필요
 }
