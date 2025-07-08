@@ -25,7 +25,7 @@
 // print('GA 업데이트 오류: $e');
 // print('Stack trace: $stackTrace');
 // }
-
+//ㅇ
 
 
 // onTap: () async{
