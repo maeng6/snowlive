@@ -1513,8 +1513,9 @@ class RankingCrewView_recordRoom extends StatelessWidget {
                                   child: Entrance_snowballShop(),
                                 ),
                               //마이인포 박스 - 점수와 랭킹없는경우 안보여주게함
-                              if(_rankingListViewModel_recordRoom.rankingListCrewMy_view!.crewName != null)
-                                Obx(() => Padding(
+                                if (_rankingListViewModel_recordRoom.rankingListCrewMy_view != null &&
+                                    _rankingListViewModel_recordRoom.rankingListCrewMy_view!.crewName != null)
+                                  Obx(() => Padding(
                                   padding: EdgeInsets.only(top: 10, bottom: 12),
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,

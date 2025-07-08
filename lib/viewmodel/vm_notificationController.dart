@@ -1,7 +1,7 @@
 import 'dart:convert';
+import 'package:flutter_udid/flutter_udid.dart';
 import 'package:get/get.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:platform_device_id/platform_device_id.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:http/http.dart' as http;
 
@@ -39,7 +39,7 @@ class NotificationController extends GetxController {
   Future<void> _getToken() async {
     try {
       String? deviceToken = await messaging.getToken();
-      String? deviceId = await PlatformDeviceId.getDeviceId;
+      String? deviceId = await FlutterUdid.udid;
 
       _deviceToken.value = deviceToken ?? '';
       _deviceID.value = deviceId ?? '';

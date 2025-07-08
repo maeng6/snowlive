@@ -677,6 +677,7 @@ class CrewHomeView extends StatelessWidget {
                                       ],
                                     ),
                                     Expanded(child: SizedBox()),
+                                    if(_crewDetailViewModel.crewDetailInfo.crewId == _userViewModel.user.crew_id)
                                     Padding(
                                       padding: EdgeInsets.only(bottom: 6),
                                       child: TextButton(

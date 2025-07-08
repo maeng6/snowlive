@@ -6,11 +6,11 @@ import 'package:com.snowlive/routes/routes.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
 import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter_udid/flutter_udid.dart';
 import 'package:get/get.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:platform_device_id/platform_device_id.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'dart:math' as math; // math 패키지 추가
@@ -53,7 +53,7 @@ class LoginViewModel extends GetxController {
       NotificationSettings settings = await messaging.requestPermission();
       if (settings.authorizationStatus == AuthorizationStatus.authorized) {
         String? deviceToken = await messaging.getToken();
-        String? deviceId = await PlatformDeviceId.getDeviceId;
+        String? deviceId = await FlutterUdid.udid;
 
         device_token!.value = deviceToken ?? '';
         device_id!.value = deviceId ?? '';
@@ -68,7 +68,7 @@ class LoginViewModel extends GetxController {
 
   Future<bool> _isPhysicalDevice() async {
     try {
-      final deviceId = await PlatformDeviceId.getDeviceId;
+      final deviceId = await FlutterUdid.udid;
       return deviceId != null && !deviceId.toLowerCase().contains('simulator');
     } catch (_) {
       return false;

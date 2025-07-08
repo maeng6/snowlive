@@ -26,10 +26,8 @@ import 'package:get/get_core/src/get_main.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
 import 'package:shimmer/shimmer.dart';
-import 'package:android_intent_plus/android_intent.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-import '../ranking/v_entrance_snowballShop.dart';
 
 class ResortHomeView extends StatefulWidget {
   @override

@@ -688,7 +688,7 @@ class RankingListViewModel_recordRoom extends GetxController {
     } else if (tapName == '개인랭킹' && resortOrTotal == '전체스키장' && dayOrTotal == '누적' && selectedCategory_fed != '리그별 랭킹'){
       _isLoadingRankingListIndiv_total.value=true;
       _isLoadingRankingListIndiv_total_daily.value=true;
-      await fetchRankingDataIndiv_fed(userId: _userViewModel.user.user_id,federation: selectedCategory_fed);
+      await fetchRankingDataIndiv_fed(userId: _userViewModel.user.user_id,selected_season:  _selectedCategory_season_db.value, federation: selectedCategory_fed);
       _isLoadingRankingListIndiv_total.value=false;
       _isLoadingRankingListIndiv_total_daily.value=false;
       _rankingListIndivList_view.value = _rankingListIndivList_fed;
@@ -730,7 +730,7 @@ class RankingListViewModel_recordRoom extends GetxController {
     } else if (tapName == '크루랭킹' && resortOrTotal == '전체스키장' && dayOrTotal == '누적' && selectedCategory_fed != '리그별 랭킹'){
       _isLoadingRankingListCrewList_total.value=true;
       _isLoadingRankingListCrewList_total_daily.value=true;
-      await fetchRankingDataCrew_fed(userId: _userViewModel.user.user_id,federation: selectedCategory_fed);
+      await fetchRankingDataCrew_fed(userId: _userViewModel.user.user_id,selected_season:  _selectedCategory_season_db.value, federation: selectedCategory_fed);
       _isLoadingRankingListCrewList_total.value=false;
       _isLoadingRankingListCrewList_total_daily.value=false;
       _rankingListCrewList_view.value = _rankingListCrewList_fed;

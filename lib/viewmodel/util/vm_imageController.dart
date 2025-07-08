@@ -109,22 +109,18 @@ class ImageController extends GetxController {
   Future<XFile?> cropImage(XFile? imageFile) async {
     if (imageFile != null) {
       final CroppedFile? croppedFile = await ImageCropper().cropImage(
-          sourcePath: imageFile.path,
-          aspectRatioPresets: [
-            CropAspectRatioPreset.square,
-            CropAspectRatioPreset.ratio3x2,
-            CropAspectRatioPreset.original,
-            CropAspectRatioPreset.ratio4x3,
-            CropAspectRatioPreset.ratio16x9
-          ],
-          uiSettings: [
-            AndroidUiSettings(
-                lockAspectRatio: false
-            ),
-            IOSUiSettings(
-
-            ),]
+        sourcePath: imageFile.path,
+        uiSettings: [
+          AndroidUiSettings(
+            toolbarTitle: 'Cropper',
+            lockAspectRatio: false,  // 자유 비율 허용
+          ),
+          IOSUiSettings(
+            aspectRatioLockEnabled: false,  // iOS 쪽은 아직 이 옵션을 사용할 수 있음
+          ),
+        ],
       );
+
 
       if (croppedFile != null) {
         return XFile(croppedFile.path);

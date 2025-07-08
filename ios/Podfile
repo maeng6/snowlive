@@ -35,7 +35,6 @@ target 'Runner' do
 
   # Firebase SDK 추가
   pod 'Firebase/Analytics', :modular_headers => true
-  pod 'Firebase/Firestore', :modular_headers => true
 
 #   target 'RunnerTests' do
 #     inherit! :search_paths
