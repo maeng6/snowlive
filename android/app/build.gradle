@@ -91,9 +91,5 @@ dependencies {
     implementation 'androidx.multidex:multidex:2.0.1'  // androidx로 변경
     implementation 'androidx.window:window:1.1.0'
     implementation 'androidx.window:window-java:1.1.0'
-<<<<<<< HEAD
-    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.0.3' // 최신 버전 확인 필요
-=======
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.0.4'
->>>>>>> master
 }
