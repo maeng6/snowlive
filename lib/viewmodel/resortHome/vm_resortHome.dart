@@ -310,11 +310,11 @@ class ResortHomeViewModel extends GetxController {
                         "snowball_id": passPointInfo['id'],
                         "coordinates": "POINT (${position.longitude} ${position.latitude})"
                       });
-                      if (response.statusCode == 201) {
+                      if (response.success) {
                         _lastSnowballMethodCall = DateTime.now();
                         print('포그라운드 눈송이 기록 성공');
                       } else {
-                        print('포그라운드 눈송이 기록 실패: ${response.statusCode}');
+                        print('포그라운드 눈송이 기록 실패: ${response.error}');
                       }
                     }
                   }
@@ -480,11 +480,11 @@ class ResortHomeViewModel extends GetxController {
                     "snowball_id": passPointInfo['id'],
                     "coordinates": "POINT (${position.longitude} ${position.latitude})"
                   });
-                  if (response.statusCode == 201) {
+                  if (response.success) {
                     _lastSnowballMethodCall = DateTime.now();
-                    print('백그라운드 눈송이 기록 성공');
+                    print('포그라운드 눈송이 기록 성공');
                   } else {
-                    print('백그라운드 눈송이 기록 실패: ${response.statusCode}');
+                    print('포그라운드 눈송이 기록 실패: ${response.error}');
                   }
                 }
               }
