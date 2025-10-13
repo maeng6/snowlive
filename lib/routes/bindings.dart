@@ -53,6 +53,7 @@ class MainHomeBinding extends Bindings {
     Get.put(CommunityCommentDetailViewModel());
     Get.put(AlarmCenterViewModel());
     Get.put(StreamController_Banner());
+    Get.put(SnowballShopViewModel());
     Get.put(ResortHomeViewModel());
     Get.put(ForestParkViewModel());
     Get.put(GenderCategoryViewModel());
@@ -75,7 +76,6 @@ class MainHomeBinding extends Bindings {
     Get.put(SetCrewViewModel());
     Get.put(RankingListBetaViewModel());
     Get.put(RankingCrewHistoryViewModel());
-    Get.put(SnowballShopViewModel());
 
   }
 }

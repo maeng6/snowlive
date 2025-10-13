@@ -11,6 +11,7 @@ import 'package:com.snowlive/model/m_bestFriendListModel.dart';
 import 'package:com.snowlive/model/m_treasure_record.dart';
 import 'package:com.snowlive/model/m_weatherModel.dart';
 import 'package:com.snowlive/util/util_1.dart';
+import 'package:com.snowlive/viewmodel/ranking/vm_snowball.dart';
 import 'package:com.snowlive/viewmodel/vm_splashController.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
 import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
@@ -110,6 +111,8 @@ class ResortHomeViewModel extends GetxController {
   UserViewModel _userViewModel = Get.find<UserViewModel>();
   ScrollController scrollController_resortHome_openchat = ScrollController();
   SplashController _splashController = Get.find<SplashController>();
+  SnowballShopViewModel _snowballShopViewModel = Get.find<SnowballShopViewModel>();
+
 
   @override
   void onInit() async{
@@ -308,7 +311,8 @@ class ResortHomeViewModel extends GetxController {
                       final response = await SnowballAPI().createSnowballRecord({
                         "user_id": user_id,
                         "snowball_id": passPointInfo['id'],
-                        "coordinates": "POINT (${position.longitude} ${position.latitude})"
+                        "coordinates": "POINT (${position.longitude} ${position.latitude})",
+                        "event_date": _snowballShopViewModel.eventDate.value,
                       });
                       if (response.success) {
                         _lastSnowballMethodCall = DateTime.now();
@@ -478,7 +482,8 @@ class ResortHomeViewModel extends GetxController {
                   final response = await SnowballAPI().createSnowballRecord({
                     "user_id": user_id,
                     "snowball_id": passPointInfo['id'],
-                    "coordinates": "POINT (${position.longitude} ${position.latitude})"
+                    "coordinates": "POINT (${position.longitude} ${position.latitude})",
+                    "event_date": _snowballShopViewModel.eventDate.value,
                   });
                   if (response.success) {
                     _lastSnowballMethodCall = DateTime.now();

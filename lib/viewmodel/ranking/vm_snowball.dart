@@ -51,11 +51,9 @@ class SnowballShopViewModel extends GetxController {
   Rxn<Stream<DocumentSnapshot<Map<String, dynamic>>>> infoStream_snowballShop_notice_gold = Rxn();
 
   @override
-  void onInit() {
+  void onInit() async{
     super.onInit();
-    // 진입 시 홈 데이터와 상점 기본 목록 로딩
-    fetchSnowballHomeData();
-    fetchSnowballShop(); // 기본필터 없음
+    await getInfo_snowballMarket();
   }
 
   // ------------------------
@@ -73,6 +71,14 @@ class SnowballShopViewModel extends GetxController {
         .collection('snowball_market')
         .doc('snowball_market')
         .snapshots();
+
+    final doc = await FirebaseFirestore.instance
+        .collection('snowball_market')
+        .doc('snowball_market')
+        .get();
+
+    final eventDateInt = (doc.data()?['event_date'] as num?)?.toInt();
+    if (eventDateInt != null) setEventDate(eventDateInt);
   }
 
   Future<void> getInfo_snowballMarket_notice_gold() async {
