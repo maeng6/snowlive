@@ -28,6 +28,10 @@ class SnowballShopViewModel extends GetxController {
     eventDate.value = v;
   }
 
+  // 미션 상태 저장용 (선택적)
+  var _missionStatus = MissionStatus().obs;
+  MissionStatus get missionStatus => _missionStatus.value;
+
   // ------------------------
   // 홈/상점/구매/기록 상태
   // ------------------------
@@ -259,4 +263,66 @@ class SnowballShopViewModel extends GetxController {
   void selectItem(SnowballShopItem item) {
     selectedItem.value = item;
   }
+
+  // ------------------------
+  // 미션 상태 확인
+  // POST /snowball-mission-status/ { user_id, event_date }
+  // ------------------------
+  Future<void> fetchMissionStatus() async {
+    try {
+      isLoading(true);
+      final userId = _userViewModel.user.user_id;
+
+      final response = await _api.fetchSnowballMissionStatus({
+        'user_id': userId,
+        'event_date': eventDate.value,
+      });
+
+      if (response.success) {
+        final missionData = MissionStatus.fromJson(response.data!);
+
+        // 필요하면 상태 변수에 저장하도록 추가
+        _missionStatus.value = missionData;
+
+        // 혹은 바로 UI 업데이트용 print
+        print("미션 상태 불러오기 성공: 전체완료=${missionData.completeTotal}");
+      } else {
+        print("미션 상태 요청 실패: ${response.error}");
+      }
+    } catch (e) {
+      print("Error fetchMissionStatus: $e");
+    } finally {
+      isLoading(false);
+    }
+  }
+
+  // ------------------------
+  // 미션 신청
+  // POST /snowball-mission-apply/ { user_id, event_date, Snowball_sponsor_id }
+  // ------------------------
+  Future<void> applyMission(int sponsorId) async {
+    try {
+      isLoading(true);
+      final userId = _userViewModel.user.user_id;
+
+      final response = await _api.applySnowballMission({
+        'user_id': userId,
+        'event_date': eventDate.value,
+        'Snowball_sponsor_id': sponsorId,
+      });
+
+      if (response.success) {
+        print("미션 신청 성공: ${response.data?['message'] ?? ''}");
+        // 신청 후 다시 상태 갱신
+        await fetchMissionStatus();
+      } else {
+        print("미션 신청 실패: ${response.error}");
+      }
+    } catch (e) {
+      print("Error applyMission: $e");
+    } finally {
+      isLoading(false);
+    }
+  }
+
 }
