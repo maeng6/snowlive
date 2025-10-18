@@ -269,6 +269,16 @@ class _SnowballMarketPremiumShopViewState extends State<SnowballMarketPremiumSho
                                                               ),
                                                             ),
                                                             SizedBox(height: 40),
+                                                            if(_snowballShopViewModel.isPremiumUser.value == false)
+                                                              Text(
+                                                                '랭킹 등급 골드 이상만 구매 가능합니다.',
+                                                                textAlign: TextAlign.center,
+                                                                style: SDSTextStyle.regular.copyWith(
+                                                                  fontSize: 14,
+                                                                  color: Color(0xFFFFFFFF),
+                                                                ),
+                                                              ),
+                                                            SizedBox(height: 20),
                                                             // 버튼들
                                                             Row(
                                                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -298,6 +308,7 @@ class _SnowballMarketPremiumShopViewState extends State<SnowballMarketPremiumSho
                                                                     :Container(),
                                                                 (item.landingUrl != null && item.landingUrl != "")
                                                                     ? SizedBox(width: 10) : Container(),
+                                                                if(_snowballShopViewModel.isPremiumUser.value == true)
                                                                 Expanded(
                                                                     child: ElevatedButton(
                                                                       onPressed: () async {
@@ -565,7 +576,6 @@ class _SnowballMarketPremiumShopViewState extends State<SnowballMarketPremiumSho
                                                                         ),
                                                                       ),
                                                                     )
-
                                                                 ),
                                                               ],
                                                             ),

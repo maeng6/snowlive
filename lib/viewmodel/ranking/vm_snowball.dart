@@ -42,6 +42,7 @@ class SnowballShopViewModel extends GetxController {
   var shopItems = <SnowballShopItem>[].obs;     // 상점 아이템 (필터 반영)
   var purchaseHistory = <SnowballBuyRecord>[].obs;
   var userSnowballRecords = <SnowballRecord>[].obs;
+  var isPremiumUser = false.obs;
 
   var selectedItem = SnowballShopItem().obs;
 
@@ -139,6 +140,14 @@ class SnowballShopViewModel extends GetxController {
         // 상점 summary도 동일 포맷이므로 병행 업데이트 가능
         summary.value = shop.summary ?? [];
         shopItems.value = shop.items ?? [];
+
+        // ✅ 추가: 프리미엄 여부 업데이트
+        if (shop.isPremiumUser != null) {
+          print('👑 프리미엄 유저 여부: ${shop.isPremiumUser}');
+          isPremiumUser.value = shop.isPremiumUser!;
+        }
+
+
       } else {
         print("Failed to fetch shop: ${response.error}");
         shopItems.clear();
