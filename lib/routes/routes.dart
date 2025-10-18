@@ -30,7 +30,8 @@ import 'package:com.snowlive/view/ranking/v_rankingGuide.dart';
 import 'package:com.snowlive/view/ranking/v_reward_exchange.dart';
 import 'package:com.snowlive/view/ranking/v_settingGuide_android.dart';
 import 'package:com.snowlive/view/ranking/v_settingGuide_ios.dart';
-import 'package:com.snowlive/view/ranking/v_snowballShop_buyRecord.dart';
+import 'package:com.snowlive/view/ranking/v_snowballMarket_shop_brand.dart';
+import 'package:com.snowlive/view/ranking/v_snowballmarket_buyRecord.dart';
 import 'package:com.snowlive/view/ranking/v_snowballmarket_shop_premium.dart';
 import 'package:com.snowlive/view/ranking/v_snowballmarket_shop_public.dart';
 import 'package:com.snowlive/view/resortHome/v_alarmCenter.dart';
@@ -132,7 +133,7 @@ class AppRoutes {
   static const String forestParkMap = '/forestParkMap';
   static const String snowballMarketPremiumShop = '/snowballMarketPremiumShop';
   static const String snowballMarketPublicShop = '/snowballMarketPublicShop';
-
+  static const String snowballMarketBrandShop = '/snowballMarketBrandShop';
 
 
 
@@ -426,6 +427,10 @@ class AppRoutes {
     GetPage(
       name: snowballMarketPublicShop,
       page: () => SnowballMarketPublicShopView(),
+    ),
+    GetPage(
+      name: snowballMarketBrandShop,
+      page: () => SnowballMarketBrandShopView(),
     ),
   ];
 }

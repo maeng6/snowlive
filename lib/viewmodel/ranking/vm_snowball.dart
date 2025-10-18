@@ -66,6 +66,7 @@ class SnowballShopViewModel extends GetxController {
         .snapshots();
   }
 
+
   Future<void> getInfo_snowballMarket() async {
     infoStream_snowballShop.value = FirebaseFirestore.instance
         .collection('snowball_market')

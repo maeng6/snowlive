@@ -565,8 +565,13 @@ class _SnowballMarketHomeViewState extends State<SnowballMarketHomeView> {
                                   ),
                                 ),
                                 SizedBox(height: 10,),
-                                Image.asset(
-                                  'assets/imgs/imgs/snowballShop/icon_snowballshop_store_brand.png',
+                                GestureDetector(
+                                  onTap: (){
+                                    Get.toNamed(AppRoutes.snowballMarketBrandShop);
+                                  },
+                                  child: Image.asset(
+                                    'assets/imgs/imgs/snowballShop/icon_snowballshop_store_brand.png',
+                                  ),
                                 ),
                               ],
                             ),
