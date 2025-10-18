@@ -3,7 +3,7 @@ import 'package:com.snowlive/data/imgaUrls/Data_url_image.dart';
 import 'package:com.snowlive/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/routes/routes.dart';
 import 'package:com.snowlive/view/banner/v_banner_ranking.dart';
-import 'package:com.snowlive/view/ranking/v_entrance_snowballShop.dart';
+import 'package:com.snowlive/view/ranking/v_entrance_snowballmarket_ranking.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewDetail.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewMemberList.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewMemberRankingList.dart';

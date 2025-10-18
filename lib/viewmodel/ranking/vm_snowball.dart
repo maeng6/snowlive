@@ -140,9 +140,11 @@ class SnowballShopViewModel extends GetxController {
         shopItems.value = shop.items ?? [];
       } else {
         print("Failed to fetch shop: ${response.error}");
+        shopItems.clear();
       }
     } catch (e) {
       print("Error fetchSnowballShop: $e");
+      shopItems.clear();
     } finally {
       isLoading(false);
     }
@@ -182,7 +184,7 @@ class SnowballShopViewModel extends GetxController {
   // 아이템 구매
   // POST /snowball-item-purchase/ { user_id, snowball_item_id, event_date }
   // ------------------------
-  Future<void> purchaseSnowballItem({
+  Future<bool> purchaseSnowballItem({
     required int snowballItemId,
   }) async {
     try {
@@ -202,11 +204,15 @@ class SnowballShopViewModel extends GetxController {
           fetchSnowballShop(),
           fetchPurchaseHistory(),
         ]);
+
+        return true; // ✅ 성공 시 true 반환
       } else {
-        print("Failed to purchase item: ${response.error}");
+        print("❌ Failed to purchase item: ${response.error}");
+        return false; // ❌ 실패 시 false 반환
       }
     } catch (e) {
-      print("Error purchasing item: $e");
+      print("⚠️ Error purchasing item: $e");
+      return false; // ❌ 예외 발생 시 false 반환
     } finally {
       isLoading(false);
     }

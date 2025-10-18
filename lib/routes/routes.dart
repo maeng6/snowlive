@@ -31,8 +31,10 @@ import 'package:com.snowlive/view/ranking/v_reward_exchange.dart';
 import 'package:com.snowlive/view/ranking/v_settingGuide_android.dart';
 import 'package:com.snowlive/view/ranking/v_settingGuide_ios.dart';
 import 'package:com.snowlive/view/ranking/v_snowballShop_buyRecord.dart';
+import 'package:com.snowlive/view/ranking/v_snowballmarket_shop_premium.dart';
+import 'package:com.snowlive/view/ranking/v_snowballmarket_shop_public.dart';
 import 'package:com.snowlive/view/resortHome/v_alarmCenter.dart';
-import 'package:com.snowlive/view/ranking/v_snowballShop.dart';
+import 'package:com.snowlive/view/ranking/v_snowballmarket_home.dart';
 import 'package:com.snowlive/view/v_forestParkShop.dart';
 import 'package:com.snowlive/view/v_forestParkShop_buyRecord.dart';
 import 'package:com.snowlive/view/v_forestPark_map.dart';
@@ -116,10 +118,10 @@ class AppRoutes {
   static const String rankingGuideMain = '/rankingGuideMain';
   static const String androidSettingGuide = '/androidSettingGuide';
   static const String iosSettingGuide = '/iosSettingGuide';
-  static const String snowballShop = '/treasureHunt';
+  static const String snowballmarket = '/snowballmarket';
   static const String crewMemberRankingList = '/crewMemberRankingList';
   static const String crewMemberRankingList_recordRoom = '/crewMemberRankingList_recordRoom';
-  static const String snowballExchangeHistoryView = '/snowballExchangeHistoryView';
+  static const String snowballMarketBuyRecord = '/snowballMarketBuyRecord';
   static const String rewardExchangeView = '/rewardExchangeView';
   static const String forestParkHome = '/forestParkHome';
   static const String quizPageForestPark = '/quizPageForestPark';
@@ -128,7 +130,8 @@ class AppRoutes {
   static const String forestParkExchangeHistory = '/forestParkExchangeHistory';
   static const String crewDailyRecord = '/crewDailyRecord';
   static const String forestParkMap = '/forestParkMap';
-
+  static const String snowballMarketPremiumShop = '/snowballMarketPremiumShop';
+  static const String snowballMarketPublicShop = '/snowballMarketPublicShop';
 
 
 
@@ -367,8 +370,8 @@ class AppRoutes {
       page: () => IosSettingGuideView(),
     ),
     GetPage(
-      name: snowballShop,
-      page: () => SnowballShopView(),
+      name: snowballmarket,
+      page: () => SnowballMarketHomeView(),
     ),
     GetPage(
       name: crewMemberRankingList,
@@ -381,8 +384,8 @@ class AppRoutes {
     ),
 
     GetPage(
-      name: snowballExchangeHistoryView,
-      page: () => SnowballExchangeHistoryView(),
+      name: snowballMarketBuyRecord,
+      page: () => SnowballMarketBuyRecordView(),
     ),
     GetPage(
       name: rewardExchangeView,
@@ -415,6 +418,14 @@ class AppRoutes {
     GetPage(
       name: forestParkMap,
       page: () => ForestParkMap(),
+    ),
+    GetPage(
+      name: snowballMarketPremiumShop,
+      page: () => SnowballMarketPremiumShopView(),
+    ),
+    GetPage(
+      name: snowballMarketPublicShop,
+      page: () => SnowballMarketPublicShopView(),
     ),
   ];
 }

@@ -247,7 +247,7 @@ class SnowballRecord {
     passTime = json['pass_time'];
     coordinates = json['coordinates'];
     active = json['active'];
-    color = json['color'];
+    color = json['snowball_kind'];
     slopeName = json['slope_name'];
   }
 

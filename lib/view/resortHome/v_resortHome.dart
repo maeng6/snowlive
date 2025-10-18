@@ -5,6 +5,7 @@ import 'package:com.snowlive/data/imgaUrls/Data_url_image.dart';
 import 'package:com.snowlive/routes/routes.dart';
 import 'package:com.snowlive/util/util_1.dart';
 import 'package:com.snowlive/view/banner/v_banner_resortHome.dart';
+import 'package:com.snowlive/view/ranking/v_entrance_snowballmarket_home.dart';
 import 'package:com.snowlive/view/resortHome/v_chat_resortHome.dart';
 import 'package:com.snowlive/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/view/v_entrance_forestPark.dart';
@@ -1665,6 +1666,11 @@ class _ResortHomeViewState extends State<ResortHomeView> with
                             Padding(
                               padding: EdgeInsets.only(left: 16, right: 16, top: 28),
                               child: Entrance_forestPark(),
+                            ),
+                            //TODO: 눈송이 상점 진입점
+                            Padding(
+                              padding: EdgeInsets.only(left: 16, right: 16, top: 28),
+                              child: Entrance_snowballMarket_Home(),
                             ),
                             //TODO: 오늘의 기록
                             if(_forestParkViewModel.isForestParkOpen.value == false)

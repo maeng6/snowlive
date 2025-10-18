@@ -1,7 +1,7 @@
 import 'package:com.snowlive/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/routes/routes.dart';
 import 'package:com.snowlive/view/banner/v_banner_ranking.dart';
-import 'package:com.snowlive/view/ranking/v_entrance_snowballShop.dart';
+import 'package:com.snowlive/view/ranking/v_entrance_snowballmarket_ranking.dart';
 import 'package:com.snowlive/view/ranking/v_rankingList_Indi.dart';
 import 'package:com.snowlive/view/ranking/history/v_rankingList_beta.dart';
 import 'package:com.snowlive/view/ranking/v_rankingList_crew.dart';
@@ -227,11 +227,11 @@ class RankingHomeView extends StatelessWidget {
                   ],
                 ),
               ),
-              // 눈송이 상점 진입점
-              // Padding(
-              //   padding: EdgeInsets.only(left: 16, right: 16, top: 8),
-              //   child: Entrance_snowballShop(),
-              // ),
+              //눈송이 상점 진입점
+              Padding(
+                padding: EdgeInsets.only(left: 16, right: 16, top: 8),
+                child: Entrance_snowballShop(),
+              ),
               if (_rankingListViewModel.tapName=='개인랭킹')
                 Expanded(
                     child: RankingIndiView()),

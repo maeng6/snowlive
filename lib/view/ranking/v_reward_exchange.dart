@@ -177,7 +177,7 @@ class _RewardExchangeViewState extends State<RewardExchangeView> {
                                 ),
                               ),
                               Text(
-                                '${_snowballShopViewModel.selectedItem.value.color} 눈송이 ${_snowballShopViewModel.selectedItem.value.snowballCount}개',
+                                '하얀?황금? 눈송이 1개',
                                 style: SDSTextStyle.regular.copyWith(
                                   fontSize: 12,
                                   color: Colors.white.withOpacity(0.5),
@@ -691,7 +691,7 @@ class _RewardExchangeViewState extends State<RewardExchangeView> {
                                                     ),
                                                   ),
                                                   Text(
-                                                    '${_snowballShopViewModel.selectedItem.value.color ?? ''} 눈송이 ${_snowballShopViewModel.selectedItem.value.snowballCount ?? 0}개',
+                                                    '하얀?황금? 눈송이 2개',
                                                     style: SDSTextStyle.regular.copyWith(
                                                       fontSize: 12,
                                                       color: Colors.white.withOpacity(0.5),
@@ -845,7 +845,7 @@ class _RewardExchangeViewState extends State<RewardExchangeView> {
                                             ),
                                             Expanded(
                                               child: Text(
-                                                '${_snowballShopViewModel.selectedItem.value.color ?? ''} 눈송이 ${_snowballShopViewModel.selectedItem.value.snowballCount ?? 0}개',
+                                                '하얀?황금? 눈송이 3개',
                                                 textAlign: TextAlign.end,
                                                 style: TextStyle(
                                                   fontSize: 14,
@@ -909,9 +909,6 @@ class _RewardExchangeViewState extends State<RewardExchangeView> {
                                                   CustomFullScreenDialog.showDialog(); // 로딩 다이얼로그 표시
                                                   await _snowballShopViewModel.purchaseSnowballItem(
                                                     snowballItemId: _snowballShopViewModel.selectedItem.value.snowballItemId!,
-                                                    address: '${_postalCodeController.text} ${_addressController.text} ${_detailAddressController.text}',
-                                                    name: _nameController.text,
-                                                    phoneNumber: _phoneController.text,
                                                   );
                                                   CustomFullScreenDialog.cancelDialog(); // 로딩 다이얼로그 닫기
                                                   // 교환 완료 팝업 띄우기
@@ -942,7 +939,7 @@ class _RewardExchangeViewState extends State<RewardExchangeView> {
                                                               height: 6,
                                                             ),
                                                             Text(
-                                                              '${_snowballShopViewModel.selectedItem.value.color} 눈송이 ${_snowballShopViewModel.selectedItem.value.snowballCount}개로 경품 교환을 완료했어요. 교환하신 상품은 구매 목록을 통해 확인해 주세요.',
+                                                              '하얀?황금 눈송이 10개로 경품 교환을 완료했어요. 교환하신 상품은 구매 목록을 통해 확인해 주세요.',
                                                               textAlign: TextAlign.center,
                                                               style: SDSTextStyle.regular.copyWith(
                                                                 color: SDSColor.gray500,

@@ -33,7 +33,7 @@ class _Entrance_snowballShopState extends State<Entrance_snowballShop> {
       isLoading.value = true;
     });
 
-    await _snowballShopViewModel.fetchSnowballSummary();
+    await _snowballShopViewModel.fetchSnowballSummaryOnly();
 
     if (!mounted) return;
     setState(() {
@@ -77,9 +77,9 @@ class _Entrance_snowballShopState extends State<Entrance_snowballShop> {
               GestureDetector(
                 onTap: () async {
                   _snowballShopViewModel.loadingEntrance = true;
-                  Get.toNamed(AppRoutes.snowballShop);
+                  Get.toNamed(AppRoutes.snowballmarket);
                   await _snowballShopViewModel.getInfo_snowballMarket();
-                  await _snowballShopViewModel.fetchSnowballShopData();
+                  await _snowballShopViewModel.fetchSnowballShop();
                   await _snowballShopViewModel.getInfo_snowballMarket_notice_gold();
                   await _snowballShopViewModel.fetchUserSnowballRecords();
                   _snowballShopViewModel.loadingEntrance = false;
@@ -165,7 +165,7 @@ class _Entrance_snowballShopState extends State<Entrance_snowballShop> {
                                               ),
                                               SizedBox(width: 3),
                                               Text(
-                                                '${_snowballShopViewModel.snowballSummary.value.white}', // 하얀 눈송이 개수
+                                                '${_snowballShopViewModel.summary[0].remaining}', // 하얀 눈송이 개수
                                                 style: SDSTextStyle.regular.copyWith(
                                                   color: Colors.white,
                                                   fontSize: 13,
@@ -182,7 +182,7 @@ class _Entrance_snowballShopState extends State<Entrance_snowballShop> {
                                               ),
                                               SizedBox(width: 3),
                                               Text(
-                                                '${_snowballShopViewModel.snowballSummary.value.gold}', // 황금 눈송이 개수
+                                                '${_snowballShopViewModel.summary[1].remaining}', // 황금 눈송이 개수
                                                 style: SDSTextStyle.regular.copyWith(
                                                   color: Colors.white,
                                                   fontSize: 13,
@@ -204,9 +204,9 @@ class _Entrance_snowballShopState extends State<Entrance_snowballShop> {
                           GestureDetector(
                             onTap: () async {
                               _snowballShopViewModel.loadingEntrance = true;
-                              Get.toNamed(AppRoutes.snowballShop);
+                              Get.toNamed(AppRoutes.snowballmarket);
                               await _snowballShopViewModel.getInfo_snowballMarket();
-                              await _snowballShopViewModel.fetchSnowballShopData();
+                              await _snowballShopViewModel.fetchSnowballShop();
                               await _snowballShopViewModel.getInfo_snowballMarket_notice_gold();
                               await _snowballShopViewModel.fetchUserSnowballRecords();
                               _snowballShopViewModel.loadingEntrance = false;
@@ -256,9 +256,9 @@ class _Entrance_snowballShopState extends State<Entrance_snowballShop> {
                 child: GestureDetector(
                   onTap: () async {
                     _snowballShopViewModel.loadingEntrance = true;
-                    Get.toNamed(AppRoutes.snowballShop);
+                    Get.toNamed(AppRoutes.snowballmarket);
                     await _snowballShopViewModel.getInfo_snowballMarket();
-                    await _snowballShopViewModel.fetchSnowballShopData();
+                    await _snowballShopViewModel.fetchSnowballShop();
                     await _snowballShopViewModel.getInfo_snowballMarket_notice_gold();
                     await _snowballShopViewModel.fetchUserSnowballRecords();
                     _snowballShopViewModel.loadingEntrance = false;
