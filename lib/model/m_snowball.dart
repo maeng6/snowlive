@@ -73,6 +73,7 @@ class SnowballSponsor {
 class SnowballShopResponse {
   List<SnowballKindRemain>? summary; // [{kind, remaining}]
   List<SnowballShopItem>? items;     // 상점 아이템
+  bool? isPremiumUser;                 // ✅ 추가: is_premium_user
 
   SnowballShopResponse({this.summary, this.items});
 
