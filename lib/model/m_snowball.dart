@@ -71,28 +71,46 @@ class SnowballSponsor {
 // 상점 응답
 // -----------------------------
 class SnowballShopResponse {
-  List<SnowballKindRemain>? summary; // [{kind, remaining}]
-  List<SnowballShopItem>? items;     // 상점 아이템
-  bool? isPremiumUser;                 // ✅ 추가: is_premium_user
+  List<SnowballKindRemain>? summary;        // [{kind, remaining}]
+  List<SnowballShopItem>? items;            // 일반 상점 아이템
+  List<SnowballShopItem>? brandItems;       // ✅ is_for_mission=true일 때만 내려옴
+  bool? isPremiumUser;                      // ✅ 서버 필드: is_premium_user
 
-  SnowballShopResponse({this.summary, this.items});
+  SnowballShopResponse({
+    this.summary,
+    this.items,
+    this.brandItems,
+    this.isPremiumUser,
+  });
 
   SnowballShopResponse.fromJson(Map<String, dynamic> json) {
     summary = (json['summary'] as List?)
         ?.map((e) => SnowballKindRemain.fromJson(e))
         .toList();
+
     items = (json['items'] as List?)
         ?.map((e) => SnowballShopItem.fromJson(e))
         .toList();
+
+    // 서버가 is_for_mission=true일 때만 내려줌(없으면 null)
+    brandItems = (json['brand_items'] as List?)
+        ?.map((e) => SnowballShopItem.fromJson(e))
+        .toList();
+
+    isPremiumUser = json['is_premium_user'];
   }
 
   Map<String, dynamic> toJson() {
     return {
       'summary': summary?.map((e) => e.toJson()).toList(),
       'items': items?.map((e) => e.toJson()).toList(),
+      if (brandItems != null)
+        'brand_items': brandItems?.map((e) => e.toJson()).toList(),
+      'is_premium_user': isPremiumUser,
     };
   }
 }
+
 
 class PriceEntry {
   int? snowballKindId;
