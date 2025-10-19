@@ -329,10 +329,9 @@ class _SnowballMarketHomeViewState extends State<SnowballMarketHomeView> {
                   onRefresh: () async{
                     _snowballShopViewModel.loadingEntrance = true;
                     Get.toNamed(AppRoutes.snowballmarket);
+                    await _snowballShopViewModel.fetchSnowballHomeData();
                     await _snowballShopViewModel.getInfo_snowballMarket();
-                    await _snowballShopViewModel.fetchSnowballShop();
                     await _snowballShopViewModel.getInfo_snowballMarket_notice_gold();
-                    await _snowballShopViewModel.fetchUserSnowballRecords();
                     _snowballShopViewModel.loadingEntrance = false;
 
                   },
@@ -1414,6 +1413,101 @@ class _SnowballMarketHomeViewState extends State<SnowballMarketHomeView> {
                                 Image.asset(
                                   'assets/imgs/imgs/snowballShop/img_snowballshop_store_bottom_image2.png',
                                 ),
+                              ],
+                            ),
+                          ),
+                          // 함께 하는 브랜드 섹션
+                          SizedBox(height: 60,),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                // 타이틀
+                                Center(
+                                  child: Text(
+                                    '함께 하는 브랜드',
+                                    style: SDSTextStyle.bold.copyWith(
+                                      fontSize: 20,
+                                      color: SDSColor.snowliveWhite,
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(height: 20), // ✅ 기존 8 → 4로 축소
+
+                                // 브랜드 리스트
+                                GridView.builder(
+                                  shrinkWrap: true,
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  padding: EdgeInsets.zero, // ✅ GridView 자체의 기본 padding 제거
+                                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount: 2,
+                                    mainAxisSpacing: 12,
+                                    crossAxisSpacing: 10,
+                                    childAspectRatio: 1 / 0.9,
+                                  ),
+                                  itemCount: _snowballShopViewModel.sponsors.length,
+                                  itemBuilder: (context, index) {
+                                    final sponsor = _snowballShopViewModel.sponsors[index];
+
+                                    return GestureDetector(
+                                      onTap: () async {
+                                        if (sponsor.landingUrl != null && sponsor.landingUrl!.isNotEmpty) {
+                                          await otherShare(contents: sponsor.landingUrl!);
+                                        }
+                                      },
+                                      child: Column(
+                                        children: [
+                                          Container(
+                                            height: 120,
+                                            decoration: BoxDecoration(
+                                              color: Color(0xFF141F30),
+                                              borderRadius: BorderRadius.circular(4),
+                                            ),
+                                            child: ClipRRect(
+                                              borderRadius: BorderRadius.circular(4),
+                                              child: ExtendedImage.network(
+                                                sponsor.logoUrl ?? '',
+                                                enableMemoryCache: true,
+                                                fit: BoxFit.cover,
+                                                cacheHeight: 800,
+                                                loadStateChanged: (state) {
+                                                  switch (state.extendedImageLoadState) {
+                                                    case LoadState.loading:
+                                                      return Shimmer.fromColors(
+                                                        baseColor: SDSColor.gray200!,
+                                                        highlightColor: SDSColor.gray50!,
+                                                        child: Container(color: Colors.white),
+                                                      );
+                                                    case LoadState.completed:
+                                                      return state.completedWidget;
+                                                    case LoadState.failed:
+                                                      return Image.asset(
+                                                        'assets/imgs/imgs/img_flea_default.png',
+                                                        fit: BoxFit.cover,
+                                                      );
+                                                  }
+                                                },
+                                              ),
+                                            ),
+                                          ),
+                                          const SizedBox(height: 6),
+                                          Text(
+                                            sponsor.name ?? '브랜드 이름',
+                                            textAlign: TextAlign.center,
+                                            style: SDSTextStyle.regular.copyWith(
+                                              fontSize: 14,
+                                              color: SDSColor.snowliveWhite,
+                                            ),
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  },
+                                ),
+
+                                const SizedBox(height: 16),
                               ],
                             ),
                           ),

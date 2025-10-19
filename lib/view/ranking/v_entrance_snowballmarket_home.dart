@@ -62,10 +62,9 @@ class _Entrance_snowballMarket_HomeState extends State<Entrance_snowballMarket_H
             onTap: () async {
               _snowballShopViewModel.loadingEntrance = true;
               Get.toNamed(AppRoutes.snowballmarket);
+              await _snowballShopViewModel.fetchSnowballHomeData();
               await _snowballShopViewModel.getInfo_snowballMarket();
-              await _snowballShopViewModel.fetchSnowballShop();
               await _snowballShopViewModel.getInfo_snowballMarket_notice_gold();
-              await _snowballShopViewModel.fetchUserSnowballRecords();
               _snowballShopViewModel.loadingEntrance = false;
             },
             child: Container(
