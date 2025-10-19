@@ -49,13 +49,15 @@ class SnowballSponsor {
   String? name;
   String? logoUrl;
   String? landingUrl;
+  String? badgeUrl;
 
-  SnowballSponsor({this.name, this.logoUrl, this.landingUrl});
+  SnowballSponsor({this.name, this.logoUrl, this.landingUrl,this.badgeUrl});
 
   SnowballSponsor.fromJson(Map<String, dynamic> json) {
     name = json['name'];
     logoUrl = json['logo_url'];
     landingUrl = json['landing_url'];
+    badgeUrl = json['badge_url'];
   }
 
   Map<String, dynamic> toJson() {
@@ -63,6 +65,7 @@ class SnowballSponsor {
       'name': name,
       'logo_url': logoUrl,
       'landing_url': landingUrl,
+      'badge_url': badgeUrl,
     };
   }
 }
