@@ -1,54 +1,76 @@
-# Miscellaneous
+# ───────── Misc ─────────
 *.class
 *.log
 *.pyc
 *.swp
 .DS_Store
-.atom/
-.build/
-.buildlog/
 .history
 .svn/
+atom/
+.build/
+.buildlog/
 .swiftpm/
 migrate_working_dir/
 
-# IntelliJ related
+# Flutter tool metadata (로컬 전용)
+.metadata
+
+# ───────── IDE ─────────
 *.iml
 *.ipr
 *.iws
 .idea/
+.vscode/            # 팀에서 공유 안 할 거면 주석 해제
 
-# The .vscode folder contains launch configuration and tasks you configure in
-# VS Code which you may wish to be included in version control, so this line
-# is commented out by default.
-#.vscode/
-
-# Flutter/Dart/Pub related
-**/doc/api/
-**/ios/Flutter/.last_build_id
+# ───────── Flutter / Dart / Pub ─────────
 .dart_tool/
-.flutter-plugins
-.flutter-plugins-dependencies
 .packages
 .pub-cache/
 .pub/
+**/doc/api/
+**/ios/Flutter/.last_build_id
+
+# ───────── Build outputs ─────────
 /build/
-/ios/Podfile.lock
-
-# Web related
-lib/generated_plugin_registrant.dart
-
-# Symbolication related
-app.*.symbols
-
-# Obfuscation related
-app.*.map.json
-
-# Android Studio will place build artifacts here
 /android/app/debug
 /android/app/profile
 /android/app/release
 
+# ───────── Android ─────────
+/android/.gradle/
+**/gradle/local.properties
+/android/local.properties
+/android/key.properties           # 🔐 서명 정보(반드시 ignore)
+/android/app/**/*.keystore
+/android/app/**/*.jks
+
+# Gradle-wrapper 캐시 폴더는 커밋 X (wrapper 자체는 커밋 O)
+**/.gradle/
+
+# ───────── iOS ─────────
+/ios/Pods/
+**/ios/.symlinks/
+/ios/Flutter/ephemeral/
+/ios/Flutter/flutter_export_environment.sh
+# Xcode 사용자별 세팅
+**/xcuserdata/
+**/*.mode1v3
+**/*.mode2v3
+**/*.perspectivev3
+**/*.pbxuser
+
+# ───────── macOS (Flutter desktop) ─────────
+/macos/Pods/
+/macos/Podfile.lock
+/macos/Flutter/ephemeral/
+
+# ───────── Web ─────────
+lib/generated_plugin_registrant.dart   # flutter build 시 재생성
+
+# ───────── Symbolication / Obfuscation ─────────
+app.*.symbols
+app.*.map.json
 
 
-
+.flutter-plugins
+.flutter-plugins-dependencies
