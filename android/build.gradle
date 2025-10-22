@@ -16,7 +16,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:8.3.0'  // ✅ AGP 업그레이드
+        classpath 'com.android.tools.build:gradle:8.6.1'             // ⬅️ 업그레이드
         classpath 'com.google.gms:google-services:4.4.0'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
