@@ -40,6 +40,7 @@ class SnowballShopViewModel extends GetxController {
   var sponsors = <SnowballSponsor>[].obs;       // 홈: 스폰서
 
   var shopItems = <SnowballShopItem>[].obs;     // 상점 아이템 (필터 반영)
+  var brandItems = <SnowballShopItem>[].obs;  // ✅ 브랜드 아이템 별도 바인딩(미션 전용)
   var purchaseHistory = <SnowballBuyRecord>[].obs;
   var userSnowballRecords = <SnowballRecord>[].obs;
   var isPremiumUser = false.obs;
@@ -127,6 +128,7 @@ class SnowballShopViewModel extends GetxController {
     try {
       isLoading(true);
       final userId = _userViewModel.user.user_id;
+
       final body = {
         'user_id': userId,
         'event_date': eventDate.value,
@@ -137,28 +139,36 @@ class SnowballShopViewModel extends GetxController {
       final response = await _api.fetchSnowballShop(body);
       if (response.success) {
         final shop = SnowballShopResponse.fromJson(response.data!);
-        // 상점 summary도 동일 포맷이므로 병행 업데이트 가능
+
+        // 요약, 일반 아이템
         summary.value = shop.summary ?? [];
         shopItems.value = shop.items ?? [];
 
-        // ✅ 추가: 프리미엄 여부 업데이트
-        if (shop.isPremiumUser != null) {
-          print('👑 프리미엄 유저 여부: ${shop.isPremiumUser}');
-          isPremiumUser.value = shop.isPremiumUser!;
+        // ✅ 프리미엄 여부
+        isPremiumUser.value = shop.isPremiumUser ?? false;
+
+        // ✅ 브랜드 아이템 (미션일 때만 내려오므로 null 체크)
+        if (shop.brandItems != null) {
+          brandItems.value = shop.brandItems!;
+        } else {
+          brandItems.clear();
         }
-
-
       } else {
         print("Failed to fetch shop: ${response.error}");
         shopItems.clear();
+        brandItems.clear();
+        isPremiumUser.value = false;
       }
     } catch (e) {
       print("Error fetchSnowballShop: $e");
       shopItems.clear();
+      brandItems.clear();
+      isPremiumUser.value = false;
     } finally {
       isLoading(false);
     }
   }
+
 
   // ------------------------
   // 남은 눈송이 요약만 갱신
