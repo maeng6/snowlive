@@ -94,32 +94,25 @@ class _Entrance_snowballShopState extends State<Entrance_snowballShop> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Container(
-                        width: 86,
+                        width: 40,
                       ),
                       Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Image.asset(
-                            'assets/imgs/imgs/snowballShop/img_snowballshop_text_1.png',
-                            height: 22,
-                          ),
-                          Image.asset(
-                            'assets/imgs/imgs/snowballShop/img_snowballshop_text_2.png',
-                            height: 22,
+                            'assets/imgs/imgs/snowballShop/img_rank_snb_src_2.png',
+                            height: 52,
                           ),
                           SizedBox(height: 4),
                           Padding(
                             padding: EdgeInsets.only(left: 2),
-                            child: Container(
-                              color: SDSColor.blue400.withOpacity(0.4),
-                              child: Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 4, vertical: 1),
-                                child: Text(
-                                  'IN 휘닉스 파크',
-                                  style: SDSTextStyle.bold.copyWith(
-                                    color: Colors.white,
-                                    fontSize: 11,
-                                  ),
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 4, vertical: 1),
+                              child: Text(
+                                '휘닉스 파크에서 눈송이를 찾아라!',
+                                style: SDSTextStyle.bold.copyWith(
+                                  color: Colors.white,
+                                  fontSize: 11,
                                 ),
                               ),
                             ),
@@ -249,9 +242,8 @@ class _Entrance_snowballShopState extends State<Entrance_snowballShop> {
               ),
               // 이미지 영역
               Positioned(
-                left: 6,
-                top: 6,
-                bottom: 6,
+                left: 0,
+                bottom: 0,
                 child: GestureDetector(
                   onTap: () async {
                     _snowballShopViewModel.loadingEntrance = true;
@@ -265,8 +257,8 @@ class _Entrance_snowballShopState extends State<Entrance_snowballShop> {
                   child: Padding(
                     padding: EdgeInsets.only(top: 2),
                     child: Image.asset(
-                        'assets/imgs/imgs/snowballShop/icon_snowballshop_store_banner.png',
-                        width: 86
+                        'assets/imgs/imgs/snowballShop/img_rank_snb_src_1.png',
+                        width: 105
                     ),
                   ),
                 ),

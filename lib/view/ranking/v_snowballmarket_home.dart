@@ -55,15 +55,15 @@ class _SnowballMarketHomeViewState extends State<SnowballMarketHomeView> {
               child: GestureDetector(
                 onTap: () {}, // 내부 터치시 닫히지 않게
                 child: Container(
-                  height: MediaQuery.of(context).size.height * 0.74, // ✅ 높이 지정
-                  decoration: const BoxDecoration(
+                  height: MediaQuery.of(context).size.height * 0.63, // ✅ 높이 지정
+                  decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.only(
                       topLeft: Radius.circular(24),
                       topRight: Radius.circular(24),
                     ),
                   ),
-                  padding: const EdgeInsets.only(top: 16, bottom: 32),
+                  padding: EdgeInsets.only(top: 16, bottom: 32),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween, // ✅ 공간 균등 분배
                     children: [
@@ -79,11 +79,10 @@ class _SnowballMarketHomeViewState extends State<SnowballMarketHomeView> {
                               borderRadius: BorderRadius.circular(10),
                             ),
                           ),
-                          const SizedBox(height: 10),
-
+                          SizedBox(height: 24),
                           // 기존 CarouselSlider 대신
                           SizedBox(
-                            height: 470, // 카드 높이 명시 (원래 400이었는데 살짝 줄여도 OK)
+                            height: 360,
                             child: PageView.builder(
                               controller: PageController(viewportFraction: 0.65),
                               itemCount: 2,
@@ -109,7 +108,7 @@ class _SnowballMarketHomeViewState extends State<SnowballMarketHomeView> {
                                 return Padding(
                                   padding: const EdgeInsets.symmetric(horizontal: 8),
                                   child: Transform.scale(
-                                    scale: _currentShopIndex == index ? 1.0 : 0.92,
+                                    scale: _currentShopIndex == index ? 1.0 : 0.9,
                                     child: GestureDetector(
                                       onTap: (){
                                         Navigator.of(context).pop();
@@ -130,20 +129,20 @@ class _SnowballMarketHomeViewState extends State<SnowballMarketHomeView> {
                               },
                             ),
                           ),
-                          const SizedBox(height: 8), // 도트와 카드 사이 여백 줄임
+                          SizedBox(height: 12), // 도트와 카드 사이 여백 줄임
                           AnimatedSmoothIndicator(
                             activeIndex: _currentShopIndex,
                             count: 2,
                             effect: SlideEffect(
                               dotHeight: 8,
                               dotWidth: 8,
-                              spacing: 6,
+                              spacing: 8,
                               radius: 8,
                               dotColor: Colors.grey.withOpacity(0.3),
                               activeDotColor: const Color(0xFF1D242E),
                             ),
                           ),
-                          const SizedBox(height: 32),
+                          SizedBox(height: 24),
                           ElevatedButton(
                             onPressed: () {
                               _snowballShopViewModel.fetchPurchaseHistory();
@@ -191,27 +190,42 @@ class _SnowballMarketHomeViewState extends State<SnowballMarketHomeView> {
   }) {
     return Column(
       children: [
-        ClipRRect(
-          child: Image.asset(
-            image,
-            fit: BoxFit.cover,
-            height: 400,
-            width: double.infinity,
+        Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.16),
+                blurRadius: 10,
+                offset: const Offset(0, 6),
+              ),
+            ],
+          ),
+          child: ClipRRect(
+            child: Image.asset(
+              image,
+              fit: BoxFit.fill,
+              height: 292,
+              width: 220,
+            ),
           ),
         ),
-        Text(
-          title,
-          style: const TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 16,
+        Padding(
+          padding: EdgeInsets.only(top: 20),
+          child: Text(
+            title,
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 16,
+            ),
           ),
         ),
-        const SizedBox(height: 4),
+        SizedBox(height: 4),
         Text(
           subtitle,
           textAlign: TextAlign.center,
           style: TextStyle(
-            fontSize: 12,
+            fontSize: 13,
             color: Colors.grey[600],
           ),
         ),
@@ -316,10 +330,9 @@ class _SnowballMarketHomeViewState extends State<SnowballMarketHomeView> {
               ),
             ),
           )
-              : Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+              : Stack(
             children: [
-              Expanded(
+              Positioned.fill(
                 child: RefreshIndicator(
                   strokeWidth: 2,
                   edgeOffset: -40,
@@ -379,10 +392,11 @@ class _SnowballMarketHomeViewState extends State<SnowballMarketHomeView> {
                                   // ✅ 하얀 눈송이 박스
                                   Container(
                                     decoration: BoxDecoration(
-                                      color: Colors.black.withOpacity(0.3),
+                                      color: Colors.black.withOpacity(0.5),
                                       borderRadius: BorderRadius.circular(20),
+                                      border: Border.all(width: 1, color: SDSColor.snowliveWhite.withOpacity(0.2),),
                                     ),
-                                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                                     child: Row(
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
@@ -395,7 +409,7 @@ class _SnowballMarketHomeViewState extends State<SnowballMarketHomeView> {
                                           '하얀 눈송이',
                                           style: SDSTextStyle.regular.copyWith(
                                             color: Colors.white.withOpacity(0.7), // ✅ 투명도 70%
-                                            fontSize: 12,
+                                            fontSize: 13,
                                           ),
                                         ),
                                         const SizedBox(width: 6),
@@ -404,7 +418,7 @@ class _SnowballMarketHomeViewState extends State<SnowballMarketHomeView> {
                                           style: SDSTextStyle.regular.copyWith(
                                             color: Colors.white,
                                             fontWeight: FontWeight.bold,
-                                            fontSize: 12,
+                                            fontSize: 14,
                                           ),
                                         ),
                                       ],
@@ -416,10 +430,11 @@ class _SnowballMarketHomeViewState extends State<SnowballMarketHomeView> {
                                   // ✅ 황금 눈송이 박스
                                   Container(
                                     decoration: BoxDecoration(
-                                      color: Colors.black.withOpacity(0.3),
+                                      color: Colors.black.withOpacity(0.5),
                                       borderRadius: BorderRadius.circular(20),
+                                      border: Border.all(width: 1, color: SDSColor.snowliveWhite.withOpacity(0.2),),
                                     ),
-                                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                                     child: Row(
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
@@ -432,7 +447,7 @@ class _SnowballMarketHomeViewState extends State<SnowballMarketHomeView> {
                                           '황금 눈송이',
                                           style: SDSTextStyle.regular.copyWith(
                                             color: Colors.white.withOpacity(0.7), // ✅ 투명도 70%
-                                            fontSize: 12,
+                                            fontSize: 13,
                                           ),
                                         ),
                                         const SizedBox(width: 6),
@@ -441,7 +456,7 @@ class _SnowballMarketHomeViewState extends State<SnowballMarketHomeView> {
                                           style: SDSTextStyle.regular.copyWith(
                                             color: Colors.white,
                                             fontWeight: FontWeight.bold,
-                                            fontSize: 12,
+                                            fontSize: 14,
                                           ),
                                         ),
                                       ],
@@ -508,14 +523,14 @@ class _SnowballMarketHomeViewState extends State<SnowballMarketHomeView> {
                                         ),
                                         IntrinsicWidth(
                                           child: Container(
-                                            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                                            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 13),
                                             decoration: BoxDecoration(
                                               color: SDSColor.snowliveWhite,
                                               borderRadius: BorderRadius.circular(8),
                                             ),
                                             child: Text(
                                               displayText,
-                                              style: SDSTextStyle.bold.copyWith(color: SDSColor.snowliveBlack, fontSize: 12),
+                                              style: SDSTextStyle.bold.copyWith(color: SDSColor.snowliveBlack, fontSize: 13),
                                             ),
                                           ),
                                         ),
@@ -578,7 +593,7 @@ class _SnowballMarketHomeViewState extends State<SnowballMarketHomeView> {
                           //눈송이 획득 실시간 현황
                           Column(
                             children: [
-                              SizedBox(height: 60),
+                              SizedBox(height: 96),
                               // 내가 획득한 눈송이_내용+바텀시트
                               Text('내가 획득한 눈송이',
                                 style: TextStyle(
@@ -587,7 +602,7 @@ class _SnowballMarketHomeViewState extends State<SnowballMarketHomeView> {
                                     fontWeight: FontWeight.bold
                                 ),
                               ),
-                              SizedBox(height: 10),
+                              SizedBox(height: 16),
                               Padding(
                                 padding: const EdgeInsets.symmetric(horizontal: 16),
                                 child: Column(
@@ -1189,7 +1204,7 @@ class _SnowballMarketHomeViewState extends State<SnowballMarketHomeView> {
                                             ),
                                           ),
                                           child: SizedBox(
-                                            width: 70, // ✅ 고정 크기 (텍스트 기준)
+                                            width: 64, // ✅ 고정 크기 (텍스트 기준)
                                             height: 18,
                                             child: Center(
                                               child: AnimatedSwitcher(
@@ -1279,7 +1294,8 @@ class _SnowballMarketHomeViewState extends State<SnowballMarketHomeView> {
                                                                     ),
                                                                   ),
                                                                   SizedBox(height: 20,),
-                                                                  Expanded(
+                                                                  (_snowballShopViewModel.userSnowballRecords.length > 0)
+                                                                  ? Expanded(
                                                                     child: ListView.builder(
                                                                       controller: controller,
                                                                       itemCount: _snowballShopViewModel.userSnowballRecords.length,
@@ -1343,6 +1359,33 @@ class _SnowballMarketHomeViewState extends State<SnowballMarketHomeView> {
                                                                         );
                                                                       },
                                                                     ),
+                                                                  )
+                                                                  : Expanded(
+                                                                    child: Center(
+                                                                      child: Padding(
+                                                                        padding: EdgeInsets.only(bottom: 100),
+                                                                        child: Column(
+                                                                          mainAxisAlignment: MainAxisAlignment.center,
+                                                                          crossAxisAlignment: CrossAxisAlignment.center,
+                                                                          children: [
+                                                                            Image.asset(
+                                                                              'assets/imgs/imgs/snowballShop/icon_snb_nodata.png',
+                                                                              width: 80,
+                                                                              height: 80,
+                                                                            ),
+                                                                            SizedBox(
+                                                                              height: 6,
+                                                                            ),
+                                                                            Text('아직 획득한 눈송이가 없어요',
+                                                                              style: SDSTextStyle.regular.copyWith(
+                                                                                  fontSize: 14,
+                                                                                  color: SDSColor.gray600
+                                                                              ),
+                                                                            ),
+                                                                          ],
+                                                                        ),
+                                                                      ),
+                                                                    ),
                                                                   ),
                                                                 ],
                                                               ),
@@ -1359,7 +1402,7 @@ class _SnowballMarketHomeViewState extends State<SnowballMarketHomeView> {
                                           style: ElevatedButton.styleFrom(
                                             backgroundColor: Colors.white,
                                             elevation: 0,
-                                            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
+                                            padding: const EdgeInsets.only(top: 10, bottom: 10, left: 16, right: 12),
                                             shape: RoundedRectangleBorder(
                                               borderRadius: BorderRadius.circular(20),
                                             ),
@@ -1389,35 +1432,170 @@ class _SnowballMarketHomeViewState extends State<SnowballMarketHomeView> {
                                   ],
                                 ),
                               ),
-                              SizedBox(height: 20),
                             ],
                           ),
                           //눈송이 상점 참여 방법
-                          SizedBox(height: 60,),
+                          SizedBox(height: 96,),
                           Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 16),
-                            child: Column(
-                              children: [
-                                Image.asset(
-                                  'assets/imgs/imgs/snowballShop/img_snowballshop_store_bottom_image1.png',
-                                ),
-                              ],
+                            padding: EdgeInsets.only(bottom: 16),
+                            child: Text('눈송이 상점 참여 방법',
+                              style: TextStyle(
+                                  color: Color(0xFFFFFFFF),
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold
+                              ),
                             ),
                           ),
+                          Container(
+                              width: _size.width - 32,
+                              decoration: BoxDecoration(
+                                color: Color(0xFF18273E),
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(vertical: 30, horizontal: 16),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Image.asset(
+                                          'assets/imgs/imgs/snowballShop/icon_snowballshop_whiteball.png',
+                                          height: 60,
+                                        ),
+                                        SizedBox(width: 6,),
+                                        Image.asset(
+                                          'assets/imgs/imgs/snowballShop/icon_snowballshop_goldball.png',
+                                          height: 60,
+                                        ),
+                                      ],
+                                  ),
+                                  Padding(
+                                    padding: EdgeInsets.only(bottom: 8, top: 16),
+                                    child: Text('눈송이 모으기',
+                                      style: SDSTextStyle.bold.copyWith(
+                                          color: Color(0xFFFFFFFF),
+                                          fontSize: 16,
+                                      ),
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: EdgeInsets.only(bottom: 8),
+                                    child: Text('라이브를 켜고 휘닉스 파크에서 라이딩 시 일정 확률로\n하얀 눈송이 혹은 황금 눈송이를 획득할 수 있어요!',
+                                      style: SDSTextStyle.regular.copyWith(
+                                          color: Color(0xFFFFFFFF).withOpacity(0.6),
+                                          fontSize: 13,
+                                      ),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: EdgeInsets.only(bottom: 8),
+                                    child: Text('단, 황금 눈송이는 1시간에 한 번 랜덤으로 등장해요.\n황금 눈송이가 내리는 위치는 매 정각마다\n눈송이 상점에서 알려드릴게요.',
+                                      style: SDSTextStyle.regular.copyWith(
+                                        color: Color(0xFFBDD7FF),
+                                        fontSize: 13,
+                                      ),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            )
+                          ),
+                          SizedBox(height: 16),
+                          Container(
+                              width: _size.width - 32,
+                              decoration: BoxDecoration(
+                                color: Color(0xFF18273E),
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: Padding(
+                                padding: EdgeInsets.symmetric(vertical: 30, horizontal: 16),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Image.asset(
+                                      'assets/imgs/imgs/snowballShop/icon_snowballshop_store_banner.png',
+                                      height: 100,
+                                    ),
+                                    Padding(
+                                      padding: EdgeInsets.only(bottom: 8, top: 16),
+                                      child: Text('눈송이 상점 이용하기',
+                                        style: SDSTextStyle.bold.copyWith(
+                                          color: Color(0xFFFFFFFF),
+                                          fontSize: 16,
+                                        ),
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: EdgeInsets.only(bottom: 8),
+                                      child: Text('라이딩하면서 모아둔 하얀 눈송이와 황금 눈송이로\n교환하고 싶은 상품과 교환을 할 수 있어요.\n상품 수령을 위해 이름과 전화번호, 주소를 입력하면 신청 완료!\n만약 현장 수령을 원하시면, 호크 리프트 옆\n눈송이 상품 수령처에서 직접 수령도 가능해요.',
+                                        style: SDSTextStyle.regular.copyWith(
+                                          color: Color(0xFFFFFFFF).withOpacity(0.6),
+                                          fontSize: 13,
+                                        ),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: EdgeInsets.only(bottom: 8),
+                                      child: Text('상품 교환시 취소 및 변경이 불가능하니 신중하게 골라주세요!',
+                                        style: SDSTextStyle.regular.copyWith(
+                                          color: Color(0xFFBDD7FF),
+                                          fontSize: 13,
+                                        ),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              )
+                          ),
                           //눈송이 상점 이야기
-                          SizedBox(height: 60,),
+                          SizedBox(height: 96),
+                          Text('눈송이 상점 이야기',
+                            style: TextStyle(
+                                color: Color(0xFFFFFFFF),
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold
+                            ),
+                          ),
+                          Text('눈송이를 모아 스노빌리지 친구들이\n여름을 날 수 있도록 도와주세요!',
+                            style: TextStyle(
+                                color: Color(0xFFFFFFFF).withOpacity(0.6),
+                                fontSize: 13
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                          SizedBox(height: 16),
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 16),
-                            child: Column(
+                            child: Stack(
                               children: [
                                 Image.asset(
                                   'assets/imgs/imgs/snowballShop/img_snowballshop_store_bottom_image2.png',
+                                ),
+                                Center(
+                                  child: Padding(
+                                    padding: EdgeInsets.symmetric(vertical: 46, horizontal: 40),
+                                    child: Text('안녕하세요?\n저는 전국에서 내리는 눈송이를 찾아\n유랑하는 상인 하람이에요.\n\n스노빌리지에서는 제가 눈송이를 가득 싣고 오기를 애타게 기다리고 있어요.\n\n눈송이가 왜 필요하냐구요?\n눈송이는 우리 스노 친구들이 더운 여름을 견디기위해 꼭 필요한 자원이랍니다. 그래서 저는 이번 겨울 최대한 많은 눈송이를 모으기 위해 여기저기 유랑하고 있답니다.\n특히 황금 눈송이는 스노빌리지에서 다양한 재화를 만들 수 있는 제일 중요한 자원이에요.\n\n그런데 주말동안 휘닉스 파크에서 눈송이가 내린다는 예보가 있지 뭐에요?\n제가 다양한 상품을 가지고 왔으니, 여러분이 힘을 합쳐 눈송이를 모아서 가져와주세요!\n\n눈송이 값은 섭섭치 않게 쳐드릴게요 :)',
+                                      style: TextStyle(
+                                          color: SDSColor.snowliveBlack,
+                                          fontSize: 14
+                                      ),
+                                        textAlign: TextAlign.center,
+                                    ),
+                                  ),
                                 ),
                               ],
                             ),
                           ),
                           // 함께 하는 브랜드 섹션
-                          SizedBox(height: 60,),
+                          SizedBox(height: 96),
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                             child: Column(
@@ -1511,7 +1689,6 @@ class _SnowballMarketHomeViewState extends State<SnowballMarketHomeView> {
                               ],
                             ),
                           ),
-
                           //안내사항
                           SizedBox(height: 60,),
                           Padding(
@@ -1557,8 +1734,8 @@ class _SnowballMarketHomeViewState extends State<SnowballMarketHomeView> {
                                 ],
                               ),
                             ),
-                          )
-
+                          ),
+                          SizedBox(height: 130),
                         ],
                       ),
                     ],
@@ -1566,158 +1743,181 @@ class _SnowballMarketHomeViewState extends State<SnowballMarketHomeView> {
                 ),
               ),
               // 하단 버튼
-              Container(
-                  padding: EdgeInsets.only(left: 16,right: 16,top: 16, bottom: 34),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: ElevatedButton(
-                          onPressed: () async {
-                            try {
-                              // 🔹 Firestore에서 event_date 불러오기
-                              final doc = await FirebaseFirestore.instance
-                                  .collection('snowball_market')
-                                  .doc('snowball_market')
-                                  .get();
+              Positioned(
+                bottom: 0,
+                left: 0,
+                right: 0,
+                child: Column(
+                  children: [
+                    Container(
+                        width: _size.width,
+                      height: 30,
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,      // 위쪽(0%)
+                          end: Alignment.bottomCenter,     // 아래쪽(100%)
+                          colors: [
+                            Color(0x00050E1B),             // #030C19, opacity 0
+                            Color(0xFF050E1B),             // #030C19, opacity 100
+                          ],
+                          stops: [0.0, 1.0],
+                        ),
+                      ),
+                    ),
+                    Container(
+                      color: Color(0xFF050E1B),
+                        padding: EdgeInsets.only(left: 16,right: 16,top: 10, bottom: 34),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: ElevatedButton(
+                                onPressed: () async {
+                                  try {
+                                    // 🔹 Firestore에서 event_date 불러오기
+                                    final doc = await FirebaseFirestore.instance
+                                        .collection('snowball_market')
+                                        .doc('snowball_market')
+                                        .get();
 
-                              final eventDate = doc.data()?['event_date'] ?? 1;
+                                    final eventDate = doc.data()?['event_date'] ?? 1;
 
-                              // 🔹 QR 데이터 구성
-                              final qrData = jsonEncode({
-                                "user_id": _userViewModel.user.user_id,
-                                "event_date": eventDate,
-                              });
+                                    // 🔹 QR 데이터 구성
+                                    final qrData = jsonEncode({
+                                      "user_id": _userViewModel.user.user_id,
+                                      "event_date": eventDate,
+                                    });
 
-                              // 🔹 QR 표시 바텀시트
-                              showModalBottomSheet(
-                                context: context,
-                                isScrollControlled: true,
-                                backgroundColor: const Color(0xFF3D83ED),
-                                builder: (context) {
-                                  return GestureDetector(
-                                    behavior: HitTestBehavior.opaque,
-                                    onTap: () => Navigator.of(context).pop(),
-                                    child: SafeArea(
-                                      child: Container(
-                                        decoration: const BoxDecoration(
-                                          borderRadius: BorderRadius.only(
-                                            topLeft: Radius.circular(16),
-                                            topRight: Radius.circular(16),
-                                          ),
-                                          color: Color(0xFF3D83ED),
-                                        ),
-                                        padding: const EdgeInsets.only(
-                                            bottom: 16, right: 16, left: 16, top: 12),
-                                        child: Column(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            // 핸들바
-                                            Center(
-                                              child: Padding(
-                                                padding: const EdgeInsets.only(bottom: 20),
-                                                child: Container(
-                                                  height: 4,
-                                                  width: 36,
-                                                  decoration: BoxDecoration(
-                                                    borderRadius: BorderRadius.circular(10),
-                                                    color: SDSColor.snowliveWhite,
+                                    // 🔹 QR 표시 바텀시트
+                                    showModalBottomSheet(
+                                      context: context,
+                                      isScrollControlled: true,
+                                      backgroundColor: const Color(0xFF3D83ED),
+                                      builder: (context) {
+                                        return GestureDetector(
+                                          behavior: HitTestBehavior.opaque,
+                                          onTap: () => Navigator.of(context).pop(),
+                                          child: SafeArea(
+                                            child: Container(
+                                              decoration: const BoxDecoration(
+                                                borderRadius: BorderRadius.only(
+                                                  topLeft: Radius.circular(16),
+                                                  topRight: Radius.circular(16),
+                                                ),
+                                                color: Color(0xFF3D83ED),
+                                              ),
+                                              padding: const EdgeInsets.only(
+                                                  bottom: 16, right: 16, left: 16, top: 12),
+                                              child: Column(
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: [
+                                                  // 핸들바
+                                                  Center(
+                                                    child: Padding(
+                                                      padding: const EdgeInsets.only(bottom: 20),
+                                                      child: Container(
+                                                        height: 4,
+                                                        width: 36,
+                                                        decoration: BoxDecoration(
+                                                          borderRadius: BorderRadius.circular(10),
+                                                          color: SDSColor.snowliveWhite,
+                                                        ),
+                                                      ),
+                                                    ),
                                                   ),
-                                                ),
+                                                  const SizedBox(height: 32),
+                                                  // QR 이미지
+                                                  Container(
+                                                    decoration: BoxDecoration(
+                                                      border: Border.all(
+                                                        color: const Color(0xFF073819),
+                                                        width: 6,
+                                                      ),
+                                                    ),
+                                                    child: QrImageView(
+                                                      data: qrData, // ✅ event_date 포함된 데이터
+                                                      version: QrVersions.auto,
+                                                      size: _size.width - 140,
+                                                      backgroundColor: Colors.white,
+                                                    ),
+                                                  ),
+                                                  const SizedBox(height: 16),
+                                                  Text(
+                                                    '눈송이 Pay QR 결제',
+                                                    style: SDSTextStyle.bold.copyWith(
+                                                      fontSize: 16,
+                                                      color: Colors.white,
+                                                    ),
+                                                    textAlign: TextAlign.center,
+                                                  ),
+                                                  const SizedBox(height: 6),
+                                                  Text(
+                                                    '경품 수령처에서 QR 코드를 스캔하고\n현장 이벤트에 참여해 보세요!',
+                                                    style: TextStyle(
+                                                      fontSize: 13,
+                                                      fontWeight: FontWeight.normal,
+                                                      color: SDSColor.snowliveWhite.withOpacity(0.6),
+                                                    ),
+                                                    textAlign: TextAlign.center,
+                                                  ),
+                                                  const SizedBox(height: 30),
+                                                ],
                                               ),
                                             ),
-                                            const SizedBox(height: 32),
-                                            // QR 이미지
-                                            Container(
-                                              decoration: BoxDecoration(
-                                                border: Border.all(
-                                                  color: const Color(0xFF073819),
-                                                  width: 6,
-                                                ),
-                                              ),
-                                              child: QrImageView(
-                                                data: qrData, // ✅ event_date 포함된 데이터
-                                                version: QrVersions.auto,
-                                                size: _size.width - 140,
-                                                backgroundColor: Colors.white,
-                                              ),
-                                            ),
-                                            const SizedBox(height: 16),
-                                            Text(
-                                              '눈송이 pay QR 결제',
-                                              style: SDSTextStyle.bold.copyWith(
-                                                fontSize: 16,
-                                                color: Colors.white,
-                                              ),
-                                              textAlign: TextAlign.center,
-                                            ),
-                                            const SizedBox(height: 6),
-                                            Text(
-                                              '경품 수령처에서 QR 코드를 스캔하고\n현장 이벤트에 참여해 보세요!',
-                                              style: TextStyle(
-                                                fontSize: 13,
-                                                fontWeight: FontWeight.normal,
-                                                color: SDSColor.snowliveWhite,
-                                              ),
-                                              textAlign: TextAlign.center,
-                                            ),
-                                            const SizedBox(height: 30),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  );
+                                          ),
+                                        );
+                                      },
+                                    );
+                                  } catch (e) {
+                                    print('❌ Firestore event_date 불러오기 실패: $e');
+                                  }
                                 },
-                              );
-                            } catch (e) {
-                              print('❌ Firestore event_date 불러오기 실패: $e');
-                            }
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFF7C899D),
-                            padding: const EdgeInsets.symmetric(vertical: 14),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(6),
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: const Color(0xFF7C899D),
+                                  padding: const EdgeInsets.symmetric(vertical: 14),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(6),
+                                  ),
+                                ),
+                                child: const Text(
+                                  '눈송이 pay',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
                             ),
-                          ),
-                          child: const Text(
-                            '눈송이 pay',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
+                            SizedBox(width: 10),
+                            Expanded(
+                              child: ElevatedButton(
+                                onPressed: () async{
+                                  _openSnowShopBottomSheet(context);
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  elevation: 0,
+                                  backgroundColor: Color(0xFF3D83ED),
+                                  padding: EdgeInsets.symmetric(vertical: 14),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(6),
+                                  ),
+                                ),
+                                child: Text(
+                                  '눈송이 상점',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
                             ),
-                          ),
+                          ],
                         ),
                       ),
-                      SizedBox(width: 10),
-                      Expanded(
-                        child: ElevatedButton(
-                          onPressed: () async{
-                            _openSnowShopBottomSheet(context);
-                          },
-                          style: ElevatedButton.styleFrom(
-                            elevation: 0,
-                            backgroundColor: Color(0xFF3D83ED),
-                            padding: EdgeInsets.symmetric(vertical: 14),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(6),
-                            ),
-                          ),
-                          child: Text(
-                            '눈송이 상점',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
+                  ],
                 ),
-
-
+              ),
             ],
           )
       ),
