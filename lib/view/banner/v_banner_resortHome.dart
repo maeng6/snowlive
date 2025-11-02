@@ -97,8 +97,8 @@ class _Banner_resortHomeState extends State<Banner_resortHome> {
 
             return Padding(
               padding: bannerWidgets.length > 0
-                  ? EdgeInsets.only(bottom: 0)
-                  : EdgeInsets.only(bottom: 0),
+                  ? EdgeInsets.only(bottom: 20)
+                  : EdgeInsets.only(bottom: 20),
               child: CarouselSlider(
                 items: bannerWidgets,
                 carouselController: _carouselController,

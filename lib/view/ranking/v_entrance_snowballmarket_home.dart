@@ -67,71 +67,74 @@ class _Entrance_snowballMarket_HomeState extends State<Entrance_snowballMarket_H
               await _snowballShopViewModel.getInfo_snowballMarket_notice_gold();
               _snowballShopViewModel.loadingEntrance = false;
             },
-            child: Container(
-              height: _size.width - 32,
-              child: Stack(
-                children: [
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(16),
-                    child: ExtendedImage.network(
-                      entranceImage,
-                      width: double.infinity,
-                      height: null, // 높이 비율 유지
-                      fit: BoxFit.fitWidth,
-                      loadStateChanged: (state) {
-                        switch (state.extendedImageLoadState) {
-                          case LoadState.loading:
-                            return Container(
-                              height: 200,
-                              color: Colors.grey.shade100,
-                              alignment: Alignment.center,
-                              child: CircularProgressIndicator(),
-                            );
-                          case LoadState.failed:
-                            return Container(
-                              height: 200,
-                              color: Colors.grey.shade100,
-                              alignment: Alignment.center,
-                              child: Icon(Icons.error, color: Colors.red),
-                            );
-                          case LoadState.completed:
-                            return null;
-                        }
-                      },
-                    ),
-                  ),
-                  Align(
-                    alignment: Alignment.bottomCenter,
-                    child: Padding(
-                      padding: EdgeInsets.only(bottom: 24),
-                      child: Container(
-                        padding: EdgeInsets.symmetric(vertical: 6, horizontal: 16),
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(50),
-                            color: SDSColor.snowliveWhite
-                        ),
-                        width: 268,
-                        height: 42,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text('눈송이 상점 입장하기',
-                              style: SDSTextStyle.extraBold.copyWith(
-                                  fontSize: 14,
-                                  color: SDSColor.snowliveBlack
-                              ),),
-                            Image.asset(
-                              'assets/imgs/icons/icon_arrow_round_black.png',
-                              fit: BoxFit.cover,
-                              width: 18,
-                              height: 18,
-                            ),
-                          ],
-                        ),
+            child: Padding(
+              padding: EdgeInsets.only(bottom: 20),
+              child: Container(
+                height: _size.width - 32,
+                child: Stack(
+                  children: [
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(16),
+                      child: ExtendedImage.network(
+                        entranceImage,
+                        width: double.infinity,
+                        height: null, // 높이 비율 유지
+                        fit: BoxFit.fitWidth,
+                        loadStateChanged: (state) {
+                          switch (state.extendedImageLoadState) {
+                            case LoadState.loading:
+                              return Container(
+                                height: 200,
+                                color: Colors.grey.shade100,
+                                alignment: Alignment.center,
+                                child: CircularProgressIndicator(),
+                              );
+                            case LoadState.failed:
+                              return Container(
+                                height: 200,
+                                color: Colors.grey.shade100,
+                                alignment: Alignment.center,
+                                child: Icon(Icons.error, color: Colors.red),
+                              );
+                            case LoadState.completed:
+                              return null;
+                          }
+                        },
                       ),
                     ),
-                  )
-                ],
+                    Align(
+                      alignment: Alignment.bottomCenter,
+                      child: Padding(
+                        padding: EdgeInsets.only(bottom: 24),
+                        child: Container(
+                          padding: EdgeInsets.symmetric(vertical: 6, horizontal: 16),
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(50),
+                              color: SDSColor.snowliveWhite
+                          ),
+                          width: 268,
+                          height: 42,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text('눈송이 상점 입장하기',
+                                style: SDSTextStyle.extraBold.copyWith(
+                                    fontSize: 14,
+                                    color: SDSColor.snowliveBlack
+                                ),),
+                              Image.asset(
+                                'assets/imgs/icons/icon_arrow_round_black.png',
+                                fit: BoxFit.cover,
+                                width: 18,
+                                height: 18,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    )
+                  ],
+                ),
               ),
             ),
           );

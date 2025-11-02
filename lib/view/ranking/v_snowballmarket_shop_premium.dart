@@ -153,16 +153,16 @@ class _SnowballMarketPremiumShopViewState extends State<SnowballMarketPremiumSho
                           Column(
                             children: [
                               Padding(
-                                padding: EdgeInsets.only(top: 10),
+                                padding: EdgeInsets.only(top: 4),
                                 child: Text('획득한 눈송이는 당일에 사용하지 않으면 모두 사라집니다',
                                   style: TextStyle(
                                       fontSize: 14,
-                                      fontWeight: FontWeight.bold,
-                                      color: Color(0xFF3D83ED)
+                                      fontWeight: FontWeight.normal,
+                                      color: Color(0xFFFFFFFF).withOpacity(0.6)
                                   ),
                                 ),
                               ),
-                              SizedBox(height: 20),
+                              SizedBox(height: 16),
                               GridView.builder(
                                 shrinkWrap: true,
                                 physics: NeverScrollableScrollPhysics(),
@@ -258,13 +258,13 @@ class _SnowballMarketPremiumShopViewState extends State<SnowballMarketPremiumSho
                                                                   color: SDSColor.snowliveWhite
                                                               ),
                                                             ),
-                                                            SizedBox(height: 8),
+                                                            SizedBox(height: 6),
                                                             // 설명 텍스트
                                                             Text(
                                                               item.description ?? '',
                                                               textAlign: TextAlign.center,
                                                               style: SDSTextStyle.regular.copyWith(
-                                                                fontSize: 12,
+                                                                fontSize: 13,
                                                                 color: Colors.white.withOpacity(0.5),
                                                               ),
                                                             ),
@@ -274,11 +274,11 @@ class _SnowballMarketPremiumShopViewState extends State<SnowballMarketPremiumSho
                                                                 '랭킹 등급 골드 이상만 구매 가능합니다.',
                                                                 textAlign: TextAlign.center,
                                                                 style: SDSTextStyle.regular.copyWith(
-                                                                  fontSize: 14,
+                                                                  fontSize: 13,
                                                                   color: Color(0xFFFFFFFF),
                                                                 ),
                                                               ),
-                                                            SizedBox(height: 20),
+                                                            SizedBox(height: 12),
                                                             // 버튼들
                                                             Row(
                                                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
