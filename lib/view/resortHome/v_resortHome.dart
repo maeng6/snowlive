@@ -8,8 +8,6 @@ import 'package:com.snowlive/view/banner/v_banner_resortHome.dart';
 import 'package:com.snowlive/view/ranking/v_entrance_snowballmarket_home.dart';
 import 'package:com.snowlive/view/resortHome/v_chat_resortHome.dart';
 import 'package:com.snowlive/data/snowliveDesignStyle.dart';
-import 'package:com.snowlive/view/v_entrance_forestPark.dart';
-import 'package:com.snowlive/viewmodel/forestPark/vm_forestPark.dart';
 import 'package:com.snowlive/viewmodel/friend/vm_friendDetail.dart';
 import 'package:com.snowlive/viewmodel/friend/vm_friendList.dart';
 import 'package:com.snowlive/viewmodel/resortHome/vm_alarmCenter.dart';
@@ -57,7 +55,6 @@ class _ResortHomeViewState extends State<ResortHomeView> with
   FriendListViewModel _friendListViewModel = Get.find<FriendListViewModel>();
   GenderCategoryViewModel _genderCategoryViewModel = Get.find<GenderCategoryViewModel>();
   AlarmCenterViewModel _alarmCenterViewModel = Get.find<AlarmCenterViewModel>();
-  ForestParkViewModel _forestParkViewModel = Get.find<ForestParkViewModel>();
   //TODO: Dependency Injection**************************************************
 
   @override
@@ -1662,18 +1659,12 @@ class _ResortHomeViewState extends State<ResortHomeView> with
                                   color: SDSColor.gray50,
                                 ),
                               ),
-                            //TODO: 포레스트파크 진입점
-                            Padding(
-                              padding: EdgeInsets.only(left: 16, right: 16, top: 28),
-                              child: Entrance_forestPark(),
-                            ),
                             //TODO: 눈송이 상점 진입점
                             Padding(
                               padding: EdgeInsets.only(left: 16, right: 16, top: 28),
                               child: Entrance_snowballMarket_Home(),
                             ),
                             //TODO: 오늘의 기록
-                            if(_forestParkViewModel.isForestParkOpen.value == false)
                               Padding(
                                   padding: EdgeInsets.only(left: 16, right: 16),
                                   child: Column(

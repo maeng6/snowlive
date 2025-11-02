@@ -56,7 +56,6 @@ class RankingAPI {
   Future<http.Response> addCheckPoint(Map<String, dynamic> body) async {
     final Uri uri = Uri.parse('$baseUrl/add-check-point/');
     print('체크포인트 요청 바디: ${jsonEncode(body)}');
-    print(uri);
 
     final response = await http.post(
       uri,

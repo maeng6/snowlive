@@ -55,7 +55,7 @@ class MainHomeBinding extends Bindings {
     Get.put(StreamController_Banner());
     Get.put(SnowballShopViewModel());
     Get.put(ResortHomeViewModel());
-    Get.put(ForestParkViewModel());
+    //Get.put(ForestParkViewModel());
     Get.put(GenderCategoryViewModel());
     Get.put(ChatViewModel());
     Get.put(FriendDetailUpdateViewModel());

@@ -10,6 +10,7 @@ import 'package:com.snowlive/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/model/m_bestFriendListModel.dart';
 import 'package:com.snowlive/model/m_treasure_record.dart';
 import 'package:com.snowlive/model/m_weatherModel.dart';
+import 'package:com.snowlive/native/live_activity_service.dart';
 import 'package:com.snowlive/util/util_1.dart';
 import 'package:com.snowlive/viewmodel/ranking/vm_snowball.dart';
 import 'package:com.snowlive/viewmodel/vm_splashController.dart';
@@ -68,6 +69,8 @@ class ResortHomeViewModel extends GetxController {
   RxBool isLoadingTreasureRecordUpdate = false.obs;
   RxInt _treasureHuntNum = 0.obs;
 
+  String? _liveActivityId;
+  DateTime? _liveOnStartedAt; // 시작 시각 표시용 (LockScreen에 타이머로 쓰는 값)
 
   dynamic weatherTextColors;
   dynamic weatherColors;
@@ -127,6 +130,26 @@ class ResortHomeViewModel extends GetxController {
   }
 
   //TODO: 라이브온 관련 메소드****************************************************
+
+  void _updateLiveActivity({
+    String? lastSlopeName,
+    int? todayRideCount,
+    int? sessionRideCount,
+  }) {
+    if (!Platform.isIOS) return;
+    if (_liveActivityId == null) return;
+
+    final int today = todayRideCount ?? (resortHomeModel?.todayRideCount ?? 0);
+    final int session = sessionRideCount ?? 0; // 세션 카운트 관리 중이면 값 대체
+    final String last = lastSlopeName ?? '—';
+
+    LiveActivityService.update(
+      activityId: _liveActivityId!,
+      todayRideCount: today,
+      sessionRideCount: session,
+      lastSlopeName: last,
+    );
+  }
 
   Future<void> startLiveLocationService({required user_id}) async {
     try {
@@ -337,6 +360,14 @@ class ResortHomeViewModel extends GetxController {
                     _lastRespawnMethodCall = DateTime.now();
                     await RankingAPI().respawn({"user_id": user_id});
                     print('리스폰 성공');
+
+                    _updateLiveActivity(
+                      lastSlopeName: 'Respawn',
+                      // todayRideCount/sessionRideCount 값 추적 중이면 전달해도 됨
+                      // todayRideCount: resortHomeModel?.todayRideCount,
+                      // sessionRideCount: ...,
+                    );
+
                   }
                 }
               }
@@ -470,6 +501,12 @@ class ResortHomeViewModel extends GetxController {
                 if (response.statusCode == 201 || response.statusCode == 416) {
                   _lastCountMethodCall = DateTime.now();
                   print('백그라운드 체크포인트 업데이트 성공');
+                  await LiveActivityService.update(
+                    activityId: _liveActivityId!,
+                    todayRideCount: 1,
+                    sessionRideCount: 1,
+                    lastSlopeName: '테스트슬로프',
+                  );
                 } else {
                   print('백그라운드 체크포인트 업데이트 실패: ${response.statusCode}');
                 }
@@ -508,6 +545,14 @@ class ResortHomeViewModel extends GetxController {
                 _lastRespawnMethodCall = DateTime.now();
                 await RankingAPI().respawn({"user_id": user_id});
                 print('리스폰 성공');
+
+                _updateLiveActivity(
+                  lastSlopeName: 'Respawn',
+                  // todayRideCount/sessionRideCount 값 추적 중이면 전달해도 됨
+                  // todayRideCount: resortHomeModel?.todayRideCount,
+                  // sessionRideCount: ...,
+                );
+
               }
             }
           }
@@ -598,18 +643,25 @@ class ResortHomeViewModel extends GetxController {
     return distance <= radius;
   }
 
-  Future<void> liveOff(Map<String, dynamic> body,user_id) async {
-
+  Future<void> liveOff(Map<String, dynamic> body, user_id) async {
     isLoading(true);
-    ApiResponse response_off = await RankingAPI().liveOff(body);
-    if(response_off.success) {
-      ApiResponse response_fetchResortHome = await ResortHomeAPI().fetchResortHomeData(user_id);
-      if (response_fetchResortHome.success)
+    final ApiResponse response_off = await RankingAPI().liveOff(body);
+
+    if (response_off.success) {
+      // ✅ 라이브 액티비티 종료 (iOS에서만)
+      if (Platform.isIOS && _liveActivityId != null) {
+        await LiveActivityService.end(activityId: _liveActivityId!);
+        _liveActivityId = null;
+        _liveOnStartedAt = null;
+      }
+
+      final ApiResponse response_fetchResortHome = await ResortHomeAPI().fetchResortHomeData(user_id);
+      if (response_fetchResortHome.success) {
         _resortHomeModel.value = ResortHomeModel.fromJson(response_fetchResortHome.data);
+      }
       await _userViewModel.updateUserModel_api(_userViewModel.user.user_id);
       print('liveOff 완료');
-    }
-    else {
+    } else {
       CustomFullScreenDialog.cancelDialog();
     }
     isLoading(false);
@@ -618,15 +670,29 @@ class ResortHomeViewModel extends GetxController {
   Future<ApiResponse> liveOn(Map<String, dynamic> body) async {
     try {
       isLoading(true);
-      // API 호출
-      ApiResponse response = await RankingAPI().check_wb(body);
+      final ApiResponse response = await RankingAPI().check_wb(body);
       if (response.success) {
-        _resort_info.value = response.data['resort_info'];
-        _slope_info.value = List<Map<String, dynamic>>.from(response.data['slope_info']);
+        _resort_info.value   = response.data['resort_info'];
+        _slope_info.value    = List<Map<String, dynamic>>.from(response.data['slope_info']);
         _snowball_info.value = List<Map<String, dynamic>>.from(response.data['snowball_info']);
-        _reset_point.value = List<Map<String, dynamic>>.from(response.data['reset_point']);
+        _reset_point.value   = List<Map<String, dynamic>>.from(response.data['reset_point']);
         _respawn_point.value = List<Map<String, dynamic>>.from(response.data['respawn_point']);
-        _isParticipate_treasure_hunt.value = response.data['participant'];
+
+        // ✅ 라이브 액티비티 시작 (iOS에서만)
+        if (Platform.isIOS) {
+          _liveOnStartedAt = DateTime.now();
+          final int todayRide = 0;
+          final int sessionRide = 0; // 세션 카운트 관리 중이면 실제 값 사용
+          final String lastSlope = '—';
+
+          _liveActivityId = await LiveActivityService.start(
+            liveOnStartAt: _liveOnStartedAt!,
+            todayRideCount: todayRide,
+            sessionRideCount: sessionRide,
+            lastSlopeName: lastSlope,
+          );
+        }
+
         return response;
       } else {
         await stopForegroundLocationService();
@@ -642,6 +708,7 @@ class ResortHomeViewModel extends GetxController {
       isLoading(false);
     }
   }
+
 
   /// 배터리 절약 모드 확인 메서드
   Future<bool> isBatterySaverOn() async {

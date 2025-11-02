@@ -1,7 +1,9 @@
-# Uncomment this line to define a global platform for your project
+# CocoaPods CDN 사용 (권장)
+source 'https://cdn.cocoapods.org/'
+
 platform :ios, '16.4'
 
-# CocoaPods analytics sends network stats synchronously affecting flutter build latency.
+# CocoaPods analytics off
 ENV['COCOAPODS_DISABLE_STATS'] = 'true'
 
 project 'Runner', {
@@ -20,7 +22,7 @@ def flutter_root
     matches = line.match(/FLUTTER_ROOT\=(.*)/)
     return matches[1].strip if matches
   end
-  raise "FLUTTER_ROOT not found in #{generated_xcode_build_settings_path}. Try deleting Generated.xcconfig, then run flutter pub get"
+  raise "FLUTTER_ROOT not found in #{generated_xcconfig_path}. Try deleting Generated.xcconfig, then run flutter pub get"
 end
 
 require File.expand_path(File.join('packages', 'flutter_tools', 'bin', 'podhelper'), flutter_root)
@@ -33,28 +35,32 @@ target 'Runner' do
 
   flutter_install_all_ios_pods File.dirname(File.realpath(__FILE__))
 
-  # Firebase SDK 추가
+  # Firebase Analytics (모듈러 헤더 유지)
   pod 'Firebase/Analytics', :modular_headers => true
 
-#   target 'RunnerTests' do
-#     inherit! :search_paths
-#   end
+  # target 'RunnerTests' do
+  #   inherit! :search_paths
+  # end
 end
 
 post_install do |installer|
+  # Flutter가 권장하는 추가 설정
   installer.pods_project.targets.each do |target|
     flutter_additional_ios_build_settings(target)
-23
-    target.build_configurations.each do |config|
-      # iOS 최소 버전 15.0으로 설정
-      config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '16.4'
-      config.build_settings['CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES'] = 'YES'
 
-      # DT_TOOLCHAIN_DIR 치환
-      xcconfig_path = config.base_configuration_reference.real_path
-      xcconfig = File.read(xcconfig_path)
-      xcconfig_mod = xcconfig.gsub(/DT_TOOLCHAIN_DIR/, "TOOLCHAIN_DIR")
-      File.open(xcconfig_path, "w") { |file| file << xcconfig_mod }
+    target.build_configurations.each do |config|
+      # 배포 타깃 통일
+      config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '16.4'
+      # 모듈 외부 헤더 허용 (필요 시)
+      config.build_settings['CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES'] = 'YES'
     end
   end
+
+  # ⚠️ 'object_version=' 조작은 제거 (여기서 크래시 났음)
+  # installer.pods_project.object_version = '60'
+  # installer.pods_project.save
+
+  # ⚠️ xcconfig 파일 직접 치환 로직 제거 (간헐적 실패 원인)
+  # 각 config.base_configuration_reference 가 nil일 수 있어 런타임 에러가 납니다.
+  # DT_TOOLCHAIN_DIR 이슈가 실제로 있을 때만, 안전 가드 후 별도 스크립트에서 처리하세요.
 end

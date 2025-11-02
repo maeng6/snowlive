@@ -15,8 +15,8 @@ class UserViewModel extends GetxController {
 
     isLoading(true);
     ApiResponse response = await UserAPI().getUserInfo(user_id);
-    print(response);
     if(response.success) {
+    print('유저모델 업데이트 완료');
 
       _user.value = UserModel.fromJson(response.data);
 
