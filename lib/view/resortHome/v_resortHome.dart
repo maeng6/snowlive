@@ -63,7 +63,6 @@ class _ResortHomeViewState extends State<ResortHomeView> with
   FriendListViewModel _friendListViewModel = Get.find<FriendListViewModel>();
   GenderCategoryViewModel _genderCategoryViewModel = Get.find<GenderCategoryViewModel>();
   AlarmCenterViewModel _alarmCenterViewModel = Get.find<AlarmCenterViewModel>();
-  ForestParkViewModel _forestParkViewModel = Get.find<ForestParkViewModel>();
   CrewMemberListViewModel _crewMemberListViewModel = Get.find<CrewMemberListViewModel>();
   CrewDetailViewModel _crewDetailViewModel = Get.find<CrewDetailViewModel>();
 
@@ -1672,17 +1671,16 @@ class _ResortHomeViewState extends State<ResortHomeView> with
                                 ),
                               ),
                             //TODO: 포레스트파크 진입점
-                            Padding(
-                              padding: EdgeInsets.only(left: 16, right: 16),
-                              child: Entrance_forestPark(),
-                            ),
+                            // Padding(
+                            //   padding: EdgeInsets.only(left: 16, right: 16),
+                            //   child: Entrance_forestPark(),
+                            // ),
                             //TODO: 눈송이 상점 진입점
                             Padding(
                               padding: EdgeInsets.only(left: 16, right: 16),
                               child: Entrance_snowballMarket_Home(),
                             ),
                             //TODO: 오늘의 기록
-                            if(_forestParkViewModel.isForestParkOpen.value == false)
                               Padding(
                                   padding: EdgeInsets.only(left: 16, right: 16),
                                   child: Column(
