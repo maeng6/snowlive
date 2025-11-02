@@ -109,7 +109,71 @@ class _SnowballMarketBrandShopViewState extends State<SnowballMarketBrandShopVie
                                   ),
                                 ),
                               ),
+                              //브랜드 배지
+                              Image.asset('assets/imgs/imgs/snowballShop/icon_snowballshop_brand_badge.png'),
+                              Column(
+                                children: [
+                                  const Text(
+                                    '브랜드 미션을 완수하라',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  SizedBox(height: 10,),
+                                  Text('아래 미션을 완료하고, 원하는 브랜드 경품애 응모하세요!',
+                                    style: TextStyle(
+                                        fontSize: 13,
+                                        color: Color(0xFFFFFFFF).withOpacity(0.6)
+                                    ),
+                                  ),
+                                  SizedBox(height: 2,),
+                                  Text('추첨을 통해 단 하나의 상품의 주인공이 되어 보세요!',
+                                    style: TextStyle(
+                                        fontSize: 13,
+                                        color: Color(0xFFFFFFFF).withOpacity(0.6)
+                                    ),
+                                  ),
+                                ],
+                              ),
+
                               //브랜드 미션 선택
+                              SizedBox(height: 60,),
+                              Column(
+                                children: [
+                                  Text(
+                                    '원하는 브랜드의 경품을 선택하고',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  Text(
+                                    '브랜드 미션 응모하기 버튼을 눌러주세요!',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  SizedBox(height: 10,),
+                                  Text('경품에 대한 자세한 정보는',
+                                    style: TextStyle(
+                                        fontSize: 13,
+                                        color: Color(0xFFFFFFFF).withOpacity(0.6)
+                                    ),
+                                  ),
+                                  SizedBox(height: 2,),
+                                  Text('아래 경품 구경하기 버튼을 눌러주세요!',
+                                    style: TextStyle(
+                                        fontSize: 13,
+                                        color: Color(0xFFFFFFFF).withOpacity(0.6)
+                                    ),
+                                  ),
+                                ],
+                              ),
                               SizedBox(height: 60),
                               //브랜드 미션 설명
                               Padding(
