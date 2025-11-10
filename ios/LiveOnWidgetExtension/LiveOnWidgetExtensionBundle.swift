@@ -1,18 +1,10 @@
-//
-//  LiveOnWidgetExtensionBundle.swift
-//  LiveOnWidgetExtension
-//
-//  Created by 김명식 on 10/26/25.
-//
-
 import WidgetKit
 import SwiftUI
 
 @main
 struct LiveOnWidgetExtensionBundle: WidgetBundle {
     var body: some Widget {
-        LiveOnWidgetExtension()
-        LiveOnWidgetExtensionControl()
+        // 오직 Live Activity만 포함
         LiveOnWidgetExtensionLiveActivity()
     }
 }

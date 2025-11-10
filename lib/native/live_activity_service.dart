@@ -11,24 +11,25 @@ class LiveActivityService {
     required String lastSlopeName,
   }) async {
     if (!Platform.isIOS) return null;
-    try {
-      // ✅ 날짜를 문자열이 아닌 epoch(ms)로 보냅니다 (UTC 권장)
-      final payload = {
-        'liveOnStartAtMs': liveOnStartAt.toUtc().millisecondsSinceEpoch,
-        'todayRideCount': todayRideCount,
-        'sessionRideCount': sessionRideCount,
-        'lastSlopeName': lastSlopeName,
-      };
-      // 디버그용 로그 (원하면 남겨두세요)
-      print('[LiveActivityService.start] payload: $payload');
 
+    final payload = {
+      'liveOnStartAtMs': liveOnStartAt.toUtc().millisecondsSinceEpoch,
+      'todayRideCount': todayRideCount,
+      'sessionRideCount': sessionRideCount,
+      'lastSlopeName': lastSlopeName,
+    };
+    print('[LiveActivityService.start] payload: $payload');
+
+    try {
       final id = await _channel.invokeMethod<String>('start', payload);
+      print('🎯 [LA] start() returned id = $id'); // ← 여기서 null인지 확인
       return id;
     } on PlatformException catch (e) {
-      print('LiveActivity start error: $e');
+      print('❌ [LA] start error: $e');
       return null;
     }
   }
+
 
   static Future<void> update({
     required String activityId,

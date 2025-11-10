@@ -309,12 +309,12 @@ class MissionPiece {
 }
 
 class MissionStatus {
-  // mission_status: { mission_1:{title,complete}, ... }
   Map<String, MissionPiece>? missionStatus;
   bool? completeTotal;
   List<BrandItemPremium>? brandItemPremium;
   List<BrandItemBasic>? brandItemBasic;
   bool? isApplied;
+  SnowballCount? snowballCount;
 
   MissionStatus({
     this.missionStatus,
@@ -322,6 +322,7 @@ class MissionStatus {
     this.brandItemPremium,
     this.brandItemBasic,
     this.isApplied,
+    this.snowballCount,
   });
 
   MissionStatus.fromJson(Map<String, dynamic> json) {
@@ -340,6 +341,11 @@ class MissionStatus {
         ?.map((e) => BrandItemBasic.fromJson(e))
         .toList();
     isApplied = json['is_applied'];
+
+    final sc = json['snowball_count'];
+    if (sc is Map<String, dynamic>) {
+      snowballCount = SnowballCount.fromJson(sc);
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -352,9 +358,33 @@ class MissionStatus {
       'brand_item_basic':
       brandItemBasic?.map((e) => e.toJson()).toList(),
       'is_applied': isApplied,
+      'snowball_count': snowballCount?.toJson(),
     };
   }
 }
+
+class SnowballCount {
+  int? white;
+  int? gold;
+  int? white_on_slope;
+
+  SnowballCount({this.white, this.gold});
+
+  SnowballCount.fromJson(Map<String, dynamic> json) {
+    white = json['white'];
+    gold = json['gold'];
+    white_on_slope = json['white_on_slope'];
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'white': white,
+      'gold': gold,
+      'white_on_slope': white_on_slope,
+    };
+  }
+}
+
 
 class BrandItemPremium {
   int? snowballItemBrandId;
