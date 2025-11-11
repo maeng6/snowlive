@@ -117,7 +117,9 @@ class _SnowballMarketBrandShopViewState extends State<SnowballMarketBrandShopVie
                         Column(
                           children: [
                             const SizedBox(height: 10),
+                            // ===== 눈송이 사용 기한 안내 문구=====
                             const _TopNotice(),
+                            // ===== 브랜드 미션 뱃지=====
                             if (badgeUrl == null || badgeUrl.isEmpty)
                               Image.asset(
                                 'assets/imgs/imgs/snowballShop/icon_snowballshop_brand_badge.png',
@@ -204,11 +206,15 @@ class _SnowballMarketBrandShopViewState extends State<SnowballMarketBrandShopVie
                                 ],
                               ),
                             const SizedBox(height: 50),
+                            // ===== 브랜드 미션 설명 문구=====
                             const _HeroText(),
+                            // ===== 미션 달성 현황 영역=====
                             _MissionProgressRow(),
                             const SizedBox(height: 100),
+                            // ===== 브랜드 응모 영역 상단 문구=====
                             const _ChooseTitle(),
                             const SizedBox(height: 20),
+                            // ===== 경품 구경하기=====
                             Align(
                               child: SizedBox(
                                 width: 130, // ⬅️ 좌우 여백 주고 가운데 정렬 (필요시 200~260 사이로 조절)
@@ -387,7 +393,6 @@ class _SnowballMarketBrandShopViewState extends State<SnowballMarketBrandShopVie
                               ),
                             ),
                             const SizedBox(height: 40),
-
                             // ===== 브랜드 미션 선택 그리드 =====
                             Padding(
                               padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -429,11 +434,10 @@ class _SnowballMarketBrandShopViewState extends State<SnowballMarketBrandShopVie
                                 },
                               ),
                             ),
-
                             const SizedBox(height: 60),
+                            // ===== 경품 추첨 방법 설명 문구=====
                             const _DrawHowTo(),
                             const SizedBox(height: 60),
-
                             // ===== 추가 경품 리스트 (기존 로직 유지) =====
                             const _ExtraPrizeTitle(),
                             const SizedBox(height: 20),
