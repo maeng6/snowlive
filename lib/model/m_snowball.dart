@@ -47,6 +47,7 @@ class SnowballKindRemain {
 
 class SnowballSponsor {
   String? name;
+  String? name_eng;
   String? logoUrl;
   String? landingUrl;
   String? badgeUrl;
@@ -55,6 +56,7 @@ class SnowballSponsor {
 
   SnowballSponsor.fromJson(Map<String, dynamic> json) {
     name = json['name'];
+    name_eng = json['name_eng'];
     logoUrl = json['logo_url'];
     landingUrl = json['landing_url'];
     badgeUrl = json['badge_url'];
@@ -63,6 +65,7 @@ class SnowballSponsor {
   Map<String, dynamic> toJson() {
     return {
       'name': name,
+      'name_eng': name_eng,
       'logo_url': logoUrl,
       'landing_url': landingUrl,
       'badge_url': badgeUrl,
@@ -316,7 +319,9 @@ class MissionStatus {
   bool? isApplied;
   String? badgeUrl;
   int? snowballSponsorId;
+  String? sponsorEngName;
   SnowballCount? snowballCount;
+  int? missionApplyId;
 
   MissionStatus({
     this.missionStatus,
@@ -326,7 +331,9 @@ class MissionStatus {
     this.isApplied,
     this.badgeUrl,
     this.snowballSponsorId,
+    this.sponsorEngName,
     this.snowballCount,
+    this.missionApplyId,
   });
 
   MissionStatus.fromJson(Map<String, dynamic> json) {
@@ -346,7 +353,9 @@ class MissionStatus {
         .toList();
     isApplied = json['is_applied'];
     badgeUrl = json['badge_url'];
+    sponsorEngName = json['sponsor_name_eng'];
     snowballSponsorId = json['snowball_sponsor_id'];
+    missionApplyId = json['snowball_mission_apply_list_id'];
 
     final sc = json['snowball_count'];
     if (sc is Map) {
@@ -363,6 +372,8 @@ class MissionStatus {
       'is_applied': isApplied,
       'snowball_sponsor_id': snowballSponsorId,
       'badge_url': badgeUrl,
+      'snowball_mission_apply_list_id': missionApplyId,
+      'sponsor_name_eng': sponsorEngName,
       'snowball_count': snowballCount?.toJson(),
     };
   }
@@ -416,6 +427,7 @@ class BrandItemPremium {
   int? itemCount;
   String? landingUrl;
   int? eventDate;
+  SponsorInfo? sponsor; // ✅ 추가된 필드
 
   BrandItemPremium({
     this.snowballItemBrandId,
@@ -425,6 +437,7 @@ class BrandItemPremium {
     this.itemCount,
     this.landingUrl,
     this.eventDate,
+    this.sponsor,
   });
 
   BrandItemPremium.fromJson(Map<String, dynamic> json) {
@@ -435,6 +448,11 @@ class BrandItemPremium {
     itemCount = json['item_count'];
     landingUrl = json['landing_url'];
     eventDate = json['event_date'];
+
+    // ✅ sponsor가 존재하면 파싱
+    if (json['sponsor'] != null) {
+      sponsor = SponsorInfo.fromJson(Map<String, dynamic>.from(json['sponsor']));
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -446,6 +464,38 @@ class BrandItemPremium {
       'item_count': itemCount,
       'landing_url': landingUrl,
       'event_date': eventDate,
+      if (sponsor != null) 'sponsor': sponsor!.toJson(), // ✅ sponsor 직렬화
+    };
+  }
+}
+
+/// ✅ 새로 추가된 스폰서 서브모델
+class SponsorInfo {
+  int? snowballSponsorId;
+  String? name;
+  String? nameEng;
+  String? logoUrl;
+
+  SponsorInfo({
+    this.snowballSponsorId,
+    this.name,
+    this.nameEng,
+    this.logoUrl,
+  });
+
+  SponsorInfo.fromJson(Map<String, dynamic> json) {
+    snowballSponsorId = json['snowball_sponsor_id'];
+    name = json['name'];
+    nameEng = json['name_eng'];
+    logoUrl = json['logo_url'];
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'snowball_sponsor_id': snowballSponsorId,
+      'name': name,
+      'name_eng': nameEng,
+      'logo_url': logoUrl,
     };
   }
 }
