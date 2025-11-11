@@ -330,45 +330,59 @@ class MissionStatus {
     if (ms is Map) {
       missionStatus = {};
       ms.forEach((k, v) {
-        missionStatus![k.toString()] = MissionPiece.fromJson(v);
+        missionStatus![k.toString()] = MissionPiece.fromJson(Map<String, dynamic>.from(v));
       });
     }
     completeTotal = json['complete_total'];
     brandItemPremium = (json['brand_item_premium'] as List?)
-        ?.map((e) => BrandItemPremium.fromJson(e))
+        ?.map((e) => BrandItemPremium.fromJson(Map<String, dynamic>.from(e)))
         .toList();
     brandItemBasic = (json['brand_item_basic'] as List?)
-        ?.map((e) => BrandItemBasic.fromJson(e))
+        ?.map((e) => BrandItemBasic.fromJson(Map<String, dynamic>.from(e)))
         .toList();
     isApplied = json['is_applied'];
 
     final sc = json['snowball_count'];
-    if (sc is Map<String, dynamic>) {
-      snowballCount = SnowballCount.fromJson(sc);
+    if (sc is Map) {
+      snowballCount = SnowballCount.fromJson(Map<String, dynamic>.from(sc));
     }
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'mission_status':
-      missionStatus?.map((k, v) => MapEntry(k, v.toJson())),
+      'mission_status': missionStatus?.map((k, v) => MapEntry(k, v.toJson())),
       'complete_total': completeTotal,
-      'brand_item_premium':
-      brandItemPremium?.map((e) => e.toJson()).toList(),
-      'brand_item_basic':
-      brandItemBasic?.map((e) => e.toJson()).toList(),
+      'brand_item_premium': brandItemPremium?.map((e) => e.toJson()).toList(),
+      'brand_item_basic': brandItemBasic?.map((e) => e.toJson()).toList(),
       'is_applied': isApplied,
       'snowball_count': snowballCount?.toJson(),
     };
   }
+
+  // === 👇 여기부터 추가 (title/complete만) ===
+
+  /// 정렬된 미션 엔트리 (mission_1, mission_2 ... 순)
+  List<MapEntry<String, MissionPiece>> get entriesSorted {
+    final m = missionStatus ?? const {};
+    final list = m.entries.toList();
+    list.sort((a, b) => a.key.compareTo(b.key));
+    return list;
+  }
+
+  /// 특정 미션 id의 title
+  String titleOf(String id) => missionStatus?[id]?.title ?? '-';
+
+  /// 특정 미션 id 완료 여부
+  bool isComplete(String id) => missionStatus?[id]?.complete ?? false;
 }
+
 
 class SnowballCount {
   int? white;
   int? gold;
   int? white_on_slope;
 
-  SnowballCount({this.white, this.gold});
+  SnowballCount({this.white, this.gold, this.white_on_slope});
 
   SnowballCount.fromJson(Map<String, dynamic> json) {
     white = json['white'];

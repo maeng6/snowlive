@@ -580,7 +580,11 @@ class _SnowballMarketHomeViewState extends State<SnowballMarketHomeView> {
                                 ),
                                 SizedBox(height: 10,),
                                 GestureDetector(
-                                  onTap: (){
+                                  onTap: () async{
+                                    CustomFullScreenDialog.showDialog();
+                                    await _snowballShopViewModel.fetchSnowballHomeData();
+                                    await _snowballShopViewModel.fetchMissionStatus();
+                                    CustomFullScreenDialog.cancelDialog();
                                     Get.toNamed(AppRoutes.snowballMarketBrandShop);
                                   },
                                   child: Image.asset(
