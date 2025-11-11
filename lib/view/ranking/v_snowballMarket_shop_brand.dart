@@ -141,8 +141,7 @@ class _SnowballMarketBrandShopViewState extends State<SnowballMarketBrandShopVie
                                       else
                                         ExtendedImage.network(
                                           badgeUrl,
-                                          width: 280,
-                                          height: 280,
+                                          width: 340,
                                           fit: BoxFit.contain,
                                           loadStateChanged: (state) {
                                             switch (state.extendedImageLoadState) {
@@ -172,10 +171,10 @@ class _SnowballMarketBrandShopViewState extends State<SnowballMarketBrandShopVie
 
                                       // 2️⃣ 응모번호 (리본 위쪽에 겹쳐 표시)
                                       Positioned(
-                                        bottom: 25,
-                                        child: Text('1',
+                                        bottom: 30,
+                                        child: Text('${_snowballShopViewModel.missionStatus.missionApplyId}',
                                           style: const TextStyle(
-                                            fontSize: 24,
+                                            fontSize: 30,
                                             fontWeight: FontWeight.w900,
                                             color: Colors.white,
                                             shadows: [
@@ -186,16 +185,20 @@ class _SnowballMarketBrandShopViewState extends State<SnowballMarketBrandShopVie
                                       ),
                                     ],
                                   ),
-
-                                  const SizedBox(height: 12),
-
                                   // 3️⃣ 유저 이름
                                   Text(
                                     '${_userViewModel.user.display_name}',
                                     style: const TextStyle(
                                       fontSize: 18,
-                                      fontWeight: FontWeight.bold,
                                       color: Colors.white,
+                                    ),
+                                  ),
+                                  Text(
+                                    '${_snowballShopViewModel.missionStatus.sponsorEngName}',
+                                    style: TextStyle(
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white.withOpacity(0.4),
                                     ),
                                   ),
                                 ],
@@ -271,49 +274,52 @@ class _SnowballMarketBrandShopViewState extends State<SnowballMarketBrandShopVie
                                                           onPageChanged: (i) => setState(() => currentPage = i),
                                                           itemBuilder: (context, i) {
                                                             final b = brands[i];
-                                                            return Column(
-                                                              mainAxisSize: MainAxisSize.min,
+                                                            final logo = b.sponsor?.logoUrl;
+                                                            return Stack(
                                                               children: [
-                                                                // 이미지
-                                                                Container(
-                                                                  width: 140,
-                                                                  height: 140,
-                                                                  decoration: BoxDecoration(
-                                                                    borderRadius: BorderRadius.circular(8),
-                                                                    color: Colors.white.withOpacity(0.08),
-                                                                  ),
-                                                                  clipBehavior: Clip.hardEdge,
-                                                                  child: ExtendedImage.network(
-                                                                    b.imageUrl ?? '',
-                                                                    width: 140,
-                                                                    height: 140,
-                                                                    fit: BoxFit.cover,
-                                                                  ),
+                                                                // 본문 콘텐츠
+                                                                Column(
+                                                                  mainAxisSize: MainAxisSize.min,
+                                                                  children: [
+                                                                    // 이미지
+                                                                    ExtendedImage.network(
+                                                                      b.imageUrl ?? '',
+                                                                      width: 80,
+                                                                      fit: BoxFit.cover,
+                                                                    ),
+                                                                    const SizedBox(height: 14),
+                                                                    // 타이틀
+                                                                    Text(
+                                                                      (b.name ?? '상품 이름'),
+                                                                      textAlign: TextAlign.center,
+                                                                      style: SDSTextStyle.bold.copyWith(
+                                                                        fontSize: 16,
+                                                                        color: SDSColor.snowliveWhite,
+                                                                      ),
+                                                                      maxLines: 1,
+                                                                      overflow: TextOverflow.ellipsis,
+                                                                    ),
+                                                                    const SizedBox(height: 6),
+                                                                    // 설명
+                                                                    Text(
+                                                                      b.description ?? '',
+                                                                      textAlign: TextAlign.center,
+                                                                      style: SDSTextStyle.regular.copyWith(
+                                                                        fontSize: 12,
+                                                                        color: Colors.white.withOpacity(0.6),
+                                                                      ),
+                                                                      maxLines: 2,
+                                                                      overflow: TextOverflow.ellipsis,
+                                                                    ),
+                                                                  ],
                                                                 ),
-                                                                const SizedBox(height: 14),
-                                                                // 타이틀
-                                                                Text(
-                                                                  (b.name ?? '상품 이름'),
-                                                                  textAlign: TextAlign.center,
-                                                                  style: SDSTextStyle.bold.copyWith(
-                                                                    fontSize: 16,
-                                                                    color: SDSColor.snowliveWhite,
+
+                                                                // 우상단 스폰서 로고(Sticker)
+                                                                if (logo != null && logo.isNotEmpty)
+                                                                  Positioned(
+                                                                    right: 1,
+                                                                    child: _SponsorSticker(logoUrl: logo),
                                                                   ),
-                                                                  maxLines: 1,
-                                                                  overflow: TextOverflow.ellipsis,
-                                                                ),
-                                                                const SizedBox(height: 6),
-                                                                // 설명
-                                                                Text(
-                                                                  b.description ?? '',
-                                                                  textAlign: TextAlign.center,
-                                                                  style: SDSTextStyle.regular.copyWith(
-                                                                    fontSize: 12,
-                                                                    color: Colors.white.withOpacity(0.6),
-                                                                  ),
-                                                                  maxLines: 2,
-                                                                  overflow: TextOverflow.ellipsis,
-                                                                ),
                                                               ],
                                                             );
                                                           },
@@ -391,7 +397,7 @@ class _SnowballMarketBrandShopViewState extends State<SnowballMarketBrandShopVie
                                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                                   crossAxisCount: 2,
                                   crossAxisSpacing: 14,
-                                  mainAxisSpacing: 14,
+                                  mainAxisSpacing: 20,
                                   childAspectRatio: 0.82,
                                 ),
                                 itemCount: _snowballShopViewModel.missionStatus.brandItemPremium?.length ?? 0,
@@ -405,8 +411,8 @@ class _SnowballMarketBrandShopViewState extends State<SnowballMarketBrandShopVie
                                       : (_selectedBrandId == id);
 
                                   return _BrandChoiceCard(
-                                    title: (item.name ?? '').toUpperCase(),
-                                    subtitle: item.description ?? '',
+                                    title: (item.sponsor?.nameEng ?? '').toUpperCase(),
+                                    subtitle: item.sponsor?.name ?? '',
                                     imageUrl: item.imageUrl ?? '',
                                     selected: selected,
                                     onTap: () {
@@ -616,7 +622,6 @@ class _SnowballMarketBrandShopViewState extends State<SnowballMarketBrandShopVie
                   ),
                 ),
 
-                // ===== 하단 응모 버튼 =====
                 // ===== 하단 응모 버튼 =====
                 SafeArea(
                   child: Container(
@@ -964,6 +969,7 @@ class _BrandChoiceCard extends StatelessWidget {
 
     final overlay = selected ? Colors.white.withOpacity(0.06) : Colors.transparent;
 
+    // ⬇️ _BrandChoiceCard.build() 내부에서 card 만드는 부분만 교체
     Widget card = Container(
       decoration: BoxDecoration(
         color: emphasized ? null : const Color(0xFF11213D),
@@ -975,54 +981,83 @@ class _BrandChoiceCard extends StatelessWidget {
             : const [BoxShadow(color: Color(0x33000000), blurRadius: 12, offset: Offset(0, 6))],
       ),
       child: Stack(
+        clipBehavior: Clip.none,
         children: [
+          // 1) 우측으로 살짝 튀어나오는 큰 제품 이미지 (텍스트 뒤)
+          Positioned(
+            // 원하는 만큼 조절하세요
+            right: -35,     // ➡️ 카드 오른쪽 밖으로 튀어나오게
+            top: -15,
+            bottom: 10,    // ⬇️ 세로도 카드보다 살짝 길어 보이게
+            child: IgnorePointer(
+              ignoring: true,
+              child: Opacity(
+                opacity: 0.95, // 너무 세면 0.85~0.9
+                child: Image.network(
+                  imageUrl,
+                  width: 190,            // 카드 크기에 맞춰 조절(160~210)
+                  fit: BoxFit.contain,
+                  errorBuilder: (_, __, ___) => const SizedBox.shrink(),
+                ),
+              ),
+            ),
+          ),
+
+          // 2) 내용(체크배지 + 텍스트)은 왼쪽 아래
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                if (showCheckbox) _CheckBadge(selected: selected) else const SizedBox(height: 26),
-                const SizedBox(height: 8),
-                Expanded(
-                  child: Center(
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(14),
-                      child: Image.network(
-                        imageUrl,
-                        fit: BoxFit.contain,
-                        errorBuilder: (_, __, ___) => const SizedBox.shrink(),
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 12),
+                if (showCheckbox) const SizedBox(height: 2) else const SizedBox(height: 26),
+                if (showCheckbox) _CheckBadge(selected: selected),
+                const Spacer(), // ⬅️ 아래로 밀기
+
+                // 제목/부제목은 이미지 위에 겹쳐짐 (가독성 보정용 그림자)
                 Text(
                   title,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.w800, letterSpacing: 0.5),
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 18,
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: 0.5,
+                    shadows: [Shadow(blurRadius: 4, color: Colors.black26, offset: Offset(0, 1))],
+                  ),
                 ),
+                const SizedBox(height: 4),
                 Text(
                   subtitle,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: TextStyle(color: Colors.white.withOpacity(0.8), fontSize: 13, fontWeight: FontWeight.w500),
+                  style: TextStyle(
+                    color: Colors.white.withOpacity(0.55),
+                    fontSize: 13,
+                    fontWeight: FontWeight.w500,
+                    shadows: const [Shadow(blurRadius: 4, color: Colors.black26, offset: Offset(0, 1))],
+                  ),
                 ),
               ],
             ),
           ),
-          // 선택 시 하이라이트
+
+          // 3) 선택 하이라이트 오버레이 (기존 유지)
           Positioned.fill(
             child: IgnorePointer(
               child: AnimatedContainer(
                 duration: const Duration(milliseconds: 160),
-                decoration: BoxDecoration(color: overlay, borderRadius: BorderRadius.circular(22)),
+                decoration: BoxDecoration(
+                  color: selected ? Colors.white.withOpacity(0.06) : Colors.transparent,
+                  borderRadius: BorderRadius.circular(22),
+                ),
               ),
             ),
           ),
         ],
       ),
     );
+
 
     if (dim) {
       card = Opacity(opacity: 0.35, child: card);
@@ -1142,6 +1177,24 @@ class _ExtraPrizeTitle extends StatelessWidget {
   }
 }
 //TODO: 추가 경품 리스트 상단 문구**************************************************
+
+
+//TODO: 경품 구경하기 바텀싯 우상단 로고**************************************************
+class _SponsorSticker extends StatelessWidget {
+  const _SponsorSticker({required this.logoUrl});
+  final String logoUrl;
+
+  @override
+  Widget build(BuildContext context) {
+    return ExtendedImage.network(
+      logoUrl,
+      width: 110,   // 필요시 80~110 사이로 조절
+      fit: BoxFit.cover,
+    );
+  }
+}
+//TODO: 경품 구경하기 바텀싯 우상단 로고**************************************************
+
 
 
 class _BottomSheetHandle extends StatelessWidget {
