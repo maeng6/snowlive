@@ -314,8 +314,8 @@ class MissionStatus {
   List<BrandItemPremium>? brandItemPremium;
   List<BrandItemBasic>? brandItemBasic;
   bool? isApplied;
-  bool? badgeUrl;
-  bool? snowballSponsorId;
+  String? badgeUrl;
+  int? snowballSponsorId;
   SnowballCount? snowballCount;
 
   MissionStatus({

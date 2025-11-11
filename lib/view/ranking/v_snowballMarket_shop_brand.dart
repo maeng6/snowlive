@@ -24,6 +24,7 @@ class _SnowballMarketBrandShopViewState extends State<SnowballMarketBrandShopVie
 
   bool _hasFetchedData = false;
 
+
   // 단일 선택 상태
   int? _selectedBrandId;
   void _toggleBrand(int id) {
@@ -56,11 +57,12 @@ class _SnowballMarketBrandShopViewState extends State<SnowballMarketBrandShopVie
         // ---- Reactive UI ----
         return Obx(() {
           final ms = _snowballShopViewModel.missionStatus;
+          final badgeUrl = _snowballShopViewModel.missionStatus.badgeUrl;
 
           // 필드명은 프로젝트에 맞게 확인 필요
           final bool totalComplete = ms.completeTotal == true;     // 모든 미션 완료
           final bool isApplied     = ms.isApplied == true;         // 이미 응모 완료
-          final int? appliedBrandId = 2;      // 서버가 저장한 응모 브랜드 id
+          final int? appliedBrandId = _snowballShopViewModel.missionStatus.snowballSponsorId;      // 서버가 저장한 응모 브랜드 id
 
           // 응모 완료 상태면 UI의 선택값을 서버 값으로 고정
           if (isApplied && appliedBrandId != null && _selectedBrandId != appliedBrandId) {
@@ -116,7 +118,88 @@ class _SnowballMarketBrandShopViewState extends State<SnowballMarketBrandShopVie
                           children: [
                             const SizedBox(height: 10),
                             const _TopNotice(),
-                            Image.asset('assets/imgs/imgs/snowballShop/icon_snowballshop_brand_badge.png'),
+                            if (badgeUrl == null || badgeUrl.isEmpty)
+                              Image.asset(
+                                'assets/imgs/imgs/snowballShop/icon_snowballshop_brand_badge.png',
+                                width: 80,
+                                height: 80,
+                              )
+                            else
+                              Column(
+                                children: [
+                                  Stack(
+                                    alignment: Alignment.center,
+                                    children: [
+                                      // 1️⃣ 배지 이미지 (네트워크 or 로컬)
+                                      if (badgeUrl.isEmpty)
+                                        Image.asset(
+                                          'assets/imgs/imgs/snowballShop/icon_snowballshop_brand_badge.png',
+                                          width: 280,
+                                          height: 280,
+                                          fit: BoxFit.contain,
+                                        )
+                                      else
+                                        ExtendedImage.network(
+                                          badgeUrl,
+                                          width: 280,
+                                          height: 280,
+                                          fit: BoxFit.contain,
+                                          loadStateChanged: (state) {
+                                            switch (state.extendedImageLoadState) {
+                                              case LoadState.loading:
+                                                return const SizedBox(
+                                                  width: 280,
+                                                  height: 280,
+                                                  child: Center(
+                                                    child: CircularProgressIndicator(
+                                                      strokeWidth: 2,
+                                                      color: Colors.white,
+                                                    ),
+                                                  ),
+                                                );
+                                              case LoadState.failed:
+                                                return Image.asset(
+                                                  'assets/imgs/imgs/snowballShop/icon_snowballshop_brand_badge.png',
+                                                  width: 280,
+                                                  height: 280,
+                                                  fit: BoxFit.contain,
+                                                );
+                                              case LoadState.completed:
+                                                return state.completedWidget;
+                                            }
+                                          },
+                                        ),
+
+                                      // 2️⃣ 응모번호 (리본 위쪽에 겹쳐 표시)
+                                      Positioned(
+                                        bottom: 25,
+                                        child: Text('1',
+                                          style: const TextStyle(
+                                            fontSize: 24,
+                                            fontWeight: FontWeight.w900,
+                                            color: Colors.white,
+                                            shadows: [
+                                              Shadow(offset: Offset(0, 1), blurRadius: 4, color: Colors.black45),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+
+                                  const SizedBox(height: 12),
+
+                                  // 3️⃣ 유저 이름
+                                  Text(
+                                    '${_userViewModel.user.display_name}',
+                                    style: const TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ],
+                              ),
                             const SizedBox(height: 50),
                             const _HeroText(),
                             _MissionProgressRow(),
