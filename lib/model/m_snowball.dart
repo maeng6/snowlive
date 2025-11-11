@@ -314,6 +314,8 @@ class MissionStatus {
   List<BrandItemPremium>? brandItemPremium;
   List<BrandItemBasic>? brandItemBasic;
   bool? isApplied;
+  bool? badgeUrl;
+  bool? snowballSponsorId;
   SnowballCount? snowballCount;
 
   MissionStatus({
@@ -322,6 +324,8 @@ class MissionStatus {
     this.brandItemPremium,
     this.brandItemBasic,
     this.isApplied,
+    this.badgeUrl,
+    this.snowballSponsorId,
     this.snowballCount,
   });
 
@@ -341,6 +345,8 @@ class MissionStatus {
         ?.map((e) => BrandItemBasic.fromJson(Map<String, dynamic>.from(e)))
         .toList();
     isApplied = json['is_applied'];
+    badgeUrl = json['badge_url'];
+    snowballSponsorId = json['snowball_sponsor_id'];
 
     final sc = json['snowball_count'];
     if (sc is Map) {
@@ -355,6 +361,8 @@ class MissionStatus {
       'brand_item_premium': brandItemPremium?.map((e) => e.toJson()).toList(),
       'brand_item_basic': brandItemBasic?.map((e) => e.toJson()).toList(),
       'is_applied': isApplied,
+      'snowball_sponsor_id': snowballSponsorId,
+      'badge_url': badgeUrl,
       'snowball_count': snowballCount?.toJson(),
     };
   }
