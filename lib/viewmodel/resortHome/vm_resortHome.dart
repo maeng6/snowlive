@@ -667,13 +667,13 @@ class ResortHomeViewModel extends GetxController {
 
     if (response_off.success) {
       // ✅ 라이브 액티비티 종료 (iOS에서만)
-      // if (Platform.isIOS && _liveActivityId != null) {
-      //   await LiveActivityService.end(activityId: _liveActivityId!);
-      //   _liveActivityId = null;
-      //   _liveOnStartedAt = null;
-      // }
+      if (Platform.isIOS && _liveActivityId != null) {
+        await LiveActivityService.end(activityId: _liveActivityId!);
+        _liveActivityId = null;
+        _liveOnStartedAt = null;
+      }
 
-      // await _endLiveActivity('liveOff()');
+      await _endLiveActivity('liveOff()');
 
       final ApiResponse response_fetchResortHome = await ResortHomeAPI().fetchResortHomeData(user_id);
       if (response_fetchResortHome.success) {
@@ -699,19 +699,19 @@ class ResortHomeViewModel extends GetxController {
         _respawn_point.value = List<Map<String, dynamic>>.from(response.data['respawn_point']);
 
         // ✅ 라이브 액티비티 시작 (iOS에서만)
-        // if (Platform.isIOS) {
-        //   _liveOnStartedAt = DateTime.now();
-        //   final int todayRide = 0;
-        //   final int sessionRide = 0; // 세션 카운트 관리 중이면 실제 값 사용
-        //   final String lastSlope = '—';
-        //
-        //   _liveActivityId = await LiveActivityService.start(
-        //     liveOnStartAt: _liveOnStartedAt!,
-        //     todayRideCount: todayRide,
-        //     sessionRideCount: sessionRide,
-        //     lastSlopeName: lastSlope,
-        //   );
-        // }
+        if (Platform.isIOS) {
+          _liveOnStartedAt = DateTime.now();
+          final int todayRide = 0;
+          final int sessionRide = 0; // 세션 카운트 관리 중이면 실제 값 사용
+          final String lastSlope = '—';
+
+          _liveActivityId = await LiveActivityService.start(
+            liveOnStartAt: _liveOnStartedAt!,
+            todayRideCount: todayRide,
+            sessionRideCount: sessionRide,
+            lastSlopeName: lastSlope,
+          );
+        }
 
         return response;
       } else {
