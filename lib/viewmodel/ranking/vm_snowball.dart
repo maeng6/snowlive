@@ -32,6 +32,13 @@ class SnowballShopViewModel extends GetxController {
   var _missionStatus = MissionStatus().obs;
   MissionStatus get missionStatus => _missionStatus.value;
 
+  List<MapEntry<String, MissionPiece>> get missionEntriesSorted =>
+      missionStatus.entriesSorted;
+
+  String missionTitle(String id) => missionStatus.titleOf(id);
+
+  bool missionComplete(String id) => missionStatus.isComplete(id);
+
   // ------------------------
   // 홈/상점/구매/기록 상태
   // ------------------------
@@ -309,6 +316,7 @@ class SnowballShopViewModel extends GetxController {
         'user_id': userId,
         'event_date': eventDate.value,
       });
+      print('[mission] raw data: ${response.data}');
 
       if (response.success) {
         final missionData = MissionStatus.fromJson(response.data!);
