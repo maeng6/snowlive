@@ -424,6 +424,7 @@ class BrandItemPremium {
   String? name;
   String? description;
   String? imageUrl;
+  String? image_url_bg;
   int? itemCount;
   String? landingUrl;
   int? eventDate;
@@ -434,6 +435,7 @@ class BrandItemPremium {
     this.name,
     this.description,
     this.imageUrl,
+    this.image_url_bg,
     this.itemCount,
     this.landingUrl,
     this.eventDate,
@@ -445,6 +447,7 @@ class BrandItemPremium {
     name = json['name'];
     description = json['description'];
     imageUrl = json['image_url'];
+    image_url_bg = json['image_url_bg'];
     itemCount = json['item_count'];
     landingUrl = json['landing_url'];
     eventDate = json['event_date'];
@@ -461,6 +464,7 @@ class BrandItemPremium {
       'name': name,
       'description': description,
       'image_url': imageUrl,
+      'image_url_bg': image_url_bg,
       'item_count': itemCount,
       'landing_url': landingUrl,
       'event_date': eventDate,
