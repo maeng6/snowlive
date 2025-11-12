@@ -11,12 +11,20 @@ class SlopeRushResponse {
   }) : slopeRush = slopeRush ?? const [];
 
   factory SlopeRushResponse.fromJson(Map<String, dynamic> json) {
-    final list = (json['slope_Rush'] as List<dynamic>? ?? [])
+    // 서버 표준 키: slope_occupancy
+    // 과거/임시 키 호환: slope_Rush
+    final rawList = (json['slope_occupancy'] ??
+        json['slope_Rush'] ??
+        const []) as List<dynamic>;
+
+    final list = rawList
         .map((e) => SlopeRushItem.fromJson(e as Map<String, dynamic>))
         .toList();
 
     return SlopeRushResponse(
-      resortId: (json['resort_id'] ?? 0) is int ? json['resort_id'] : int.tryParse('${json['resort_id'] ?? 0}') ?? 0,
+      resortId: (json['resort_id'] ?? 0) is int
+          ? json['resort_id']
+          : int.tryParse('${json['resort_id'] ?? 0}') ?? 0,
       resortFullname: (json['resort_fullname'] ?? "").toString(),
       slopeRush: list,
     );
@@ -25,7 +33,8 @@ class SlopeRushResponse {
   Map<String, dynamic> toJson() => {
     "resort_id": resortId,
     "resort_fullname": resortFullname,
-    "slope_Rush": slopeRush.map((e) => e.toJson()).toList(),
+    // 서버 스펙에 맞춰 표준 키로 내보내기
+    "slope_occupancy": slopeRush.map((e) => e.toJson()).toList(),
   };
 }
 
@@ -60,9 +69,9 @@ class SlopeRushItem {
 }
 
 class SlopeCrew {
-  final int? crewId;                // 서버에서 null일 수도 있으니 nullable
+  final int? crewId; // 서버에서 개인(None) 제외되어 내려오지만 nullable 유지 OK
   final String crewName;
-  final String crewLogoUrl;         // URL은 기본 "" 선호
+  final String crewLogoUrl;
   final int count;
   final double ratio;
 
@@ -82,8 +91,12 @@ class SlopeCrew {
         : int.tryParse('${json['crew_id']}')),
     crewName: (json['crew_name'] ?? "").toString(),
     crewLogoUrl: (json['crew_logo_url'] ?? "").toString(),
-    count: (json['count'] ?? 0) is int ? json['count'] : int.tryParse('${json['count'] ?? 0}') ?? 0,
-    ratio: (json['ratio'] ?? 0.0) is num ? (json['ratio'] as num).toDouble() : double.tryParse('${json['ratio'] ?? 0.0}') ?? 0.0,
+    count: (json['count'] ?? 0) is int
+        ? json['count']
+        : int.tryParse('${json['count'] ?? 0}') ?? 0,
+    ratio: (json['ratio'] ?? 0.0) is num
+        ? (json['ratio'] as num).toDouble()
+        : double.tryParse('${json['ratio'] ?? 0.0}') ?? 0.0,
   );
 
   Map<String, dynamic> toJson() => {
