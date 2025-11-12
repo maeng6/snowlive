@@ -281,9 +281,22 @@ class _SnowballMarketBrandShopViewState extends State<SnowballMarketBrandShopVie
                                                           itemBuilder: (context, i) {
                                                             final b = brands[i];
                                                             final logo = b.sponsor?.logoUrl;
+                                                            final bgUrl = (b.image_url_bg ?? '').trim();
+
                                                             return Stack(
                                                               children: [
-                                                                // 본문 콘텐츠
+                                                                // ===== 배경 이미지 =====
+                                                                if (bgUrl.isNotEmpty)
+                                                                  Positioned.fill(
+                                                                    child: ExtendedImage.network(
+                                                                      bgUrl,
+                                                                      fit: BoxFit.cover,
+                                                                      cache: true,
+                                                                    ),
+                                                                  ),
+
+
+                                                                // ===== 본문 콘텐츠 =====
                                                                 Column(
                                                                   mainAxisSize: MainAxisSize.min,
                                                                   children: [
@@ -296,7 +309,7 @@ class _SnowballMarketBrandShopViewState extends State<SnowballMarketBrandShopVie
                                                                     const SizedBox(height: 14),
                                                                     // 타이틀
                                                                     Text(
-                                                                      (b.name ?? '상품 이름'),
+                                                                      b.name ?? '상품 이름',
                                                                       textAlign: TextAlign.center,
                                                                       style: SDSTextStyle.bold.copyWith(
                                                                         fontSize: 16,
@@ -312,7 +325,7 @@ class _SnowballMarketBrandShopViewState extends State<SnowballMarketBrandShopVie
                                                                       textAlign: TextAlign.center,
                                                                       style: SDSTextStyle.regular.copyWith(
                                                                         fontSize: 12,
-                                                                        color: Colors.white.withOpacity(0.6),
+                                                                        color: Colors.white.withOpacity(0.7),
                                                                       ),
                                                                       maxLines: 2,
                                                                       overflow: TextOverflow.ellipsis,
@@ -320,7 +333,7 @@ class _SnowballMarketBrandShopViewState extends State<SnowballMarketBrandShopVie
                                                                   ],
                                                                 ),
 
-                                                                // 우상단 스폰서 로고(Sticker)
+                                                                // ===== 우상단 스폰서 로고 =====
                                                                 if (logo != null && logo.isNotEmpty)
                                                                   Positioned(
                                                                     right: 1,
@@ -330,6 +343,7 @@ class _SnowballMarketBrandShopViewState extends State<SnowballMarketBrandShopVie
                                                             );
                                                           },
                                                         ),
+
                                                       ),
 
                                                       // 인디케이터(점)

@@ -30,6 +30,7 @@ import 'package:com.snowlive/viewmodel/onboarding_login/vm_login.dart';
 import 'package:com.snowlive/viewmodel/onboarding_login/vm_tos.dart';
 import 'package:com.snowlive/viewmodel/ranking/vm_rankingList.dart';
 import 'package:com.snowlive/viewmodel/ranking/vm_rankingList_beta.dart';
+import 'package:com.snowlive/viewmodel/ranking/vm_slope_rush.dart';
 import 'package:com.snowlive/viewmodel/ranking/vm_snowball.dart';
 import 'package:com.snowlive/viewmodel/resortHome/vm_alarmCenter.dart';
 import 'package:com.snowlive/viewmodel/resortHome/vm_openChat.dart';
@@ -76,6 +77,7 @@ class MainHomeBinding extends Bindings {
     Get.put(SetCrewViewModel());
     Get.put(RankingListBetaViewModel());
     Get.put(RankingCrewHistoryViewModel());
+    Get.put(SlopeRushViewModel());
 
   }
 }

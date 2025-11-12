@@ -30,6 +30,7 @@ import 'package:com.snowlive/view/ranking/v_rankingGuide.dart';
 import 'package:com.snowlive/view/ranking/v_reward_exchange.dart';
 import 'package:com.snowlive/view/ranking/v_settingGuide_android.dart';
 import 'package:com.snowlive/view/ranking/v_settingGuide_ios.dart';
+import 'package:com.snowlive/view/ranking/v_slope_rush.dart';
 import 'package:com.snowlive/view/ranking/v_snowballMarket_shop_brand.dart';
 import 'package:com.snowlive/view/ranking/v_snowballmarket_brandonly_home.dart';
 import 'package:com.snowlive/view/ranking/v_snowballmarket_buyRecord.dart';
@@ -140,7 +141,7 @@ class AppRoutes {
   static const String snowballmarketBrandOnly = '/snowballmarketBrandOnly';
   static const String snowballMarketBrandOnlyPremiumShop = '/snowballMarketBrandOnlyPremiumShop';
   static const String snowballMarketBrandOnlyPublicShop = '/snowballMarketBrandOnlyPublicShop';
-
+  // static const String slopeRushHome = '/slopeRushHome';
 
 
 
@@ -448,5 +449,9 @@ class AppRoutes {
       name: snowballMarketBrandOnlyPublicShop,
       page: () => SnowballMarketBrandOnlyPublicShopView(),
     ),
+    // GetPage(
+    //   name: slopeRushHome,
+    //   page: () => SlopeRushHomeView(),
+    // ),
   ];
 }
