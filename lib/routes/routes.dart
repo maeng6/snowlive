@@ -31,7 +31,10 @@ import 'package:com.snowlive/view/ranking/v_reward_exchange.dart';
 import 'package:com.snowlive/view/ranking/v_settingGuide_android.dart';
 import 'package:com.snowlive/view/ranking/v_settingGuide_ios.dart';
 import 'package:com.snowlive/view/ranking/v_snowballMarket_shop_brand.dart';
+import 'package:com.snowlive/view/ranking/v_snowballmarket_brandonly_home.dart';
 import 'package:com.snowlive/view/ranking/v_snowballmarket_buyRecord.dart';
+import 'package:com.snowlive/view/ranking/v_snowballmarket_shop_brandonly_premium.dart';
+import 'package:com.snowlive/view/ranking/v_snowballmarket_shop_brandonly_public.dart';
 import 'package:com.snowlive/view/ranking/v_snowballmarket_shop_premium.dart';
 import 'package:com.snowlive/view/ranking/v_snowballmarket_shop_public.dart';
 import 'package:com.snowlive/view/resortHome/v_alarmCenter.dart';
@@ -134,8 +137,9 @@ class AppRoutes {
   static const String snowballMarketPremiumShop = '/snowballMarketPremiumShop';
   static const String snowballMarketPublicShop = '/snowballMarketPublicShop';
   static const String snowballMarketBrandShop = '/snowballMarketBrandShop';
-
-
+  static const String snowballmarketBrandOnly = '/snowballmarketBrandOnly';
+  static const String snowballMarketBrandOnlyPremiumShop = '/snowballMarketBrandOnlyPremiumShop';
+  static const String snowballMarketBrandOnlyPublicShop = '/snowballMarketBrandOnlyPublicShop';
 
 
 
@@ -431,6 +435,18 @@ class AppRoutes {
     GetPage(
       name: snowballMarketBrandShop,
       page: () => SnowballMarketBrandShopView(),
+    ),
+    GetPage(
+      name: snowballmarketBrandOnly,
+      page: () => SnowballMarketBrandOnlyHomeView(),
+    ),
+    GetPage(
+      name: snowballMarketBrandOnlyPremiumShop,
+      page: () => SnowballMarketBrandOnlyPremiumShopView(),
+    ),
+    GetPage(
+      name: snowballMarketBrandOnlyPublicShop,
+      page: () => SnowballMarketBrandOnlyPublicShopView(),
     ),
   ];
 }

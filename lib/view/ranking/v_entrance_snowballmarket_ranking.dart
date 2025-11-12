@@ -9,12 +9,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
-class Entrance_snowballShop extends StatefulWidget {
+class Entrance_snowballShop_ranking extends StatefulWidget {
   @override
-  _Entrance_snowballShopState createState() => _Entrance_snowballShopState();
+  _Entrance_snowballShop_rankingState createState() => _Entrance_snowballShop_rankingState();
 }
 
-class _Entrance_snowballShopState extends State<Entrance_snowballShop> {
+class _Entrance_snowballShop_rankingState extends State<Entrance_snowballShop_ranking> {
   UserViewModel _userViewModel = Get.find<UserViewModel>();
   SnowballShopViewModel _snowballShopViewModel = Get.find<SnowballShopViewModel>();
 
@@ -66,9 +66,14 @@ class _Entrance_snowballShopState extends State<Entrance_snowballShop> {
         // to_everyone 필드가 true인지 확인
         bool isToEveryone = data?['to_everyone'] ?? false;
 
+        // brand_only 필드가 true인지 확인
+        bool isBrandOnly = data?['brand_only'] ?? false;
+
         // crew_list 필드가 리스트인지 확인하고, 유저의 크루가 리스트에 포함되어 있는지 확인
         List<dynamic> crewList = data?['crew_list'] ?? [];
         bool isUserInCrewList = _userViewModel.user.crew_id != null && crewList.contains(_userViewModel.user.crew_id);
+
+
 
 
         if (isOpen == true && (isToEveryone || isUserInCrewList)) {
@@ -77,7 +82,11 @@ class _Entrance_snowballShopState extends State<Entrance_snowballShop> {
               GestureDetector(
                 onTap: () async {
                   _snowballShopViewModel.loadingEntrance = true;
-                  Get.toNamed(AppRoutes.snowballmarket);
+                  if(isBrandOnly == true){
+                  Get.toNamed(AppRoutes.snowballmarketBrandOnly);
+                  }else{
+                    Get.toNamed(AppRoutes.snowballmarket);
+                  }
                   await _snowballShopViewModel.fetchSnowballHomeData();
                   await _snowballShopViewModel.getInfo_snowballMarket();
                   await _snowballShopViewModel.getInfo_snowballMarket_notice_gold();
@@ -88,7 +97,7 @@ class _Entrance_snowballShopState extends State<Entrance_snowballShop> {
                   width: double.infinity,
                   padding: EdgeInsets.only(top: 8, bottom: 10, right: 16, left: 12),
                   decoration: BoxDecoration(
-                    color: Color(0xFF1D242E), // 배경색
+                    color: isBrandOnly == false ? Color(0xFF1D242E) : Color(0xFF0C9F1E), // 배경색
                     borderRadius: BorderRadius.circular(12.0),
                   ),
                   child: Row(
@@ -100,8 +109,13 @@ class _Entrance_snowballShopState extends State<Entrance_snowballShop> {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          Image.asset(
+                          isBrandOnly == false
+                          ? Image.asset(
                             'assets/imgs/imgs/snowballShop/img_rank_snb_src_2.png',
+                            height: 52,
+                          )
+                          : Image.asset(
+                            'assets/imgs/imgs/snowballShop/img_rank_snb_src_brand_2.png',
                             height: 52,
                           ),
                           SizedBox(height: 4),
@@ -197,7 +211,11 @@ class _Entrance_snowballShopState extends State<Entrance_snowballShop> {
                           GestureDetector(
                             onTap: () async {
                               _snowballShopViewModel.loadingEntrance = true;
-                              Get.toNamed(AppRoutes.snowballmarket);
+                              if(isBrandOnly == true){
+                                Get.toNamed(AppRoutes.snowballmarketBrandOnly);
+                              }else{
+                                Get.toNamed(AppRoutes.snowballmarket);
+                              }
                               await _snowballShopViewModel.getInfo_snowballMarket();
                               await _snowballShopViewModel.fetchSnowballShop();
                               await _snowballShopViewModel.getInfo_snowballMarket_notice_gold();
@@ -248,7 +266,11 @@ class _Entrance_snowballShopState extends State<Entrance_snowballShop> {
                 child: GestureDetector(
                   onTap: () async {
                     _snowballShopViewModel.loadingEntrance = true;
-                    Get.toNamed(AppRoutes.snowballmarket);
+                    if(isBrandOnly == true){
+                      Get.toNamed(AppRoutes.snowballmarketBrandOnly);
+                    }else{
+                      Get.toNamed(AppRoutes.snowballmarket);
+                    }
                     await _snowballShopViewModel.getInfo_snowballMarket();
                     await _snowballShopViewModel.fetchSnowballShop();
                     await _snowballShopViewModel.getInfo_snowballMarket_notice_gold();
@@ -257,10 +279,16 @@ class _Entrance_snowballShopState extends State<Entrance_snowballShop> {
                   },
                   child: Padding(
                     padding: EdgeInsets.only(top: 2),
-                    child: Image.asset(
+                    child:
+                    isBrandOnly == false
+                    ? Image.asset(
                         'assets/imgs/imgs/snowballShop/img_rank_snb_src_1.png',
                         width: 105
-                    ),
+                    )
+                    : Image.asset(
+                        'assets/imgs/imgs/snowballShop/img_rank_snb_src_brand_1.png',
+                        width: 105
+                    )
                   ),
                 ),
               ),

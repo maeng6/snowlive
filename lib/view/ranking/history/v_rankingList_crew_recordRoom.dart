@@ -1510,7 +1510,7 @@ class RankingCrewView_recordRoom extends StatelessWidget {
                                 // 눈송이 상점 진입점
                                 Padding(
                                   padding: EdgeInsets.only(top: 4),
-                                  child: Entrance_snowballShop(),
+                                  child: Entrance_snowballShop_ranking(),
                                 ),
                               //마이인포 박스 - 점수와 랭킹없는경우 안보여주게함
                                 if (_rankingListViewModel_recordRoom.rankingListCrewMy_view != null &&

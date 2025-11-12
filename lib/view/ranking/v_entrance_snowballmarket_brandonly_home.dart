@@ -11,12 +11,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
-class Entrance_snowballMarket_Home extends StatefulWidget {
+class Entrance_snowballMarket_brandonly_Home extends StatefulWidget {
   @override
-  _Entrance_snowballMarket_HomeState createState() => _Entrance_snowballMarket_HomeState();
+  _Entrance_snowballMarket_brandonly_HomeState createState() => _Entrance_snowballMarket_brandonly_HomeState();
 }
 
-class _Entrance_snowballMarket_HomeState extends State<Entrance_snowballMarket_Home> {
+class _Entrance_snowballMarket_brandonly_HomeState extends State<Entrance_snowballMarket_brandonly_Home> {
 
   UserViewModel _userViewModel = Get.find<UserViewModel>();
   SnowballShopViewModel _snowballShopViewModel = Get.find<SnowballShopViewModel>();
@@ -58,13 +58,13 @@ class _Entrance_snowballMarket_HomeState extends State<Entrance_snowballMarket_H
         // crew_list 필드가 리스트인지 확인하고, 유저의 크루가 리스트에 포함되어 있는지 확인
         List<dynamic> crewList = data?['crew_list'] ?? [];
         bool isUserInCrewList = _userViewModel.user.crew_id != null && crewList.contains(_userViewModel.user.crew_id);
-        String entranceImage = data?['mainImage'] ?? '';
+        String entranceImage = data?['mainImage_brand'] ?? '';
 
-        if (isOpen == true && (isToEveryone || isUserInCrewList) && isBrandOnly == false) {
+        if (isOpen == true && (isToEveryone || isUserInCrewList) && isBrandOnly == true) {
           return GestureDetector(
             onTap: () async {
               _snowballShopViewModel.loadingEntrance = true;
-              Get.toNamed(AppRoutes.snowballmarket);
+              Get.toNamed(AppRoutes.snowballmarketBrandOnly);
               await _snowballShopViewModel.fetchSnowballHomeData();
               await _snowballShopViewModel.getInfo_snowballMarket();
               await _snowballShopViewModel.getInfo_snowballMarket_notice_gold();

@@ -5,6 +5,7 @@ import 'package:com.snowlive/data/imgaUrls/Data_url_image.dart';
 import 'package:com.snowlive/routes/routes.dart';
 import 'package:com.snowlive/util/util_1.dart';
 import 'package:com.snowlive/view/banner/v_banner_resortHome.dart';
+import 'package:com.snowlive/view/ranking/v_entrance_snowballmarket_brandonly_home.dart';
 import 'package:com.snowlive/view/ranking/v_entrance_snowballmarket_home.dart';
 import 'package:com.snowlive/view/resortHome/v_chat_resortHome.dart';
 import 'package:com.snowlive/data/snowliveDesignStyle.dart';
@@ -1680,6 +1681,11 @@ class _ResortHomeViewState extends State<ResortHomeView> with
                               padding: EdgeInsets.only(left: 16, right: 16),
                               child: Entrance_snowballMarket_Home(),
                             ),
+                            //TODO: 브랜드 눈송이 상점 진입점
+                            Padding(
+                              padding: EdgeInsets.only(left: 16, right: 16),
+                              child: Entrance_snowballMarket_brandonly_Home(),
+                            ),
                             //TODO: 오늘의 기록
                               Padding(
                                   padding: EdgeInsets.only(left: 16, right: 16),
@@ -2096,6 +2102,91 @@ class _ResortHomeViewState extends State<ResortHomeView> with
                                     ],
                                   )
                               ),
+                            SizedBox(height: 20,),
+                            //TODO: 점령전 진입점
+                            Padding(
+                              padding: EdgeInsets.only(left: 16, right: 16),
+                              child: Container(
+                                height: 180,
+                                decoration: BoxDecoration(
+                                  color: Color(0xFFECF3FD),
+                                  borderRadius: BorderRadius.circular(16),
+                                ),
+                                child: Stack (
+                                  children: [
+                                    Row(
+                                      children: [
+                                        Padding(
+                                          padding: const EdgeInsets.only(left: 24, top: 24, right: 24, bottom: 24),
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            mainAxisAlignment: MainAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                '슬로프 Clash',
+                                                style: SDSTextStyle.bold.copyWith(
+                                                  fontSize: 16,
+                                                  color: SDSColor.gray900,
+                                                ),
+                                              ),
+                                              Padding(
+                                                padding: const EdgeInsets.only(top: 4),
+                                                child: Text(
+                                                  '더 많이, 더 오래, 더 뜨겁게!\n슬로프의 주인이 되어라!',
+                                                  style: SDSTextStyle.regular.copyWith(
+                                                    fontSize: 13,
+                                                    color: SDSColor.gray600,
+                                                  ),
+                                                ),
+                                              ),
+                                              Padding(
+                                                padding: EdgeInsets.only(top: 24),
+                                                child: GestureDetector(
+                                                  onTap: () {
+                                                    Get.toNamed(AppRoutes.rankingGuideMain);
+                                                  },
+                                                  child: Container(
+                                                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 9),
+                                                    decoration: BoxDecoration(
+                                                        color: SDSColor.snowliveWhite,
+                                                        borderRadius: BorderRadius.circular(20),
+                                                        border: Border.all(
+                                                            color: SDSColor.gray200,
+                                                            width: 1
+                                                        )
+                                                    ),
+                                                    child: Row(
+                                                      children: [
+                                                        Padding(
+                                                          padding: const EdgeInsets.only(right: 6),
+                                                          child: Text(
+                                                            '더 알아보기',
+                                                            style: SDSTextStyle.extraBold.copyWith(
+                                                                color: SDSColor.snowliveBlack,
+                                                                fontSize: 13
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        Image.asset(
+                                                          'assets/imgs/icons/icon_arrow_round_black.png',
+                                                          fit: BoxFit.cover,
+                                                          width: 18,
+                                                          height: 18,
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
                             // 구분선
                             Padding(
                               padding: const EdgeInsets.only(top: 30, bottom: 30),
