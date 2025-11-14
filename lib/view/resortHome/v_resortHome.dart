@@ -1726,7 +1726,7 @@ class _ResortHomeViewState extends State<ResortHomeView> with
                                                 padding: EdgeInsets.only(top: 24),
                                                 child: GestureDetector(
                                                   onTap: () {
-                                                    // Get.toNamed(AppRoutes.slopeRushHome);
+                                                    Get.toNamed(AppRoutes.slopeRushHome);
                                                   },
                                                   child: Container(
                                                     padding: EdgeInsets.symmetric(horizontal: 16, vertical: 9),

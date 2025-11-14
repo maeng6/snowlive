@@ -142,6 +142,8 @@ flutter:
     - assets/imgs/ranking/
     - assets/imgs/imgs/
     - assets/imgs/imgs/snowballShop/
+    - assets/imgs/imgs/slopeRush/gonjiam/
+    - assets/imgs/imgs/slopeRush/phoenix/
     - assets/json/
 
   # An image asset can refer to one or more resolution-specific "variants", see

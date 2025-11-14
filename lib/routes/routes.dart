@@ -141,7 +141,7 @@ class AppRoutes {
   static const String snowballmarketBrandOnly = '/snowballmarketBrandOnly';
   static const String snowballMarketBrandOnlyPremiumShop = '/snowballMarketBrandOnlyPremiumShop';
   static const String snowballMarketBrandOnlyPublicShop = '/snowballMarketBrandOnlyPublicShop';
-  // static const String slopeRushHome = '/slopeRushHome';
+  static const String slopeRushHome = '/slopeRushHome';
 
 
 
@@ -449,9 +449,9 @@ class AppRoutes {
       name: snowballMarketBrandOnlyPublicShop,
       page: () => SnowballMarketBrandOnlyPublicShopView(),
     ),
-    // GetPage(
-    //   name: slopeRushHome,
-    //   page: () => SlopeRushHomeView(),
-    // ),
+    GetPage(
+      name: slopeRushHome,
+      page: () => SlopeRushHomeView(),
+    ),
   ];
 }

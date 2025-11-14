@@ -23,13 +23,6 @@ class _Entrance_snowballMarket_HomeState extends State<Entrance_snowballMarket_H
 
 
   @override
-  void initState() {
-    super.initState();
-    _snowballShopViewModel.getInfo_snowballMarket_entrance();
-  }
-
-
-  @override
   Widget build(BuildContext context) {
     Size _size = MediaQuery.of(context).size;
 

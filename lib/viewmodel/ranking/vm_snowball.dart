@@ -63,6 +63,7 @@ class SnowballShopViewModel extends GetxController {
   void onInit() async{
     super.onInit();
     await getInfo_snowballMarket();
+    await getInfo_snowballMarket_entrance();
   }
 
   // ------------------------
