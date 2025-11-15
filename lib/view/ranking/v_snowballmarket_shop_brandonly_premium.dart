@@ -152,14 +152,11 @@ class _SnowballMarketBrandOnlyPremiumShopViewState extends State<SnowballMarketB
                         children: [
                           Column(
                             children: [
-                              Padding(
-                                padding: EdgeInsets.only(top: 4),
-                                child: Text('획득한 눈송이는 당일에 사용하지 않으면 모두 사라집니다',
-                                  style: TextStyle(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.normal,
-                                      color: Color(0xFFFFFFFF).withOpacity(0.6)
-                                  ),
+                              Text('획득한 눈송이는 당일에 사용하지 않으면 모두 사라집니다',
+                                style: TextStyle(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.normal,
+                                    color: Color(0xFFFFFFFF).withOpacity(0.6)
                                 ),
                               ),
                               SizedBox(height: 16),

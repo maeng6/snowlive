@@ -129,7 +129,7 @@ class _SnowballMarketBrandOnlyHomeViewState extends State<SnowballMarketBrandOnl
                               },
                             ),
                           ),
-                          SizedBox(height: 12), // 도트와 카드 사이 여백 줄임
+                          SizedBox(height: 8), // 도트와 카드 사이 여백 줄임
                           AnimatedSmoothIndicator(
                             activeIndex: _currentShopIndex,
                             count: 2,
@@ -142,7 +142,7 @@ class _SnowballMarketBrandOnlyHomeViewState extends State<SnowballMarketBrandOnl
                               activeDotColor: const Color(0xFF1D242E),
                             ),
                           ),
-                          SizedBox(height: 24),
+                          SizedBox(height: 18),
                           ElevatedButton(
                             onPressed: () {
                               _snowballShopViewModel.fetchPurchaseHistory();
@@ -339,7 +339,7 @@ class _SnowballMarketBrandOnlyHomeViewState extends State<SnowballMarketBrandOnl
                   strokeWidth: 2,
                   edgeOffset: -40,
                   displacement: 40,
-                  backgroundColor: SDSColor.snowliveBlue,
+                  backgroundColor: Color(0xFF86ED3D),
                   color: SDSColor.snowliveWhite,
                   onRefresh: () async{
                     _snowballShopViewModel.loadingEntrance = true;
@@ -394,7 +394,7 @@ class _SnowballMarketBrandOnlyHomeViewState extends State<SnowballMarketBrandOnl
                                   // ✅ 하얀 눈송이 박스
                                   Container(
                                     decoration: BoxDecoration(
-                                      color: Color(0xFFBEFF8C),
+                                      color: Color(0xFFCAFFA2),
                                       borderRadius: BorderRadius.circular(20),
                                       border: Border.all(width: 1, color: SDSColor.snowliveWhite.withOpacity(0.2),),
                                     ),
@@ -432,7 +432,7 @@ class _SnowballMarketBrandOnlyHomeViewState extends State<SnowballMarketBrandOnl
                                   // ✅ 황금 눈송이 박스
                                   Container(
                                     decoration: BoxDecoration(
-                                      color: Color(0xFFBEFF8C),
+                                      color: Color(0xFFCAFFA2),
                                       borderRadius: BorderRadius.circular(20),
                                       border: Border.all(width: 1, color: SDSColor.snowliveWhite.withOpacity(0.2),),
                                     ),
@@ -484,7 +484,6 @@ class _SnowballMarketBrandOnlyHomeViewState extends State<SnowballMarketBrandOnl
                                     ),
                                   );
                                 }
-
                                 if (snapshot.hasError) {
                                   return Center(
                                     child: Text(
@@ -552,17 +551,27 @@ class _SnowballMarketBrandOnlyHomeViewState extends State<SnowballMarketBrandOnl
                           ),
                         ],
                       ),
-                      SizedBox(height: 20,),
+                      SizedBox(height: 60,),
                       Column(
                         children: [
                           //브랜드 미션 이미지
                           Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 30),
-                            child: Column(
+                            padding: const EdgeInsets.symmetric(horizontal: 16),
+                            child: Stack(
                               children: [
-                                SizedBox(height: 60,),
+                                Padding(
+                                  padding: EdgeInsets.only(top: 10),
+                                  child: Center(
+                                    child: Image.asset(
+                                      'assets/imgs/imgs/snowballShop/anim_bs_logo.webp',
+                                      width: 300,
+                                      height: 150,
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                ),
                                 Image.asset(
-                                  'assets/imgs/imgs/snowballShop/icon_snowballshop_home_bs_logo.png',
+                                  'assets/imgs/imgs/snowballShop/icon_snowballshop_home_bs_bg.png',
                                 ),
                               ],
                             ),
@@ -570,7 +579,7 @@ class _SnowballMarketBrandOnlyHomeViewState extends State<SnowballMarketBrandOnl
                           //눈송이 획득 실시간 현황
                           Column(
                             children: [
-                              SizedBox(height: 50),
+                              SizedBox(height: 80),
                               // 내가 획득한 눈송이_내용+바텀시트
                               Text('내가 획득한 눈송이',
                                 style: TextStyle(
@@ -717,13 +726,12 @@ class _SnowballMarketBrandOnlyHomeViewState extends State<SnowballMarketBrandOnl
                                         );
                                       },
                                       child: Container(
+                                        height: 54,
+                                        width: _size.width-16,
                                         padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                                         decoration: BoxDecoration(
                                           borderRadius: BorderRadius.circular(8),
-                                          image: const DecorationImage(
-                                            image: AssetImage('assets/imgs/imgs/snowballShop/icon_snowballshop_store_box_1.png'),
-                                            fit: BoxFit.cover,
-                                          ),
+                                          color: Color(0xFFCAFFA2)
                                         ),
                                         child: Row(
                                           children: [
@@ -908,13 +916,12 @@ class _SnowballMarketBrandOnlyHomeViewState extends State<SnowballMarketBrandOnl
                                               );
                                             },
                                             child: Container(
+                                              height: 54,
+                                              width: _size.width-16,
                                               padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                                               decoration: BoxDecoration(
-                                                borderRadius: BorderRadius.circular(8),
-                                                image: const DecorationImage(
-                                                  image: AssetImage('assets/imgs/imgs/snowballShop/icon_snowballshop_store_box_1.png'),
-                                                  fit: BoxFit.cover,
-                                                ),
+                                                  borderRadius: BorderRadius.circular(8),
+                                                  color: Color(0xFFCAFFA2)
                                               ),
                                               child: Row(
                                                 children: [
@@ -1101,13 +1108,12 @@ class _SnowballMarketBrandOnlyHomeViewState extends State<SnowballMarketBrandOnl
                                               );
                                             },
                                             child: Container(
+                                              height: 54,
+                                              width: _size.width-16,
                                               padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                                               decoration: BoxDecoration(
-                                                borderRadius: BorderRadius.circular(8),
-                                                image: const DecorationImage(
-                                                  image: AssetImage('assets/imgs/imgs/snowballShop/icon_snowballshop_store_box_1.png'),
-                                                  fit: BoxFit.cover,
-                                                ),
+                                                  borderRadius: BorderRadius.circular(8),
+                                                  color: Color(0xFFCAFFA2)
                                               ),
                                               child: Row(
                                                 children: [
@@ -1175,13 +1181,13 @@ class _SnowballMarketBrandOnlyHomeViewState extends State<SnowballMarketBrandOnl
                                           style: ElevatedButton.styleFrom(
                                             backgroundColor: const Color(0xFFFFFFFF), // ✅ 색상 고정
                                             elevation: 0,
-                                            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
+                                            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
                                             shape: RoundedRectangleBorder(
                                               borderRadius: BorderRadius.circular(20),
                                             ),
                                           ),
                                           child: SizedBox(
-                                            width: 64, // ✅ 고정 크기 (텍스트 기준)
+                                            width: 56, // ✅ 고정 크기 (텍스트 기준)
                                             height: 18,
                                             child: Center(
                                               child: AnimatedSwitcher(
@@ -1195,7 +1201,7 @@ class _SnowballMarketBrandOnlyHomeViewState extends State<SnowballMarketBrandOnl
                                                   height: 14,
                                                   child: Center(
                                                     child: LoadingAnimationWidget.waveDots(
-                                                      color: SDSColor.snowliveWhite,
+                                                      color: SDSColor.snowliveBlack,
                                                       size: 15,
                                                     ),
                                                   ),
@@ -1214,7 +1220,7 @@ class _SnowballMarketBrandOnlyHomeViewState extends State<SnowballMarketBrandOnl
                                             ),
                                           ),
                                         ),
-                                        const SizedBox(width: 10),
+                                        const SizedBox(width: 6),
                                         // 자세히 보기 버튼
                                         ElevatedButton(
                                           onPressed: () {
@@ -1405,7 +1411,6 @@ class _SnowballMarketBrandOnlyHomeViewState extends State<SnowballMarketBrandOnl
                                         ),
                                       ],
                                     )
-
                                   ],
                                 ),
                               ),
@@ -1462,7 +1467,7 @@ class _SnowballMarketBrandOnlyHomeViewState extends State<SnowballMarketBrandOnl
                                       padding: EdgeInsets.only(bottom: 8),
                                       child: Text('라이브를 켜고 휘닉스 파크에서 라이딩 시 일정 확률로\n하얀 눈송이 혹은 황금 눈송이를 획득할 수 있어요!',
                                         style: SDSTextStyle.regular.copyWith(
-                                          color: Color(0xFFFFFFFF).withOpacity(0.6),
+                                          color: Color(0xFFFFFFFF).withOpacity(0.8),
                                           fontSize: 13,
                                         ),
                                         textAlign: TextAlign.center,
@@ -1512,7 +1517,7 @@ class _SnowballMarketBrandOnlyHomeViewState extends State<SnowballMarketBrandOnl
                                       padding: EdgeInsets.only(bottom: 8),
                                       child: Text('라이딩하면서 모아둔 하얀 눈송이와 황금 눈송이로\n교환하고 싶은 상품과 교환을 할 수 있어요.\n상품 수령을 위해 이름과 전화번호, 주소를 입력하면 신청 완료!\n만약 현장 수령을 원하시면, 호크 리프트 옆\n눈송이 상품 수령처에서 직접 수령도 가능해요.',
                                         style: SDSTextStyle.regular.copyWith(
-                                          color: Color(0xFFFFFFFF).withOpacity(0.6),
+                                          color: Color(0xFFFFFFFF).withOpacity(0.8),
                                           fontSize: 13,
                                         ),
                                         textAlign: TextAlign.center,
@@ -1554,7 +1559,7 @@ class _SnowballMarketBrandOnlyHomeViewState extends State<SnowballMarketBrandOnl
                             child: Stack(
                               children: [
                                 Image.asset(
-                                  'assets/imgs/imgs/snowballShop/img_snowballshop_store_bottom_image2.png',
+                                  'assets/imgs/imgs/snowballShop/img_snowballshop_store_bottom_image3.png',
                                 ),
                                 Center(
                                   child: Padding(
@@ -1639,7 +1644,7 @@ class _SnowballMarketBrandOnlyHomeViewState extends State<SnowballMarketBrandOnl
                           begin: Alignment.topCenter,      // 위쪽(0%)
                           end: Alignment.bottomCenter,     // 아래쪽(100%)
                           colors: [
-                            Color(0xFF0C7519),             // #030C19, opacity 0
+                            Color(0x000C7519),             // #030C19, opacity 0
                             Color(0xFF0C7519),             // #030C19, opacity 100
                           ],
                           stops: [0.0, 1.0],
