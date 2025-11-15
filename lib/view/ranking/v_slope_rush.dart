@@ -35,6 +35,7 @@ class _SlopeRushHomeViewState extends State<SlopeRushHomeView> {
   // 리조트별 이미지 폴더 슬러그
   static const Map<int, String> _resortSlug = {
     1: 'gonjiam',
+    3: 'vivaldi',
     13: 'phoenix',
   };
 
@@ -50,6 +51,17 @@ class _SlopeRushHomeViewState extends State<SlopeRushHomeView> {
       '그램2': 'gram2',
       '와이낫': 'whynot',
       '휘센': 'whisen',
+    },
+    3: {
+      '발라드': 'ballad',
+      '블루스': 'blues',
+      '클래식': 'classic',
+      '펑키': 'funky',
+      '힙합': 'hiphop',
+      '재즈': 'jazz',
+      '레게': 'reggae',
+      '테크노1': 'techno1',
+      '테크노2': 'techno2',
     },
     13: {
       '챔피온': 'champion',
@@ -83,6 +95,17 @@ class _SlopeRushHomeViewState extends State<SlopeRushHomeView> {
       'gram2': const Offset(0.68, 0.20),
       'whynot': const Offset(0.69, 0.50),
       'whisen': const Offset(0.68, 0.90),
+    },
+    3: {
+      'ballad': const Offset(0.43, 0.72),
+      'blues': const Offset(0.78, 0.82),
+      'classic': const Offset(0.10, 0.22),
+      'funky': const Offset(0.36, 0.53),
+      'hiphop': const Offset(0.70, 0.60),
+      'jazz': const Offset(0.15, 0.62),
+      'reggae': const Offset(0.15, 0.42),
+      'techno1': const Offset(0.60, 0.40),
+      'techno2': const Offset(0.54, 0.20),
     },
     13: {
       'champion': const Offset(0.55, 0.22),
@@ -140,7 +163,7 @@ class _SlopeRushHomeViewState extends State<SlopeRushHomeView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: SDSColor.snowliveWhite,
+      backgroundColor: Color(0xFFEFF5FF),
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(44),
         child: AppBar(
@@ -167,76 +190,84 @@ class _SlopeRushHomeViewState extends State<SlopeRushHomeView> {
           ),
           centerTitle: true,
           titleSpacing: 0,
-          backgroundColor: SDSColor.snowliveWhite,
+          backgroundColor: Color(0xFFEFF5FF),
           foregroundColor: Colors.transparent,
           surfaceTintColor: Colors.transparent,
           elevation: 0.0,
         ),
       ),
-      // ==== 화면 전체 스크롤 ====
-      body: Obx(() {
-        final items = _slopeRushViewModel.items.toList();
-        final loading = _slopeRushViewModel.isLoading.value;
+      body: RefreshIndicator.adaptive(
+        onRefresh: _refreshCurrentResort,      // ✅ 아래로 당기면 현재 리조트 재조회
+        displacement: 72,                      // 인디케이터 위치(옵션)
+        edgeOffset: 0,                         // 앱바 아래 바로 시작
+        child: Obx(() {
+          final items = _slopeRushViewModel.items.toList();
+          final loading = _slopeRushViewModel.isLoading.value;
 
-        return CustomScrollView(
-          slivers: [
-            // ⬇️ 상단 전체(앱바 아래~지도까지) 하늘색 배경으로 감싸기
-            SliverToBoxAdapter(
-              child: Container(
-                color: const Color(0xFFEFF5FF), // 하늘색 배경
-                child: Column(
-                  children: [
-                    _buildCapsuleFilter(),
-                    _buildMapSection(items),
-                  ],
-                ),
-              ),
-            ),
-
-            // 힌트 텍스트 (하얀 배경으로 자연스럽게 넘어감)
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                child: Text(
-                  '슬로프에서 가장 최근 라이딩 횟수 500회 기준으로 계산',
-                  style: SDSTextStyle.regular.copyWith(
-                    fontSize: 12,
-                    color: SDSColor.gray500,
+          return CustomScrollView(
+            physics: const AlwaysScrollableScrollPhysics(), // ✅ 리스트가 짧아도 당길 수 있게
+            slivers: [
+              // ⬇️ 상단(필터+지도) 하늘색 구역
+              SliverToBoxAdapter(
+                child: Container(
+                  color: const Color(0xFFEFF5FF),
+                  child: Column(
+                    children: [
+                      _buildCapsuleFilter(),
+                      _buildMapSection(items),
+                    ],
                   ),
                 ),
               ),
-            ),
 
-            // 나머지 리스트 섹션
-            if (loading)
-              const SliverToBoxAdapter(
+              // 안내 텍스트
+              SliverToBoxAdapter(
                 child: Padding(
-                  padding: EdgeInsets.symmetric(vertical: 40),
-                  child: Center(child: CircularProgressIndicator()),
-                ),
-              )
-            else if (items.isEmpty)
-              const SliverToBoxAdapter(
-                child: Padding(
-                  padding: EdgeInsets.symmetric(vertical: 40),
-                  child: Center(child: Text('데이터가 없습니다.')),
-                ),
-              )
-            else
-              SliverList(
-                delegate: SliverChildBuilderDelegate(
-                      (context, index) => Padding(
-                    padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-                    child: _buildSlopeCard(items[index]),
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  child: Center(
+                    child: Text(
+                      '슬로프에서 가장 최근 라이딩 횟수 500회 기준으로 계산',
+                      style: SDSTextStyle.regular.copyWith(
+                        fontSize: 12,
+                        color: SDSColor.gray500,
+                      ),
+                    ),
                   ),
-                  childCount: items.length,
                 ),
               ),
-            const SliverToBoxAdapter(child: SizedBox(height: 16)),
-          ],
-        );
 
-      }),
+              // 로딩/빈상태/리스트
+              if (loading)
+                const SliverToBoxAdapter(
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(vertical: 40),
+                    child: Center(child: CircularProgressIndicator()),
+                  ),
+                )
+              else if (items.isEmpty)
+                const SliverToBoxAdapter(
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(vertical: 40),
+                    child: Center(child: Text('데이터가 없습니다.')),
+                  ),
+                )
+              else
+                SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                        (context, index) => Padding(
+                      padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+                      child: _buildSlopeCard(items[index]),
+                    ),
+                    childCount: items.length,
+                  ),
+                ),
+
+              const SliverToBoxAdapter(child: SizedBox(height: 16)),
+            ],
+          );
+        }),
+      ),
+
     );
   }
 
@@ -251,7 +282,7 @@ class _SlopeRushHomeViewState extends State<SlopeRushHomeView> {
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
         decoration: BoxDecoration(
           color: pillColor,
-          borderRadius: BorderRadius.circular(24),
+          borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withOpacity(0.06),
@@ -585,6 +616,19 @@ class _SlopeRushHomeViewState extends State<SlopeRushHomeView> {
       },
     );
   }
+
+
+  // ==== Pull-to-Refresh: 현재 선택된 리조트 데이터 재조회 ====
+  Future<void> _refreshCurrentResort() async {
+    // 필요시 캐시 무시 옵션이 있으면 추가: force: true 같은 파라미터
+    await _slopeRushViewModel.fetchSlopeRush(resort_id: selectedResortId);
+    await _precacheDefaultMap(selectedResortId);
+    // 선택된 슬로프 하이라이트는 유지 (리셋 원하면 아래 주석 해제)
+    // setState(() => selectedSlopeKey = null);
+    setState(() {}); // UI 갱신
+  }
+
+
 }
 
 // =======================
