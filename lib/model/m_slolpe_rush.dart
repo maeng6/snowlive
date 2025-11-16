@@ -72,6 +72,7 @@ class SlopeCrew {
   final int? crewId; // 서버에서 개인(None) 제외되어 내려오지만 nullable 유지 OK
   final String crewName;
   final String crewLogoUrl;
+  final String description;
   final int count;
   final double ratio;
 
@@ -79,6 +80,7 @@ class SlopeCrew {
     this.crewId,
     this.crewName = "",
     this.crewLogoUrl = "",
+    this.description = "",
     this.count = 0,
     this.ratio = 0.0,
   });
@@ -91,6 +93,7 @@ class SlopeCrew {
         : int.tryParse('${json['crew_id']}')),
     crewName: (json['crew_name'] ?? "").toString(),
     crewLogoUrl: (json['crew_logo_url'] ?? "").toString(),
+    description: (json['description'] ?? "").toString(),
     count: (json['count'] ?? 0) is int
         ? json['count']
         : int.tryParse('${json['count'] ?? 0}') ?? 0,
@@ -103,6 +106,7 @@ class SlopeCrew {
     "crew_id": crewId,
     "crew_name": crewName,
     "crew_logo_url": crewLogoUrl,
+    "description": description,
     "count": count,
     "ratio": ratio,
   };

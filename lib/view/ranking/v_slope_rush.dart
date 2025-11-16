@@ -1,4 +1,9 @@
 import 'package:com.snowlive/data/snowliveDesignStyle.dart';
+import 'package:com.snowlive/routes/routes.dart';
+import 'package:com.snowlive/viewmodel/crew/vm_crewDetail.dart';
+import 'package:com.snowlive/viewmodel/crew/vm_crewMemberList.dart';
+import 'package:com.snowlive/viewmodel/friend/vm_friendDetail.dart';
+import 'package:com.snowlive/viewmodel/vm_user.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:com.snowlive/viewmodel/ranking/vm_slope_rush.dart';
@@ -13,9 +18,14 @@ class SlopeRushHomeView extends StatefulWidget {
 
 class _SlopeRushHomeViewState extends State<SlopeRushHomeView> {
   final SlopeRushViewModel _slopeRushViewModel = Get.put(SlopeRushViewModel());
+  final UserViewModel _userViewModel = Get.put(UserViewModel());
+  final CrewDetailViewModel _crewDetailViewModel = Get.find<CrewDetailViewModel>();
+  final CrewMemberListViewModel _crewMemberListViewModel = Get.find<CrewMemberListViewModel>();
+  final FriendDetailViewModel _friendDetailViewModel = Get.find<FriendDetailViewModel>();
 
-  int selectedResortId = 1;
-  String? selectedSlopeKey; // 예: 'CNP1', 'thinq2' …
+
+  late int selectedResortId;        // ← 여기서 바로 값 넣지 않음
+  String? selectedSlopeKey;
 
   final resortOptions = const [
     {'id': 1, 'name': '곤지암리조트'},
@@ -393,13 +403,31 @@ class _SlopeRushHomeViewState extends State<SlopeRushHomeView> {
     },
   };
 
+  late ScrollController _scrollController;
+  bool isScrolled = false;
+
+
   @override
   void initState() {
     super.initState();
+
+    final fav = _userViewModel.user.favorite_resort; // 필요하면 ?. 로 처리
+    selectedResortId = (fav == 0 ? 1 : fav);         // 스펙에 맞춰 폴백
+
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await _slopeRushViewModel.fetchSlopeRush(resort_id: selectedResortId);
       await _precacheDefaultMap(selectedResortId);
     });
+
+    _scrollController = ScrollController();
+    _scrollController.addListener(() {
+      if (_scrollController.offset > 100 && !isScrolled) {
+        setState(() => isScrolled = true);
+      } else if (_scrollController.offset <= 100 && isScrolled) {
+        setState(() => isScrolled = false);
+      }
+    });
+
   }
 
   Future<void> _precacheDefaultMap(int resortId) async {
@@ -435,41 +463,39 @@ class _SlopeRushHomeViewState extends State<SlopeRushHomeView> {
     return key;
   }
 
-
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
-      backgroundColor: SDSColor.snowliveWhite,
+      backgroundColor: Color(0xFFC9DEE9),
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(44),
+        preferredSize: const Size.fromHeight(44),
         child: AppBar(
+          backgroundColor:
+          isScrolled ? Colors.white : const Color(0xFFC9DEE9),
+          elevation: isScrolled ? 0 : 0,
+          shadowColor: isScrolled ? Colors.black.withOpacity(0.05) : Colors.transparent,
+          surfaceTintColor: Colors.transparent,
+          centerTitle: true,
+
           leading: GestureDetector(
             child: Image.asset(
               'assets/imgs/icons/icon_snowLive_back.png',
               scale: 4,
               width: 26,
               height: 26,
+              color: isScrolled ? SDSColor.gray900 : null, // 🔥 스크롤 시 아이콘 색 변경
             ),
-            onTap: () {
-              Get.back();
-            },
+            onTap: () => Get.back(),
           ),
-          title: Padding(
-            padding: const EdgeInsets.only(left: 0),
-            child: Text(
-              '슬로프크래프트',
-              style: SDSTextStyle.extraBold.copyWith(
-                color: SDSColor.gray900,
-                fontSize: 18,
-              ),
+
+          title: Text(
+            '슬로프크래프트',
+            style: SDSTextStyle.extraBold.copyWith(
+              fontSize: 18,
+              color: isScrolled ? SDSColor.gray900 : SDSColor.gray900.withOpacity(0.9),
             ),
           ),
-          centerTitle: true,
-          titleSpacing: 0,
-          backgroundColor: Color(0xFFC9DEE9),
-          foregroundColor: Colors.transparent,
-          surfaceTintColor: Colors.transparent,
-          elevation: 0.0,
         ),
       ),
       body: RefreshIndicator.adaptive(
@@ -481,6 +507,7 @@ class _SlopeRushHomeViewState extends State<SlopeRushHomeView> {
           final loading = _slopeRushViewModel.isLoading.value;
 
           return CustomScrollView(
+            controller: _scrollController,
             physics: const AlwaysScrollableScrollPhysics(), // ✅ 리스트가 짧아도 당길 수 있게
             slivers: [
               // ⬇️ 상단(필터+지도) 하늘색 구역
@@ -490,16 +517,21 @@ class _SlopeRushHomeViewState extends State<SlopeRushHomeView> {
                   child: Column(
                     children: [
                       _buildCapsuleFilter(),
-                      _buildMapSection(items),
+                      SizedBox(
+                        height: 6,
+                      ),
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 10),
+                        child: _buildMapSection(items),
+                      ),
                     ],
                   ),
                 ),
               ),
-
               // 안내 텍스트
               SliverToBoxAdapter(
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  padding: const EdgeInsets.only(top: 24, bottom: 20),
                   child: Center(
                     child: Text(
                       '슬로프에서 가장 최근 라이딩 횟수 500회 기준으로 계산',
@@ -511,34 +543,73 @@ class _SlopeRushHomeViewState extends State<SlopeRushHomeView> {
                   ),
                 ),
               ),
-
+              SliverToBoxAdapter(
+                  child: Container(
+                    height: 20,
+                    decoration: BoxDecoration(
+                      color: SDSColor.snowliveWhite,
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(16),
+                        topRight: Radius.circular(16),
+                      ),
+                    ),
+                  )
+              ),
               // 로딩/빈상태/리스트
               if (loading)
-                const SliverToBoxAdapter(
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(vertical: 40),
-                    child: Center(child: CircularProgressIndicator()),
+                SliverToBoxAdapter(
+                  child: Container(
+                    height: 200,
+                    color: Colors.white,
+                    child: Center(child: CircularProgressIndicator(
+                      color: SDSColor.snowliveBlue,
+                    )),
                   ),
                 )
               else if (items.isEmpty)
-                const SliverToBoxAdapter(
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(vertical: 40),
-                    child: Center(child: Text('데이터가 없습니다.')),
+                SliverToBoxAdapter(
+                  child: Container(
+                    height: 200,
+                    color: Colors.white,
+                    child: const Padding(
+                      padding: EdgeInsets.symmetric(vertical: 40),
+                      child: Center(child: Text('데이터가 없습니다.')),
+                    ),
                   ),
                 )
               else
-                SliverList(
-                  delegate: SliverChildBuilderDelegate(
-                        (context, index) => Padding(
-                      padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-                      child: _buildSlopeCard(items[index]),
+                SliverPadding(
+                  padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                  sliver: SliverToBoxAdapter(
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: SDSColor.snowliveWhite,
+                      //   borderRadius: BorderRadius.only(
+                      //     topLeft: Radius.circular(16),
+                      //     topRight: Radius.circular(16),
+                      //   ),
+                      ),
+                      child: ListView.separated(
+                        shrinkWrap: true,                         // 🔹 높이를 내용만큼만
+                        physics: const NeverScrollableScrollPhysics(), // 🔹 바깥 스크롤만 사용
+                        itemCount: items.length,
+                        itemBuilder: (context, index) {
+                          return _buildSlopeRow(items[index]);    // 아래에서 새로 정의
+                        },
+                        separatorBuilder: (context, index) {
+                          return Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 20),
+                            child: Divider(
+                              height: 1,
+                              thickness: 1,
+                              color: SDSColor.snowliveWhite,
+                            ),
+                          );
+                        },
+                      ),
                     ),
-                    childCount: items.length,
                   ),
                 ),
-
-              const SliverToBoxAdapter(child: SizedBox(height: 16)),
             ],
           );
         }),
@@ -546,6 +617,7 @@ class _SlopeRushHomeViewState extends State<SlopeRushHomeView> {
 
     );
   }
+
 
 // ---------------------------
 // 상단 캡슐 필터 UI (아이콘이 리조트명 바로 우측에 붙도록 수정)
@@ -555,17 +627,10 @@ class _SlopeRushHomeViewState extends State<SlopeRushHomeView> {
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 8, 16, 10),
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+        padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 14),
         decoration: BoxDecoration(
           color: pillColor,
           borderRadius: BorderRadius.circular(16),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.06),
-              blurRadius: 14,
-              offset: const Offset(0, 4),
-            ),
-          ],
         ),
         child: Row(
           children: [
@@ -576,26 +641,52 @@ class _SlopeRushHomeViewState extends State<SlopeRushHomeView> {
                 child: DropdownButton<int>(
                   value: selectedResortId,
                   isDense: true,
-                  isExpanded: false, // ★ 중요: 가로 전체 차지 금지
+                  isExpanded: false,
                   borderRadius: BorderRadius.circular(16),
-                  icon: const Icon(Icons.keyboard_arrow_down_rounded, size: 18),
+                  dropdownColor: Color(0xFFFFFFFF),
+                  // 🔸 기본 icon 제거 (우리가 직접 붙일거라)
+                  icon: const SizedBox.shrink(),
+
+                  // 🔸 닫힌 상태의 위젯을 직접 커스텀
+                  selectedItemBuilder: (context) {
+                    return resortOptions.map((r) {
+                      final name = r['name'] as String;
+                      return Row(
+                        mainAxisSize: MainAxisSize.min,  // 🔥 텍스트 길이만큼만 너비
+                        children: [
+                          Text(
+                            name,
+                            style: SDSTextStyle.bold.copyWith(
+                              fontSize: 15,
+                              color: SDSColor.gray900,
+                            ),
+                          ),
+
+                          const SizedBox(width: 2),  // 🔥 텍스트와 아이콘 간격
+                          const Icon(Icons.keyboard_arrow_down_rounded, size: 22),
+                        ],
+                      );
+                    }).toList();
+                  },
+
                   items: resortOptions
                       .map((r) => DropdownMenuItem<int>(
                     value: r['id'] as int,
                     child: Text(
                       r['name'] as String,
                       style: SDSTextStyle.bold.copyWith(
-                        fontSize: 14,
+                        fontSize: 15,
                         color: SDSColor.gray900,
                       ),
                     ),
                   ))
                       .toList(),
+
                   onChanged: (id) async {
                     if (id == null) return;
                     setState(() {
                       selectedResortId = id;
-                      selectedSlopeKey = null; // 하이라이트 리셋
+                      selectedSlopeKey = null;
                     });
                     await _precacheDefaultMap(id);
                     await _slopeRushViewModel.fetchSlopeRush(resort_id: id);
@@ -604,7 +695,7 @@ class _SlopeRushHomeViewState extends State<SlopeRushHomeView> {
               ),
             ),
 
-            const Spacer(),
+            Spacer(),
 
             // 선택된 슬로프명 표시 (없으면 '슬로프명')
             GestureDetector(
@@ -612,8 +703,8 @@ class _SlopeRushHomeViewState extends State<SlopeRushHomeView> {
               child: Text(
                 _selectedSlopeDisplayName(),
                 style: SDSTextStyle.bold.copyWith(
-                  fontSize: 14,
-                  color: const Color(0xFF5B7CFF),
+                  fontSize: 15,
+                  color: SDSColor.snowliveBlue,
                 ),
               ),
             ),
@@ -639,89 +730,81 @@ class _SlopeRushHomeViewState extends State<SlopeRushHomeView> {
 
     return AspectRatio(
       aspectRatio: 780 / 900,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            final w = constraints.maxWidth;
-            final h = constraints.maxHeight;
-            final markers = <Widget>[];
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final w = constraints.maxWidth;
+          final h = constraints.maxHeight;
+          final markers = <Widget>[];
 
-// key ↔ 표시명 역변환(예: 'allegro' → '알레그로')
-            final keyMap = _slopeKeyByResort[selectedResortId] ?? const {};
-            String displayNameFromKey(String key) {
-              for (final e in keyMap.entries) {
-                if (e.value == key) return e.key;
-              }
-              return key;
+      // key ↔ 표시명 역변환(예: 'allegro' → '알레그로')
+          final keyMap = _slopeKeyByResort[selectedResortId] ?? const {};
+          String displayNameFromKey(String key) {
+            for (final e in keyMap.entries) {
+              if (e.value == key) return e.key;
             }
+            return key;
+          }
 
-// items에서 키로 매칭되는 슬로프 찾기
-            SlopeRushItem? findItemByKey(String key) {
-              for (final s in items) {
-                final k = _slopeKeyOf(s);
-                if (k == key) return s;
-              }
-              return null;
+      // items에서 키로 매칭되는 슬로프 찾기
+          SlopeRushItem? findItemByKey(String key) {
+            for (final s in items) {
+              final k = _slopeKeyOf(s);
+              if (k == key) return s;
             }
+            return null;
+          }
 
-// ✅ posMap 기준 모든 슬로프 마커 생성 (데이터 없어도 표시)
-            for (final entry in (posMap.entries)) {
-              final key = entry.key;   // ex) 'allegro'
-              final pos = entry.value;
+      // ✅ posMap 기준 모든 슬로프 마커 생성 (데이터 없어도 표시)
+          for (final entry in (posMap.entries)) {
+            final key = entry.key;   // ex) 'allegro'
+            final pos = entry.value;
 
-              final matched = findItemByKey(key);
-              final leader  = matched == null ? null : _leaderOf(matched);
+            final matched = findItemByKey(key);
+            final leader  = matched == null ? null : _leaderOf(matched);
 
-              // ▶ 미점령/데이터 없음이면 '미점령'만 표시
-              final bool unclaimed = (matched == null) || (leader == null);
+            // ▶ 미점령/데이터 없음이면 '미점령'만 표시
+            final bool unclaimed = (matched == null) || (leader == null);
 
-              final label = unclaimed
-                  ? '미점령'
-                  : (matched!.slopeNickname.isNotEmpty ? matched.slopeNickname : matched.slopeFullname);
+            final label = unclaimed
+                ? '미점령'
+                : (matched!.slopeNickname.isNotEmpty ? matched.slopeNickname : matched.slopeFullname);
 
-              final left = (pos.dx * w) - 12;
-              final top  = (pos.dy * h) - 12;
+            final left = (pos.dx * w) - 12;
+            final top  = (pos.dy * h) - 12;
 
-              markers.add(Positioned(
-                left: left,
-                top: top,
-                child: _Marker(
-                  selected: selectedSlopeKey == key,
-                  leader: unclaimed ? null : leader, // null이면 기본 마커로 렌더
-                  label: label,                      // 미점령 텍스트
-                  onTap: () {
-                    if (!unclaimed && matched != null) {
-                      _onMarkerTap(key, matched);    // 데이터 있으면 상세
-                    } else {
-                      // 미점령: 하이라이트만 주고 끝 (바텀시트 안 띄움)
-                      setState(() => selectedSlopeKey = key);
-                    }
-                  },
-                ),
-              ));
-            }
+            markers.add(
+                Positioned(
+                  left: left,
+                  top: top,
+                  child: _Marker(
+                selected: selectedSlopeKey == key,
+                leader: unclaimed ? null : leader, // null이면 기본 마커로 렌더
+                label: label,                      // 미점령 텍스트
+                onTap: () {
+                  if (!unclaimed && matched != null) {
+                    _onMarkerTap(key, matched);    // 데이터 있으면 상세
+                  } else {
+                    // 미점령: 하이라이트만 주고 끝 (바텀시트 안 띄움)
+                    setState(() => selectedSlopeKey = key);
+                  }
+                },
+              ),
+            ));
+          }
 
-            return Stack(
-              fit: StackFit.expand,
-              children: [
-                Container(
-                  color: const Color(0xFFC9DEE9), // 원하는 색상으로 변경 가능
-                ),
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(16),
-                  child: Image.asset(defaultPath, fit: BoxFit.cover),
-                ),
-                if (highlightPath != null)
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(16),
-                    child: Image.asset(highlightPath, fit: BoxFit.cover),
-                  ),
-                ...markers,
-              ],
-            );
-          },
-        ),
+          return Stack(
+            fit: StackFit.expand,
+            children: [
+              Container(
+                color: Color(0xFFC9DEE9), // 원하는 색상으로 변경 가능
+              ),
+              Image.asset(defaultPath, fit: BoxFit.cover),
+              if (highlightPath != null)
+                Image.asset(highlightPath, fit: BoxFit.cover),
+              ...markers,
+            ],
+          );
+        },
       ),
     );
   }
@@ -759,81 +842,119 @@ class _SlopeRushHomeViewState extends State<SlopeRushHomeView> {
   // ---------------------------
   // 리스트 카드 (슬로프명 + 1위 크루 표시)
   // ---------------------------
-  Widget _buildSlopeCard(SlopeRushItem slope) {
+  Widget _buildSlopeRow(SlopeRushItem slope) {
     final leader = _leaderOf(slope);
     final slopeName =
     slope.slopeNickname.isNotEmpty ? slope.slopeNickname : slope.slopeFullname;
 
-    return GestureDetector(
+    return InkWell(
       onTap: () {
         final key = _slopeKeyOf(slope);
         if (key != null) _onMarkerTap(key, slope);
       },
-      child: Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: SDSColor.snowliveWhite,
-          borderRadius: BorderRadius.circular(14),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.06),
-              blurRadius: 8,
-              offset: const Offset(0, 2),
-            ),
-          ],
-        ),
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(24, 10, 24, 10),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // 슬로프명 (카드 상단에 명확히 표시)
-            Text(
-              slopeName,
-              style: SDSTextStyle.bold.copyWith(
-                fontSize: 15,
-                color: SDSColor.gray900,
-              ),
-              overflow: TextOverflow.ellipsis,
+            // 슬로프명
+            Column(
+              children: [
+                Text(
+                  slopeName,
+                  style: SDSTextStyle.bold.copyWith(
+                    fontSize: 14,
+                    color: SDSColor.gray900,
+                  ),
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
             ),
-            const SizedBox(height: 10),
+            const SizedBox(height: 6),
 
             if (leader != null)
               Row(
                 children: [
-                  CircleAvatar(
-                    radius: 16,
-                    backgroundImage: leader.crewLogoUrl.isNotEmpty
-                        ? NetworkImage(leader.crewLogoUrl)
-                        : null,
-                    backgroundColor: Colors.grey[200],
-                    child: leader.crewLogoUrl.isEmpty
-                        ? const Icon(Icons.group, color: Colors.grey)
-                        : null,
+                  GestureDetector(
+                    // onTap: () async {
+                    //   Get.toNamed(AppRoutes.crewMain);
+                    //   await _crewMemberListViewModel.fetchCrewMembers(crewId: _slopeRushViewModel.items..crewId!);
+                    //   await _crewDetailViewModel.fetchCrewDetail(
+                    //       document.crewId!,
+                    //       _friendDetailViewModel.seasonDate
+                    //   );
+                    // },
+                    child: Container(
+                      width: 40,   // radius * 2
+                      height: 40,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: Colors.grey[200], // CircleAvatar의 backgroundColor 역할
+                        border: Border.all(
+                          color: Colors.grey[300]!,
+                          width: 1,
+                        ),
+                        image: leader.crewLogoUrl.isNotEmpty
+                            ? DecorationImage(
+                          image: NetworkImage(leader.crewLogoUrl),
+                          fit: BoxFit.cover,
+                        )
+                            : null,
+                      ),
+                      child: leader.crewLogoUrl.isEmpty
+                          ? const Icon(
+                        Icons.group,
+                        color: Colors.grey,
+                        size: 20,
+                      )
+                          : null,
+                    ),
                   ),
                   const SizedBox(width: 10),
                   Expanded(
-                    child: Text(
-                      leader.crewName,
-                      style: SDSTextStyle.bold,
-                      overflow: TextOverflow.ellipsis,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          leader.crewName,
+                          style: SDSTextStyle.regular.copyWith(fontSize: 14, height: 1.2,),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        Text(
+                          leader.description,
+                          style: SDSTextStyle.regular.copyWith(fontSize: 12, color: SDSColor.gray500),
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 1,
+                        ),
+                      ],
                     ),
                   ),
-                  Text(
-                    "${(leader.ratio * 100).toStringAsFixed(1)}%",
-                    style: SDSTextStyle.bold
-                        .copyWith(color: SDSColor.snowliveBlack),
+                  Padding(
+                    padding: EdgeInsets.only(left: 16),
+                    child: Text(
+                      "${(leader.ratio * 100).toStringAsFixed(1)}%",
+                      style: SDSTextStyle.bold.copyWith(
+                        color: SDSColor.snowliveBlack,
+                        fontSize: 18,
+                      ),
+                    ),
                   ),
                 ],
               )
             else
               Text(
                 '점령중인 크루 없음',
-                style: SDSTextStyle.regular.copyWith(color: SDSColor.gray500),
+                style: SDSTextStyle.regular.copyWith(
+                  color: SDSColor.gray500,
+                ),
               ),
           ],
         ),
       ),
     );
   }
+
+
 
   // ---------------------------
   // 바텀싯: 크루 상세 (화면 절반)
@@ -847,7 +968,7 @@ class _SlopeRushHomeViewState extends State<SlopeRushHomeView> {
         final sorted = [...slope.crews]..sort((a, b) => b.ratio.compareTo(a.ratio));
 
         return FractionallySizedBox(
-          heightFactor: 0.5,
+          heightFactor: 0.6,
           child: Container(
             decoration: const BoxDecoration(
               color: Colors.white,
@@ -857,7 +978,7 @@ class _SlopeRushHomeViewState extends State<SlopeRushHomeView> {
               top: false,
               child: Column(
                 children: [
-                  const SizedBox(height: 8),
+                  const SizedBox(height: 12),
                   Container(
                     width: 48,
                     height: 5,
@@ -866,12 +987,12 @@ class _SlopeRushHomeViewState extends State<SlopeRushHomeView> {
                       borderRadius: BorderRadius.circular(10),
                     ),
                   ),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: 24),
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    padding: EdgeInsets.symmetric(horizontal: 20),
                     child: Text(
                       '${slope.slopeNickname.isNotEmpty ? slope.slopeNickname : slope.slopeFullname} 점령 현황',
-                      style: SDSTextStyle.bold.copyWith(fontSize: 18),
+                      style: SDSTextStyle.bold.copyWith(fontSize: 16),
                     ),
                   ),
                   const SizedBox(height: 8),
@@ -882,31 +1003,64 @@ class _SlopeRushHomeViewState extends State<SlopeRushHomeView> {
                       itemBuilder: (context, i) {
                         final c = sorted[i];
                         return Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 6.0),
+                          padding: const EdgeInsets.symmetric(vertical: 8),
                           child: Row(
                             children: [
-                              CircleAvatar(
-                                radius: 18,
-                                backgroundImage: c.crewLogoUrl.isNotEmpty
-                                    ? NetworkImage(c.crewLogoUrl)
-                                    : null,
-                                backgroundColor: Colors.grey[200],
+                              Container(
+                                width: 40,   // radius * 2
+                                height: 40,
+                                decoration: BoxDecoration(
+                                  color: Colors.grey[200],                       // 배경색
+                                  borderRadius: BorderRadius.circular(10),       // 🔥 직접 적용 가능한 모서리 반경
+                                  border: Border.all(
+                                    color: Colors.grey[300]!,                    // 테두리색
+                                    width: 1,
+                                  ),
+                                  image: c.crewLogoUrl.isNotEmpty
+                                      ? DecorationImage(
+                                    image: NetworkImage(c.crewLogoUrl),
+                                    fit: BoxFit.cover,                     // 이미지 꽉 채움
+                                  )
+                                      : null,
+                                ),
                                 child: c.crewLogoUrl.isEmpty
-                                    ? const Icon(Icons.group, color: Colors.grey)
+                                    ? const Icon(
+                                  Icons.group,
+                                  color: Colors.grey,
+                                  size: 18,
+                                )
                                     : null,
-                              ),
-                              const SizedBox(width: 12),
+                              )
+                              ,
+                              const SizedBox(width: 16),
                               Expanded(
-                                child: Text(
-                                  c.crewName,
-                                  style: SDSTextStyle.bold,
-                                  overflow: TextOverflow.ellipsis,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      c.crewName,
+                                      style: SDSTextStyle.regular.copyWith(
+                                          fontSize: 14
+                                      ),
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                    Text(
+                                      c.description,
+                                      style: SDSTextStyle.regular
+                                          .copyWith(color: SDSColor.gray500,
+                                      fontSize: 12),
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 1,
+                                    ),
+                                  ],
                                 ),
                               ),
-                              Text(
-                                "${(c.ratio * 100).toStringAsFixed(1)}%",
-                                style: SDSTextStyle.bold
-                                    .copyWith(color: SDSColor.snowliveBlack),
+                              Padding(
+                                padding: EdgeInsets.only(left: 16),
+                                child: Text(
+                                  "${(c.ratio * 100).toStringAsFixed(1)}%",
+                                  style: SDSTextStyle.bold.copyWith(color: SDSColor.snowliveBlack, fontSize: 16),
+                                ),
                               ),
                             ],
                           ),
@@ -967,17 +1121,24 @@ class _Marker extends StatelessWidget {
           // 🔹 프로필 이미지 (미점령이면 아예 표시 안 함)
           if (!unclaimed)
             Container(
-              width: 20,
-              height: 20,
+              width: selected ? 36 : 24,
+              height: selected ? 36 : 24,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 color: Colors.white,
                 border: Border.all(
                   color: selected
-                      ? const Color(0xFF5B7CFF)
+                      ? Colors.black12
                       : Colors.black12,
-                  width: selected ? 2 : 1,
+                  width: selected ? 1 : 1,
                 ),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.10),
+                    blurRadius: 4,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
               ),
               child: ClipOval(
                 child: crewLogo.isNotEmpty
@@ -986,26 +1147,34 @@ class _Marker extends StatelessWidget {
               ),
             ),
 
-          if (!unclaimed) const SizedBox(height: 4),
+          if (!unclaimed) const SizedBox(height: 2),
 
           // 🔹 라벨 캡슐 (미점령 포함 항상 표시)
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+            padding: const EdgeInsets.symmetric(horizontal: 3, vertical: 1),
             decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(12),
+              color: selected ? Colors.black : Colors.white,
+              borderRadius: BorderRadius.circular(4),
               border: Border.all(
                 color: selected
-                    ? const Color(0xFF5B7CFF)
-                    : (unclaimed ? Colors.black26 : Colors.black12),
+                    ? Colors.black26
+                    : (unclaimed ? Colors.black26 : Colors.black26),
+                width: selected ? 1 : 1,
               ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.10),
+                  blurRadius: 4,
+                  offset: const Offset(0, 2),
+                ),
+              ],
             ),
             child: Text(
               crewName,
               style: TextStyle(
-                fontSize: 8,
-                fontWeight: FontWeight.w700,
-                color: unclaimed ? Colors.grey[600] : Colors.black87,
+                fontSize: 10,
+                fontWeight: FontWeight.bold,
+                color: selected ? Colors.white : (unclaimed ? Colors.grey[500] : Colors.black),
               ),
               overflow: TextOverflow.ellipsis,
             ),
