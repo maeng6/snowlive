@@ -1111,7 +1111,7 @@ class _ResortHomeViewState extends State<ResortHomeView> with
                             decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(16),
                                 color: (_resortHomeViewModel.isLoading_weather == true)
-                                    ? SDSColor.gray200
+                                    ? SDSColor.gray700
                                     : _resortHomeViewModel.weatherColors),
                             alignment: Alignment.center,
                             width: double.infinity,
@@ -1134,14 +1134,7 @@ class _ResortHomeViewState extends State<ResortHomeView> with
                                                 Padding(
                                                   padding: const EdgeInsets.only(left: 24),
                                                   child:
-                                                  (_resortHomeViewModel.isLoading_weather == true)
-                                                      ? Text(
-                                                    ' ',
-                                                    style: SDSTextStyle.bold.copyWith(
-                                                        color: SDSColor.snowliveWhite,
-                                                        fontSize: 16),
-                                                  )
-                                                      : Text(
+                                                  Text(
                                                     '${_resortHomeViewModel.resortHomeModel.instantResortName}',
                                                     style: SDSTextStyle.bold.copyWith(
                                                         color: _resortHomeViewModel.weatherTextColors,
@@ -1151,9 +1144,7 @@ class _ResortHomeViewState extends State<ResortHomeView> with
                                                 SizedBox(
                                                   width: 3,
                                                 ),
-                                                (_resortHomeViewModel.isLoading_weather == true)
-                                                    ? Container()
-                                                    : Image.asset(
+                                                Image.asset(
                                                   'assets/imgs/icons/icon_dropdown.png',
                                                   width: 18,
                                                   height: 18,
@@ -1191,13 +1182,7 @@ class _ResortHomeViewState extends State<ResortHomeView> with
                                               child: Row(
                                                 mainAxisAlignment: MainAxisAlignment.start,
                                                 children: [
-                                                  (_resortHomeViewModel.isLoading_weather == true)
-                                                      ? Text(' ',
-                                                    style: SDSTextStyle.regular.copyWith(
-                                                        color: _resortHomeViewModel.weatherTextColors,
-                                                        fontSize: 13),
-                                                  )
-                                                      : Opacity(
+                                                  Opacity(
                                                     opacity: 0.5,
                                                     child: Text('${GetDatetime().getDateTime()}',
                                                       style: SDSTextStyle.regular.copyWith(
