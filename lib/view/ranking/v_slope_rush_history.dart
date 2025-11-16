@@ -1297,35 +1297,5 @@ class _Marker extends StatelessWidget {
       ),
     );
   }
-
-}
-
-class _SeasonPillContent extends StatelessWidget {
-  const _SeasonPillContent();
-
-  @override
-  Widget build(BuildContext context) {
-    final _state = context.findAncestorStateOfType<_SlopeRushHistoryHomeViewState>();
-    final RxString label = _state!._selectedSeasonLabel;
-
-    return Obx(() => Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Text(
-          label.value, // 선택된 시즌 라벨
-          style: SDSTextStyle.bold.copyWith(
-            fontSize: 12,
-            color: const Color(0xFF111111),
-          ),
-        ),
-        const SizedBox(width: 2),
-        Image.asset(
-          'assets/imgs/icons/icon_check_round.png',
-          width: 16,
-          height: 16,
-        ),
-      ],
-    ));
-  }
 }
 
