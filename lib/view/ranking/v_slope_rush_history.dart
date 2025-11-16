@@ -4,21 +4,20 @@ import 'package:com.snowlive/viewmodel/crew/vm_crewDetail.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewMemberList.dart';
 import 'package:com.snowlive/viewmodel/friend/vm_friendDetail.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
-import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:com.snowlive/viewmodel/ranking/vm_slope_rush.dart';
 import 'package:com.snowlive/model/m_slolpe_rush.dart';
 
-class SlopeRushHomeView extends StatefulWidget {
-  const SlopeRushHomeView({super.key});
+class SlopeRushHistoryHomeView extends StatefulWidget {
+  const SlopeRushHistoryHomeView({super.key});
 
   @override
-  State<SlopeRushHomeView> createState() => _SlopeRushHomeViewState();
+  State<SlopeRushHistoryHomeView> createState() => _SlopeRushHistoryHomeViewState();
 }
 
-class _SlopeRushHomeViewState extends State<SlopeRushHomeView> {
+class _SlopeRushHistoryHomeViewState extends State<SlopeRushHistoryHomeView> {
   final SlopeRushViewModel _slopeRushViewModel = Get.put(SlopeRushViewModel());
   final UserViewModel _userViewModel = Get.put(UserViewModel());
   final CrewDetailViewModel _crewDetailViewModel = Get.find<CrewDetailViewModel>();
@@ -405,6 +404,108 @@ class _SlopeRushHomeViewState extends State<SlopeRushHomeView> {
     },
   };
 
+
+  // 시즌 라벨 (UI 표기)
+  final RxString _selectedSeasonLabel = '24/25'.obs;
+
+  // (선택) 서버 파라미터 등은 나중에 연결 — 지금은 훅만 남겨둠
+  void _onSeasonSelected({required String uiLabel /*, String? apiCode*/}) async {
+    // TODO: 서버 연동 시 여기에 fetch 호출 추가
+    // 예: await _slopeRushViewModel.fetchSlopeRush(resort_id: selectedResortId, season: apiCode);
+  }
+
+  // 시즌 선택 필터
+  Widget _buildSeasonFilterAction(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(right: 14),
+      child: Container(
+        decoration: BoxDecoration(
+          color: SDSColor.snowliveWhite,
+          borderRadius: BorderRadius.circular(50),
+          border: Border.all(color: SDSColor.gray200, width: 1),
+        ),
+        child: InkWell(
+          borderRadius: BorderRadius.circular(50),
+          onTap: () async {
+            HapticFeedback.lightImpact();
+            showModalBottomSheet(
+              enableDrag: false,
+              isScrollControlled: true,
+              backgroundColor: Colors.transparent,
+              context: context,
+              builder: (context) {
+                return SafeArea(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 20),
+                    child: Container(
+                      margin: const EdgeInsets.symmetric(horizontal: 16),
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      child: SingleChildScrollView(
+                        child: Wrap(
+                          children: [
+                            // 24/25
+                            ListTile(
+                              contentPadding: EdgeInsets.zero,
+                              title: Center(
+                                child: Text(
+                                  '24/25',
+                                  style: SDSTextStyle.bold.copyWith(
+                                    fontSize: 15,
+                                    color: SDSColor.gray900,
+                                  ),
+                                ),
+                              ),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(16),
+                              ),
+                              onTap: () async {
+                                Navigator.pop(context);
+                                _selectedSeasonLabel.value = '24/25';
+                                // TODO: 서버 연동 시 여기에서 fetch 호출
+                                // await _slopeRushViewModel.fetchSlopeRush(resort_id: selectedResortId, season: '2024-2025');
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                );
+              },
+            );
+          },
+          child: Padding(
+            padding: const EdgeInsets.only(left: 8, right: 4, top: 4, bottom: 4),
+            // 🔑 여기에만 Obx를 사용하고 바로 Rx 값을 읽습니다.
+            child: Obx(() => Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  _selectedSeasonLabel.value,
+                  style: SDSTextStyle.bold.copyWith(
+                    fontSize: 12,
+                    color: const Color(0xFF111111),
+                  ),
+                ),
+                const SizedBox(width: 2),
+                Image.asset(
+                  'assets/imgs/icons/icon_check_round.png',
+                  width: 16,
+                  height: 16,
+                ),
+              ],
+            )),
+          ),
+        ),
+      ),
+    );
+  }
+
+
   late ScrollController _scrollController;
   bool isScrolled = false;
 
@@ -480,25 +581,7 @@ class _SlopeRushHomeViewState extends State<SlopeRushHomeView> {
           surfaceTintColor: Colors.transparent,
           centerTitle: true,
           actions: [
-            Padding(
-              padding: const EdgeInsets.only(right: 16),
-              child: Row(
-                children: [
-                  IconButton(
-                    highlightColor: Colors.transparent,
-                    onPressed: () async{
-                      HapticFeedback.lightImpact();
-                      Get.toNamed(AppRoutes.slopeRushHistoryHome);
-                    },
-                    icon: Image.asset(
-                      'assets/imgs/icons/icon_data_history.png',
-                      width: 26,
-                      height: 26,
-                    ),
-                  ),
-                ],
-              ),
-            ),
+            _buildSeasonFilterAction(context),
           ],
           leading: GestureDetector(
             child: Image.asset(
@@ -512,7 +595,7 @@ class _SlopeRushHomeViewState extends State<SlopeRushHomeView> {
           ),
 
           title: Text(
-            '슬로프크래프트',
+            '시즌 기록실',
             style: SDSTextStyle.extraBold.copyWith(
               fontSize: 18,
               color: isScrolled ? SDSColor.gray900 : SDSColor.gray900.withOpacity(0.9),
@@ -606,10 +689,10 @@ class _SlopeRushHomeViewState extends State<SlopeRushHomeView> {
                     child: Container(
                       decoration: BoxDecoration(
                         color: SDSColor.snowliveWhite,
-                      //   borderRadius: BorderRadius.only(
-                      //     topLeft: Radius.circular(16),
-                      //     topRight: Radius.circular(16),
-                      //   ),
+                        //   borderRadius: BorderRadius.only(
+                        //     topLeft: Radius.circular(16),
+                        //     topRight: Radius.circular(16),
+                        //   ),
                       ),
                       child: ListView.separated(
                         shrinkWrap: true,                         // 🔹 높이를 내용만큼만
@@ -758,7 +841,7 @@ class _SlopeRushHomeViewState extends State<SlopeRushHomeView> {
           final h = constraints.maxHeight;
           final markers = <Widget>[];
 
-      // key ↔ 표시명 역변환(예: 'allegro' → '알레그로')
+          // key ↔ 표시명 역변환(예: 'allegro' → '알레그로')
           final keyMap = _slopeKeyByResort[selectedResortId] ?? const {};
           String displayNameFromKey(String key) {
             for (final e in keyMap.entries) {
@@ -767,7 +850,7 @@ class _SlopeRushHomeViewState extends State<SlopeRushHomeView> {
             return key;
           }
 
-      // items에서 키로 매칭되는 슬로프 찾기
+          // items에서 키로 매칭되는 슬로프 찾기
           SlopeRushItem? findItemByKey(String key) {
             for (final s in items) {
               final k = _slopeKeyOf(s);
@@ -776,7 +859,7 @@ class _SlopeRushHomeViewState extends State<SlopeRushHomeView> {
             return null;
           }
 
-      // ✅ posMap 기준 모든 슬로프 마커 생성 (데이터 없어도 표시)
+          // ✅ posMap 기준 모든 슬로프 마커 생성 (데이터 없어도 표시)
           for (final entry in (posMap.entries)) {
             final key = entry.key;   // ex) 'allegro'
             final pos = entry.value;
@@ -799,19 +882,19 @@ class _SlopeRushHomeViewState extends State<SlopeRushHomeView> {
                   left: left,
                   top: top,
                   child: _Marker(
-                selected: selectedSlopeKey == key,
-                leader: unclaimed ? null : leader, // null이면 기본 마커로 렌더
-                label: label,                      // 미점령 텍스트
-                onTap: () {
-                  if (!unclaimed && matched != null) {
-                    _onMarkerTap(key, matched);    // 데이터 있으면 상세
-                  } else {
-                    // 미점령: 하이라이트만 주고 끝 (바텀시트 안 띄움)
-                    setState(() => selectedSlopeKey = key);
-                  }
-                },
-              ),
-            ));
+                    selected: selectedSlopeKey == key,
+                    leader: unclaimed ? null : leader, // null이면 기본 마커로 렌더
+                    label: label,                      // 미점령 텍스트
+                    onTap: () {
+                      if (!unclaimed && matched != null) {
+                        _onMarkerTap(key, matched);    // 데이터 있으면 상세
+                      } else {
+                        // 미점령: 하이라이트만 주고 끝 (바텀시트 안 띄움)
+                        setState(() => selectedSlopeKey = key);
+                      }
+                    },
+                  ),
+                ));
           }
 
           return Stack(
@@ -1079,7 +1162,7 @@ class _SlopeRushHomeViewState extends State<SlopeRushHomeView> {
                                       c.description,
                                       style: SDSTextStyle.regular
                                           .copyWith(color: SDSColor.gray500,
-                                      fontSize: 12),
+                                          fontSize: 12),
                                       overflow: TextOverflow.ellipsis,
                                       maxLines: 1,
                                     ),
@@ -1215,5 +1298,34 @@ class _Marker extends StatelessWidget {
     );
   }
 
+}
+
+class _SeasonPillContent extends StatelessWidget {
+  const _SeasonPillContent();
+
+  @override
+  Widget build(BuildContext context) {
+    final _state = context.findAncestorStateOfType<_SlopeRushHistoryHomeViewState>();
+    final RxString label = _state!._selectedSeasonLabel;
+
+    return Obx(() => Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(
+          label.value, // 선택된 시즌 라벨
+          style: SDSTextStyle.bold.copyWith(
+            fontSize: 12,
+            color: const Color(0xFF111111),
+          ),
+        ),
+        const SizedBox(width: 2),
+        Image.asset(
+          'assets/imgs/icons/icon_check_round.png',
+          width: 16,
+          height: 16,
+        ),
+      ],
+    ));
+  }
 }
 
