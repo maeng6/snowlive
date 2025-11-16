@@ -44,6 +44,7 @@ class _SlopeRushHomeViewState extends State<SlopeRushHomeView> {
     1: {
       'CNP1': 'CNP1',
       'CNP2': 'CNP2',
+      '씽큐1': 'thinq1',
       '씽큐2': 'thinq2',
       '씽큐3': 'thinq3',
       '씽큐B': 'thinqB',
@@ -54,6 +55,7 @@ class _SlopeRushHomeViewState extends State<SlopeRushHomeView> {
     },
     3: {
       '발라드': 'ballad',
+      '락': 'rock',
       '블루스': 'blues',
       '클래식': 'classic',
       '펑키': 'funky',
@@ -88,17 +90,19 @@ class _SlopeRushHomeViewState extends State<SlopeRushHomeView> {
     1: {
       'CNP1': const Offset(0.29, 0.22),
       'CNP2': const Offset(0.30, 0.68),
+      'thinq1': const Offset(0.41, 0.05),
       'thinq2': const Offset(0.47, 0.62),
       'thinq3': const Offset(0.46, 0.32),
       'thinqB': const Offset(0.33, 0.47),
-      'gram1': const Offset(0.48, 0.13),
-      'gram2': const Offset(0.68, 0.20),
+      'gram1': const Offset(0.48, 0.16),
+      'gram2': const Offset(0.71, 0.20),
       'whynot': const Offset(0.69, 0.50),
       'whisen': const Offset(0.68, 0.90),
     },
     3: {
       'ballad': const Offset(0.43, 0.72),
       'blues': const Offset(0.78, 0.82),
+      'rock': const Offset(0.33, 0.30),
       'classic': const Offset(0.10, 0.22),
       'funky': const Offset(0.36, 0.53),
       'hiphop': const Offset(0.70, 0.60),
