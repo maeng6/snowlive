@@ -28,14 +28,14 @@ require File.expand_path(File.join('packages', 'flutter_tools', 'bin', 'podhelpe
 flutter_ios_podfile_setup
 
 target 'Runner' do
-  # ⬇️ 동적 → 정적 프레임워크 링크로 변경
   use_frameworks! :linkage => :static
-  # ⬇️ 제거 (충돌 유발 가능)
-  # use_modular_headers!
 
   flutter_install_all_ios_pods File.dirname(File.realpath(__FILE__))
 
-  # Firebase Analytics (모듈러 헤더 유지 가능)
+  # 🔥 Google Maps iOS SDK 추가 (필수)
+  pod 'GoogleMaps'
+
+  # Firebase Analytics
   pod 'Firebase/Analytics', :modular_headers => true
 end
 

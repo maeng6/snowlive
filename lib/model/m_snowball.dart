@@ -322,6 +322,7 @@ class MissionStatus {
   String? sponsorEngName;
   SnowballCount? snowballCount;
   int? missionApplyId;
+  int? snowballItemBrandId;
 
   MissionStatus({
     this.missionStatus,
@@ -334,6 +335,7 @@ class MissionStatus {
     this.sponsorEngName,
     this.snowballCount,
     this.missionApplyId,
+    this.snowballItemBrandId,
   });
 
   MissionStatus.fromJson(Map<String, dynamic> json) {
@@ -356,6 +358,7 @@ class MissionStatus {
     sponsorEngName = json['sponsor_name_eng'];
     snowballSponsorId = json['snowball_sponsor_id'];
     missionApplyId = json['snowball_mission_apply_list_id'];
+    snowballItemBrandId = json['snowball_item_brand_id'];
 
     final sc = json['snowball_count'];
     if (sc is Map) {
@@ -375,6 +378,7 @@ class MissionStatus {
       'snowball_mission_apply_list_id': missionApplyId,
       'sponsor_name_eng': sponsorEngName,
       'snowball_count': snowballCount?.toJson(),
+      'snowball_item_brand_id': snowballItemBrandId,
     };
   }
 

@@ -3,6 +3,7 @@ import Flutter
 import GoogleMaps
 import ActivityKit
 import UserNotifications
+import WidgetKit
 
 @main
 @objc class AppDelegate: FlutterAppDelegate {
