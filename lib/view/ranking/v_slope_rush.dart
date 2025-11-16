@@ -457,7 +457,7 @@ class _SlopeRushHomeViewState extends State<SlopeRushHomeView> {
           title: Padding(
             padding: const EdgeInsets.only(left: 0),
             child: Text(
-              '슬로프 러쉬',
+              '슬로프크래프트',
               style: SDSTextStyle.extraBold.copyWith(
                 color: SDSColor.gray900,
                 fontSize: 18,

@@ -1706,7 +1706,7 @@ class _ResortHomeViewState extends State<ResortHomeView> with
                                             mainAxisAlignment: MainAxisAlignment.start,
                                             children: [
                                               Text(
-                                                '슬로프 Clash',
+                                                '슬로프크래프트',
                                                 style: SDSTextStyle.bold.copyWith(
                                                   fontSize: 16,
                                                   color: SDSColor.gray900,
