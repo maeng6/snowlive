@@ -37,6 +37,14 @@ class _SlopeRushHomeViewState extends State<SlopeRushHomeView> {
     1: 'gonjiam',
     2: 'muju',
     3: 'vivaldi',
+    4: 'alpensia',
+    6: 'gangchon',
+    7: 'oakvalley',
+    8: 'o2',
+    9: 'yongpyong',
+    10: 'wellihilli',
+    11: 'jisan',
+    12: 'high1',
     13: 'phoenix',
   };
 
@@ -87,6 +95,111 @@ class _SlopeRushHomeViewState extends State<SlopeRushHomeView> {
       '테크노1': 'techno1',
       '테크노2': 'techno2',
     },
+    4: {
+      '알파': 'alpha',
+      '브라보': 'bravo',
+      '찰리': 'charlie',
+      '델타': 'delta',
+      '에코': 'echo',
+      '폭스트롯': 'foxtrot',
+    },
+    6: {
+      '디어': 'deer',
+      '드래곤': 'dragon',
+      '재규어': 'jaguar',
+      '래퍼드': 'leopard',
+      '팬더': 'panda',
+      '페가수': 'pegasus',
+      '퓨마': 'puma',
+      '래빗': 'rabbit',
+      '제브라': 'zebra',
+    },
+    7: {
+      'F': 'F',
+      'G': 'G',
+      'I': 'I',
+    },
+    8: {
+      '챌1(오)': 'challenge1',
+      '챌2(오)': 'challenge2',
+      '챌3(오)': 'challenge3',
+      '드림1': 'dream1',
+      '드림2': 'dream2',
+      '글로리1': 'glory1',
+      '글로리2': 'glory2',
+      '글로리3': 'glory3',
+      '해피': 'happy',
+      '헤드': 'head',
+      '패션1': 'passion1',
+      '패션2': 'passion2',
+    },
+    9: {
+      '블루': 'blue',
+      '파크(용)': 'dragonpark',
+      '골드F': 'goldfantastic',
+      '골드P': 'goldparadise',
+      '골드V': 'goldvalley',
+      '메가G': 'megagreen',
+      '뉴골드': 'newgold',
+      '뉴레드': 'newred',
+      '핑크': 'pink',
+      '렌보1': 'rainbow1',
+      '렌보2': 'rainbow2',
+      '렌보3': 'rainbow3',
+      '렌보4': 'rainbow4',
+      '렌보P': 'rainbowparadise',
+      '레드': 'red',
+      '레골브': 'redgoldbridge',
+      '레드P': 'redparadise',
+      '실버': 'silver',
+      '실버P': 'silverparadise',
+      '옐로우': 'yellow',
+    },
+    10: {
+      '알파1': 'alpha1',
+      '알파2': 'alpha2',
+      '알파3': 'alpha3',
+      '브라보1': 'bravo1',
+      '브라보2': 'bravo2',
+      '챌린지1': 'challenge1',
+      '챌린지2': 'challenge2',
+      '챌린지3': 'challenge3',
+      '챌린지4': 'challenge4',
+      '챌린지5': 'challenge5',
+      '델타1': 'delta1',
+      '델타플': 'deltaplus',
+      '에코1': 'echo1',
+      '에코2': 'echo2',
+      '에코3': 'echo3',
+      'S1': 'starexpress1',
+      'S2': 'starexpress2',
+    },
+    11: {
+      '1': '1',
+      '1-1': '1-1',
+      '2': '2',
+      '5': '5',
+      '6': '6',
+      '7': '7',
+    },
+    12: {
+      '아폴로1': 'apolo1',
+      '아폴로3': 'apolo3',
+      '아폴로4': 'apolo4',
+      '아폴로6': 'apolo6',
+      '아테나2': 'athena2',
+      '아테나3': 'athena3',
+      '헤라1': 'hera1',
+      '헤라2': 'hera2',
+      '헤라3': 'hera3',
+      '빅토1': 'victoria1',
+      '빅토2': 'victoria2',
+      '빅토3': 'victoria3',
+      '제우스1': 'zeus1',
+      '제우스2': 'zeus2',
+      '제우스3': 'zeus3',
+      '제우3-1': 'zeus3-1',
+    },
     13: {
       '챔피온': 'champion',
       '디지': 'digi',
@@ -121,6 +234,27 @@ class _SlopeRushHomeViewState extends State<SlopeRushHomeView> {
       'whynot': const Offset(0.69, 0.50),
       'whisen': const Offset(0.68, 0.90),
     },
+    2: {
+      'allegro':const Offset(0.45, 0.15),
+      'cadenza':const Offset(0.40, 0.25),
+      'connection':const Offset(0.35, 0.88),
+      'eastern':const Offset(0.55, 0.82),
+      'freeway':const Offset(0.75, 0.42),
+      'minuet':const Offset(0.27, 0.10),
+      'panorama':const Offset(0.76, 0.82),
+      'polka':const Offset(0.22, 0.30),
+      'raidersdown':const Offset(0.57, 0.62),
+      'raidersup':const Offset(0.60, 0.52),
+      'rookiehill':const Offset(0.61, 0.92),
+      'silkdown':const Offset(0.15, 0.55),
+      'silkroad':const Offset(0.88, 0.55),
+      'silkup':const Offset(0.10, 0.20),
+      'spitz':const Offset(0.35, 0.65),
+      'turbo':const Offset(0.90, 0.75),
+      'waltz':const Offset(0.10, 0.40),
+      'western':const Offset(0.85, 0.65),
+      'yamaga':const Offset(0.70, 0.71),
+    },
     3: {
       'ballad': const Offset(0.43, 0.72),
       'blues': const Offset(0.78, 0.82),
@@ -132,6 +266,112 @@ class _SlopeRushHomeViewState extends State<SlopeRushHomeView> {
       'reggae': const Offset(0.15, 0.42),
       'techno1': const Offset(0.60, 0.40),
       'techno2': const Offset(0.54, 0.20),
+    },
+    4: {
+      'alpha': const Offset(0.80, 0.40),
+      'bravo': const Offset(0.65, 0.05),
+      'charlie': const Offset(0.47, 0.30),
+      'delta': const Offset(0.40, 0.45),
+      'echo': const Offset(0.23, 0.55),
+      'foxtrot': const Offset(0.10, 0.40),
+    },
+    6: {
+      'deer': const Offset(0.45, 0.33),
+      'dragon': const Offset(0.15, 0.10),
+      'jaguar': const Offset(0.85, 0.70),
+      'leopard': const Offset(0.68, 0.45),
+      'panda': const Offset(0.15, 0.82),
+      'pegasus': const Offset(0.50, 0.65),
+      'puma': const Offset(0.50, 0.20),
+      'rabbit': const Offset(0.10, 0.67),
+      'zebra': const Offset(0.50, 0.78),
+
+    },
+    7: {
+      'F': const Offset(0.64, 0.40),
+      'G': const Offset(0.87, 0.50),
+      'I': const Offset(0.47, 0.60),
+    },
+    8: {
+      'challenge1': const Offset(0.15, 0.70),
+      'challenge2': const Offset(0.33, 0.75),
+      'challenge3': const Offset(0.35, 0.60),
+      'dream1': const Offset(0.60, 0.83),
+      'dream2': const Offset(0.75, 0.55),
+      'glory1': const Offset(0.20, 0.90),
+      'glory2': const Offset(0.15, 0.80),
+      'glory3': const Offset(0.55, 0.10),
+      'happy': const Offset(0.55, 0.65),
+      'head': const Offset(0.37, 0.22),
+      'passion1': const Offset(0.58, 0.34),
+      'passion2': const Offset(0.55, 0.45),
+    },
+    9: {
+      'blue': const Offset(0.32, 0.70),
+      'dragonpark': const Offset(0.55, 0.75),
+      'goldfantastic': const Offset(0.07, 0.40),
+      'goldparadise': const Offset(0.30, 0.40),
+      'goldvalley': const Offset(0.20, 0.30),
+      'megagreen': const Offset(0.60, 0.85),
+      'newgold': const Offset(0.10, 0.65),
+      'newred': const Offset(0.25, 0.60),
+      'pink': const Offset(0.32, 0.80),
+      'rainbow1': const Offset(0.65, 0.05),
+      'rainbow2': const Offset(0.75, 0.25),
+      'rainbow3': const Offset(0.87, 0.35),
+      'rainbow4': const Offset(0.90, 0.15),
+      'rainbowparadise': const Offset(0.50, 0.20),
+      'red': const Offset(0.15, 0.75),
+      'redgoldbridge': const Offset(0.15, 0.50),
+      'redparadise': const Offset(0.35, 0.50),
+      'silver': const Offset(0.60, 0.60),
+      'silverparadise': const Offset(0.45, 0.58),
+      'yellow': const Offset(0.40, 0.90),
+    },
+    10: {
+      'alpha1': const Offset(0.12, 0.85),
+      'alpha2': const Offset(0.15, 0.65),
+      'alpha3': const Offset(0.30, 0.76),
+      'bravo1': const Offset(0.12, 0.33),
+      'bravo2': const Offset(0.30, 0.40),
+      'challenge1': const Offset(0.25, 0.20),
+      'challenge2': const Offset(0.35, 0.30),
+      'challenge3': const Offset(0.45, 0.48),
+      'challenge4': const Offset(0.55, 0.38),
+      'challenge5': const Offset(0.60, 0.26),
+      'delta1': const Offset(0.45, 0.60),
+      'deltaplus': const Offset(0.57, 0.77),
+      'echo1': const Offset(0.69, 0.48),
+      'echo2': const Offset(0.72, 0.17),
+      'echo3': const Offset(0.85, 0.27),
+      'starexpress1': const Offset(0.60, 0.10),
+      'starexpress2': const Offset(0.78, 0.60),
+    },
+    11: {
+      '1': const Offset(0.17, 0.77),
+      '1-1': const Offset(0.05, 0.50),
+      '2': const Offset(0.11, 0.25),
+      '5': const Offset(0.47, 0.30),
+      '6': const Offset(0.64, 0.40),
+      '7': const Offset(0.70, 0.73),
+    },
+    12: {
+      'apolo1': const Offset(0.80, 0.40),
+      'apolo3': const Offset(0.50, 0.43),
+      'apolo4': const Offset(0.50, 0.60),
+      'apolo6': const Offset(0.50, 0.73),
+      'athena2': const Offset(0.60, 0.85),
+      'athena3': const Offset(0.40, 0.90),
+      'hera1': const Offset(0.57, 0.20),
+      'hera2': const Offset(0.75, 0.23),
+      'hera3': const Offset(0.60, 0.33),
+      'victoria1': const Offset(0.30, 0.30),
+      'victoria2': const Offset(0.30, 0.18),
+      'victoria3': const Offset(0.40, 0.07),
+      'zeus1': const Offset(0.65, 0.05),
+      'zeus2': const Offset(0.80, 0.10),
+      'zeus3': const Offset(0.35, 0.50),
+      'zeus3-1': const Offset(0.30, 0.73),
     },
     13: {
       'champion': const Offset(0.55, 0.22),
@@ -172,24 +412,34 @@ class _SlopeRushHomeViewState extends State<SlopeRushHomeView> {
   }
 
   // 현재 선택된 키를 사람이 읽을 수 있는 슬로프명으로
+// 현재 선택된 키를 사람이 읽을 수 있는 슬로프명으로
   String _selectedSlopeDisplayName() {
     final key = selectedSlopeKey;
     if (key == null) return '슬로프명';
-    // vm.items 에서 매칭 검색
+
+    // 1️⃣ 먼저 _slopeRushViewModel.items 안에서 매칭된 데이터 찾기
     for (final s in _slopeRushViewModel.items) {
       final k = _slopeKeyOf(s);
       if (k == key) {
         return s.slopeNickname.isNotEmpty ? s.slopeNickname : s.slopeFullname;
       }
     }
-    // 없으면 키 그대로
+
+    // 2️⃣ 데이터가 없으면, key를 한글명으로 변환해서 반환
+    final table = _slopeKeyByResort[selectedResortId] ?? const {};
+    for (final entry in table.entries) {
+      if (entry.value == key) return entry.key; // 예: 'allegro' → '알레그로'
+    }
+
+    // 3️⃣ 그래도 못 찾으면 그대로 반환 (fallback)
     return key;
   }
+
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFFEFF5FF),
+      backgroundColor: SDSColor.snowliveWhite,
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(44),
         child: AppBar(
@@ -216,7 +466,7 @@ class _SlopeRushHomeViewState extends State<SlopeRushHomeView> {
           ),
           centerTitle: true,
           titleSpacing: 0,
-          backgroundColor: Color(0xFFEFF5FF),
+          backgroundColor: Color(0xFFC9DEE9),
           foregroundColor: Colors.transparent,
           surfaceTintColor: Colors.transparent,
           elevation: 0.0,
@@ -236,7 +486,7 @@ class _SlopeRushHomeViewState extends State<SlopeRushHomeView> {
               // ⬇️ 상단(필터+지도) 하늘색 구역
               SliverToBoxAdapter(
                 child: Container(
-                  color: const Color(0xFFEFF5FF),
+                  color: const Color(0xFFC9DEE9),
                   child: Column(
                     children: [
                       _buildCapsuleFilter(),
@@ -397,26 +647,56 @@ class _SlopeRushHomeViewState extends State<SlopeRushHomeView> {
             final h = constraints.maxHeight;
             final markers = <Widget>[];
 
-            for (final slope in items) {
-              final key = _slopeKeyOf(slope);
-              final pos = key == null ? null : posMap[key];
-              if (pos == null) continue;
+// key ↔ 표시명 역변환(예: 'allegro' → '알레그로')
+            final keyMap = _slopeKeyByResort[selectedResortId] ?? const {};
+            String displayNameFromKey(String key) {
+              for (final e in keyMap.entries) {
+                if (e.value == key) return e.key;
+              }
+              return key;
+            }
+
+// items에서 키로 매칭되는 슬로프 찾기
+            SlopeRushItem? findItemByKey(String key) {
+              for (final s in items) {
+                final k = _slopeKeyOf(s);
+                if (k == key) return s;
+              }
+              return null;
+            }
+
+// ✅ posMap 기준 모든 슬로프 마커 생성 (데이터 없어도 표시)
+            for (final entry in (posMap.entries)) {
+              final key = entry.key;   // ex) 'allegro'
+              final pos = entry.value;
+
+              final matched = findItemByKey(key);
+              final leader  = matched == null ? null : _leaderOf(matched);
+
+              // ▶ 미점령/데이터 없음이면 '미점령'만 표시
+              final bool unclaimed = (matched == null) || (leader == null);
+
+              final label = unclaimed
+                  ? '미점령'
+                  : (matched!.slopeNickname.isNotEmpty ? matched.slopeNickname : matched.slopeFullname);
 
               final left = (pos.dx * w) - 12;
-              final top = (pos.dy * h) - 12;
-              final leader = _leaderOf(slope);
+              final top  = (pos.dy * h) - 12;
 
               markers.add(Positioned(
                 left: left,
                 top: top,
                 child: _Marker(
                   selected: selectedSlopeKey == key,
-                  leader: leader,
-                  label: slope.slopeNickname.isNotEmpty
-                      ? slope.slopeNickname
-                      : slope.slopeFullname,
+                  leader: unclaimed ? null : leader, // null이면 기본 마커로 렌더
+                  label: label,                      // 미점령 텍스트
                   onTap: () {
-                    if (key != null) _onMarkerTap(key, slope);
+                    if (!unclaimed && matched != null) {
+                      _onMarkerTap(key, matched);    // 데이터 있으면 상세
+                    } else {
+                      // 미점령: 하이라이트만 주고 끝 (바텀시트 안 띄움)
+                      setState(() => selectedSlopeKey = key);
+                    }
                   },
                 ),
               ));
@@ -426,7 +706,7 @@ class _SlopeRushHomeViewState extends State<SlopeRushHomeView> {
               fit: StackFit.expand,
               children: [
                 Container(
-                  color: const Color(0xFFEFF5FF), // 원하는 색상으로 변경 가능
+                  color: const Color(0xFFC9DEE9), // 원하는 색상으로 변경 가능
                 ),
                 ClipRRect(
                   borderRadius: BorderRadius.circular(16),
@@ -675,46 +955,57 @@ class _Marker extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final crewName = leader?.crewName ?? label;
-    final crewLogo = leader?.crewLogoUrl ?? '';
+    final bool unclaimed = leader == null;
+    final crewName = unclaimed ? '미점령' : leader!.crewName;
+    final crewLogo = unclaimed ? '' : leader!.crewLogoUrl;
 
     return InkWell(
       onTap: onTap,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Container(
-            width: 24,
-            height: 24,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: Colors.white,
-              border: Border.all(
-                color: selected ? const Color(0xFF5B7CFF) : Colors.black12,
-                width: selected ? 2 : 1,
+          // 🔹 프로필 이미지 (미점령이면 아예 표시 안 함)
+          if (!unclaimed)
+            Container(
+              width: 20,
+              height: 20,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.white,
+                border: Border.all(
+                  color: selected
+                      ? const Color(0xFF5B7CFF)
+                      : Colors.black12,
+                  width: selected ? 2 : 1,
+                ),
+              ),
+              child: ClipOval(
+                child: crewLogo.isNotEmpty
+                    ? Image.network(crewLogo, fit: BoxFit.cover)
+                    : const Icon(Icons.group, size: 14, color: Colors.grey),
               ),
             ),
-            child: ClipOval(
-              child: crewLogo.isNotEmpty
-                  ? Image.network(crewLogo, fit: BoxFit.cover)
-                  : const Icon(Icons.group, size: 16, color: Colors.grey),
-            ),
-          ),
-          const SizedBox(height: 4),
+
+          if (!unclaimed) const SizedBox(height: 4),
+
+          // 🔹 라벨 캡슐 (미점령 포함 항상 표시)
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(12),
               border: Border.all(
-                color: selected ? const Color(0xFF5B7CFF) : Colors.black12,
+                color: selected
+                    ? const Color(0xFF5B7CFF)
+                    : (unclaimed ? Colors.black26 : Colors.black12),
               ),
             ),
             child: Text(
               crewName,
-              style: const TextStyle(
-                fontSize: 10,
+              style: TextStyle(
+                fontSize: 8,
                 fontWeight: FontWeight.w700,
+                color: unclaimed ? Colors.grey[600] : Colors.black87,
               ),
               overflow: TextOverflow.ellipsis,
             ),
@@ -723,4 +1014,6 @@ class _Marker extends StatelessWidget {
       ),
     );
   }
+
 }
+

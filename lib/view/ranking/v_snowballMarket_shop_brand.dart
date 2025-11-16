@@ -72,7 +72,7 @@ class _SnowballMarketBrandShopViewState extends State<SnowballMarketBrandShopVie
           // 필드명은 프로젝트에 맞게 확인 필요
           final bool totalComplete = ms.completeTotal == true;     // 모든 미션 완료
           final bool isApplied     = ms.isApplied == true;         // 이미 응모 완료
-          final int? appliedBrandId = _snowballShopViewModel.missionStatus.snowballSponsorId;      // 서버가 저장한 응모 브랜드 id
+          final int? appliedBrandId = _snowballShopViewModel.missionStatus.snowballItemBrandId;      // 서버가 저장한 응모 브랜드 id
 
           // 응모 완료 상태면 UI의 선택값을 서버 값으로 고정
           if (isApplied && appliedBrandId != null && _selectedBrandId != appliedBrandId) {
@@ -697,14 +697,20 @@ class _SnowballMarketBrandShopViewState extends State<SnowballMarketBrandShopVie
                               // ✅ 활성 조건: 모든 미션 완료 && 아직 응모 전 && 브랜드 선택됨
                               onPressed: (totalComplete && !isApplied && _selectedBrandId != null)
                                   ? () async {
-                                // 이미 위 조건에서 선택 여부 체크했지만, 방어 코드는 유지
-                                if (_selectedBrandId == null) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(content: Text('응모할 브랜드를 선택해 주세요.')),
+                                final brands = _snowballShopViewModel.missionStatus.brandItemPremium ?? [];
+
+                                // 1️⃣ 브랜드 데이터가 아직 준비되지 않은 경우 (빈 리스트)
+                                if (brands.isEmpty) {
+                                  await showApplySuccessPopup(
+                                    context,
+                                    title: '응모할 경품을 선택해주세요!',
+                                    message: '응모할 경품을 선택 후.\n'
+                                        '다시 응모 하기 버튼을 눌러주세요.',
                                   );
                                   return;
                                 }
 
+                                // 2️⃣ 정상 응모 절차
                                 CustomFullScreenDialog.showDialog();
                                 try {
                                   await _snowballShopViewModel.applyMission(_selectedBrandId!);
@@ -713,27 +719,16 @@ class _SnowballMarketBrandShopViewState extends State<SnowballMarketBrandShopVie
                                   CustomFullScreenDialog.cancelDialog();
                                 }
 
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    behavior: SnackBarBehavior.floating,
-                                    backgroundColor: Colors.black.withOpacity(0.7),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(16),
-                                    ),
-                                    content: const Text(
-                                      '브랜드 미션 응모 완료!',
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 15,
-                                        fontWeight: FontWeight.w400,
-                                      ),
-                                    ),
-                                    elevation: 0,
-                                    margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                                  ),
+                                // 3️⃣ 응모 완료 안내 팝업
+                                await showApplySuccessPopup(
+                                  context,
+                                  title: '브랜드 미션 응모 완료!',
+                                  message: '상단에 표시된 추첨 번호를 확인해주세요.\n'
+                                      '14시까지 경품 수령처로 모여주세요!',
                                 );
                               }
                                   : null,
+
 
                               // ── 3가지 상태별 색상/라벨 계산
                               style: () {
@@ -1319,6 +1314,93 @@ class _SponsorSticker extends StatelessWidget {
   }
 }
 //TODO: 경품 구경하기 바텀싯 우상단 로고**************************************************
+
+
+//TODO: 응모완료 팝업**************************************************
+Future<void> showApplySuccessPopup(
+    BuildContext context, {
+      required String title,
+      required String message,
+      String buttonText = '확인',
+    }) {
+  return showDialog(
+    context: context,
+    barrierDismissible: false, // 바깥 탭으로 닫히지 않게
+    builder: (_) {
+      return Center(
+        child: Material(
+          color: Colors.transparent,
+          child: Container(
+            width: MediaQuery.of(context).size.width * 0.82, // 이미지 느낌의 폭
+            padding: const EdgeInsets.fromLTRB(20, 24, 20, 20),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(20), // 둥근 모서리
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.25),
+                  blurRadius: 20,
+                  offset: const Offset(0, 8),
+                ),
+              ],
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // 타이틀
+                Text(
+                  title,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w800,
+                    color: Color(0xFF111111),
+                  ),
+                ),
+                const SizedBox(height: 12),
+                // 본문
+                Text(
+                  message,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    fontSize: 14,
+                    height: 1.5,
+                    color: Color(0xFF7A7A7A),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                // 확인 버튼 (풀 폭)
+                SizedBox(
+                  width: double.infinity,
+                  height: 44,
+                  child: ElevatedButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF3D83ED), // 파란 버튼
+                      elevation: 0,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                    child: const Text(
+                      '확인',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w800,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    },
+  );
+}
+//TODO: 응모완료 팝업**************************************************
 
 
 

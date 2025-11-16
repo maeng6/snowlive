@@ -146,6 +146,14 @@ flutter:
     - assets/imgs/imgs/slopeRush/vivaldi/
     - assets/imgs/imgs/slopeRush/phoenix/
     - assets/imgs/imgs/slopeRush/muju/
+    - assets/imgs/imgs/slopeRush/alpensia/
+    - assets/imgs/imgs/slopeRush/gangchon/
+    - assets/imgs/imgs/slopeRush/oakvalley/
+    - assets/imgs/imgs/slopeRush/o2/
+    - assets/imgs/imgs/slopeRush/yongpyong/
+    - assets/imgs/imgs/slopeRush/wellihilli/
+    - assets/imgs/imgs/slopeRush/jisan/
+    - assets/imgs/imgs/slopeRush/high1/
     - assets/json/
 
   # An image asset can refer to one or more resolution-specific "variants", see

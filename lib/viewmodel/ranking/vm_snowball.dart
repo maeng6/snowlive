@@ -341,7 +341,7 @@ class SnowballShopViewModel extends GetxController {
   // 미션 신청
   // POST /snowball-mission-apply/ { user_id, event_date, Snowball_sponsor_id }
   // ------------------------
-  Future<void> applyMission(int sponsorId) async {
+  Future<void> applyMission(int snowballItemBrandId) async {
     try {
       isLoading(true);
       final userId = _userViewModel.user.user_id;
@@ -349,7 +349,7 @@ class SnowballShopViewModel extends GetxController {
       final response = await _api.applySnowballMission({
         'user_id': userId,
         'event_date': eventDate.value,
-        'Snowball_sponsor_id': sponsorId,
+        'snowball_item_brand_id': snowballItemBrandId,
       });
 
       if (response.success) {
