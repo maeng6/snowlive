@@ -35,6 +35,7 @@ class _SlopeRushHomeViewState extends State<SlopeRushHomeView> {
   // 리조트별 이미지 폴더 슬러그
   static const Map<int, String> _resortSlug = {
     1: 'gonjiam',
+    2: 'muju',
     3: 'vivaldi',
     13: 'phoenix',
   };
@@ -52,6 +53,27 @@ class _SlopeRushHomeViewState extends State<SlopeRushHomeView> {
       '그램2': 'gram2',
       '와이낫': 'whynot',
       '휘센': 'whisen',
+    },
+    2: {
+      '알레그로': 'allegro',
+      '카덴자': 'cadenza',
+      '커넥션': 'connection',
+      '이스턴': 'eastern',
+      '프리W': 'freeway',
+      '미뉴': 'minuet',
+      '파노(무)': 'panorama',
+      '폴카': 'polka',
+      '레이하': 'raidersdown',
+      '레이상': 'raidersup',
+      '루키힐': 'rookiehill',
+      '실크하': 'silkdown',
+      '서역': 'silkroad',
+      '실크상': 'silkup',
+      '스피츠': 'spitz',
+      '터보': 'turbo',
+      '왈츠': 'waltz',
+      '웨스턴': 'western',
+      '야마가': 'yamaga',
     },
     3: {
       '발라드': 'ballad',
