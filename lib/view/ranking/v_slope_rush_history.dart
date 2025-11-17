@@ -3,6 +3,7 @@ import 'package:com.snowlive/routes/routes.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewDetail.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewMemberList.dart';
 import 'package:com.snowlive/viewmodel/friend/vm_friendDetail.dart';
+import 'package:com.snowlive/viewmodel/ranking/vm_slope_rush_recordRoom.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -19,6 +20,7 @@ class SlopeRushHistoryHomeView extends StatefulWidget {
 
 class _SlopeRushHistoryHomeViewState extends State<SlopeRushHistoryHomeView> {
   final SlopeRushViewModel _slopeRushViewModel = Get.put(SlopeRushViewModel());
+  final SlopeRushRecordRoomViewModel _slopeRushRecordRoomViewModel = Get.put(SlopeRushRecordRoomViewModel());
   final UserViewModel _userViewModel = Get.put(UserViewModel());
   final CrewDetailViewModel _crewDetailViewModel = Get.find<CrewDetailViewModel>();
   final CrewMemberListViewModel _crewMemberListViewModel = Get.find<CrewMemberListViewModel>();
@@ -406,7 +408,7 @@ class _SlopeRushHistoryHomeViewState extends State<SlopeRushHistoryHomeView> {
 
 
   // 시즌 라벨 (UI 표기)
-  final RxString _selectedSeasonLabel = '24/25'.obs;
+  final RxString _selectedSeasonLabel = '2425'.obs;
 
   // (선택) 서버 파라미터 등은 나중에 연결 — 지금은 훅만 남겨둠
   void _onSeasonSelected({required String uiLabel /*, String? apiCode*/}) async {
@@ -464,9 +466,9 @@ class _SlopeRushHistoryHomeViewState extends State<SlopeRushHistoryHomeView> {
                               ),
                               onTap: () async {
                                 Navigator.pop(context);
-                                _selectedSeasonLabel.value = '24/25';
+                                _selectedSeasonLabel.value = '2425';
                                 // TODO: 서버 연동 시 여기에서 fetch 호출
-                                // await _slopeRushViewModel.fetchSlopeRush(resort_id: selectedResortId, season: '2024-2025');
+                                await _slopeRushRecordRoomViewModel.fetchSlopeRushRecordRoom(resortIdArg: _slopeRushViewModel.resortId.value, selectedSeason: _selectedSeasonLabel.value);
                               },
                             ),
                           ],
