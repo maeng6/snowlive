@@ -131,7 +131,7 @@ class _SnowballMarketBrandShopViewState extends State<SnowballMarketBrandShopVie
                               // ===== 눈송이 사용 기한 안내 문구=====
                               // const _TopNotice(),
                               SizedBox(
-                                height: 20,
+                                height: 10,
                               ),
                               // ===== 브랜드 미션 뱃지=====
                                 Stack(
@@ -228,7 +228,7 @@ class _SnowballMarketBrandShopViewState extends State<SnowballMarketBrandShopVie
                                       ),
                                   ],
                                 ),
-                              const SizedBox(height: 60),
+                              const SizedBox(height: 30),
                               // ===== 브랜드 미션 설명 문구=====
                               const _HeroText(),
                               const SizedBox(height: 24),
@@ -250,7 +250,35 @@ class _SnowballMarketBrandShopViewState extends State<SnowballMarketBrandShopVie
 
                                       if (brands.isEmpty) {
                                         ScaffoldMessenger.of(context).showSnackBar(
-                                          const SnackBar(content: Text('브랜드 경품이 아직 준비되지 않았어요.')),
+                                          SnackBar(
+                                            content: SizedBox(
+                                              width: _size.width - 32,
+                                              height: 40,
+                                              child: Center(
+                                                child: Text(
+                                                  '브랜드 경품이 아직 준비되지 않았어요.',
+                                                  textAlign: TextAlign.center,
+                                                  style: const TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 14,
+                                                    fontWeight: FontWeight.w400,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                            backgroundColor: Colors.black.withOpacity(0.8),
+                                            behavior: SnackBarBehavior.floating,
+                                            margin: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+                                            padding: const EdgeInsets.symmetric(
+                                              horizontal: 16,
+                                              vertical: 8,
+                                            ),
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(8),
+                                            ),
+                                            elevation: 0,
+                                            duration: const Duration(seconds: 2),
+                                          ),
                                         );
                                         return;
                                       }
@@ -1332,10 +1360,10 @@ Future<void> showApplySuccessPopup(
           color: Colors.transparent,
           child: Container(
             width: MediaQuery.of(context).size.width * 0.82, // 이미지 느낌의 폭
-            padding: const EdgeInsets.fromLTRB(20, 24, 20, 20),
+            padding: const EdgeInsets.fromLTRB(24, 30, 24, 24),
             decoration: BoxDecoration(
               color: Colors.white,
-              borderRadius: BorderRadius.circular(20), // 둥근 모서리
+              borderRadius: BorderRadius.circular(16), // 둥근 모서리
               boxShadow: [
                 BoxShadow(
                   color: Colors.black.withOpacity(0.25),
@@ -1347,32 +1375,39 @@ Future<void> showApplySuccessPopup(
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                // 타이틀
-                Text(
-                  title,
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w800,
-                    color: Color(0xFF111111),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 4),
+                  child: Column(
+                    children: [
+                      // 타이틀
+                      Text(
+                        title,
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFF111111),
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      // 본문
+                      Text(
+                        message,
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          fontSize: 14,
+                          height: 1.4,
+                          color: Color(0xFF666666),
+                        ),
+                      ),
+                      const SizedBox(height: 30),
+                    ],
                   ),
                 ),
-                const SizedBox(height: 12),
-                // 본문
-                Text(
-                  message,
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(
-                    fontSize: 14,
-                    height: 1.5,
-                    color: Color(0xFF7A7A7A),
-                  ),
-                ),
-                const SizedBox(height: 20),
                 // 확인 버튼 (풀 폭)
                 SizedBox(
                   width: double.infinity,
-                  height: 44,
+                  height: 48,
                   child: ElevatedButton(
                     onPressed: () => Navigator.of(context).pop(),
                     style: ElevatedButton.styleFrom(

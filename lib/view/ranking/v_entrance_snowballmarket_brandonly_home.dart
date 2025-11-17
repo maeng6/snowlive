@@ -74,7 +74,7 @@ class _Entrance_snowballMarket_brandonly_HomeState extends State<Entrance_snowba
             child: Padding(
               padding: EdgeInsets.only(bottom: 20),
               child: Container(
-                height: _size.width - 32,
+                height: _size.width - 70,
                 child: Stack(
                   children: [
                     ClipRRect(
@@ -88,14 +88,14 @@ class _Entrance_snowballMarket_brandonly_HomeState extends State<Entrance_snowba
                           switch (state.extendedImageLoadState) {
                             case LoadState.loading:
                               return Container(
-                                height: 200,
+                                height: _size.width - 70,
                                 color: Colors.grey.shade100,
                                 alignment: Alignment.center,
                                 child: CircularProgressIndicator(),
                               );
                             case LoadState.failed:
                               return Container(
-                                height: 200,
+                                height: _size.width - 70,
                                 color: Colors.grey.shade100,
                                 alignment: Alignment.center,
                                 child: Icon(Icons.error, color: Colors.red),

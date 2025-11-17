@@ -1111,7 +1111,7 @@ class _ResortHomeViewState extends State<ResortHomeView> with
                             decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(16),
                                 color: (_resortHomeViewModel.isLoading_weather == true)
-                                    ? SDSColor.gray700
+                                    ? SDSColor.gray600
                                     : _resortHomeViewModel.weatherColors),
                             alignment: Alignment.center,
                             width: double.infinity,
@@ -1499,7 +1499,7 @@ class _ResortHomeViewState extends State<ResortHomeView> with
                               decoration: BoxDecoration(
                                 color: Colors.white,),
                               child: Padding(
-                                padding: const EdgeInsets.only(right: 28, left: 28, top: 20, bottom: 36),
+                                padding: const EdgeInsets.only(right: 28, left: 28, top: 20, bottom: 30),
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
@@ -1675,17 +1675,29 @@ class _ResortHomeViewState extends State<ResortHomeView> with
                             Padding(
                               padding: EdgeInsets.only(left: 16, right: 16),
                               child: Container(
-                                height: 180,
+                                height: 160,
                                 decoration: BoxDecoration(
                                   color: Color(0xFFECF3FD),
                                   borderRadius: BorderRadius.circular(16),
                                 ),
                                 child: Stack (
                                   children: [
+                                    Positioned(
+                                      bottom: 0,
+                                      right: 10,
+                                      child: Padding(
+                                        padding: EdgeInsets.only(bottom: 10, right: 16),
+                                        child: Image.asset(
+                                          'assets/imgs/imgs/img_resorthome_slopecraft_banner.png',
+                                          fit: BoxFit.cover,
+                                          width: 130,
+                                        ),
+                                      ),
+                                    ),
                                     Row(
                                       children: [
                                         Padding(
-                                          padding: const EdgeInsets.only(left: 24, top: 24, right: 24, bottom: 24),
+                                          padding: const EdgeInsets.only(left: 24, top: 22, right: 24, bottom: 20),
                                           child: Column(
                                             crossAxisAlignment: CrossAxisAlignment.start,
                                             mainAxisAlignment: MainAxisAlignment.start,
@@ -1708,13 +1720,13 @@ class _ResortHomeViewState extends State<ResortHomeView> with
                                                 ),
                                               ),
                                               Padding(
-                                                padding: EdgeInsets.only(top: 24),
+                                                padding: EdgeInsets.only(top: 12),
                                                 child: GestureDetector(
                                                   onTap: () {
                                                     Get.toNamed(AppRoutes.slopeRushHome);
                                                   },
                                                   child: Container(
-                                                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 9),
+                                                    padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                                                     decoration: BoxDecoration(
                                                         color: SDSColor.snowliveWhite,
                                                         borderRadius: BorderRadius.circular(20),
@@ -1755,7 +1767,7 @@ class _ResortHomeViewState extends State<ResortHomeView> with
                                 ),
                               ),
                             ),
-                            SizedBox(height: 20,),
+                            SizedBox(height: 12),
                             //TODO: 오늘의 기록
                               Padding(
                                   padding: EdgeInsets.only(left: 16, right: 16),
@@ -2078,7 +2090,7 @@ class _ResortHomeViewState extends State<ResortHomeView> with
                                         ),
                                       if(_resortHomeViewModel.resortHomeModel.dailyTotalCount == 0 && _userViewModel.user.within_boundary == false)
                                         Container(
-                                          height: 180,
+                                          height: 160,
                                           decoration: BoxDecoration(
                                             color: Color(0xFFF5F2F7),
                                             borderRadius: BorderRadius.circular(16),
@@ -2089,7 +2101,7 @@ class _ResortHomeViewState extends State<ResortHomeView> with
                                                 bottom: 0,
                                                 right: 10,
                                                 child: Padding(
-                                                  padding: EdgeInsets.only(bottom: 20),
+                                                  padding: EdgeInsets.only(bottom: 12),
                                                   child: Image.asset(
                                                     'assets/imgs/imgs/img_resortHome_ranking_1.png',
                                                     fit: BoxFit.cover,
@@ -2100,7 +2112,7 @@ class _ResortHomeViewState extends State<ResortHomeView> with
                                               Row(
                                                 children: [
                                                   Padding(
-                                                    padding: const EdgeInsets.only(left: 24, top: 24, right: 24, bottom: 24),
+                                                    padding: const EdgeInsets.only(left: 24, top: 22, right: 24, bottom: 20),
                                                     child: Column(
                                                       crossAxisAlignment: CrossAxisAlignment.start,
                                                       mainAxisAlignment: MainAxisAlignment.start,
@@ -2123,13 +2135,13 @@ class _ResortHomeViewState extends State<ResortHomeView> with
                                                           ),
                                                         ),
                                                         Padding(
-                                                          padding: EdgeInsets.only(top: 24),
+                                                          padding: EdgeInsets.only(top: 12),
                                                           child: GestureDetector(
                                                             onTap: () {
                                                               Get.toNamed(AppRoutes.rankingGuideMain);
                                                             },
                                                             child: Container(
-                                                              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 9),
+                                                              padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                                                               decoration: BoxDecoration(
                                                                   color: SDSColor.snowliveWhite,
                                                                   borderRadius: BorderRadius.circular(20),

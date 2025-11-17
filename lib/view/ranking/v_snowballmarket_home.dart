@@ -359,7 +359,7 @@ class _SnowballMarketHomeViewState extends State<SnowballMarketHomeView> {
                               child: Column(
                                 children: [
                                   Image.asset(
-                                      'assets/imgs/imgs/snowballShop/icon_snowballshop_store.png',
+                                      'assets/imgs/imgs/snowballShop/img_snowballshop_store.png',
                                       width: _size.width
                                   ),
                                 ],
