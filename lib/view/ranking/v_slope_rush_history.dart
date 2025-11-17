@@ -1,4 +1,5 @@
 import 'package:com.snowlive/data/snowliveDesignStyle.dart';
+import 'package:com.snowlive/model/m_slolpe_rush_recordRoom.dart';
 import 'package:com.snowlive/routes/routes.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewDetail.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewMemberList.dart';
@@ -19,7 +20,6 @@ class SlopeRushHistoryHomeView extends StatefulWidget {
 }
 
 class _SlopeRushHistoryHomeViewState extends State<SlopeRushHistoryHomeView> {
-  final SlopeRushViewModel _slopeRushViewModel = Get.put(SlopeRushViewModel());
   final SlopeRushRecordRoomViewModel _slopeRushRecordRoomViewModel = Get.put(SlopeRushRecordRoomViewModel());
   final UserViewModel _userViewModel = Get.put(UserViewModel());
   final CrewDetailViewModel _crewDetailViewModel = Get.find<CrewDetailViewModel>();
@@ -468,7 +468,7 @@ class _SlopeRushHistoryHomeViewState extends State<SlopeRushHistoryHomeView> {
                                 Navigator.pop(context);
                                 _selectedSeasonLabel.value = '2425';
                                 // TODO: 서버 연동 시 여기에서 fetch 호출
-                                await _slopeRushRecordRoomViewModel.fetchSlopeRushRecordRoom(resortIdArg: _slopeRushViewModel.resortId.value, selectedSeason: _selectedSeasonLabel.value);
+                                await _slopeRushRecordRoomViewModel.fetchSlopeRushRecordRoom(resortIdArg: _slopeRushRecordRoomViewModel.resortId.value, selectedSeason: _selectedSeasonLabel.value);
                               },
                             ),
                           ],
@@ -520,7 +520,7 @@ class _SlopeRushHistoryHomeViewState extends State<SlopeRushHistoryHomeView> {
     selectedResortId = (fav == 0 ? 1 : fav);         // 스펙에 맞춰 폴백
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await _slopeRushViewModel.fetchSlopeRush(resort_id: selectedResortId);
+      await _slopeRushRecordRoomViewModel.fetchSlopeRushRecordRoom(resortIdArg: selectedResortId, selectedSeason: _selectedSeasonLabel.toString());
       await _precacheDefaultMap(selectedResortId);
     });
 
@@ -551,7 +551,7 @@ class _SlopeRushHistoryHomeViewState extends State<SlopeRushHistoryHomeView> {
     if (key == null) return '슬로프명';
 
     // 1️⃣ 먼저 _slopeRushViewModel.items 안에서 매칭된 데이터 찾기
-    for (final s in _slopeRushViewModel.items) {
+    for (final s in _slopeRushRecordRoomViewModel.items) {
       final k = _slopeKeyOf(s);
       if (k == key) {
         return s.slopeNickname.isNotEmpty ? s.slopeNickname : s.slopeFullname;
@@ -610,8 +610,8 @@ class _SlopeRushHistoryHomeViewState extends State<SlopeRushHistoryHomeView> {
         displacement: 72,                      // 인디케이터 위치(옵션)
         edgeOffset: 0,                         // 앱바 아래 바로 시작
         child: Obx(() {
-          final items = _slopeRushViewModel.items.toList();
-          final loading = _slopeRushViewModel.isLoading.value;
+          final items = _slopeRushRecordRoomViewModel.items.toList();
+          final loading = _slopeRushRecordRoomViewModel.isLoading.value;
 
           return CustomScrollView(
             controller: _scrollController,
@@ -796,7 +796,7 @@ class _SlopeRushHistoryHomeViewState extends State<SlopeRushHistoryHomeView> {
                       selectedSlopeKey = null;
                     });
                     await _precacheDefaultMap(id);
-                    await _slopeRushViewModel.fetchSlopeRush(resort_id: id);
+                    await _slopeRushRecordRoomViewModel.fetchSlopeRushRecordRoom(resortIdArg: id, selectedSeason: _selectedSeasonLabel.toString());
                   },
                 ),
               ),
@@ -825,7 +825,7 @@ class _SlopeRushHistoryHomeViewState extends State<SlopeRushHistoryHomeView> {
   // ---------------------------
   // 지도 섹션
   // ---------------------------
-  Widget _buildMapSection(List<SlopeRushItem> items) {
+  Widget _buildMapSection(List<SlopeRushRecordRoomItem> items) {
     final slug = _resortSlug[selectedResortId];
     if (slug == null) return const SizedBox();
 
@@ -853,7 +853,7 @@ class _SlopeRushHistoryHomeViewState extends State<SlopeRushHistoryHomeView> {
           }
 
           // items에서 키로 매칭되는 슬로프 찾기
-          SlopeRushItem? findItemByKey(String key) {
+          SlopeRushRecordRoomItem? findItemByKey(String key) {
             for (final s in items) {
               final k = _slopeKeyOf(s);
               if (k == key) return s;
@@ -919,7 +919,7 @@ class _SlopeRushHistoryHomeViewState extends State<SlopeRushHistoryHomeView> {
   // ---------------------------
   // 마커 탭 → 하이라이트 & 상세
   // ---------------------------
-  Future<void> _onMarkerTap(String slopeKey, SlopeRushItem slope) async {
+  Future<void> _onMarkerTap(String slopeKey, SlopeRushRecordRoomItem slope) async {
     final slug = _resortSlug[selectedResortId];
     if (slug == null) return;
     final highlight =
@@ -932,14 +932,14 @@ class _SlopeRushHistoryHomeViewState extends State<SlopeRushHistoryHomeView> {
   }
 
   // 현재 점령(1위) 크루
-  SlopeCrew? _leaderOf(SlopeRushItem slope) {
+  SlopeRushRecordRoomCrew? _leaderOf(SlopeRushRecordRoomItem slope) {
     if (slope.crews.isEmpty) return null;
     final sorted = [...slope.crews]..sort((a, b) => b.ratio.compareTo(a.ratio));
     return sorted.first;
   }
 
   // 서버 슬로프명 → 이미지키
-  String? _slopeKeyOf(SlopeRushItem slope) {
+  String? _slopeKeyOf(SlopeRushRecordRoomItem slope) {
     final table = _slopeKeyByResort[selectedResortId] ?? const {};
     final name =
     slope.slopeNickname.isNotEmpty ? slope.slopeNickname : slope.slopeFullname;
@@ -949,7 +949,7 @@ class _SlopeRushHistoryHomeViewState extends State<SlopeRushHistoryHomeView> {
   // ---------------------------
   // 리스트 카드 (슬로프명 + 1위 크루 표시)
   // ---------------------------
-  Widget _buildSlopeRow(SlopeRushItem slope) {
+  Widget _buildSlopeRow(SlopeRushRecordRoomItem slope) {
     final leader = _leaderOf(slope);
     final slopeName =
     slope.slopeNickname.isNotEmpty ? slope.slopeNickname : slope.slopeFullname;
@@ -1066,7 +1066,7 @@ class _SlopeRushHistoryHomeViewState extends State<SlopeRushHistoryHomeView> {
   // ---------------------------
   // 바텀싯: 크루 상세 (화면 절반)
   // ---------------------------
-  void _showSlopeDetail(SlopeRushItem slope) {
+  void _showSlopeDetail(SlopeRushRecordRoomItem slope) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -1197,7 +1197,7 @@ class _SlopeRushHistoryHomeViewState extends State<SlopeRushHistoryHomeView> {
   // ==== Pull-to-Refresh: 현재 선택된 리조트 데이터 재조회 ====
   Future<void> _refreshCurrentResort() async {
     // 필요시 캐시 무시 옵션이 있으면 추가: force: true 같은 파라미터
-    await _slopeRushViewModel.fetchSlopeRush(resort_id: selectedResortId);
+    await _slopeRushRecordRoomViewModel.fetchSlopeRushRecordRoom(resortIdArg: selectedResortId, selectedSeason: _selectedSeasonLabel.toString());
     await _precacheDefaultMap(selectedResortId);
     // 선택된 슬로프 하이라이트는 유지 (리셋 원하면 아래 주석 해제)
     // setState(() => selectedSlopeKey = null);
@@ -1212,7 +1212,7 @@ class _SlopeRushHistoryHomeViewState extends State<SlopeRushHistoryHomeView> {
 // =======================
 class _Marker extends StatelessWidget {
   final bool selected;
-  final SlopeCrew? leader;
+  final SlopeRushRecordRoomCrew? leader;
   final String label;
   final VoidCallback onTap;
 
