@@ -520,7 +520,7 @@ class _SlopeRushHistoryHomeViewState extends State<SlopeRushHistoryHomeView> {
     selectedResortId = (fav == 0 ? 1 : fav);         // 스펙에 맞춰 폴백
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await _slopeRushRecordRoomViewModel.fetchSlopeRushRecordRoom(resortIdArg: selectedResortId, selectedSeason: _selectedSeasonLabel.toString());
+      await _slopeRushRecordRoomViewModel.fetchSlopeRushRecordRoom(resortIdArg: selectedResortId, selectedSeason: _selectedSeasonLabel.value);
       await _precacheDefaultMap(selectedResortId);
     });
 
@@ -796,7 +796,7 @@ class _SlopeRushHistoryHomeViewState extends State<SlopeRushHistoryHomeView> {
                       selectedSlopeKey = null;
                     });
                     await _precacheDefaultMap(id);
-                    await _slopeRushRecordRoomViewModel.fetchSlopeRushRecordRoom(resortIdArg: id, selectedSeason: _selectedSeasonLabel.toString());
+                    await _slopeRushRecordRoomViewModel.fetchSlopeRushRecordRoom(resortIdArg: id, selectedSeason: _selectedSeasonLabel.value);
                   },
                 ),
               ),
@@ -1197,7 +1197,7 @@ class _SlopeRushHistoryHomeViewState extends State<SlopeRushHistoryHomeView> {
   // ==== Pull-to-Refresh: 현재 선택된 리조트 데이터 재조회 ====
   Future<void> _refreshCurrentResort() async {
     // 필요시 캐시 무시 옵션이 있으면 추가: force: true 같은 파라미터
-    await _slopeRushRecordRoomViewModel.fetchSlopeRushRecordRoom(resortIdArg: selectedResortId, selectedSeason: _selectedSeasonLabel.toString());
+    await _slopeRushRecordRoomViewModel.fetchSlopeRushRecordRoom(resortIdArg: selectedResortId, selectedSeason: _selectedSeasonLabel.value);
     await _precacheDefaultMap(selectedResortId);
     // 선택된 슬로프 하이라이트는 유지 (리셋 원하면 아래 주석 해제)
     // setState(() => selectedSlopeKey = null);
