@@ -350,6 +350,22 @@ class RankingAPI {
     }
   }
 
+  Future<ApiResponse> fetchSlopeRush_recordRoom(Map<String, dynamic> body) async {
+    final response = await http.post(
+      Uri.parse('$baseUrl/slope-rush-recordroom/'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode(body),
+    );
+
+    final decoded = json.decode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
+
+    if (response.statusCode == 200) {
+      return ApiResponse.success(decoded);
+    } else {
+      return ApiResponse.error(decoded);
+    }
+  }
+
 
 
 
