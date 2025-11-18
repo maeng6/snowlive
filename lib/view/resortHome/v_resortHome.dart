@@ -1677,7 +1677,7 @@ class _ResortHomeViewState extends State<ResortHomeView> with
                               child: Container(
                                 height: 160,
                                 decoration: BoxDecoration(
-                                  color: Color(0xFFECF3FD),
+                                  color: Color(0xFFF1E9FF),
                                   borderRadius: BorderRadius.circular(16),
                                 ),
                                 child: Stack (

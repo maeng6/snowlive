@@ -251,14 +251,14 @@ class _SlopeRushHistoryHomeViewState extends State<SlopeRushHistoryHomeView> {
       'allegro':const Offset(0.45, 0.15),
       'cadenza':const Offset(0.40, 0.25),
       'connection':const Offset(0.35, 0.88),
-      'eastern':const Offset(0.55, 0.82),
-      'freeway':const Offset(0.75, 0.42),
+      'eastern':const Offset(0.55, 0.77),
+      'freeway':const Offset(0.75, 0.45),
       'minuet':const Offset(0.27, 0.10),
       'panorama':const Offset(0.76, 0.82),
       'polka':const Offset(0.22, 0.30),
       'raidersdown':const Offset(0.57, 0.62),
-      'raidersup':const Offset(0.60, 0.52),
-      'rookiehill':const Offset(0.61, 0.92),
+      'raidersup':const Offset(0.58, 0.47),
+      'rookiehill':const Offset(0.61, 0.88),
       'silkdown':const Offset(0.15, 0.55),
       'silkroad':const Offset(0.88, 0.55),
       'silkup':const Offset(0.10, 0.20),
@@ -266,7 +266,7 @@ class _SlopeRushHistoryHomeViewState extends State<SlopeRushHistoryHomeView> {
       'turbo':const Offset(0.90, 0.75),
       'waltz':const Offset(0.10, 0.40),
       'western':const Offset(0.85, 0.65),
-      'yamaga':const Offset(0.70, 0.71),
+      'yamaga':const Offset(0.73, 0.68),
     },
     3: {
       'ballad': const Offset(0.43, 0.72),
@@ -311,8 +311,8 @@ class _SlopeRushHistoryHomeViewState extends State<SlopeRushHistoryHomeView> {
       'challenge3': const Offset(0.35, 0.60),
       'dream1': const Offset(0.60, 0.83),
       'dream2': const Offset(0.75, 0.55),
-      'glory1': const Offset(0.20, 0.90),
-      'glory2': const Offset(0.15, 0.80),
+      'glory1': const Offset(0.16, 0.86),
+      'glory2': const Offset(0.36, 0.87),
       'glory3': const Offset(0.55, 0.10),
       'happy': const Offset(0.55, 0.65),
       'head': const Offset(0.37, 0.22),
@@ -321,88 +321,88 @@ class _SlopeRushHistoryHomeViewState extends State<SlopeRushHistoryHomeView> {
     },
     9: {
       'blue': const Offset(0.32, 0.70),
-      'dragonpark': const Offset(0.55, 0.75),
-      'goldfantastic': const Offset(0.07, 0.40),
-      'goldparadise': const Offset(0.30, 0.40),
-      'goldvalley': const Offset(0.20, 0.30),
-      'megagreen': const Offset(0.60, 0.85),
-      'newgold': const Offset(0.10, 0.65),
-      'newred': const Offset(0.25, 0.60),
-      'pink': const Offset(0.32, 0.80),
+      'dragonpark': const Offset(0.53, 0.75),
+      'goldfantastic': const Offset(0.05, 0.52),
+      'goldparadise': const Offset(0.30, 0.35),
+      'goldvalley': const Offset(0.21, 0.28),
+      'megagreen': const Offset(0.68, 0.73),
+      'newgold': const Offset(0.24, 0.47),
+      'newred': const Offset(0.32, 0.58),
+      'pink': const Offset(0.27, 0.81),
       'rainbow1': const Offset(0.65, 0.05),
       'rainbow2': const Offset(0.75, 0.25),
       'rainbow3': const Offset(0.87, 0.35),
-      'rainbow4': const Offset(0.90, 0.15),
+      'rainbow4': const Offset(0.90, 0.20),
       'rainbowparadise': const Offset(0.50, 0.20),
-      'red': const Offset(0.15, 0.75),
-      'redgoldbridge': const Offset(0.15, 0.50),
-      'redparadise': const Offset(0.35, 0.50),
+      'red': const Offset(0.20, 0.70),
+      'redgoldbridge': const Offset(0.17, 0.41),
+      'redparadise': const Offset(0.16, 0.60),
       'silver': const Offset(0.60, 0.60),
       'silverparadise': const Offset(0.45, 0.58),
-      'yellow': const Offset(0.40, 0.90),
+      'yellow': const Offset(0.36, 0.84),
     },
     10: {
-      'alpha1': const Offset(0.12, 0.85),
-      'alpha2': const Offset(0.15, 0.65),
-      'alpha3': const Offset(0.30, 0.76),
-      'bravo1': const Offset(0.12, 0.33),
-      'bravo2': const Offset(0.30, 0.40),
-      'challenge1': const Offset(0.25, 0.20),
-      'challenge2': const Offset(0.35, 0.30),
-      'challenge3': const Offset(0.45, 0.48),
-      'challenge4': const Offset(0.55, 0.38),
+      'alpha1': const Offset(0.16, 0.80),
+      'alpha2': const Offset(0.17, 0.67),
+      'alpha3': const Offset(0.32, 0.72),
+      'bravo1': const Offset(0.26, 0.53),
+      'bravo2': const Offset(0.34, 0.46),
+      'challenge1': const Offset(0.32, 0.28),
+      'challenge2': const Offset(0.42, 0.14),
+      'challenge3': const Offset(0.47, 0.32),
+      'challenge4': const Offset(0.55, 0.45),
       'challenge5': const Offset(0.60, 0.26),
-      'delta1': const Offset(0.45, 0.60),
-      'deltaplus': const Offset(0.57, 0.77),
-      'echo1': const Offset(0.69, 0.48),
-      'echo2': const Offset(0.72, 0.17),
+      'delta1': const Offset(0.43, 0.66),
+      'deltaplus': const Offset(0.57, 0.73),
+      'echo1': const Offset(0.67, 0.36),
+      'echo2': const Offset(0.74, 0.20),
       'echo3': const Offset(0.85, 0.27),
-      'starexpress1': const Offset(0.60, 0.10),
-      'starexpress2': const Offset(0.78, 0.60),
+      'starexpress1': const Offset(0.84, 0.10),
+      'starexpress2': const Offset(0.76, 0.64),
     },
     11: {
-      '1': const Offset(0.17, 0.77),
-      '1-1': const Offset(0.05, 0.50),
-      '2': const Offset(0.11, 0.25),
+      '1': const Offset(0.19, 0.70),
+      '1-1': const Offset(0.05, 0.52),
+      '2': const Offset(0.14, 0.32),
       '5': const Offset(0.47, 0.30),
       '6': const Offset(0.64, 0.40),
-      '7': const Offset(0.70, 0.73),
+      '7': const Offset(0.74, 0.64),
     },
     12: {
-      'apolo1': const Offset(0.80, 0.40),
-      'apolo3': const Offset(0.50, 0.43),
-      'apolo4': const Offset(0.50, 0.60),
-      'apolo6': const Offset(0.50, 0.73),
+      'apolo1': const Offset(0.74, 0.40),
+      'apolo3': const Offset(0.63, 0.51),
+      'apolo4': const Offset(0.49, 0.56),
+      'apolo6': const Offset(0.53, 0.70),
       'athena2': const Offset(0.60, 0.85),
-      'athena3': const Offset(0.40, 0.90),
-      'hera1': const Offset(0.57, 0.20),
-      'hera2': const Offset(0.75, 0.23),
-      'hera3': const Offset(0.60, 0.33),
-      'victoria1': const Offset(0.30, 0.30),
-      'victoria2': const Offset(0.30, 0.18),
-      'victoria3': const Offset(0.40, 0.07),
-      'zeus1': const Offset(0.65, 0.05),
-      'zeus2': const Offset(0.80, 0.10),
+      'athena3': const Offset(0.40, 0.84),
+      'hera1': const Offset(0.59, 0.18),
+      'hera2': const Offset(0.68, 0.23),
+      'hera3': const Offset(0.58, 0.34),
+      'victoria1': const Offset(0.37, 0.34),
+      'victoria2': const Offset(0.39, 0.20),
+      'victoria3': const Offset(0.42, 0.07),
+      'zeus1': const Offset(0.60, 0.05),
+      'zeus2': const Offset(0.74, 0.10),
       'zeus3': const Offset(0.35, 0.50),
       'zeus3-1': const Offset(0.30, 0.73),
     },
     13: {
       'champion': const Offset(0.55, 0.22),
       'digi': const Offset(0.48, 0.34),
-      'dodo': const Offset(0.10, 0.75),
-      'duke': const Offset(0.04, 0.55),
+      'dodo': const Offset(0.11, 0.70),
+      'duke': const Offset(0.06, 0.57),
       'fantasy': const Offset(0.55, 0.45),
-      'hawk1': const Offset(0.55, 0.86),
+      'hawk1': const Offset(0.52, 0.76),
       'hawk2': const Offset(0.55, 0.59),
-      'kiwi': const Offset(0.05, 0.43),
-      'mogul': const Offset(0.20, 0.65),
+      'kiwi': const Offset(0.12, 0.42),
+      'mogul': const Offset(0.23, 0.60),
       'panorama': const Offset(0.73, 0.08),
-      'paradise': const Offset(0.76, 0.35),
+      'paradise': const Offset(0.75, 0.31),
       'park': const Offset(0.64, 0.71),
-      'penguin': const Offset(0.40, 0.75),
-      'slopestyle': const Offset(0.19, 0.85),
-      'sparrow': const Offset(0.80, 0.52),
-      'valley': const Offset(0.35, 0.10),
+      'penguin': const Offset(0.40, 0.70),
+      'slopestyle': const Offset(0.20, 0.76),
+      'sparrow': const Offset(0.78, 0.56),
+      'valley': const Offset(0.34, 0.12),
     },
   };
 
@@ -419,12 +419,12 @@ class _SlopeRushHistoryHomeViewState extends State<SlopeRushHistoryHomeView> {
   // 시즌 선택 필터
   Widget _buildSeasonFilterAction(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(right: 14),
+      padding: const EdgeInsets.only(right: 16),
       child: Container(
         decoration: BoxDecoration(
-          color: SDSColor.snowliveWhite,
+          color: isScrolled ? SDSColor.snowliveWhite : Colors.transparent,
           borderRadius: BorderRadius.circular(50),
-          border: Border.all(color: SDSColor.gray200, width: 1),
+          border: Border.all(color: isScrolled ? SDSColor.gray200 : SDSColor.snowliveBlack.withOpacity(0.1), width: 1),
         ),
         child: InkWell(
           borderRadius: BorderRadius.circular(50),
@@ -481,7 +481,7 @@ class _SlopeRushHistoryHomeViewState extends State<SlopeRushHistoryHomeView> {
             );
           },
           child: Padding(
-            padding: const EdgeInsets.only(left: 8, right: 4, top: 4, bottom: 4),
+            padding: const EdgeInsets.only(left: 10, right: 6, top: 5, bottom: 5),
             // 🔑 여기에만 Obx를 사용하고 바로 Rx 값을 읽습니다.
             child: Obx(() => Row(
               mainAxisSize: MainAxisSize.min,
@@ -489,13 +489,18 @@ class _SlopeRushHistoryHomeViewState extends State<SlopeRushHistoryHomeView> {
                 Text(
                   _selectedSeasonLabel.value,
                   style: SDSTextStyle.bold.copyWith(
-                    fontSize: 12,
+                    fontSize: 13,
                     color: const Color(0xFF111111),
                   ),
                 ),
-                const SizedBox(width: 2),
-                Image.asset(
+                const SizedBox(width: 6),
+                isScrolled ? Image.asset(
                   'assets/imgs/icons/icon_check_round.png',
+                  width: 16,
+                  height: 16,
+                )
+                : Image.asset(
+                  'assets/imgs/icons/icon_check_round_black.png',
                   width: 16,
                   height: 16,
                 ),
@@ -964,24 +969,24 @@ class _SlopeRushHistoryHomeViewState extends State<SlopeRushHistoryHomeView> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // 슬로프명
-            Column(
-              children: [
-                Text(
-                  slopeName,
-                  style: SDSTextStyle.bold.copyWith(
-                    fontSize: 14,
-                    color: SDSColor.gray900,
-                  ),
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ],
-            ),
-            const SizedBox(height: 6),
-
             if (leader != null)
               Row(
                 children: [
+                  // 슬로프명
+                  Padding(
+                    padding: EdgeInsets.only(right: 8),
+                    child: Container(
+                      width: 50,
+                      child: Text(
+                        slopeName,
+                        style: SDSTextStyle.bold.copyWith(
+                          fontSize: 14,
+                          color: SDSColor.gray900,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ),
                   GestureDetector(
                     onTap: () async {
                       Get.toNamed(AppRoutes.crewMain);
@@ -992,8 +997,8 @@ class _SlopeRushHistoryHomeViewState extends State<SlopeRushHistoryHomeView> {
                       );
                     },
                     child: Container(
-                      width: 40,   // radius * 2
-                      height: 40,
+                      width: 36,   // radius * 2
+                      height: 36,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
                         color: Colors.grey[200], // CircleAvatar의 backgroundColor 역할
@@ -1017,7 +1022,7 @@ class _SlopeRushHistoryHomeViewState extends State<SlopeRushHistoryHomeView> {
                           : null,
                     ),
                   ),
-                  const SizedBox(width: 10),
+                  const SizedBox(width: 8),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
