@@ -136,7 +136,7 @@ class _SearchCrewViewState extends State<SearchCrewView> {
                                   labelStyle: SDSTextStyle.regular.copyWith(color: SDSColor.gray400, fontSize: 14),
                                   hintStyle: SDSTextStyle.regular.copyWith(color: SDSColor.gray400, fontSize: 14),
                                   hintText: '크루명 또는 자주가는 스키장을 입력해보세요.',
-                                  labelText: '크루 검색',
+                                  labelText: '크루명 또는 자주가는 스키장을 입력해보세요.',
                                   contentPadding: EdgeInsets.only(top: 8, bottom: 8, left: 36, right: 12),
                                   fillColor: SDSColor.gray50,
                                   filled: true,
