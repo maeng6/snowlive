@@ -11,6 +11,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:com.snowlive/viewmodel/ranking/vm_slope_rush.dart';
 import 'package:com.snowlive/model/m_slolpe_rush.dart';
+import 'package:shimmer/shimmer.dart';
 
 class SlopeRushHistoryHomeView extends StatefulWidget {
   const SlopeRushHistoryHomeView({super.key});
@@ -669,15 +670,7 @@ class _SlopeRushHistoryHomeViewState extends State<SlopeRushHistoryHomeView> {
               ),
               // 로딩/빈상태/리스트
               if (loading)
-                SliverToBoxAdapter(
-                  child: Container(
-                    height: 200,
-                    color: Colors.white,
-                    child: Center(child: CircularProgressIndicator(
-                      color: SDSColor.snowliveBlue,
-                    )),
-                  ),
-                )
+                _buildSlopeListSkeleton()
               else if (items.isEmpty)
                 SliverToBoxAdapter(
                   child: Container(
@@ -696,17 +689,13 @@ class _SlopeRushHistoryHomeViewState extends State<SlopeRushHistoryHomeView> {
                     child: Container(
                       decoration: BoxDecoration(
                         color: SDSColor.snowliveWhite,
-                        //   borderRadius: BorderRadius.only(
-                        //     topLeft: Radius.circular(16),
-                        //     topRight: Radius.circular(16),
-                        //   ),
                       ),
                       child: ListView.separated(
-                        shrinkWrap: true,                         // 🔹 높이를 내용만큼만
-                        physics: const NeverScrollableScrollPhysics(), // 🔹 바깥 스크롤만 사용
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
                         itemCount: items.length,
                         itemBuilder: (context, index) {
-                          return _buildSlopeRow(items[index]);    // 아래에서 새로 정의
+                          return _buildSlopeRow(items[index]);
                         },
                         separatorBuilder: (context, index) {
                           return Padding(
@@ -873,6 +862,7 @@ class _SlopeRushHistoryHomeViewState extends State<SlopeRushHistoryHomeView> {
 
             final matched = findItemByKey(key);
             final leader  = matched == null ? null : _leaderOf(matched);
+            final isLoading = _slopeRushRecordRoomViewModel.isLoading.value;
 
             // ▶ 미점령/데이터 없음이면 '미점령'만 표시
             final bool unclaimed = (matched == null) || (leader == null);
@@ -885,23 +875,26 @@ class _SlopeRushHistoryHomeViewState extends State<SlopeRushHistoryHomeView> {
             final top  = (pos.dy * h) - 12;
 
             markers.add(
-                Positioned(
-                  left: left,
-                  top: top,
-                  child: _Marker(
-                    selected: selectedSlopeKey == key,
-                    leader: unclaimed ? null : leader, // null이면 기본 마커로 렌더
-                    label: label,                      // 미점령 텍스트
-                    onTap: () {
-                      if (!unclaimed && matched != null) {
-                        _onMarkerTap(key, matched);    // 데이터 있으면 상세
-                      } else {
-                        // 미점령: 하이라이트만 주고 끝 (바텀시트 안 띄움)
-                        setState(() => selectedSlopeKey = key);
-                      }
-                    },
-                  ),
-                ));
+              Positioned(
+                left: left,
+                top: top,
+                child: _Marker(
+                  selected: selectedSlopeKey == key,
+                  leader: unclaimed ? null : leader,
+                  label: label,
+                  onTap: () {
+                    if (isLoading) return; // 로딩 중이면 탭 동작 막고 싶으면 넣기
+                    if (!unclaimed && matched != null) {
+                      _onMarkerTap(key, matched);
+                    } else {
+                      setState(() => selectedSlopeKey = key);
+                    }
+                  },
+                  isLoading: isLoading,   // 🔥 여기서 연결된다
+                ),
+              ),
+            );
+
           }
 
           return Stack(
@@ -1210,6 +1203,96 @@ class _SlopeRushHistoryHomeViewState extends State<SlopeRushHistoryHomeView> {
   }
 
 
+  // 스켈레톤 로딩
+  SliverToBoxAdapter _buildSlopeListSkeleton() {
+    return SliverToBoxAdapter(
+      child: Container(
+        color: Colors.white,
+        padding: const EdgeInsets.symmetric(vertical: 8),
+        child: Shimmer.fromColors(
+          baseColor: Colors.grey[200]!,
+          highlightColor: Colors.grey[100]!,
+          child: Column(
+            children: List.generate(5, (index) {
+              return Padding(
+                padding: const EdgeInsets.fromLTRB(24, 10, 24, 10),
+                child: Column(
+                  children: [
+                    Row(
+                      children: [
+                        // 슬로프명 영역 스켈레톤
+                        Container(
+                          width: 48,
+                          height: 14,
+                          decoration: BoxDecoration(
+                            color: Colors.grey[300],
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+
+                        // 크루 로고 스켈레톤(정사각형 아바타)
+                        Container(
+                          width: 36,
+                          height: 36,
+                          decoration: BoxDecoration(
+                            color: Colors.grey[300],
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+
+                        // 크루명 + 설명 영역 스켈레톤
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Container(
+                                height: 14,
+                                margin: const EdgeInsets.only(bottom: 6),
+                                decoration: BoxDecoration(
+                                  color: Colors.grey[300],
+                                  borderRadius: BorderRadius.circular(4),
+                                ),
+                              ),
+                              Container(
+                                height: 12,
+                                width: 120,
+                                decoration: BoxDecoration(
+                                  color: Colors.grey[300],
+                                  borderRadius: BorderRadius.circular(4),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+
+                        const SizedBox(width: 16),
+
+                        // 비율(%) 영역 스켈레톤
+                        Container(
+                          width: 40,
+                          height: 18,
+                          decoration: BoxDecoration(
+                            color: Colors.grey[300],
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 12),
+                  ],
+                ),
+              );
+            }),
+          ),
+        ),
+      ),
+    );
+  }
+
+
+
 }
 
 // =======================
@@ -1221,15 +1304,24 @@ class _Marker extends StatelessWidget {
   final String label;
   final VoidCallback onTap;
 
+  /// 🔥 추가: 로딩 중일 때 스켈레톤을 보여줄 플래그
+  final bool isLoading;
+
   const _Marker({
     required this.selected,
     required this.leader,
     required this.label,
     required this.onTap,
+    this.isLoading = false, // 기본값 false
   });
 
   @override
   Widget build(BuildContext context) {
+    // 로딩 중일 때는 '미점령' 상태랑 별개로 스켈레톤 표시
+    if (isLoading) {
+      return _buildSkeletonMarker();
+    }
+
     final bool unclaimed = leader == null;
     final crewName = unclaimed ? '미점령' : leader!.crewName;
     final crewLogo = unclaimed ? '' : leader!.crewLogoUrl;
@@ -1248,10 +1340,8 @@ class _Marker extends StatelessWidget {
                 shape: BoxShape.circle,
                 color: Colors.white,
                 border: Border.all(
-                  color: selected
-                      ? Colors.black12
-                      : Colors.black12,
-                  width: selected ? 1 : 1,
+                  color: Colors.black12,
+                  width: 1,
                 ),
                 boxShadow: [
                   BoxShadow(
@@ -1277,10 +1367,8 @@ class _Marker extends StatelessWidget {
               color: selected ? Colors.black : Colors.white,
               borderRadius: BorderRadius.circular(4),
               border: Border.all(
-                color: selected
-                    ? Colors.black26
-                    : (unclaimed ? Colors.black26 : Colors.black26),
-                width: selected ? 1 : 1,
+                color: Colors.black26,
+                width: 1,
               ),
               boxShadow: [
                 BoxShadow(
@@ -1295,7 +1383,9 @@ class _Marker extends StatelessWidget {
               style: TextStyle(
                 fontSize: 10,
                 fontWeight: FontWeight.bold,
-                color: selected ? Colors.white : (unclaimed ? Colors.grey[500] : Colors.black),
+                color: selected
+                    ? Colors.white
+                    : (unclaimed ? Colors.grey[500] : Colors.black),
               ),
               overflow: TextOverflow.ellipsis,
             ),
@@ -1304,5 +1394,61 @@ class _Marker extends StatelessWidget {
       ),
     );
   }
+
+  /// 🔹 마커용 스켈레톤 (로딩 상태에서만 사용)
+  Widget _buildSkeletonMarker() {
+    return Shimmer.fromColors(
+      baseColor: Colors.grey[200]!,
+      highlightColor: Colors.grey[100]!,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          // 동그란 아바타 스켈레톤
+          Container(
+            width: 24,
+            height: 24,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: Colors.grey[200],
+              border: Border.all(
+                color: Colors.white,
+                width: 1,
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.10),
+                  blurRadius: 4,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 2),
+
+          // 라벨 캡슐 스켈레톤
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+            decoration: BoxDecoration(
+              color: Colors.grey[200],
+              borderRadius: BorderRadius.circular(4),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.10),
+                  blurRadius: 4,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+            ),
+            child: const SizedBox(
+              width: 20,
+              height: 10,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }
+
+
 
