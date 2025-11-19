@@ -1712,7 +1712,7 @@ class _ResortHomeViewState extends State<ResortHomeView> with
                                               Padding(
                                                 padding: const EdgeInsets.only(top: 4),
                                                 child: Text(
-                                                  '더 많이, 더 오래, 더 뜨겁게!\n슬로프의 주인이 되어라!',
+                                                  '크루와 함께 슬로프를 점령해 보세요.\n슬로프의 주인공은 바로 우리!',
                                                   style: SDSTextStyle.regular.copyWith(
                                                     fontSize: 13,
                                                     color: SDSColor.gray600,
