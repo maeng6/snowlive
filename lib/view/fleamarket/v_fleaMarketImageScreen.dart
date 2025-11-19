@@ -34,6 +34,7 @@ class _FleaMarketImageScreenState extends State<FleaMarketImageScreen> {
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(58),
         child: AppBar(
+          backgroundColor: Colors.black,
           systemOverlayStyle: SystemUiOverlayStyle.dark,
           leading: GestureDetector(
             child: Icon(Icons.close, color: Colors.white),
