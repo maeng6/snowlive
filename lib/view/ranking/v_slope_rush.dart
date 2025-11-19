@@ -584,11 +584,16 @@ class _SlopeRushHomeViewState extends State<SlopeRushHomeView> {
               else if (items.isEmpty)
                 SliverToBoxAdapter(
                   child: Container(
-                    height: 200,
+                    height: 400,
                     color: Colors.white,
                     child: const Padding(
                       padding: EdgeInsets.symmetric(vertical: 40),
-                      child: Center(child: Text('데이터가 없습니다.')),
+                      child: Text('데이터가 없습니다.',
+                        style: TextStyle(
+                          color: Color(0xFF949494),
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
                     ),
                   ),
                 )
