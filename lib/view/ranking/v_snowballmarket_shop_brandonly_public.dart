@@ -133,7 +133,25 @@ class _SnowballMarketBrandOnlyPublicShopViewState extends State<SnowballMarketBr
                   ],
                 ),
               ),
-              body: Column(
+              body:
+              _snowballShopViewModel.isLoading.value
+                  ? Container(
+                width: double.infinity,
+                height: double.infinity,
+                color: Color(0xFF1D242E), // 배경색 유지
+                child: Center(
+                  child: SizedBox(
+                    width: 24,
+                    height: 24,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 4,
+                      backgroundColor: SDSColor.gray100,
+                      color: SDSColor.gray300.withOpacity(0.6),
+                    ),
+                  ),
+                ),
+              )
+                  : Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Expanded(
@@ -180,7 +198,7 @@ class _SnowballMarketBrandOnlyPublicShopViewState extends State<SnowballMarketBr
                                           }
 
                                           CustomFullScreenDialog.showDialog();
-                                          await _snowballShopViewModel.fetchSnowballShop(isTierOnly: false, isForMission: false);
+                                          await _snowballShopViewModel.fetchSnowballShopTapTheList(isTierOnly: false, isForMission: false);
                                           CustomFullScreenDialog.cancelDialog();
 
                                           final updatedItem = _snowballShopViewModel.shopItems.firstWhere(
@@ -266,6 +284,7 @@ class _SnowballMarketBrandOnlyPublicShopViewState extends State<SnowballMarketBr
                                                             ),
                                                             SizedBox(height: 40),
                                                             // 버튼들
+                                                            if(item.isFieldGame == false)
                                                             Row(
                                                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                                               children: [
@@ -402,7 +421,7 @@ class _SnowballMarketBrandOnlyPublicShopViewState extends State<SnowballMarketBr
                                                                         Navigator.pop(context); // 바텀시트 닫기
                                                                         CustomFullScreenDialog.showDialog();
                                                                         final result = await _snowballShopViewModel.purchaseSnowballItem(snowballItemId: _snowballShopViewModel.selectedItem.value.snowballItemId!);
-                                                                        await _snowballShopViewModel.fetchSnowballShop(isTierOnly: false, isForMission: false);
+                                                                        await _snowballShopViewModel.fetchSnowballShopTapTheList(isTierOnly: false, isForMission: false);
                                                                         CustomFullScreenDialog.cancelDialog();
 
                                                                         if (result) {
@@ -701,7 +720,7 @@ class _SnowballMarketBrandOnlyPublicShopViewState extends State<SnowballMarketBr
                             child: ElevatedButton(
                               onPressed: () async{
                                 CustomFullScreenDialog.showDialog();
-                                await _snowballShopViewModel.fetchPurchaseHistory();
+                                await _snowballShopViewModel.fetchPurchaseHistoryOnly();
                                 CustomFullScreenDialog.cancelDialog();
                                 Get.toNamed(AppRoutes.snowballMarketBuyRecord);
                               },

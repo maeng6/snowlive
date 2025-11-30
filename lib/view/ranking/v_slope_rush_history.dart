@@ -6,6 +6,7 @@ import 'package:com.snowlive/viewmodel/crew/vm_crewMemberList.dart';
 import 'package:com.snowlive/viewmodel/friend/vm_friendDetail.dart';
 import 'package:com.snowlive/viewmodel/ranking/vm_slope_rush_recordRoom.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -989,30 +990,84 @@ class _SlopeRushHistoryHomeViewState extends State<SlopeRushHistoryHomeView> {
                           _friendDetailViewModel.seasonDate
                       );
                     },
-                    child: Container(
-                      width: 36,   // radius * 2
+                    child: SizedBox(
+                      width: 36,
                       height: 36,
-                      decoration: BoxDecoration(
+                      child: leader.crewLogoUrl.isNotEmpty
+                          ? ExtendedImage.network(
+                        leader.crewLogoUrl,
+                        cache: true,
+                        shape: BoxShape.rectangle,
                         borderRadius: BorderRadius.circular(10),
-                        color: Colors.grey[200], // CircleAvatar의 backgroundColor 역할
                         border: Border.all(
-                          color: Colors.grey[300]!,
                           width: 1,
+                          color: Colors.grey[300]!,
                         ),
-                        image: leader.crewLogoUrl.isNotEmpty
-                            ? DecorationImage(
-                          image: NetworkImage(leader.crewLogoUrl),
-                          fit: BoxFit.cover,
-                        )
-                            : null,
-                      ),
-                      child: leader.crewLogoUrl.isEmpty
-                          ? const Icon(
-                        Icons.group,
-                        color: Colors.grey,
-                        size: 20,
+                        width: 36,
+                        height: 36,
+                        cacheHeight: 200, // 필요 없으면 지워도 됨
+                        fit: BoxFit.cover,
+                        loadStateChanged: (ExtendedImageState state) {
+                          switch (state.extendedImageLoadState) {
+                            case LoadState.loading:
+                            // 로딩 중 스켈레톤
+                              return Shimmer.fromColors(
+                                baseColor: SDSColor.gray200,
+                                highlightColor: SDSColor.gray50,
+                                child: Container(
+                                  width: 36,
+                                  height: 36,
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                ),
+                              );
+                            case LoadState.completed:
+                            // 로딩 완료 시 이미지
+                              return ClipRRect(
+                                borderRadius: BorderRadius.circular(10),
+                                child: state.completedWidget,
+                              );
+                            case LoadState.failed:
+                            // 실패 시 기본 아이콘
+                              return Container(
+                                width: 36,
+                                height: 36,
+                                decoration: BoxDecoration(
+                                  color: Colors.grey[200],
+                                  borderRadius: BorderRadius.circular(10),
+                                  border: Border.all(
+                                    color: Colors.grey[300]!,
+                                    width: 1,
+                                  ),
+                                ),
+                                child: const Icon(
+                                  Icons.group,
+                                  color: Colors.grey,
+                                  size: 20,
+                                ),
+                              );
+                          }
+                        },
                       )
-                          : null,
+                          : Container(
+                        width: 36,
+                        height: 36,
+                        decoration: BoxDecoration(
+                          color: Colors.grey[200],
+                          borderRadius: BorderRadius.circular(10),
+                          border: Border.all(
+                            color: Colors.grey[300]!,
+                            width: 1,
+                          ),
+                        ),
+                        child: const Icon(
+                          Icons.group,
+                          color: Colors.grey,
+                          size: 20,
+                        ),
+                      ),
                     ),
                   ),
                   const SizedBox(width: 8),
@@ -1120,30 +1175,83 @@ class _SlopeRushHistoryHomeViewState extends State<SlopeRushHistoryHomeView> {
                                       _friendDetailViewModel.seasonDate
                                   );
                                 },
-                                child: Container(
-                                  width: 40,   // radius * 2
+                                child: SizedBox(
+                                  width: 40,
                                   height: 40,
-                                  decoration: BoxDecoration(
-                                    color: Colors.grey[200],                       // 배경색
-                                    borderRadius: BorderRadius.circular(10),       // 🔥 직접 적용 가능한 모서리 반경
+                                  child: c.crewLogoUrl.isNotEmpty
+                                      ? ExtendedImage.network(
+                                    c.crewLogoUrl,
+                                    cache: true,
+                                    shape: BoxShape.rectangle,
+                                    borderRadius: BorderRadius.circular(10),
                                     border: Border.all(
-                                      color: Colors.grey[300]!,                    // 테두리색
                                       width: 1,
+                                      color: Colors.grey[300]!,
                                     ),
-                                    image: c.crewLogoUrl.isNotEmpty
-                                        ? DecorationImage(
-                                      image: NetworkImage(c.crewLogoUrl),
-                                      fit: BoxFit.cover,                     // 이미지 꽉 채움
-                                    )
-                                        : null,
-                                  ),
-                                  child: c.crewLogoUrl.isEmpty
-                                      ? const Icon(
-                                    Icons.group,
-                                    color: Colors.grey,
-                                    size: 18,
+                                    width: 40,
+                                    height: 40,
+                                    cacheHeight: 240, // 필요하면 제거 가능
+                                    fit: BoxFit.cover,
+                                    loadStateChanged: (ExtendedImageState state) {
+                                      switch (state.extendedImageLoadState) {
+                                        case LoadState.loading:
+                                          return Shimmer.fromColors(
+                                            baseColor: SDSColor.gray200!,
+                                            highlightColor: SDSColor.gray50!,
+                                            child: Container(
+                                              width: 40,
+                                              height: 40,
+                                              decoration: BoxDecoration(
+                                                color: Colors.white,
+                                                borderRadius: BorderRadius.circular(10),
+                                              ),
+                                            ),
+                                          );
+
+                                        case LoadState.completed:
+                                          return ClipRRect(
+                                            borderRadius: BorderRadius.circular(10),
+                                            child: state.completedWidget,
+                                          );
+
+                                        case LoadState.failed:
+                                          return Container(
+                                            width: 40,
+                                            height: 40,
+                                            decoration: BoxDecoration(
+                                              color: Colors.grey[200],
+                                              borderRadius: BorderRadius.circular(10),
+                                              border: Border.all(
+                                                color: Colors.grey[300]!,
+                                                width: 1,
+                                              ),
+                                            ),
+                                            child: const Icon(
+                                              Icons.group,
+                                              color: Colors.grey,
+                                              size: 18,
+                                            ),
+                                          );
+                                      }
+                                    },
                                   )
-                                      : null,
+                                      : Container(
+                                    width: 40,
+                                    height: 40,
+                                    decoration: BoxDecoration(
+                                      color: Colors.grey[200],
+                                      borderRadius: BorderRadius.circular(10),
+                                      border: Border.all(
+                                        color: Colors.grey[300]!,
+                                        width: 1,
+                                      ),
+                                    ),
+                                    child: const Icon(
+                                      Icons.group,
+                                      color: Colors.grey,
+                                      size: 18,
+                                    ),
+                                  ),
                                 ),
                               ),
                               const SizedBox(width: 16),
@@ -1296,15 +1404,15 @@ class _SlopeRushHistoryHomeViewState extends State<SlopeRushHistoryHomeView> {
 }
 
 // =======================
-// 마커 (아바타 ↑ / 크루명 ↓)
+// 마커 (아바타 ↑ / 크루명 ↓) - 시즌 기록실 버전 (현시즌과 동일 스타일)
 // =======================
 class _Marker extends StatelessWidget {
   final bool selected;
   final SlopeRushRecordRoomCrew? leader;
-  final String label;
+  final String label;        // 호출부 시그니처 유지
   final VoidCallback onTap;
 
-  /// 🔥 추가: 로딩 중일 때 스켈레톤을 보여줄 플래그
+  /// 🔥 로딩 중일 때 스켈레톤을 보여줄 플래그
   final bool isLoading;
 
   const _Marker({
@@ -1312,12 +1420,12 @@ class _Marker extends StatelessWidget {
     required this.leader,
     required this.label,
     required this.onTap,
-    this.isLoading = false, // 기본값 false
+    this.isLoading = false,
   });
 
   @override
   Widget build(BuildContext context) {
-    // 로딩 중일 때는 '미점령' 상태랑 별개로 스켈레톤 표시
+    // 🔥 로딩 중이면 스켈레톤 UI
     if (isLoading) {
       return _buildSkeletonMarker();
     }
@@ -1331,43 +1439,85 @@ class _Marker extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          // 🔹 프로필 이미지 (미점령이면 아예 표시 안 함)
-          if (!unclaimed)
-            Container(
-              width: selected ? 36 : 24,
-              height: selected ? 36 : 24,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: Colors.white,
-                border: Border.all(
-                  color: Colors.black12,
-                  width: 1,
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.10),
-                    blurRadius: 4,
-                    offset: const Offset(0, 2),
-                  ),
-                ],
+          // 🔹 프로필 이미지 (이제 미점령이어도 항상 원형 배지 표시)
+          Container(
+            width: selected ? 36 : 24,
+            height: selected ? 36 : 24,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: Colors.white,
+              border: Border.all(
+                color: Colors.black12,
+                width: 1,
               ),
-              child: ClipOval(
-                child: crewLogo.isNotEmpty
-                    ? Image.network(crewLogo, fit: BoxFit.cover)
-                    : const Icon(Icons.group, size: 14, color: Colors.grey),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.10),
+                  blurRadius: 4,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+            ),
+            child: ClipOval(
+              child: crewLogo.isNotEmpty
+                  ? ExtendedImage.network(
+                crewLogo,
+                cache: true,
+                width: selected ? 36 : 24,
+                height: selected ? 36 : 24,
+                fit: BoxFit.cover,
+                loadStateChanged: (ExtendedImageState state) {
+                  switch (state.extendedImageLoadState) {
+                    case LoadState.loading:
+                    // 로딩 중 스켈레톤
+                      return Shimmer.fromColors(
+                        baseColor: Colors.grey[200]!,
+                        highlightColor: Colors.grey[100]!,
+                        child: Container(
+                          width: selected ? 36 : 24,
+                          height: selected ? 36 : 24,
+                          color: Colors.white,
+                        ),
+                      );
+                    case LoadState.completed:
+                    // 로딩 완료
+                      return state.completedWidget;
+                    case LoadState.failed:
+                    // 실패 시 기본 아이콘
+                      return Container(
+                        width: selected ? 36 : 24,
+                        height: selected ? 36 : 24,
+                        color: Colors.grey[200],
+                        child: const Icon(
+                          Icons.group,
+                          size: 14,
+                          color: Colors.grey,
+                        ),
+                      );
+                  }
+                },
+              )
+                  : const Icon(
+                Icons.group,
+                size: 14,
+                color: Colors.grey,
               ),
             ),
+          ),
 
-          if (!unclaimed) const SizedBox(height: 2),
+          const SizedBox(height: 2),
 
           // 🔹 라벨 캡슐 (미점령 포함 항상 표시)
           Container(
+            constraints: const BoxConstraints(
+              maxWidth: 38,   // ← 🔥 캡슐 최대 너비 제한
+            ),
             padding: const EdgeInsets.symmetric(horizontal: 3, vertical: 1),
             decoration: BoxDecoration(
               color: selected ? Colors.black : Colors.white,
               borderRadius: BorderRadius.circular(4),
               border: Border.all(
-                color: Colors.black26,
+                color: selected ? Colors.black26 : Colors.black26,
                 width: 1,
               ),
               boxShadow: [
@@ -1388,6 +1538,7 @@ class _Marker extends StatelessWidget {
                     : (unclaimed ? Colors.grey[500] : Colors.black),
               ),
               overflow: TextOverflow.ellipsis,
+              maxLines: 1,
             ),
           ),
         ],
@@ -1449,6 +1600,7 @@ class _Marker extends StatelessWidget {
     );
   }
 }
+
 
 
 
