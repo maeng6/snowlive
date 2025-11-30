@@ -789,7 +789,7 @@ class _SnowballMarketBrandShopViewState extends State<SnowballMarketBrandShopVie
                               }(),
 
                               child: Text(
-                                isApplied ? '응모 완료' : '브랜드 응모하기',
+                                isApplied ? '응모 완료' : '브랜드 미션 응모하기',
                                 style: const TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.w700,
@@ -843,9 +843,9 @@ class _HeroText extends StatelessWidget {
           style: SDSTextStyle.bold.copyWith(color: SDSColor.snowliveWhite, fontSize: 18),
         ),
         const SizedBox(height: 4),
-        Text('아래 미션을 완료하고, 원하는 브랜드 경품에 응모하세요!',
+        Text('아래 미션을 완료하고, 원하는 브랜드 경품에 응모하여',
             style: SDSTextStyle.regular.copyWith(fontSize: 13, color: SDSColor.snowliveWhite.withOpacity(0.6))),
-        Text('추첨을 통해 단 하나의 상품의 주인공이 되어 보세요!',
+        Text('25/26 신상 의류의 주인이 되어 보세요!',
             style: SDSTextStyle.regular.copyWith(fontSize: 13, color: SDSColor.snowliveWhite.withOpacity(0.6))),
       ],
     );
@@ -871,7 +871,7 @@ class _MissionProgressRow extends StatelessWidget {
             imgDone: 'assets/imgs/imgs/snowballShop/icon_snowballshop_brandmission1_end.png',
             title: vm.missionTitle('mission_1'),
             achieved: count.white ?? 0,
-            required: 9,
+            required: 1,
           ),
           SizedBox(
             width: 14,
@@ -1066,7 +1066,7 @@ class _ChooseTitle extends StatelessWidget {
         const Text('브랜드 미션 응모하기 버튼을 눌러주세요!',
             style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
         const SizedBox(height: 4),
-        Text('경품에 대한 자세한 정보는',
+        Text('경품에 대한 자세한 정보를 확인하려면',
             style: SDSTextStyle.regular.copyWith(fontSize: 13, color: SDSColor.snowliveWhite.withOpacity(0.6))),
         Text('아래 경품 구경하기 버튼을 눌러주세요!',
             style: SDSTextStyle.regular.copyWith(fontSize: 13, color: SDSColor.snowliveWhite.withOpacity(0.6))),
