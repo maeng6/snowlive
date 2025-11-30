@@ -145,7 +145,7 @@ class _SnowballMarketHomeViewState extends State<SnowballMarketHomeView> {
                           SizedBox(height: 18),
                           ElevatedButton(
                             onPressed: () {
-                              _snowballShopViewModel.fetchPurchaseHistory();
+                              _snowballShopViewModel.fetchPurchaseHistoryOnly();
                               Get.toNamed(AppRoutes.snowballMarketBuyRecord);
                             },
                             style: ElevatedButton.styleFrom(
