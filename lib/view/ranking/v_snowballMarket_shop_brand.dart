@@ -886,12 +886,11 @@ class _MissionProgressRow extends StatelessWidget {
           SizedBox(
             width: 14,
           ),
-          _missionBlock(
+          _mission4Block(
             imgNormal: 'assets/imgs/imgs/snowballShop/icon_snowballshop_brandmission3.png',
             imgDone: 'assets/imgs/imgs/snowballShop/icon_snowballshop_brandmission3_end.png',
             title: vm.missionTitle('mission_3'),
-            achieved: count.white_on_slope ?? 0,
-            required: 5,
+            done: vm.missionComplete('mission_3'),
           ),
           SizedBox(
             width: 14,
