@@ -752,7 +752,7 @@ class _SnowballMarketBrandShopViewState extends State<SnowballMarketBrandShopVie
                                   context,
                                   title: '브랜드 미션 응모 완료!',
                                   message: '상단에 표시된 추첨 번호를 확인해주세요.\n'
-                                      '14시까지 경품 수령처로 모여주세요!',
+                                      '19시까지 경품 수령처로 모여주세요!',
                                 );
                               }
                                   : null,
@@ -843,7 +843,7 @@ class _HeroText extends StatelessWidget {
           style: SDSTextStyle.bold.copyWith(color: SDSColor.snowliveWhite, fontSize: 18),
         ),
         const SizedBox(height: 4),
-        Text('아래 미션을 완료하고, 원하는 브랜드 경품애 응모하세요!',
+        Text('아래 미션을 완료하고, 원하는 브랜드 경품에 응모하세요!',
             style: SDSTextStyle.regular.copyWith(fontSize: 13, color: SDSColor.snowliveWhite.withOpacity(0.6))),
         Text('추첨을 통해 단 하나의 상품의 주인공이 되어 보세요!',
             style: SDSTextStyle.regular.copyWith(fontSize: 13, color: SDSColor.snowliveWhite.withOpacity(0.6))),
@@ -1253,7 +1253,7 @@ class _DrawHowTo extends StatelessWidget {
             child: const Text('추첨 방법', style: TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold)),
           ),
           const SizedBox(height: 8),
-          const Text('14시까지 경품 수령처로 모여주세요!',
+          const Text('19시까지 경품 수령처로 모여주세요!',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Color(0xFFFFFFFF))),
           const SizedBox(height: 15),
           Container(
@@ -1280,7 +1280,7 @@ class _DrawHowTo extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Text(
-                          '브랜드 미션 응모를 완료하셨다면,\n14시까지 경품 수령처로 모여주세요!\n현장에서 직접 당첨자 추첨을 진행합니다!',
+                          '브랜드 미션 응모를 완료하셨다면,\n19시까지 경품 수령처로 모여주세요!\n현장에서 직접 당첨자 추첨을 진행합니다!',
                           textAlign: TextAlign.center,
                           style: SDSTextStyle.regular.copyWith(color: SDSColor.snowliveWhite, fontSize: 14),
                         ),
@@ -1314,7 +1314,7 @@ class _ExtraPrizeTitle extends StatelessWidget {
       children: [
         const Text('브랜드 미션에 응모하시면,',
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Color(0xFFFFFFFF))),
-        const Text('추가 경품 당첨 기회가 주어집니다!',
+        const Text('추첨을 통해 아래 경품을 추가로 드립니다!',
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Color(0xFFFFFFFF))),
         const SizedBox(height: 4),
         Text('브랜드 미션 응모 시, 자동으로 응모됩니다.',
