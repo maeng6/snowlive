@@ -12,6 +12,9 @@ class SnowballShopViewModel extends GetxController {
   // UI 상태
   // ------------------------
   var isLoading = false.obs;
+  var isLoading_fetchSnowballShopData = false.obs;
+  var isLoading_fetchPurchageHistoryOnly = false.obs;
+
 
   // (오탈자 유지 대신 명시적 getter/setter 유지)
   var _isLodaing_entrance = false.obs;
@@ -177,6 +180,51 @@ class SnowballShopViewModel extends GetxController {
     }
   }
 
+  Future<void> fetchSnowballShopTapTheList({bool? isTierOnly, bool? isForMission}) async {
+    try {
+      isLoading_fetchSnowballShopData(true);
+      final userId = _userViewModel.user.user_id;
+
+      final body = {
+        'user_id': userId,
+        'event_date': eventDate.value,
+        if (isTierOnly != null) 'is_tier_only': isTierOnly,
+        if (isForMission != null) 'is_for_mission': isForMission,
+      };
+
+      final response = await _api.fetchSnowballShop(body);
+      if (response.success) {
+        final shop = SnowballShopResponse.fromJson(response.data!);
+
+        // 요약, 일반 아이템
+        summary.value = shop.summary ?? [];
+        shopItems.value = shop.items ?? [];
+
+        // ✅ 프리미엄 여부
+        isPremiumUser.value = shop.isPremiumUser ?? false;
+
+        // ✅ 브랜드 아이템 (미션일 때만 내려오므로 null 체크)
+        if (shop.brandItems != null) {
+          brandItems.value = shop.brandItems!;
+        } else {
+          brandItems.clear();
+        }
+      } else {
+        print("Failed to fetch shop: ${response.error}");
+        shopItems.clear();
+        brandItems.clear();
+        isPremiumUser.value = false;
+      }
+    } catch (e) {
+      print("Error fetchSnowballShop: $e");
+      shopItems.clear();
+      brandItems.clear();
+      isPremiumUser.value = false;
+    } finally {
+      isLoading_fetchSnowballShopData(false);
+    }
+  }
+
 
   // ------------------------
   // 남은 눈송이 요약만 갱신
@@ -269,6 +317,27 @@ class SnowballShopViewModel extends GetxController {
       isLoading(false);
     }
   }
+
+  Future<void> fetchPurchaseHistoryOnly() async {
+    try {
+      isLoading_fetchPurchageHistoryOnly(true);
+      final userId = _userViewModel.user.user_id;
+
+      final response = await _api.fetchSnowballBuyRecords({'user_id': userId});
+      if (response.success) {
+        final List<dynamic> records = response.data?['snowball_buy_records'] ?? [];
+        purchaseHistory.value =
+            records.map((e) => SnowballBuyRecord.fromJson(e)).toList();
+      } else {
+        print("Failed to fetch purchase history: ${response.error}");
+      }
+    } catch (e) {
+      print("Error fetching purchase history: $e");
+    } finally {
+      isLoading_fetchPurchageHistoryOnly(false);
+    }
+  }
+
 
   // ------------------------
   // 내 눈송이 기록

@@ -134,7 +134,25 @@ class _SnowballMarketPremiumShopViewState extends State<SnowballMarketPremiumSho
                   ],
                 ),
               ),
-              body:  Column(
+              body:
+              _snowballShopViewModel.isLoading.value
+                  ? Container(
+                width: double.infinity,
+                height: double.infinity,
+                color: Color(0xFF1D242E), // 배경색 유지
+                child: Center(
+                  child: SizedBox(
+                    width: 24,
+                    height: 24,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 4,
+                      backgroundColor: SDSColor.gray100,
+                      color: SDSColor.gray300.withOpacity(0.6),
+                    ),
+                  ),
+                ),
+              )
+                  : Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Expanded(
@@ -184,7 +202,7 @@ class _SnowballMarketPremiumShopViewState extends State<SnowballMarketPremiumSho
                                           }
 
                                           CustomFullScreenDialog.showDialog();
-                                          await _snowballShopViewModel.fetchSnowballShop(isTierOnly: true, isForMission: false);
+                                          await _snowballShopViewModel.fetchSnowballShopTapTheList(isTierOnly: true, isForMission: false);
                                           CustomFullScreenDialog.cancelDialog();
 
                                           final updatedItem = _snowballShopViewModel.shopItems.firstWhere(
@@ -269,7 +287,7 @@ class _SnowballMarketPremiumShopViewState extends State<SnowballMarketPremiumSho
                                                               ),
                                                             ),
                                                             SizedBox(height: 40),
-                                                            if(_snowballShopViewModel.isPremiumUser.value == false)
+                                                            if(_snowballShopViewModel.isPremiumUser.value == false && item.isFieldGame == false)
                                                               Text(
                                                                 '랭킹 등급 골드 이상만 구매 가능합니다.',
                                                                 textAlign: TextAlign.center,
@@ -280,6 +298,7 @@ class _SnowballMarketPremiumShopViewState extends State<SnowballMarketPremiumSho
                                                               ),
                                                             SizedBox(height: 12),
                                                             // 버튼들
+                                                            if(item.isFieldGame == false)
                                                             Row(
                                                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                                               children: [
@@ -417,7 +436,7 @@ class _SnowballMarketPremiumShopViewState extends State<SnowballMarketPremiumSho
                                                                         Navigator.pop(context); // 바텀시트 닫기
                                                                         CustomFullScreenDialog.showDialog();
                                                                         final result = await _snowballShopViewModel.purchaseSnowballItem(snowballItemId: _snowballShopViewModel.selectedItem.value.snowballItemId!);
-                                                                        await _snowballShopViewModel.fetchSnowballShop(isTierOnly: true, isForMission: false);
+                                                                        await _snowballShopViewModel.fetchSnowballShopTapTheList(isTierOnly: true, isForMission: false);
                                                                         CustomFullScreenDialog.cancelDialog();
 
                                                                         if (result) {
@@ -715,7 +734,7 @@ class _SnowballMarketPremiumShopViewState extends State<SnowballMarketPremiumSho
                             child: ElevatedButton(
                               onPressed: () async{
                                 CustomFullScreenDialog.showDialog();
-                                await _snowballShopViewModel.fetchPurchaseHistory();
+                                await _snowballShopViewModel.fetchPurchaseHistoryOnly();
                                 CustomFullScreenDialog.cancelDialog();
                                 Get.toNamed(AppRoutes.snowballMarketBuyRecord);
                               },

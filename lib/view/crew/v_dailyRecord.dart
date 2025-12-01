@@ -136,7 +136,7 @@ class _CrewDailyRecordViewState extends State<CrewDailyRecordView> {
   // 년도 선택 탭을 생성하는 함수
   Widget buildYearSelector() {
     int currentYear = DateTime.now().year; // 현재 연도
-    int startYear = 2024; // 시작 연도
+    int startYear = 2025; // 시작 연도
 
     // 시작 연도부터 현재 연도까지의 탭을 최신순으로 생성
     List<Widget> yearTabs = [];

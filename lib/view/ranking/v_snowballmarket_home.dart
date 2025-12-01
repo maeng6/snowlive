@@ -145,7 +145,7 @@ class _SnowballMarketHomeViewState extends State<SnowballMarketHomeView> {
                           SizedBox(height: 18),
                           ElevatedButton(
                             onPressed: () {
-                              _snowballShopViewModel.fetchPurchaseHistory();
+                              _snowballShopViewModel.fetchPurchaseHistoryOnly();
                               Get.toNamed(AppRoutes.snowballMarketBuyRecord);
                             },
                             style: ElevatedButton.styleFrom(
@@ -563,13 +563,13 @@ class _SnowballMarketHomeViewState extends State<SnowballMarketHomeView> {
                                     fontWeight: FontWeight.bold
                                   ),
                                   ),
-                                  Text('각 브랜드의 미션을 빠르게 완수하고,',
+                                  Text('주어진 미션을 빠르게 완수하고,',
                                     style: TextStyle(
                                         color: Color(0xFFFFFFFF).withOpacity(0.6),
                                         fontSize: 13
                                     ),
                                   ),
-                                  Text('단 하나뿐인 리워드의 주인공이 될 기회를 잡아라!',
+                                  Text('25/26 신상 의류의 주인이 될 기회를 잡아라!',
                                     style: TextStyle(
                                         color: Color(0xFFFFFFFF).withOpacity(0.6),
                                         fontSize: 13
@@ -1494,7 +1494,7 @@ class _SnowballMarketHomeViewState extends State<SnowballMarketHomeView> {
                                     ),
                                     Padding(
                                       padding: EdgeInsets.only(bottom: 8),
-                                      child: Text('단, 황금 눈송이는 1시간에 한 번 랜덤으로 등장해요.\n황금 눈송이가 내리는 위치는 매 정각마다\n눈송이 상점에서 알려드릴게요.',
+                                      child: Text('단, 황금 눈송이는 1시간에 한 번 랜덤으로 등장해요.\n황금 눈송이가 내리는 위치는 매시 정각마다\n눈송이 상점에서 알려드릴게요.',
                                         style: SDSTextStyle.regular.copyWith(
                                           color: Color(0xFFBDD7FF),
                                           fontSize: 13,
@@ -1534,7 +1534,7 @@ class _SnowballMarketHomeViewState extends State<SnowballMarketHomeView> {
                                       ),
                                       Padding(
                                         padding: EdgeInsets.only(bottom: 8),
-                                        child: Text('라이딩하면서 모아둔 하얀 눈송이와 황금 눈송이로\n교환하고 싶은 상품과 교환을 할 수 있어요.\n상품 수령을 위해 이름과 전화번호, 주소를 입력하면 신청 완료!\n만약 현장 수령을 원하시면, 호크 리프트 옆\n눈송이 상품 수령처에서 직접 수령도 가능해요.',
+                                        child: Text('획득한 눈송이로 경품을 교환할 수 있어요.\n호크 리프트 옆 눈송이 상점을 방문해 주세요.',
                                           style: SDSTextStyle.regular.copyWith(
                                             color: Color(0xFFFFFFFF).withOpacity(0.6),
                                             fontSize: 13,
@@ -1544,7 +1544,7 @@ class _SnowballMarketHomeViewState extends State<SnowballMarketHomeView> {
                                       ),
                                       Padding(
                                         padding: EdgeInsets.only(bottom: 8),
-                                        child: Text('상품 교환시 취소 및 변경이 불가능하니 신중하게 골라주세요!',
+                                        child: Text('경품 교환 후 취소 및 변경이 불가능하니 신중하게 골라주세요!',
                                           style: SDSTextStyle.regular.copyWith(
                                             color: Color(0xFFBDD7FF),
                                             fontSize: 13,
@@ -1583,7 +1583,7 @@ class _SnowballMarketHomeViewState extends State<SnowballMarketHomeView> {
                                   Center(
                                     child: Padding(
                                       padding: EdgeInsets.symmetric(vertical: 46, horizontal: 40),
-                                      child: Text('안녕하세요?\n저는 전국에서 내리는 눈송이를 찾아\n유랑하는 상인 하람이에요.\n\n스노빌리지에서는 제가 눈송이를 가득 싣고 오기를 애타게 기다리고 있어요.\n\n눈송이가 왜 필요하냐구요?\n눈송이는 우리 스노 친구들이 더운 여름을 견디기위해 꼭 필요한 자원이랍니다. 그래서 저는 이번 겨울 최대한 많은 눈송이를 모으기 위해 여기저기 유랑하고 있답니다.\n특히 황금 눈송이는 스노빌리지에서 다양한 재화를 만들 수 있는 제일 중요한 자원이에요.\n\n그런데 주말동안 휘닉스 파크에서 눈송이가 내린다는 예보가 있지 뭐에요?\n제가 다양한 상품을 가지고 왔으니, 여러분이 힘을 합쳐 눈송이를 모아서 가져와주세요!\n\n눈송이 값은 섭섭치 않게 쳐드릴게요 :)',
+                                      child: Text('안녕하세요?\n저는 눈송이를 찾아 전국을 유랑하는\n상인 하람이에요.\n\n저의 고향 스노빌리지에서는\n제가 눈송이를 가득 싣고 오기를\n애타게 기다리고 있어요.\n\n눈송이가 왜 필요하냐구요?\n\n눈송이는 우리 스노 친구들이 더운 여름을 견디기 위해 꼭 필요한 자원이랍니다.\n그래서 저는 이번 겨울 최대한 많은 눈송이를 모으기 위해 전국을 유랑하고 있어요.\n\n그런데 이번 겨울 휘닉스 파크에서 대량의 눈송이가 내린다는 예보가 있지 뭐에요?\n제가 다양한 선물을 가지고 왔으니, 여러분이 힘을 합쳐 눈송이를 모아서 가져와주세요!\n\n눈송이 값은 섭섭치 않게 쳐드릴게요~',
                                         style: TextStyle(
                                             color: SDSColor.snowliveBlack,
                                             fontSize: 14
@@ -1710,7 +1710,7 @@ class _SnowballMarketHomeViewState extends State<SnowballMarketHomeView> {
                                     ),
                                     SizedBox(height: 10,),
                                     Text(
-                                      '· 교환이 완료된 상품은 취소나 변경이 불가합니다.',
+                                      '· 교환이 완료된 경품은 취소나 변경이 불가합니다.',
                                       style: TextStyle(
                                         color: Color(0xFFFFFFFF).withOpacity(0.6),
                                         fontSize: 14,
@@ -1718,7 +1718,7 @@ class _SnowballMarketHomeViewState extends State<SnowballMarketHomeView> {
                                     ),
                                     SizedBox(height: 5,),
                                     Text(
-                                      '· 앱에서 교환한 상품은 반드시 현장 행사부스에서 실물 상품으로 교환해야 합니다.',
+                                      '· 앱에서 교환한 경품은 반드시 현장 행사 부스에서 실물 경품으로 교환해야 합니다.',
                                       style: TextStyle(
                                         color: Color(0xFFFFFFFF).withOpacity(0.6),
                                         fontSize: 14,

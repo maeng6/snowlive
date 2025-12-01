@@ -237,229 +237,229 @@ class _SnowballMarketBrandShopViewState extends State<SnowballMarketBrandShopVie
                               const SizedBox(height: 100),
                               // ===== 브랜드 응모 영역 상단 문구=====
                               const _ChooseTitle(),
-                              const SizedBox(height: 16),
-                              // ===== 경품 구경하기=====
-                              Align(
-                                child: SizedBox(
-                                  width: 124, // ⬅️ 좌우 여백 주고 가운데 정렬 (필요시 200~260 사이로 조절)
-                                  height: 40,
-                                  child: ElevatedButton(
-                                    onPressed: () {
-                                      // 캐러셀에 쓸 데이터: 브랜드 아이템 프리미엄
-                                      final brands = _snowballShopViewModel.missionStatus.brandItemPremium ?? [];
-
-                                      if (brands.isEmpty) {
-                                        ScaffoldMessenger.of(context).showSnackBar(
-                                          SnackBar(
-                                            content: SizedBox(
-                                              width: _size.width - 32,
-                                              height: 40,
-                                              child: Center(
-                                                child: Text(
-                                                  '브랜드 경품이 아직 준비되지 않았어요.',
-                                                  textAlign: TextAlign.center,
-                                                  style: const TextStyle(
-                                                    color: Colors.white,
-                                                    fontSize: 14,
-                                                    fontWeight: FontWeight.w400,
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                            backgroundColor: Colors.black.withOpacity(0.8),
-                                            behavior: SnackBarBehavior.floating,
-                                            margin: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-                                            padding: const EdgeInsets.symmetric(
-                                              horizontal: 16,
-                                              vertical: 8,
-                                            ),
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.circular(8),
-                                            ),
-                                            elevation: 0,
-                                            duration: const Duration(seconds: 2),
-                                          ),
-                                        );
-                                        return;
-                                      }
-
-                                      // 시작 페이지: 현재 선택한 브랜드가 있으면 거기서 시작
-                                      final initialPage = (_selectedBrandId != null)
-                                          ? brands.indexWhere((b) => b.snowballItemBrandId == _selectedBrandId)
-                                          : 0;
-
-                                      final startPage = (initialPage >= 0) ? initialPage : 0;
-
-                                      showModalBottomSheet(
-                                        context: context,
-                                        isScrollControlled: true,
-                                        backgroundColor: const Color(0xFF3D83ED),
-                                        builder: (BuildContext context) {
-                                          final pageController = PageController(initialPage: startPage);
-                                          int currentPage = startPage;
-
-                                          return GestureDetector(
-                                            onTap: () => Navigator.of(context).pop(), // 바깥 탭 시 닫기
-                                            child: SafeArea(
-                                              child: Container(
-                                                decoration: const BoxDecoration(
-                                                  color: Color(0xFF3D83ED),
-                                                  borderRadius: BorderRadius.only(
-                                                    topLeft: Radius.circular(16),
-                                                    topRight: Radius.circular(16),
-                                                  ),
-                                                ),
-                                                padding: const EdgeInsets.only(bottom: 16, top: 12),
-                                                child: StatefulBuilder(
-                                                  builder: (context, setState) {
-                                                    return Column(
-                                                      mainAxisSize: MainAxisSize.min,
-                                                      children: [
-                                                        // 상단 핸들
-                                                        const Padding(
-                                                          padding: EdgeInsets.only(bottom: 20),
-                                                          child: Center(
-                                                            child: _BottomSheetHandle(),
-                                                          ),
-                                                        ),
-
-                                                        // ===== 캐러셀(브랜드 아이템) =====
-                                                        SizedBox(
-                                                          height: 260, // 이미지+텍스트 영역 높이
-                                                          child: PageView.builder(
-                                                            controller: pageController,
-                                                            itemCount: brands.length,
-                                                            onPageChanged: (i) => setState(() => currentPage = i),
-                                                            itemBuilder: (context, i) {
-                                                              final b = brands[i];
-                                                              final logo = b.sponsor?.logoUrl;
-                                                              final bgUrl = (b.image_url_bg ?? '').trim();
-
-                                                              return Stack(
-                                                                children: [
-                                                                  // ===== 배경 이미지 =====
-                                                                  if (bgUrl.isNotEmpty)
-                                                                    Positioned.fill(
-                                                                      child: ExtendedImage.network(
-                                                                        bgUrl,
-                                                                        fit: BoxFit.cover,
-                                                                        cache: true,
-                                                                      ),
-                                                                    ),
-
-
-                                                                  // ===== 본문 콘텐츠 =====
-                                                                  Padding(
-                                                                    padding: EdgeInsets.symmetric(horizontal: 30),
-                                                                    child: Column(
-                                                                      mainAxisSize: MainAxisSize.min,
-                                                                      children: [
-                                                                        // 이미지
-                                                                        ExtendedImage.network(
-                                                                          b.imageUrl ?? '',
-                                                                          width: 80,
-                                                                          fit: BoxFit.cover,
-                                                                        ),
-                                                                        const SizedBox(height: 14),
-                                                                        // 타이틀
-                                                                        Text(
-                                                                          b.name ?? '상품 이름',
-                                                                          textAlign: TextAlign.center,
-                                                                          style: SDSTextStyle.bold.copyWith(
-                                                                            fontSize: 16,
-                                                                            color: SDSColor.snowliveWhite,
-                                                                          ),
-                                                                          maxLines: 1,
-                                                                          overflow: TextOverflow.ellipsis,
-                                                                        ),
-                                                                        const SizedBox(height: 6),
-                                                                        // 설명
-                                                                        Text(
-                                                                          b.description ?? '',
-                                                                          textAlign: TextAlign.center,
-                                                                          style: SDSTextStyle.regular.copyWith(
-                                                                            fontSize: 12,
-                                                                            color: Colors.white.withOpacity(0.7),
-                                                                          ),
-                                                                          maxLines: 2,
-                                                                          overflow: TextOverflow.ellipsis,
-                                                                        ),
-                                                                      ],
-                                                                    ),
-                                                                  ),
-
-                                                                  // ===== 우상단 스폰서 로고 =====
-                                                                  if (logo != null && logo.isNotEmpty)
-                                                                    Positioned(
-                                                                      right: 20,
-                                                                      child: _SponsorSticker(logoUrl: logo),
-                                                                    ),
-                                                                ],
-                                                              );
-                                                            },
-                                                          ),
-
-                                                        ),
-
-                                                        // 인디케이터(점)
-                                                        const SizedBox(height: 6),
-                                                        Row(
-                                                          mainAxisAlignment: MainAxisAlignment.center,
-                                                          children: List.generate(brands.length, (i) {
-                                                            final active = i == currentPage;
-                                                            return AnimatedContainer(
-                                                              duration: const Duration(milliseconds: 200),
-                                                              margin: const EdgeInsets.symmetric(horizontal: 3),
-                                                              width: active ? 12 : 6,
-                                                              height: 6,
-                                                              decoration: BoxDecoration(
-                                                                color: active ? Colors.white : Color(0xFF2467CC),
-                                                                borderRadius: BorderRadius.circular(4),
-                                                              ),
-                                                            );
-                                                          }),
-                                                        ),
-                                                        const SizedBox(height: 10),
-                                                      ],
-                                                    );
-                                                  },
-                                                ),
-                                              ),
-                                            ),
-                                          );
-                                        },
-                                      );
-                                    },
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: Colors.white,
-                                      elevation: 0,
-                                      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 14),
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(20),
-                                      ),
-                                    ),
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: [
-                                        Text(
-                                          '경품 구경하기',
-                                          style: SDSTextStyle.bold.copyWith(
-                                            color: Colors.black,
-                                            fontSize: 13,
-                                          ),
-                                        ),
-                                        const SizedBox(width: 8),
-                                        Image.asset(
-                                          'assets/imgs/imgs/snowballShop/icon_snowballshop_arrow_b.png',
-                                          width: 16,
-                                          height: 16,
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(height: 32),
+                              const SizedBox(height: 50),
+                              // // ===== 경품 구경하기=====
+                              // Align(
+                              //   child: SizedBox(
+                              //     width: 124, // ⬅️ 좌우 여백 주고 가운데 정렬 (필요시 200~260 사이로 조절)
+                              //     height: 40,
+                              //     child: ElevatedButton(
+                              //       onPressed: () {
+                              //         // 캐러셀에 쓸 데이터: 브랜드 아이템 프리미엄
+                              //         final brands = _snowballShopViewModel.missionStatus.brandItemPremium ?? [];
+                              //
+                              //         if (brands.isEmpty) {
+                              //           ScaffoldMessenger.of(context).showSnackBar(
+                              //             SnackBar(
+                              //               content: SizedBox(
+                              //                 width: _size.width - 32,
+                              //                 height: 40,
+                              //                 child: Center(
+                              //                   child: Text(
+                              //                     '브랜드 경품이 아직 준비되지 않았어요.',
+                              //                     textAlign: TextAlign.center,
+                              //                     style: const TextStyle(
+                              //                       color: Colors.white,
+                              //                       fontSize: 14,
+                              //                       fontWeight: FontWeight.w400,
+                              //                     ),
+                              //                   ),
+                              //                 ),
+                              //               ),
+                              //               backgroundColor: Colors.black.withOpacity(0.8),
+                              //               behavior: SnackBarBehavior.floating,
+                              //               margin: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+                              //               padding: const EdgeInsets.symmetric(
+                              //                 horizontal: 16,
+                              //                 vertical: 8,
+                              //               ),
+                              //               shape: RoundedRectangleBorder(
+                              //                 borderRadius: BorderRadius.circular(8),
+                              //               ),
+                              //               elevation: 0,
+                              //               duration: const Duration(seconds: 2),
+                              //             ),
+                              //           );
+                              //           return;
+                              //         }
+                              //
+                              //         // 시작 페이지: 현재 선택한 브랜드가 있으면 거기서 시작
+                              //         final initialPage = (_selectedBrandId != null)
+                              //             ? brands.indexWhere((b) => b.snowballItemBrandId == _selectedBrandId)
+                              //             : 0;
+                              //
+                              //         final startPage = (initialPage >= 0) ? initialPage : 0;
+                              //
+                              //         showModalBottomSheet(
+                              //           context: context,
+                              //           isScrollControlled: true,
+                              //           backgroundColor: const Color(0xFF3D83ED),
+                              //           builder: (BuildContext context) {
+                              //             final pageController = PageController(initialPage: startPage);
+                              //             int currentPage = startPage;
+                              //
+                              //             return GestureDetector(
+                              //               onTap: () => Navigator.of(context).pop(), // 바깥 탭 시 닫기
+                              //               child: SafeArea(
+                              //                 child: Container(
+                              //                   decoration: const BoxDecoration(
+                              //                     color: Color(0xFF3D83ED),
+                              //                     borderRadius: BorderRadius.only(
+                              //                       topLeft: Radius.circular(16),
+                              //                       topRight: Radius.circular(16),
+                              //                     ),
+                              //                   ),
+                              //                   padding: const EdgeInsets.only(bottom: 16, top: 12),
+                              //                   child: StatefulBuilder(
+                              //                     builder: (context, setState) {
+                              //                       return Column(
+                              //                         mainAxisSize: MainAxisSize.min,
+                              //                         children: [
+                              //                           // 상단 핸들
+                              //                           const Padding(
+                              //                             padding: EdgeInsets.only(bottom: 20),
+                              //                             child: Center(
+                              //                               child: _BottomSheetHandle(),
+                              //                             ),
+                              //                           ),
+                              //
+                              //                           // ===== 캐러셀(브랜드 아이템) =====
+                              //                           SizedBox(
+                              //                             height: 260, // 이미지+텍스트 영역 높이
+                              //                             child: PageView.builder(
+                              //                               controller: pageController,
+                              //                               itemCount: brands.length,
+                              //                               onPageChanged: (i) => setState(() => currentPage = i),
+                              //                               itemBuilder: (context, i) {
+                              //                                 final b = brands[i];
+                              //                                 final logo = b.sponsor?.logoUrl;
+                              //                                 final bgUrl = (b.image_url_bg ?? '').trim();
+                              //
+                              //                                 return Stack(
+                              //                                   children: [
+                              //                                     // ===== 배경 이미지 =====
+                              //                                     if (bgUrl.isNotEmpty)
+                              //                                       Positioned.fill(
+                              //                                         child: ExtendedImage.network(
+                              //                                           bgUrl,
+                              //                                           fit: BoxFit.cover,
+                              //                                           cache: true,
+                              //                                         ),
+                              //                                       ),
+                              //
+                              //
+                              //                                     // ===== 본문 콘텐츠 =====
+                              //                                     Padding(
+                              //                                       padding: EdgeInsets.symmetric(horizontal: 30),
+                              //                                       child: Column(
+                              //                                         mainAxisSize: MainAxisSize.min,
+                              //                                         children: [
+                              //                                           // 이미지
+                              //                                           ExtendedImage.network(
+                              //                                             b.imageUrl ?? '',
+                              //                                             width: 80,
+                              //                                             fit: BoxFit.cover,
+                              //                                           ),
+                              //                                           const SizedBox(height: 14),
+                              //                                           // 타이틀
+                              //                                           Text(
+                              //                                             b.name ?? '상품 이름',
+                              //                                             textAlign: TextAlign.center,
+                              //                                             style: SDSTextStyle.bold.copyWith(
+                              //                                               fontSize: 16,
+                              //                                               color: SDSColor.snowliveWhite,
+                              //                                             ),
+                              //                                             maxLines: 1,
+                              //                                             overflow: TextOverflow.ellipsis,
+                              //                                           ),
+                              //                                           const SizedBox(height: 6),
+                              //                                           // 설명
+                              //                                           Text(
+                              //                                             b.description ?? '',
+                              //                                             textAlign: TextAlign.center,
+                              //                                             style: SDSTextStyle.regular.copyWith(
+                              //                                               fontSize: 12,
+                              //                                               color: Colors.white.withOpacity(0.7),
+                              //                                             ),
+                              //                                             maxLines: 2,
+                              //                                             overflow: TextOverflow.ellipsis,
+                              //                                           ),
+                              //                                         ],
+                              //                                       ),
+                              //                                     ),
+                              //
+                              //                                     // ===== 우상단 스폰서 로고 =====
+                              //                                     if (logo != null && logo.isNotEmpty)
+                              //                                       Positioned(
+                              //                                         right: 20,
+                              //                                         child: _SponsorSticker(logoUrl: logo),
+                              //                                       ),
+                              //                                   ],
+                              //                                 );
+                              //                               },
+                              //                             ),
+                              //
+                              //                           ),
+                              //
+                              //                           // 인디케이터(점)
+                              //                           const SizedBox(height: 6),
+                              //                           Row(
+                              //                             mainAxisAlignment: MainAxisAlignment.center,
+                              //                             children: List.generate(brands.length, (i) {
+                              //                               final active = i == currentPage;
+                              //                               return AnimatedContainer(
+                              //                                 duration: const Duration(milliseconds: 200),
+                              //                                 margin: const EdgeInsets.symmetric(horizontal: 3),
+                              //                                 width: active ? 12 : 6,
+                              //                                 height: 6,
+                              //                                 decoration: BoxDecoration(
+                              //                                   color: active ? Colors.white : Color(0xFF2467CC),
+                              //                                   borderRadius: BorderRadius.circular(4),
+                              //                                 ),
+                              //                               );
+                              //                             }),
+                              //                           ),
+                              //                           const SizedBox(height: 10),
+                              //                         ],
+                              //                       );
+                              //                     },
+                              //                   ),
+                              //                 ),
+                              //               ),
+                              //             );
+                              //           },
+                              //         );
+                              //       },
+                              //       style: ElevatedButton.styleFrom(
+                              //         backgroundColor: Colors.white,
+                              //         elevation: 0,
+                              //         padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 14),
+                              //         shape: RoundedRectangleBorder(
+                              //           borderRadius: BorderRadius.circular(20),
+                              //         ),
+                              //       ),
+                              //       child: Row(
+                              //         mainAxisAlignment: MainAxisAlignment.center,
+                              //         children: [
+                              //           Text(
+                              //             '경품 구경하기',
+                              //             style: SDSTextStyle.bold.copyWith(
+                              //               color: Colors.black,
+                              //               fontSize: 13,
+                              //             ),
+                              //           ),
+                              //           const SizedBox(width: 8),
+                              //           Image.asset(
+                              //             'assets/imgs/imgs/snowballShop/icon_snowballshop_arrow_b.png',
+                              //             width: 16,
+                              //             height: 16,
+                              //           ),
+                              //         ],
+                              //       ),
+                              //     ),
+                              //   ),
+                              // ),
+                              // const SizedBox(height: 32),
                               // ===== 브랜드 미션 선택 그리드 =====
                               Padding(
                                 padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -486,6 +486,7 @@ class _SnowballMarketBrandShopViewState extends State<SnowballMarketBrandShopVie
                                       title: (item.sponsor?.nameEng ?? '').toUpperCase(),
                                       subtitle: item.sponsor?.name ?? '',
                                       imageUrl: item.imageUrl ?? '',
+                                      description: item.description ?? '',
                                       selected: selected,
                                       onTap: () {
                                         if (isApplied) return; // 응모 완료 후 탭 불가
@@ -752,7 +753,7 @@ class _SnowballMarketBrandShopViewState extends State<SnowballMarketBrandShopVie
                                   context,
                                   title: '브랜드 미션 응모 완료!',
                                   message: '상단에 표시된 추첨 번호를 확인해주세요.\n'
-                                      '14시까지 경품 수령처로 모여주세요!',
+                                      '19시까지 경품 수령처로 모여주세요!',
                                 );
                               }
                                   : null,
@@ -789,7 +790,7 @@ class _SnowballMarketBrandShopViewState extends State<SnowballMarketBrandShopVie
                               }(),
 
                               child: Text(
-                                isApplied ? '응모 완료' : '브랜드 응모하기',
+                                isApplied ? '응모 완료' : '브랜드 미션 응모하기',
                                 style: const TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.w700,
@@ -843,9 +844,9 @@ class _HeroText extends StatelessWidget {
           style: SDSTextStyle.bold.copyWith(color: SDSColor.snowliveWhite, fontSize: 18),
         ),
         const SizedBox(height: 4),
-        Text('아래 미션을 완료하고, 원하는 브랜드 경품애 응모하세요!',
+        Text('아래 미션을 완료하고, 원하는 브랜드 경품에 응모하여',
             style: SDSTextStyle.regular.copyWith(fontSize: 13, color: SDSColor.snowliveWhite.withOpacity(0.6))),
-        Text('추첨을 통해 단 하나의 상품의 주인공이 되어 보세요!',
+        Text('25/26 신상 의류의 주인이 되어 보세요!',
             style: SDSTextStyle.regular.copyWith(fontSize: 13, color: SDSColor.snowliveWhite.withOpacity(0.6))),
       ],
     );
@@ -870,8 +871,8 @@ class _MissionProgressRow extends StatelessWidget {
             imgNormal: 'assets/imgs/imgs/snowballShop/icon_snowballshop_brandmission1.png',
             imgDone: 'assets/imgs/imgs/snowballShop/icon_snowballshop_brandmission1_end.png',
             title: vm.missionTitle('mission_1'),
-            achieved: count.white ?? 0,
-            required: 9,
+            done: vm.missionComplete('mission_1'),
+
           ),
           SizedBox(
             width: 14,
@@ -880,8 +881,7 @@ class _MissionProgressRow extends StatelessWidget {
             imgNormal: 'assets/imgs/imgs/snowballShop/icon_snowballshop_brandmission2.png',
             imgDone: 'assets/imgs/imgs/snowballShop/icon_snowballshop_brandmission2_end.png',
             title: vm.missionTitle('mission_2'),
-            achieved: count.gold ?? 0,
-            required: 1,
+            done: vm.missionComplete('mission_2'),
           ),
           SizedBox(
             width: 14,
@@ -890,13 +890,12 @@ class _MissionProgressRow extends StatelessWidget {
             imgNormal: 'assets/imgs/imgs/snowballShop/icon_snowballshop_brandmission3.png',
             imgDone: 'assets/imgs/imgs/snowballShop/icon_snowballshop_brandmission3_end.png',
             title: vm.missionTitle('mission_3'),
-            achieved: count.white_on_slope ?? 0,
-            required: 5,
+            done: vm.missionComplete('mission_3'),
           ),
           SizedBox(
             width: 14,
           ),
-          _mission4Block(
+          _missionBlock(
             imgNormal: 'assets/imgs/imgs/snowballShop/icon_snowballshop_brandmission4.png',
             imgDone: 'assets/imgs/imgs/snowballShop/icon_snowballshop_brandmission4_end.png',
             title: vm.missionTitle('mission_4'),
@@ -907,93 +906,93 @@ class _MissionProgressRow extends StatelessWidget {
     );
   }
 
-  // ── 숫자 기반 미션 (1~3)
-  Widget _missionBlock({
-    required String imgNormal,
-    required String imgDone,
-    required String title,
-    required int achieved,
-    required int required,
-  }) {
-    final bool isDone = achieved >= required;
-    final int safeAchieved = achieved.clamp(0, required);
-
-    return Expanded(
-      child: Column(
-        children: [
-          Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(16),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.12),
-                  blurRadius: 10,
-                  offset: const Offset(0, 6),
-                ),
-              ],
-            ),
-            child: ClipRRect(
-                borderRadius: BorderRadius.circular(16),
-                child: Image.asset(isDone ? imgDone : imgNormal)),
-          ),
-          const SizedBox(height: 10),
-          Text(
-            'MISSION',
-            style: TextStyle(
-              fontSize: 11,
-              fontWeight: FontWeight.bold,
-              color: Colors.white.withOpacity(0.5),
-            ),
-          ),
-          const SizedBox(height: 2),
-          Text(
-            title,
-            textAlign: TextAlign.center,
-            style: const TextStyle(
-              fontSize: 13,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-              height: 1.2,
-            ),
-          ),
-          const SizedBox(height: 4),
-          RichText(
-            text: TextSpan(
-              children: [
-                TextSpan(
-                  text: '$safeAchieved',
-                  style: const TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                ),
-                const TextSpan(
-                  text: ' / ',
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white54,
-                  ),
-                ),
-                TextSpan(
-                  text: '$required',
-                  style: const TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white54,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+  // // ── 숫자 기반 미션 (1~3)
+  // Widget _missionBlock({
+  //   required String imgNormal,
+  //   required String imgDone,
+  //   required String title,
+  //   required int achieved,
+  //   required int required,
+  // }) {
+  //   final bool isDone = achieved >= required;
+  //   final int safeAchieved = achieved.clamp(0, required);
+  //
+  //   return Expanded(
+  //     child: Column(
+  //       children: [
+  //         Container(
+  //           decoration: BoxDecoration(
+  //             borderRadius: BorderRadius.circular(16),
+  //             boxShadow: [
+  //               BoxShadow(
+  //                 color: Colors.black.withOpacity(0.12),
+  //                 blurRadius: 10,
+  //                 offset: const Offset(0, 6),
+  //               ),
+  //             ],
+  //           ),
+  //           child: ClipRRect(
+  //               borderRadius: BorderRadius.circular(16),
+  //               child: Image.asset(isDone ? imgDone : imgNormal)),
+  //         ),
+  //         const SizedBox(height: 10),
+  //         Text(
+  //           'MISSION',
+  //           style: TextStyle(
+  //             fontSize: 11,
+  //             fontWeight: FontWeight.bold,
+  //             color: Colors.white.withOpacity(0.5),
+  //           ),
+  //         ),
+  //         const SizedBox(height: 2),
+  //         Text(
+  //           title,
+  //           textAlign: TextAlign.center,
+  //           style: const TextStyle(
+  //             fontSize: 13,
+  //             fontWeight: FontWeight.bold,
+  //             color: Colors.white,
+  //             height: 1.2,
+  //           ),
+  //         ),
+  //         const SizedBox(height: 4),
+  //         RichText(
+  //           text: TextSpan(
+  //             children: [
+  //               TextSpan(
+  //                 text: '$safeAchieved',
+  //                 style: const TextStyle(
+  //                   fontSize: 14,
+  //                   fontWeight: FontWeight.bold,
+  //                   color: Colors.white,
+  //                 ),
+  //               ),
+  //               const TextSpan(
+  //                 text: ' / ',
+  //                 style: TextStyle(
+  //                   fontSize: 14,
+  //                   fontWeight: FontWeight.bold,
+  //                   color: Colors.white54,
+  //                 ),
+  //               ),
+  //               TextSpan(
+  //                 text: '$required',
+  //                 style: const TextStyle(
+  //                   fontSize: 14,
+  //                   fontWeight: FontWeight.bold,
+  //                   color: Colors.white54,
+  //                 ),
+  //               ),
+  //             ],
+  //           ),
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
 
   // ── 미션4 (달성/미달성)
-  Widget _mission4Block({
+  Widget _missionBlock({
     required String imgNormal,
     required String imgDone,
     required String title,
@@ -1067,7 +1066,7 @@ class _ChooseTitle extends StatelessWidget {
         const Text('브랜드 미션 응모하기 버튼을 눌러주세요!',
             style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
         const SizedBox(height: 4),
-        Text('경품에 대한 자세한 정보는',
+        Text('경품에 대한 자세한 정보를 확인하려면',
             style: SDSTextStyle.regular.copyWith(fontSize: 13, color: SDSColor.snowliveWhite.withOpacity(0.6))),
         Text('아래 경품 구경하기 버튼을 눌러주세요!',
             style: SDSTextStyle.regular.copyWith(fontSize: 13, color: SDSColor.snowliveWhite.withOpacity(0.6))),
@@ -1080,6 +1079,7 @@ class _BrandChoiceCard extends StatelessWidget {
     required this.title,
     required this.subtitle,
     required this.imageUrl,
+    required this.description,
     required this.selected,
     required this.onTap,
     this.showCheckbox = true,
@@ -1091,6 +1091,7 @@ class _BrandChoiceCard extends StatelessWidget {
   final String title;
   final String subtitle;
   final String imageUrl;
+  final String description;
   final bool selected;
   final VoidCallback onTap;
 
@@ -1151,7 +1152,7 @@ class _BrandChoiceCard extends StatelessWidget {
               children: [
                 if (showCheckbox) const SizedBox(height: 2) else const SizedBox(height: 26),
                 if (showCheckbox) _CheckBadge(selected: selected),
-                const Spacer(), // ⬅️ 아래로 밀기
+                const SizedBox(height: 16),  // 🔥 여기: Spacer 대신 10~20 정도 여백만
 
                 // 제목/부제목은 이미지 위에 겹쳐짐 (가독성 보정용 그림자)
                 Text(
@@ -1173,6 +1174,16 @@ class _BrandChoiceCard extends StatelessWidget {
                     color: Colors.white.withOpacity(0.55),
                     fontSize: 13,
                     fontWeight: FontWeight.w500,
+                    shadows: const [Shadow(blurRadius: 4, color: Colors.black26, offset: Offset(0, 1))],
+                  ),
+                ),
+                const Spacer(),
+                Text(
+                  description,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 13,
+                    fontWeight: FontWeight.bold,
                     shadows: const [Shadow(blurRadius: 4, color: Colors.black26, offset: Offset(0, 1))],
                   ),
                 ),
@@ -1254,7 +1265,7 @@ class _DrawHowTo extends StatelessWidget {
             child: const Text('추첨 방법', style: TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold)),
           ),
           const SizedBox(height: 8),
-          const Text('14시까지 경품 수령처로 모여주세요!',
+          const Text('19시까지 경품 수령처로 모여주세요!',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Color(0xFFFFFFFF))),
           const SizedBox(height: 15),
           Container(
@@ -1281,7 +1292,7 @@ class _DrawHowTo extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Text(
-                          '브랜드 미션 응모를 완료하셨다면,\n14시까지 경품 수령처로 모여주세요!\n현장에서 직접 당첨자 추첨을 진행합니다!',
+                          '브랜드 미션 응모를 완료하셨다면,\n19시까지 경품 수령처로 모여주세요!\n현장에서 직접 당첨자 추첨을 진행합니다!',
                           textAlign: TextAlign.center,
                           style: SDSTextStyle.regular.copyWith(color: SDSColor.snowliveWhite, fontSize: 14),
                         ),
@@ -1315,7 +1326,7 @@ class _ExtraPrizeTitle extends StatelessWidget {
       children: [
         const Text('브랜드 미션에 응모하시면,',
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Color(0xFFFFFFFF))),
-        const Text('추가 경품 당첨 기회가 주어집니다!',
+        const Text('추첨을 통해 아래 경품을 추가로 드립니다!',
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Color(0xFFFFFFFF))),
         const SizedBox(height: 4),
         Text('브랜드 미션 응모 시, 자동으로 응모됩니다.',
