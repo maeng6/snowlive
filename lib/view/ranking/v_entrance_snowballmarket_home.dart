@@ -84,7 +84,9 @@ class _Entrance_snowballMarket_HomeState extends State<Entrance_snowballMarket_H
                                 height: _size.width - 70,
                                 color: Colors.grey.shade100,
                                 alignment: Alignment.center,
-                                child: CircularProgressIndicator(),
+                                child: CircularProgressIndicator(
+                                  color: Colors.black26,
+                                ),
                               );
                             case LoadState.failed:
                               return Container(

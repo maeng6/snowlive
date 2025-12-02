@@ -2222,6 +2222,58 @@ class _ResortHomeViewState extends State<ResortHomeView> with
                               child: Column(
                                 children: [
                                   GestureDetector(
+                                    onTap: () async {
+                                      await otherShare(contents: 'https://www.instagram.com/snowlive_official?igsh=MTk4dHg4d3ExaGZwMw==');
+                                    },
+                                    child: Padding(
+                                      padding: EdgeInsets.only(bottom : 10),
+                                      child: Container(
+                                        width: _size.width - 32,
+                                        decoration: BoxDecoration(
+                                          color: SDSColor.snowliveWhite,
+                                          borderRadius: BorderRadius.circular(16),
+                                          border: Border.all(width: 1, color: SDSColor.gray100),
+                                        ),
+                                        child: Padding(
+                                          padding: EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                                          child: Column(
+                                            children: [
+                                              Row(
+                                                crossAxisAlignment: CrossAxisAlignment.center,
+                                                children: [
+                                                  ExtendedImage.asset(
+                                                    'assets/imgs/imgs/img_slmk_home_banner_4.png',
+                                                    width: 56,
+                                                  ),
+                                                  SizedBox(width: 12),
+                                                  Column(
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                    children: [
+                                                      Text(
+                                                        '스노우라이브 소식은 인스타그램에서!',
+                                                        style: SDSTextStyle.bold.copyWith(
+                                                          fontSize: 14,
+                                                          color: SDSColor.gray900,
+                                                        ),
+                                                      ),
+                                                      Text(
+                                                        '스노우라이브 인스타 프로필 방문하기',
+                                                        style: SDSTextStyle.regular.copyWith(
+                                                          fontSize: 13,
+                                                          color: SDSColor.gray500,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ],
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  GestureDetector(
                                     onTap: (){
                                       // 스라마켓 탭 클릭 시 별도 처리
                                       FirebaseAnalytics.instance.logEvent(
