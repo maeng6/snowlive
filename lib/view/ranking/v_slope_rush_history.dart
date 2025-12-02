@@ -1127,9 +1127,13 @@ class _SlopeRushHistoryHomeViewState extends State<SlopeRushHistoryHomeView> {
       builder: (_) {
         final sorted = [...slope.crews]..sort((a, b) => b.ratio.compareTo(a.ratio));
 
-        return FractionallySizedBox(
-          heightFactor: 0.6,
-          child: Container(
+        return DraggableScrollableSheet(
+          initialChildSize: 0.36,
+          minChildSize: 0.20,
+          maxChildSize: 0.64,
+          expand: false,
+          builder: (context, scrollController) {
+            return Container(
             decoration: const BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
@@ -1158,6 +1162,7 @@ class _SlopeRushHistoryHomeViewState extends State<SlopeRushHistoryHomeView> {
                   const SizedBox(height: 8),
                   Expanded(
                     child: ListView.builder(
+                      controller: scrollController,
                       padding: const EdgeInsets.fromLTRB(20, 8, 20, 20),
                       itemCount: sorted.length,
                       itemBuilder: (context, i) {
@@ -1293,7 +1298,8 @@ class _SlopeRushHistoryHomeViewState extends State<SlopeRushHistoryHomeView> {
                 ],
               ),
             ),
-          ),
+            );
+          }
         );
       },
     );

@@ -1041,173 +1041,190 @@ class _SlopeRushHomeViewState extends State<SlopeRushHomeView> {
       builder: (_) {
         final sorted = [...slope.crews]..sort((a, b) => b.ratio.compareTo(a.ratio));
 
-        return FractionallySizedBox(
-          heightFactor: 0.6,
-          child: Container(
-            decoration: const BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-            ),
-            child: SafeArea(
-              top: false,
-              child: Column(
-                children: [
-                  const SizedBox(height: 12),
-                  Container(
-                    width: 48,
-                    height: 5,
-                    decoration: BoxDecoration(
-                      color: SDSColor.gray200,
-                      borderRadius: BorderRadius.circular(10),
+        return DraggableScrollableSheet(
+          initialChildSize: 0.36,
+          minChildSize: 0.20,
+          maxChildSize: 0.64,
+            expand: false,
+          builder: (context, scrollController) {
+            return Container(
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+              ),
+              child: SafeArea(
+                top: false,
+                child: Column(
+                  children: [
+                    const SizedBox(height: 12),
+                    Container(
+                      width: 48,
+                      height: 5,
+                      decoration: BoxDecoration(
+                        color: SDSColor.gray200,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 24),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 20),
-                    child: Text(
-                      '${slope.slopeNickname.isNotEmpty ? slope.slopeNickname : slope.slopeFullname} 점령 현황',
-                      style: SDSTextStyle.bold.copyWith(fontSize: 16),
+                    const SizedBox(height: 24),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 20),
+                      child: Text(
+                        '${slope.slopeNickname.isNotEmpty
+                            ? slope.slopeNickname
+                            : slope.slopeFullname} 점령 현황',
+                        style: SDSTextStyle.bold.copyWith(fontSize: 16),
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 8),
-                  Expanded(
-                    child: ListView.builder(
-                      padding: const EdgeInsets.fromLTRB(20, 8, 20, 20),
-                      itemCount: sorted.length,
-                      itemBuilder: (context, i) {
-                        final c = sorted[i];
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 8),
-                          child: Row(
-                            children: [
-                              GestureDetector(
-                                onTap: () async{
-                                  Get.toNamed(AppRoutes.crewMain);
-                                  await _crewMemberListViewModel.fetchCrewMembers(crewId: c.crewId!);
-                                  await _crewDetailViewModel.fetchCrewDetail(
-                                      c.crewId!,
-                                      _friendDetailViewModel.seasonDate
-                                  );
-                                },
-                                child: SizedBox(
-                                  width: 40,
-                                  height: 40,
-                                  child: c.crewLogoUrl.isNotEmpty
-                                      ? ExtendedImage.network(
-                                    c.crewLogoUrl,
-                                    cache: true,
-                                    shape: BoxShape.rectangle,
-                                    borderRadius: BorderRadius.circular(10),
-                                    border: Border.all(
-                                      width: 1,
-                                      color: Colors.grey[300]!,
-                                    ),
+                    const SizedBox(height: 8),
+                    Expanded(
+                      child: ListView.builder(
+                        controller: scrollController,
+                        padding: const EdgeInsets.fromLTRB(20, 8, 20, 20),
+                        itemCount: sorted.length,
+                        itemBuilder: (context, i) {
+                          final c = sorted[i];
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 8),
+                            child: Row(
+                              children: [
+                                GestureDetector(
+                                  onTap: () async {
+                                    Get.toNamed(AppRoutes.crewMain);
+                                    await _crewMemberListViewModel
+                                        .fetchCrewMembers(crewId: c.crewId!);
+                                    await _crewDetailViewModel.fetchCrewDetail(
+                                        c.crewId!,
+                                        _friendDetailViewModel.seasonDate
+                                    );
+                                  },
+                                  child: SizedBox(
                                     width: 40,
                                     height: 40,
-                                    cacheHeight: 240, // 필요하면 제거 가능
-                                    fit: BoxFit.cover,
-                                    loadStateChanged: (ExtendedImageState state) {
-                                      switch (state.extendedImageLoadState) {
-                                        case LoadState.loading:
-                                          return Shimmer.fromColors(
-                                            baseColor: SDSColor.gray200!,
-                                            highlightColor: SDSColor.gray50!,
-                                            child: Container(
+                                    child: c.crewLogoUrl.isNotEmpty
+                                        ? ExtendedImage.network(
+                                      c.crewLogoUrl,
+                                      cache: true,
+                                      shape: BoxShape.rectangle,
+                                      borderRadius: BorderRadius.circular(10),
+                                      border: Border.all(
+                                        width: 1,
+                                        color: Colors.grey[300]!,
+                                      ),
+                                      width: 40,
+                                      height: 40,
+                                      cacheHeight: 240,
+                                      // 필요하면 제거 가능
+                                      fit: BoxFit.cover,
+                                      loadStateChanged: (
+                                          ExtendedImageState state) {
+                                        switch (state.extendedImageLoadState) {
+                                          case LoadState.loading:
+                                            return Shimmer.fromColors(
+                                              baseColor: SDSColor.gray200!,
+                                              highlightColor: SDSColor.gray50!,
+                                              child: Container(
+                                                width: 40,
+                                                height: 40,
+                                                decoration: BoxDecoration(
+                                                  color: Colors.white,
+                                                  borderRadius: BorderRadius
+                                                      .circular(10),
+                                                ),
+                                              ),
+                                            );
+
+                                          case LoadState.completed:
+                                            return ClipRRect(
+                                              borderRadius: BorderRadius
+                                                  .circular(10),
+                                              child: state.completedWidget,
+                                            );
+
+                                          case LoadState.failed:
+                                            return Container(
                                               width: 40,
                                               height: 40,
                                               decoration: BoxDecoration(
-                                                color: Colors.white,
-                                                borderRadius: BorderRadius.circular(10),
+                                                color: Colors.grey[200],
+                                                borderRadius: BorderRadius
+                                                    .circular(10),
+                                                border: Border.all(
+                                                  color: Colors.grey[300]!,
+                                                  width: 1,
+                                                ),
                                               ),
-                                            ),
-                                          );
-
-                                        case LoadState.completed:
-                                          return ClipRRect(
-                                            borderRadius: BorderRadius.circular(10),
-                                            child: state.completedWidget,
-                                          );
-
-                                        case LoadState.failed:
-                                          return Container(
-                                            width: 40,
-                                            height: 40,
-                                            decoration: BoxDecoration(
-                                              color: Colors.grey[200],
-                                              borderRadius: BorderRadius.circular(10),
-                                              border: Border.all(
-                                                color: Colors.grey[300]!,
-                                                width: 1,
+                                              child: const Icon(
+                                                Icons.group,
+                                                color: Colors.grey,
+                                                size: 18,
                                               ),
-                                            ),
-                                            child: const Icon(
-                                              Icons.group,
-                                              color: Colors.grey,
-                                              size: 18,
-                                            ),
-                                          );
-                                      }
-                                    },
-                                  )
-                                      : Container(
-                                    width: 40,
-                                    height: 40,
-                                    decoration: BoxDecoration(
-                                      color: Colors.grey[200],
-                                      borderRadius: BorderRadius.circular(10),
-                                      border: Border.all(
-                                        color: Colors.grey[300]!,
-                                        width: 1,
+                                            );
+                                        }
+                                      },
+                                    )
+                                        : Container(
+                                      width: 40,
+                                      height: 40,
+                                      decoration: BoxDecoration(
+                                        color: Colors.grey[200],
+                                        borderRadius: BorderRadius.circular(10),
+                                        border: Border.all(
+                                          color: Colors.grey[300]!,
+                                          width: 1,
+                                        ),
                                       ),
-                                    ),
-                                    child: const Icon(
-                                      Icons.group,
-                                      color: Colors.grey,
-                                      size: 18,
+                                      child: const Icon(
+                                        Icons.group,
+                                        color: Colors.grey,
+                                        size: 18,
+                                      ),
                                     ),
                                   ),
                                 ),
-                              ),
-                              const SizedBox(width: 16),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      c.crewName,
-                                      style: SDSTextStyle.regular.copyWith(
-                                          fontSize: 14
+                                const SizedBox(width: 16),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment
+                                        .start,
+                                    children: [
+                                      Text(
+                                        c.crewName,
+                                        style: SDSTextStyle.regular.copyWith(
+                                            fontSize: 14
+                                        ),
+                                        overflow: TextOverflow.ellipsis,
                                       ),
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                    Text(
-                                      c.description,
-                                      style: SDSTextStyle.regular
-                                          .copyWith(color: SDSColor.gray500,
-                                      fontSize: 12),
-                                      overflow: TextOverflow.ellipsis,
-                                      maxLines: 1,
-                                    ),
-                                  ],
+                                      Text(
+                                        c.description,
+                                        style: SDSTextStyle.regular
+                                            .copyWith(color: SDSColor.gray500,
+                                            fontSize: 12),
+                                        overflow: TextOverflow.ellipsis,
+                                        maxLines: 1,
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                              ),
-                              Padding(
-                                padding: EdgeInsets.only(left: 16),
-                                child: Text(
-                                  "${(c.ratio * 100).toStringAsFixed(1)}%",
-                                  style: SDSTextStyle.bold.copyWith(color: SDSColor.snowliveBlack, fontSize: 16),
+                                Padding(
+                                  padding: EdgeInsets.only(left: 16),
+                                  child: Text(
+                                    "${(c.ratio * 100).toStringAsFixed(1)}%",
+                                    style: SDSTextStyle.bold.copyWith(
+                                        color: SDSColor.snowliveBlack,
+                                        fontSize: 16),
+                                  ),
                                 ),
-                              ),
-                            ],
-                          ),
-                        );
-                      },
+                              ],
+                            ),
+                          );
+                        },
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-          ),
+            );
+          }
         );
       },
     );

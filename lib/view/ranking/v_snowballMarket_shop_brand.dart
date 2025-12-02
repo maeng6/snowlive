@@ -844,9 +844,9 @@ class _HeroText extends StatelessWidget {
           style: SDSTextStyle.bold.copyWith(color: SDSColor.snowliveWhite, fontSize: 18),
         ),
         const SizedBox(height: 4),
-        Text('아래 미션을 완료하고, 원하는 브랜드 경품에 응모하여',
+        Text('아래 미션을 완료한 뒤 원하는 브랜드 경품에 응모하면',
             style: SDSTextStyle.regular.copyWith(fontSize: 13, color: SDSColor.snowliveWhite.withOpacity(0.6))),
-        Text('25/26 신상 의류의 주인이 되어 보세요!',
+        Text('추첨을 통해 25/26 신상 의류를 드립니다',
             style: SDSTextStyle.regular.copyWith(fontSize: 13, color: SDSColor.snowliveWhite.withOpacity(0.6))),
       ],
     );
@@ -1063,13 +1063,16 @@ class _ChooseTitle extends StatelessWidget {
       children: [
         const Text('원하는 브랜드의 경품을 선택하고',
             style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
-        const Text('브랜드 미션 응모하기 버튼을 눌러주세요!',
+        const Text('브랜드 미션 응모하기 버튼을 눌러주세요',
             style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
         const SizedBox(height: 4),
-        Text('경품에 대한 자세한 정보를 확인하려면',
+        Text('브랜드마다 다양한 경품 구성!',
             style: SDSTextStyle.regular.copyWith(fontSize: 13, color: SDSColor.snowliveWhite.withOpacity(0.6))),
-        Text('아래 경품 구경하기 버튼을 눌러주세요!',
+        Text('나에게 필요한 브랜드를 선택하세요',
             style: SDSTextStyle.regular.copyWith(fontSize: 13, color: SDSColor.snowliveWhite.withOpacity(0.6))),
+        const SizedBox(height: 8),
+        Text('구성에 맞춰 상품을 직접 선택할 수 있어요',
+            style: SDSTextStyle.bold.copyWith(fontSize: 13, color: SDSColor.snowliveBlue)),
       ],
     );
   }
@@ -1265,7 +1268,7 @@ class _DrawHowTo extends StatelessWidget {
             child: const Text('추첨 방법', style: TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold)),
           ),
           const SizedBox(height: 8),
-          const Text('19시까지 경품 수령처로 모여주세요!',
+          const Text('19시까지 경품 수령처로 모여주세요',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Color(0xFFFFFFFF))),
           const SizedBox(height: 15),
           Container(
