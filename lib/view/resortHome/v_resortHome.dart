@@ -1111,7 +1111,7 @@ class _ResortHomeViewState extends State<ResortHomeView> with
                             decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(16),
                                 color: (_resortHomeViewModel.isLoading_weather == true)
-                                    ? SDSColor.gray600
+                                    ? SDSColor.gray400
                                     : _resortHomeViewModel.weatherColors),
                             alignment: Alignment.center,
                             width: double.infinity,
@@ -2223,7 +2223,7 @@ class _ResortHomeViewState extends State<ResortHomeView> with
                                 children: [
                                   GestureDetector(
                                     onTap: () async {
-                                      await otherShare(contents: 'https://www.instagram.com/snowlive_official?igsh=MTk4dHg4d3ExaGZwMw==');
+                                      await otherShare(contents: 'https://www.instagram.com/snowlive_official/#');
                                     },
                                     child: Padding(
                                       padding: EdgeInsets.only(bottom : 10),
