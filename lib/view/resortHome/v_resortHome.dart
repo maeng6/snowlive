@@ -974,10 +974,10 @@ class _ResortHomeViewState extends State<ResortHomeView> with
                   },
                   icon:
                   _resortHomeViewModel.hasFriendInBoundaryAndRevealWb
-                  ? Image.asset(
-                    'assets/imgs/icons/icon_friend_search_illust.png',
-                    width: 28,
-                    height: 28,
+                  ? Container(
+                      width: 28,
+                      height: 28,
+                      child: Lottie.asset('assets/json/ic_friend_resortHome_on.json')
                   )
                   : Image.asset(
                     'assets/imgs/icons/icon_friend_resortHome.png',
@@ -1653,16 +1653,16 @@ class _ResortHomeViewState extends State<ResortHomeView> with
                               padding: EdgeInsets.only(left: 16, right: 16),
                               child: Banner_resortHome(),
                             ),
-                            //TODO: 구분선
-                            if((_resortHomeViewModel.resortHomeModel.dailyTotalCount != 0 || _userViewModel.user.within_boundary == true))
-                              Padding(
-                                padding: const EdgeInsets.only(top: 20, bottom: 24),
-                                child: Container(
-                                  width: _size.width,
-                                  height: 10,
-                                  color: SDSColor.gray50,
-                                ),
-                              ),
+                            // TODO: 구분선
+                            // if((_resortHomeViewModel.resortHomeModel.dailyTotalCount != 0 || _userViewModel.user.within_boundary == true))
+                            //   Padding(
+                            //     padding: const EdgeInsets.only(top: 20, bottom: 24),
+                            //     child: Container(
+                            //       width: _size.width,
+                            //       height: 10,
+                            //       color: SDSColor.gray50,
+                            //     ),
+                            //   ),
                             //TODO: 포레스트파크 진입점
                             // Padding(
                             //   padding: EdgeInsets.only(left: 16, right: 16),
@@ -1789,7 +1789,7 @@ class _ResortHomeViewState extends State<ResortHomeView> with
                                           children: [
                                             if((_resortHomeViewModel.resortHomeModel.dailyTotalCount != 0 || _userViewModel.user.within_boundary == true))
                                               Padding(
-                                                padding: EdgeInsets.only(top : 16, bottom: 12),
+                                                padding: EdgeInsets.only(top : 24, bottom: 12),
                                                 child: Text('오늘의 기록',
                                                   style: SDSTextStyle.extraBold.copyWith(
                                                       fontSize: 15,
@@ -1799,7 +1799,7 @@ class _ResortHomeViewState extends State<ResortHomeView> with
                                               ),
                                             if(_userViewModel.user.within_boundary == true)
                                               Padding(
-                                                padding: EdgeInsets.only(top : 16, bottom: 12),
+                                                padding: EdgeInsets.only(top : 24, bottom: 12),
                                                 child: Row(
                                                   children: [
                                                     Padding(
