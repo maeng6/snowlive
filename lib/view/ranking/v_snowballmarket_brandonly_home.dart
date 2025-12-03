@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:math';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:com.snowlive/data/imgaUrls/Data_url_image.dart';
@@ -37,6 +38,12 @@ class _SnowballMarketBrandOnlyHomeViewState extends State<SnowballMarketBrandOnl
   String _hours = '00';
   String _minutes = '00';
   DateTime? _currentEndTime;
+
+  String generateRandomString(int length) {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    final rand = Random.secure();
+    return List.generate(length, (_) => chars[rand.nextInt(chars.length)]).join();
+  }
 
   //TODO: Select Store**************************************************
   int _currentShopIndex = 0;
@@ -1668,11 +1675,10 @@ class _SnowballMarketBrandOnlyHomeViewState extends State<SnowballMarketBrandOnl
 
                                   final eventDate = doc.data()?['event_date'] ?? 1;
 
-                                  // 🔹 QR 데이터 구성
-                                  final qrData = jsonEncode({
-                                    "user_id": _userViewModel.user.user_id,
-                                    "event_date": eventDate,
-                                  });
+                                  final randomString = generateRandomString(12);
+
+                                  final qrData = "$randomString#${_userViewModel.user.user_id}#$eventDate";
+
 
                                   // 🔹 QR 표시 바텀시트
                                   showModalBottomSheet(

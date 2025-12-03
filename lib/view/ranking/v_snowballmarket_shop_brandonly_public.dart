@@ -253,8 +253,14 @@ class _SnowballMarketBrandOnlyPublicShopViewState extends State<SnowballMarketBr
               Expanded(
                 child: ElevatedButton(
                   onPressed: () async {
-                    final ok = await _vm.purchaseSnowballItem(snowballItemId: item.snowballItemId!);
                     Navigator.pop(context);
+                    CustomFullScreenDialog.showDialog();
+                    final ok = await _vm.purchaseSnowballItem(snowballItemId: item.snowballItemId!);
+                    await _vm.fetchSnowballShopExchange(
+                      isTierOnly: false,
+                      isForMission: false,
+                    );
+                    CustomFullScreenDialog.cancelDialog();
                     if (ok) {
                       Get.dialog(_successDialog());
                     } else {

@@ -582,7 +582,7 @@ class _SnowballMarketBrandOnlyPremiumShopViewState
                                                                                 .snowballItemId!,
                                                                           );
                                                                           await _snowballShopViewModel
-                                                                              .fetchSnowballShopTapTheList(
+                                                                              .fetchSnowballShopExchange(
                                                                             isTierOnly: true,
                                                                             isForMission:
                                                                             false,

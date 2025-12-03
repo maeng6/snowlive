@@ -555,7 +555,7 @@ class _SnowballMarketPublicShopViewState
                                                                         final result = await _snowballShopViewModel.purchaseSnowballItem(
                                                                           snowballItemId: _snowballShopViewModel.selectedItem.value.snowballItemId!,
                                                                         );
-                                                                        await _snowballShopViewModel.fetchSnowballShopTapTheList(
+                                                                        await _snowballShopViewModel.fetchSnowballShopExchange(
                                                                           isTierOnly: false,
                                                                           isForMission: false,
                                                                         );

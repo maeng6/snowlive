@@ -69,6 +69,10 @@ class ResortHomeViewModel extends GetxController {
   RxBool isLoadingTreasureRecordUpdate = false.obs;
   RxInt _treasureHuntNum = 0.obs;
 
+  RxBool _hasFriendInBoundaryAndRevealWb = false.obs;
+  bool get hasFriendInBoundaryAndRevealWb => _hasFriendInBoundaryAndRevealWb.value;
+
+
   String? _liveActivityId;
   DateTime? _liveOnStartedAt; // 시작 시각 표시용 (LockScreen에 타이머로 쓰는 값)
 
@@ -771,6 +775,8 @@ class ResortHomeViewModel extends GetxController {
   Future<void> fetchResortHome(int userId) async {
     isLoading(true);
     ApiResponse response = await ResortHomeAPI().fetchResortHomeData(userId);
+    await fetchBestFriendList(user_id: _userViewModel.user.user_id);
+
     if(response.success)
       _resortHomeModel.value = ResortHomeModel.fromJson(response.data);
     print('리조트홈 패치 완료');
@@ -811,6 +817,12 @@ class ResortHomeViewModel extends GetxController {
 
         // _bestFriendList를 업데이트
         _bestFriendList.value = friendList;
+
+        // ✅ within_boundary && reveal_wb 인 친구가 있는지 계산
+        _hasFriendInBoundaryAndRevealWb.value = _bestFriendList.any(
+              (f) => f.friendInfo.withinBoundary == true &&
+              f.friendInfo.revealWb == true,
+        );
 
         // 초기 높이 설정
         if (_bestFriendList.length < 5) {
