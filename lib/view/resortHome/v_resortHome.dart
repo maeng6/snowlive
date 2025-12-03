@@ -972,7 +972,14 @@ class _ResortHomeViewState extends State<ResortHomeView> with
                       },
                     );
                   },
-                  icon: Image.asset(
+                  icon:
+                  _resortHomeViewModel.hasFriendInBoundaryAndRevealWb
+                  ? Image.asset(
+                    'assets/imgs/icons/icon_friend_search_illust.png',
+                    width: 28,
+                    height: 28,
+                  )
+                  : Image.asset(
                     'assets/imgs/icons/icon_friend_resortHome.png',
                     width: 28,
                     height: 28,
