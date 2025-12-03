@@ -150,6 +150,31 @@ class SnowballShopViewModel extends GetxController {
     }
   }
 
+  Future<void> fetchSnowballHomeDataExchange() async {
+    try {
+
+      final userId = _userViewModel.user.user_id;
+      final body = {
+        'user_id': userId,
+        'event_date': eventDate.value,
+      };
+
+      final response = await _api.fetchSnowballHome(body);
+      if (response.success) {
+        final data = SnowballHomeResponse.fromJson(response.data!);
+        summary.value = data.summary ?? [];
+        homeRecords.value = data.records ?? [];
+        sponsors.value = data.sponsor ?? [];
+      } else {
+        print("Failed to fetch home: ${response.error}");
+      }
+    } catch (e) {
+      print("Error fetchSnowballHomeData: $e");
+    } finally {
+    }
+  }
+
+
   // ============================================================
   // ⭐⭐ 상점 조회 (랭킹 방식 동일)
   // ============================================================
@@ -221,6 +246,66 @@ class SnowballShopViewModel extends GetxController {
     print('fetchSnowballShop 끝');
   }
 
+  Future<void> fetchSnowballShopExchange({
+    bool? isTierOnly,
+    bool? isForMission,
+    String? url, // null → 첫 페이지, not null → 다음 페이지
+  }) async {
+    print('fetchSnowballShop 시작');
+
+    try {
+
+      lastIsTierOnly = isTierOnly;
+      lastIsForMission = isForMission;
+
+      final userId = _userViewModel.user.user_id;
+
+      final response = await _api.fetchSnowballShop(
+        userId: userId,
+        eventDate: eventDate.value,
+        isTierOnly: isTierOnly,
+        isForMission: isForMission,
+        url: url,
+      );
+
+      if (!response.success) {
+        print('❌ fetchSnowballShop 실패: ${response.error}');
+        return;
+      }
+
+      final shop = SnowballShopResponse.fromJson(response.data!);
+
+      // ⭐ 첫 페이지
+      if (url == null) {
+        _shopList.value = shop.items?.results ?? [];
+        _brandList.value = shop.brandItems ?? [];
+
+        summary.value = shop.summary ?? [];
+        isPremiumUser.value = shop.isPremiumUser ?? false;
+
+        // UI 반영
+        shopItems.assignAll(_shopList);
+        brandItems.assignAll(_brandList);
+      }
+
+      // ⭐ 다음 페이지
+      else {
+        _shopList.addAll(shop.items?.results ?? []);
+
+        // UI 반영
+        shopItems.assignAll(_shopList);
+      }
+
+      _nextPageUrl_shop.value = shop.items?.next ?? '';
+
+    } catch (e) {
+      print('❌ Error fetchSnowballShop: $e');
+    } finally {
+    }
+
+    print('fetchSnowballShop 끝');
+  }
+
   // ⭐ 다음 페이지 (랭킹과 동일)
   Future<void> fetchNextPageSnowballShop() async {
     if (_nextPageUrl_shop.value.isEmpty) return;
@@ -259,7 +344,6 @@ class SnowballShopViewModel extends GetxController {
 
         // 요약, 일반 아이템
         summary.value = shop.summary ?? [];
-        shopItems.value = shop.items?.results ?? [];
 
         // ✅ 프리미엄 여부
         isPremiumUser.value = shop.isPremiumUser ?? false;
@@ -319,7 +403,6 @@ class SnowballShopViewModel extends GetxController {
 
   Future<bool> purchaseSnowballItem({required int snowballItemId}) async {
     try {
-      isLoading(true);
 
       final userId = _userViewModel.user.user_id;
 
@@ -331,12 +414,8 @@ class SnowballShopViewModel extends GetxController {
 
       if (response.success) {
         await Future.wait([
-          fetchSnowballHomeData(),
-          fetchSnowballShop(
-            isTierOnly: lastIsTierOnly,
-            isForMission: lastIsForMission,
-          ),
-          fetchPurchaseHistory(),
+          fetchSnowballHomeDataExchange(),
+          fetchPurchaseHistoryOnly(),
         ]);
         return true;
       } else {
@@ -347,7 +426,6 @@ class SnowballShopViewModel extends GetxController {
       print("⚠️ Error purchase: $e");
       return false;
     } finally {
-      isLoading(false);
     }
   }
 
