@@ -46,20 +46,42 @@ class SnowballAPI {
   }
 
   // -----------------------
-  // 상점 목록
-  // POST /snowball-shop/
-  // body: { user_id, event_date, is_tier_only?, is_for_mission? }
-  // resp: { summary:[...], items:[{...}] }
+  // 상점 목록 (GET 방식 + Pagination)
+  // GET /snowball-shop/?user_id=2715&event_date=1&is_tier_only=false&is_for_mission=false
+  // resp: { summary:[...], items:{count,next,previous,results:[]}, brand_items:[...] }
   // -----------------------
-  Future<ApiResponse> fetchSnowballShop(Map<String, dynamic> body) async {
-    final r = await http.post(
-      Uri.parse('$baseUrl/snowball-shop/'),
-      headers: _headers,
-      body: jsonEncode(body),
-    );
+  Future<ApiResponse> fetchSnowballShop({
+    required int userId,
+    required int eventDate,
+    bool? isTierOnly,
+    bool? isForMission,
+    String? url, // 👈 next 페이지용 URL (랭킹 API와 동일 패턴)
+  }) async {
+    late Uri uri;
+
+    if (url != null && url.isNotEmpty) {
+      // 👇 next / previous 같은 전체 URL을 그대로 사용할 때
+      uri = Uri.parse(url);
+    } else {
+      // 👇 첫 페이지 호출 (쿼리 파라미터로 구성)
+      final params = {
+        'user_id': '$userId',
+        'event_date': '$eventDate',
+        if (isTierOnly != null) 'is_tier_only': '$isTierOnly',
+        if (isForMission != null) 'is_for_mission': '$isForMission',
+      };
+
+      uri = Uri.parse('$baseUrl/snowball-shop/').replace(queryParameters: params);
+    }
+
+    final r = await http.get(uri, headers: _headers);
     final data = _decodeBody(r);
-    return (r.statusCode == 200) ? ApiResponse.success(data) : ApiResponse.error(data);
+
+    return (r.statusCode == 200)
+        ? ApiResponse.success(data)
+        : ApiResponse.error(data);
   }
+
 
   // -----------------------
   // 아이템 구매

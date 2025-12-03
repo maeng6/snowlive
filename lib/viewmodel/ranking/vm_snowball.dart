@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:com.snowlive/api/api_snowball.dart';
 import 'package:com.snowlive/model/m_snowball.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 
 class SnowballShopViewModel extends GetxController {
@@ -12,6 +13,7 @@ class SnowballShopViewModel extends GetxController {
   // UI 상태
   // ------------------------
   var isLoading = false.obs;
+  var isMoreLoading = false.obs;
   var isLoading_fetchSnowballShopData = false.obs;
   var isLoading_fetchPurchageHistoryOnly = false.obs;
 
@@ -43,42 +45,51 @@ class SnowballShopViewModel extends GetxController {
   bool missionComplete(String id) => missionStatus.isComplete(id);
 
   // ------------------------
-  // 홈/상점/구매/기록 상태
+  // 데이터 저장소
   // ------------------------
-  var summary = <SnowballKindRemain>[].obs;     // 남은 눈송이 요약
-  var homeRecords = <SnowballRecord>[].obs;     // 홈: 눈송이 획득 기록
-  var sponsors = <SnowballSponsor>[].obs;       // 홈: 스폰서
+  var summary = <SnowballKindRemain>[].obs;
+  var homeRecords = <SnowballRecord>[].obs;
+  var sponsors = <SnowballSponsor>[].obs;
 
-  var shopItems = <SnowballShopItem>[].obs;     // 상점 아이템 (필터 반영)
-  var brandItems = <SnowballShopItem>[].obs;  // ✅ 브랜드 아이템 별도 바인딩(미션 전용)
+  var shopItems = <SnowballShopItem>[].obs;   // UI가 보는 리스트
+  var brandItems = <SnowballShopItem>[].obs;  // UI가 보는 리스트
   var purchaseHistory = <SnowballBuyRecord>[].obs;
   var userSnowballRecords = <SnowballRecord>[].obs;
   var isPremiumUser = false.obs;
 
   var selectedItem = SnowballShopItem().obs;
 
-  // Firebase 공지/배너 스트림
+  // ------------------------
+  // 내부 저장소 (랭킹 방식 동일)
+  // ------------------------
+  var _shopList = <SnowballShopItem>[].obs;
+  var _brandList = <SnowballShopItem>[].obs;
+
+  var _nextPageUrl_shop = ''.obs;
+
+  String get nextPageUrlShop => _nextPageUrl_shop.value;
+  bool get hasMore => _nextPageUrl_shop.value.isNotEmpty;
+
+  bool? lastIsTierOnly;
+  bool? lastIsForMission;
+
+  // ------------------------
+  // Firestore Streams
+  // ------------------------
   Rxn<Stream<DocumentSnapshot<Map<String, dynamic>>>> infoStream_snowballShop = Rxn();
   Rxn<Stream<DocumentSnapshot<Map<String, dynamic>>>> infoStream_snowballShop_entrance = Rxn();
   Rxn<Stream<DocumentSnapshot<Map<String, dynamic>>>> infoStream_snowballShop_notice_gold = Rxn();
 
   @override
-  void onInit() async{
+  Future<void> onInit() async {
     super.onInit();
     await getInfo_snowballMarket();
     await getInfo_snowballMarket_entrance();
   }
 
-  // ------------------------
-  // Firestore Streams
-  // ------------------------
-  Future<void> getInfo_snowballMarket_entrance() async {
-    infoStream_snowballShop_entrance.value = FirebaseFirestore.instance
-        .collection('snowball_market')
-        .doc('snowball_market')
-        .snapshots();
-  }
-
+  // ============================================================
+  // Firestore 정보
+  // ============================================================
 
   Future<void> getInfo_snowballMarket() async {
     infoStream_snowballShop.value = FirebaseFirestore.instance
@@ -92,7 +103,14 @@ class SnowballShopViewModel extends GetxController {
         .get();
 
     final eventDateInt = (doc.data()?['event_date'] as num?)?.toInt();
-    if (eventDateInt != null) setEventDate(eventDateInt);
+    if (eventDateInt != null) eventDate.value = eventDateInt;
+  }
+
+  Future<void> getInfo_snowballMarket_entrance() async {
+    infoStream_snowballShop_entrance.value = FirebaseFirestore.instance
+        .collection('snowball_market')
+        .doc('snowball_market')
+        .snapshots();
   }
 
   Future<void> getInfo_snowballMarket_notice_gold() async {
@@ -102,13 +120,14 @@ class SnowballShopViewModel extends GetxController {
         .snapshots();
   }
 
-  // ------------------------
-  // 홈 데이터 (summary + records + sponsor)
-  // POST /snowball-home/ { user_id, event_date }
-  // ------------------------
+  // ============================================================
+  // 홈 데이터
+  // ============================================================
+
   Future<void> fetchSnowballHomeData() async {
     try {
       isLoading(true);
+
       final userId = _userViewModel.user.user_id;
       final body = {
         'user_id': userId,
@@ -131,55 +150,92 @@ class SnowballShopViewModel extends GetxController {
     }
   }
 
-  // ------------------------
-  // 상점 목록 (필터 옵션)
-  // POST /snowball-shop/ { user_id, event_date, is_tier_only?, is_for_mission? }
-  // ------------------------
-  Future<void> fetchSnowballShop({bool? isTierOnly, bool? isForMission}) async {
+  // ============================================================
+  // ⭐⭐ 상점 조회 (랭킹 방식 동일)
+  // ============================================================
+
+  Future<void> fetchSnowballShop({
+    bool? isTierOnly,
+    bool? isForMission,
+    String? url, // null → 첫 페이지, not null → 다음 페이지
+  }) async {
+    print('fetchSnowballShop 시작');
+
     try {
-      isLoading(true);
+      if (url == null) {
+        isLoading(true);
+      } else {
+        isMoreLoading(true);
+      }
+
+      lastIsTierOnly = isTierOnly;
+      lastIsForMission = isForMission;
+
       final userId = _userViewModel.user.user_id;
 
-      final body = {
-        'user_id': userId,
-        'event_date': eventDate.value,
-        if (isTierOnly != null) 'is_tier_only': isTierOnly,
-        if (isForMission != null) 'is_for_mission': isForMission,
-      };
+      final response = await _api.fetchSnowballShop(
+        userId: userId,
+        eventDate: eventDate.value,
+        isTierOnly: isTierOnly,
+        isForMission: isForMission,
+        url: url,
+      );
 
-      final response = await _api.fetchSnowballShop(body);
-      if (response.success) {
-        final shop = SnowballShopResponse.fromJson(response.data!);
+      if (!response.success) {
+        print('❌ fetchSnowballShop 실패: ${response.error}');
+        return;
+      }
 
-        // 요약, 일반 아이템
+      final shop = SnowballShopResponse.fromJson(response.data!);
+
+      // ⭐ 첫 페이지
+      if (url == null) {
+        _shopList.value = shop.items?.results ?? [];
+        _brandList.value = shop.brandItems ?? [];
+
         summary.value = shop.summary ?? [];
-        shopItems.value = shop.items ?? [];
-
-        // ✅ 프리미엄 여부
         isPremiumUser.value = shop.isPremiumUser ?? false;
 
-        // ✅ 브랜드 아이템 (미션일 때만 내려오므로 null 체크)
-        if (shop.brandItems != null) {
-          brandItems.value = shop.brandItems!;
-        } else {
-          brandItems.clear();
-        }
-      } else {
-        print("Failed to fetch shop: ${response.error}");
-        shopItems.clear();
-        brandItems.clear();
-        isPremiumUser.value = false;
+        // UI 반영
+        shopItems.assignAll(_shopList);
+        brandItems.assignAll(_brandList);
       }
+
+      // ⭐ 다음 페이지
+      else {
+        _shopList.addAll(shop.items?.results ?? []);
+
+        // UI 반영
+        shopItems.assignAll(_shopList);
+      }
+
+      _nextPageUrl_shop.value = shop.items?.next ?? '';
+
     } catch (e) {
-      print("Error fetchSnowballShop: $e");
-      shopItems.clear();
-      brandItems.clear();
-      isPremiumUser.value = false;
+      print('❌ Error fetchSnowballShop: $e');
     } finally {
       isLoading(false);
+      isMoreLoading(false);
     }
+
+    print('fetchSnowballShop 끝');
   }
 
+  // ⭐ 다음 페이지 (랭킹과 동일)
+  Future<void> fetchNextPageSnowballShop() async {
+    if (_nextPageUrl_shop.value.isEmpty) return;
+
+    print('fetchNextPageSnowballShop 시작');
+
+    await fetchSnowballShop(
+      url: _nextPageUrl_shop.value,
+      isTierOnly: lastIsTierOnly,
+      isForMission: lastIsForMission,
+    );
+    print('fetchNextPageSnowballShop 끝');
+  }
+
+  // ⭐ 탭 눌렀을 때 (초기화 후 첫 페이지)
   Future<void> fetchSnowballShopTapTheList({bool? isTierOnly, bool? isForMission}) async {
     try {
       isLoading_fetchSnowballShopData(true);
@@ -192,13 +248,18 @@ class SnowballShopViewModel extends GetxController {
         if (isForMission != null) 'is_for_mission': isForMission,
       };
 
-      final response = await _api.fetchSnowballShop(body);
+      final response = await _api.fetchSnowballShop(
+        userId: userId,
+        eventDate: eventDate.value,
+        isTierOnly: isTierOnly,
+        isForMission: isForMission,
+      );
       if (response.success) {
         final shop = SnowballShopResponse.fromJson(response.data!);
 
         // 요약, 일반 아이템
         summary.value = shop.summary ?? [];
-        shopItems.value = shop.items ?? [];
+        shopItems.value = shop.items?.results ?? [];
 
         // ✅ 프리미엄 여부
         isPremiumUser.value = shop.isPremiumUser ?? false;
@@ -225,29 +286,25 @@ class SnowballShopViewModel extends GetxController {
     }
   }
 
+  // ============================================================
+  // 요약만 갱신
+  // ============================================================
 
-  // ------------------------
-  // 남은 눈송이 요약만 갱신
-  // POST /snowball-summary/ { user_id, event_date }
-  // 응답: List<Map(kind, remaining)>
-  // ------------------------
   Future<void> fetchSnowballSummaryOnly() async {
     try {
       isLoading(true);
+
       final userId = _userViewModel.user.user_id;
-      final body = {
+      final response = await _api.fetchSnowballSummary({
         'user_id': userId,
         'event_date': eventDate.value,
-      };
+      });
 
-      final response = await _api.fetchSnowballSummary(body);
       if (response.success) {
         final list = (response.data as List)
             .map((e) => SnowballKindRemain.fromJson(e))
             .toList();
         summary.value = list;
-      } else {
-        print("Failed to fetch summary: ${response.error}");
       }
     } catch (e) {
       print("Error fetchSnowballSummaryOnly: $e");
@@ -256,15 +313,14 @@ class SnowballShopViewModel extends GetxController {
     }
   }
 
-  // ------------------------
-  // 아이템 구매
-  // POST /snowball-item-purchase/ { user_id, snowball_item_id, event_date }
-  // ------------------------
-  Future<bool> purchaseSnowballItem({
-    required int snowballItemId,
-  }) async {
+  // ============================================================
+  // 구매
+  // ============================================================
+
+  Future<bool> purchaseSnowballItem({required int snowballItemId}) async {
     try {
       isLoading(true);
+
       final userId = _userViewModel.user.user_id;
 
       final response = await _api.purchaseSnowballItem({
@@ -274,45 +330,45 @@ class SnowballShopViewModel extends GetxController {
       });
 
       if (response.success) {
-        // 구매 성공 시 홈/상점/구매내역 새로 고침
         await Future.wait([
           fetchSnowballHomeData(),
-          fetchSnowballShop(),
+          fetchSnowballShop(
+            isTierOnly: lastIsTierOnly,
+            isForMission: lastIsForMission,
+          ),
           fetchPurchaseHistory(),
         ]);
-
-        return true; // ✅ 성공 시 true 반환
+        return true;
       } else {
-        print("❌ Failed to purchase item: ${response.error}");
-        return false; // ❌ 실패 시 false 반환
+        print("❌ Failed to purchase: ${response.error}");
+        return false;
       }
     } catch (e) {
-      print("⚠️ Error purchasing item: $e");
-      return false; // ❌ 예외 발생 시 false 반환
+      print("⚠️ Error purchase: $e");
+      return false;
     } finally {
       isLoading(false);
     }
   }
 
-  // ------------------------
+  // ============================================================
   // 구매 기록
-  // POST /snowball-buy-record/ { user_id }
-  // ------------------------
+  // ============================================================
+
   Future<void> fetchPurchaseHistory() async {
     try {
       isLoading(true);
-      final userId = _userViewModel.user.user_id;
 
+      final userId = _userViewModel.user.user_id;
       final response = await _api.fetchSnowballBuyRecords({'user_id': userId});
+
       if (response.success) {
-        final List<dynamic> records = response.data?['snowball_buy_records'] ?? [];
+        final list = response.data?['snowball_buy_records'] ?? [];
         purchaseHistory.value =
-            records.map((e) => SnowballBuyRecord.fromJson(e)).toList();
-      } else {
-        print("Failed to fetch purchase history: ${response.error}");
+            list.map<SnowballBuyRecord>((e) => SnowballBuyRecord.fromJson(e)).toList();
       }
     } catch (e) {
-      print("Error fetching purchase history: $e");
+      print("Error fetchPurchaseHistory: $e");
     } finally {
       isLoading(false);
     }
@@ -321,81 +377,71 @@ class SnowballShopViewModel extends GetxController {
   Future<void> fetchPurchaseHistoryOnly() async {
     try {
       isLoading_fetchPurchageHistoryOnly(true);
-      final userId = _userViewModel.user.user_id;
 
+      final userId = _userViewModel.user.user_id;
       final response = await _api.fetchSnowballBuyRecords({'user_id': userId});
+
       if (response.success) {
-        final List<dynamic> records = response.data?['snowball_buy_records'] ?? [];
+        final list = response.data?['snowball_buy_records'] ?? [];
         purchaseHistory.value =
-            records.map((e) => SnowballBuyRecord.fromJson(e)).toList();
-      } else {
-        print("Failed to fetch purchase history: ${response.error}");
+            list.map<SnowballBuyRecord>((e) => SnowballBuyRecord.fromJson(e)).toList();
       }
     } catch (e) {
-      print("Error fetching purchase history: $e");
+      print("Error fetchPurchaseHistoryOnly: $e");
     } finally {
       isLoading_fetchPurchageHistoryOnly(false);
     }
   }
 
+  // ============================================================
+  // 유저 눈송이 기록
+  // ============================================================
 
-  // ------------------------
-  // 내 눈송이 기록
-  // POST /user-snowball-record/ { user_id, event_date }
-  // ------------------------
   Future<void> fetchUserSnowballRecords() async {
     try {
       isLoading(true);
-      final userId = _userViewModel.user.user_id;
 
+      final userId = _userViewModel.user.user_id;
       final response = await _api.fetchUserSnowballRecords({
         'user_id': userId,
         'event_date': eventDate.value,
       });
+
       if (response.success) {
-        userSnowballRecords.value = (response.data as List)
-            .map((e) => SnowballRecord.fromJson(e))
-            .toList();
-      } else {
-        print("Failed to fetch user snowball records: ${response.error}");
+        userSnowballRecords.value =
+            (response.data as List).map((e) => SnowballRecord.fromJson(e)).toList();
       }
     } catch (e) {
-      print("Error fetching user snowball records: $e");
+      print("Error fetchUserSnowballRecords: $e");
     } finally {
       isLoading(false);
     }
   }
 
-  // ------------------------
+  // ============================================================
   // 선택 아이템
-  // ------------------------
+  // ============================================================
+
   void selectItem(SnowballShopItem item) {
     selectedItem.value = item;
   }
 
-  // ------------------------
-  // 미션 상태 확인
-  // POST /snowball-mission-status/ { user_id, event_date }
-  // ------------------------
+  // ============================================================
+  // 미션 상태 조회
+  // ============================================================
+
   Future<void> fetchMissionStatus() async {
     try {
       isLoading(true);
-      final userId = _userViewModel.user.user_id;
 
+      final userId = _userViewModel.user.user_id;
       final response = await _api.fetchSnowballMissionStatus({
         'user_id': userId,
         'event_date': eventDate.value,
       });
-      print('[mission] raw data: ${response.data}');
 
       if (response.success) {
-        final missionData = MissionStatus.fromJson(response.data!);
-
-        // 필요하면 상태 변수에 저장하도록 추가
-        _missionStatus.value = missionData;
-
-        // 혹은 바로 UI 업데이트용 print
-        print("미션 상태 불러오기 성공: 전체완료=${missionData.completeTotal}");
+        _missionStatus.value = MissionStatus.fromJson(response.data!);
       } else {
         print("미션 상태 요청 실패: ${response.error}");
       }
@@ -406,15 +452,15 @@ class SnowballShopViewModel extends GetxController {
     }
   }
 
-  // ------------------------
+  // ============================================================
   // 미션 신청
-  // POST /snowball-mission-apply/ { user_id, event_date, Snowball_sponsor_id }
-  // ------------------------
+  // ============================================================
+
   Future<void> applyMission(int snowballItemBrandId) async {
     try {
       isLoading(true);
-      final userId = _userViewModel.user.user_id;
 
+      final userId = _userViewModel.user.user_id;
       final response = await _api.applySnowballMission({
         'user_id': userId,
         'event_date': eventDate.value,
@@ -422,8 +468,6 @@ class SnowballShopViewModel extends GetxController {
       });
 
       if (response.success) {
-        print("미션 신청 성공: ${response.data?['message'] ?? ''}");
-        // 신청 후 다시 상태 갱신
         await fetchMissionStatus();
       } else {
         print("미션 신청 실패: ${response.error}");
@@ -434,5 +478,5 @@ class SnowballShopViewModel extends GetxController {
       isLoading(false);
     }
   }
-
 }
+

@@ -73,14 +73,47 @@ class SnowballSponsor {
   }
 }
 
+class SnowballShopPagination {
+  int? count;
+  String? next;
+  String? previous;
+  List<SnowballShopItem>? results;
+
+  SnowballShopPagination({
+    this.count,
+    this.next,
+    this.previous,
+    this.results,
+  });
+
+  SnowballShopPagination.fromJson(Map<String, dynamic> json) {
+    count = json['count'];
+    next = json['next'];
+    previous = json['previous'];
+
+    results = (json['results'] as List?)
+        ?.map((e) => SnowballShopItem.fromJson(e))
+        .toList();
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'count': count,
+      'next': next,
+      'previous': previous,
+      'results': results?.map((e) => e.toJson()).toList(),
+    };
+  }
+}
+
 // -----------------------------
 // 상점 응답
 // -----------------------------
 class SnowballShopResponse {
-  List<SnowballKindRemain>? summary;        // [{kind, remaining}]
-  List<SnowballShopItem>? items;            // 일반 상점 아이템
-  List<SnowballShopItem>? brandItems;       // ✅ is_for_mission=true일 때만 내려옴
-  bool? isPremiumUser;                      // ✅ 서버 필드: is_premium_user
+  List<SnowballKindRemain>? summary;
+  SnowballShopPagination? items;      // ❗ Pagination 적용
+  List<SnowballShopItem>? brandItems;
+  bool? isPremiumUser;
 
   SnowballShopResponse({
     this.summary,
@@ -94,11 +127,12 @@ class SnowballShopResponse {
         ?.map((e) => SnowballKindRemain.fromJson(e))
         .toList();
 
-    items = (json['items'] as List?)
-        ?.map((e) => SnowballShopItem.fromJson(e))
-        .toList();
+    // ❗ items는 Pagination 객체
+    if (json['items'] != null && json['items'] is Map<String, dynamic>) {
+      items = SnowballShopPagination.fromJson(json['items']);
+    }
 
-    // 서버가 is_for_mission=true일 때만 내려줌(없으면 null)
+    // brand_items는 배열 그대로
     brandItems = (json['brand_items'] as List?)
         ?.map((e) => SnowballShopItem.fromJson(e))
         .toList();
@@ -109,9 +143,8 @@ class SnowballShopResponse {
   Map<String, dynamic> toJson() {
     return {
       'summary': summary?.map((e) => e.toJson()).toList(),
-      'items': items?.map((e) => e.toJson()).toList(),
-      if (brandItems != null)
-        'brand_items': brandItems?.map((e) => e.toJson()).toList(),
+      'items': items?.toJson(),
+      'brand_items': brandItems?.map((e) => e.toJson()).toList(),
       'is_premium_user': isPremiumUser,
     };
   }

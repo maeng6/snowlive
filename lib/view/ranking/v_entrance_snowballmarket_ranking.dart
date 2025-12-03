@@ -98,9 +98,9 @@ class _Entrance_snowballShop_rankingState extends State<Entrance_snowballShop_ra
                       }
                       await _snowballShopViewModel.getInfo_snowballMarket();
                       await _snowballShopViewModel.fetchSnowballShop();
+                      _snowballShopViewModel.loadingEntrance = false;
                       await _snowballShopViewModel.getInfo_snowballMarket_notice_gold();
                       await _snowballShopViewModel.fetchUserSnowballRecords();
-                      _snowballShopViewModel.loadingEntrance = false;
                     },
                     child: Padding(
                         padding: EdgeInsets.only(top: 2),
@@ -127,9 +127,9 @@ class _Entrance_snowballShop_rankingState extends State<Entrance_snowballShop_ra
                     }
                     await _snowballShopViewModel.fetchSnowballHomeData();
                     await _snowballShopViewModel.getInfo_snowballMarket();
+                    _snowballShopViewModel.loadingEntrance = false;
                     await _snowballShopViewModel.getInfo_snowballMarket_notice_gold();
                     await _snowballShopViewModel.fetchUserSnowballRecords();
-                    _snowballShopViewModel.loadingEntrance = false;
                   },
                   child: Container(
                     width: double.infinity,
@@ -255,9 +255,9 @@ class _Entrance_snowballShop_rankingState extends State<Entrance_snowballShop_ra
                                 }
                                 await _snowballShopViewModel.getInfo_snowballMarket();
                                 await _snowballShopViewModel.fetchSnowballShop();
+                                _snowballShopViewModel.loadingEntrance = false;
                                 await _snowballShopViewModel.getInfo_snowballMarket_notice_gold();
                                 await _snowballShopViewModel.fetchUserSnowballRecords();
-                                _snowballShopViewModel.loadingEntrance = false;
                               },
                               child: Padding(
                                 padding: EdgeInsets.only(right: 8),

@@ -351,9 +351,9 @@ class _SnowballMarketHomeViewState extends State<SnowballMarketHomeView> {
                       _snowballShopViewModel.loadingEntrance = true;
                       await _snowballShopViewModel.fetchSnowballHomeData();
                       await _snowballShopViewModel.getInfo_snowballMarket();
+                      _snowballShopViewModel.loadingEntrance = false;
                       await _snowballShopViewModel.getInfo_snowballMarket_notice_gold();
                       await _snowballShopViewModel.fetchUserSnowballRecords();
-                      _snowballShopViewModel.loadingEntrance = false;
 
                     },
                     child: ListView(
