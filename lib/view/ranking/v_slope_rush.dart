@@ -599,9 +599,10 @@ class _SlopeRushHomeViewState extends State<SlopeRushHomeView> {
                 )
               else
                 SliverPadding(
-                  padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                  padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
                   sliver: SliverToBoxAdapter(
                     child: Container(
+                      padding: EdgeInsets.only(bottom: 60),
                       decoration: BoxDecoration(
                         color: SDSColor.snowliveWhite,
                       ),
@@ -988,12 +989,14 @@ class _SlopeRushHomeViewState extends State<SlopeRushHomeView> {
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
                           leader.crewName,
                           style: SDSTextStyle.regular.copyWith(fontSize: 14, height: 1.2,),
                           overflow: TextOverflow.ellipsis,
                         ),
+                        if(leader.description.isNotEmpty)
                         Text(
                           leader.description,
                           style: SDSTextStyle.regular.copyWith(fontSize: 12, color: SDSColor.gray500),
