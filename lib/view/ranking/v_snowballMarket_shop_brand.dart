@@ -1139,8 +1139,8 @@ class _BrandChoiceCard extends StatelessWidget {
           Positioned(
             // 원하는 만큼 조절하세요
             right: -35,     // ➡️ 카드 오른쪽 밖으로 튀어나오게
-            top: -15,
-            bottom: 10,    // ⬇️ 세로도 카드보다 살짝 길어 보이게
+            top: -18,
+            bottom: 0,    // ⬇️ 세로도 카드보다 살짝 길어 보이게
             child: IgnorePointer(
               ignoring: true,
               child: Image.network(
