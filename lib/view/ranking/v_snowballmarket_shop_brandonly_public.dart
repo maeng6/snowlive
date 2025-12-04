@@ -135,10 +135,6 @@ class _SnowballMarketBrandOnlyPublicShopViewState extends State<SnowballMarketBr
                             GestureDetector(
                               onTap: () async {
                                 if (item.itemCount == 0) return;
-                                CustomFullScreenDialog.showDialog();
-                                await _snowballShopViewModel.fetchSnowballShopTapTheList(
-                                    isTierOnly: false, isForMission: false);
-                                CustomFullScreenDialog.cancelDialog();
                                 _snowballShopViewModel.selectItem(item);
 
                                 showModalBottomSheet(
@@ -253,8 +249,6 @@ class _SnowballMarketBrandOnlyPublicShopViewState extends State<SnowballMarketBr
                                                   final ok =
                                                   await _snowballShopViewModel.purchaseSnowballItem(
                                                       snowballItemId: item.snowballItemId!);
-                                                  await _snowballShopViewModel.fetchSnowballShopTapTheList(
-                                                      isTierOnly: false, isForMission: false);
                                                   CustomFullScreenDialog.cancelDialog();
 
                                                   Get.dialog(AlertDialog(
@@ -270,7 +264,7 @@ class _SnowballMarketBrandOnlyPublicShopViewState extends State<SnowballMarketBr
                                                         Text(
                                                           ok
                                                               ? '경품 교환이 완료되었습니다.\n수령처에서 경품을 받아주세요.'
-                                                              : '일시적 오류로 교환에 실패했습니다.',
+                                                              : '일시적 오류 또는 품절된 상품으로\n교환에 실패했습니다.',
                                                           textAlign: TextAlign.center,
                                                           style: SDSTextStyle.regular.copyWith(
                                                               fontSize: 14, color: Colors.grey),

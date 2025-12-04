@@ -321,54 +321,54 @@ class SnowballShopViewModel extends GetxController {
   }
 
   // ⭐ 탭 눌렀을 때 (초기화 후 첫 페이지)
-  Future<void> fetchSnowballShopTapTheList({bool? isTierOnly, bool? isForMission}) async {
-    try {
-      isLoading_fetchSnowballShopData(true);
-      final userId = _userViewModel.user.user_id;
-
-      final body = {
-        'user_id': userId,
-        'event_date': eventDate.value,
-        if (isTierOnly != null) 'is_tier_only': isTierOnly,
-        if (isForMission != null) 'is_for_mission': isForMission,
-      };
-
-      final response = await _api.fetchSnowballShop(
-        userId: userId,
-        eventDate: eventDate.value,
-        isTierOnly: isTierOnly,
-        isForMission: isForMission,
-      );
-      if (response.success) {
-        final shop = SnowballShopResponse.fromJson(response.data!);
-
-        // 요약, 일반 아이템
-        summary.value = shop.summary ?? [];
-
-        // ✅ 프리미엄 여부
-        isPremiumUser.value = shop.isPremiumUser ?? false;
-
-        // ✅ 브랜드 아이템 (미션일 때만 내려오므로 null 체크)
-        if (shop.brandItems != null) {
-          brandItems.value = shop.brandItems!;
-        } else {
-          brandItems.clear();
-        }
-      } else {
-        print("Failed to fetch shop: ${response.error}");
-        shopItems.clear();
-        brandItems.clear();
-        isPremiumUser.value = false;
-      }
-    } catch (e) {
-      print("Error fetchSnowballShop: $e");
-      shopItems.clear();
-      brandItems.clear();
-      isPremiumUser.value = false;
-    } finally {
-      isLoading_fetchSnowballShopData(false);
-    }
-  }
+  // Future<void> fetchSnowballShopTapTheList({bool? isTierOnly, bool? isForMission}) async {
+  //   try {
+  //     isLoading_fetchSnowballShopData(true);
+  //     final userId = _userViewModel.user.user_id;
+  //
+  //     final body = {
+  //       'user_id': userId,
+  //       'event_date': eventDate.value,
+  //       if (isTierOnly != null) 'is_tier_only': isTierOnly,
+  //       if (isForMission != null) 'is_for_mission': isForMission,
+  //     };
+  //
+  //     final response = await _api.fetchSnowballShop(
+  //       userId: userId,
+  //       eventDate: eventDate.value,
+  //       isTierOnly: isTierOnly,
+  //       isForMission: isForMission,
+  //     );
+  //     if (response.success) {
+  //       final shop = SnowballShopResponse.fromJson(response.data!);
+  //
+  //       // 요약, 일반 아이템
+  //       summary.value = shop.summary ?? [];
+  //
+  //       // ✅ 프리미엄 여부
+  //       isPremiumUser.value = shop.isPremiumUser ?? false;
+  //
+  //       // ✅ 브랜드 아이템 (미션일 때만 내려오므로 null 체크)
+  //       if (shop.brandItems != null) {
+  //         brandItems.value = shop.brandItems!;
+  //       } else {
+  //         brandItems.clear();
+  //       }
+  //     } else {
+  //       print("Failed to fetch shop: ${response.error}");
+  //       shopItems.clear();
+  //       brandItems.clear();
+  //       isPremiumUser.value = false;
+  //     }
+  //   } catch (e) {
+  //     print("Error fetchSnowballShop: $e");
+  //     shopItems.clear();
+  //     brandItems.clear();
+  //     isPremiumUser.value = false;
+  //   } finally {
+  //     isLoading_fetchSnowballShopData(false);
+  //   }
+  // }
 
   // ============================================================
   // 요약만 갱신

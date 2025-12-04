@@ -212,13 +212,6 @@ class _SnowballMarketBrandOnlyPremiumShopViewState
                                         onTap: () async {
                                           if (item.itemCount == 0) return;
 
-                                          CustomFullScreenDialog.showDialog();
-                                          await _snowballShopViewModel.fetchSnowballShopTapTheList(
-                                            isTierOnly: true,
-                                            isForMission: false,
-                                          );
-                                          CustomFullScreenDialog.cancelDialog();
-
                                           final updatedItem =
                                           _snowballShopViewModel.shopItems.firstWhere(
                                                 (updated) =>
@@ -749,7 +742,7 @@ class _SnowballMarketBrandOnlyPremiumShopViewState
                                                                                           height:
                                                                                           6),
                                                                                       Text(
-                                                                                        '일시적인 오류로 교환에 실패했어요.\n다시 시도해 주세요.',
+                                                                                        '이미 품절된 상품입니다.',
                                                                                         textAlign:
                                                                                         TextAlign
                                                                                             .center,

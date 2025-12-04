@@ -501,7 +501,7 @@ class _ForestParkShopState extends State<ForestParkShop> {
                                                                                       height: 6,
                                                                                     ),
                                                                                     Text(
-                                                                                      '일시적인 오류로 교환에 실패했어요.\n다시 시도해 주세요.',
+                                                                                      '이미 품절된 상품입니다.',
                                                                                       textAlign: TextAlign.center,
                                                                                       style: SDSTextStyle.regular.copyWith(
                                                                                         color: SDSColor.gray500,
