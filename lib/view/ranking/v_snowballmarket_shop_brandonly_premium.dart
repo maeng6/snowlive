@@ -288,7 +288,7 @@ class _SnowballMarketBrandOnlyPremiumShopViewState extends State<SnowballMarketB
                                                                       color: Colors.white.withOpacity(0.5),
                                                                     ),
                                                                   ),
-                                                                  const SizedBox(height: 40),
+                                                                  const SizedBox(height: 24),
                                                                   if (_snowballShopViewModel.isPremiumUser.value == false)
                                                                     Text(
                                                                       '랭킹 등급 골드 이상만 구매 가능합니다.',

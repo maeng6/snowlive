@@ -289,11 +289,14 @@ class _SnowballMarketPremiumShopViewState extends State<SnowballMarketPremiumSho
                                                                   ),
                                                                   const SizedBox(height: 16),
                                                                   // 상품명
-                                                                  Text(
-                                                                    item.name ?? '상품 이름',
-                                                                    style: SDSTextStyle.bold.copyWith(
-                                                                      fontSize: 16,
-                                                                      color: SDSColor.snowliveWhite,
+                                                                  Center(
+                                                                    child: Text(
+                                                                      item.name ?? '상품 이름',
+                                                                      style: SDSTextStyle.bold.copyWith(
+                                                                        fontSize: 16,
+                                                                        color: SDSColor.snowliveWhite,
+                                                                      ),
+                                                                      textAlign: TextAlign.center,
                                                                     ),
                                                                   ),
                                                                   const SizedBox(height: 6),
@@ -306,7 +309,7 @@ class _SnowballMarketPremiumShopViewState extends State<SnowballMarketPremiumSho
                                                                       color: Colors.white.withOpacity(0.5),
                                                                     ),
                                                                   ),
-                                                                  const SizedBox(height: 40),
+                                                                  const SizedBox(height: 24),
                                                                   if (_snowballShopViewModel.isPremiumUser.value == false && item.isFieldGame == false)
                                                                     Text(
                                                                       '랭킹 등급 골드 이상만 구매 가능합니다.',
