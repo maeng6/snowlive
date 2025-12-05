@@ -120,8 +120,10 @@ class _SnowballMarketBrandOnlyPublicShopViewState extends State<SnowballMarketBr
                   child: ListView(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                     children: [
-                      Text('획득한 눈송이는 당일에 사용하지 않으면 모두 사라집니다',
-                          style: TextStyle(fontSize: 13, color: Colors.white.withOpacity(0.6))),
+                      Center(
+                        child: Text('획득한 눈송이는 당일에 사용하지 않으면 모두 사라집니다',
+                            style: TextStyle(fontSize: 13, color: Colors.white.withOpacity(0.6))),
+                      ),
                       const SizedBox(height: 16),
                       GridView.builder(
                         shrinkWrap: true,
@@ -301,32 +303,43 @@ class _SnowballMarketBrandOnlyPublicShopViewState extends State<SnowballMarketBr
                                 );
                               },
                               child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                                ClipRRect(
-                                  borderRadius: BorderRadius.circular(4),
-                                  child: Stack(children: [
-                                    ExtendedImage.network(
-                                      item.imageUrl ?? '',
-                                      fit: BoxFit.cover,
-                                      loadStateChanged: (state) {
-                                        switch (state.extendedImageLoadState) {
-                                          case LoadState.loading:
-                                            return Shimmer.fromColors(
-                                              baseColor: Colors.grey[200]!,
-                                              highlightColor: Colors.grey[50]!,
-                                              child: Container(color: Colors.white),
-                                            );
-                                          case LoadState.completed:
-                                            return state.completedWidget;
-                                          case LoadState.failed:
-                                            return Image.asset('assets/imgs/imgs/img_flea_default.png',
-                                                fit: BoxFit.cover);
-                                        }
-                                      },
+                                AspectRatio(
+                                  aspectRatio: 1,
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(4),
+                                    child: Container(
+                                      color: Colors.white,
+                                      child: Stack(children: [
+                                        Center(
+                                          child: Container(
+                                            color: SDSColor.snowliveWhite,
+                                            child: ExtendedImage.network(
+                                              item.imageUrl ?? '',
+                                              fit: BoxFit.cover,
+                                              loadStateChanged: (state) {
+                                                switch (state.extendedImageLoadState) {
+                                                  case LoadState.loading:
+                                                    return Shimmer.fromColors(
+                                                      baseColor: Colors.grey[200]!,
+                                                      highlightColor: Colors.grey[50]!,
+                                                      child: Container(color: Colors.white),
+                                                    );
+                                                  case LoadState.completed:
+                                                    return state.completedWidget;
+                                                  case LoadState.failed:
+                                                    return Image.asset('assets/imgs/imgs/img_flea_default.png',
+                                                        fit: BoxFit.cover);
+                                                }
+                                              },
+                                            ),
+                                          ),
+                                        ),
+                                        if (item.itemCount == 0)
+                                          Positioned.fill(
+                                              child: Container(color: SDSColor.sBlue900.withOpacity(0.8))),
+                                      ]),
                                     ),
-                                    if (item.itemCount == 0)
-                                      Positioned.fill(
-                                          child: Container(color: SDSColor.sBlue900.withOpacity(0.8))),
-                                  ]),
+                                  ),
                                 ),
                                 const SizedBox(height: 8),
                                 Text(item.name ?? '',
