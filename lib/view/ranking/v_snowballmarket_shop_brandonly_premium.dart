@@ -277,6 +277,7 @@ class _SnowballMarketBrandOnlyPremiumShopViewState extends State<SnowballMarketB
                                                                       fontSize: 16,
                                                                       color: SDSColor.snowliveWhite,
                                                                     ),
+                                                                    textAlign: TextAlign.center,
                                                                   ),
                                                                   const SizedBox(height: 6),
                                                                   Text(
@@ -375,7 +376,7 @@ class _SnowballMarketBrandOnlyPremiumShopViewState extends State<SnowballMarketB
                                                                                       elevation: 0,
                                                                                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                                                                                       content: SizedBox(
-                                                                                        height: 90,
+                                                                                        height: 94,
                                                                                         child: Column(
                                                                                           crossAxisAlignment: CrossAxisAlignment.center,
                                                                                           children: [
@@ -401,8 +402,8 @@ class _SnowballMarketBrandOnlyPremiumShopViewState extends State<SnowballMarketB
                                                                                               shortfallDetails,
                                                                                               textAlign: TextAlign.center,
                                                                                               style: SDSTextStyle.regular.copyWith(
-                                                                                                color: const Color(0xFF0B5E2A),
-                                                                                                fontSize: 12,
+                                                                                                color: const Color(0xFF000000),
+                                                                                                fontSize: 13,
                                                                                               ),
                                                                                             ),
                                                                                           ],

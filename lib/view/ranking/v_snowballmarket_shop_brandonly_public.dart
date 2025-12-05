@@ -192,54 +192,108 @@ class _SnowballMarketBrandOnlyPublicShopViewState extends State<SnowballMarketBr
                                               const SizedBox(width: 10),
                                             Expanded(
                                               child: ElevatedButton(
-                                                style: ElevatedButton.styleFrom(
-                                                    backgroundColor: SDSColor.snowliveWhite,
-                                                    shape: RoundedRectangleBorder(
-                                                        borderRadius: BorderRadius.circular(6))),
                                                 onPressed: () async {
-                                                  final white = _snowballShopViewModel.summary[0].remaining ?? 0;
-                                                  final gold = _snowballShopViewModel.summary[1].remaining ?? 0;
-                                                  final needW = item.price?[0].snowballCount ?? 0;
-                                                  final needG = item.price?[1].snowballCount ?? 0;
+                                                  final userWhite = _snowballShopViewModel.summary[0].remaining ?? 0;
+                                                  final userGold = _snowballShopViewModel.summary[1].remaining ?? 0;
 
-                                                  if (white < needW || gold < needG) {
+                                                  final needWhite = item.price![0].snowballCount ?? 0;
+                                                  final needGold = item.price![1].snowballCount ?? 0;
+
+                                                  final whiteShort = userWhite < needWhite ? needWhite - userWhite : 0;
+                                                  final goldShort = userGold < needGold ? needGold - userGold : 0;
+
+                                                  final isNotEnough = whiteShort > 0 || goldShort > 0;
+
+                                                  if (isNotEnough) {
+                                                    final shortfallTitle = '교환에 필요한 눈송이가 부족해요.';
+                                                    String? shortfallWhite;
+                                                    String? shortfallGold;
+
+                                                    if (whiteShort > 0) {
+                                                      shortfallWhite = '하얀 눈송이 ${whiteShort}개 부족';
+                                                    }
+
+                                                    if (goldShort > 0) {
+                                                      shortfallGold = '황금 눈송이 ${goldShort}개 부족';
+                                                    }
+
+                                                    final shortfallDetails = [
+                                                      if (shortfallWhite != null) '$shortfallWhite',
+                                                      if (shortfallGold != null) '$shortfallGold',
+                                                    ].join('\n');
+
                                                     showDialog(
                                                       context: context,
                                                       builder: (_) => AlertDialog(
-                                                        backgroundColor: Colors.white,
-                                                        shape: RoundedRectangleBorder(
-                                                            borderRadius: BorderRadius.circular(16)),
+                                                        backgroundColor: SDSColor.snowliveWhite,
+                                                        contentPadding: const EdgeInsets.only(
+                                                          bottom: 0,
+                                                          left: 28,
+                                                          right: 28,
+                                                          top: 36,
+                                                        ),
+                                                        elevation: 0,
+                                                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                                                         content: SizedBox(
-                                                          height: 90,
+                                                          height: 94,
                                                           child: Column(
+                                                            crossAxisAlignment: CrossAxisAlignment.center,
                                                             children: [
-                                                              Text('눈송이가 부족해요',
-                                                                  style: SDSTextStyle.bold.copyWith(
-                                                                      fontSize: 16, color: Colors.black)),
+                                                              Text(
+                                                                '눈송이가 부족해요',
+                                                                textAlign: TextAlign.center,
+                                                                style: SDSTextStyle.bold.copyWith(
+                                                                  color: SDSColor.gray900,
+                                                                  fontSize: 16,
+                                                                ),
+                                                              ),
                                                               const SizedBox(height: 6),
-                                                              Text('교환에 필요한 눈송이가 부족해요.',
-                                                                  textAlign: TextAlign.center,
-                                                                  style: SDSTextStyle.regular.copyWith(
-                                                                      fontSize: 14, color: Colors.grey)),
+                                                              Text(
+                                                                shortfallTitle,
+                                                                textAlign: TextAlign.center,
+                                                                style: SDSTextStyle.regular.copyWith(
+                                                                  color: SDSColor.gray500,
+                                                                  fontSize: 14,
+                                                                ),
+                                                              ),
+                                                              const SizedBox(height: 6),
+                                                              Text(
+                                                                shortfallDetails,
+                                                                textAlign: TextAlign.center,
+                                                                style: SDSTextStyle.regular.copyWith(
+                                                                  color: const Color(0xFF000000),
+                                                                  fontSize: 13,
+                                                                ),
+                                                              ),
                                                             ],
                                                           ),
                                                         ),
                                                         actions: [
                                                           Padding(
-                                                            padding: const EdgeInsets.only(bottom: 16),
+                                                            padding: const EdgeInsets.only(top: 24),
                                                             child: SizedBox(
+                                                              width: 240,
                                                               height: 48,
                                                               child: ElevatedButton(
+                                                                onPressed: () => Navigator.of(context).pop(),
                                                                 style: ElevatedButton.styleFrom(
-                                                                    backgroundColor: const Color(0xFF3D83ED),
-                                                                    shape: RoundedRectangleBorder(
-                                                                        borderRadius: BorderRadius.circular(6))),
-                                                                onPressed: () => Get.back(),
-                                                                child: const Text('확인',
-                                                                    style: TextStyle(fontSize: 15)),
+                                                                  elevation: 0,
+                                                                  backgroundColor: const Color(0xFF3D83ED),
+                                                                  foregroundColor: Colors.white,
+                                                                  shape: RoundedRectangleBorder(
+                                                                    borderRadius: BorderRadius.circular(6),
+                                                                  ),
+                                                                ),
+                                                                child: const Text(
+                                                                  '확인',
+                                                                  style: TextStyle(
+                                                                    fontWeight: FontWeight.bold,
+                                                                    fontSize: 15,
+                                                                  ),
+                                                                ),
                                                               ),
                                                             ),
-                                                          )
+                                                          ),
                                                         ],
                                                       ),
                                                     );
@@ -248,51 +302,173 @@ class _SnowballMarketBrandOnlyPublicShopViewState extends State<SnowballMarketBr
 
                                                   Navigator.pop(context);
                                                   CustomFullScreenDialog.showDialog();
-                                                  final ok =
-                                                  await _snowballShopViewModel.purchaseSnowballItem(
-                                                      snowballItemId: item.snowballItemId!);
+                                                  final result = await _snowballShopViewModel.purchaseSnowballItem(
+                                                    snowballItemId: _snowballShopViewModel.selectedItem.value.snowballItemId!,
+                                                  );
+                                                  await _snowballShopViewModel.fetchSnowballShopExchange(
+                                                    isTierOnly: true,
+                                                    isForMission: false,
+                                                  );
                                                   CustomFullScreenDialog.cancelDialog();
 
-                                                  Get.dialog(AlertDialog(
-                                                    backgroundColor: Colors.white,
-                                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                                                    content: SizedBox(
-                                                      height: 80,
-                                                      child: Column(children: [
-                                                        Text(ok ? '교환 완료!' : '교환 실패',
-                                                            style: SDSTextStyle.bold
-                                                                .copyWith(fontSize: 16, color: Colors.black)),
-                                                        const SizedBox(height: 6),
-                                                        Text(
-                                                          ok
-                                                              ? '경품 교환이 완료되었습니다.\n수령처에서 경품을 받아주세요.'
-                                                              : '일시적 오류 또는 품절된 상품으로\n교환에 실패했습니다.',
-                                                          textAlign: TextAlign.center,
-                                                          style: SDSTextStyle.regular.copyWith(
-                                                              fontSize: 14, color: Colors.grey),
-                                                        )
-                                                      ]),
-                                                    ),
-                                                    actions: [
-                                                      Padding(
-                                                        padding: const EdgeInsets.only(bottom: 16),
-                                                        child: SizedBox(
-                                                          height: 48,
-                                                          child: ElevatedButton(
-                                                            onPressed: () => Get.back(),
-                                                            style: ElevatedButton.styleFrom(
-                                                                backgroundColor: const Color(0xFF3D83ED),
-                                                                shape: RoundedRectangleBorder(
-                                                                    borderRadius: BorderRadius.circular(6))),
-                                                            child: const Text('확인'),
+                                                  if (result) {
+                                                    Get.dialog(
+                                                      AlertDialog(
+                                                        backgroundColor: SDSColor.snowliveWhite,
+                                                        contentPadding: const EdgeInsets.only(
+                                                          bottom: 0,
+                                                          left: 28,
+                                                          right: 28,
+                                                          top: 36,
+                                                        ),
+                                                        elevation: 0,
+                                                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                                                        buttonPadding: const EdgeInsets.symmetric(
+                                                          horizontal: 20,
+                                                          vertical: 0,
+                                                        ),
+                                                        content: SizedBox(
+                                                          height: 80,
+                                                          child: Column(
+                                                            crossAxisAlignment: CrossAxisAlignment.center,
+                                                            children: [
+                                                              Text(
+                                                                '교환 완료!',
+                                                                textAlign: TextAlign.center,
+                                                                style: SDSTextStyle.bold.copyWith(
+                                                                  color: SDSColor.gray900,
+                                                                  fontSize: 16,
+                                                                ),
+                                                              ),
+                                                              const SizedBox(height: 6),
+                                                              Text(
+                                                                '경품 교환이 성공적으로 완료되었습니다.\n경품 수령처에서 경품을 수령해 주세요.',
+                                                                textAlign: TextAlign.center,
+                                                                style: SDSTextStyle.regular.copyWith(
+                                                                  color: SDSColor.gray500,
+                                                                  fontSize: 14,
+                                                                ),
+                                                              ),
+                                                            ],
                                                           ),
                                                         ),
-                                                      )
-                                                    ],
-                                                  ));
+                                                        actions: [
+                                                          Padding(
+                                                            padding: const EdgeInsets.only(top: 24),
+                                                            child: SizedBox(
+                                                              width: 240,
+                                                              height: 48,
+                                                              child: ElevatedButton(
+                                                                onPressed: () => Get.back(),
+                                                                style: ElevatedButton.styleFrom(
+                                                                  elevation: 0,
+                                                                  backgroundColor: const Color(0xFF3D83ED),
+                                                                  foregroundColor: Colors.white,
+                                                                  shape: RoundedRectangleBorder(
+                                                                    borderRadius: BorderRadius.circular(6),
+                                                                  ),
+                                                                ),
+                                                                child: const Text(
+                                                                  '확인',
+                                                                  style: TextStyle(
+                                                                    fontWeight: FontWeight.bold,
+                                                                    fontSize: 15,
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    );
+                                                  } else {
+                                                    Get.dialog(
+                                                      AlertDialog(
+                                                        backgroundColor: SDSColor.snowliveWhite,
+                                                        contentPadding: const EdgeInsets.only(
+                                                          bottom: 0,
+                                                          left: 28,
+                                                          right: 28,
+                                                          top: 36,
+                                                        ),
+                                                        elevation: 0,
+                                                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                                                        buttonPadding: const EdgeInsets.symmetric(
+                                                          horizontal: 20,
+                                                          vertical: 0,
+                                                        ),
+                                                        content: SizedBox(
+                                                          height: 80,
+                                                          child: Column(
+                                                            crossAxisAlignment: CrossAxisAlignment.center,
+                                                            children: [
+                                                              Text(
+                                                                '교환 실패',
+                                                                textAlign: TextAlign.center,
+                                                                style: SDSTextStyle.bold.copyWith(
+                                                                  color: SDSColor.gray900,
+                                                                  fontSize: 16,
+                                                                ),
+                                                              ),
+                                                              const SizedBox(height: 6),
+                                                              Text(
+                                                                '이미 품절된 상품입니다.',
+                                                                textAlign: TextAlign.center,
+                                                                style: SDSTextStyle.regular.copyWith(
+                                                                  color: SDSColor.gray500,
+                                                                  fontSize: 14,
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                        actions: [
+                                                          Padding(
+                                                            padding: const EdgeInsets.only(top: 24),
+                                                            child: SizedBox(
+                                                              width: 240,
+                                                              height: 48,
+                                                              child: ElevatedButton(
+                                                                onPressed: () => Get.back(),
+                                                                style: ElevatedButton.styleFrom(
+                                                                  elevation: 0,
+                                                                  backgroundColor: const Color(0xFF3D83ED),
+                                                                  foregroundColor: Colors.white,
+                                                                  shape: RoundedRectangleBorder(
+                                                                    borderRadius: BorderRadius.circular(6),
+                                                                  ),
+                                                                ),
+                                                                child: const Text(
+                                                                  '확인',
+                                                                  style: TextStyle(
+                                                                    fontWeight: FontWeight.bold,
+                                                                    fontSize: 15,
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    );
+                                                  }
                                                 },
-                                                child:
-                                                Text('교환하기', style: SDSTextStyle.bold.copyWith(color: Colors.black)),
+                                                style: ElevatedButton.styleFrom(
+                                                  shape: const RoundedRectangleBorder(
+                                                    borderRadius: BorderRadius.all(Radius.circular(5)),
+                                                  ),
+                                                  splashFactory: InkRipple.splashFactory,
+                                                  elevation: 0,
+                                                  minimumSize: const Size(100, 48),
+                                                  backgroundColor: SDSColor.snowliveWhite,
+                                                ),
+                                                child: Text(
+                                                  '교환하기',
+                                                  style: SDSTextStyle.bold.copyWith(
+                                                    color: SDSColor.snowliveBlack,
+                                                    fontSize: 16,
+                                                  ),
+                                                ),
                                               ),
                                             ),
                                           ]),
