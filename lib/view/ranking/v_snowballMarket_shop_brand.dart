@@ -639,37 +639,45 @@ class _SnowballMarketBrandShopViewState extends State<SnowballMarketBrandShopVie
                                           child: Column(
                                             crossAxisAlignment: CrossAxisAlignment.start,
                                             children: [
-                                              ClipRRect(
-                                                borderRadius: BorderRadius.circular(4),
-                                                child: Stack(
-                                                  children: [
-                                                    Container(
-                                                      color: SDSColor.snowliveWhite,
-                                                      child: ExtendedImage.network(
-                                                        item.imageUrl ?? '',
-                                                        enableMemoryCache: true,
-                                                        fit: BoxFit.cover,
-                                                        loadStateChanged: (ExtendedImageState state) {
-                                                          switch (state.extendedImageLoadState) {
-                                                            case LoadState.loading:
-                                                              return Shimmer.fromColors(
-                                                                baseColor: Colors.grey[200]!,
-                                                                highlightColor: Colors.grey[50]!,
-                                                                child: Container(color: Colors.white),
-                                                              );
-                                                            case LoadState.completed:
-                                                              return state.completedWidget;
-                                                            case LoadState.failed:
-                                                              return Image.asset('assets/imgs/imgs/img_flea_default.png', fit: BoxFit.cover);
-                                                          }
-                                                        },
-                                                      ),
+                                              AspectRatio(
+                                                aspectRatio: 1,
+                                                child: ClipRRect(
+                                                  borderRadius: BorderRadius.circular(4),
+                                                  child: Container(
+                                                    color: Colors.white,
+                                                    child: Stack(
+                                                      children: [
+                                                        Center(
+                                                          child: Container(
+                                                            color: SDSColor.snowliveWhite,
+                                                            child: ExtendedImage.network(
+                                                              item.imageUrl ?? '',
+                                                              enableMemoryCache: true,
+                                                              fit: BoxFit.cover,
+                                                              loadStateChanged: (ExtendedImageState state) {
+                                                                switch (state.extendedImageLoadState) {
+                                                                  case LoadState.loading:
+                                                                    return Shimmer.fromColors(
+                                                                      baseColor: Colors.grey[200]!,
+                                                                      highlightColor: Colors.grey[50]!,
+                                                                      child: Container(color: Colors.white),
+                                                                    );
+                                                                  case LoadState.completed:
+                                                                    return state.completedWidget;
+                                                                  case LoadState.failed:
+                                                                    return Image.asset('assets/imgs/imgs/img_flea_default.png', fit: BoxFit.cover);
+                                                                }
+                                                              },
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        if (item.itemCount == 0)
+                                                          Positioned.fill(
+                                                            child: Container(color: SDSColor.sBlue900.withOpacity(0.8)),
+                                                          ),
+                                                      ],
                                                     ),
-                                                    if (item.itemCount == 0)
-                                                      Positioned.fill(
-                                                        child: Container(color: SDSColor.sBlue900.withOpacity(0.8)),
-                                                      ),
-                                                  ],
+                                                  ),
                                                 ),
                                               ),
                                               const SizedBox(height: 8),
