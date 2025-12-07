@@ -447,7 +447,7 @@ class ResortHomeViewModel extends GetxController {
       foregroundService: true,
 
       // 🔥 위치 업데이트 튜닝
-      distanceFilter: 10,                    // 3 → 10m (가장 안정)
+      distanceFilter: 5,                     // 5m 이동 시 업데이트 (더 정밀한 추적)
       stationaryRadius: 25,
       elasticityMultiplier: 1.0,             // disableElasticity 쓰지 않음
 
@@ -461,8 +461,8 @@ class ResortHomeViewModel extends GetxController {
       enableHeadless: true,                  // 🆕 앱 종료 후에도 headless 모드로 동작
 
       // 🔥 위치 업데이트 속도 (삼성 Doze 정책 준수)
-      locationUpdateInterval: 10000,          // 10초
-      fastestLocationUpdateInterval: 5000,    // 5초
+      locationUpdateInterval: 5000,           // 5초
+      fastestLocationUpdateInterval: 3000,    // 3초
 
       // 🔥 Android 배터리 최적화 안내
       backgroundPermissionRationale: PermissionRationale(
