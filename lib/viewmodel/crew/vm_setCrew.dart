@@ -7,6 +7,7 @@ import 'package:com.snowlive/viewmodel/crew/vm_crewDetail.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewMemberList.dart';
 import 'package:com.snowlive/viewmodel/friend/vm_friendDetail.dart';
 import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
@@ -115,19 +116,51 @@ class SetCrewViewModel extends GetxController {
   }
 
 
-  // 이미지 URL 생성
-  Future<void> getImageUrl() async {
-    if (_croppedFile.value != null) {
-      try {
-        profileImageUrl = await imageController.setNewImage_Crew(
-          newImage: _croppedFile.value!,
-          crewID: _crewName.value,
-        );
-      } catch (e) {
-        print('Image upload error: $e');
+  Future<void> getImageUrl({String? oldUrl}) async {
+    // 1) 새 이미지 없음 = 사용자가 이미지 삭제함
+    if (_croppedFile.value == null) {
+      // 🔥 기존 Storage 이미지 삭제
+      if (oldUrl != null && oldUrl.isNotEmpty) {
+        try {
+          final oldRef = FirebaseStorage.instance.refFromURL(oldUrl);
+          await oldRef.delete();
+          print("Old crew image deleted due to reset.");
+        } catch (e) {
+          print("Delete old crew image error: $e");
+        }
       }
+
+      // 🔥 디폴트 이미지 상태로 만들기
+      profileImageUrl = '';
+
+      return; // 여기서 끝
+    }
+
+    // 2) 새 이미지 업로드
+    try {
+      final newUrl = await imageController.setNewImage_Crew(
+        newImage: _croppedFile.value!,
+        crewID: _crewName.value,
+      );
+
+      profileImageUrl = newUrl;
+
+      // 3) 기존 이미지 삭제
+      if (oldUrl != null && oldUrl.isNotEmpty && oldUrl != newUrl) {
+        try {
+          final oldRef = FirebaseStorage.instance.refFromURL(oldUrl);
+          await oldRef.delete();
+          print("Old crew image deleted: $oldUrl");
+        } catch (e) {
+          print("Delete old crew image error: $e");
+        }
+      }
+    } catch (e) {
+      print('Image upload error: $e');
     }
   }
+
+
 
 
   Future<void> setCrewLogoAsCroppedFile() async {
@@ -266,8 +299,13 @@ class SetCrewViewModel extends GetxController {
   // 크루 세부사항 업데이트 메서드
   Future<void> updateCrewDetails(int crewId) async {
     isLoading.value = true;  // 로딩 시작
+
+    final oldUrl = _crewDetailViewModel.crewLogoUrl;
+
     try {
-      await getImageUrl();
+      // 새 이미지 업로드 + oldUrl 삭제
+      await getImageUrl(oldUrl: oldUrl);
+
       // 서버로 전송할 데이터 준비
       final updateCrewData = {
         "user_id": _userViewModel.user.user_id, // 유저 ID

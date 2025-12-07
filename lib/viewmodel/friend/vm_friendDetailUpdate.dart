@@ -3,6 +3,7 @@ import 'package:com.snowlive/api/api_login.dart';
 import 'package:com.snowlive/api/api_user.dart';
 import 'package:com.snowlive/model/m_resortModel.dart';
 import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_rx/get_rx.dart';
@@ -105,15 +106,50 @@ class FriendDetailUpdateViewModel extends GetxController {
     }
   }
 
-  Future<void> getImageUrl() async {
-    if (_croppedFile.value != null) {
-      try {
-        _profileImageUrl.value = await imageController.setNewImage(_croppedFile.value!);
-      } catch (e) {
-        print('Profile image upload error: $e');
+
+  Future<void> getImageUrl({String? oldUrl}) async {
+    // 기본값은 현재 값 유지
+    String currentUrl = _profileImageUrl.value;
+
+    try {
+      // 1) 새로 크롭된 이미지가 있으면 → 업로드 후 새 URL 받기
+      if (_croppedFile.value != null) {
+        final newUrl = await imageController.setNewImage(_croppedFile.value!);
+        currentUrl = newUrl;
+
+        // 2) 이전 URL이 있고, 기본이미지가 아니면 → 스토리지에서 삭제
+        if (oldUrl != null && oldUrl.isNotEmpty && oldUrl != newUrl) {
+          try {
+            final oldRef = FirebaseStorage.instance.refFromURL(oldUrl);
+            await oldRef.delete();
+            print('Old profile image deleted: $oldUrl');
+          } catch (e) {
+            print('Failed to delete old profile image: $e');
+          }
+        }
+      } else {
+        // 3) 크롭 파일이 없는데, 사용자가 삭제 버튼으로 기본이미지로 만든 경우
+        //    (네 코드에서 setProfileImageUrl('') 호출했을 때)
+        if (_profileImageUrl.value.isEmpty &&
+            oldUrl != null &&
+            oldUrl.isNotEmpty) {
+          try {
+            final oldRef = FirebaseStorage.instance.refFromURL(oldUrl);
+            await oldRef.delete();
+            print('Old profile image deleted (reset to default): $oldUrl');
+          } catch (e) {
+            print('Failed to delete old profile image when reset: $e');
+          }
+        }
       }
+    } catch (e) {
+      print('Profile image upload error: $e');
     }
+
+    // 4) 최종 URL 반영
+    _profileImageUrl.value = currentUrl;
   }
+
 
   void toggleActiveCheckDisplaynameButton(bool active) {
     _activeCheckDisplaynameButton.value = active;

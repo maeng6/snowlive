@@ -732,7 +732,14 @@ class FriendDetailUpdateView extends StatelessWidget {
                     child: ElevatedButton(
                       onPressed: () async {
                         CustomFullScreenDialog.showDialog();
-                        await _friendDetailUpdateViewModel.getImageUrl();
+
+                        // 1) 이전 프로필 URL 잡아두기
+                        final String oldUrl =
+                            _friendDetailViewModel.friendDetailModel.friendUserInfo.profileImageUrlUser;
+
+                        // 2) 새 이미지 업로드 + URL 세팅 + 이전 파일 삭제
+                        await _friendDetailUpdateViewModel.getImageUrl(oldUrl: oldUrl);
+
                         bool isSuccess = await _friendDetailUpdateViewModel.updateFriendDetail({
                           "user_id": _userViewModel.user.user_id, // 필수
                           "display_name": _friendDetailUpdateViewModel.textEditingController_displayName.text,
