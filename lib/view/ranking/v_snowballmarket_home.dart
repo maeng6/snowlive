@@ -1565,7 +1565,7 @@ class _SnowballMarketHomeViewState extends State<SnowballMarketHomeView> {
                                       ),
                                       Padding(
                                         padding: EdgeInsets.only(bottom: 8),
-                                        child: Text('경품 교환 후 취소 및 변경이 불가능하니 신중하게 골라주세요!',
+                                        child: Text('경품 교환 후 취소 및 변경이 불가능하니\n신중하게 골라주세요!',
                                           style: SDSTextStyle.regular.copyWith(
                                             color: Color(0xFFBDD7FF),
                                             fontSize: 13,
