@@ -30,41 +30,67 @@ class ImageController extends GetxController {
     DateTime dateTime = DateTime.now();
     var metaData = SettableMetadata(contentType: 'image/jpeg');
 
-    List<Future<String>> uploadTasks = [];
     List<String> downloadUrlList = [];
 
-    print('파베업로드 & url다운 작업 시작');
+    print('📤 중고거래 이미지 업로드 시작');
 
     for (int i = 0; i < newImages.length; i++) {
-      File originalFile = File(newImages[i].path);
+      final filePath = newImages[i].path;
+      File originalFile = File(filePath);
       File fileToUpload;
 
+      // ──────────────────────────────
+      // 1) 이미지 압축 시도
+      // ──────────────────────────────
       try {
-        // 1) 압축 시도
         fileToUpload = await _compressImage(originalFile);
-        print("압축 성공: ${fileToUpload.path}");
+        print("🔥 압축 성공: $filePath");
       } catch (e) {
-        // 2) 압축 실패 → 원본 업로드
-        print("압축 실패 → 원본 업로드로 fallback: $e");
+        print("⚠️ 압축 실패 → 원본 업로드로 대체: $e");
         fileToUpload = originalFile;
       }
 
-      Reference ref = FirebaseStorage.instance.ref('fleamarket/#$pk/$i.jpg');
+      // ──────────────────────────────
+      // 2) 업로드 (재시도 포함)
+      // ──────────────────────────────
+      Reference ref =
+      FirebaseStorage.instance.ref('fleamarket/$pk/$i.jpg');
 
-      var uploadTask = ref
-          .putFile(fileToUpload, metaData)
-          .then((p0) => ref.getDownloadURL());
+      int retry = 0;
+      const int maxRetry = 3;
+      bool uploaded = false;
+      String? imageUrl;
 
-      uploadTasks.add(uploadTask);
+      while (!uploaded && retry < maxRetry) {
+        try {
+          print("📌 [$i] 업로드 시도 ${retry + 1}/$maxRetry");
+          await ref.putFile(fileToUpload, metaData);
+
+          imageUrl = await ref.getDownloadURL();
+
+          print("✅ [$i] 업로드 성공: $imageUrl");
+          uploaded = true;
+        } catch (e) {
+          retry++;
+          print("❌ [$i] 업로드 실패 → 재시도 ($retry/$maxRetry), error: $e");
+
+          await Future.delayed(Duration(milliseconds: 600));
+        }
+      }
+
+      if (!uploaded || imageUrl == null) {
+        print("🚨 [$i] 업로드 최종 실패 → 빈값 push (서버 Validation 방지)");
+        downloadUrlList.add("");
+        continue;
+      }
+
+      downloadUrlList.add(imageUrl);
     }
 
-    print('파베업로드 & url다운 작업 끝');
-
-    // 병렬 업로드 결과 기다리기
-    downloadUrlList = await Future.wait(uploadTasks);
-
+    print('📤 중고거래 이미지 업로드 종료');
     return downloadUrlList;
   }
+
 
 // 이미지 압축 함수 - JPEG 코덱을 명시적으로 설정
   Future<File> _compressImage(File file) async {
@@ -81,44 +107,48 @@ class ImageController extends GetxController {
     return compressedFile;
   }
 
-  Future<String> setNewImage_Crew({required XFile newImage, required crewID}) async {
-    String? uid = await FlutterSecureStorage().read(key: 'uid');
-    var metaData = SettableMetadata(contentType: 'image/jpeg');
+  Future<String> setNewImage_Crew({
+    required XFile newImage,
+    required crewID,
+    String? oldUrl,   // ← 이전 로고 URL (수정일 때만 넘겨줌)
+  }) async {
+    final metaData = SettableMetadata(contentType: 'image/jpeg');
     String downloadUrl = '';
 
-    if (newImage != null) {
+    try {
+      File fileToUpload;
       try {
-        // 이미지 압축 작업
-        try {
-          File compressedImage = await _compressImage(File(newImage.path));
-
-          // Firebase Storage에 이미지 업로드
-          Reference ref = FirebaseStorage.instance.ref('crewLogo/$crewID.jpg');
-          await ref.putFile(compressedImage, metaData);
-
-          // 다운로드 URL 가져오기
-          downloadUrl = await ref.getDownloadURL();
-          print('Download URL: $downloadUrl');
-        }catch(e){
-
-          // Firebase Storage에 이미지 업로드
-          Reference ref = FirebaseStorage.instance.ref('crewLogo/$crewID.jpg');
-          await ref.putFile(File(newImage.path), metaData);
-
-          // 다운로드 URL 가져오기
-          downloadUrl = await ref.getDownloadURL();
-          print('Download URL: $downloadUrl');
-        }
-
+        fileToUpload = await _compressImage(File(newImage.path));
       } catch (e) {
-        print('Error uploading image: $e');
+        print('Crew image compress error, use original: $e');
+        fileToUpload = File(newImage.path);
       }
-    } else {
-      CustomFullScreenDialog.cancelDialog();
+
+      final timestamp = DateTime.now().millisecondsSinceEpoch;
+      final fileName = '${crewID}_$timestamp.jpg';
+      final ref = FirebaseStorage.instance.ref('crewLogo/$fileName');
+
+      await ref.putFile(fileToUpload, metaData);
+      downloadUrl = await ref.getDownloadURL();
+      print('Crew logo download URL: $downloadUrl');
+
+      // 이전 로고 삭제 (크루 수정 시)
+      if (oldUrl != null && oldUrl.isNotEmpty) {
+        try {
+          final oldRef = FirebaseStorage.instance.refFromURL(oldUrl);
+          await oldRef.delete();
+          print('Old crew logo deleted: $oldUrl');
+        } catch (e) {
+          print('Failed to delete old crew logo: $e');
+        }
+      }
+    } catch (e) {
+      print('Error uploading crew image: $e');
     }
 
     return downloadUrl;
   }
+
 
 
   Future<XFile?> getSingleImage(ImageSource) async {
@@ -245,33 +275,39 @@ class ImageController extends GetxController {
       return '';
     }
 
-    var metaData = SettableMetadata(contentType: 'image/jpeg');
-    String downloadUrl = '';
+    final metaData = SettableMetadata(contentType: 'image/jpeg');
 
     try {
-      // 이미지 압축 작업
-      File compressedImage = await _compressImage(File(newImage.path));
+      // 1) 업로드할 파일 준비 (압축 시도 → 실패하면 원본 사용)
+      File fileToUpload;
+      try {
+        fileToUpload = await _compressImage(File(newImage.path));
+      } catch (e) {
+        print('Image compress error, use original file: $e');
+        fileToUpload = File(newImage.path);
+      }
 
-      // Firebase Storage에 이미지 업로드
-      Reference ref = FirebaseStorage.instance.ref('user_profile/$uid.jpg');
-      await ref.putFile(compressedImage, metaData);
+      // 2) 매번 다른 파일명 생성 (uid + timestamp)
+      final timestamp = DateTime.now().millisecondsSinceEpoch;
+      final fileName = '${uid}_$timestamp.jpg';
 
-      // 다운로드 URL 가져오기
-      downloadUrl = await ref.getDownloadURL();
+      // 3) Firebase Storage 경로
+      final ref = FirebaseStorage.instance.ref('user_profile/$fileName');
+
+      // 4) 업로드
+      await ref.putFile(fileToUpload, metaData);
+
+      // 5) 다운로드 URL 가져오기
+      final downloadUrl = await ref.getDownloadURL();
       print('Download URL: $downloadUrl');
+
+      return downloadUrl;
     } catch (e) {
-      // Firebase Storage에 이미지 업로드
-      Reference ref = FirebaseStorage.instance.ref('user_profile/$uid.jpg');
-      await ref.putFile(File(newImage.path), metaData);
-
-      // 다운로드 URL 가져오기
-      downloadUrl = await ref.getDownloadURL();
-      print('Download URL: $downloadUrl');
       print('Error uploading image: $e');
+      return '';
     }
-
-    return downloadUrl;
   }
+
 
 
   // Future<void> deleteProfileImage() async{

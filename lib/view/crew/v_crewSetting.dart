@@ -38,10 +38,9 @@ class CrewSettingView extends StatelessWidget {
         ),
         title: Text(
           '크루 설정',
-          style: TextStyle(
-              color: SDSColor.snowliveBlack,
-              fontSize: 18
-          ),
+          style: SDSTextStyle.extraBold.copyWith(
+              color: SDSColor.gray900,
+              fontSize: 18),
         ),
         elevation: 0,
         toolbarHeight: 44,
