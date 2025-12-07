@@ -72,6 +72,15 @@ class ResortHomeViewModel extends GetxController {
   RxBool _hasFriendInBoundaryAndRevealWb = false.obs;
   bool get hasFriendInBoundaryAndRevealWb => _hasFriendInBoundaryAndRevealWb.value;
 
+  // 경계 외부 debounce를 위한 변수 (GPS 오차로 인한 오탐 방지)
+  int _outOfBoundaryCount = 0;
+  static const int _outOfBoundaryThreshold = 3; // 3회 연속 경계 외부일 때만 종료
+  DateTime? _lastOutOfBoundaryTime;
+
+  // 백그라운드 서비스 재시작을 위한 변수
+  int _locationErrorCount = 0;
+  static const int _maxLocationErrorRetry = 3;
+  bool _isRestartingService = false;
 
   String? _liveActivityId;
   DateTime? _liveOnStartedAt; // 시작 시각 표시용 (LockScreen에 타이머로 쓰는 값)
@@ -291,6 +300,9 @@ class ResortHomeViewModel extends GetxController {
             DateTime now = DateTime.now();
 
             if (withinBoundary) {
+              // 경계 내부 진입 시 카운터 리셋
+              _outOfBoundaryCount = 0;
+              _locationErrorCount = 0;
 
               // try {
               //   // 현재 시간 가져오기
@@ -394,10 +406,19 @@ class ResortHomeViewModel extends GetxController {
                 }
               }
             } else {
-              print('포그라운드 경계 외부');
-              await stopForegroundLocationService();
-              await stopBackgroundLocationService();
-              await liveOff({"user_id": user_id}, user_id);
+              // 경계 외부 debounce 로직: GPS 오차로 인한 오탐 방지
+              _outOfBoundaryCount++;
+              _lastOutOfBoundaryTime = DateTime.now();
+              print('포그라운드 경계 외부 감지 ($_outOfBoundaryCount/$_outOfBoundaryThreshold)');
+
+              // 연속 3회 이상 경계 외부일 때만 종료
+              if (_outOfBoundaryCount >= _outOfBoundaryThreshold) {
+                print('경계 외부 확정 - 위치 서비스 종료');
+                _outOfBoundaryCount = 0; // 카운터 리셋
+                await stopForegroundLocationService();
+                await stopBackgroundLocationService();
+                await liveOff({"user_id": user_id}, user_id);
+              }
             }
           });
         });
@@ -414,28 +435,53 @@ class ResortHomeViewModel extends GetxController {
   }
 
   Future<void> startBackgroundLocationService({required user_id}) async {
-    DateTime now = DateTime.now();
     await bg.BackgroundGeolocation.ready(bg.Config(
       desiredAccuracy: bg.Config.DESIRED_ACCURACY_HIGH,
+
+      // 🔥 iOS suspend 방지 / 백그라운드 안정화
       preventSuspend: true,
-      disableMotionActivityUpdates: true,
+      disableMotionActivityUpdates: false,   // 반드시 false (중요)
       stopOnStationary: false,
-      distanceFilter: 0,
-      isMoving: true,
-      disableElasticity: true,
-      stopOnTerminate: true,
-      startOnBoot: false,
+
+      // 🔥 Android foreground service 유지 → 삼성 종료 방지
+      foregroundService: true,
+
+      // 🔥 위치 업데이트 튜닝
+      distanceFilter: 10,                    // 3 → 10m (가장 안정)
       stationaryRadius: 25,
-      logLevel: bg.Config.LOG_LEVEL_OFF,
-      locationUpdateInterval: 5000,
-      disableLocationAuthorizationAlert: true,
-      showsBackgroundLocationIndicator: true,
+      elasticityMultiplier: 1.0,             // disableElasticity 쓰지 않음
+
+      // 🔥 앱 종료 / 재부팅 이후에도 계속 동작
+      stopOnTerminate: false,
+      startOnBoot: true,
+      forceReloadOnBoot: true,               // 🆕 삼성/중국 기기 재부팅 후에도 재시작
+
+      // 🔥 iOS/Android 백그라운드 유지를 위한 heartbeat
+      heartbeatInterval: 60,                 // 🆕 60초마다 heartbeat (iOS suspend 방지)
+      enableHeadless: true,                  // 🆕 앱 종료 후에도 headless 모드로 동작
+
+      // 🔥 위치 업데이트 속도 (삼성 Doze 정책 준수)
+      locationUpdateInterval: 10000,          // 10초
+      fastestLocationUpdateInterval: 5000,    // 5초
+
+      // 🔥 Android 배터리 최적화 안내
       backgroundPermissionRationale: PermissionRationale(
-        title: "{applicationName}가 종료되거나 사용하지 않을 때 위치에 접근하도록 허용하시겠습니까?",
-        message: "위치 서비스를 사용하시면 라이브 기능을 통해 랭킹 서비스를 이용할 수 있고, 친구와 라이브 상태를 공유할 수 있습니다. 이 앱은 항상 허용을 하면 앱이 사용 중이 아닐 때도 위치 데이터를 수집하여 라이브 서비스 기능을 지원합니다.",
+        title: "{applicationName}가 종료되거나 사용하지 않을 때 위치 접근을 허용하시겠습니까?",
+        message: "라이브 기능과 랭킹 서비스를 위해 앱이 백그라운드에서도 위치를 수집해야 합니다.",
         positiveAction: '{backgroundPermissionOptionLabel}',
         negativeAction: '취소',
       ),
+
+      // 🔥 Android 알림 설정 (포그라운드 서비스)
+      notification: bg.Notification(
+        title: "스노우라이브",
+        text: "라이브 위치 추적 중...",
+        sticky: true,                         // 🆕 알림 고정 (스와이프로 삭제 불가)
+      ),
+
+      showsBackgroundLocationIndicator: true,
+      disableLocationAuthorizationAlert: true,
+      logLevel: bg.Config.LOG_LEVEL_OFF,
     ));
 
     await bg.BackgroundGeolocation.start();
@@ -467,42 +513,10 @@ class ResortHomeViewModel extends GetxController {
             _resort_info['radius']
         );
 
-        DateTime now = DateTime.now();
-
         if (withinBoundary) {
-          //
-          // try {
-          //   // 현재 시간 가져오기
-          //   final now = DateTime.now();
-          //
-          //   // 마지막 페이크 위치 감지 시간과의 차이 계산 (10초 초과 시 실행)
-          //   if (_lastFakeLocationCheckTime == null ||
-          //       now.difference(_lastFakeLocationCheckTime!).inSeconds > 10) {
-          //     _lastFakeLocationCheckTime = now; // 마지막 실행 시간 업데이트
-          //
-          //     // 페이크 위치 감지
-          //     final isFakeLocation = await DetectFakeLocation().detectFakeLocation();
-          //
-          //     if (isFakeLocation) {
-          //       print('페이크 위치가 감지되었습니다. 위치 추적을 중지합니다.');
-          //
-          //       // 위치 추적 서비스 중지
-          //       await stopForegroundLocationService();
-          //       await stopBackgroundLocationService();
-          //
-          //       // 사용자에게 경고 메시지 표시
-          //       Get.snackbar(
-          //         '경고',
-          //         '페이크 위치가 감지되었습니다. 위치 추적 서비스가 중단되었습니다.',
-          //         snackPosition: SnackPosition.BOTTOM,
-          //       );
-          //
-          //       return; // 이후 코드 실행 방지
-          //     }
-          //   }
-          // } catch (e) {
-          //   print('페이크 위치 감지 중 오류 발생: $e');
-          // }
+          // 경계 내부 진입 시 카운터 리셋
+          _outOfBoundaryCount = 0;
+          _locationErrorCount = 0;
 
           List<Map<String, dynamic>> passPointInfos = checkPositionInAreas(
             position,
@@ -580,14 +594,44 @@ class ResortHomeViewModel extends GetxController {
           }
 
         } else {
-          await stopForegroundLocationService();
-          await stopBackgroundLocationService();
-          await liveOff({"user_id": user_id}, user_id);
+          // 경계 외부 debounce 로직: GPS 오차로 인한 오탐 방지
+          _outOfBoundaryCount++;
+          _lastOutOfBoundaryTime = DateTime.now();
+          print('백그라운드 경계 외부 감지 ($_outOfBoundaryCount/$_outOfBoundaryThreshold)');
+
+          // 연속 3회 이상 경계 외부일 때만 종료
+          if (_outOfBoundaryCount >= _outOfBoundaryThreshold) {
+            print('경계 외부 확정 - 위치 서비스 종료');
+            _outOfBoundaryCount = 0; // 카운터 리셋
+            await stopForegroundLocationService();
+            await stopBackgroundLocationService();
+            await liveOff({"user_id": user_id}, user_id);
+          }
         }
       });
 
-    }, (bg.LocationError error) async{
-      print('[onLocation] ERROR: $error');
+    }, (bg.LocationError error) async {
+      // 위치 에러 발생 시 복구 로직
+      _locationErrorCount++;
+      print('[onLocation] ERROR ($_locationErrorCount/$_maxLocationErrorRetry): $error');
+
+      // 최대 재시도 횟수 초과 시 서비스 재시작 시도
+      if (_locationErrorCount >= _maxLocationErrorRetry && !_isRestartingService) {
+        _isRestartingService = true;
+        print('위치 에러 최대 횟수 도달 - 서비스 재시작 시도');
+
+        try {
+          await bg.BackgroundGeolocation.stop();
+          await Future.delayed(const Duration(seconds: 2));
+          await bg.BackgroundGeolocation.start();
+          _locationErrorCount = 0;
+          print('백그라운드 위치 서비스 재시작 성공');
+        } catch (e) {
+          print('백그라운드 위치 서비스 재시작 실패: $e');
+        } finally {
+          _isRestartingService = false;
+        }
+      }
     });
   }
 
