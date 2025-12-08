@@ -31,14 +31,7 @@ class FriendDetailViewModel extends GetxController {
   @override
   void onInit() async {
     super.onInit();
-    textEditingController.addListener(() {
-      if (textEditingController.text.trim().isNotEmpty) {
-        isSendButtonEnabled(true);
-      } else {
-        isSendButtonEnabled(false);
-      }
-    });
-
+    textEditingController.addListener(_textEditingListener);
 
     mainTabNameList = <String>[
       '라이딩 통계',
@@ -413,7 +406,24 @@ class FriendDetailViewModel extends GetxController {
         date.isAtSameMomentAs(seasonStart) || date.isAtSameMomentAs(seasonEnd);
   }
 
+  // 리스너 함수 (onClose에서 제거하기 위해 분리)
+  void _textEditingListener() {
+    if (textEditingController.text.trim().isNotEmpty) {
+      isSendButtonEnabled(true);
+    } else {
+      isSendButtonEnabled(false);
+    }
+  }
 
-
+  @override
+  void onClose() {
+    // TextEditingController 리스너 해제 및 dispose (메모리 누수 방지)
+    textEditingController.removeListener(_textEditingListener);
+    textEditingController.dispose();
+    _stateMsgController.value.dispose();
+    _friendTalkController.value.dispose();
+    _displayNameController.value.dispose();
+    super.onClose();
+  }
 }
 

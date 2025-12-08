@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'package:flutter_udid/flutter_udid.dart';
 import 'package:get/get.dart';
@@ -10,6 +11,10 @@ class NotificationController extends GetxController {
   RxString _deviceToken = ''.obs;
   RxString _deviceID = ''.obs;
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+
+  // StreamSubscription 저장 (메모리 누수 방지)
+  StreamSubscription<RemoteMessage>? _onMessageSubscription;
+  StreamSubscription<RemoteMessage>? _onMessageOpenedAppSubscription;
 
   String get deviceToken => _deviceToken.value;
   String get deviceID => _deviceID.value;
@@ -90,14 +95,14 @@ class NotificationController extends GetxController {
   }
 
   Future<void> _onMessage() async {
-    // 포그라운드 알림 수신 처리
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+    // 포그라운드 알림 수신 처리 (StreamSubscription 저장)
+    _onMessageSubscription = FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       print('Foreground에서 알림 수신: ${message.notification?.title}');
       _showLocalNotification(message);
     });
 
-    // 알림 클릭 시 앱이 열리는 처리
-    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+    // 알림 클릭 시 앱이 열리는 처리 (StreamSubscription 저장)
+    _onMessageOpenedAppSubscription = FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
       //print('알림 클릭 후 앱이 열림: ${message.notification?.title}');
     });
 
@@ -124,5 +129,13 @@ class NotificationController extends GetxController {
       platformChannelSpecifics,
       payload: message.data.isNotEmpty ? json.encode(message.data) : null,
     );
+  }
+
+  @override
+  void onClose() {
+    // StreamSubscription 해제 (메모리 누수 방지)
+    _onMessageSubscription?.cancel();
+    _onMessageOpenedAppSubscription?.cancel();
+    super.onClose();
   }
 }

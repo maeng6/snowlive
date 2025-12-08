@@ -129,48 +129,61 @@ class FleamarketListViewModel extends GetxController {
       ..addListener(_scrollListener_favorite);
     scrollController_my = ScrollController()
       ..addListener(_scrollListener_my);
-
   }
 
-  Future<void> fetchAllFleamarket() async{
-    _isLoadingList_total.value = true;
-    print(_isLoadingList_total.value);
-    _isLoadingList_ski.value = true;
-    _isLoadingList_board.value = true;
-    _isLoadingList_my.value = true;
-    _isLoadingList_favorite.value = true;
-    await fetchFleamarketData_total(userId: _userViewModel.user.user_id);
-    _isLoadingList_total.value = false;
-    print(_isLoadingList_total.value);
-    await fetchFleamarketData_ski(userId: _userViewModel.user.user_id, categoryMain:'스키');
-    _isLoadingList_ski.value = false;
-    await fetchFleamarketData_board(userId: _userViewModel.user.user_id, categoryMain:'스노보드');
-    _isLoadingList_board.value = false;
-    await fetchFleamarketData_my(userId: _userViewModel.user.user_id, myflea: true);
-    _isLoadingList_my.value = false;
-    await fetchFleamarketData_favorite(userId: _userViewModel.user.user_id, favorite_list: true);
-    _isLoadingList_favorite.value = false;
+  @override
+  void onClose() {
+    // ScrollController 리스너 해제 및 dispose (메모리 누수 방지)
+    scrollController_total.removeListener(_scrollListener_total);
+    scrollController_total.dispose();
+    scrollController_ski.removeListener(_scrollListener_ski);
+    scrollController_ski.dispose();
+    scrollController_board.removeListener(_scrollListener_board);
+    scrollController_board.dispose();
+    scrollController_favorite.removeListener(_scrollListener_favorite);
+    scrollController_favorite.dispose();
+    scrollController_my.removeListener(_scrollListener_my);
+    scrollController_my.dispose();
+    super.onClose();
   }
 
-  Future<void> fetchAllFleamarket_afterFavorite() async{
-    _isLoadingList_favorite.value = true;
+  Future<void> fetchAllFleamarket() async {
+    // 모든 로딩 상태 true로 설정
     _isLoadingList_total.value = true;
     _isLoadingList_ski.value = true;
     _isLoadingList_board.value = true;
     _isLoadingList_my.value = true;
-    await fetchFleamarketData_favorite(userId: _userViewModel.user.user_id, favorite_list: true);
-    _isLoadingList_favorite.value = false;
-    await fetchFleamarketData_total(userId: _userViewModel.user.user_id);
-    _isLoadingList_total.value = false;
-    await fetchFleamarketData_ski(userId: _userViewModel.user.user_id, categoryMain:'스키');
-    _isLoadingList_ski.value = false;
-    await fetchFleamarketData_board(userId: _userViewModel.user.user_id, categoryMain:'스노보드');
-    _isLoadingList_board.value = false;
-    await fetchFleamarketData_my(userId: _userViewModel.user.user_id, myflea: true);
-    _isLoadingList_my.value = false;
+    _isLoadingList_favorite.value = true;
+
+    // 5개 API 병렬 처리 (약 80% 시간 단축)
+    await Future.wait([
+      fetchFleamarketData_total(userId: _userViewModel.user.user_id).then((_) => _isLoadingList_total.value = false),
+      fetchFleamarketData_ski(userId: _userViewModel.user.user_id, categoryMain: '스키').then((_) => _isLoadingList_ski.value = false),
+      fetchFleamarketData_board(userId: _userViewModel.user.user_id, categoryMain: '스노보드').then((_) => _isLoadingList_board.value = false),
+      fetchFleamarketData_my(userId: _userViewModel.user.user_id, myflea: true).then((_) => _isLoadingList_my.value = false),
+      fetchFleamarketData_favorite(userId: _userViewModel.user.user_id, favorite_list: true).then((_) => _isLoadingList_favorite.value = false),
+    ]);
   }
 
-  Future<void> fetchAllFleamarket_afterUpload() async{
+  Future<void> fetchAllFleamarket_afterFavorite() async {
+    // 모든 로딩 상태 true로 설정
+    _isLoadingList_favorite.value = true;
+    _isLoadingList_total.value = true;
+    _isLoadingList_ski.value = true;
+    _isLoadingList_board.value = true;
+    _isLoadingList_my.value = true;
+
+    // 5개 API 병렬 처리
+    await Future.wait([
+      fetchFleamarketData_favorite(userId: _userViewModel.user.user_id, favorite_list: true).then((_) => _isLoadingList_favorite.value = false),
+      fetchFleamarketData_total(userId: _userViewModel.user.user_id).then((_) => _isLoadingList_total.value = false),
+      fetchFleamarketData_ski(userId: _userViewModel.user.user_id, categoryMain: '스키').then((_) => _isLoadingList_ski.value = false),
+      fetchFleamarketData_board(userId: _userViewModel.user.user_id, categoryMain: '스노보드').then((_) => _isLoadingList_board.value = false),
+      fetchFleamarketData_my(userId: _userViewModel.user.user_id, myflea: true).then((_) => _isLoadingList_my.value = false),
+    ]);
+  }
+
+  Future<void> fetchAllFleamarket_afterUpload() async {
     changeCategory_sub_total('${FleamarketCategory_sub.total.korean}');
     changeCategory_spot_total('${FleamarketCategory_spot.total.korean}');
     changeCategory_sub_ski('${FleamarketCategory_sub.total.korean}');
@@ -178,21 +191,22 @@ class FleamarketListViewModel extends GetxController {
     changeCategory_sub_board('${FleamarketCategory_sub.total.korean}');
     changeCategory_spot_board('${FleamarketCategory_spot.total.korean}');
     changeTap('전체');
+
+    // 모든 로딩 상태 true로 설정
     _isLoadingList_total.value = true;
     _isLoadingList_ski.value = true;
     _isLoadingList_board.value = true;
     _isLoadingList_my.value = true;
     _isLoadingList_favorite.value = true;
-    await fetchFleamarketData_total(userId: _userViewModel.user.user_id);
-    _isLoadingList_total.value = false;
-    await fetchFleamarketData_my(userId: _userViewModel.user.user_id, myflea: true);
-    _isLoadingList_my.value = false;
-    await fetchFleamarketData_ski(userId: _userViewModel.user.user_id, categoryMain:'스키');
-    _isLoadingList_ski.value = false;
-    await fetchFleamarketData_board(userId: _userViewModel.user.user_id, categoryMain:'스노보드');
-    _isLoadingList_board.value = false;
-    await fetchFleamarketData_favorite(userId: _userViewModel.user.user_id, favorite_list: true);
-    _isLoadingList_favorite.value = false;
+
+    // 5개 API 병렬 처리
+    await Future.wait([
+      fetchFleamarketData_total(userId: _userViewModel.user.user_id).then((_) => _isLoadingList_total.value = false),
+      fetchFleamarketData_my(userId: _userViewModel.user.user_id, myflea: true).then((_) => _isLoadingList_my.value = false),
+      fetchFleamarketData_ski(userId: _userViewModel.user.user_id, categoryMain: '스키').then((_) => _isLoadingList_ski.value = false),
+      fetchFleamarketData_board(userId: _userViewModel.user.user_id, categoryMain: '스노보드').then((_) => _isLoadingList_board.value = false),
+      fetchFleamarketData_favorite(userId: _userViewModel.user.user_id, favorite_list: true).then((_) => _isLoadingList_favorite.value = false),
+    ]);
   }
 
   Future<void> _scrollListener_total() async {
