@@ -1601,15 +1601,21 @@ class _SnowballMarketHomeViewState extends State<SnowballMarketHomeView> {
                                   Image.asset(
                                     'assets/imgs/imgs/snowballShop/img_snowballshop_store_bottom_image2.png',
                                   ),
-                                  Center(
-                                    child: Padding(
-                                      padding: EdgeInsets.symmetric(vertical: 46, horizontal: 40),
-                                      child: Text('안녕하세요?\n저는 눈송이를 찾아 전국을 유랑하는\n상인 하람이에요.\n\n저의 고향 스노빌리지에서는\n제가 눈송이를 가득 싣고 오기를\n애타게 기다리고 있어요.\n\n눈송이가 왜 필요하냐구요?\n\n눈송이는 우리 스노 친구들이 더운 여름을 견디기 위해 꼭 필요한 자원이랍니다.\n그래서 저는 이번 겨울 최대한 많은 눈송이를 모으기 위해 전국을 유랑하고 있어요.\n\n그런데 이번 겨울 휘닉스 파크에서 대량의 눈송이가 내린다는 예보가 있지 뭐에요?\n제가 다양한 선물을 가지고 왔으니, 여러분이 힘을 합쳐 눈송이를 모아서 가져와주세요!\n\n눈송이 값은 섭섭치 않게 쳐드릴게요~',
-                                        style: TextStyle(
-                                            color: SDSColor.snowliveBlack,
-                                            fontSize: 14
+                                  Positioned(
+                                    top: 0,
+                                    bottom: 20,
+                                    left: 0,
+                                    right: 0,
+                                    child: Center(
+                                      child: Padding(
+                                        padding: EdgeInsets.symmetric(horizontal: 40),
+                                        child: Text('안녕하세요?\n저는 눈송이를 찾아 전국을 유랑하는\n상인 하람이에요.\n\n저의 고향 스노빌리지에서는\n제가 눈송이를 가득 싣고 오기를\n애타게 기다리고 있어요.\n\n눈송이가 왜 필요하냐구요?\n\n눈송이는 우리 스노 친구들이 더운 여름을 견디기 위해 꼭 필요한 자원이랍니다.\n그래서 저는 이번 겨울 최대한 많은 눈송이를 모으기 위해 전국을 유랑하고 있어요.\n\n그런데 이번 겨울 휘닉스 파크에서 대량의 눈송이가 내린다는 예보가 있지 뭐에요?\n제가 다양한 선물을 가지고 왔으니, 여러분이 힘을 합쳐 눈송이를 모아서 가져와주세요!\n\n눈송이 값은 섭섭치 않게 쳐드릴게요~',
+                                          style: TextStyle(
+                                              color: SDSColor.snowliveBlack,
+                                              fontSize: 14
+                                          ),
+                                            textAlign: TextAlign.center,
                                         ),
-                                          textAlign: TextAlign.center,
                                       ),
                                     ),
                                   ),
