@@ -56,5 +56,10 @@ class MainHomeViewModel extends GetxController {
     _tap_5.value = index == 4;
   }
 
-
+  @override
+  void onClose() {
+    // 메모리 누수 방지: PageController 정리
+    _pageController.value.dispose();
+    super.onClose();
+  }
 }

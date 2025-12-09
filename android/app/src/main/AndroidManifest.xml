@@ -15,6 +15,8 @@
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <!-- 배터리 최적화 제외 요청 권한 (백그라운드 위치 서비스 안정적 실행) -->
+    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
 
     <!-- 앱 설정 -->
     <application

@@ -59,6 +59,7 @@ class NotificationController extends GetxController {
   Future<String?> postMessage({required String fcmToken, required String title, required String body}) async {
     try {
       String url = 'https://snowlive-api-0eab29705c9f.herokuapp.com/api/fcm/send-push/';
+      // timeout 추가: 백그라운드에서 무한 대기 방지
       http.Response response = await http.post(
         Uri.parse(url),
         headers: {'Content-Type': 'application/json'},
@@ -67,6 +68,11 @@ class NotificationController extends GetxController {
           "title": title,
           "body": body,
         }),
+      ).timeout(
+        const Duration(seconds: 30),
+        onTimeout: () {
+          throw TimeoutException('푸시 알림 전송 시간 초과');
+        },
       );
 
       if (response.statusCode == 200) {
@@ -75,6 +81,9 @@ class NotificationController extends GetxController {
         print("Failed to send push notification: ${response.statusCode}");
         return "Failed to send push notification";
       }
+    } on TimeoutException catch (e) {
+      print("Timeout occurred: $e");
+      return "Error: 요청 시간 초과";
     } catch (e) {
       print("Error occurred: $e");
       return "Error: $e";

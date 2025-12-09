@@ -30,28 +30,36 @@ class FleamarketCommentDetailViewModel extends GetxController {
   final TextEditingController textEditingController = TextEditingController();
   final formKey = GlobalKey<FormState>();
 
+  // 리스너 참조 저장 (removeListener 호출을 위해)
+  late void Function() _textEditingListener;
+
   @override
   void onInit() async {
-
-    textEditingController.addListener(() {
+    // 리스너를 변수에 저장하여 나중에 해제 가능하도록 함
+    _textEditingListener = () {
       if (textEditingController.text.trim().isNotEmpty) {
         isCommentButtonEnabled(true);
       } else {
         isCommentButtonEnabled(false);
       }
-    });
+    };
+    textEditingController.addListener(_textEditingListener);
+
     _scrollController = ScrollController()
       ..addListener(_scrollListener);
 
     super.onInit();
-
   }
 
   Future<void> _scrollListener() async {}
 
   @override
   void onClose() {
-    textEditingController.dispose(); // 메모리 누수를 방지하기 위해 컨트롤러 해제
+    // 메모리 누수 방지: 리스너 해제 후 dispose
+    textEditingController.removeListener(_textEditingListener);
+    textEditingController.dispose();
+    _scrollController.removeListener(_scrollListener);
+    _scrollController.dispose();
     super.onClose();
   }
 

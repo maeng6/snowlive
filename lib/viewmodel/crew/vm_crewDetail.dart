@@ -17,7 +17,8 @@ class CrewDetailViewModel extends GetxController {
   final UserViewModel _userViewModel = Get.find<UserViewModel>();
   final FriendDetailViewModel _friendDetailViewModel = Get.find<FriendDetailViewModel>();
 
-  TextEditingController textEditingController_description = TextEditingController();
+  late TextEditingController textEditingController_description;
+  late void Function() _descriptionListener; // 리스너 참조 저장용
   final formKey_description = GlobalKey<FormState>();
 
   var currentTab = '홈'.obs;
@@ -70,10 +71,22 @@ class CrewDetailViewModel extends GetxController {
   bool get isCrewIntroExpanded => _isCrewIntroExpanded.value;
 
 
-  CrewDetailViewModel() {
-    textEditingController_description.addListener(() {
+  @override
+  void onInit() {
+    super.onInit();
+    textEditingController_description = TextEditingController();
+    _descriptionListener = () {
       crewDetailInfo.description = textEditingController_description.text;
-    });
+    };
+    textEditingController_description.addListener(_descriptionListener);
+  }
+
+  @override
+  void onClose() {
+    // 메모리 누수 방지: 리스너 해제 후 dispose
+    textEditingController_description.removeListener(_descriptionListener);
+    textEditingController_description.dispose();
+    super.onClose();
   }
 
   void changeTab(String tabName) {

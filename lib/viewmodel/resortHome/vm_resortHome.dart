@@ -637,6 +637,15 @@ class ResortHomeViewModel extends GetxController {
           print('백그라운드 위치 서비스 재시작 성공');
         } catch (e) {
           print('백그라운드 위치 서비스 재시작 실패: $e');
+          // 재시작 실패 시 서비스 완전 정리 (메모리 누수 및 비정상 상태 방지)
+          try {
+            await stopBackgroundLocationService();
+            await stopForegroundLocationService();
+            _locationErrorCount = 0;
+            print('위치 서비스 정리 완료 - 앱 재시작 필요');
+          } catch (cleanupError) {
+            print('위치 서비스 정리 실패: $cleanupError');
+          }
         } finally {
           _isRestartingService = false;
         }
@@ -746,6 +755,15 @@ class ResortHomeViewModel extends GetxController {
 
   Future<ApiResponse> liveOn(Map<String, dynamic> body) async {
     try {
+      // Android: 배터리 최적화 제외 확인 (백그라운드 kill 방지)
+      if (Platform.isAndroid) {
+        final isAllowed = await showBatteryOptimizationDialog();
+        if (!isAllowed) {
+          // 사용자가 취소한 경우 라이브온 중단
+          return ApiResponse.error('배터리 최적화 설정이 필요합니다.');
+        }
+      }
+
       isLoading(true);
       final ApiResponse response = await RankingAPI().check_wb(body);
       if (response.success) {
@@ -804,20 +822,88 @@ class ResortHomeViewModel extends GetxController {
 
   Future<void> navigateToBatterySettings() async {
     if (Platform.isAndroid) {
-      // Android의 경우 배터리 절약 모드 설정 화면으로 이동
       final intent = AndroidIntent(
         action: 'android.settings.BATTERY_SAVER_SETTINGS',
       );
       await intent.launch();
     } else if (Platform.isIOS) {
-      // iOS의 경우 배터리 설정 화면으로 이동
       const url = 'App-Prefs:root=BATTERY_USAGE';
-      if (await canLaunch(url)) {
-        await launch(url);
+      if (await canLaunchUrl(Uri.parse(url))) {
+        await launchUrl(Uri.parse(url));
       } else {
-        openAppSettings(); // URL 스킴이 실패하면 앱 설정으로 이동
+        openAppSettings();
       }
     }
+  }
+
+  /// 배터리 최적화 제외 상태 확인 (Android 전용)
+  /// true: 제외됨 (백그라운드 실행 제한 없음), false: 제외 안됨
+  Future<bool> isIgnoringBatteryOptimizations() async {
+    if (Platform.isAndroid) {
+      try {
+        const channel = MethodChannel('detect_battery_saver');
+        final result = await channel.invokeMethod('isIgnoringBatteryOptimizations');
+        return result == true;
+      } catch (e) {
+        print('배터리 최적화 상태 확인 오류: $e');
+        return false;
+      }
+    }
+    return true; // iOS는 해당 없음
+  }
+
+  /// 배터리 최적화 제외 요청 (시스템 다이얼로그 표시)
+  Future<bool> requestIgnoreBatteryOptimizations() async {
+    if (Platform.isAndroid) {
+      try {
+        const channel = MethodChannel('detect_battery_saver');
+        final result = await channel.invokeMethod('requestIgnoreBatteryOptimizations');
+        return result == true;
+      } catch (e) {
+        print('배터리 최적화 제외 요청 오류: $e');
+        return false;
+      }
+    }
+    return true;
+  }
+
+  /// 배터리 최적화 안내 다이얼로그 표시 후 시스템 설정 호출
+  Future<bool> showBatteryOptimizationDialog() async {
+    if (!Platform.isAndroid) return true;
+
+    // 이미 제외되어 있으면 스킵
+    final isIgnoring = await isIgnoringBatteryOptimizations();
+    if (isIgnoring) return true;
+
+    // 앱 내 안내 다이얼로그 표시
+    final result = await Get.dialog<bool>(
+      AlertDialog(
+        title: const Text('배터리 설정 안내'),
+        content: const Text(
+          '라이브 기능을 원활히 사용하기 위해 배터리 최적화를 무시하도록 설정해야 합니다.\n\n허용하시겠습니까?',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Get.back(result: false),
+            child: const Text('취소'),
+          ),
+          TextButton(
+            onPressed: () => Get.back(result: true),
+            child: const Text('설정하기'),
+          ),
+        ],
+      ),
+      barrierDismissible: false,
+    );
+
+    if (result == true) {
+      // 시스템 다이얼로그 호출
+      await requestIgnoreBatteryOptimizations();
+      // 약간의 딜레이 후 결과 확인
+      await Future.delayed(const Duration(milliseconds: 500));
+      return await isIgnoringBatteryOptimizations();
+    }
+    return false;
   }
 
   //TODO: 라이브온 관련 메소드****************************************************
