@@ -112,11 +112,14 @@ class RankingCrewView_recordRoom extends StatelessWidget {
                                             GestureDetector(
                                               onTap: () async{
                                                 Get.toNamed(AppRoutes.crewMain);
-                                                await _crewMemberListViewModel.fetchCrewMembers(crewId: _rankingListViewModel_recordRoom.rankingListCrewMy_view!.crewId!);
-                                                await _crewDetailViewModel.fetchCrewDetail(
-                                                    _rankingListViewModel_recordRoom.rankingListCrewMy_view!.crewId!,
-                                                    _friendDetailViewModel.seasonDate
-                                                );
+                                                // 병렬 호출로 로딩 시간 단축
+                                                await Future.wait([
+                                                  _crewMemberListViewModel.fetchCrewMembers(crewId: _rankingListViewModel_recordRoom.rankingListCrewMy_view!.crewId!),
+                                                  _crewDetailViewModel.fetchCrewDetail(
+                                                      _rankingListViewModel_recordRoom.rankingListCrewMy_view!.crewId!,
+                                                      _friendDetailViewModel.seasonDate
+                                                  ),
+                                                ]);
                                               },
                                               child: Padding(
                                                 padding: EdgeInsets.only(left: 8.0),
@@ -1291,11 +1294,14 @@ class RankingCrewView_recordRoom extends StatelessWidget {
                               child: GestureDetector(
                                 onTap: () async {
                                   Get.toNamed(AppRoutes.crewMain);
-                                  await _crewMemberListViewModel.fetchCrewMembers(crewId: document.crewId!);
-                                  await _crewDetailViewModel.fetchCrewDetail(
-                                      document.crewId!,
-                                      _friendDetailViewModel.seasonDate
-                                  );
+                                  // 병렬 호출로 로딩 시간 단축
+                                  await Future.wait([
+                                    _crewMemberListViewModel.fetchCrewMembers(crewId: document.crewId!),
+                                    _crewDetailViewModel.fetchCrewDetail(
+                                        document.crewId!,
+                                        _friendDetailViewModel.seasonDate
+                                    ),
+                                  ]);
                                 },
                                 child: Row(
                                   children: [
@@ -1534,11 +1540,14 @@ class RankingCrewView_recordRoom extends StatelessWidget {
                                             GestureDetector(
                                               onTap: () async{
                                                 Get.toNamed(AppRoutes.crewMain);
-                                                await _crewMemberListViewModel.fetchCrewMembers(crewId: _rankingListViewModel_recordRoom.rankingListCrewMy_view!.crewId!);
-                                                await _crewDetailViewModel.fetchCrewDetail(
-                                                    _rankingListViewModel_recordRoom.rankingListCrewMy_view!.crewId!,
-                                                    _friendDetailViewModel.seasonDate
-                                                );
+                                                // 병렬 호출로 로딩 시간 단축
+                                                await Future.wait([
+                                                  _crewMemberListViewModel.fetchCrewMembers(crewId: _rankingListViewModel_recordRoom.rankingListCrewMy_view!.crewId!),
+                                                  _crewDetailViewModel.fetchCrewDetail(
+                                                      _rankingListViewModel_recordRoom.rankingListCrewMy_view!.crewId!,
+                                                      _friendDetailViewModel.seasonDate
+                                                  ),
+                                                ]);
                                               },
                                               child: Padding(
                                                 padding: EdgeInsets.only(left: 8.0),

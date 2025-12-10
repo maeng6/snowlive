@@ -104,7 +104,8 @@ class CrewDetailViewModel extends GetxController {
       if (response.success) {
 
         crewDetailResponse.value = CrewDetailResponse.fromJson(response.data!);
-        await _crewNoticeViewModel.fetchCrewNotices();
+        // 공지사항은 별도 로딩 상태가 있으므로 await 없이 병렬 실행
+        _crewNoticeViewModel.fetchCrewNotices();
 
 
       } else {
@@ -128,7 +129,8 @@ class CrewDetailViewModel extends GetxController {
       if (response.success) {
 
         crewDetailResponse.value = CrewDetailResponse.fromJson(response.data!);
-        await _crewNoticeViewModel.fetchCrewNotices();
+        // 공지사항은 별도 로딩 상태가 있으므로 await 없이 병렬 실행
+        _crewNoticeViewModel.fetchCrewNotices();
 
 
       } else {

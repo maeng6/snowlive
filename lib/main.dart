@@ -70,10 +70,14 @@ void main() async {
   }, permanent: true);
 
   Get.put(FriendDetailViewModel());
+
+  // 푸시 알림 초기화 (순서대로 await하여 권한 요청 오버레이 충돌 방지)
+  await PushNotification.init();
+  await PushNotification.localNotiInit();
+
+  // NotificationController는 권한 요청 완료 후 초기화
   Get.put(NotificationController(), permanent: true);
 
-  PushNotification.init();
-  PushNotification.localNotiInit();
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   setupInteractedMessage();
 

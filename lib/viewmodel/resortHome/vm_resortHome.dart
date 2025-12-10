@@ -39,7 +39,7 @@ import 'package:url_launcher/url_launcher.dart';
 final ref = FirebaseFirestore.instance;
 DateTime? _lastFakeLocationCheckTime;
 
-class ResortHomeViewModel extends GetxController {
+class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
   var _resortHomeModel = ResortHomeModel().obs;
   var isLoading = true.obs;
   var isLoading_bestFriend = true.obs;
@@ -81,6 +81,10 @@ class ResortHomeViewModel extends GetxController {
   int _locationErrorCount = 0;
   static const int _maxLocationErrorRetry = 3;
   bool _isRestartingService = false;
+
+  // 배터리 최적화 시스템 팝업 후 자동 라이브온을 위한 변수
+  int? _pendingLiveOnUserId;
+  bool _isWaitingForBatteryOptimization = false;
 
   String? _liveActivityId;
   DateTime? _liveOnStartedAt; // 시작 시각 표시용 (LockScreen에 타이머로 쓰는 값)
@@ -133,6 +137,9 @@ class ResortHomeViewModel extends GetxController {
   @override
   void onInit() async {
     super.onInit();
+    // 앱 lifecycle 감지를 위한 observer 등록
+    WidgetsBinding.instance.addObserver(this);
+
     final UserViewModel _userViewModel = Get.find<UserViewModel>();
 
     // 독립적인 작업들 병렬 처리 (약 60% 시간 단축)
@@ -146,6 +153,32 @@ class ResortHomeViewModel extends GetxController {
 
     // fetchResortHome 완료 후 날씨 정보 fetch (nx, ny 값 필요)
     await fetchWeatherModel();
+  }
+
+  /// 앱이 포그라운드로 돌아왔을 때 호출 (배터리 최적화 시스템 팝업 후 자동 라이브온)
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed && _isWaitingForBatteryOptimization) {
+      _isWaitingForBatteryOptimization = false;
+      _checkBatteryOptimizationAndStartLive();
+    }
+  }
+
+  /// 시스템 팝업 후 배터리 최적화 상태 확인하고 라이브온 자동 진행
+  Future<void> _checkBatteryOptimizationAndStartLive() async {
+    if (_pendingLiveOnUserId == null) return;
+
+    final isIgnoring = await isIgnoringBatteryOptimizations();
+    if (isIgnoring) {
+      // 배터리 최적화 허용됨 → 라이브온 자동 진행
+      final userId = _pendingLiveOnUserId!;
+      _pendingLiveOnUserId = null;
+      await startLiveLocationService(user_id: userId);
+    } else {
+      // 사용자가 거부함
+      _pendingLiveOnUserId = null;
+      Get.snackbar('알림', '배터리 최적화 설정이 거부되어 라이브 기능을 사용할 수 없습니다.');
+    }
   }
 
   //TODO: 라이브온 관련 메소드****************************************************
@@ -190,6 +223,15 @@ class ResortHomeViewModel extends GetxController {
 
   Future<void> startLiveLocationService({required user_id}) async {
     try {
+      // Android: 배터리 최적화 제외 확인 (백그라운드 kill 방지)
+      if (Platform.isAndroid) {
+        final shouldProceed = await showBatteryOptimizationDialog(userId: user_id);
+        if (!shouldProceed) {
+          // 시스템 팝업이 뜬 경우 - 앱이 resumed 되면 자동으로 재시도됨
+          return;
+        }
+      }
+
       // 포그라운드 서비스 실행 및 성공 여부 확인
       bool foregroundSuccess = await startForegroundLocationService(user_id: user_id);
 
@@ -732,6 +774,11 @@ class ResortHomeViewModel extends GetxController {
     final ApiResponse response_off = await RankingAPI().liveOff(body);
 
     if (response_off.success) {
+      // ✅ 위치 추적 서비스 완전 종료 (백그라운드 + 포그라운드)
+      await stopBackgroundLocationService();
+      await stopForegroundLocationService();
+      print('🛑 위치 추적 서비스 종료 완료');
+
       // ✅ 라이브 액티비티 종료 (iOS에서만)
       if (Platform.isIOS && _liveActivityId != null) {
         await LiveActivityService.end(activityId: _liveActivityId!);
@@ -740,6 +787,10 @@ class ResortHomeViewModel extends GetxController {
       }
 
       await _endLiveActivity('liveOff()');
+
+      // 경계 외부 카운트 초기화
+      _outOfBoundaryCount = 0;
+      _lastOutOfBoundaryTime = null;
 
       final ApiResponse response_fetchResortHome = await ResortHomeAPI().fetchResortHomeData(user_id);
       if (response_fetchResortHome.success) {
@@ -755,15 +806,6 @@ class ResortHomeViewModel extends GetxController {
 
   Future<ApiResponse> liveOn(Map<String, dynamic> body) async {
     try {
-      // Android: 배터리 최적화 제외 확인 (백그라운드 kill 방지)
-      if (Platform.isAndroid) {
-        final isAllowed = await showBatteryOptimizationDialog();
-        if (!isAllowed) {
-          // 사용자가 취소한 경우 라이브온 중단
-          return ApiResponse.error('배터리 최적화 설정이 필요합니다.');
-        }
-      }
-
       isLoading(true);
       final ApiResponse response = await RankingAPI().check_wb(body);
       if (response.success) {
@@ -868,10 +910,11 @@ class ResortHomeViewModel extends GetxController {
   }
 
   /// 배터리 최적화 안내 다이얼로그 표시 후 시스템 설정 호출
-  Future<bool> showBatteryOptimizationDialog() async {
+  /// 반환값: true = 바로 라이브온 진행, false = 시스템 팝업 띄움 (resumed 후 자동 재시도)
+  Future<bool> showBatteryOptimizationDialog({required int userId}) async {
     if (!Platform.isAndroid) return true;
 
-    // 이미 제외되어 있으면 스킵
+    // 이미 제외되어 있으면 바로 진행
     final isIgnoring = await isIgnoringBatteryOptimizations();
     if (isIgnoring) return true;
 
@@ -897,12 +940,18 @@ class ResortHomeViewModel extends GetxController {
     );
 
     if (result == true) {
-      // 시스템 다이얼로그 호출
+      // pending 상태 저장 (앱이 resumed 되면 자동으로 라이브온 재시도)
+      _pendingLiveOnUserId = userId;
+      _isWaitingForBatteryOptimization = true;
+
+      // 시스템 다이얼로그 호출 (앱이 백그라운드로 감)
       await requestIgnoreBatteryOptimizations();
-      // 약간의 딜레이 후 결과 확인
-      await Future.delayed(const Duration(milliseconds: 500));
-      return await isIgnoringBatteryOptimizations();
+
+      // false 반환하여 현재 흐름 중단 → resumed 후 자동 재시도
+      return false;
     }
+
+    // 사용자가 취소한 경우
     return false;
   }
 
@@ -1278,6 +1327,9 @@ class ResortHomeViewModel extends GetxController {
 
   @override
   void onClose() {
+    // WidgetsBindingObserver 해제
+    WidgetsBinding.instance.removeObserver(this);
+
     // StreamSubscription 해제 (메모리 누수 방지)
     _positionStreamSubscription?.cancel();
     _positionStreamSubscription = null;

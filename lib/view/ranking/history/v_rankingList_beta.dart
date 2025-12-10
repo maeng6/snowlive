@@ -105,13 +105,16 @@ class RankingBetaView extends StatelessWidget {
                               child: GestureDetector(
                                 onTap: () async {
                                   Get.toNamed(AppRoutes.crewMain);
-                                  await _crewMemberListViewModel.fetchCrewMembers(
-                                    crewId: document.crewInfo!.crewId!,
-                                  );
-                                  await _crewDetailViewModel.fetchCrewDetail(
-                                    document.crewInfo!.crewId!,
-                                    _friendDetailViewModel.seasonDate,
-                                  );
+                                  // 병렬 호출로 로딩 시간 단축
+                                  await Future.wait([
+                                    _crewMemberListViewModel.fetchCrewMembers(
+                                      crewId: document.crewInfo!.crewId!,
+                                    ),
+                                    _crewDetailViewModel.fetchCrewDetail(
+                                      document.crewInfo!.crewId!,
+                                      _friendDetailViewModel.seasonDate,
+                                    ),
+                                  ]);
                                 },
                                 child: Row(
                                   children: [

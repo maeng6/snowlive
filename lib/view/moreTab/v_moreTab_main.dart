@@ -239,11 +239,14 @@ class MoreTabMainView extends StatelessWidget {
                                 CustomFullScreenDialog.cancelDialog();
                                 if(_userViewModel.user.crew_id != null){
                                   Get.toNamed(AppRoutes.crewMain);
-                                  await _crewMemberListViewModel.fetchCrewMembers(crewId: _userViewModel.user.crew_id);
-                                  await _crewDetailViewModel.fetchCrewDetail(
-                                      _userViewModel.user.crew_id,
-                                      _friendDetailViewModel.seasonDate
-                                  );
+                                  // 병렬 호출로 로딩 시간 단축
+                                  await Future.wait([
+                                    _crewMemberListViewModel.fetchCrewMembers(crewId: _userViewModel.user.crew_id),
+                                    _crewDetailViewModel.fetchCrewDetail(
+                                        _userViewModel.user.crew_id,
+                                        _friendDetailViewModel.seasonDate
+                                    ),
+                                  ]);
 
                                 } else if(_userViewModel.user.crew_id == null){
                                   Get.toNamed(AppRoutes.onBoardingCrewMain);
@@ -251,11 +254,14 @@ class MoreTabMainView extends StatelessWidget {
                               }
                               else{
                                 Get.toNamed(AppRoutes.crewMain);
-                                await _crewMemberListViewModel.fetchCrewMembers(crewId: _userViewModel.user.crew_id);
-                                await _crewDetailViewModel.fetchCrewDetail(
-                                    _userViewModel.user.crew_id,
-                                    _friendDetailViewModel.seasonDate
-                                );
+                                // 병렬 호출로 로딩 시간 단축
+                                await Future.wait([
+                                  _crewMemberListViewModel.fetchCrewMembers(crewId: _userViewModel.user.crew_id),
+                                  _crewDetailViewModel.fetchCrewDetail(
+                                      _userViewModel.user.crew_id,
+                                      _friendDetailViewModel.seasonDate
+                                  ),
+                                ]);
                                 print(RankingFilter_season.values.first.dbSeason);
 
 

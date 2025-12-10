@@ -899,11 +899,14 @@ class _SlopeRushHomeViewState extends State<SlopeRushHomeView> {
                   GestureDetector(
                     onTap: () async {
                       Get.toNamed(AppRoutes.crewMain);
-                      await _crewMemberListViewModel.fetchCrewMembers(crewId: leader.crewId!);
-                      await _crewDetailViewModel.fetchCrewDetail(
-                          leader.crewId!,
-                          _friendDetailViewModel.seasonDate
-                      );
+                      // 병렬 호출로 로딩 시간 단축
+                      await Future.wait([
+                        _crewMemberListViewModel.fetchCrewMembers(crewId: leader.crewId!),
+                        _crewDetailViewModel.fetchCrewDetail(
+                            leader.crewId!,
+                            _friendDetailViewModel.seasonDate
+                        ),
+                      ]);
                     },
                     child: SizedBox(
                       width: 36,
@@ -1093,12 +1096,14 @@ class _SlopeRushHomeViewState extends State<SlopeRushHomeView> {
                                 GestureDetector(
                                   onTap: () async {
                                     Get.toNamed(AppRoutes.crewMain);
-                                    await _crewMemberListViewModel
-                                        .fetchCrewMembers(crewId: c.crewId!);
-                                    await _crewDetailViewModel.fetchCrewDetail(
-                                        c.crewId!,
-                                        _friendDetailViewModel.seasonDate
-                                    );
+                                    // 병렬 호출로 로딩 시간 단축
+                                    await Future.wait([
+                                      _crewMemberListViewModel.fetchCrewMembers(crewId: c.crewId!),
+                                      _crewDetailViewModel.fetchCrewDetail(
+                                          c.crewId!,
+                                          _friendDetailViewModel.seasonDate
+                                      ),
+                                    ]);
                                   },
                                   child: SizedBox(
                                     width: 40,
