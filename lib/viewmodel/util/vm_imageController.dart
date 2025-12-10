@@ -22,39 +22,50 @@ class ImageController extends GetxController {
   final auth = FirebaseAuth.instance;
   List<String> imagesUrlList = [];
 
+  // 업로드 진행 상황 (1/5, 2/5 등 표시용)
+  RxInt uploadProgress = 0.obs;      // 현재 완료된 업로드 수
+  RxInt uploadTotal = 0.obs;         // 총 업로드할 이미지 수
+  RxBool isUploading = false.obs;    // 업로드 진행 중 여부
+
 
   Future<List<String>> setNewMultiImageFlea({
     required List<XFile> newImages,
     required pk,
   }) async {
-    DateTime dateTime = DateTime.now();
     var metaData = SettableMetadata(contentType: 'image/jpeg');
-
     List<String> downloadUrlList = [];
 
-    print('📤 중고거래 이미지 업로드 시작');
+    // 진행 상황 초기화
+    uploadProgress.value = 0;
+    uploadTotal.value = newImages.length;
+    isUploading.value = true;
 
-    for (int i = 0; i < newImages.length; i++) {
-      final filePath = newImages[i].path;
-      File originalFile = File(filePath);
-      File fileToUpload;
+    print('📤 중고거래 이미지 업로드 시작 (총 ${newImages.length}장)');
 
-      // ──────────────────────────────
-      // 1) 이미지 압축 시도
-      // ──────────────────────────────
-      try {
-        fileToUpload = await _compressImage(originalFile);
-        print("🔥 압축 성공: $filePath");
-      } catch (e) {
-        print("⚠️ 압축 실패 → 원본 업로드로 대체: $e");
-        fileToUpload = originalFile;
-      }
+    // ===== 1단계: 모든 이미지 병렬 압축 =====
+    print('🔄 이미지 압축 시작 (병렬 처리)');
+    List<File> compressedFiles = await Future.wait(
+      newImages.asMap().entries.map((entry) async {
+        int i = entry.key;
+        XFile xfile = entry.value;
+        File originalFile = File(xfile.path);
 
-      // ──────────────────────────────
-      // 2) 업로드 (재시도 포함)
-      // ──────────────────────────────
-      Reference ref =
-      FirebaseStorage.instance.ref('fleamarket/$pk/$i.jpg');
+        try {
+          File compressed = await _compressImage(originalFile);
+          print("🔥 [$i] 압축 성공");
+          return compressed;
+        } catch (e) {
+          print("⚠️ [$i] 압축 실패 → 원본 사용: $e");
+          return originalFile;
+        }
+      }),
+    );
+    print('✅ 이미지 압축 완료 (${compressedFiles.length}장)');
+
+    // ===== 2단계: 순차적으로 업로드 (순서 보장) =====
+    for (int i = 0; i < compressedFiles.length; i++) {
+      File fileToUpload = compressedFiles[i];
+      Reference ref = FirebaseStorage.instance.ref('fleamarket/$pk/$i.jpg');
 
       int retry = 0;
       const int maxRetry = 3;
@@ -74,37 +85,92 @@ class ImageController extends GetxController {
           retry++;
           print("❌ [$i] 업로드 실패 → 재시도 ($retry/$maxRetry), error: $e");
 
-          await Future.delayed(Duration(milliseconds: 600));
+          await Future.delayed(const Duration(milliseconds: 600));
         }
       }
 
       if (!uploaded || imageUrl == null) {
-        print("🚨 [$i] 업로드 최종 실패 → 빈값 push (서버 Validation 방지)");
+        print("🚨 [$i] 업로드 최종 실패 → 빈값 push");
         downloadUrlList.add("");
-        continue;
+      } else {
+        downloadUrlList.add(imageUrl);
       }
 
-      downloadUrlList.add(imageUrl);
+      // 진행 상황 업데이트 (UI에서 관찰 가능)
+      uploadProgress.value = i + 1;
     }
 
+    isUploading.value = false;
     print('📤 중고거래 이미지 업로드 종료');
     return downloadUrlList;
   }
 
 
-// 이미지 압축 함수 - JPEG 코덱을 명시적으로 설정
+// 이미지 압축 함수 - HEIC 포맷 + 고해상도 + 저장소 권한 대응
   Future<File> _compressImage(File file) async {
     final compressedImage = await FlutterImageCompress.compressWithFile(
       file.absolute.path,
-      format: CompressFormat.jpeg,  // JPEG 포맷으로 압축
-      quality: 85,  // 압축 품질 설정 (0에서 100)
+      format: CompressFormat.jpeg,
+      quality: 70,
+      // 업로드 속도 향상을 위해 1280px로 축소
+      minWidth: 1280,
+      minHeight: 1280,
     );
 
-    // 압축된 이미지 파일을 새로운 경로에 저장
-    final compressedFile = File('${file.parent.path}/compressed_${file.uri.pathSegments.last}');
-    await compressedFile.writeAsBytes(compressedImage!);
+    // [2단계] HEIC 등 일부 포맷에서 null 반환 가능 → 대체 방식으로 변환
+    if (compressedImage == null || compressedImage.isEmpty) {
+      print('⚠️ FlutterImageCompress 반환값 null → image 패키지로 대체 변환');
+      return await _compressImageFallback(file);
+    }
+
+    // [1단계] 앱 전용 임시 디렉토리에 저장 (저장소 권한 문제 해결)
+    // - Android 11+ Scoped Storage에서도 항상 쓰기 가능
+    // - 원본 파일 폴더(갤러리 등)에 쓰기 시도 X
+    final tempDir = await getTemporaryDirectory();
+    final timestamp = DateTime.now().millisecondsSinceEpoch;
+    final compressedFile = File('${tempDir.path}/compressed_$timestamp.jpg');
+    await compressedFile.writeAsBytes(compressedImage);
 
     return compressedFile;
+  }
+
+  // [2단계] 대체 압축 방식 - HEIC 등 FlutterImageCompress 실패 시 사용
+  Future<File> _compressImageFallback(File file) async {
+    final tempDir = await getTemporaryDirectory();
+    final timestamp = DateTime.now().millisecondsSinceEpoch;
+    final outputPath = '${tempDir.path}/fallback_$timestamp.jpg';
+
+    // image 패키지로 디코딩 (HEIC 포함 대부분 포맷 지원)
+    final bytes = await file.readAsBytes();
+    img.Image? image = img.decodeImage(bytes);
+
+    if (image == null) {
+      print('❌ image 패키지 디코딩도 실패 → 원본 반환');
+      return file;
+    }
+
+    // 업로드 속도 향상을 위해 1280px로 축소
+    const int maxSize = 1280;
+    if (image.width > maxSize || image.height > maxSize) {
+      final double ratio = image.width > image.height
+          ? maxSize / image.width
+          : maxSize / image.height;
+      image = img.copyResize(
+        image,
+        width: (image.width * ratio).toInt(),
+        height: (image.height * ratio).toInt(),
+        interpolation: img.Interpolation.linear,
+      );
+      print('📐 리사이징: ${image.width}x${image.height}');
+    }
+
+    // JPEG로 인코딩하여 저장
+    final jpegBytes = img.encodeJpg(image, quality: 70);
+    final outputFile = File(outputPath);
+    await outputFile.writeAsBytes(jpegBytes);
+
+    print('✅ HEIC→JPEG 변환 성공: ${outputFile.path} (${jpegBytes.length} bytes)');
+    return outputFile;
   }
 
   Future<String> setNewImage_Crew({

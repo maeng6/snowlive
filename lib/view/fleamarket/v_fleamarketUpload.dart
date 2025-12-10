@@ -1297,7 +1297,7 @@ class FleamarketUploadView extends StatelessWidget {
                               && _fleamarketUploadViewModel.selectedTradeMethod != '거래방법 선택'
                               && _fleamarketUploadViewModel.selectedTradeSpot != '거래장소 선택'
                               && _fleamarketUploadViewModel.isDescriptionWritten == true){
-                            CustomFullScreenDialog.showDialog();
+                            CustomFullScreenDialog.showDialog_uploadFlea();
                             await _fleamarketUploadViewModel.uploadFleamarket(
                                 {
                                   "user_id": _userViewModel.user.user_id,
