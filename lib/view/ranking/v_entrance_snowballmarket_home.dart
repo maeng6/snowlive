@@ -21,6 +21,11 @@ class _Entrance_snowballMarket_HomeState extends State<Entrance_snowballMarket_H
   UserViewModel _userViewModel = Get.find<UserViewModel>();
   SnowballShopViewModel _snowballShopViewModel = Get.find<SnowballShopViewModel>();
 
+  @override
+  void initState() {
+    super.initState();
+    _snowballShopViewModel.getInfo_snowballMarket_entrance();
+  }
 
   @override
   Widget build(BuildContext context) {
