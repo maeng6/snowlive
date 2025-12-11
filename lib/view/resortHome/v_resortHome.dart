@@ -9,6 +9,7 @@ import 'package:com.snowlive/view/ranking/v_entrance_snowballmarket_brandonly_ho
 import 'package:com.snowlive/view/ranking/v_entrance_snowballmarket_home.dart';
 import 'package:com.snowlive/view/resortHome/v_chat_resortHome.dart';
 import 'package:com.snowlive/data/snowliveDesignStyle.dart';
+import 'package:com.snowlive/view/resortHome/v_snowliveBrandVideo.dart';
 import 'package:com.snowlive/view/v_entrance_forestPark.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewDetail.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewMemberList.dart';
@@ -1122,19 +1123,26 @@ class _ResortHomeViewState extends State<ResortHomeView> with
               systemOverlayStyle: SystemUiOverlayStyle.dark,
               centerTitle: false,
               titleSpacing: 0,
-              title: Padding(
-                padding: const EdgeInsets.only(left: 20),
-                child:  (_userViewModel.user.within_boundary == true)
-                    ? (_resortHomeViewModel.resort_info['fullname'] != null) ? Image.asset(
-                  'assets/imgs/logos/snowliveLogo_main_new_blue.png',
-                  height: 38,
-                ) : Image.asset(
-                  'assets/imgs/logos/snowliveLogo_main_new.png',
-                  height: 38,
-                )
-                    : Image.asset(
-                  'assets/imgs/logos/snowliveLogo_main_new.png',
-                  height: 38,
+              title: GestureDetector(
+                onTap: () {
+                  Get.dialog(
+                    const IntroVideoDialog(),
+                  );
+                },
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 20),
+                  child:  (_userViewModel.user.within_boundary == true)
+                      ? (_resortHomeViewModel.resort_info['fullname'] != null) ? Image.asset(
+                    'assets/imgs/logos/snowliveLogo_main_new_blue.png',
+                    height: 38,
+                  ) : Image.asset(
+                    'assets/imgs/logos/snowliveLogo_main_new.png',
+                    height: 38,
+                  )
+                      : Image.asset(
+                    'assets/imgs/logos/snowliveLogo_main_new.png',
+                    height: 38,
+                  ),
                 ),
               ),
               backgroundColor: SDSColor.snowliveWhite,
