@@ -13,6 +13,7 @@ import 'package:com.snowlive/model/m_weatherModel.dart';
 import 'package:com.snowlive/native/live_activity_service.dart';
 import 'package:com.snowlive/util/util_1.dart';
 import 'package:com.snowlive/viewmodel/ranking/vm_snowball.dart';
+import 'package:com.snowlive/viewmodel/resortHome/vm_liveOnAlarm.dart';
 import 'package:com.snowlive/viewmodel/vm_splashController.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
 import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
@@ -183,6 +184,40 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
 
   //TODO: 라이브온 관련 메소드****************************************************
 
+  /// 라이브온 성공 시 친구들에게 알림 등록
+  Future<void> _notifyFriendsLiveOn(int myUserId) async {
+    try {
+      // bestFriendList에서 친구들의 user_id 추출
+      List<int> friendUserIds = _bestFriendList
+          .map((friend) => friend.friendInfo.userId)
+          .toList();
+
+      if (friendUserIds.isEmpty) {
+        print('📢 알림 대상 친구 없음');
+        return;
+      }
+
+      // LiveOnAlarmViewModel을 통해 알림 등록
+      final liveOnAlarmViewModel = Get.find<LiveOnAlarmViewModel>();
+      await liveOnAlarmViewModel.notifyFriendsLiveOn(
+        myUserId: myUserId,
+        friendUserIds: friendUserIds,
+      );
+    } catch (e) {
+      print('❌ 친구 라이브온 알림 등록 실패: $e');
+    }
+  }
+
+  /// 라이브오프 시 친구들에게서 알림 제거
+  Future<void> _removeLiveOnNotification() async {
+    try {
+      final liveOnAlarmViewModel = Get.find<LiveOnAlarmViewModel>();
+      await liveOnAlarmViewModel.removeLiveOnNotification();
+    } catch (e) {
+      print('❌ 친구 라이브온 알림 제거 실패: $e');
+    }
+  }
+
   void _updateLiveActivity({
     String? lastSlopeName,
     int? todayRideCount,
@@ -335,6 +370,9 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
       });
 
       if (response.success) {
+        // 라이브온 성공 시 친구들에게 알림 등록
+        _notifyFriendsLiveOn(user_id);
+
         _positionStreamSubscription = Geolocator.getPositionStream().listen((Position position) async {
           await _lock.synchronized(() async {
             bool withinBoundary = _checkPositionWithinBoundary(
@@ -779,6 +817,9 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
       await stopForegroundLocationService();
       print('🛑 위치 추적 서비스 종료 완료');
 
+      // ✅ 친구들에게서 라이브온 알림 제거
+      await _removeLiveOnNotification();
+
       // ✅ 라이브 액티비티 종료 (iOS에서만)
       if (Platform.isIOS && _liveActivityId != null) {
         await LiveActivityService.end(activityId: _liveActivityId!);
@@ -991,7 +1032,7 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
 
   Future<void> fetchBestFriendList({required int user_id}) async {
     isLoading_bestFriend(true);
-    ApiResponse response = await FriendAPI().fetchFriendList(userId: user_id, bestFriend: true);
+    ApiResponse response = await FriendAPI().fetchFriendList(userId: user_id, bestFriend: false);
 
     if (response.success) {
       try {

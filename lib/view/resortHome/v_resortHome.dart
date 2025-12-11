@@ -17,6 +17,8 @@ import 'package:com.snowlive/viewmodel/friend/vm_friendDetail.dart';
 import 'package:com.snowlive/viewmodel/friend/vm_friendList.dart';
 import 'package:com.snowlive/viewmodel/ranking/vm_rankingList_recordRoom.dart';
 import 'package:com.snowlive/viewmodel/resortHome/vm_alarmCenter.dart';
+import 'package:com.snowlive/viewmodel/resortHome/vm_openChatAlarm.dart';
+import 'package:com.snowlive/viewmodel/resortHome/vm_liveOnAlarm.dart';
 import 'package:com.snowlive/viewmodel/resortHome/vm_resortHome.dart';
 import 'package:com.snowlive/viewmodel/resortHome/vm_setGenderAndCategory.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
@@ -66,6 +68,8 @@ class _ResortHomeViewState extends State<ResortHomeView> with
   AlarmCenterViewModel _alarmCenterViewModel = Get.find<AlarmCenterViewModel>();
   CrewMemberListViewModel _crewMemberListViewModel = Get.find<CrewMemberListViewModel>();
   CrewDetailViewModel _crewDetailViewModel = Get.find<CrewDetailViewModel>();
+  OpenChatAlarmViewModel _openChatAlarmViewModel = Get.find<OpenChatAlarmViewModel>();
+  LiveOnAlarmViewModel _liveOnAlarmViewModel = Get.find<LiveOnAlarmViewModel>();
 
   //TODO: Dependency Injection**************************************************
 
@@ -74,6 +78,13 @@ class _ResortHomeViewState extends State<ResortHomeView> with
     super.initState();
 
     print('내 유저아이디 : ${_userViewModel.user.user_id}');
+
+    // 오픈채팅 알람 스트림 구독 시작
+    _openChatAlarmViewModel.startListening(_userViewModel.user.user_id!);
+
+    // 라이브온 알람 스트림 구독 시작 (친구 라이브온 알림)
+    _liveOnAlarmViewModel.startListening(_userViewModel.user.user_id!);
+
     _controller = AnimationController(
       vsync: this,
       duration: Duration(milliseconds: 1500),
@@ -586,88 +597,125 @@ class _ResortHomeViewState extends State<ResortHomeView> with
             preferredSize: Size.fromHeight(44),
             child: AppBar(
               actions: [
-                IconButton(
-                  highlightColor: Colors.transparent,
-                  onPressed: () async{
-                    showModalBottomSheet(
-                      context: context,
-                      isScrollControlled: true,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-                      ),
-                      builder: (context) => DraggableScrollableSheet(
-                        expand: false,
-                        initialChildSize: 0.88,
-                        minChildSize: 0.4,
-                        maxChildSize: 0.88,
-                        builder: (BuildContext context, ScrollController scrollController) {
-                          return Container(
-                            decoration: BoxDecoration(
-                                color: SDSColor.snowliveWhite,
-                                borderRadius: BorderRadius.only(topRight: Radius.circular(20), topLeft: Radius.circular(20))
-                            ),
-                            padding: EdgeInsets.only(top: 16),
-                            child: Column(
-                              children: [
-                                Center(
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(bottom: 20),
-                                    child: Container(
-                                      height: 4,
-                                      width: 36,
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(10),
-                                        color: SDSColor.gray200,
+                // 오픈채팅 아이콘 + 빨간점 알림
+                Obx(() => Stack(
+                  children: [
+                    IconButton(
+                      highlightColor: Colors.transparent,
+                      onPressed: () async{
+                        // 오픈채팅 열면 읽음 처리
+                        _openChatAlarmViewModel.markAsRead();
+
+                        showModalBottomSheet(
+                          context: context,
+                          isScrollControlled: true,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+                          ),
+                          builder: (context) => DraggableScrollableSheet(
+                            expand: false,
+                            initialChildSize: 0.88,
+                            minChildSize: 0.4,
+                            maxChildSize: 0.88,
+                            builder: (BuildContext context, ScrollController scrollController) {
+                              return Container(
+                                decoration: BoxDecoration(
+                                    color: SDSColor.snowliveWhite,
+                                    borderRadius: BorderRadius.only(topRight: Radius.circular(20), topLeft: Radius.circular(20))
+                                ),
+                                padding: EdgeInsets.only(top: 16),
+                                child: Column(
+                                  children: [
+                                    Center(
+                                      child: Padding(
+                                        padding: const EdgeInsets.only(bottom: 20),
+                                        child: Container(
+                                          height: 4,
+                                          width: 36,
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(10),
+                                            color: SDSColor.gray200,
+                                          ),
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                ),
-                                Center(
-                                  child: Column(
-                                    children: [
-                                      Text(
-                                        '스키장 오픈채팅',
-                                        style: SDSTextStyle.bold.copyWith(fontSize: 16, color: SDSColor.gray900),
+                                    Center(
+                                      child: Column(
+                                        children: [
+                                          Text(
+                                            '스키장 오픈채팅',
+                                            style: SDSTextStyle.bold.copyWith(fontSize: 16, color: SDSColor.gray900),
+                                          ),
+                                          SizedBox(height: 10,),
+                                          Text(
+                                            '전국 스키장의 스노우라이브 유저들과',
+                                            style: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray500),
+                                          ),
+                                          Text(
+                                            '익명으로 실시간 채팅을 즐겨 보세요',
+                                            style: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray500),
+                                          ),
+                                        ],
                                       ),
-                                      SizedBox(height: 10,),
-                                      Text(
-                                        '전국 스키장의 스노우라이브 유저들과',
-                                        style: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray500),
-                                      ),
-                                      Text(
-                                        '익명으로 실시간 채팅을 즐겨 보세요',
-                                        style: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray500),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                SizedBox(height: 20,),
-                                Expanded(child: ChatScreen()),
-                              ],
-                            ), // ChatScreen을 모달 시트로 띄움
-                          );
-                        },
+                                    ),
+                                    SizedBox(height: 20,),
+                                    Expanded(child: ChatScreen()),
+                                  ],
+                                ), // ChatScreen을 모달 시트로 띄움
+                              );
+                            },
+                          ),
+                        );
+                      },
+                      icon: Image.asset(
+                        'assets/imgs/icons/icon_talk_resortHome.png',
+                        width: 26,
+                        height: 26,
                       ),
-                    );
-                  },
-                  icon: Image.asset(
-                    'assets/imgs/icons/icon_talk_resortHome.png',
-                    width: 26,
-                    height: 26,
-                  ),
-                ),
-                IconButton(
-                  highlightColor: Colors.transparent,
-                  onPressed: () async{
-                    showModalBottomSheet(
-                      context: context,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.vertical(
-                          top: Radius.circular(20),
+                    ),
+                    // N 뱃지 (새 메시지 있을 때만 표시)
+                    if (_openChatAlarmViewModel.hasNewMessage.value)
+                      Positioned(
+                        right: 5,
+                        top: 5,
+                        child: Container(
+                          width: 20,
+                          height: 20,
+                          padding: EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                          decoration: BoxDecoration(
+                            color: Color(0xFFD6382B),
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: Text(
+                            'N',
+                            style: SDSTextStyle.extraBold.copyWith(
+                              fontSize: 11,
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xFFFFFFFF),
+                            ),
+                          ),
                         ),
                       ),
-                      isScrollControlled: true,
-                      builder: (context) {
+                  ],
+                )),
+                // 친구 목록 아이콘 + 빨간점 알림 (친구 라이브온)
+                Obx(() => Stack(
+                  children: [
+                    IconButton(
+                      highlightColor: Colors.transparent,
+                      onPressed: () async{
+                        CustomFullScreenDialog.showDialog();
+                        await _resortHomeViewModel.fetchBestFriendList(user_id: _userViewModel.user.user_id);
+                        CustomFullScreenDialog.cancelDialog();
+                        showModalBottomSheet(
+                          context: context,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.vertical(
+                              top: Radius.circular(20),
+                            ),
+                          ),
+                          isScrollControlled: true,
+                          builder: (context) {
                         return Obx(() => DraggableScrollableSheet(
                           initialChildSize:
                           (_resortHomeViewModel.bestFriendList.length > 8)
@@ -770,7 +818,7 @@ class _ResortHomeViewState extends State<ResortHomeView> with
                                             child: Container(
                                               height: 180,
                                               child: Text(
-                                                '친구 관리로 이동해 즐겨찾는 친구를 등록해 주세요.\n라이브중인 친구를 바로 확인하실 수 있어요.',
+                                                '친구를 등록해보세요.\n라이브중인 친구를 바로 확인하실 수 있어요.',
                                                 style: SDSTextStyle.regular.copyWith(
                                                     fontSize: 14, color: SDSColor.gray500, height: 1.4
                                                 ),
@@ -972,19 +1020,21 @@ class _ResortHomeViewState extends State<ResortHomeView> with
                       },
                     );
                   },
-                  icon:
-                  _resortHomeViewModel.hasFriendInBoundaryAndRevealWb
-                  ? Container(
-                      width: 28,
-                      height: 28,
-                      child: Lottie.asset('assets/json/ic_friend_resortHome_on.json')
-                  )
-                  : Image.asset(
-                    'assets/imgs/icons/icon_friend_resortHome.png',
-                    width: 28,
-                    height: 28,
-                  ),
-                ),
+                      icon:
+                      _liveOnAlarmViewModel.hasFriendLiveOn.value
+                      ? Container(
+                          width: 28,
+                          height: 28,
+                          child: Lottie.asset('assets/json/ic_friend_resortHome_on.json')
+                      )
+                      : Image.asset(
+                        'assets/imgs/icons/icon_friend_resortHome.png',
+                        width: 28,
+                        height: 28,
+                      ),
+                    ),
+                  ],
+                )),
                 Padding(
                   padding: EdgeInsets.only(right: 8),
                   child: StreamBuilder<QuerySnapshot>(

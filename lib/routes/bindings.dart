@@ -34,6 +34,8 @@ import 'package:com.snowlive/viewmodel/ranking/vm_slope_rush.dart';
 import 'package:com.snowlive/viewmodel/ranking/vm_snowball.dart';
 import 'package:com.snowlive/viewmodel/resortHome/vm_alarmCenter.dart';
 import 'package:com.snowlive/viewmodel/resortHome/vm_openChat.dart';
+import 'package:com.snowlive/viewmodel/resortHome/vm_openChatAlarm.dart';
+import 'package:com.snowlive/viewmodel/resortHome/vm_liveOnAlarm.dart';
 import 'package:com.snowlive/viewmodel/resortHome/vm_setGenderAndCategory.dart';
 import 'package:com.snowlive/viewmodel/util/vm_imageController.dart';
 import 'package:com.snowlive/viewmodel/vm_mainHome.dart';
@@ -59,6 +61,8 @@ class MainHomeBinding extends Bindings {
     //Get.put(ForestParkViewModel());
     Get.put(GenderCategoryViewModel());
     Get.put(ChatViewModel());
+    Get.put(OpenChatAlarmViewModel());
+    Get.put(LiveOnAlarmViewModel());
     Get.put(FriendDetailUpdateViewModel());
     Get.put(FleamarketListViewModel());
     Get.put(FleamarketDetailViewModel());

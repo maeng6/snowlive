@@ -1,6 +1,7 @@
 import 'package:com.snowlive/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/util/util_1.dart';
 import 'package:com.snowlive/viewmodel/resortHome/vm_openChat.dart';
+import 'package:com.snowlive/viewmodel/resortHome/vm_openChatAlarm.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:bubble/bubble.dart';
@@ -13,6 +14,7 @@ class ChatScreen extends StatefulWidget {
 
 class _ChatScreenState extends State<ChatScreen> {
   final ChatViewModel _chatViewModel = Get.find<ChatViewModel>();
+  final OpenChatAlarmViewModel _openChatAlarmViewModel = Get.find<OpenChatAlarmViewModel>();
   final ScrollController _scrollController = ScrollController();
   FocusNode textFocus = FocusNode();
 
@@ -209,6 +211,9 @@ class _ChatScreenState extends State<ChatScreen> {
                           _chatViewModel.chatController.clear();
                           _chatViewModel.isButtonEnabled.value = false;
                           _scrollToBottom();
+
+                          // 새 글 작성 시 알람 초기화 (모든 유저에게 새 글 알림, 본인은 읽음 처리)
+                          _openChatAlarmViewModel.clearAndMarkMyself();
                         }
                             : null,
                       ),
