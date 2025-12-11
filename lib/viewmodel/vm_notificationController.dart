@@ -51,8 +51,31 @@ class NotificationController extends GetxController {
 
       print('📱 FCM Token: $_deviceToken');
       print('📱 Device ID: $_deviceID');
+
+      // 전체 유저 대상 푸시 알림을 위한 토픽 구독
+      await subscribeToTopic('all_users');
     } catch (e) {
       print('❗️FCM 토큰 가져오기 실패: $e');
+    }
+  }
+
+  // 토픽 구독
+  Future<void> subscribeToTopic(String topic) async {
+    try {
+      await messaging.subscribeToTopic(topic);
+      print('✅ FCM 토픽 구독 완료: $topic');
+    } catch (e) {
+      print('❌ FCM 토픽 구독 실패: $e');
+    }
+  }
+
+  // 토픽 구독 해제
+  Future<void> unsubscribeFromTopic(String topic) async {
+    try {
+      await messaging.unsubscribeFromTopic(topic);
+      print('✅ FCM 토픽 구독 해제: $topic');
+    } catch (e) {
+      print('❌ FCM 토픽 구독 해제 실패: $e');
     }
   }
 
