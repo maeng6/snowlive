@@ -463,7 +463,7 @@ class CrewHomeView extends StatelessWidget {
                                 ),
                                 child: Text(
                                   '크루원 랭킹',
-                                  style: SDSTextStyle.bold.copyWith(fontSize: 12, color: SDSColor.gray700),
+                                  style: SDSTextStyle.bold.copyWith(fontSize: 12, color: SDSColor.gray900),
 
                                 ),
                               ),
@@ -490,7 +490,7 @@ class CrewHomeView extends StatelessWidget {
                                       ),
                                       child: Text(
                                         '시즌 기록실',
-                                        style: SDSTextStyle.bold.copyWith(fontSize: 12, color: SDSColor.gray700),
+                                        style: SDSTextStyle.bold.copyWith(fontSize: 12, color: SDSColor.gray900),
 
                                       ),
                                     ),
@@ -567,6 +567,33 @@ class CrewHomeView extends StatelessWidget {
                         ],
                       ),
                     ),
+                    if(_crewDetailViewModel.crewDetailInfo.crewId == _userViewModel.user.crew_id)
+                      Padding(
+                        padding: EdgeInsets.only(top: 8, left: 16, right: 16),
+                        child: TextButton(
+                          onPressed: () async{
+                            Get.toNamed(AppRoutes.crewDailyRecord);
+                          },
+                          style: ElevatedButton.styleFrom(
+                              shadowColor: Colors.transparent,
+                              overlayColor: Colors.transparent,
+                              padding: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                              minimumSize: Size(_size.width-32, 40),
+                              backgroundColor: SDSColor.snowliveWhite,
+                              elevation: 0,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(5)),
+                              side: BorderSide(
+                                  color: SDSColor.gray200.withOpacity(0.6)
+                              )
+                          ),
+                          child: Text(
+                            '일별현황 둘러보기',
+                            style: SDSTextStyle.bold.copyWith(fontSize: 14, color: SDSColor.gray900),
+
+                          ),
+                        ),
+                      ),
                     SizedBox(height: 20),
                     Padding(
                       padding: const EdgeInsets.only(left: 16, right: 16),
@@ -676,34 +703,6 @@ class CrewHomeView extends StatelessWidget {
                                         ),
                                       ],
                                     ),
-                                    Expanded(child: SizedBox()),
-                                    if(_crewDetailViewModel.crewDetailInfo.crewId == _userViewModel.user.crew_id)
-                                    Padding(
-                                      padding: EdgeInsets.only(bottom: 6),
-                                      child: TextButton(
-                                        onPressed: () async{
-                                          Get.toNamed(AppRoutes.crewDailyRecord);
-                                        },
-                                        style: ElevatedButton.styleFrom(
-                                          shadowColor: Colors.transparent,
-                                          overlayColor: Colors.transparent,
-                                          padding: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-                                          minimumSize: Size(36, 32),
-                                            backgroundColor: Color(0xFFD2DFF4).withOpacity(0.7),
-                                          elevation: 0,
-                                          shape: RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.circular(40)),
-                                          side: BorderSide(
-                                            color: SDSColor.blue100
-                                          )
-                                        ),
-                                        child: Text(
-                                          '일별현황',
-                                          style: SDSTextStyle.bold.copyWith(fontSize: 12, color: SDSColor.gray900),
-
-                                        ),
-                                      ),
-                                    )
                                   ],
                                 ),
 
