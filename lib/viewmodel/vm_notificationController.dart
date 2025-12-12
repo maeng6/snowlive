@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 import 'package:flutter_udid/flutter_udid.dart';
 import 'package:get/get.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -43,6 +44,27 @@ class NotificationController extends GetxController {
 
   Future<void> _getToken() async {
     try {
+      // iOS에서는 APNS 토큰이 설정될 때까지 대기
+      if (Platform.isIOS) {
+        String? apnsToken;
+        int retryCount = 0;
+        const maxRetries = 10;
+
+        while (apnsToken == null && retryCount < maxRetries) {
+          apnsToken = await messaging.getAPNSToken();
+          if (apnsToken == null) {
+            await Future.delayed(const Duration(milliseconds: 500));
+            retryCount++;
+          }
+        }
+
+        if (apnsToken == null) {
+          print('⚠️ APNS 토큰을 가져올 수 없습니다. FCM 초기화를 건너뜁니다.');
+          return;
+        }
+        print('✅ APNS 토큰 획득 완료');
+      }
+
       String? deviceToken = await messaging.getToken();
       String? deviceId = await FlutterUdid.udid;
 

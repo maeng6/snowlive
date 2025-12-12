@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -23,9 +24,34 @@ class PushNotification {
       sound: true,
     );
 
+    // iOS에서는 APNS 토큰이 설정될 때까지 대기
+    if (Platform.isIOS) {
+      String? apnsToken;
+      int retryCount = 0;
+      const maxRetries = 10;
+
+      while (apnsToken == null && retryCount < maxRetries) {
+        apnsToken = await _firebaseMessaging.getAPNSToken();
+        if (apnsToken == null) {
+          await Future.delayed(const Duration(milliseconds: 500));
+          retryCount++;
+        }
+      }
+
+      if (apnsToken == null) {
+        print('⚠️ APNS 토큰을 가져올 수 없습니다. FCM 토큰 요청을 건너뜁니다.');
+        return;
+      }
+      print('✅ APNS 토큰 획득 완료');
+    }
+
     // get the device fcm token
-    _token = await _firebaseMessaging.getToken(); // 토큰 얻기
-    //print("device token: $_token");
+    try {
+      _token = await _firebaseMessaging.getToken();
+      print("📱 FCM device token: $_token");
+    } catch (e) {
+      print('❌ FCM 토큰 획득 실패: $e');
+    }
   }
 
   // flutter_local_notifications 패키지 관련 초기화
