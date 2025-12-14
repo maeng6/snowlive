@@ -71,12 +71,17 @@ class LiveOnAlarmViewModel extends GetxController {
     _lastNotifiedFriendIds = friendUserIds;
 
     for (int friendId in friendUserIds) {
+      // 본인 ID는 제외
+      if (friendId == myUserId) {
+        print('⏭️ 본인 ID($myUserId)는 스킵');
+        continue;
+      }
+
       try {
         final docRef = _firestore
             .collection('liveOn_alarm')
             .doc(friendId.toString());
 
-        // 문서가 존재하면 배열에 추가, 없으면 생성
         await docRef.set({
           'liveOn_friend_user_id': FieldValue.arrayUnion([myUserId]),
         }, SetOptions(merge: true));
@@ -87,7 +92,7 @@ class LiveOnAlarmViewModel extends GetxController {
       }
     }
 
-    print('📢 총 ${friendUserIds.length}명의 친구에게 라이브온 알림 완료');
+    print('📢 총 ${friendUserIds.where((id) => id != myUserId).length}명의 친구에게 라이브온 알림 완료');
   }
 
   /// 라이브오프 시 친구들에게서 알림 제거

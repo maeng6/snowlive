@@ -452,7 +452,15 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
 
                 if (passPointInfo['type'] == 'snowball_info') {
                   if (resort_info['snowball'] == true) {
-                    if (_lastSnowballMethodCall == null || DateTime.now().difference(_lastSnowballMethodCall!).inSeconds > 300) {
+                    int setNum = passPointInfo['set_num'] ?? 0;
+                    bool isGoldenSnowball = setNum >= 91;
+
+                    // 황금눈송이(set_num >= 91)는 시간 제한 없이 등록, 하얀눈송이는 300초 제한
+                    bool canRegister = isGoldenSnowball ||
+                        _lastSnowballMethodCall == null ||
+                        DateTime.now().difference(_lastSnowballMethodCall!).inSeconds > 300;
+
+                    if (canRegister) {
                       final response = await SnowballAPI().createSnowballRecord({
                         "user_id": user_id,
                         "snowball_id": passPointInfo['id'],
@@ -460,8 +468,11 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
                         "event_date": _snowballShopViewModel.eventDate.value,
                       });
                       if (response.success) {
-                        _lastSnowballMethodCall = DateTime.now();
-                        print('포그라운드 눈송이 기록 성공');
+                        // 하얀눈송이일 때만 시간 기록 (황금눈송이는 시간 제한 없으므로 기록 안함)
+                        if (!isGoldenSnowball) {
+                          _lastSnowballMethodCall = DateTime.now();
+                        }
+                        print('포그라운드 ${isGoldenSnowball ? "황금" : "하얀"}눈송이 기록 성공');
                       } else {
                         print('포그라운드 눈송이 기록 실패: ${response.error}');
                       }
@@ -640,7 +651,15 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
 
             if (passPointInfo['type'] == 'snowball_info') {
               if (resort_info['snowball'] == true) {
-                if (_lastSnowballMethodCall == null || DateTime.now().difference(_lastSnowballMethodCall!).inSeconds > 300) {
+                int setNum = passPointInfo['set_num'] ?? 0;
+                bool isGoldenSnowball = setNum >= 91;
+
+                // 황금눈송이(set_num >= 91)는 시간 제한 없이 등록, 하얀눈송이는 300초 제한
+                bool canRegister = isGoldenSnowball ||
+                    _lastSnowballMethodCall == null ||
+                    DateTime.now().difference(_lastSnowballMethodCall!).inSeconds > 300;
+
+                if (canRegister) {
                   final response = await SnowballAPI().createSnowballRecord({
                     "user_id": user_id,
                     "snowball_id": passPointInfo['id'],
@@ -648,10 +667,13 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
                     "event_date": _snowballShopViewModel.eventDate.value,
                   });
                   if (response.success) {
-                    _lastSnowballMethodCall = DateTime.now();
-                    print('포그라운드 눈송이 기록 성공');
+                    // 하얀눈송이일 때만 시간 기록 (황금눈송이는 시간 제한 없으므로 기록 안함)
+                    if (!isGoldenSnowball) {
+                      _lastSnowballMethodCall = DateTime.now();
+                    }
+                    print('백그라운드 ${isGoldenSnowball ? "황금" : "하얀"}눈송이 기록 성공');
                   } else {
-                    print('포그라운드 눈송이 기록 실패: ${response.error}');
+                    print('백그라운드 눈송이 기록 실패: ${response.error}');
                   }
                 }
               }
@@ -769,7 +791,7 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
     // 트레저 헌트 영역 검사
     for (var treasure in treasureHuntInfo) {
       if (_isWithinRadius(position, treasure['coordinates'], treasure['radius'])) {
-        detectedAreas.add({'type': 'snowball_info', 'id': treasure['snowball_id']});
+        detectedAreas.add({'type': 'snowball_info', 'id': treasure['snowball_id'],'set_num':treasure['set_num']});
       }
     }
 
