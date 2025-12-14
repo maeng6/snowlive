@@ -47,9 +47,16 @@ class _Entrance_snowballShop_rankingState extends State<Entrance_snowballShop_ra
   Widget build(BuildContext context) {
     Size _size = MediaQuery.of(context).size;
 
-    return StreamBuilder(
-      stream: _snowballShopViewModel.infoStream_snowballShop_entrance.value,
-      builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+    return Obx(() {
+      final stream = _snowballShopViewModel.infoStream_snowballShop_entrance.value;
+
+      if (stream == null) {
+        return SizedBox.shrink();
+      }
+
+      return StreamBuilder(
+        stream: stream,
+        builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
         // 데이터 로드 중이라면
         if (snapshot.connectionState == ConnectionState.waiting) {
           return SizedBox.shrink();
@@ -303,7 +310,8 @@ class _Entrance_snowballShop_rankingState extends State<Entrance_snowballShop_ra
           return SizedBox.shrink(); // banner 필드가 없거나 비어있으면 빈 공간 반환
         }
 
-      },
-    );
+        },
+      );
+    });
   }
 }
