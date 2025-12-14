@@ -65,14 +65,25 @@ class _EventPageViewState extends State<EventPageView> {
       appBar: AppBar(
         toolbarHeight: 44,
         backgroundColor: Colors.white,
-        elevation: 0,
-        centerTitle: true,
-        title: Text(
-          '이벤트 모음',
-          style: SDSTextStyle.extraBold.copyWith(
-            color: SDSColor.gray900,
-            fontSize: 18,
+        surfaceTintColor: Colors.transparent,
+        leading: GestureDetector(
+          child: Image.asset(
+            'assets/imgs/icons/icon_snowLive_back.png',
+            scale: 4,
+            width: 26,
+            height: 26,
           ),
+          onTap: () {
+            Navigator.pop(context);
+          },
+        ),
+        elevation: 0.0,
+        titleSpacing: 0,
+        centerTitle: true,
+        title: Text('이벤트 모음',
+          style: SDSTextStyle.extraBold.copyWith(
+              color: SDSColor.gray900,
+              fontSize: 18),
         ),
       ),
       body: Column(
