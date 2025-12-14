@@ -7,6 +7,7 @@ import 'package:com.snowlive/view/resortHome/v_resortHome.dart';
 import 'package:com.snowlive/view/v_slmkScreen.dart';
 import 'package:com.snowlive/viewmodel/vm_mainHome.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
+import 'package:com.snowlive/viewmodel/vm_eventAlarm.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -14,6 +15,7 @@ import 'package:get/get.dart';
 class MainHomeView extends StatelessWidget {
   final MainHomeViewModel _MainHomeViewModel = Get.find<MainHomeViewModel>();
   final UserViewModel _userViewModel = Get.find<UserViewModel>();
+  final EventAlarmViewModel _eventAlarmViewModel = Get.find<EventAlarmViewModel>();
 
   @override
   Widget build(BuildContext context) {
@@ -118,8 +120,44 @@ class MainHomeView extends StatelessWidget {
                 ),
                 BottomNavigationBarItem(
                   backgroundColor: Colors.transparent,
-                  icon: Image.asset('assets/imgs/icons/icon_more_off.png', width: 32, height: 32),
-                  activeIcon: Image.asset('assets/imgs/icons/icon_more_on.png', width: 32, height: 32),
+                  icon: Stack(
+                    clipBehavior: Clip.none,
+                    children: [
+                      Image.asset('assets/imgs/icons/icon_more_off.png', width: 32, height: 32),
+                      if (_eventAlarmViewModel.hasNewEvent.value)
+                        Positioned(
+                          right: 0,
+                          top: 0,
+                          child: Container(
+                            width: 5,
+                            height: 5,
+                            decoration: BoxDecoration(
+                              color: Color(0xFFEB5757),
+                              shape: BoxShape.circle,
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
+                  activeIcon: Stack(
+                    clipBehavior: Clip.none,
+                    children: [
+                      Image.asset('assets/imgs/icons/icon_more_on.png', width: 32, height: 32),
+                      if (_eventAlarmViewModel.hasNewEvent.value)
+                        Positioned(
+                          right: 0,
+                          top: 0,
+                          child: Container(
+                            width: 5,
+                            height: 5,
+                            decoration: BoxDecoration(
+                              color: Color(0xFFEB5757),
+                              shape: BoxShape.circle,
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
                   label: '더보기',
                 ),
               ],

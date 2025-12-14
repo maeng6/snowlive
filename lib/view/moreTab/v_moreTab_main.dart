@@ -13,6 +13,7 @@ import 'package:com.snowlive/viewmodel/friend/vm_friendDetail.dart';
 import 'package:com.snowlive/viewmodel/friend/vm_friendList.dart';
 import 'package:com.snowlive/viewmodel/ranking/vm_rankingList_recordRoom.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
+import 'package:com.snowlive/viewmodel/vm_eventAlarm.dart';
 import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
@@ -28,6 +29,7 @@ class MoreTabMainView extends StatelessWidget {
   final FriendDetailViewModel _friendDetailViewModel = Get.find<FriendDetailViewModel>();
   final CrewDetailViewModel _crewDetailViewModel = Get.find<CrewDetailViewModel>();
   final CrewMemberListViewModel _crewMemberListViewModel = Get.find<CrewMemberListViewModel>();
+  final EventAlarmViewModel _eventAlarmViewModel = Get.find<EventAlarmViewModel>();
 
   @override
   Widget build(BuildContext context) {
@@ -284,7 +286,7 @@ class MoreTabMainView extends StatelessWidget {
                             ),
                           ),
                         ),
-                        Container(
+                        Obx(() => Container(
                           height: 52,
                           child: ListTile(
                             contentPadding: EdgeInsets.symmetric(horizontal: 16),
@@ -294,11 +296,33 @@ class MoreTabMainView extends StatelessWidget {
                             leading: Image.asset('assets/imgs/icons/icon_moretab_event.png', width: 30),
                             title: Transform.translate(
                               offset: Offset(-8, 0),
-                              child: Text(
-                                '이벤트 모음',
-                                style: SDSTextStyle.regular.copyWith(
-                                    fontSize: 15,
-                                    color: SDSColor.gray900),
+                              child: Row(
+                                children: [
+                                  Text(
+                                    '이벤트 모음',
+                                    style: SDSTextStyle.regular.copyWith(
+                                        fontSize: 15,
+                                        color: SDSColor.gray900),
+                                  ),
+                                  if (_eventAlarmViewModel.hasNewEvent.value)
+                                    Padding(
+                                      padding: const EdgeInsets.only(left: 4),
+                                      child: Container(
+                                        padding: EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+                                        decoration: BoxDecoration(
+                                          color: Color(0xFFEB5757),
+                                          borderRadius: BorderRadius.circular(4),
+                                        ),
+                                        child: Text(
+                                          'N',
+                                          style: SDSTextStyle.bold.copyWith(
+                                            fontSize: 10,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                ],
                               ),
                             ),
                             trailing: Image.asset(
@@ -307,7 +331,7 @@ class MoreTabMainView extends StatelessWidget {
                               width: 24,
                             ),
                           ),
-                        ),
+                        )),
                         SizedBox(height: 30),
                         Padding(
                           padding: EdgeInsets.symmetric(horizontal: 20),

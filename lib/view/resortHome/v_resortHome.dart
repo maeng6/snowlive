@@ -20,6 +20,7 @@ import 'package:com.snowlive/viewmodel/ranking/vm_rankingList_recordRoom.dart';
 import 'package:com.snowlive/viewmodel/resortHome/vm_alarmCenter.dart';
 import 'package:com.snowlive/viewmodel/resortHome/vm_openChatAlarm.dart';
 import 'package:com.snowlive/viewmodel/resortHome/vm_liveOnAlarm.dart';
+import 'package:com.snowlive/viewmodel/vm_eventAlarm.dart';
 import 'package:com.snowlive/viewmodel/resortHome/vm_resortHome.dart';
 import 'package:com.snowlive/viewmodel/resortHome/vm_setGenderAndCategory.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
@@ -71,6 +72,7 @@ class _ResortHomeViewState extends State<ResortHomeView> with
   CrewDetailViewModel _crewDetailViewModel = Get.find<CrewDetailViewModel>();
   OpenChatAlarmViewModel _openChatAlarmViewModel = Get.find<OpenChatAlarmViewModel>();
   LiveOnAlarmViewModel _liveOnAlarmViewModel = Get.find<LiveOnAlarmViewModel>();
+  EventAlarmViewModel _eventAlarmViewModel = Get.find<EventAlarmViewModel>();
 
   //TODO: Dependency Injection**************************************************
 
@@ -85,6 +87,9 @@ class _ResortHomeViewState extends State<ResortHomeView> with
 
     // 라이브온 알람 스트림 구독 시작 (친구 라이브온 알림)
     _liveOnAlarmViewModel.startListening(_userViewModel.user.user_id!);
+
+    // 이벤트 알람 스트림 구독 시작
+    _eventAlarmViewModel.startListening(_userViewModel.user.user_id!);
 
     _controller = AnimationController(
       vsync: this,

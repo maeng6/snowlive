@@ -1,44 +1,30 @@
 import 'package:com.snowlive/data/snowliveDesignStyle.dart';
+import 'package:com.snowlive/viewmodel/vm_event.dart';
+import 'package:com.snowlive/viewmodel/vm_eventAlarm.dart';
+import 'package:com.snowlive/model/m_event.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:intl/intl.dart';
 
-class EventPageView extends StatelessWidget {
+class EventPageView extends StatefulWidget {
   EventPageView({Key? key}) : super(key: key);
 
-  // 더미 데이터
-  final List<EventItem> _dummyEvents = [
-    EventItem(
-      category: '이벤트',
-      date: '2024.12.01 ~ 2024.12.31',
-      title: '겨울 시즌 오픈 기념 이벤트',
-      url: 'https://example.com/event1',
-    ),
-    EventItem(
-      category: '공지',
-      date: '2024.11.15',
-      title: '스노우라이브 서비스 업데이트 안내',
-      url: 'https://example.com/notice1',
-    ),
-    EventItem(
-      category: '이벤트',
-      date: '2024.11.01 ~ 2024.11.30',
-      title: '크루 랭킹 이벤트',
-      url: 'https://example.com/event2',
-    ),
-    EventItem(
-      category: '혜택',
-      date: '2024.10.20 ~ 2024.12.20',
-      title: '리프트권 할인 프로모션',
-      url: 'https://example.com/benefit1',
-    ),
-    EventItem(
-      category: '이벤트',
-      date: '2024.10.01 ~ 2024.10.31',
-      title: '친구 초대 이벤트',
-      url: 'https://example.com/event3',
-    ),
-  ];
+  @override
+  State<EventPageView> createState() => _EventPageViewState();
+}
+
+class _EventPageViewState extends State<EventPageView> {
+  final EventViewModel _eventViewModel = Get.put(EventViewModel());
+  final EventAlarmViewModel _eventAlarmViewModel = Get.find<EventAlarmViewModel>();
+
+  @override
+  void initState() {
+    super.initState();
+    _eventViewModel.fetchEventList();
+    // 이벤트 페이지 진입 시 읽음 처리
+    _eventAlarmViewModel.markAsRead();
+  }
 
   Future<void> _launchURL(String url) async {
     final Uri uri = Uri.parse(url);
@@ -53,13 +39,20 @@ class EventPageView extends StatelessWidget {
     }
   }
 
+  String _formatDate(DateTime? dateTime) {
+    if (dateTime == null) return '';
+    return DateFormat('yyyy.MM.dd').format(dateTime);
+  }
+
   Color _getCategoryColor(String category) {
     switch (category) {
-      case '이벤트':
+      case '클리닉':
         return Color(0xFF4A90E2);
       case '공지':
         return Color(0xFFE24A4A);
-      case '혜택':
+      case '행사':
+        return Color(0xFF50C878);
+      case '시승회':
         return Color(0xFF50C878);
       default:
         return SDSColor.gray500!;
@@ -94,98 +87,197 @@ class EventPageView extends StatelessWidget {
               fontSize: 18),
         ),
       ),
-      body: ListView.separated(
-        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 20),
-        itemCount: _dummyEvents.length,
-        separatorBuilder: (context, index) => SizedBox(height: 12),
-        itemBuilder: (context, index) {
-          final event = _dummyEvents[index];
-          return _buildEventCard(event);
-        },
+      body: Column(
+        children: [
+          // 테이블 헤더 (고정)
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            decoration: BoxDecoration(
+              color: SDSColor.gray50,
+              border: Border(
+                bottom: BorderSide(color: SDSColor.gray200!, width: 1),
+              ),
+            ),
+            child: Row(
+              children: [
+                SizedBox(
+                  width: 60,
+                  child: Text(
+                    '분류',
+                    textAlign: TextAlign.center,
+                    style: SDSTextStyle.bold.copyWith(
+                      fontSize: 13,
+                      color: SDSColor.gray600,
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: Text(
+                    '제목',
+                    textAlign: TextAlign.center,
+                    style: SDSTextStyle.bold.copyWith(
+                      fontSize: 13,
+                      color: SDSColor.gray600,
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  width: 80,
+                  child: Text(
+                    '등록일',
+                    textAlign: TextAlign.center,
+                    style: SDSTextStyle.bold.copyWith(
+                      fontSize: 13,
+                      color: SDSColor.gray600,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          // 게시판 목록 (당겨서 새로고침 가능)
+          Expanded(
+            child: RefreshIndicator(
+              strokeWidth: 2,
+              edgeOffset: -40,
+              displacement: 40,
+              backgroundColor: SDSColor.snowliveBlue,
+              color: SDSColor.snowliveWhite,
+              onRefresh: _eventViewModel.fetchEventList,
+              child: Obx(() {
+                // 로딩 중일 때 인디케이터 표시
+                if (_eventViewModel.isLoading.value && _eventViewModel.eventList.isEmpty) {
+                  return Center(
+                    child: CircularProgressIndicator(
+                      color: SDSColor.snowliveBlue,
+                    ),
+                  );
+                }
+
+                // 데이터가 없을 때
+                if (_eventViewModel.eventList.isEmpty) {
+                  return SingleChildScrollView(
+                    physics: AlwaysScrollableScrollPhysics(),
+                    child: Container(
+                      height: MediaQuery.of(context).size.height * 0.5,
+                      child: Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.event_busy,
+                              size: 48,
+                              color: SDSColor.gray400,
+                            ),
+                            SizedBox(height: 16),
+                            Text(
+                              '등록된 이벤트가 없습니다.',
+                              style: SDSTextStyle.regular.copyWith(
+                                fontSize: 14,
+                                color: SDSColor.gray500,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  );
+                }
+
+                return ListView.builder(
+                  physics: AlwaysScrollableScrollPhysics(),
+                  controller: _eventViewModel.scrollController,
+                  itemCount: _eventViewModel.eventList.length + (_eventViewModel.hasNextPage ? 1 : 0),
+                  itemBuilder: (context, index) {
+                    if (index == _eventViewModel.eventList.length) {
+                      return Padding(
+                        padding: EdgeInsets.symmetric(vertical: 16),
+                        child: Center(
+                          child: CircularProgressIndicator(
+                            color: SDSColor.snowliveBlue,
+                          ),
+                        ),
+                      );
+                    }
+                    final event = _eventViewModel.eventList[index];
+                    return _buildEventRow(event);
+                  },
+                );
+              }),
+            ),
+          ),
+        ],
       ),
     );
   }
 
-  Widget _buildEventCard(EventItem event) {
+  Widget _buildEventRow(EventModel event) {
     return GestureDetector(
-      onTap: () => _launchURL(event.url),
+      onTap: () {
+        print(1);
+        if (event.landingUrl != null && event.landingUrl!.isNotEmpty) {
+          _launchURL(event.landingUrl!);
+        }
+      },
       child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(
-            color: SDSColor.gray200!,
-            width: 1,
+          border: Border(
+            bottom: BorderSide(color: SDSColor.gray100!, width: 1),
           ),
         ),
-        child: Padding(
-          padding: EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  Container(
-                    padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                    decoration: BoxDecoration(
-                      color: _getCategoryColor(event.category).withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(4),
-                    ),
-                    child: Text(
-                      event.category,
-                      style: SDSTextStyle.bold.copyWith(
-                        fontSize: 12,
-                        color: _getCategoryColor(event.category),
-                      ),
-                    ),
+        child: Row(
+          children: [
+            // 분류
+            SizedBox(
+              width: 60,
+              child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 6, vertical: 3),
+                decoration: BoxDecoration(
+                  color: _getCategoryColor(event.category ?? '').withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(4),
+                ),
+                child: Text(
+                  event.category ?? '',
+                  textAlign: TextAlign.center,
+                  style: SDSTextStyle.bold.copyWith(
+                    fontSize: 11,
+                    color: _getCategoryColor(event.category ?? ''),
                   ),
-                  Spacer(),
-                  Text(
-                    event.date,
-                    style: SDSTextStyle.regular.copyWith(
-                      fontSize: 12,
-                      color: SDSColor.gray500,
-                    ),
-                  ),
-                ],
+                  overflow: TextOverflow.ellipsis,
+                ),
               ),
-              SizedBox(height: 12),
-              Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      event.title,
-                      style: SDSTextStyle.bold.copyWith(
-                        fontSize: 15,
-                        color: SDSColor.gray900,
-                      ),
-                    ),
-                  ),
-                  Icon(
-                    Icons.arrow_forward_ios,
-                    size: 16,
-                    color: SDSColor.gray400,
-                  ),
-                ],
+            ),
+            SizedBox(width: 12),
+            // 제목
+            Expanded(
+              child: Text(
+                event.title ?? '',
+                style: SDSTextStyle.regular.copyWith(
+                  fontSize: 14,
+                  color: SDSColor.gray900,
+                ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
               ),
-            ],
-          ),
+            ),
+            SizedBox(width: 12),
+            // 등록일
+            SizedBox(
+              width: 80,
+              child: Text(
+                _formatDate(event.uploadTime),
+                textAlign: TextAlign.center,
+                style: SDSTextStyle.regular.copyWith(
+                  fontSize: 12,
+                  color: SDSColor.gray500,
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );
   }
-}
-
-class EventItem {
-  final String category;
-  final String date;
-  final String title;
-  final String url;
-
-  EventItem({
-    required this.category,
-    required this.date,
-    required this.title,
-    required this.url,
-  });
 }
