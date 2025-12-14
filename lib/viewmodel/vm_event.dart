@@ -9,9 +9,10 @@ class EventViewModel extends GetxController {
   final EventAPI _eventAPI = EventAPI();
 
   // 로딩 상태
-  var isLoading = false.obs;
-  var isLoadingMore = false.obs;
-  var isLoadingDetail = false.obs;
+  var isLoading = false.obs;        // 초기/일반 로딩
+  var isLoadingMore = false.obs;    // 무한스크롤 로딩
+  var isLoadingDetail = false.obs;  // 상세 로딩
+  var isRefreshing = false.obs;     // ✅ 당겨서 새로고침 전용
 
   // 이벤트 목록
   var _eventList = <EventModel>[].obs;
@@ -51,48 +52,71 @@ class EventViewModel extends GetxController {
 
   /// 스크롤 리스너 (무한 스크롤)
   void _scrollListener() {
-    if (scrollController.position.pixels >= scrollController.position.maxScrollExtent - 200) {
-      if (!isLoadingMore.value && hasNextPage) {
+    if (scrollController.position.pixels >=
+        scrollController.position.maxScrollExtent - 200) {
+      // ✅ 새로고침 중에는 더보기 호출 방지
+      if (!isRefreshing.value && !isLoadingMore.value && hasNextPage) {
         fetchMoreEvents();
       }
     }
   }
 
-  /// 카테고리 변경
+  /// 카테고리 변경 (이건 UX상 새로 로딩하는 게 맞으니 clear=true 유지)
   void setCategory(String category) {
     _selectedCategory.value = category;
-    fetchEventList();
+    fetchEventList(clearBeforeFetch: true);
   }
 
-  /// 검색어 변경
+  /// 검색어 변경 (이것도 clear=true 유지)
   void setSearchQuery(String query) {
     _searchQuery.value = query;
-    fetchEventList();
+    fetchEventList(clearBeforeFetch: true);
   }
 
-  /// 필터 초기화
+  /// 필터 초기화 (clear=true 유지)
   void clearFilters() {
     _selectedCategory.value = '';
     _searchQuery.value = '';
-    fetchEventList();
+    fetchEventList(clearBeforeFetch: true);
   }
 
-  /// 이벤트 목록 조회
-  Future<void> fetchEventList() async {
-    if (isLoading.value) return;
+  /// ✅ 이벤트 목록 조회
+  /// - clearBeforeFetch=true  : 초기 진입/필터 변경용 (리스트 비우고 새로 그림)
+  /// - clearBeforeFetch=false : 당겨서 새로고침용 (리스트 유지 + 갱신만)
+  Future<void> fetchEventList({bool clearBeforeFetch = true}) async {
+    // 새로고침 모드일 때는 isLoading 대신 isRefreshing을 쓰는 게 깔끔
+    if (clearBeforeFetch) {
+      if (isLoading.value) return;
+    } else {
+      if (isRefreshing.value) return;
+    }
 
     try {
-      isLoading(true);
-      _eventList.clear();
+      if (clearBeforeFetch) {
+        isLoading(true);
+        _eventList.clear(); // ✅ 초기 로딩/필터변경일 때만 비움
+        _nextPageUrl.value = ''; // 초기화
+      } else {
+        // ✅ 당겨서 새로고침에서는 리스트를 비우지 않는다
+        isRefreshing(true);
+      }
 
       final response = await _eventAPI.fetchEventList(
-        category: _selectedCategory.value.isNotEmpty ? _selectedCategory.value : null,
-        searchQuery: _searchQuery.value.isNotEmpty ? _searchQuery.value : null,
+        category: _selectedCategory.value.isNotEmpty
+            ? _selectedCategory.value
+            : null,
+        searchQuery:
+        _searchQuery.value.isNotEmpty ? _searchQuery.value : null,
       );
 
       if (response.success) {
         final eventListResponse = EventListResponse.fromJson(response.data!);
-        _eventList.value = eventListResponse.events;
+
+        // ✅ 여기서 한 번에 갈아끼우면 “리스트 유지 + 최신화” UX
+        // (당겨서 새로고침에서도 기존 리스트는 남아있고,
+        //  응답 도착하는 순간 자연스럽게 최신으로 바뀜)
+        _eventList.assignAll(eventListResponse.events);
+
         _nextPageUrl.value = eventListResponse.next ?? '';
         print('이벤트 목록 조회 완료: ${_eventList.length}개');
       } else {
@@ -101,13 +125,20 @@ class EventViewModel extends GetxController {
     } catch (e) {
       print('이벤트 목록 조회 에러: $e');
     } finally {
-      isLoading(false);
+      if (clearBeforeFetch) {
+        isLoading(false);
+      } else {
+        isRefreshing(false);
+      }
     }
   }
 
   /// 이벤트 추가 로드 (무한 스크롤)
   Future<void> fetchMoreEvents() async {
     if (!hasNextPage || isLoadingMore.value) return;
+
+    // ✅ 새로고침 중이면 더보기 금지
+    if (isRefreshing.value) return;
 
     try {
       isLoadingMore(true);
@@ -180,7 +211,7 @@ class EventViewModel extends GetxController {
 
       if (response.success) {
         print('이벤트 생성 완료');
-        await fetchEventList(); // 목록 새로고침
+        await fetchEventList(clearBeforeFetch: true);
         return true;
       } else {
         print('이벤트 생성 실패: ${response.error}');
@@ -221,7 +252,7 @@ class EventViewModel extends GetxController {
       if (response.success) {
         print('이벤트 수정 완료');
         _eventDetail.value = EventModel.fromJson(response.data!);
-        await fetchEventList(); // 목록 새로고침
+        await fetchEventList(clearBeforeFetch: true);
         return true;
       } else {
         print('이벤트 수정 실패: ${response.error}');
@@ -286,9 +317,9 @@ class EventViewModel extends GetxController {
     }
   }
 
-  /// 새로고침
+  /// ✅ 새로고침 (당겨서 새로고침에서 이걸 호출하면 리스트 유지됨)
   Future<void> refresh() async {
-    await fetchEventList();
+    await fetchEventList(clearBeforeFetch: false);
   }
 
   /// 상세 정보 초기화
