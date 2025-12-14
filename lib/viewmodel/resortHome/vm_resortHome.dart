@@ -87,6 +87,13 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
   int? _pendingLiveOnUserId;
   bool _isWaitingForBatteryOptimization = false;
 
+  // 에러 로그 전송을 위한 변수
+  final RankingAPI _rankingAPI = RankingAPI();
+  bool _isLoggingOn = false; // 로깅 활성화 여부
+  StreamSubscription<DocumentSnapshot>? _errorLogSubscription;
+  Timer? _heartbeatTimer; // Heartbeat 타이머
+  int? _currentLiveUserId; // 현재 라이브온 중인 사용자 ID
+
   String? _liveActivityId;
   DateTime? _liveOnStartedAt; // 시작 시각 표시용 (LockScreen에 타이머로 쓰는 값)
 
@@ -184,6 +191,79 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
 
   //TODO: 라이브온 관련 메소드****************************************************
 
+  /// Firebase error_log 컬렉션 스트림 구독 시작
+  void _startErrorLogSubscription(int userId) {
+    _errorLogSubscription?.cancel();
+
+    _errorLogSubscription = FirebaseFirestore.instance
+        .collection('error_log')
+        .doc('user_id')
+        .snapshots()
+        .listen((snapshot) {
+      if (snapshot.exists) {
+        final data = snapshot.data();
+        _isLoggingOn = data?['logging_on'] ?? false;
+        print('🔍 로깅 활성화 상태: $_isLoggingOn');
+      } else {
+        _isLoggingOn = false;
+      }
+    }, onError: (e) {
+      print('❌ 에러 로그 스트림 구독 오류: $e');
+      _isLoggingOn = false;
+    });
+  }
+
+  /// 서버로 라이브온 로그 전송 (로깅이 활성화된 경우에만)
+  Future<void> _sendLiveLog({
+    required int userId,
+    required String requestType,
+    String? error,
+    double? lat,
+    double? lon,
+  }) async {
+    if (!_isLoggingOn) return;
+
+    try {
+      final coordinates = (lat != null && lon != null)
+          ? 'POINT($lon $lat)'
+          : null;
+
+      await _rankingAPI.createErrorLog({
+        'user_id': userId,
+        if (coordinates != null) 'coordinates': coordinates,
+        if (error != null) 'error': error,
+        'request_type': requestType,
+      });
+      print('📝 로그 전송 완료: $requestType');
+    } catch (e) {
+      print('❌ 로그 전송 실패: $e');
+    }
+  }
+
+  /// Heartbeat 타이머 시작 (60초마다 서버로 생존 신호 전송)
+  void _startHeartbeatTimer() {
+    _stopHeartbeatTimer(); // 기존 타이머 정리
+
+    _heartbeatTimer = Timer.periodic(const Duration(seconds: 60), (timer) async {
+      if (_currentLiveUserId != null) {
+        _sendLiveLog(
+          userId: _currentLiveUserId!,
+          requestType: 'heartbeat',
+          lat: _latitude.value,
+          lon: _longitude.value,
+        );
+      }
+    });
+    print('💓 Heartbeat 타이머 시작');
+  }
+
+  /// Heartbeat 타이머 정지
+  void _stopHeartbeatTimer() {
+    _heartbeatTimer?.cancel();
+    _heartbeatTimer = null;
+    print('💔 Heartbeat 타이머 정지');
+  }
+
   /// 라이브온 성공 시 친구들에게 알림 등록
   Future<void> _notifyFriendsLiveOn(int myUserId) async {
     try {
@@ -258,6 +338,15 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
 
   Future<void> startLiveLocationService({required user_id}) async {
     try {
+      // 현재 라이브온 사용자 ID 저장
+      _currentLiveUserId = user_id;
+
+      // 에러 로그 대상 사용자 스트림 구독 시작 (라이브온 시에만)
+      _startErrorLogSubscription(user_id);
+
+      // Heartbeat 타이머 시작 (60초마다 서버로 생존 신호 전송)
+      _startHeartbeatTimer();
+
       // Android: 배터리 최적화 제외 확인 (백그라운드 kill 방지)
       if (Platform.isAndroid) {
         final shouldProceed = await showBatteryOptimizationDialog(userId: user_id);
@@ -342,8 +431,11 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
 
   Future<bool> startForegroundLocationService({required user_id}) async {
     try {
+      _sendLiveLog(userId: user_id, requestType: 'foreground_start_begin');
+
       bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
       if (!serviceEnabled) {
+        _sendLiveLog(userId: user_id, requestType: 'foreground_error', error: 'Location services are disabled');
         throw Exception('Location services are disabled.');
       }
 
@@ -351,9 +443,11 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
       if (permission == LocationPermission.denied) {
         permission = await Geolocator.requestPermission();
         if (permission == LocationPermission.deniedForever) {
+          _sendLiveLog(userId: user_id, requestType: 'foreground_error', error: 'Location permissions are permanently denied');
           throw Exception('Location permissions are permanently denied.');
         }
         if (permission == LocationPermission.denied) {
+          _sendLiveLog(userId: user_id, requestType: 'foreground_error', error: 'Location permissions are denied');
           throw Exception('Location permissions are denied.');
         }
       }
@@ -363,6 +457,8 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
       _latitude.value = currentPosition.latitude;
       _longitude.value = currentPosition.longitude;
 
+      _sendLiveLog(userId: user_id, requestType: 'foreground_got_position', lat: _latitude.value, lon: _longitude.value);
+
       // 서버와 라이브 상태 동기화
       ApiResponse response = await liveOn({
         "user_id": user_id,
@@ -370,6 +466,7 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
       });
 
       if (response.success) {
+        _sendLiveLog(userId: user_id, requestType: 'liveOn_success', lat: _latitude.value, lon: _longitude.value);
         // 라이브온 성공 시 친구들에게 알림 등록
         _notifyFriendsLiveOn(user_id);
 
@@ -440,13 +537,15 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
                       "slope_id": passPointInfo['id'],
                       "coordinates": "${position.latitude}, ${position.longitude}"
                     });
-                    if (response.statusCode == 201 || response.statusCode == 416) {
+                    final isSuccess = response.statusCode == 201 || response.statusCode == 416;
+                    if (isSuccess) {
                       _lastCountMethodCall = DateTime.now();
                       print(response.statusCode);
                       print('포그라운드 체크포인트 업데이트 성공');
                     } else {
                       print('포그라운드 체크포인트 업데이트 실패: ${response.statusCode}');
                     }
+                    _sendLiveLog(userId: user_id, requestType: 'fg_checkpoint', error: isSuccess ? 'success' : 'statusCode: ${response.statusCode}', lat: position.latitude, lon: position.longitude);
                   }
                 }
 
@@ -483,22 +582,23 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
                 if (passPointInfo['type'] == 'reset_point') {
                   if (_lastResetMethodCall == null || DateTime.now().difference(_lastResetMethodCall!).inSeconds > 180) {
                     _lastResetMethodCall = DateTime.now();
-                    await RankingAPI().reset({"user_id": user_id});
+                    final resetResponse = await RankingAPI().reset({"user_id": user_id});
                     print('리셋 성공');
+                    _sendLiveLog(userId: user_id, requestType: 'fg_reset', error: resetResponse.success ? 'success' : resetResponse.error.toString(), lat: position.latitude, lon: position.longitude);
                   }
                 }
 
                 if (passPointInfo['type'] == 'respawn_point') {
                   if (_lastRespawnMethodCall == null || DateTime.now().difference(_lastRespawnMethodCall!).inSeconds > 180) {
                     _lastRespawnMethodCall = DateTime.now();
-                    await RankingAPI().respawn({"user_id": user_id});
-                    print('리스폰 성공');
+                    final respawnResponse = await RankingAPI().respawn({"user_id": user_id});
+                    if (respawnResponse.success) {
+                      print('리스폰 성공');
+                    }
+                    _sendLiveLog(userId: user_id, requestType: 'fg_respawn', error: respawnResponse.success ? 'success' : respawnResponse.error.toString(), lat: position.latitude, lon: position.longitude);
 
                     _updateLiveActivity(
                       lastSlopeName: 'Respawn',
-                      // todayRideCount/sessionRideCount 값 추적 중이면 전달해도 됨
-                      // todayRideCount: resortHomeModel?.todayRideCount,
-                      // sessionRideCount: ...,
                     );
 
                   }
@@ -513,6 +613,7 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
               // 연속 3회 이상 경계 외부일 때만 종료
               if (_outOfBoundaryCount >= _outOfBoundaryThreshold) {
                 print('경계 외부 확정 - 위치 서비스 종료');
+                _sendLiveLog(userId: user_id, requestType: 'fg_out_of_boundary', lat: position.latitude, lon: position.longitude);
                 _outOfBoundaryCount = 0; // 카운터 리셋
                 await stopForegroundLocationService();
                 await stopBackgroundLocationService();
@@ -522,13 +623,16 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
           });
         });
         print('포그라운드 서비스 실행 성공');
+        _sendLiveLog(userId: user_id, requestType: 'foreground_stream_started');
         return true; // 성공 반환
       } else {
         print('라이브 서비스 불가 지역');
+        _sendLiveLog(userId: user_id, requestType: 'liveOn_fail_not_in_resort', lat: _latitude.value, lon: _longitude.value);
         return false; // 실패 반환
       }
     } catch (error) {
       print('포그라운드 서비스 실행 실패: $error');
+      _sendLiveLog(userId: user_id, requestType: 'foreground_error', error: error.toString());
       return false; // 실패 반환
     }
   }
@@ -584,6 +688,35 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
     ));
 
     await bg.BackgroundGeolocation.start();
+    _sendLiveLog(userId: user_id, requestType: 'background_service_started');
+
+    // 위치 서비스(GPS) on/off 감지
+    bg.BackgroundGeolocation.onProviderChange((bg.ProviderChangeEvent event) {
+      print('📍 위치 제공자 상태 변경: enabled=${event.enabled}, status=${event.status}');
+      if (!event.enabled) {
+        _sendLiveLog(
+          userId: user_id,
+          requestType: 'location_provider_disabled',
+          error: 'GPS/위치 서비스가 꺼졌습니다',
+        );
+      } else {
+        _sendLiveLog(
+          userId: user_id,
+          requestType: 'location_provider_enabled',
+        );
+      }
+    });
+
+    // 백그라운드 heartbeat 이벤트 (플러그인 내장 heartbeat)
+    bg.BackgroundGeolocation.onHeartbeat((bg.HeartbeatEvent event) {
+      print('💓 백그라운드 Heartbeat: ${event.location?.coords.latitude}, ${event.location?.coords.longitude}');
+      _sendLiveLog(
+        userId: user_id,
+        requestType: 'bg_heartbeat',
+        lat: event.location?.coords.latitude,
+        lon: event.location?.coords.longitude,
+      );
+    });
 
     bg.BackgroundGeolocation.onLocation((bg.Location location) async {
 
@@ -634,7 +767,8 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
                   "slope_id": passPointInfo['id'],
                   "coordinates": "${position.latitude}, ${position.longitude}"
                 });
-                if (response.statusCode == 201 || response.statusCode == 416) {
+                final isSuccess = response.statusCode == 201 || response.statusCode == 416;
+                if (isSuccess) {
                   _lastCountMethodCall = DateTime.now();
                   print('백그라운드 체크포인트 업데이트 성공');
                   await LiveActivityService.update(
@@ -646,6 +780,7 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
                 } else {
                   print('백그라운드 체크포인트 업데이트 실패: ${response.statusCode}');
                 }
+                _sendLiveLog(userId: user_id, requestType: 'bg_checkpoint', error: isSuccess ? 'success' : 'statusCode: ${response.statusCode}', lat: position.latitude, lon: position.longitude);
               }
             }
 
@@ -682,22 +817,23 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
             if (passPointInfo['type'] == 'reset_point') {
               if (_lastResetMethodCall == null || DateTime.now().difference(_lastResetMethodCall!).inSeconds > 180) {
                 _lastResetMethodCall = DateTime.now();
-                await RankingAPI().reset({"user_id": user_id});
+                final resetResponse = await RankingAPI().reset({"user_id": user_id});
                 print('리셋 성공');
+                _sendLiveLog(userId: user_id, requestType: 'bg_reset', error: resetResponse.success ? 'success' : resetResponse.error.toString(), lat: position.latitude, lon: position.longitude);
               }
             }
 
             if (passPointInfo['type'] == 'respawn_point') {
               if (_lastRespawnMethodCall == null || DateTime.now().difference(_lastRespawnMethodCall!).inSeconds > 180) {
                 _lastRespawnMethodCall = DateTime.now();
-                await RankingAPI().respawn({"user_id": user_id});
-                print('리스폰 성공');
+                final respawnResponse = await RankingAPI().respawn({"user_id": user_id});
+                if (respawnResponse.success) {
+                  print('리스폰 성공');
+                }
+                _sendLiveLog(userId: user_id, requestType: 'bg_respawn', error: respawnResponse.success ? 'success' : respawnResponse.error.toString(), lat: position.latitude, lon: position.longitude);
 
                 _updateLiveActivity(
                   lastSlopeName: 'Respawn',
-                  // todayRideCount/sessionRideCount 값 추적 중이면 전달해도 됨
-                  // todayRideCount: resortHomeModel?.todayRideCount,
-                  // sessionRideCount: ...,
                 );
 
               }
@@ -713,6 +849,7 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
           // 연속 3회 이상 경계 외부일 때만 종료
           if (_outOfBoundaryCount >= _outOfBoundaryThreshold) {
             print('경계 외부 확정 - 위치 서비스 종료');
+            _sendLiveLog(userId: user_id, requestType: 'bg_out_of_boundary', lat: position.latitude, lon: position.longitude);
             _outOfBoundaryCount = 0; // 카운터 리셋
             await stopForegroundLocationService();
             await stopBackgroundLocationService();
@@ -725,6 +862,7 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
       // 위치 에러 발생 시 복구 로직
       _locationErrorCount++;
       print('[onLocation] ERROR ($_locationErrorCount/$_maxLocationErrorRetry): $error');
+      _sendLiveLog(userId: user_id, requestType: 'bg_location_error', error: error.toString());
 
       // 최대 재시도 횟수 초과 시 서비스 재시작 시도
       if (_locationErrorCount >= _maxLocationErrorRetry && !_isRestartingService) {
@@ -831,13 +969,28 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
 
   Future<void> liveOff(Map<String, dynamic> body, user_id) async {
     isLoading(true);
+
+    // 로그 전송 (스트림 구독 해제 전에 전송)
+    _sendLiveLog(userId: user_id, requestType: 'liveOff_start');
+
     final ApiResponse response_off = await RankingAPI().liveOff(body);
 
     if (response_off.success) {
+      _sendLiveLog(userId: user_id, requestType: 'liveOff_success');
+
       // ✅ 위치 추적 서비스 완전 종료 (백그라운드 + 포그라운드)
       await stopBackgroundLocationService();
       await stopForegroundLocationService();
       print('🛑 위치 추적 서비스 종료 완료');
+
+      // ✅ Heartbeat 타이머 정지
+      _stopHeartbeatTimer();
+      _currentLiveUserId = null;
+
+      // ✅ 에러 로그 스트림 구독 해제 (로그 전송 후에 해제)
+      _errorLogSubscription?.cancel();
+      _errorLogSubscription = null;
+      _isLoggingOn = false;
 
       // ✅ 친구들에게서 라이브온 알림 제거
       await _removeLiveOnNotification();
