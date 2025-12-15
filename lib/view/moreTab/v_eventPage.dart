@@ -58,6 +58,8 @@ class _EventPageViewState extends State<EventPageView> {
         return const Color(0xFF50C850);
       case '모집':
         return const Color(0xFF50C850);
+      case '프로모션':
+        return const Color(0xFF50C850);
       default:
         return SDSColor.gray500!;
     }
