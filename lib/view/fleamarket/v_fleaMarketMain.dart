@@ -19,27 +19,18 @@ class FleaMarketMainView extends StatefulWidget {
   State<FleaMarketMainView> createState() => _FleaMarketMainViewState();
 }
 
-class _FleaMarketMainViewState extends State<FleaMarketMainView> {
+// AnimatedSize를 쓰려면 TickerProvider가 필요해서 mixin 추가
+class _FleaMarketMainViewState extends State<FleaMarketMainView>
+    with SingleTickerProviderStateMixin {
   final FleamarketListViewModel _fleamarketViewModel =
   Get.find<FleamarketListViewModel>();
 
   /// 헤더(검색 + 탭 + 배너) 보임 여부
   bool _isHeaderVisible = true;
 
-  /// 헤더 실제 높이 (초기값은 대충 넣어두고, 빌드 후 정확히 측정해서 갱신)
-  double _headerHeight = 220;
-
-  /// 헤더 높이 측정을 위한 GlobalKey
-  final GlobalKey _headerKey = GlobalKey();
-
   @override
   Widget build(BuildContext context) {
-    Size _size = MediaQuery.of(context).size;
-
-    // 빌드 완료 후 헤더 실제 높이 측정
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _updateHeaderHeight();
-    });
+    final Size _size = MediaQuery.of(context).size;
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -66,18 +57,23 @@ class _FleaMarketMainViewState extends State<FleaMarketMainView> {
         ),
       ),
       body: SafeArea(
-        child: Stack(
+        child: Column(
           children: [
-            /// 1) 리스트 영역
+            /// 1) 헤더 영역 (검색 + 탭 + 배너)
             ///
-            /// top 패딩 = 헤더 실제 높이
-            /// 헤더가 숨을 때는 0으로 줄어들어서, 바로 윗부분까지 꽉 채움
-            AnimatedPadding(
+            /// _isHeaderVisible = true  → 자연 높이로 보임
+            /// _isHeaderVisible = false → height 0으로 슥 접힘
+            AnimatedSize(
               duration: const Duration(milliseconds: 220),
               curve: Curves.easeInOut,
-              padding: EdgeInsets.only(
-                top: _isHeaderVisible ? _headerHeight : 0,
-              ),
+              alignment: Alignment.topCenter,
+              child: _isHeaderVisible
+                  ? _buildHeader(_size)
+                  : const SizedBox.shrink(),
+            ),
+
+            /// 2) 리스트 영역 – 항상 남은 영역을 꽉 채움
+            Expanded(
               child: NotificationListener<UserScrollNotification>(
                 onNotification: (notification) {
                   // 스크롤 방향에 따라 헤더 숨기기/보이기
@@ -88,7 +84,8 @@ class _FleaMarketMainViewState extends State<FleaMarketMainView> {
                         _isHeaderVisible = false;
                       });
                     }
-                  } else if (notification.direction == ScrollDirection.forward) {
+                  } else if (notification.direction ==
+                      ScrollDirection.forward) {
                     // 위로 스크롤 → 헤더 보이기
                     if (!_isHeaderVisible) {
                       setState(() {
@@ -96,6 +93,12 @@ class _FleaMarketMainViewState extends State<FleaMarketMainView> {
                       });
                     }
                   }
+
+                  // 최상단에 도달하면 무조건 헤더 다시 보이게 하고 싶으면:
+                  // if (notification.metrics.pixels <= 0 && !_isHeaderVisible) {
+                  //   setState(() => _isHeaderVisible = true);
+                  // }
+
                   return false;
                 },
                 child: Obx(() {
@@ -117,19 +120,6 @@ class _FleaMarketMainViewState extends State<FleaMarketMainView> {
                 }),
               ),
             ),
-
-            /// 2) 헤더(검색 + 탭 + 배너) 슬라이드 인/아웃
-            Align(
-              alignment: Alignment.topCenter,
-              child: AnimatedSlide(
-                offset: _isHeaderVisible
-                    ? const Offset(0, 0)
-                    : const Offset(0, -1), // 위로 스윽 올라가게
-                duration: const Duration(milliseconds: 220),
-                curve: Curves.easeInOut,
-                child: _buildHeader(_size),
-              ),
-            ),
           ],
         ),
       ),
@@ -139,7 +129,6 @@ class _FleaMarketMainViewState extends State<FleaMarketMainView> {
   /// 상단 헤더: 검색 / 탭 메뉴 / 배너
   Widget _buildHeader(Size size) {
     return Container(
-      key: _headerKey, // ← 여기에 key 부착해서 높이 측정
       width: size.width,
       color: Colors.white,
       child: Column(
@@ -151,8 +140,8 @@ class _FleaMarketMainViewState extends State<FleaMarketMainView> {
               Get.toNamed(AppRoutes.fleamarketSearch);
             },
             child: Padding(
-              padding:
-              const EdgeInsets.only(left: 16, right: 16, top: 4, bottom: 10),
+              padding: const EdgeInsets.only(
+                  left: 16, right: 16, top: 4, bottom: 10),
               child: Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(6),
@@ -185,10 +174,9 @@ class _FleaMarketMainViewState extends State<FleaMarketMainView> {
             ),
           ),
 
-          // 탭 메뉴
+          // 탭 메뉴 + 아래 구분선
           Stack(
             children: [
-              // 헤더 하단 구분선
               Positioned(
                 bottom: 1,
                 child: Container(
@@ -215,7 +203,8 @@ class _FleaMarketMainViewState extends State<FleaMarketMainView> {
               ),
             ],
           ),
-          // 배너
+
+          // 배너 (보이든/안 보이든 자연스럽게 포함됨)
           Banner_fleaMarket(),
         ],
       ),
@@ -270,21 +259,5 @@ class _FleaMarketMainViewState extends State<FleaMarketMainView> {
         ],
       ),
     );
-  }
-
-  /// 헤더 실제 높이 측정해서 _headerHeight 갱신
-  void _updateHeaderHeight() {
-    final ctx = _headerKey.currentContext;
-    if (ctx == null) return;
-
-    final box = ctx.findRenderObject();
-    if (box is RenderBox) {
-      final newHeight = box.size.height;
-      if (newHeight != _headerHeight && newHeight > 0 && mounted) {
-        setState(() {
-          _headerHeight = newHeight;
-        });
-      }
-    }
   }
 }

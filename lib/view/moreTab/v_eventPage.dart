@@ -51,9 +51,9 @@ class _EventPageViewState extends State<EventPageView> {
       case '시승회':
         return const Color(0xFF34A853);
       case '공지':
-        return const Color(0xFF3D83ED);
+        return const Color(0xFF0066FF);
       case '모집':
-        return const Color(0xFF3D83ED);
+        return const Color(0xFF0066FF);
       case '행사':
         return const Color(0xFF7543CC);
       case '이벤트':
