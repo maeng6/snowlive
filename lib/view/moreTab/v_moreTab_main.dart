@@ -308,14 +308,14 @@ class MoreTabMainView extends StatelessWidget {
                                     Padding(
                                       padding: const EdgeInsets.only(left: 4),
                                       child: Container(
-                                        padding: EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+                                        padding: EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                                         decoration: BoxDecoration(
                                           color: Color(0xFFEB5757),
-                                          borderRadius: BorderRadius.circular(4),
+                                          borderRadius: BorderRadius.circular(20),
                                         ),
                                         child: Text(
                                           'N',
-                                          style: SDSTextStyle.bold.copyWith(
+                                          style: SDSTextStyle.extraBold.copyWith(
                                             fontSize: 10,
                                             color: Colors.white,
                                           ),
