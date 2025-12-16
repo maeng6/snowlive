@@ -78,6 +78,7 @@ class SnowballShopViewModel extends GetxController {
   // ------------------------
   Rxn<Stream<DocumentSnapshot<Map<String, dynamic>>>> infoStream_snowballShop = Rxn();
   Rxn<Stream<DocumentSnapshot<Map<String, dynamic>>>> infoStream_snowballShop_entrance = Rxn();
+  Rxn<Stream<DocumentSnapshot<Map<String, dynamic>>>> infoStream_snowballShop_entrance_ranking = Rxn();
   Rxn<Stream<DocumentSnapshot<Map<String, dynamic>>>> infoStream_snowballShop_notice_gold = Rxn();
 
   @override
@@ -112,6 +113,15 @@ class SnowballShopViewModel extends GetxController {
         .doc('snowball_market')
         .snapshots();
   }
+
+  Future<void> getInfo_snowballMarket_entrance_ranking() async {
+    infoStream_snowballShop_entrance_ranking.value = FirebaseFirestore.instance
+        .collection('snowball_market')
+        .doc('snowball_market')
+        .snapshots();
+  }
+
+
 
   Future<void> getInfo_snowballMarket_notice_gold() async {
     infoStream_snowballShop_notice_gold.value = FirebaseFirestore.instance

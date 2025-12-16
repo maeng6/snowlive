@@ -23,7 +23,7 @@ class _Entrance_snowballShop_rankingState extends State<Entrance_snowballShop_ra
   @override
   void initState() {
     super.initState();
-    _snowballShopViewModel.getInfo_snowballMarket_entrance();
+    _snowballShopViewModel.getInfo_snowballMarket_entrance_ranking();
     _fetchData();
   }
 
@@ -48,7 +48,7 @@ class _Entrance_snowballShop_rankingState extends State<Entrance_snowballShop_ra
     Size _size = MediaQuery.of(context).size;
 
     return Obx(() {
-      final stream = _snowballShopViewModel.infoStream_snowballShop_entrance.value;
+      final stream = _snowballShopViewModel.infoStream_snowballShop_entrance_ranking.value;
 
       if (stream == null) {
         return SizedBox.shrink();
