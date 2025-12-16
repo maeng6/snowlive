@@ -380,7 +380,7 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
     required String message,
     required VoidCallback action,
   }) async {
-    Get.dialog(
+    await Get.dialog(
       WillPopScope(
         onWillPop: () async => true, // 뒤로가기 허용 (기본값)
         child: AlertDialog(
@@ -450,6 +450,17 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
           _sendLiveLog(userId: user_id, requestType: 'foreground_error', error: 'Location permissions are denied');
           throw Exception('Location permissions are denied.');
         }
+      }
+
+      // "항상 허용" 권한 체크 - 백그라운드 위치 추적에 필수
+      if (permission == LocationPermission.whileInUse) {
+        _sendLiveLog(userId: user_id, requestType: 'foreground_error', error: 'Location permission is whileInUse, not always');
+        await showSettingsPopup(
+          title: '위치 권한 설정 필요',
+          message: '라이브 기능을 사용하려면 위치 권한을\n"항상 허용"으로 설정해주세요.',
+          action: () => openAppSettings(),
+        );
+        return false;
       }
 
       // 현재 위치 가져오기
