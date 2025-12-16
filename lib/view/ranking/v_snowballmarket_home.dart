@@ -50,6 +50,8 @@ class _SnowballMarketHomeViewState extends State<SnowballMarketHomeView> {
   final CarouselSliderController _carouselController = CarouselSliderController();
 
   void _openSnowShopBottomSheet(BuildContext context) {
+    setState(() => _currentShopIndex = 0);
+
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -62,15 +64,15 @@ class _SnowballMarketHomeViewState extends State<SnowballMarketHomeView> {
               child: GestureDetector(
                 onTap: () {}, // 내부 터치시 닫히지 않게
                 child: Container(
-                  height: MediaQuery.of(context).size.height * 0.63, // ✅ 높이 지정
-                  decoration: BoxDecoration(
+                  height: MediaQuery.of(context).size.height * 0.72, // ✅ 높이 지정
+                  decoration: const BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.only(
                       topLeft: Radius.circular(24),
                       topRight: Radius.circular(24),
                     ),
                   ),
-                  padding: EdgeInsets.only(top: 16, bottom: 32),
+                  padding: const EdgeInsets.only(top: 16, bottom: 32),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween, // ✅ 공간 균등 분배
                     children: [
@@ -86,8 +88,9 @@ class _SnowballMarketHomeViewState extends State<SnowballMarketHomeView> {
                               borderRadius: BorderRadius.circular(10),
                             ),
                           ),
-                          SizedBox(height: 24),
-                          // 기존 CarouselSlider 대신
+                          const SizedBox(height: 24),
+
+                          // ✅ 캐러셀
                           SizedBox(
                             height: 360,
                             child: PageView.builder(
@@ -103,26 +106,32 @@ class _SnowballMarketHomeViewState extends State<SnowballMarketHomeView> {
                                   {
                                     'title': '프리미엄 눈송이 상점',
                                     'subtitle': '랭킹 등급 골드 이상 이용 가능',
-                                    'image': 'assets/imgs/imgs/snowballShop/img_snowballshop_store_premium.png',
-                                },
+                                    'image':
+                                    'assets/imgs/imgs/snowballShop/img_snowballshop_store_premium.png',
+                                  },
                                   {
                                     'title': '일반 눈송이 상점',
                                     'subtitle': '누구나 이용 가능',
-                                    'image': 'assets/imgs/imgs/snowballShop/img_snowballshop_store_public.png',
+                                    'image':
+                                    'assets/imgs/imgs/snowballShop/img_snowballshop_store_public.png',
                                   },
                                 ][index];
 
                                 return Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                                  padding:
+                                  const EdgeInsets.symmetric(horizontal: 8),
                                   child: Transform.scale(
-                                    scale: _currentShopIndex == index ? 1.0 : 0.9,
+                                    scale:
+                                    _currentShopIndex == index ? 1.0 : 0.9,
                                     child: GestureDetector(
-                                      onTap: (){
+                                      onTap: () {
                                         Navigator.of(context).pop();
                                         if (index == 0) {
-                                          Get.toNamed(AppRoutes.snowballMarketPremiumShop); // ✅ 프리미엄 상점
+                                          Get.toNamed(
+                                              AppRoutes.snowballMarketPremiumShop);
                                         } else {
-                                          Get.toNamed(AppRoutes.snowballMarketPublicShop);  // ✅ 일반 상점
+                                          Get.toNamed(
+                                              AppRoutes.snowballMarketPublicShop);
                                         }
                                       },
                                       child: _buildShopCard(
@@ -136,7 +145,53 @@ class _SnowballMarketHomeViewState extends State<SnowballMarketHomeView> {
                               },
                             ),
                           ),
-                          SizedBox(height: 8), // 도트와 카드 사이 여백 줄임
+
+                          const SizedBox(height: 16),
+
+                          // ✅ 버튼 1개: 선택된 카드에 따라 진입 라우트/라벨이 바뀜
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 60),
+                            child: SizedBox(
+                              width: double.infinity,
+                              height: 48,
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+
+                                  if (_currentShopIndex == 0) {
+                                    Get.toNamed(
+                                        AppRoutes.snowballMarketPremiumShop);
+                                  } else {
+                                    Get.toNamed(
+                                        AppRoutes.snowballMarketPublicShop);
+                                  }
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: const Color(0xFFECECEC),
+                                  elevation: 0,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(5),
+                                  ),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 16, vertical: 10),
+                                ),
+                                child: Text(
+                                  _currentShopIndex == 0
+                                      ? '프리미엄 상점 들어가기'
+                                      : '일반 상점 들어가기',
+                                  style: const TextStyle(
+                                    color: Color(0xFF111111),
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 14,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+
+                          const SizedBox(height: 20),
+
+                          // ✅ 도트 인디케이터 (버튼 아래)
                           AnimatedSmoothIndicator(
                             activeIndex: _currentShopIndex,
                             count: 2,
@@ -149,7 +204,10 @@ class _SnowballMarketHomeViewState extends State<SnowballMarketHomeView> {
                               activeDotColor: const Color(0xFF1D242E),
                             ),
                           ),
-                          SizedBox(height: 18),
+
+                          const SizedBox(height: 20),
+
+                          // ✅ 기존 버튼 유지
                           ElevatedButton(
                             onPressed: () {
                               _snowballShopViewModel.fetchPurchaseHistoryOnly();
@@ -165,14 +223,15 @@ class _SnowballMarketHomeViewState extends State<SnowballMarketHomeView> {
                                   width: 1,
                                 ),
                               ),
-                              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 16, vertical: 10),
                             ),
                             child: const Text(
                               '경품 교환 목록',
                               style: TextStyle(
                                 color: Color(0xFF000000),
                                 fontWeight: FontWeight.bold,
-                                fontSize: 12,
+                                fontSize: 13,
                               ),
                             ),
                           ),
@@ -186,6 +245,42 @@ class _SnowballMarketHomeViewState extends State<SnowballMarketHomeView> {
           },
         );
       },
+    );
+  }
+
+
+
+  /// ✅ 추가된 진입 버튼 위젯(기존 톤 유지: 라운드/화이트 계열)
+  Widget _buildSnowShopEntryButton({
+    required String label,
+    required bool isActive,
+    required VoidCallback onTap,
+  }) {
+    return SizedBox(
+      height: 44,
+      child: ElevatedButton(
+        onPressed: onTap,
+        style: ElevatedButton.styleFrom(
+          backgroundColor: isActive ? const Color(0xFF1D242E) : const Color(0xFFFFFFFF),
+          elevation: 0,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+            side: BorderSide(
+              color: isActive ? const Color(0xFF1D242E) : const Color(0xFFDDDDDD),
+              width: 1,
+            ),
+          ),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+        ),
+        child: Text(
+          label,
+          style: TextStyle(
+            color: isActive ? const Color(0xFFFFFFFF) : const Color(0xFF000000),
+            fontWeight: FontWeight.bold,
+            fontSize: 12,
+          ),
+        ),
+      ),
     );
   }
 
@@ -218,7 +313,7 @@ class _SnowballMarketHomeViewState extends State<SnowballMarketHomeView> {
           ),
         ),
         Padding(
-          padding: EdgeInsets.only(top: 20),
+          padding: EdgeInsets.only(top: 16),
           child: Text(
             title,
             style: const TextStyle(
@@ -607,6 +702,44 @@ class _SnowballMarketHomeViewState extends State<SnowballMarketHomeView> {
                                     },
                                     child: Image.asset(
                                       'assets/imgs/imgs/snowballShop/icon_snowballshop_store_brand.png',
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 20, right: 40, left: 40),
+                                    child: ElevatedButton(
+                                      onPressed: () async {
+                                        CustomFullScreenDialog.showDialog();
+                                        await _snowballShopViewModel.fetchSnowballHomeData();
+                                        await _snowballShopViewModel.fetchMissionStatus();
+                                        CustomFullScreenDialog.cancelDialog();
+                                        Get.toNamed(AppRoutes.snowballMarketBrandShop);
+                                      },
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: Colors.white,
+                                        elevation: 0,
+                                        padding: const EdgeInsets.only(top: 10, bottom: 10, left: 16, right: 12),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(20),
+                                        ),
+                                      ),
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(
+                                            '브랜드 미션 보러가기',
+                                            style: SDSTextStyle.extraBold.copyWith(
+                                              color: Colors.black,
+                                              fontSize: 13,
+                                            ),
+                                          ),
+                                          SizedBox(width: 10,),
+                                          Image.asset(
+                                            'assets/imgs/imgs/snowballShop/icon_snowballshop_arrow_b.png',
+                                            width: 16,
+                                            height: 16,
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 ],
