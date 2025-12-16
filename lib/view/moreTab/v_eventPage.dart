@@ -2,7 +2,9 @@ import 'package:com.snowlive/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/viewmodel/vm_event.dart';
 import 'package:com.snowlive/viewmodel/vm_eventAlarm.dart';
 import 'package:com.snowlive/model/m_event.dart';
+import 'package:com.snowlive/viewmodel/vm_user.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart' show HapticFeedback;
 import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:intl/intl.dart';
@@ -16,8 +18,9 @@ class EventPageView extends StatefulWidget {
 
 class _EventPageViewState extends State<EventPageView> {
   final EventViewModel _eventViewModel = Get.put(EventViewModel());
-  final EventAlarmViewModel _eventAlarmViewModel =
-  Get.find<EventAlarmViewModel>();
+  final EventAlarmViewModel _eventAlarmViewModel = Get.find<EventAlarmViewModel>();
+  final UserViewModel _userViewModel = Get.find<UserViewModel>();
+
 
   @override
   void initState() {
@@ -92,6 +95,506 @@ class _EventPageViewState extends State<EventPageView> {
               color: SDSColor.gray900,
               fontSize: 18),
         ),
+        actions: [
+          Obx(()=> Padding(
+            padding: EdgeInsets.only(top: 12, bottom: 8),
+            child: Row(
+              children: [
+                Padding(
+                  padding: EdgeInsets.only(right: 6),
+                  child: Stack(
+                    children: [
+                      ElevatedButton(
+                          onPressed: () async {
+                            HapticFeedback.lightImpact();
+                            showModalBottomSheet(
+                                enableDrag: false,
+                                isScrollControlled: true,
+                                backgroundColor: Colors.transparent,
+                                context: context,
+                                builder: (context) {
+                                  return SafeArea(
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(vertical: 20),
+                                      child: Container(
+                                        margin: EdgeInsets.only(
+                                          left: 16,
+                                          right: 16,
+                                          top: 16,
+                                        ),
+                                        height: MediaQuery.of(context).size.height * 0.6,
+                                        padding: EdgeInsets.all(16),
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius: BorderRadius.circular(16),
+                                        ),
+                                        child: Scrollbar(
+                                          child: SingleChildScrollView(
+                                            child: Wrap(
+                                              children: [
+                                                //전체
+                                                ListTile(
+                                                  contentPadding: EdgeInsets.zero,
+                                                  title: Center(
+                                                    child: Text(
+                                                      '전체',
+                                                      style: SDSTextStyle.bold.copyWith(
+                                                          fontSize: 15,
+                                                          color: SDSColor.gray900
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  onTap: () async {
+                                                    Navigator.pop(context);
+                                                    _eventViewModel.setCategory('전체');
+                                                    await _eventViewModel.fetchEventList();
+                                                  },
+                                                  shape: RoundedRectangleBorder(
+                                                      borderRadius:
+                                                      BorderRadius.circular(16)),
+                                                ),
+                                                //공지
+                                                ListTile(
+                                                  contentPadding: EdgeInsets.zero,
+                                                  title: Center(
+                                                    child: Text(
+                                                      '공지',
+                                                      style: SDSTextStyle.bold.copyWith(
+                                                          fontSize: 15,
+                                                          color: SDSColor.gray900
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  onTap: () async {
+                                                    Navigator.pop(context);
+                                                    _eventViewModel.setCategory('공지');
+                                                    await _eventViewModel.fetchEventList();
+                                                  },
+                                                  shape: RoundedRectangleBorder(
+                                                      borderRadius:
+                                                      BorderRadius.circular(16)),
+                                                ),
+                                                //이벤트
+                                                ListTile(
+                                                  contentPadding: EdgeInsets.zero,
+                                                  title: Center(
+                                                    child: Text(
+                                                      '이벤트',
+                                                      style: SDSTextStyle.bold.copyWith(
+                                                          fontSize: 15,
+                                                          color: SDSColor.gray900
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  onTap: () async {
+                                                    Navigator.pop(context);
+                                                    _eventViewModel.setCategory('이벤트');
+                                                    await _eventViewModel.fetchEventList();
+                                                  },
+                                                  shape: RoundedRectangleBorder(
+                                                      borderRadius:
+                                                      BorderRadius.circular(16)),
+                                                ),
+                                                //행사
+                                                ListTile(
+                                                  contentPadding: EdgeInsets.zero,
+                                                  title: Center(
+                                                    child: Text(
+                                                      '행사',
+                                                      style: SDSTextStyle.bold.copyWith(
+                                                          fontSize: 15,
+                                                          color: SDSColor.gray900
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  onTap: () async {
+                                                    Navigator.pop(context);
+                                                    _eventViewModel.setCategory('행사');
+                                                    await _eventViewModel.fetchEventList();
+                                                  },
+                                                  shape: RoundedRectangleBorder(
+                                                      borderRadius:
+                                                      BorderRadius.circular(16)),
+                                                ),
+                                                //시승회
+                                                ListTile(
+                                                  contentPadding: EdgeInsets.zero,
+                                                  title: Center(
+                                                    child: Text(
+                                                      '시승회',
+                                                      style: SDSTextStyle.bold.copyWith(
+                                                          fontSize: 15,
+                                                          color: SDSColor.gray900
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  onTap: () async {
+                                                    Navigator.pop(context);
+                                                    _eventViewModel.setCategory('시승회');
+                                                    await _eventViewModel.fetchEventList();
+                                                  },
+                                                  shape: RoundedRectangleBorder(
+                                                      borderRadius:
+                                                      BorderRadius.circular(16)),
+                                                ),
+                                                //클리닉
+                                                ListTile(
+                                                  contentPadding: EdgeInsets.zero,
+                                                  title: Center(
+                                                    child: Text(
+                                                      '클리닉',
+                                                      style: SDSTextStyle.bold.copyWith(
+                                                          fontSize: 15,
+                                                          color: SDSColor.gray900
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  onTap: () async {
+                                                    Navigator.pop(context);
+                                                    _eventViewModel.setCategory('클리닉');
+                                                    await _eventViewModel.fetchEventList();
+                                                  },
+                                                  shape: RoundedRectangleBorder(
+                                                      borderRadius:
+                                                      BorderRadius.circular(16)),
+                                                ),
+                                                //모집
+                                                ListTile(
+                                                  contentPadding: EdgeInsets.zero,
+                                                  title: Center(
+                                                    child: Text(
+                                                      '모집',
+                                                      style: SDSTextStyle.bold.copyWith(
+                                                          fontSize: 15,
+                                                          color: SDSColor.gray900
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  onTap: () async {
+                                                    Navigator.pop(context);
+                                                    _eventViewModel.setCategory('모집');
+                                                    await _eventViewModel.fetchEventList();
+                                                  },
+                                                  shape: RoundedRectangleBorder(
+                                                      borderRadius:
+                                                      BorderRadius.circular(16)),
+                                                ),
+                                                //프로모션
+                                                ListTile(
+                                                  contentPadding: EdgeInsets.zero,
+                                                  title: Center(
+                                                    child: Text(
+                                                      '프로모션',
+                                                      style: SDSTextStyle.bold.copyWith(
+                                                          fontSize: 15,
+                                                          color: SDSColor.gray900
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  onTap: () async {
+                                                    Navigator.pop(context);
+                                                    _eventViewModel.setCategory('프로모션');
+                                                    await _eventViewModel.fetchEventList();
+                                                  },
+                                                  shape: RoundedRectangleBorder(
+                                                      borderRadius:
+                                                      BorderRadius.circular(16)),
+                                                ),
+                                                //기타
+                                                ListTile(
+                                                  contentPadding: EdgeInsets.zero,
+                                                  title: Center(
+                                                    child: Text(
+                                                      '기타',
+                                                      style: SDSTextStyle.bold.copyWith(
+                                                          fontSize: 15,
+                                                          color: SDSColor.gray900
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  onTap: () async {
+                                                    Navigator.pop(context);
+                                                    _eventViewModel.setCategory('기타');
+                                                    await _eventViewModel.fetchEventList();
+                                                  },
+                                                  shape: RoundedRectangleBorder(
+                                                      borderRadius:
+                                                      BorderRadius.circular(16)),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                });
+                          },
+                          style: ElevatedButton.styleFrom(
+                              shadowColor: Colors.transparent,
+                              overlayColor: Colors.transparent,
+                              padding: EdgeInsets.only(
+                                  right: 32, left: 12, top: 3, bottom: 2),
+                              side: BorderSide(
+                                width: 1,
+                                color: (_eventViewModel.selectedCategory != '전체') ? SDSColor.gray900 : SDSColor.gray100,
+                              ),
+                              backgroundColor: (_eventViewModel.selectedCategory != '전체') ? SDSColor.gray900 : SDSColor.snowliveWhite,
+                              elevation: 0,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(50))),
+                          child:
+                          Text('${_eventViewModel.selectedCategory}',
+                              style: SDSTextStyle.bold.copyWith(
+                                  fontSize: 13,
+                                  color: (_eventViewModel.selectedCategory != '전체') ? Color(0xFFFFFFFF) : Color(0xFF111111)))
+                      ),
+                      Positioned(
+                        top: 10,
+                        right: 10,
+                        child: GestureDetector(
+                          onTap: () async {
+                            showModalBottomSheet(
+                                enableDrag: false,
+                                isScrollControlled: true,
+                                backgroundColor: Colors.transparent,
+                                context: context,
+                                builder: (context) {
+                                  return SafeArea(
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(vertical: 20),
+                                      child: Container(
+                                        margin: EdgeInsets.only(
+                                          left: 16,
+                                          right: 16,
+                                          top: 16,
+                                        ),
+                                        height: MediaQuery.of(context).size.height * 0.5,
+                                        padding: EdgeInsets.all(16),
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius: BorderRadius.circular(16),
+                                        ),
+                                        child: SingleChildScrollView(
+                                          child: Wrap(
+                                            children: [
+                                              //전체
+                                              ListTile(
+                                                contentPadding: EdgeInsets.zero,
+                                                title: Center(
+                                                  child: Text(
+                                                    '전체',
+                                                    style: SDSTextStyle.bold.copyWith(
+                                                        fontSize: 15,
+                                                        color: SDSColor.gray900
+                                                    ),
+                                                  ),
+                                                ),
+                                                onTap: () async {
+                                                  Navigator.pop(context);
+                                                  _eventViewModel.setCategory('전체');
+                                                  await _eventViewModel.fetchEventList();
+                                                },
+                                                shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                    BorderRadius.circular(16)),
+                                              ),
+                                              //공지
+                                              ListTile(
+                                                contentPadding: EdgeInsets.zero,
+                                                title: Center(
+                                                  child: Text(
+                                                    '공지',
+                                                    style: SDSTextStyle.bold.copyWith(
+                                                        fontSize: 15,
+                                                        color: SDSColor.gray900
+                                                    ),
+                                                  ),
+                                                ),
+                                                onTap: () async {
+                                                  Navigator.pop(context);
+                                                  _eventViewModel.setCategory('공지');
+                                                  await _eventViewModel.fetchEventList();
+                                                },
+                                                shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                    BorderRadius.circular(16)),
+                                              ),
+                                              //이벤트
+                                              ListTile(
+                                                contentPadding: EdgeInsets.zero,
+                                                title: Center(
+                                                  child: Text(
+                                                    '이벤트',
+                                                    style: SDSTextStyle.bold.copyWith(
+                                                        fontSize: 15,
+                                                        color: SDSColor.gray900
+                                                    ),
+                                                  ),
+                                                ),
+                                                onTap: () async {
+                                                  Navigator.pop(context);
+                                                  _eventViewModel.setCategory('이벤트');
+                                                  await _eventViewModel.fetchEventList();
+                                                },
+                                                shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                    BorderRadius.circular(16)),
+                                              ),
+                                              //행사
+                                              ListTile(
+                                                contentPadding: EdgeInsets.zero,
+                                                title: Center(
+                                                  child: Text(
+                                                    '행사',
+                                                    style: SDSTextStyle.bold.copyWith(
+                                                        fontSize: 15,
+                                                        color: SDSColor.gray900
+                                                    ),
+                                                  ),
+                                                ),
+                                                onTap: () async {
+                                                  Navigator.pop(context);
+                                                  _eventViewModel.setCategory('행사');
+                                                  await _eventViewModel.fetchEventList();
+                                                },
+                                                shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                    BorderRadius.circular(16)),
+                                              ),
+                                              //시승회
+                                              ListTile(
+                                                contentPadding: EdgeInsets.zero,
+                                                title: Center(
+                                                  child: Text(
+                                                    '시승회',
+                                                    style: SDSTextStyle.bold.copyWith(
+                                                        fontSize: 15,
+                                                        color: SDSColor.gray900
+                                                    ),
+                                                  ),
+                                                ),
+                                                onTap: () async {
+                                                  Navigator.pop(context);
+                                                  _eventViewModel.setCategory('시승회');
+                                                  await _eventViewModel.fetchEventList();
+                                                },
+                                                shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                    BorderRadius.circular(16)),
+                                              ),
+                                              //클리닉
+                                              ListTile(
+                                                contentPadding: EdgeInsets.zero,
+                                                title: Center(
+                                                  child: Text(
+                                                    '클리닉',
+                                                    style: SDSTextStyle.bold.copyWith(
+                                                        fontSize: 15,
+                                                        color: SDSColor.gray900
+                                                    ),
+                                                  ),
+                                                ),
+                                                onTap: () async {
+                                                  Navigator.pop(context);
+                                                  _eventViewModel.setCategory('클리닉');
+                                                  await _eventViewModel.fetchEventList();
+                                                },
+                                                shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                    BorderRadius.circular(16)),
+                                              ),
+                                              //모집
+                                              ListTile(
+                                                contentPadding: EdgeInsets.zero,
+                                                title: Center(
+                                                  child: Text(
+                                                    '모집',
+                                                    style: SDSTextStyle.bold.copyWith(
+                                                        fontSize: 15,
+                                                        color: SDSColor.gray900
+                                                    ),
+                                                  ),
+                                                ),
+                                                onTap: () async {
+                                                  Navigator.pop(context);
+                                                  _eventViewModel.setCategory('모집');
+                                                  await _eventViewModel.fetchEventList();
+                                                },
+                                                shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                    BorderRadius.circular(16)),
+                                              ),
+                                              //프로모션
+                                              ListTile(
+                                                contentPadding: EdgeInsets.zero,
+                                                title: Center(
+                                                  child: Text(
+                                                    '프로모션',
+                                                    style: SDSTextStyle.bold.copyWith(
+                                                        fontSize: 15,
+                                                        color: SDSColor.gray900
+                                                    ),
+                                                  ),
+                                                ),
+                                                onTap: () async {
+                                                  Navigator.pop(context);
+                                                  _eventViewModel.setCategory('프로모션');
+                                                  await _eventViewModel.fetchEventList();
+                                                },
+                                                shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                    BorderRadius.circular(16)),
+                                              ),
+                                              //기타
+                                              ListTile(
+                                                contentPadding: EdgeInsets.zero,
+                                                title: Center(
+                                                  child: Text(
+                                                    '기타',
+                                                    style: SDSTextStyle.bold.copyWith(
+                                                        fontSize: 15,
+                                                        color: SDSColor.gray900
+                                                    ),
+                                                  ),
+                                                ),
+                                                onTap: () async {
+                                                  Navigator.pop(context);
+                                                  _eventViewModel.setCategory('기타');
+                                                  await _eventViewModel.fetchEventList();
+                                                },
+                                                shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                    BorderRadius.circular(16)),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                });
+                          },
+                          child: (_eventViewModel.selectedCategory != '전체') ? Image.asset(
+                            'assets/imgs/icons/icon_check_round.png',
+                            fit: BoxFit.cover,
+                            width: 16,
+                            height: 16,
+                          ) : Image.asset(
+                            'assets/imgs/icons/icon_check_round_black.png',
+                            fit: BoxFit.cover,
+                            width: 16,
+                            height: 16,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          )),
+        ],
       ),
       body: Column(
         children: [
@@ -140,7 +643,7 @@ class _EventPageViewState extends State<EventPageView> {
                     child: SizedBox(
                       height: MediaQuery.of(context).size.height * 0.6,
                       child: const Center(
-                        child: Text('등록된 이벤트가 없습니다.'),
+                        child: Text('등록된 글이 없습니다.'),
                       ),
                     ),
                   );
@@ -202,6 +705,7 @@ class _EventPageViewState extends State<EventPageView> {
       onTap: () {
         if (event.landingUrl?.isNotEmpty == true) {
           _launchURL(event.landingUrl!);
+          _eventViewModel.addViewCount(user_id: _userViewModel.user.user_id, event_id: event.eventId!);
         }
       },
       child: Container(

@@ -299,7 +299,7 @@ class MoreTabMainView extends StatelessWidget {
                               child: Row(
                                 children: [
                                   Text(
-                                    '이벤트 모음',
+                                    '이벤트·소식',
                                     style: SDSTextStyle.regular.copyWith(
                                         fontSize: 15,
                                         color: SDSColor.gray900),

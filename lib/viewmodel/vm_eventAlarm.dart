@@ -81,4 +81,6 @@ class EventAlarmViewModel extends GetxController {
       print('❌ 이벤트 알람 초기화 실패: $e');
     }
   }
+
+
 }

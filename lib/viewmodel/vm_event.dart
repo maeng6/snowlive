@@ -28,7 +28,7 @@ class EventViewModel extends GetxController {
   bool get hasNextPage => _nextPageUrl.value.isNotEmpty;
 
   // 필터
-  var _selectedCategory = ''.obs;
+  var _selectedCategory = '전체'.obs;
   String get selectedCategory => _selectedCategory.value;
 
   var _searchQuery = ''.obs;
@@ -102,7 +102,7 @@ class EventViewModel extends GetxController {
       }
 
       final response = await _eventAPI.fetchEventList(
-        category: _selectedCategory.value.isNotEmpty
+        category: _selectedCategory.value != '전체'
             ? _selectedCategory.value
             : null,
         searchQuery:
@@ -132,6 +132,12 @@ class EventViewModel extends GetxController {
       }
     }
   }
+
+  Future<void> addViewCount({user_id, event_id}) async{
+    _eventAPI.incrementViewCount(userId: user_id, eventId: event_id);
+  }
+
+
 
   /// 이벤트 추가 로드 (무한 스크롤)
   Future<void> fetchMoreEvents() async {
