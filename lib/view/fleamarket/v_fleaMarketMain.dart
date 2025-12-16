@@ -59,17 +59,21 @@ class _FleaMarketMainViewState extends State<FleaMarketMainView>
       body: SafeArea(
         child: Column(
           children: [
-            /// 1) 헤더 영역 (검색 + 탭 + 배너)
-            ///
-            /// _isHeaderVisible = true  → 자연 높이로 보임
-            /// _isHeaderVisible = false → height 0으로 슥 접힘
-            AnimatedSize(
+            // 1) 헤더 영역 (검색 + 탭 + 배너)
+            TweenAnimationBuilder<double>(
+              tween: Tween<double>(begin: 1.0, end: _isHeaderVisible ? 1.0 : 0.0),
               duration: const Duration(milliseconds: 220),
               curve: Curves.easeInOut,
-              alignment: Alignment.topCenter,
-              child: _isHeaderVisible
-                  ? _buildHeader(_size)
-                  : const SizedBox.shrink(),
+              builder: (context, factor, child) {
+                return ClipRect(
+                  child: Align(
+                    alignment: Alignment.topCenter,
+                    heightFactor: factor,   // ✅ 세로만 줄임
+                    child: child,
+                  ),
+                );
+              },
+              child: _buildHeader(_size),  // ✅ child는 항상 유지(레이아웃 안정)
             ),
 
             /// 2) 리스트 영역 – 항상 남은 영역을 꽉 채움

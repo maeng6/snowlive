@@ -2312,7 +2312,7 @@ class _ResortHomeViewState extends State<ResortHomeView> with
                                                 crossAxisAlignment: CrossAxisAlignment.center,
                                                 children: [
                                                   ExtendedImage.asset(
-                                                    'assets/imgs/imgs/img_slmk_home_banner_3.png',
+                                                    'assets/imgs/imgs/img_slmk_home_banner_5.png',
                                                     width: 56,
                                                   ),
                                                   SizedBox(width: 12),
