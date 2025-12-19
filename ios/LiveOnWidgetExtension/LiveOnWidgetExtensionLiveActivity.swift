@@ -9,13 +9,7 @@ struct LiveOnWidgetExtensionLiveActivity: Widget {
     var body: some WidgetConfiguration {
         ActivityConfiguration(for: LiveOnActivityAttributes.self) { context in
             // 🔒 Lock Screen / Banner
-            VStack(spacing: 6) {
-                Text("Snowlive Live").font(.headline)
-                Text(context.attributes.liveOnStartAt, style: .time)
-                Text("today \(context.state.todayRideCount) / session \(context.state.sessionRideCount)")
-                Text("last: \(context.state.lastSlopeName.isEmpty ? "-" : context.state.lastSlopeName)")
-            }
-            .padding(8)
+            LiveOnLockScreenView(context: context)
             .onAppear {
                 logger.info("🔵 [LockScreen] view appeared")
                 logger.info("🧩 [LockScreen] attributes: \(String(describing: context.attributes))")
@@ -29,10 +23,17 @@ struct LiveOnWidgetExtensionLiveActivity: Widget {
             DynamicIsland {
                 DynamicIslandExpandedRegion(.center) {
                     VStack(spacing: 4) {
-                        Text("🏔 Snowlive Session").font(.headline)
-                        Text("Today \(context.state.todayRideCount)")
-                        Text("Session \(context.state.sessionRideCount)")
-                        Text("Last: \(context.state.lastSlopeName.isEmpty ? "-" : context.state.lastSlopeName)")
+                        Text("Snowlive").font(.headline)
+                        HStack(spacing: 12) {
+                            Label("\(context.state.sessionRideCount)", systemImage: "figure.skiing.downhill")
+                            if let lastRideAt = context.state.lastRideAt {
+                                Text(lastRideAt, style: .relative)
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
+                            }
+                        }
+                        Text(context.state.lastSlopeName.isEmpty ? "-" : context.state.lastSlopeName)
+                            .font(.subheadline)
                     }
                     .onAppear {
                         logger.info("🟣 [DynamicIsland] expanded")
@@ -44,11 +45,15 @@ struct LiveOnWidgetExtensionLiveActivity: Widget {
                     }
                 }
             } compactLeading: {
-                Text("\(context.state.todayRideCount)")
+                Label("\(context.state.sessionRideCount)", systemImage: "figure.skiing.downhill")
                     .onAppear { logger.info("🟢 [DynamicIsland] compactLeading appeared") }
             } compactTrailing: {
-                Text("\(context.state.sessionRideCount)")
-                    .onAppear { logger.info("🟢 [DynamicIsland] compactTrailing appeared") }
+                if let lastRideAt = context.state.lastRideAt {
+                    Text(lastRideAt, style: .relative)
+                        .font(.caption2)
+                } else {
+                    Text("-")
+                }
             } minimal: {
                 Text("🏂")
                     .onAppear { logger.info("🟢 [DynamicIsland] minimal appeared") }

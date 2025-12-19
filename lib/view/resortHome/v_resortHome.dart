@@ -441,7 +441,7 @@ class _ResortHomeViewState extends State<ResortHomeView> with
 
                                           HapticFeedback.lightImpact();
                                           CustomFullScreenDialog.showDialog();
-                                          await _resortHomeViewModel.startLiveLocationService(user_id: _userViewModel.user.user_id);
+                                          await _resortHomeViewModel.startLiveLocationService(user_id: _userViewModel.user.user_id, isRestart: true);
                                           await _userViewModel.updateUserModel_api(_userViewModel.user.user_id);
                                           CustomFullScreenDialog.cancelDialog();
                                           Get.back();

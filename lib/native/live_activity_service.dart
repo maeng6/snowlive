@@ -9,6 +9,8 @@ class LiveActivityService {
     required int todayRideCount,
     required int sessionRideCount,
     required String lastSlopeName,
+    DateTime? lastRideAt,
+    int liveFriendCount = 0,
   }) async {
     if (!Platform.isIOS) return null;
 
@@ -17,15 +19,17 @@ class LiveActivityService {
       'todayRideCount': todayRideCount,
       'sessionRideCount': sessionRideCount,
       'lastSlopeName': lastSlopeName,
+      'liveFriendCount': liveFriendCount,
+      if (lastRideAt != null) 'lastRideAtMs': lastRideAt.toUtc().millisecondsSinceEpoch,
     };
     print('[LiveActivityService.start] payload: $payload');
 
     try {
       final id = await _channel.invokeMethod<String>('start', payload);
-      print('🎯 [LA] start() returned id = $id'); // ← 여기서 null인지 확인
+      print('[LA] start() returned id = $id');
       return id;
     } on PlatformException catch (e) {
-      print('❌ [LA] start error: $e');
+      print('[LA] start error: $e');
       return null;
     }
   }
@@ -36,6 +40,8 @@ class LiveActivityService {
     required int todayRideCount,
     required int sessionRideCount,
     required String lastSlopeName,
+    DateTime? lastRideAt,
+    int liveFriendCount = 0,
   }) async {
     if (!Platform.isIOS) return;
     try {
@@ -44,6 +50,8 @@ class LiveActivityService {
         'todayRideCount': todayRideCount,
         'sessionRideCount': sessionRideCount,
         'lastSlopeName': lastSlopeName,
+        'liveFriendCount': liveFriendCount,
+        if (lastRideAt != null) 'lastRideAtMs': lastRideAt.toUtc().millisecondsSinceEpoch,
       });
     } on PlatformException catch (e) {
       print('LiveActivity update error: $e');

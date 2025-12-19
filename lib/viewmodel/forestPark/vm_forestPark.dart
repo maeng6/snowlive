@@ -47,26 +47,27 @@ class ForestParkViewModel extends GetxController {
   }
 
   Future<void> getInfo_forestPark_entrance() async {
-    final stream = FirebaseFirestore.instance
-        .collection('forestPark')
-        .doc('forestPark')
-        .snapshots();
-
-    infoStream_forestPark_entrance.value = stream; // ✅ 기존 StreamBuilder용 스트림 그대로 유지
-
-    // 🔁 기존 리스너 제거 (중복 방지)
-    _entranceStreamSub?.cancel();
-
-    // ✅ open 필드 값을 Rx 상태로 저장
-    _entranceStreamSub = stream.listen((DocumentSnapshot doc) {
-      final data = doc.data() as Map<String, dynamic>?;
-      isForestParkOpen.value = data?['open'] == true;
-      isForestParkOpen_toEveryone.value = data?['to_everyone'] == true;
-      eventDate.value = data?['eventDate'] ?? 0; // ✅ 여기에 저장
-      print('🔥 open 상태 업데이트: ${isForestParkOpen.value}');
-      print('🔥 open_crew 상태 업데이트: ${isForestParkOpen_toEveryone.value}');
-      print('🔥 eventDate 업데이트: ${eventDate.value}');
-    });
+    // TODO: forestPark 스트림 비활성화 (배터리 최적화)
+    // final stream = FirebaseFirestore.instance
+    //     .collection('forestPark')
+    //     .doc('forestPark')
+    //     .snapshots();
+    //
+    // infoStream_forestPark_entrance.value = stream; // ✅ 기존 StreamBuilder용 스트림 그대로 유지
+    //
+    // // 🔁 기존 리스너 제거 (중복 방지)
+    // _entranceStreamSub?.cancel();
+    //
+    // // ✅ open 필드 값을 Rx 상태로 저장
+    // _entranceStreamSub = stream.listen((DocumentSnapshot doc) {
+    //   final data = doc.data() as Map<String, dynamic>?;
+    //   isForestParkOpen.value = data?['open'] == true;
+    //   isForestParkOpen_toEveryone.value = data?['to_everyone'] == true;
+    //   eventDate.value = data?['eventDate'] ?? 0; // ✅ 여기에 저장
+    //   print('🔥 open 상태 업데이트: ${isForestParkOpen.value}');
+    //   print('🔥 open_crew 상태 업데이트: ${isForestParkOpen_toEveryone.value}');
+    //   print('🔥 eventDate 업데이트: ${eventDate.value}');
+    // });
   }
 
 
