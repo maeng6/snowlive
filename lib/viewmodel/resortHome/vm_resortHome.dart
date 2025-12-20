@@ -1012,12 +1012,10 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
     }
 
     // 리스폰 포인트 영역 검사
-    print('🔍 [checkPositionInAreas] respawnPoint count: ${respawnPoint.length}');
     for (var respawn in respawnPoint) {
-      print('🔍 [checkPositionInAreas] checking respawn: coordinates=${respawn['coordinates']}, radius=${respawn['radius']}');
+
       if (_isWithinRadius(position, respawn['coordinates'], respawn['radius'])) {
         detectedAreas.add({'type': 'respawn_point', 'id': respawn['respawn_point_id']});
-        print('✅ [checkPositionInAreas] respawn_point detected!');
       }
     }
     print('지나간 구간 : ${detectedAreas}');
