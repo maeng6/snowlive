@@ -652,333 +652,143 @@ class FriendListView extends StatelessWidget {
                                         ),
                                       ],
                                     ),
-                                    // (friend.bestFriend)
-                                    //     ? Container(
-                                    //   width: 64,
-                                    //   child: Row(
-                                    //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    //     children: [
-                                    //       GestureDetector(
-                                    //         onTap: () async {
-                                    //           HapticFeedback.lightImpact();
-                                    //           CustomFullScreenDialog.showDialog();
-                                    //           await _friendDetailViewModel.toggleBestFriend(
-                                    //             {"friend_id": friend.friendId},
-                                    //           );
-                                    //           await _friendListViewModel.fetchFriendList_afterBest();
-                                    //
-                                    //         },
-                                    //         child: Image.asset(
-                                    //           'assets/imgs/icons/icon_profile_bestfriend_on.png',
-                                    //           width: 24,
-                                    //           height: 24,
-                                    //           fit: BoxFit.cover,
-                                    //         ),
-                                    //       ),
-                                    //       SizedBox(
-                                    //         width: 6,
-                                    //       ),
-                                    //       GestureDetector(
-                                    //         onTap: () => showModalBottomSheet(
-                                    //           enableDrag: false,
-                                    //           isScrollControlled: true,
-                                    //           backgroundColor: Colors.transparent,
-                                    //           context: context,
-                                    //           builder: (context) {
-                                    //             return SafeArea(
-                                    //               child: Padding(
-                                    //                 padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 20),
-                                    //                 child: Container(
-                                    //                   margin: EdgeInsets.only(
-                                    //                     left: 16,
-                                    //                     right: 16,
-                                    //                     top: 16,
-                                    //                   ),
-                                    //                   padding: EdgeInsets.all(16),
-                                    //                   decoration: BoxDecoration(
-                                    //                     color: Colors.white,
-                                    //                     borderRadius: BorderRadius.circular(16),
-                                    //                   ),
-                                    //                   child: Wrap(
-                                    //                     children: [
-                                    //                       GestureDetector(
-                                    //                         onTap: () {
-                                    //                           Get.dialog(
-                                    //                             AlertDialog(
-                                    //                               backgroundColor: SDSColor.snowliveWhite,
-                                    //                               contentPadding: EdgeInsets.only(bottom: 0, left: 28, right: 28, top: 36),
-                                    //                               elevation: 0,
-                                    //                               shape: RoundedRectangleBorder(
-                                    //                                   borderRadius: BorderRadius.circular(16)),
-                                    //                               buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
-                                    //                               content: Container(
-                                    //                                 height: 40,
-                                    //                                 child: Column(
-                                    //                                   crossAxisAlignment: CrossAxisAlignment.center,
-                                    //                                   children: [
-                                    //                                     Text(
-                                    //                                       '친구 목록에서 삭제하시겠어요?',
-                                    //                                       textAlign: TextAlign.center,
-                                    //                                       style: SDSTextStyle.bold.copyWith(
-                                    //                                           color: SDSColor.gray900,
-                                    //                                           fontSize: 16
-                                    //                                       ),
-                                    //                                     ),
-                                    //                                   ],
-                                    //                                 ),
-                                    //                               ),
-                                    //                               actions: [
-                                    //                                 Padding(
-                                    //                                   padding: EdgeInsets.only(top: 10, left: 16, right: 16),
-                                    //                                   child: Row(
-                                    //                                     mainAxisAlignment: MainAxisAlignment.end,
-                                    //                                     children: [
-                                    //                                       Expanded(
-                                    //                                         child: Container(
-                                    //                                           child: TextButton(
-                                    //                                             onPressed: () {
-                                    //                                               Navigator.pop(context);
-                                    //                                               Get.back();
-                                    //                                             },
-                                    //                                             style: TextButton.styleFrom(
-                                    //                                               backgroundColor: Colors.transparent, // 배경색 투명
-                                    //                                               splashFactory: NoSplash.splashFactory, // 터치 시 효과 제거
-                                    //                                             ),
-                                    //                                             child: Text('취소',
-                                    //                                               style: SDSTextStyle.bold.copyWith(
-                                    //                                                 fontSize: 17,
-                                    //                                                 color: SDSColor.gray500,
-                                    //                                               ),
-                                    //                                             ),
-                                    //                                           ),
-                                    //                                         ),
-                                    //                                       ),
-                                    //                                       SizedBox(
-                                    //                                         width: 10,
-                                    //                                       ),
-                                    //                                       Expanded(
-                                    //                                         child: Container(
-                                    //                                           child: TextButton(
-                                    //                                             onPressed: () async {
-                                    //                                               Navigator.pop(context);
-                                    //                                               Navigator.pop(context);
-                                    //                                               CustomFullScreenDialog.showDialog();
-                                    //                                               await _friendListViewModel.deleteFriend(
-                                    //                                                 {"friend_id": friend.friendId},
-                                    //                                               );
-                                    //                                               await _friendListViewModel.fetchFriendList();
-                                    //                                             },
-                                    //                                             style: TextButton.styleFrom(
-                                    //                                               backgroundColor: Colors.transparent, // 배경색 투명
-                                    //                                               splashFactory: NoSplash.splashFactory, // 터치 시 효과 제거
-                                    //                                             ),
-                                    //                                             child: Text('삭제하기',
-                                    //                                               style: SDSTextStyle.bold.copyWith(
-                                    //                                                 fontSize: 17,
-                                    //                                                 color: SDSColor.snowliveBlue,
-                                    //                                               ),
-                                    //                                             ),
-                                    //                                           ),
-                                    //                                         ),
-                                    //                                       ),
-                                    //                                     ],
-                                    //                                   ),
-                                    //                                 ),
-                                    //                               ],
-                                    //                             ),
-                                    //                           );
-                                    //                         },
-                                    //                         child: ListTile(
-                                    //                           contentPadding: EdgeInsets.zero,
-                                    //                           title: Center(
-                                    //                             child: Text(
-                                    //                               '친구 삭제하기',
-                                    //                               style: SDSTextStyle.bold.copyWith(
-                                    //                                 fontSize: 15,
-                                    //                                 color: SDSColor.gray900,
-                                    //                               ),
-                                    //                             ),
-                                    //                           ),
-                                    //                         ),
-                                    //                       ),
-                                    //                     ],
-                                    //                   ),
-                                    //                 ),
-                                    //               ),
-                                    //             );
-                                    //           },
-                                    //         ),
-                                    //         child: Icon(
-                                    //           Icons.more_horiz,
-                                    //           color: SDSColor.gray200,
-                                    //           size: 24,
-                                    //         ),
-                                    //       ),
-                                    //     ],
-                                    //   ),
-                                    // )
-                                    //     : Container(
-                                    //   width: 64,
-                                    //   child: Row(
-                                    //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    //     children: [
-                                    //       GestureDetector(
-                                    //         onTap: () async {
-                                    //           HapticFeedback.lightImpact();
-                                    //           CustomFullScreenDialog.showDialog();
-                                    //           await _friendDetailViewModel.toggleBestFriend(
-                                    //             {"friend_id": friend.friendId},
-                                    //           );
-                                    //           await _friendListViewModel.fetchFriendList_afterBest();
-                                    //         },
-                                    //         child: Image.asset(
-                                    //           'assets/imgs/icons/icon_profile_bestfriend_off.png',
-                                    //           width: 24,
-                                    //           height: 24,
-                                    //           fit: BoxFit.cover,
-                                    //         ),
-                                    //       ),
-                                    //       SizedBox(
-                                    //         width: 6,
-                                    //       ),
-                                    //       GestureDetector(
-                                    //         onTap: () => showModalBottomSheet(
-                                    //           enableDrag: false,
-                                    //           isScrollControlled: true,
-                                    //           backgroundColor: Colors.transparent,
-                                    //           context: context,
-                                    //           builder: (context) {
-                                    //             return SafeArea(
-                                    //               child: Padding(
-                                    //                 padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 20),
-                                    //                 child: Container(
-                                    //                   margin: EdgeInsets.only(
-                                    //                     left: 16,
-                                    //                     right: 16,
-                                    //                     top: 16,
-                                    //                   ),
-                                    //                   padding: EdgeInsets.all(16),
-                                    //                   decoration: BoxDecoration(
-                                    //                     color: Colors.white,
-                                    //                     borderRadius: BorderRadius.circular(16),
-                                    //                   ),
-                                    //                   child: Wrap(
-                                    //                     children: [
-                                    //                       GestureDetector(
-                                    //                         onTap: () {
-                                    //                           Get.dialog(
-                                    //                             AlertDialog(
-                                    //                               backgroundColor: SDSColor.snowliveWhite,
-                                    //                               contentPadding: EdgeInsets.only(bottom: 0, left: 28, right: 28, top: 36),
-                                    //                               elevation: 0,
-                                    //                               shape: RoundedRectangleBorder(
-                                    //                                   borderRadius: BorderRadius.circular(16)),
-                                    //                               buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
-                                    //                               content: Container(
-                                    //                                 height: 40,
-                                    //                                 child: Column(
-                                    //                                   crossAxisAlignment: CrossAxisAlignment.center,
-                                    //                                   children: [
-                                    //                                     Text(
-                                    //                                       '친구 목록에서 삭제하시겠어요?',
-                                    //                                       textAlign: TextAlign.center,
-                                    //                                       style: SDSTextStyle.bold.copyWith(
-                                    //                                           color: SDSColor.gray900,
-                                    //                                           fontSize: 16
-                                    //                                       ),
-                                    //                                     ),
-                                    //                                   ],
-                                    //                                 ),
-                                    //                               ),
-                                    //                               actions: [
-                                    //                                 Padding(
-                                    //                                   padding: EdgeInsets.only(top: 10, left: 16, right: 16),
-                                    //                                   child: Row(
-                                    //                                     mainAxisAlignment: MainAxisAlignment.end,
-                                    //                                     children: [
-                                    //                                       Expanded(
-                                    //                                         child: Container(
-                                    //                                           child: TextButton(
-                                    //                                             onPressed: () {
-                                    //                                               Navigator.pop(context);
-                                    //                                             },
-                                    //                                             style: TextButton.styleFrom(
-                                    //                                               backgroundColor: Colors.transparent, // 배경색 투명
-                                    //                                               splashFactory: NoSplash.splashFactory, // 터치 시 효과 제거
-                                    //                                             ),
-                                    //                                             child: Text('취소',
-                                    //                                               style: SDSTextStyle.bold.copyWith(
-                                    //                                                 fontSize: 17,
-                                    //                                                 color: SDSColor.gray500,
-                                    //                                               ),
-                                    //                                             ),
-                                    //                                           ),
-                                    //                                         ),
-                                    //                                       ),
-                                    //                                       SizedBox(
-                                    //                                         width: 10,
-                                    //                                       ),
-                                    //                                       Expanded(
-                                    //                                         child: Container(
-                                    //                                           child: TextButton(
-                                    //                                             onPressed: () async {
-                                    //                                               Navigator.pop(context);
-                                    //                                               Navigator.pop(context);
-                                    //                                               CustomFullScreenDialog.showDialog();
-                                    //                                               await _friendListViewModel.deleteFriend(
-                                    //                                                 {"friend_id": friend.friendId},
-                                    //                                               );
-                                    //                                               await _friendListViewModel.fetchFriendList();
-                                    //                                             },
-                                    //                                             style: TextButton.styleFrom(
-                                    //                                               backgroundColor: Colors.transparent, // 배경색 투명
-                                    //                                               splashFactory: NoSplash.splashFactory, // 터치 시 효과 제거
-                                    //                                             ),
-                                    //                                             child: Text('삭제하기',
-                                    //                                               style: SDSTextStyle.bold.copyWith(
-                                    //                                                 fontSize: 17,
-                                    //                                                 color: SDSColor.snowliveBlue,
-                                    //                                               ),
-                                    //                                             ),
-                                    //                                           ),
-                                    //                                         ),
-                                    //                                       ),
-                                    //                                     ],
-                                    //                                   ),
-                                    //                                 ),
-                                    //                               ],
-                                    //                             ),
-                                    //                           );
-                                    //                         },
-                                    //                         child: ListTile(
-                                    //                           contentPadding: EdgeInsets.zero,
-                                    //                           title: Center(
-                                    //                             child: Text(
-                                    //                               '친구 삭제하기',
-                                    //                               style: SDSTextStyle.bold.copyWith(
-                                    //                                 fontSize: 15,
-                                    //                                 color: SDSColor.gray900,
-                                    //                               ),
-                                    //                             ),
-                                    //                           ),
-                                    //                         ),
-                                    //                       ),
-                                    //                     ],
-                                    //                   ),
-                                    //                 ),
-                                    //               ),
-                                    //             );
-                                    //           },
-                                    //         ),
-                                    //         child: Icon(
-                                    //           Icons.more_horiz,
-                                    //           color: SDSColor.gray200,
-                                    //           size: 24,
-                                    //         ),
-                                    //       ),
-                                    //     ],
-                                    //   ),
-                                    // ),
+
+                                          GestureDetector(
+                                            onTap: () => showModalBottomSheet(
+                                              enableDrag: false,
+                                              isScrollControlled: true,
+                                              backgroundColor: Colors.transparent,
+                                              context: context,
+                                              builder: (context) {
+                                                return SafeArea(
+                                                  child: Padding(
+                                                    padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 20),
+                                                    child: Container(
+                                                      margin: EdgeInsets.only(
+                                                        left: 16,
+                                                        right: 16,
+                                                        top: 16,
+                                                      ),
+                                                      padding: EdgeInsets.all(16),
+                                                      decoration: BoxDecoration(
+                                                        color: Colors.white,
+                                                        borderRadius: BorderRadius.circular(16),
+                                                      ),
+                                                      child: Wrap(
+                                                        children: [
+                                                          GestureDetector(
+                                                            onTap: () {
+                                                              Get.dialog(
+                                                                AlertDialog(
+                                                                  backgroundColor: SDSColor.snowliveWhite,
+                                                                  contentPadding: EdgeInsets.only(bottom: 0, left: 28, right: 28, top: 36),
+                                                                  elevation: 0,
+                                                                  shape: RoundedRectangleBorder(
+                                                                      borderRadius: BorderRadius.circular(16)),
+                                                                  buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+                                                                  content: Container(
+                                                                    height: 40,
+                                                                    child: Column(
+                                                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                                                      children: [
+                                                                        Text(
+                                                                          '친구 목록에서 삭제하시겠어요?',
+                                                                          textAlign: TextAlign.center,
+                                                                          style: SDSTextStyle.bold.copyWith(
+                                                                              color: SDSColor.gray900,
+                                                                              fontSize: 16
+                                                                          ),
+                                                                        ),
+                                                                      ],
+                                                                    ),
+                                                                  ),
+                                                                  actions: [
+                                                                    Padding(
+                                                                      padding: EdgeInsets.only(top: 10, left: 16, right: 16),
+                                                                      child: Row(
+                                                                        mainAxisAlignment: MainAxisAlignment.end,
+                                                                        children: [
+                                                                          Expanded(
+                                                                            child: Container(
+                                                                              child: TextButton(
+                                                                                onPressed: () {
+                                                                                  Navigator.pop(context);
+                                                                                  Get.back();
+                                                                                },
+                                                                                style: TextButton.styleFrom(
+                                                                                  backgroundColor: Colors.transparent, // 배경색 투명
+                                                                                  splashFactory: NoSplash.splashFactory, // 터치 시 효과 제거
+                                                                                ),
+                                                                                child: Text('취소',
+                                                                                  style: SDSTextStyle.bold.copyWith(
+                                                                                    fontSize: 17,
+                                                                                    color: SDSColor.gray500,
+                                                                                  ),
+                                                                                ),
+                                                                              ),
+                                                                            ),
+                                                                          ),
+                                                                          SizedBox(
+                                                                            width: 10,
+                                                                          ),
+                                                                          Expanded(
+                                                                            child: Container(
+                                                                              child: TextButton(
+                                                                                onPressed: () async {
+                                                                                  Navigator.pop(context);
+                                                                                  Navigator.pop(context);
+                                                                                  CustomFullScreenDialog.showDialog();
+                                                                                  await _friendListViewModel.deleteFriend(
+                                                                                    {"friend_id": friend.friendId},
+                                                                                  );
+                                                                                  await _friendListViewModel.fetchFriendList();
+                                                                                },
+                                                                                style: TextButton.styleFrom(
+                                                                                  backgroundColor: Colors.transparent, // 배경색 투명
+                                                                                  splashFactory: NoSplash.splashFactory, // 터치 시 효과 제거
+                                                                                ),
+                                                                                child: Text('삭제하기',
+                                                                                  style: SDSTextStyle.bold.copyWith(
+                                                                                    fontSize: 17,
+                                                                                    color: SDSColor.snowliveBlue,
+                                                                                  ),
+                                                                                ),
+                                                                              ),
+                                                                            ),
+                                                                          ),
+                                                                        ],
+                                                                      ),
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                              );
+                                                            },
+                                                            child: ListTile(
+                                                              contentPadding: EdgeInsets.zero,
+                                                              title: Center(
+                                                                child: Text(
+                                                                  '친구 삭제하기',
+                                                                  style: SDSTextStyle.bold.copyWith(
+                                                                    fontSize: 15,
+                                                                    color: SDSColor.gray900,
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ),
+                                                );
+                                              },
+                                            ),
+                                            child: Icon(
+                                              Icons.more_horiz,
+                                              color: SDSColor.gray200,
+                                              size: 24,
+                                            ),
+                                          )
                                   ],
                                 ),
                               ),

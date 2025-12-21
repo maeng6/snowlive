@@ -529,39 +529,39 @@ class _FriendDetailViewState extends State<FriendDetailView> {
                                                       ),
                                                     ),
                                                   ),
-                                                  SizedBox(width: 6),
-                                                  GestureDetector(
-                                                    onTap:() async{
-                                                      _textFocus.unfocus();
-                                                      CustomFullScreenDialog.showDialog();
-                                                      await _friendDetailViewModel.checkFriendRelationship(
-                                                          {
-                                                            "my_user_id": _userViewModel.user.user_id.toString(),
-                                                            "friend_user_id": _friendDetailViewModel.friendDetailModel.friendUserInfo.userId.toString()
-                                                          }
-                                                      );
-                                                      await _friendDetailViewModel.toggleBestFriend(
-                                                          {
-                                                            "friend_id": _friendDetailViewModel.friend_id
-                                                          }
-                                                      );
-                                                    },
-                                                    child: Obx(()=>Container(
-                                                      child: (!_friendDetailViewModel.friendDetailModel.friendUserInfo.bestFriend)
-                                                          ? Image.asset(
-                                                        'assets/imgs/icons/icon_profile_bestfriend_off.png',  // 에셋 이미지 경로
-                                                        width: 34,
-                                                        height: 34,
-                                                        fit: BoxFit.cover,
-                                                      )
-                                                          : Image.asset(
-                                                        'assets/imgs/icons/icon_profile_bestfriend_on.png',  // 에셋 이미지 경로
-                                                        width: 34,
-                                                        height: 34,
-                                                        fit: BoxFit.cover,
-                                                      ),
-                                                    )),
-                                                  ),
+                                                  // SizedBox(width: 6),
+                                                  // GestureDetector(
+                                                  //   onTap:() async{
+                                                  //     _textFocus.unfocus();
+                                                  //     CustomFullScreenDialog.showDialog();
+                                                  //     await _friendDetailViewModel.checkFriendRelationship(
+                                                  //         {
+                                                  //           "my_user_id": _userViewModel.user.user_id.toString(),
+                                                  //           "friend_user_id": _friendDetailViewModel.friendDetailModel.friendUserInfo.userId.toString()
+                                                  //         }
+                                                  //     );
+                                                  //     await _friendDetailViewModel.toggleBestFriend(
+                                                  //         {
+                                                  //           "friend_id": _friendDetailViewModel.friend_id
+                                                  //         }
+                                                  //     );
+                                                  //   },
+                                                  //   child: Obx(()=>Container(
+                                                  //     child: (!_friendDetailViewModel.friendDetailModel.friendUserInfo.bestFriend)
+                                                  //         ? Image.asset(
+                                                  //       'assets/imgs/icons/icon_profile_bestfriend_off.png',  // 에셋 이미지 경로
+                                                  //       width: 34,
+                                                  //       height: 34,
+                                                  //       fit: BoxFit.cover,
+                                                  //     )
+                                                  //         : Image.asset(
+                                                  //       'assets/imgs/icons/icon_profile_bestfriend_on.png',  // 에셋 이미지 경로
+                                                  //       width: 34,
+                                                  //       height: 34,
+                                                  //       fit: BoxFit.cover,
+                                                  //     ),
+                                                  //   )),
+                                                  // ),
                                                 ],
                                               ),//내가 아니고, 친구일 때
                                           ],
