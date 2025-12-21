@@ -32,6 +32,7 @@ class SnowliveDetailPage extends StatelessWidget {
       backgroundColor: Color(0xFFF1F1F3),
       extendBodyBehindAppBar: true,
       appBar: AppBar(
+        backgroundColor: Color(0xFFF1F1F3),
         systemOverlayStyle: SystemUiOverlayStyle.dark,
         leading:
         GestureDetector(
