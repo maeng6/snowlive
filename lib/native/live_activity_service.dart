@@ -4,6 +4,9 @@ import 'package:flutter/services.dart';
 class LiveActivityService {
   static const MethodChannel _channel = MethodChannel('live_activity');
 
+  /// 라이브 액티비티 활성화 여부 (배포 시 true로 변경)
+  static const bool isEnabled = false;
+
   /// iOS와 Android 모두 지원
   /// iOS: Dynamic Island / Lock Screen Live Activity
   /// Android: Foreground Notification
@@ -15,6 +18,8 @@ class LiveActivityService {
     DateTime? lastRideAt,
     int liveFriendCount = 0,
   }) async {
+    // 라이브 액티비티 비활성화 시 바로 리턴
+    if (!isEnabled) return null;
     // iOS와 Android 모두 지원
     if (!Platform.isIOS && !Platform.isAndroid) return null;
 
@@ -47,6 +52,8 @@ class LiveActivityService {
     DateTime? lastRideAt,
     int liveFriendCount = 0,
   }) async {
+    // 라이브 액티비티 비활성화 시 바로 리턴
+    if (!isEnabled) return;
     // iOS와 Android 모두 지원
     if (!Platform.isIOS && !Platform.isAndroid) return;
     try {
@@ -64,6 +71,8 @@ class LiveActivityService {
   }
 
   static Future<void> end({required String activityId}) async {
+    // 라이브 액티비티 비활성화 시 바로 리턴
+    if (!isEnabled) return;
     // iOS와 Android 모두 지원
     if (!Platform.isIOS && !Platform.isAndroid) return;
     try {
