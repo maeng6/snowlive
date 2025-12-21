@@ -379,7 +379,7 @@ class _SnowballMarketBrandOnlyHomeViewState extends State<SnowballMarketBrandOnl
                           ),
                           //상단 일러 이미지 영역
                           Positioned(
-                            top: 30, // 이미지 상단에서 얼마나 띄울지 (필요시 조정)
+                            top: 16, // 이미지 상단에서 얼마나 띄울지 (필요시 조정)
                             left: 0,
                             right: 0,
                             child: Center(
@@ -391,7 +391,21 @@ class _SnowballMarketBrandOnlyHomeViewState extends State<SnowballMarketBrandOnl
                           ),
                           //상단 눈송이 보유 현황
                           Positioned(
-                            top: 145,
+                            top: 118,
+                            left: 0,
+                            right: 0,
+                            child: Center(
+                              child: Text('휘닉스 파크에서 눈송이를 찾아라!',
+                                style: SDSTextStyle.bold.copyWith(
+                                    fontSize: 15,
+                                    color: Colors.white
+                                ),
+
+                              ),
+                            ),
+                          ),
+                          Positioned(
+                            top: 154,
                             left: 0,
                             right: 0,
                             child: Center(
