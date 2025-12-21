@@ -94,6 +94,16 @@ import WidgetKit
             let todayRide = (args["todayRideCount"] as? Int) ?? (args["todayRideCount"] as? NSNumber)?.intValue
             let sessionRide = (args["sessionRideCount"] as? Int) ?? (args["sessionRideCount"] as? NSNumber)?.intValue
             let lastSlope = args["lastSlopeName"] as? String
+            let liveFriendCount = (args["liveFriendCount"] as? Int) ?? (args["liveFriendCount"] as? NSNumber)?.intValue ?? 0
+
+            // lastRideAt 파싱 (optional)
+            var lastRideAt: Date? = nil
+            if let n = args["lastRideAtMs"] {
+              if let d = n as? Double { lastRideAt = Date(timeIntervalSince1970: d / 1000.0) }
+              else if let i64 = n as? Int64 { lastRideAt = Date(timeIntervalSince1970: TimeInterval(i64) / 1000.0) }
+              else if let i = n as? Int { lastRideAt = Date(timeIntervalSince1970: TimeInterval(i) / 1000.0) }
+              else if let num = n as? NSNumber { lastRideAt = Date(timeIntervalSince1970: num.doubleValue / 1000.0) }
+            }
 
             guard let _startAt = startAt,
                   let _today = todayRide,
@@ -107,7 +117,9 @@ import WidgetKit
             let initial = LiveOnActivityAttributes.ContentState(
               todayRideCount: _today,
               sessionRideCount: _session,
-              lastSlopeName: _last
+              lastSlopeName: _last,
+              lastRideAt: lastRideAt,
+              liveFriendCount: liveFriendCount
             )
 
             do {
@@ -140,13 +152,27 @@ import WidgetKit
             result(FlutterError(code:"NOT_FOUND", message:"Activity not found or bad args", details:nil)); return
           }
 
+          // lastRideAt 파싱 (optional)
+          var lastRideAt: Date? = nil
+          if let n = args["lastRideAtMs"] {
+            if let d = n as? Double { lastRideAt = Date(timeIntervalSince1970: d / 1000.0) }
+            else if let i64 = n as? Int64 { lastRideAt = Date(timeIntervalSince1970: TimeInterval(i64) / 1000.0) }
+            else if let i = n as? Int { lastRideAt = Date(timeIntervalSince1970: TimeInterval(i) / 1000.0) }
+            else if let num = n as? NSNumber { lastRideAt = Date(timeIntervalSince1970: num.doubleValue / 1000.0) }
+          }
+
+          // liveFriendCount 파싱
+          let liveFriendCount = (args["liveFriendCount"] as? Int) ?? (args["liveFriendCount"] as? NSNumber)?.intValue ?? 0
+
           let state = LiveOnActivityAttributes.ContentState(
             todayRideCount: todayRide,
             sessionRideCount: sessionRide,
-            lastSlopeName: lastSlope
+            lastSlopeName: lastSlope,
+            lastRideAt: lastRideAt,
+            liveFriendCount: liveFriendCount
           )
           Task { await activity.update(using: state) }
-          print("🔄 [LA] updated id=\(id)")
+          print("🔄 [LA] updated id=\(id), lastSlope=\(lastSlope), liveFriends=\(liveFriendCount)")
           result(nil)
         } else {
           result(FlutterError(code:"UNSUPPORTED_IOS", message:"Requires iOS 16.1+", details:nil))

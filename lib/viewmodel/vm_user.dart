@@ -11,10 +11,10 @@ class UserViewModel extends GetxController {
 
   dynamic get user => _user.value;
 
-  Future<void> updateUserModel_api(int user_id)  async{
+  Future<void> updateUserModel_api(int user_id, {String? fcm_token})  async{
 
     isLoading(true);
-    ApiResponse response = await UserAPI().getUserInfo(user_id);
+    ApiResponse response = await UserAPI().getUserInfo(user_id, fcm_token: fcm_token);
     if(response.success) {
     print('유저모델 업데이트 완료');
 

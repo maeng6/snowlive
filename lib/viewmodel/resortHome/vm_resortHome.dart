@@ -96,6 +96,13 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
 
   String? _liveActivityId;
   DateTime? _liveOnStartedAt; // 시작 시각 표시용 (LockScreen에 타이머로 쓰는 값)
+  Timer? _liveActivityRefreshTimer; // Live Activity 시간 갱신 타이머
+  Worker? _liveFriendsWorker; // 친구 라이브 상태 변경 감지 워커
+
+  // Live Activity 상태 관리 변수
+  int _sessionRideCount = 0;          // 현재 세션 라이딩 횟수
+  String _lastSlopeName = '';          // 마지막 라이딩 슬로프명 (체크포인트에서 저장)
+  DateTime? _lastRideAt;               // 마지막 라이딩 시간
 
   dynamic weatherTextColors;
   dynamic weatherColors;
@@ -241,14 +248,16 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
   }
 
   /// Heartbeat 타이머 시작 (60초마다 서버로 생존 신호 전송)
+  /// 이미 위치 스트림에서 _latitude, _longitude가 갱신되므로 추가 GPS 호출 없이 저장된 값 사용
   void _startHeartbeatTimer() {
     _stopHeartbeatTimer(); // 기존 타이머 정리
 
     _heartbeatTimer = Timer.periodic(const Duration(seconds: 60), (timer) async {
       if (_currentLiveUserId != null) {
+        // 위치 스트림에서 이미 갱신된 저장된 위치 사용 (이중 GPS 호출 방지)
         _sendLiveLog(
           userId: _currentLiveUserId!,
-          requestType: 'heartbeat',
+          requestType: 'fg_heartbeat',
           lat: _latitude.value,
           lon: _longitude.value,
         );
@@ -298,23 +307,67 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
     }
   }
 
+  /// 현재 라이브 중인 친구 수 계산 (Firebase 스트림에서 실시간으로 받음)
+  int _getLiveFriendCount() {
+    final liveOnAlarmViewModel = Get.find<LiveOnAlarmViewModel>();
+    return liveOnAlarmViewModel.liveOnFriendIds.length;
+  }
+
+  /// Live Activity 시간 갱신 타이머 시작 (30초마다 업데이트)
+  void _startLiveActivityRefreshTimer() {
+    _stopLiveActivityRefreshTimer();
+    _liveActivityRefreshTimer = Timer.periodic(const Duration(seconds: 30), (timer) {
+      if (_liveActivityId != null) {
+        _updateLiveActivity();
+      }
+    });
+  }
+
+  /// Live Activity 시간 갱신 타이머 중지
+  void _stopLiveActivityRefreshTimer() {
+    _liveActivityRefreshTimer?.cancel();
+    _liveActivityRefreshTimer = null;
+  }
+
+  /// 친구 라이브 상태 변경 감지 워커 시작 (실시간 업데이트)
+  void _startLiveFriendsWorker() {
+    _stopLiveFriendsWorker();
+    final liveOnAlarmViewModel = Get.find<LiveOnAlarmViewModel>();
+    _liveFriendsWorker = ever(liveOnAlarmViewModel.liveOnFriendIds, (_) {
+      if (_liveActivityId != null) {
+        _updateLiveActivity();
+      }
+    });
+  }
+
+  /// 친구 라이브 상태 변경 감지 워커 중지
+  void _stopLiveFriendsWorker() {
+    _liveFriendsWorker?.dispose();
+    _liveFriendsWorker = null;
+  }
+
   void _updateLiveActivity({
     String? lastSlopeName,
     int? todayRideCount,
     int? sessionRideCount,
+    DateTime? lastRideAt,
   }) {
-    if (!Platform.isIOS) return;
+    // iOS와 Android 모두 지원
     if (_liveActivityId == null) return;
 
-    final int today = todayRideCount ?? (resortHomeModel?.todayRideCount ?? 0);
-    final int session = sessionRideCount ?? 0; // 세션 카운트 관리 중이면 값 대체
-    final String last = lastSlopeName ?? '—';
+    final int today = todayRideCount ?? (resortHomeModel?.dailyTotalCount ?? 0);
+    final int session = sessionRideCount ?? _sessionRideCount;
+    final String last = lastSlopeName ?? _lastSlopeName;
+    final DateTime? rideAt = lastRideAt ?? _lastRideAt;
+    final int liveFriends = _getLiveFriendCount();
 
     LiveActivityService.update(
       activityId: _liveActivityId!,
       todayRideCount: today,
       sessionRideCount: session,
-      lastSlopeName: last,
+      lastSlopeName: last.isEmpty ? '—' : last,
+      lastRideAt: rideAt,
+      liveFriendCount: liveFriends,
     );
   }
 
@@ -323,26 +376,33 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
       // 종료 호출 위치/사유를 남긴다
       print('🛑 [LA] end requested ($reason), id=$_liveActivityId');
 
-      if (Platform.isIOS && _liveActivityId != null) {
-        await LiveActivityService.end(activityId: _liveActivityId!);
+      // iOS: activityId가 있어야 종료 가능
+      // Android: activityId 없어도 서비스 종료 시도 (항상 종료)
+      if (_liveActivityId != null || Platform.isAndroid) {
+        await LiveActivityService.end(activityId: _liveActivityId ?? 'android_live_activity');
         print('✅ [LA] end completed ($reason)');
         _liveActivityId = null;
         _liveOnStartedAt = null;
       } else {
-        print('⚠️ [LA] end skipped (no id/platform)');
+        print('⚠️ [LA] end skipped (no id)');
       }
     } catch (e) {
       print('❌ [LA] end error ($reason): $e');
     }
   }
 
-  Future<void> startLiveLocationService({required user_id}) async {
+  Future<void> startLiveLocationService({required user_id, bool isRestart = false}) async {
     try {
       // 현재 라이브온 사용자 ID 저장
       _currentLiveUserId = user_id;
 
       // 에러 로그 대상 사용자 스트림 구독 시작 (라이브온 시에만)
       _startErrorLogSubscription(user_id);
+
+      // 재시작인 경우 로그 전송
+      if (isRestart) {
+        _sendLiveLog(userId: user_id, requestType: 'liveOn_restart', error: '오류로인한 재시작');
+      }
 
       // Heartbeat 타이머 시작 (60초마다 서버로 생존 신호 전송)
       _startHeartbeatTimer();
@@ -482,6 +542,10 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
         _notifyFriendsLiveOn(user_id);
 
         _positionStreamSubscription = Geolocator.getPositionStream().listen((Position position) async {
+          // 현재 좌표 갱신
+          _latitude.value = position.latitude;
+          _longitude.value = position.longitude;
+
           await _lock.synchronized(() async {
             bool withinBoundary = _checkPositionWithinBoundary(
               position.latitude,
@@ -551,8 +615,10 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
                     final isSuccess = response.statusCode == 201 || response.statusCode == 416;
                     if (isSuccess) {
                       _lastCountMethodCall = DateTime.now();
+                      // 슬로프명 저장 (리스폰 시 Live Activity에 표시하기 위해)
+                      _lastSlopeName = passPointInfo['fullname'] ?? '';
                       print(response.statusCode);
-                      print('포그라운드 체크포인트 업데이트 성공');
+                      print('포그라운드 체크포인트 업데이트 성공: $_lastSlopeName');
                     } else {
                       print('포그라운드 체크포인트 업데이트 실패: ${response.statusCode}');
                     }
@@ -600,18 +666,37 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
                 }
 
                 if (passPointInfo['type'] == 'respawn_point') {
-                  if (_lastRespawnMethodCall == null || DateTime.now().difference(_lastRespawnMethodCall!).inSeconds > 180) {
+                  final secondsSinceLastRespawn = _lastRespawnMethodCall != null
+                      ? DateTime.now().difference(_lastRespawnMethodCall!).inSeconds
+                      : null;
+                  // 환타지 슬로프는 30초 쿨다운, 그 외는 180초 쿨다운
+                  final isFantasySlope = _lastSlopeName == '환타지';
+                  final cooldownSeconds = isFantasySlope ? 30 : 180;
+                  print('리스폰 조건 확인: lastCall=$_lastRespawnMethodCall, secondsSince=$secondsSinceLastRespawn, isFantasy=$isFantasySlope, cooldown=$cooldownSeconds');
+
+                  if (_lastRespawnMethodCall == null || secondsSinceLastRespawn! > cooldownSeconds) {
                     _lastRespawnMethodCall = DateTime.now();
                     final respawnResponse = await RankingAPI().respawn({"user_id": user_id});
                     if (respawnResponse.success) {
                       print('리스폰 성공');
+                      // 라이딩 완료: 서버에서 반환한 inserted_count 만큼 세션 카운트 증가
+                      int insertedCount = respawnResponse.data['inserted_count'] ?? 0;
+                      _sessionRideCount += insertedCount;
+                      // 마지막 라이딩 슬로프명 업데이트
+                      String? latestSlopeFullname = respawnResponse.data['latest_slope_fullname'];
+                      if (latestSlopeFullname != null && latestSlopeFullname.isNotEmpty) {
+                        _lastSlopeName = latestSlopeFullname;
+                      }
+                      if (insertedCount > 0) {
+                        _lastRideAt = DateTime.now();
+                      }
+                      // Live Activity 업데이트
+                      _updateLiveActivity();
                     }
                     _sendLiveLog(userId: user_id, requestType: 'fg_respawn', error: respawnResponse.success ? 'success' : respawnResponse.error.toString(), lat: position.latitude, lon: position.longitude);
-
-                    _updateLiveActivity(
-                      lastSlopeName: 'Respawn',
-                    );
-
+                  } else {
+                    // 쿨다운으로 스킵됨
+                    _sendLiveLog(userId: user_id, requestType: 'fg_respawn_skipped', error: 'cooldown: ${secondsSinceLastRespawn}s < ${cooldownSeconds}s', lat: position.latitude, lon: position.longitude);
                   }
                 }
               }
@@ -734,6 +819,10 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
       double latitude = location.coords.latitude;
       double longitude = location.coords.longitude;
 
+      // 현재 좌표 갱신
+      _latitude.value = latitude;
+      _longitude.value = longitude;
+
       Position position = Position(
         latitude: latitude,
         longitude: longitude,
@@ -781,13 +870,9 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
                 final isSuccess = response.statusCode == 201 || response.statusCode == 416;
                 if (isSuccess) {
                   _lastCountMethodCall = DateTime.now();
-                  print('백그라운드 체크포인트 업데이트 성공');
-                  await LiveActivityService.update(
-                    activityId: _liveActivityId!,
-                    todayRideCount: 1,
-                    sessionRideCount: 1,
-                    lastSlopeName: '테스트슬로프',
-                  );
+                  // 슬로프명 저장 (리스폰 시 Live Activity에 표시하기 위해)
+                  _lastSlopeName = passPointInfo['fullname'] ?? '';
+                  print('백그라운드 체크포인트 업데이트 성공: $_lastSlopeName');
                 } else {
                   print('백그라운드 체크포인트 업데이트 실패: ${response.statusCode}');
                 }
@@ -835,18 +920,36 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
             }
 
             if (passPointInfo['type'] == 'respawn_point') {
-              if (_lastRespawnMethodCall == null || DateTime.now().difference(_lastRespawnMethodCall!).inSeconds > 180) {
+              final secondsSinceLastRespawn = _lastRespawnMethodCall != null
+                  ? DateTime.now().difference(_lastRespawnMethodCall!).inSeconds
+                  : null;
+              // 환타지 슬로프는 30초 쿨다운, 그 외는 180초 쿨다운
+              final isFantasySlope = _lastSlopeName == '환타지';
+              final cooldownSeconds = isFantasySlope ? 30 : 180;
+
+              if (_lastRespawnMethodCall == null || secondsSinceLastRespawn! > cooldownSeconds) {
                 _lastRespawnMethodCall = DateTime.now();
                 final respawnResponse = await RankingAPI().respawn({"user_id": user_id});
                 if (respawnResponse.success) {
                   print('리스폰 성공');
+                  // 라이딩 완료: 서버에서 반환한 inserted_count 만큼 세션 카운트 증가
+                  int insertedCount = respawnResponse.data['inserted_count'] ?? 0;
+                  _sessionRideCount += insertedCount;
+                  // 마지막 라이딩 슬로프명 업데이트
+                  String? latestSlopeFullname = respawnResponse.data['latest_slope_fullname'];
+                  if (latestSlopeFullname != null && latestSlopeFullname.isNotEmpty) {
+                    _lastSlopeName = latestSlopeFullname;
+                  }
+                  if (insertedCount > 0) {
+                    _lastRideAt = DateTime.now();
+                  }
+                  // Live Activity 업데이트
+                  _updateLiveActivity();
                 }
                 _sendLiveLog(userId: user_id, requestType: 'bg_respawn', error: respawnResponse.success ? 'success' : respawnResponse.error.toString(), lat: position.latitude, lon: position.longitude);
-
-                _updateLiveActivity(
-                  lastSlopeName: 'Respawn',
-                );
-
+              } else {
+                // 쿨다운으로 스킵됨
+                _sendLiveLog(userId: user_id, requestType: 'bg_respawn_skipped', error: 'cooldown: ${secondsSinceLastRespawn}s < ${cooldownSeconds}s', lat: position.latitude, lon: position.longitude);
               }
             }
           }
@@ -933,7 +1036,11 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
     // 슬로프 영역 검사
     for (var slope in slopeInfo) {
       if (_isWithinRadius(position, slope['coordinates'], slope['radius'])) {
-        detectedAreas.add({'type': 'slope_info', 'id': slope['slope_id']});
+        detectedAreas.add({
+          'type': 'slope_info',
+          'id': slope['slope_id'],
+          'fullname': slope['fullname'],
+        });
       }
     }
 
@@ -953,6 +1060,7 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
 
     // 리스폰 포인트 영역 검사
     for (var respawn in respawnPoint) {
+
       if (_isWithinRadius(position, respawn['coordinates'], respawn['radius'])) {
         detectedAreas.add({'type': 'respawn_point', 'id': respawn['respawn_point_id']});
       }
@@ -982,12 +1090,12 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
     isLoading(true);
 
     // 로그 전송 (스트림 구독 해제 전에 전송)
-    _sendLiveLog(userId: user_id, requestType: 'liveOff_start');
+    _sendLiveLog(userId: user_id, requestType: 'liveOff_start', lat: _latitude.value, lon: _longitude.value);
 
     final ApiResponse response_off = await RankingAPI().liveOff(body);
 
     if (response_off.success) {
-      _sendLiveLog(userId: user_id, requestType: 'liveOff_success');
+      _sendLiveLog(userId: user_id, requestType: 'liveOff_success', lat: _latitude.value, lon: _longitude.value);
 
       // ✅ 위치 추적 서비스 완전 종료 (백그라운드 + 포그라운드)
       await stopBackgroundLocationService();
@@ -1003,17 +1111,22 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
       _errorLogSubscription = null;
       _isLoggingOn = false;
 
-      // ✅ 친구들에게서 라이브온 알림 제거
-      await _removeLiveOnNotification();
+      // ✅ 친구들에게서 라이브온 알림 제거 (백그라운드 처리 - 인디케이터와 무관)
+      _removeLiveOnNotification();
 
-      // ✅ 라이브 액티비티 종료 (iOS에서만)
-      if (Platform.isIOS && _liveActivityId != null) {
-        await LiveActivityService.end(activityId: _liveActivityId!);
-        _liveActivityId = null;
-        _liveOnStartedAt = null;
-      }
+      // ✅ Live Activity 시간 갱신 타이머 중지
+      _stopLiveActivityRefreshTimer();
 
+      // ✅ 친구 라이브 상태 변경 감지 워커 중지
+      _stopLiveFriendsWorker();
+
+      // ✅ 라이브 액티비티 종료 (iOS, Android 모두 지원)
       await _endLiveActivity('liveOff()');
+
+      // ✅ 세션 변수 초기화
+      _sessionRideCount = 0;
+      _lastSlopeName = '';
+      _lastRideAt = null;
 
       // 경계 외부 카운트 초기화
       _outOfBoundaryCount = 0;
@@ -1042,20 +1155,32 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
         _reset_point.value   = List<Map<String, dynamic>>.from(response.data['reset_point']);
         _respawn_point.value = List<Map<String, dynamic>>.from(response.data['respawn_point']);
 
-        // ✅ 라이브 액티비티 시작 (iOS에서만)
-        if (Platform.isIOS) {
-          _liveOnStartedAt = DateTime.now();
-          final int todayRide = 0;
-          final int sessionRide = 0; // 세션 카운트 관리 중이면 실제 값 사용
-          final String lastSlope = '—';
-
-          _liveActivityId = await LiveActivityService.start(
-            liveOnStartAt: _liveOnStartedAt!,
-            todayRideCount: todayRide,
-            sessionRideCount: sessionRide,
-            lastSlopeName: lastSlope,
-          );
+        // 🔍 디버그: respawn_point 데이터 확인
+        print('🔍 [liveOn] respawn_point count: ${_respawn_point.length}');
+        for (var rp in _respawn_point) {
+          print('🔍 [liveOn] respawn_point: $rp');
         }
+
+        // ✅ 라이브 액티비티 시작 (iOS, Android 모두 지원)
+        _liveOnStartedAt = DateTime.now();
+        // 세션 변수 초기화
+        _sessionRideCount = 0;
+        _lastSlopeName = '';
+        _lastRideAt = null;
+
+        _liveActivityId = await LiveActivityService.start(
+          liveOnStartAt: _liveOnStartedAt!,
+          todayRideCount: resortHomeModel?.dailyTotalCount ?? 0,
+          sessionRideCount: _sessionRideCount,
+          lastSlopeName: '—',
+          liveFriendCount: _getLiveFriendCount(),
+        );
+
+        // Live Activity 시간 갱신 타이머 시작 (30초마다)
+        _startLiveActivityRefreshTimer();
+
+        // 친구 라이브 상태 변경 감지 워커 시작 (실시간 업데이트)
+        _startLiveFriendsWorker();
 
         return response;
       } else {

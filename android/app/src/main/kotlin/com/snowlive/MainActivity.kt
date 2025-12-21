@@ -13,11 +13,12 @@ import io.flutter.plugin.common.MethodChannel
 
 class MainActivity: FlutterActivity() {
     private val CHANNEL = "detect_battery_saver"
+    private val LIVE_ACTIVITY_CHANNEL = "live_activity"
 
     override fun configureFlutterEngine(@NonNull flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
 
-        // MethodChannel 설정
+        // MethodChannel 설정 - Battery Saver
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, CHANNEL)
             .setMethodCallHandler { call, result ->
                 when (call.method) {
@@ -59,6 +60,79 @@ class MainActivity: FlutterActivity() {
                             result.success(true)
                         } catch (e: Exception) {
                             result.success(false)
+                        }
+                    }
+                    else -> result.notImplemented()
+                }
+            }
+
+        // MethodChannel 설정 - Live Activity (라이브온 알림 표시)
+        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, LIVE_ACTIVITY_CHANNEL)
+            .setMethodCallHandler { call, result ->
+                when (call.method) {
+                    "start" -> {
+                        try {
+                            val liveOnStartAtMs = call.argument<Long>("liveOnStartAtMs") ?: System.currentTimeMillis()
+                            val todayRideCount = call.argument<Int>("todayRideCount") ?: 0
+                            val sessionRideCount = call.argument<Int>("sessionRideCount") ?: 0
+                            val lastSlopeName = call.argument<String>("lastSlopeName") ?: "—"
+                            val liveFriendCount = call.argument<Int>("liveFriendCount") ?: 0
+                            val lastRideAtMs = call.argument<Long>("lastRideAtMs")
+
+                            val intent = Intent(this, LiveActivityService::class.java).apply {
+                                action = LiveActivityService.ACTION_START
+                                putExtra("liveOnStartAtMs", liveOnStartAtMs)
+                                putExtra("todayRideCount", todayRideCount)
+                                putExtra("sessionRideCount", sessionRideCount)
+                                putExtra("lastSlopeName", lastSlopeName)
+                                putExtra("liveFriendCount", liveFriendCount)
+                                lastRideAtMs?.let { putExtra("lastRideAtMs", it) }
+                            }
+
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                startForegroundService(intent)
+                            } else {
+                                startService(intent)
+                            }
+
+                            // Android에서는 고정 ID 반환 (iOS처럼 activity ID 사용)
+                            result.success("android_live_activity")
+                        } catch (e: Exception) {
+                            result.error("START_ERROR", e.message, null)
+                        }
+                    }
+                    "update" -> {
+                        try {
+                            val todayRideCount = call.argument<Int>("todayRideCount")
+                            val sessionRideCount = call.argument<Int>("sessionRideCount")
+                            val lastSlopeName = call.argument<String>("lastSlopeName")
+                            val liveFriendCount = call.argument<Int>("liveFriendCount")
+                            val lastRideAtMs = call.argument<Long>("lastRideAtMs")
+
+                            val intent = Intent(this, LiveActivityService::class.java).apply {
+                                action = LiveActivityService.ACTION_UPDATE
+                                todayRideCount?.let { putExtra("todayRideCount", it) }
+                                sessionRideCount?.let { putExtra("sessionRideCount", it) }
+                                lastSlopeName?.let { putExtra("lastSlopeName", it) }
+                                liveFriendCount?.let { putExtra("liveFriendCount", it) }
+                                lastRideAtMs?.let { putExtra("lastRideAtMs", it) }
+                            }
+
+                            startService(intent)
+                            result.success(null)
+                        } catch (e: Exception) {
+                            result.error("UPDATE_ERROR", e.message, null)
+                        }
+                    }
+                    "end" -> {
+                        try {
+                            val intent = Intent(this, LiveActivityService::class.java).apply {
+                                action = LiveActivityService.ACTION_STOP
+                            }
+                            startService(intent)
+                            result.success(null)
+                        } catch (e: Exception) {
+                            result.error("END_ERROR", e.message, null)
                         }
                     }
                     else -> result.notImplemented()
