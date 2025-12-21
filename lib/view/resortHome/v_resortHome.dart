@@ -684,20 +684,87 @@ class _ResortHomeViewState extends State<ResortHomeView> with
                       Positioned(
                         right: 5,
                         top: 5,
-                        child: Container(
-                          width: 20,
-                          height: 20,
-                          padding: EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                          decoration: BoxDecoration(
-                            color: Color(0xFFD6382B),
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          child: Text(
-                            'N',
-                            style: SDSTextStyle.extraBold.copyWith(
-                              fontSize: 11,
-                              fontWeight: FontWeight.bold,
-                              color: Color(0xFFFFFFFF),
+                        child: GestureDetector(
+                          onTap: () async{
+                            // 오픈채팅 열면 읽음 처리
+                            _openChatAlarmViewModel.markAsRead();
+
+                            showModalBottomSheet(
+                              context: context,
+                              isScrollControlled: true,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+                              ),
+                              builder: (context) => DraggableScrollableSheet(
+                                expand: false,
+                                initialChildSize: 0.88,
+                                minChildSize: 0.4,
+                                maxChildSize: 0.88,
+                                builder: (BuildContext context, ScrollController scrollController) {
+                                  return Container(
+                                    decoration: BoxDecoration(
+                                        color: SDSColor.snowliveWhite,
+                                        borderRadius: BorderRadius.only(topRight: Radius.circular(20), topLeft: Radius.circular(20))
+                                    ),
+                                    padding: EdgeInsets.only(top: 16),
+                                    child: Column(
+                                      children: [
+                                        Center(
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(bottom: 20),
+                                            child: Container(
+                                              height: 4,
+                                              width: 36,
+                                              decoration: BoxDecoration(
+                                                borderRadius: BorderRadius.circular(10),
+                                                color: SDSColor.gray200,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        Center(
+                                          child: Column(
+                                            children: [
+                                              Text(
+                                                '스키장 오픈채팅',
+                                                style: SDSTextStyle.bold.copyWith(fontSize: 16, color: SDSColor.gray900),
+                                              ),
+                                              SizedBox(height: 10,),
+                                              Text(
+                                                '전국 스키장의 스노우라이브 유저들과',
+                                                style: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray500),
+                                              ),
+                                              Text(
+                                                '익명으로 실시간 채팅을 즐겨 보세요',
+                                                style: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray500),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        SizedBox(height: 20,),
+                                        Expanded(child: ChatScreen()),
+                                      ],
+                                    ), // ChatScreen을 모달 시트로 띄움
+                                  );
+                                },
+                              ),
+                            );
+                          },
+                          child: Container(
+                            width: 20,
+                            height: 20,
+                            padding: EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                            decoration: BoxDecoration(
+                              color: Color(0xFFD6382B),
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: Text(
+                              'N',
+                              style: SDSTextStyle.extraBold.copyWith(
+                                fontSize: 11,
+                                fontWeight: FontWeight.bold,
+                                color: Color(0xFFFFFFFF),
+                              ),
                             ),
                           ),
                         ),
