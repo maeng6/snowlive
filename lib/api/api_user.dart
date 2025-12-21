@@ -5,11 +5,19 @@ import 'ApiResponse.dart';
 class UserAPI {
   static const String baseUrl = 'https://snowlive-api-0eab29705c9f.herokuapp.com/api/accounts';
 
-  Future<ApiResponse> getUserInfo(int user_id) async {
+  Future<ApiResponse> getUserInfo(int user_id, {String? fcm_token}) async {
+    final Map<String, String> queryParams = {
+      'user_id': user_id.toString(),
+    };
+    if (fcm_token != null && fcm_token.isNotEmpty) {
+      queryParams['fcm_token'] = fcm_token;
+    }
     final Uri uri = Uri.parse('$baseUrl/get-user-info/').replace(
-      queryParameters: {
-        'user_id': user_id.toString(),
-      });
+      queryParameters: queryParams,
+    );
+
+  print('📡 getUserInfo URL: $uri');
+  print('📡 fcm_token 전달: ${fcm_token != null && fcm_token.isNotEmpty}');
 
   final response = await http.get(uri);
 

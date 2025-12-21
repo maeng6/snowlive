@@ -198,6 +198,7 @@ flutter_native_splash:
   android: true
   android_12:
       image: assets/imgs/splash_screen/splash_logo.png
+      icon_background_color: "#D8E7FD"
   ios: true
 # 변경사항 필요시 flutter pub run flutter_native_splash:create 와 remove 사용
 
