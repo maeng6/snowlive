@@ -159,13 +159,12 @@ class FriendListViewModel extends GetxController {
   }
 
   Future<void> deleteFriend(body) async {
-
     ApiResponse response = await FriendAPI().deleteFriend(body);
-    CustomFullScreenDialog.cancelDialog();
     if (response.success) {
+      print('친구 삭제/거절 성공');
     } else {
+      print('친구 삭제/거절 실패');
     }
-
   }
 
 

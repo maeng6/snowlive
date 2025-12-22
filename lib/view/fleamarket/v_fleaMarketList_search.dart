@@ -102,6 +102,7 @@ class FleaMarketListView_search extends StatelessWidget {
                                   ),
                                   child: TextFormField(
                                     focusNode: textFocus,
+                                    autofocus: true,
                                     onFieldSubmitted: (val) async {
                                       if (val.isNotEmpty) {
                                         _fleamarketSearchViewModel

@@ -111,6 +111,7 @@ class _SearchCrewViewState extends State<SearchCrewView> {
                                 borderRadius: BorderRadius.circular(6),
                               ),
                               child: TextFormField(
+                                autofocus: true,
                                 onFieldSubmitted: (val) async {
                                   if (val.isNotEmpty) {
                                     CustomFullScreenDialog.showDialog();
@@ -120,7 +121,6 @@ class _SearchCrewViewState extends State<SearchCrewView> {
                                     CustomFullScreenDialog.cancelDialog();
                                   } else {}
                                 },
-                                autofocus: false,
                                 focusNode: textFocus,
                                 textAlignVertical: TextAlignVertical.center,
                                 cursorColor: SDSColor.snowliveBlue,

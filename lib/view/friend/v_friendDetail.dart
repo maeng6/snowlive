@@ -2603,19 +2603,21 @@ class _FriendDetailViewState extends State<FriendDetailView> {
                                   if (_friendDetailViewModel.textEditingController.text.trim().isEmpty) {
                                     return;
                                   }
+                                  // 먼저 포커스 해제하여 키보드를 내림 (다이얼로그 닫힐 때 키보드가 다시 올라오는 것 방지)
+                                  _textFocus.unfocus();
+                                  final content = _friendDetailViewModel.textEditingController.text;
+                                  _friendDetailViewModel.textEditingController.clear();
                                   CustomFullScreenDialog.showDialog();
                                   await _friendDetailViewModel.uploadFriendsTalk({
                                     "author_user_id": _userViewModel.user.user_id,
                                     "friend_user_id": _friendDetailViewModel.friendDetailModel.friendUserInfo.userId,
-                                    "content": _friendDetailViewModel.textEditingController.text,
+                                    "content": content,
                                   });
                                   CustomFullScreenDialog.cancelDialog();
                                   await _friendDetailViewModel.fetchFriendsTalkList_afterFriendTalk(
                                     userId: _userViewModel.user.user_id,
                                     friendUserId: _friendDetailViewModel.friendDetailModel.friendUserInfo.userId,
                                   );
-                                  _textFocus.unfocus(); // 메시지 전송 후 포커스 해제
-                                  _friendDetailViewModel.textEditingController.clear();
                                   await _alarmCenterViewModel.updateNotification(
                                       _friendDetailViewModel.friendDetailModel.friendUserInfo.userId,
                                       total: true

@@ -120,6 +120,7 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
   DateTime? _lastResetMethodCall;
   DateTime? _lastRespawnMethodCall;
   DateTime? _lastSnowballMethodCall;
+  bool _respawnSkipLogSent = false; // 스킵 로그 중복 전송 방지
   String get rankingGuideUrl_ios => _rankingGuideUrl_ios.value;
   String get rankingGuideUrl_aos => _rankingGuideUrl_aos.value;
   String get rankingComingSoonUrl => _rankingComingSoonUrl.value;
@@ -671,11 +672,12 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
                       : null;
                   // 환타지 슬로프는 30초 쿨다운, 그 외는 180초 쿨다운
                   final isFantasySlope = _lastSlopeName == '환타지';
-                  final cooldownSeconds = isFantasySlope ? 30 : 180;
+                  final cooldownSeconds = isFantasySlope ? 20 : 180;
                   print('리스폰 조건 확인: lastCall=$_lastRespawnMethodCall, secondsSince=$secondsSinceLastRespawn, isFantasy=$isFantasySlope, cooldown=$cooldownSeconds');
 
                   if (_lastRespawnMethodCall == null || secondsSinceLastRespawn! > cooldownSeconds) {
                     _lastRespawnMethodCall = DateTime.now();
+                    _respawnSkipLogSent = false; // 리스폰 시도 시 스킵 로그 플래그 리셋
                     final respawnResponse = await RankingAPI().respawn({"user_id": user_id});
                     if (respawnResponse.success) {
                       print('리스폰 성공');
@@ -695,8 +697,11 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
                     }
                     _sendLiveLog(userId: user_id, requestType: 'fg_respawn', error: respawnResponse.success ? 'success' : respawnResponse.error.toString(), lat: position.latitude, lon: position.longitude);
                   } else {
-                    // 쿨다운으로 스킵됨
-                    _sendLiveLog(userId: user_id, requestType: 'fg_respawn_skipped', error: 'cooldown: ${secondsSinceLastRespawn}s < ${cooldownSeconds}s', lat: position.latitude, lon: position.longitude);
+                    // 쿨다운으로 스킵됨 - 처음 한 번만 로그 전송
+                    if (!_respawnSkipLogSent) {
+                      _respawnSkipLogSent = true;
+                      _sendLiveLog(userId: user_id, requestType: 'fg_respawn_skipped', error: 'cooldown: ${secondsSinceLastRespawn}s < ${cooldownSeconds}s', lat: position.latitude, lon: position.longitude);
+                    }
                   }
                 }
               }
@@ -719,7 +724,6 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
           });
         });
         print('포그라운드 서비스 실행 성공');
-        _sendLiveLog(userId: user_id, requestType: 'foreground_stream_started');
         return true; // 성공 반환
       } else {
         print('라이브 서비스 불가 지역');
@@ -784,7 +788,6 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
     ));
 
     await bg.BackgroundGeolocation.start();
-    _sendLiveLog(userId: user_id, requestType: 'background_service_started');
 
     // 위치 서비스(GPS) on/off 감지
     bg.BackgroundGeolocation.onProviderChange((bg.ProviderChangeEvent event) {
@@ -929,6 +932,7 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
 
               if (_lastRespawnMethodCall == null || secondsSinceLastRespawn! > cooldownSeconds) {
                 _lastRespawnMethodCall = DateTime.now();
+                _respawnSkipLogSent = false; // 리스폰 시도 시 스킵 로그 플래그 리셋
                 final respawnResponse = await RankingAPI().respawn({"user_id": user_id});
                 if (respawnResponse.success) {
                   print('리스폰 성공');
@@ -948,8 +952,11 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
                 }
                 _sendLiveLog(userId: user_id, requestType: 'bg_respawn', error: respawnResponse.success ? 'success' : respawnResponse.error.toString(), lat: position.latitude, lon: position.longitude);
               } else {
-                // 쿨다운으로 스킵됨
-                _sendLiveLog(userId: user_id, requestType: 'bg_respawn_skipped', error: 'cooldown: ${secondsSinceLastRespawn}s < ${cooldownSeconds}s', lat: position.latitude, lon: position.longitude);
+                // 쿨다운으로 스킵됨 - 처음 한 번만 로그 전송
+                if (!_respawnSkipLogSent) {
+                  _respawnSkipLogSent = true;
+                  _sendLiveLog(userId: user_id, requestType: 'bg_respawn_skipped', error: 'cooldown: ${secondsSinceLastRespawn}s < ${cooldownSeconds}s', lat: position.latitude, lon: position.longitude);
+                }
               }
             }
           }

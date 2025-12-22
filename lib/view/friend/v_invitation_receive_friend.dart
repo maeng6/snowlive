@@ -22,13 +22,20 @@ class _ReceiveFriendRequestViewState extends State<ReceiveFriendRequestView> {
   UserViewModel _userViewModel = Get.find<UserViewModel>();
 
   @override
+  void initState() {
+    super.initState();
+    // 화면 진입 시 데이터 로딩
+    _friendListViewModel.fetchFriendRequestList(_userViewModel.user.user_id);
+  }
+
+  @override
   Widget build(BuildContext context) {
     final Size _size = MediaQuery.of(context).size;
     return Obx(()=>Scaffold(
         backgroundColor: Colors.white,
         body:
         (_friendListViewModel.friendsRequestList.length != 0)
-            ? Obx(()=>ListView.builder(
+            ? ListView.builder(
           padding: EdgeInsets.symmetric(horizontal: 0),
           itemCount: _friendListViewModel.friendsRequestList.length,
           itemBuilder: (BuildContext context, int index) {
@@ -190,7 +197,6 @@ class _ReceiveFriendRequestViewState extends State<ReceiveFriendRequestView> {
                                                   child: Container(
                                                     child: TextButton(
                                                         onPressed: () async {
-
                                                           Navigator.pop(context);
                                                           CustomFullScreenDialog.showDialog();
                                                           await _friendDetailViewModel.acceptFriend(
@@ -199,7 +205,7 @@ class _ReceiveFriendRequestViewState extends State<ReceiveFriendRequestView> {
                                                               }
                                                           );
                                                           await _friendListViewModel.fetchFriendRequestList(_userViewModel.user.user_id);
-
+                                                          CustomFullScreenDialog.cancelDialog();
                                                         },
                                                         style: TextButton.styleFrom(
                                                           backgroundColor: Colors.transparent, // 배경색 투명
@@ -293,7 +299,6 @@ class _ReceiveFriendRequestViewState extends State<ReceiveFriendRequestView> {
                                                   child: Container(
                                                     child: TextButton(
                                                         onPressed: () async {
-
                                                           Navigator.pop(context);
                                                           CustomFullScreenDialog.showDialog();
                                                           await _friendListViewModel.deleteFriend(
@@ -302,7 +307,7 @@ class _ReceiveFriendRequestViewState extends State<ReceiveFriendRequestView> {
                                                               }
                                                           );
                                                           await _friendListViewModel.fetchFriendRequestList(_userViewModel.user.user_id);
-
+                                                          CustomFullScreenDialog.cancelDialog();
                                                         },
                                                         style: TextButton.styleFrom(
                                                           backgroundColor: Colors.transparent, // 배경색 투명
@@ -347,7 +352,7 @@ class _ReceiveFriendRequestViewState extends State<ReceiveFriendRequestView> {
               ),
             );
           },
-        ))
+        )
             : Container(
           height: _size.height - 400,
           child: Column(

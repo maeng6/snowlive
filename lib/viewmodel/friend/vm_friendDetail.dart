@@ -284,14 +284,11 @@ class FriendDetailViewModel extends GetxController {
 
 
   Future<void> acceptFriend(body) async {
-
     ApiResponse response = await FriendAPI().acceptFriend(body);
-    CustomFullScreenDialog.cancelDialog();
     if(response.success)
       print('친구수락 성공');
     if(!response.success)
       print('친구수락 실패');
-
   }
 
   Future<void> checkFriendRelationship(body) async {

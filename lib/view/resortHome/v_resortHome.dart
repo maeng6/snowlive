@@ -910,7 +910,6 @@ class _ResortHomeViewState extends State<ResortHomeView> with
                                                 var BFdoc = _resortHomeViewModel.bestFriendList[index];
                                                 return GestureDetector(
                                                   onTap: () async {
-                                                    Navigator.pop(context);
                                                     Get.toNamed(AppRoutes.friendDetail);
                                                     await _friendDetailViewModel.fetchFriendDetailInfo(
                                                       userId: _userViewModel.user.user_id,

@@ -22,13 +22,20 @@ class _SendFriendRequestViewState extends State<SendFriendRequestView> {
   UserViewModel _userViewModel = Get.find<UserViewModel>();
 
   @override
+  void initState() {
+    super.initState();
+    // 화면 진입 시 데이터 로딩
+    _friendListViewModel.fetchFriendRequestList(_userViewModel.user.user_id);
+  }
+
+  @override
   Widget build(BuildContext context) {
     final Size _size = MediaQuery.of(context).size;
     return Obx(()=>Scaffold(
         backgroundColor: Colors.white,
         body:
         (_friendListViewModel.myRequestList.length != 0)
-            ? Obx(()=>ListView.builder(
+            ? ListView.builder(
           padding: EdgeInsets.symmetric(horizontal: 0),
           itemCount: _friendListViewModel.myRequestList.length,
           itemBuilder: (BuildContext context, int index) {
@@ -200,7 +207,7 @@ class _SendFriendRequestViewState extends State<SendFriendRequestView> {
                                                               }
                                                           );
                                                           await _friendListViewModel.fetchFriendRequestList(_userViewModel.user.user_id);
-
+                                                          CustomFullScreenDialog.cancelDialog();
                                                         },
                                                         style: TextButton.styleFrom(
                                                           backgroundColor: Colors.transparent, // 배경색 투명
@@ -245,7 +252,7 @@ class _SendFriendRequestViewState extends State<SendFriendRequestView> {
               ),
             );
           },
-        ))
+        )
             : Container(
           height: _size.height - 400,
           child: Column(
