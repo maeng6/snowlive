@@ -68,7 +68,13 @@ class SetProfileViewModel extends GetxController {
   Future<void> getImageUrl() async {
     if (_croppedFile.value != null) {
       try {
-        _profileImageUrl.value = await imageController.setNewImage(_croppedFile.value!);
+        _profileImageUrl.value = await imageController.setNewImage(
+          _croppedFile.value!,
+          onError: (String requestType, String error) {
+            // 온보딩 시점에는 user_id가 없으므로 로그만 출력
+            print('[OnboardingProfileError] $requestType: $error');
+          },
+        );
       } catch (e) {
         print('Profile image upload error: $e');
       }

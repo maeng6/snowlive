@@ -141,6 +141,9 @@ class SetCrewViewModel extends GetxController {
       final newUrl = await imageController.setNewImage_Crew(
         newImage: _croppedFile.value!,
         crewID: _crewName.value,
+        onError: (String requestType, String error) {
+          _sendCrewErrorLog(requestType: requestType, error: error);
+        },
       );
 
       profileImageUrl = newUrl;
@@ -157,6 +160,23 @@ class SetCrewViewModel extends GetxController {
       }
     } catch (e) {
       print('Image upload error: $e');
+    }
+  }
+
+  /// 크루 이미지 업로드 에러 로그 전송
+  Future<void> _sendCrewErrorLog({
+    required String requestType,
+    required String error,
+  }) async {
+    try {
+      await CrewAPI().createErrorLog_crew({
+        "user_id": _userViewModel.user.user_id,
+        "request_type": requestType,
+        "error": error,
+      });
+      print('[CrewErrorLog] $requestType: $error');
+    } catch (e) {
+      print('[CrewErrorLog] 로그 전송 실패: $e');
     }
   }
 

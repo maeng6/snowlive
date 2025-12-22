@@ -1315,7 +1315,8 @@ class FleamarketUploadView extends StatelessWidget {
                             );
                             await _fleamarketUploadViewModel.getImageUrlList(
                                 newImages: _fleamarketUploadViewModel.imageFiles,
-                                pk: _fleamarketUploadViewModel.pk);
+                                pk: _fleamarketUploadViewModel.pk,
+                                userId: _userViewModel.user.user_id);
                             await _fleamarketUpdateViewModel.updateFleamarket(
                                 _fleamarketUploadViewModel.pk,
                                 {

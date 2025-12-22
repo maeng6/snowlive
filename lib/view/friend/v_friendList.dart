@@ -12,14 +12,29 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:shimmer/shimmer.dart';
 
-class FriendListView extends StatelessWidget {
+class FriendListView extends StatefulWidget {
   FriendListView({Key? key}) : super(key: key);
 
+  @override
+  State<FriendListView> createState() => _FriendListViewState();
+}
+
+class _FriendListViewState extends State<FriendListView> {
   final FriendListViewModel _friendListViewModel = Get.find<FriendListViewModel>();
   final FriendDetailViewModel _friendDetailViewModel = Get.find<FriendDetailViewModel>();
   final UserViewModel _userViewModel = Get.find<UserViewModel>();
   final AlarmCenterViewModel _alarmCenterViewModel = Get.find<AlarmCenterViewModel>();
 
+  late Stream<QuerySnapshot> _notificationStream;
+
+  @override
+  void initState() {
+    super.initState();
+    _notificationStream = FirebaseFirestore.instance
+        .collection('notificationCenter')
+        .where('uid', isEqualTo: _userViewModel.user.user_id)
+        .snapshots();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,10 +49,7 @@ class FriendListView extends StatelessWidget {
         surfaceTintColor: Colors.transparent,
         actions: [
           StreamBuilder<QuerySnapshot>(
-            stream: FirebaseFirestore.instance
-                .collection('notificationCenter')
-                .where('uid', isEqualTo:  _userViewModel.user.user_id)
-                .snapshots(),
+            stream: _notificationStream,
             builder: (context, snapshot) {
               if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
                 return IconButton(
@@ -283,6 +295,7 @@ class FriendListView extends StatelessWidget {
                                   shape: BoxShape.circle,
                                   width: 56,
                                   height: 56,
+                                  cacheHeight: 112,
                                   fit: BoxFit.cover,
                                   loadStateChanged: (ExtendedImageState state) {
                                     switch (state.extendedImageLoadState) {
@@ -531,6 +544,7 @@ class FriendListView extends StatelessWidget {
                                                 shape: BoxShape.circle,
                                                 width: 48,
                                                 height: 48,
+                                                cacheHeight: 96,
                                                 fit: BoxFit.cover,
                                                 loadStateChanged: (ExtendedImageState state) {
                                                   switch (state.extendedImageLoadState) {

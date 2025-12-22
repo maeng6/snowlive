@@ -380,6 +380,22 @@ class CrewAPI {
     }
   }
 
+  Future<ApiResponse> createErrorLog_crew(Map<String, dynamic> body) async {
+    final response = await http.post(
+      Uri.parse('$baseUrl/error-log/'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode(body),
+    );
+
+    if (response.statusCode == 201) {
+      final data = json.decode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
+      return ApiResponse.success(data);
+    } else {
+      final data = json.decode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
+      return ApiResponse.error(data);
+    }
+  }
+
 
 
 

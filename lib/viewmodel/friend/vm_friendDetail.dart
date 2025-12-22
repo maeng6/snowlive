@@ -5,6 +5,7 @@ import 'package:com.snowlive/api/api_friendDetail.dart';
 import 'package:com.snowlive/model/m_friendDetail.dart';
 import 'package:com.snowlive/model/m_friendsTalk.dart';
 import 'package:com.snowlive/viewmodel/util/vm_imageController.dart';
+import 'package:com.snowlive/viewmodel/vm_user.dart';
 import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -13,6 +14,8 @@ import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:image_picker/image_picker.dart';
 
 class FriendDetailViewModel extends GetxController {
+
+  UserViewModel _userViewModel = Get.find<UserViewModel>();
 
   static const mainTabNameListConst = [
     '라이딩 통계',
@@ -232,10 +235,32 @@ class FriendDetailViewModel extends GetxController {
   Future<void> getImageUrl() async {
     if (_croppedFile.value != null) {
       try {
-        _profileImageUrl.value = await imageController.setNewImage(_croppedFile.value!);
+        _profileImageUrl.value = await imageController.setNewImage(
+          _croppedFile.value!,
+          onError: (String requestType, String error) {
+            _sendProfileErrorLog(requestType: requestType, error: error);
+          },
+        );
       } catch (e) {
         print('Profile image upload error: $e');
       }
+    }
+  }
+
+  /// 프로필 이미지 업로드 에러 로그 전송
+  Future<void> _sendProfileErrorLog({
+    required String requestType,
+    required String error,
+  }) async {
+    try {
+      await FriendDetailAPI().createErrorLog_friendDetail({
+        "user_id": _userViewModel.user.user_id,
+        "request_type": requestType,
+        "error": error,
+      });
+      print('[ProfileErrorLog] $requestType: $error');
+    } catch (e) {
+      print('[ProfileErrorLog] 로그 전송 실패: $e');
     }
   }
 

@@ -11,6 +11,7 @@ import 'package:com.snowlive/viewmodel/util/vm_imageController.dart';
 class FleamarketUploadViewModel extends GetxController {
 
   final ImageController imageController = Get.put(ImageController());
+  int? _currentUserId;
   final TextEditingController textEditingController_title = TextEditingController();
   final TextEditingController textEditingController_productName = TextEditingController();
   final TextEditingController textEditingController_sns = TextEditingController();
@@ -110,9 +111,15 @@ class FleamarketUploadViewModel extends GetxController {
     _negotiable.value = !_negotiable.value;
   }
 
-  Future<void> getImageUrlList({required newImages, required pk}) async {
+  Future<void> getImageUrlList({required newImages, required pk, required int userId}) async {
+    _currentUserId = userId;
     _imageUrlList.value = await imageController.setNewMultiImageFlea(
-        newImages: newImages, pk: pk);
+      newImages: newImages,
+      pk: pk,
+      onError: (String requestType, String error) {
+        _sendFleaErrorLog(requestType: requestType, error: error);
+      },
+    );
 
     for (int i = 0; i < _imageUrlList.length; i++) {
       _photos.add({
@@ -120,6 +127,35 @@ class FleamarketUploadViewModel extends GetxController {
         "url_flea_photo": _imageUrlList[i],
       });
     }
+  }
+
+  /// 중고거래 이미지 업로드 에러 로그 전송
+  Future<void> _sendFleaErrorLog({
+    required String requestType,
+    required String error,
+  }) async {
+    if (_currentUserId == null) return;
+
+    try {
+      await FleamarketAPI().createErrorLog_flea({
+        "user_id": _currentUserId,
+        "request_type": requestType,
+        "error": error,
+      });
+      print('[FleaErrorLog] $requestType: $error');
+    } catch (e) {
+      print('[FleaErrorLog] 로그 전송 실패: $e');
+    }
+  }
+
+  /// 외부에서 에러 로그 전송 (서버 등록 실패 등)
+  Future<void> sendFleaErrorLog({
+    required int userId,
+    required String requestType,
+    required String error,
+  }) async {
+    _currentUserId = userId;
+    await _sendFleaErrorLog(requestType: requestType, error: error);
   }
 
   void setIsSelectedCategoryFalse() {

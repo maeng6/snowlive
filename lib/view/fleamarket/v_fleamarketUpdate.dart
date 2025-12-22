@@ -1263,7 +1263,8 @@ class FleamarketUpdateView extends StatelessWidget {
                             });
                             await _fleamarketUpdateViewModel.getImageUrlList(
                                 newImages: _fleamarketUpdateViewModel.imageFiles,
-                                pk: _fleamarketDetailViewModel.fleamarketDetail.fleaId);
+                                pk: _fleamarketDetailViewModel.fleamarketDetail.fleaId,
+                                userId: _userViewModel.user.user_id);
                             await _fleamarketUpdateViewModel.updateFleamarket(
                                 _fleamarketDetailViewModel.fleamarketDetail.fleaId,
                                 {

@@ -16,6 +16,7 @@ import 'package:path_provider/path_provider.dart';
 class FleamarketUpdateViewModel extends GetxController {
 
   final ImageController imageController = Get.put(ImageController());
+  int? _currentUserId;
   final TextEditingController textEditingController_title = TextEditingController();
   final TextEditingController textEditingController_productName = TextEditingController();
   final TextEditingController textEditingController_sns = TextEditingController();
@@ -192,16 +193,41 @@ class FleamarketUpdateViewModel extends GetxController {
     updateCacheHeight.value = !updateCacheHeight.value;
   }
 
-  Future<void> getImageUrlList({required newImages, required pk}) async {
+  Future<void> getImageUrlList({required newImages, required pk, required int userId}) async {
+    _currentUserId = userId;
     _imageUrlList.value = await imageController.setNewMultiImageFlea(
-        newImages: newImages, pk: pk);
+      newImages: newImages,
+      pk: pk,
+      onError: (String requestType, String error) {
+        _sendFleaErrorLog(requestType: requestType, error: error);
+      },
+    );
 
-      _photos.value = [];
+    _photos.value = [];
     for (int i = 0; i < _imageUrlList.length; i++) {
       _photos.add({
         "display_order": i + 1,
         "url_flea_photo": _imageUrlList[i],
       });
+    }
+  }
+
+  /// 중고거래 이미지 업로드 에러 로그 전송
+  Future<void> _sendFleaErrorLog({
+    required String requestType,
+    required String error,
+  }) async {
+    if (_currentUserId == null) return;
+
+    try {
+      await FleamarketAPI().createErrorLog_flea({
+        "user_id": _currentUserId,
+        "request_type": requestType,
+        "error": error,
+      });
+      print('[FleaErrorLog] $requestType: $error');
+    } catch (e) {
+      print('[FleaErrorLog] 로그 전송 실패: $e');
     }
   }
 

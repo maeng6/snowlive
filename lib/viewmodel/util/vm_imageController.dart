@@ -31,6 +31,7 @@ class ImageController extends GetxController {
   Future<List<String>> setNewMultiImageFlea({
     required List<XFile> newImages,
     required pk,
+    Function(String requestType, String error)? onError,
   }) async {
     var metaData = SettableMetadata(contentType: 'image/jpeg');
     List<String> downloadUrlList = [];
@@ -56,6 +57,8 @@ class ImageController extends GetxController {
           return compressed;
         } catch (e) {
           print("⚠️ [$i] 압축 실패 → 원본 사용: $e");
+          // 에러 로그 전송: 이미지 압축 실패
+          onError?.call('flea_image_compress_failed', '[$i] $e');
           return originalFile;
         }
       }),
@@ -71,19 +74,30 @@ class ImageController extends GetxController {
       const int maxRetry = 3;
       bool uploaded = false;
       String? imageUrl;
+      String? lastError;
 
       while (!uploaded && retry < maxRetry) {
         try {
           print("📌 [$i] 업로드 시도 ${retry + 1}/$maxRetry");
           await ref.putFile(fileToUpload, metaData);
 
-          imageUrl = await ref.getDownloadURL();
-
-          print("✅ [$i] 업로드 성공: $imageUrl");
-          uploaded = true;
+          // URL 획득
+          try {
+            imageUrl = await ref.getDownloadURL();
+            print("✅ [$i] 업로드 성공: $imageUrl");
+            uploaded = true;
+          } catch (urlError) {
+            print("❌ [$i] URL 획득 실패: $urlError");
+            // 에러 로그 전송: URL 획득 실패
+            onError?.call('flea_image_url_failed', '[$i] $urlError');
+            retry++;
+            lastError = urlError.toString();
+            await Future.delayed(const Duration(milliseconds: 600));
+          }
         } catch (e) {
           retry++;
-          print("❌ [$i] 업로드 실패 → 재시도 ($retry/$maxRetry), error: $e");
+          lastError = e.toString();
+          print("❌ [$i] Firebase 업로드 실패 → 재시도 ($retry/$maxRetry), error: $e");
 
           await Future.delayed(const Duration(milliseconds: 600));
         }
@@ -91,6 +105,8 @@ class ImageController extends GetxController {
 
       if (!uploaded || imageUrl == null) {
         print("🚨 [$i] 업로드 최종 실패 → 빈값 push");
+        // 에러 로그 전송: Firebase 업로드 최종 실패
+        onError?.call('flea_image_upload_failed', '[$i] $lastError');
         downloadUrlList.add("");
       } else {
         downloadUrlList.add(imageUrl);
@@ -177,6 +193,7 @@ class ImageController extends GetxController {
     required XFile newImage,
     required crewID,
     String? oldUrl,   // ← 이전 로고 URL (수정일 때만 넘겨줌)
+    Function(String requestType, String error)? onError,
   }) async {
     final metaData = SettableMetadata(contentType: 'image/jpeg');
     String downloadUrl = '';
@@ -187,6 +204,8 @@ class ImageController extends GetxController {
         fileToUpload = await _compressImage(File(newImage.path));
       } catch (e) {
         print('Crew image compress error, use original: $e');
+        // 에러 로그 전송: 이미지 압축 실패
+        onError?.call('crew_image_compress_failed', e.toString());
         fileToUpload = File(newImage.path);
       }
 
@@ -194,9 +213,24 @@ class ImageController extends GetxController {
       final fileName = '${crewID}_$timestamp.jpg';
       final ref = FirebaseStorage.instance.ref('crewLogo/$fileName');
 
-      await ref.putFile(fileToUpload, metaData);
-      downloadUrl = await ref.getDownloadURL();
-      print('Crew logo download URL: $downloadUrl');
+      try {
+        await ref.putFile(fileToUpload, metaData);
+      } catch (e) {
+        print('Crew image upload error: $e');
+        // 에러 로그 전송: Firebase 업로드 실패
+        onError?.call('crew_image_upload_failed', e.toString());
+        rethrow;
+      }
+
+      try {
+        downloadUrl = await ref.getDownloadURL();
+        print('Crew logo download URL: $downloadUrl');
+      } catch (e) {
+        print('Crew image URL error: $e');
+        // 에러 로그 전송: URL 획득 실패
+        onError?.call('crew_image_url_failed', e.toString());
+        rethrow;
+      }
 
       // 이전 로고 삭제 (크루 수정 시)
       if (oldUrl != null && oldUrl.isNotEmpty) {
@@ -334,10 +368,14 @@ class ImageController extends GetxController {
     }
   }
 
-  Future<String> setNewImage(XFile newImage) async {
+  Future<String> setNewImage(
+    XFile newImage, {
+    Function(String requestType, String error)? onError,
+  }) async {
     String? uid = auth.currentUser?.uid;
     if (uid == null) {
       print('Error: User ID is null');
+      onError?.call('profile_image_uid_null', 'User ID is null');
       return '';
     }
 
@@ -350,6 +388,8 @@ class ImageController extends GetxController {
         fileToUpload = await _compressImage(File(newImage.path));
       } catch (e) {
         print('Image compress error, use original file: $e');
+        // 에러 로그 전송: 이미지 압축 실패
+        onError?.call('profile_image_compress_failed', e.toString());
         fileToUpload = File(newImage.path);
       }
 
@@ -361,15 +401,29 @@ class ImageController extends GetxController {
       final ref = FirebaseStorage.instance.ref('user_profile/$fileName');
 
       // 4) 업로드
-      await ref.putFile(fileToUpload, metaData);
+      try {
+        await ref.putFile(fileToUpload, metaData);
+      } catch (e) {
+        print('Profile image upload error: $e');
+        // 에러 로그 전송: Firebase 업로드 실패
+        onError?.call('profile_image_upload_failed', e.toString());
+        return '';
+      }
 
       // 5) 다운로드 URL 가져오기
-      final downloadUrl = await ref.getDownloadURL();
-      print('Download URL: $downloadUrl');
-
-      return downloadUrl;
+      try {
+        final downloadUrl = await ref.getDownloadURL();
+        print('Download URL: $downloadUrl');
+        return downloadUrl;
+      } catch (e) {
+        print('Profile image URL error: $e');
+        // 에러 로그 전송: URL 획득 실패
+        onError?.call('profile_image_url_failed', e.toString());
+        return '';
+      }
     } catch (e) {
       print('Error uploading image: $e');
+      onError?.call('profile_image_unknown_error', e.toString());
       return '';
     }
   }

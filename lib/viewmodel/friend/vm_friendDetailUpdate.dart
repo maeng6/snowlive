@@ -1,7 +1,9 @@
 import 'package:com.snowlive/api/ApiResponse.dart';
+import 'package:com.snowlive/api/api_friendDetail.dart';
 import 'package:com.snowlive/api/api_login.dart';
 import 'package:com.snowlive/api/api_user.dart';
 import 'package:com.snowlive/model/m_resortModel.dart';
+import 'package:com.snowlive/viewmodel/vm_user.dart';
 import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -12,6 +14,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:com.snowlive/viewmodel/util/vm_imageController.dart';
 
 class FriendDetailUpdateViewModel extends GetxController {
+
+  UserViewModel _userViewModel = Get.find<UserViewModel>();
   final TextEditingController textEditingController_displayName = TextEditingController();
   final TextEditingController textEditingController_stateMsg = TextEditingController();
   final TextEditingController textEditingControllerYYYY = TextEditingController();
@@ -114,7 +118,12 @@ class FriendDetailUpdateViewModel extends GetxController {
     try {
       // 1) 새로 크롭된 이미지가 있으면 → 업로드 후 새 URL 받기
       if (_croppedFile.value != null) {
-        final newUrl = await imageController.setNewImage(_croppedFile.value!);
+        final newUrl = await imageController.setNewImage(
+          _croppedFile.value!,
+          onError: (String requestType, String error) {
+            _sendProfileErrorLog(requestType: requestType, error: error);
+          },
+        );
         currentUrl = newUrl;
 
         // 2) 이전 URL이 있고, 기본이미지가 아니면 → 스토리지에서 삭제
@@ -148,6 +157,23 @@ class FriendDetailUpdateViewModel extends GetxController {
 
     // 4) 최종 URL 반영
     _profileImageUrl.value = currentUrl;
+  }
+
+  /// 프로필 이미지 업로드 에러 로그 전송
+  Future<void> _sendProfileErrorLog({
+    required String requestType,
+    required String error,
+  }) async {
+    try {
+      await FriendDetailAPI().createErrorLog_friendDetail({
+        "user_id": _userViewModel.user.user_id,
+        "request_type": requestType,
+        "error": error,
+      });
+      print('[ProfileErrorLog] $requestType: $error');
+    } catch (e) {
+      print('[ProfileErrorLog] 로그 전송 실패: $e');
+    }
   }
 
 
