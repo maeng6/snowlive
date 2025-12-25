@@ -542,12 +542,21 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
         // 라이브온 성공 시 친구들에게 알림 등록
         _notifyFriendsLiveOn(user_id);
 
-        _positionStreamSubscription = Geolocator.getPositionStream().listen((Position position) async {
-          // 현재 좌표 갱신
-          _latitude.value = position.latitude;
-          _longitude.value = position.longitude;
+        _positionStreamSubscription = Geolocator.getPositionStream(
+          locationSettings: const LocationSettings(
+            accuracy: LocationAccuracy.high,
+            distanceFilter: 5,
+          ),
+        ).listen(
+          (Position position) async {
+            // 현재 좌표 갱신
+            _latitude.value = position.latitude;
+            _longitude.value = position.longitude;
 
-          await _lock.synchronized(() async {
+            // 위치 스트림 수신 로그
+            _sendLiveLog(userId: user_id, requestType: 'fg_position_stream', lat: position.latitude, lon: position.longitude);
+
+            await _lock.synchronized(() async {
             bool withinBoundary = _checkPositionWithinBoundary(
               position.latitude,
               position.longitude,
@@ -722,7 +731,12 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
               }
             }
           });
-        });
+        },
+          onError: (error) {
+            print('위치 스트림 에러: $error');
+            _sendLiveLog(userId: user_id, requestType: 'fg_stream_error', error: error.toString());
+          },
+        );
         print('포그라운드 서비스 실행 성공');
         return true; // 성공 반환
       } else {
