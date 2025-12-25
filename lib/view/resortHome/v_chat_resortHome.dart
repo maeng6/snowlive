@@ -20,7 +20,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
   @override
   void dispose() {
-    textFocus.dispose(); // FocusNode 해제
+    textFocus.dispose(); // FocusNode 해제하지롱
     super.dispose();
   }
 
