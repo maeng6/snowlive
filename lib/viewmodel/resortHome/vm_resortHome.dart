@@ -614,105 +614,137 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
                 _respawn_point,
               );
 
+              // 병렬 처리를 위한 Future 리스트
+              List<Future<void>> futures = [];
+
               for (var passPointInfo in passPointInfos) {
+                // 체크포인트 처리
                 if (passPointInfo['type'] == 'slope_info') {
                   if (_lastCountMethodCall == null || DateTime.now().difference(_lastCountMethodCall!).inSeconds > 10) {
-                    final response = await RankingAPI().addCheckPoint({
-                      "user_id": user_id,
-                      "slope_id": passPointInfo['id'],
-                      "coordinates": "${position.latitude}, ${position.longitude}"
-                    });
-                    final isSuccess = response.statusCode == 201 || response.statusCode == 416;
-                    if (isSuccess) {
-                      _lastCountMethodCall = DateTime.now();
-                      // 슬로프명 저장 (리스폰 시 Live Activity에 표시하기 위해)
-                      _lastSlopeName = passPointInfo['fullname'] ?? '';
-                      print(response.statusCode);
-                      print('포그라운드 체크포인트 업데이트 성공: $_lastSlopeName');
-                    } else {
-                      print('포그라운드 체크포인트 업데이트 실패: ${response.statusCode}');
-                    }
-                    _sendLiveLog(userId: user_id, requestType: 'fg_checkpoint', error: isSuccess ? 'success' : 'statusCode: ${response.statusCode}', lat: position.latitude, lon: position.longitude);
+                    _lastCountMethodCall = DateTime.now(); // 쿨다운 먼저 기록 (중복 호출 방지)
+                    final slopeId = passPointInfo['id'];
+                    final slopeFullname = passPointInfo['fullname'] ?? '';
+                    futures.add(() async {
+                      try {
+                        final response = await RankingAPI().addCheckPoint({
+                          "user_id": user_id,
+                          "slope_id": slopeId,
+                          "coordinates": "${position.latitude}, ${position.longitude}"
+                        });
+                        final isSuccess = response.statusCode == 201 || response.statusCode == 416;
+                        if (isSuccess) {
+                          _lastSlopeName = slopeFullname;
+                          print('포그라운드 체크포인트 업데이트 성공: $_lastSlopeName');
+                        } else {
+                          print('포그라운드 체크포인트 업데이트 실패: ${response.statusCode}');
+                        }
+                        _sendLiveLog(userId: user_id, requestType: 'fg_checkpoint', error: isSuccess ? 'success' : 'statusCode: ${response.statusCode}', lat: position.latitude, lon: position.longitude);
+                      } catch (e) {
+                        print('포그라운드 체크포인트 오류: $e');
+                        _sendLiveLog(userId: user_id, requestType: 'fg_checkpoint_error', error: e.toString(), lat: position.latitude, lon: position.longitude);
+                      }
+                    }());
                   }
                 }
 
+                // 눈송이 처리
                 if (passPointInfo['type'] == 'snowball_info') {
                   if (resort_info['snowball'] == true) {
                     int setNum = passPointInfo['set_num'] ?? 0;
                     bool isGoldenSnowball = setNum >= 91;
 
-                    // 황금눈송이(set_num >= 91)는 시간 제한 없이 등록, 하얀눈송이는 300초 제한
                     bool canRegister = isGoldenSnowball ||
                         _lastSnowballMethodCall == null ||
                         DateTime.now().difference(_lastSnowballMethodCall!).inSeconds > 300;
 
                     if (canRegister) {
-                      final response = await SnowballAPI().createSnowballRecord({
-                        "user_id": user_id,
-                        "snowball_id": passPointInfo['id'],
-                        "coordinates": "POINT (${position.longitude} ${position.latitude})",
-                        "event_date": _snowballShopViewModel.eventDate.value,
-                      });
-                      if (response.success) {
-                        // 하얀눈송이일 때만 시간 기록 (황금눈송이는 시간 제한 없으므로 기록 안함)
-                        if (!isGoldenSnowball) {
-                          _lastSnowballMethodCall = DateTime.now();
-                        }
-                        print('포그라운드 ${isGoldenSnowball ? "황금" : "하얀"}눈송이 기록 성공');
-                      } else {
-                        print('포그라운드 눈송이 기록 실패: ${response.error}');
+                      if (!isGoldenSnowball) {
+                        _lastSnowballMethodCall = DateTime.now(); // 쿨다운 먼저 기록
                       }
+                      final snowballId = passPointInfo['id'];
+                      futures.add(() async {
+                        try {
+                          final response = await SnowballAPI().createSnowballRecord({
+                            "user_id": user_id,
+                            "snowball_id": snowballId,
+                            "coordinates": "POINT (${position.longitude} ${position.latitude})",
+                            "event_date": _snowballShopViewModel.eventDate.value,
+                          });
+                          if (response.success) {
+                            print('포그라운드 ${isGoldenSnowball ? "황금" : "하얀"}눈송이 기록 성공');
+                          } else {
+                            print('포그라운드 눈송이 기록 실패: ${response.error}');
+                          }
+                        } catch (e) {
+                          print('포그라운드 눈송이 오류: $e');
+                        }
+                      }());
                     }
                   }
                 }
 
+                // 리셋 처리
                 if (passPointInfo['type'] == 'reset_point') {
                   if (_lastResetMethodCall == null || DateTime.now().difference(_lastResetMethodCall!).inSeconds > 180) {
-                    _lastResetMethodCall = DateTime.now();
-                    final resetResponse = await RankingAPI().reset({"user_id": user_id});
-                    print('리셋 성공');
-                    _sendLiveLog(userId: user_id, requestType: 'fg_reset', error: resetResponse.success ? 'success' : resetResponse.error.toString(), lat: position.latitude, lon: position.longitude);
+                    _lastResetMethodCall = DateTime.now(); // 쿨다운 먼저 기록
+                    futures.add(() async {
+                      try {
+                        final resetResponse = await RankingAPI().reset({"user_id": user_id});
+                        print('리셋 성공');
+                        _sendLiveLog(userId: user_id, requestType: 'fg_reset', error: resetResponse.success ? 'success' : resetResponse.error.toString(), lat: position.latitude, lon: position.longitude);
+                      } catch (e) {
+                        print('포그라운드 리셋 오류: $e');
+                      }
+                    }());
                   }
                 }
 
+                // 리스폰 처리
                 if (passPointInfo['type'] == 'respawn_point') {
                   final secondsSinceLastRespawn = _lastRespawnMethodCall != null
                       ? DateTime.now().difference(_lastRespawnMethodCall!).inSeconds
                       : null;
-                  // 환타지 슬로프는 30초 쿨다운, 그 외는 180초 쿨다운
                   final isFantasySlope = _lastSlopeName == '환타지';
                   final cooldownSeconds = isFantasySlope ? 20 : 180;
                   print('리스폰 조건 확인: lastCall=$_lastRespawnMethodCall, secondsSince=$secondsSinceLastRespawn, isFantasy=$isFantasySlope, cooldown=$cooldownSeconds');
 
                   if (_lastRespawnMethodCall == null || secondsSinceLastRespawn! > cooldownSeconds) {
-                    _lastRespawnMethodCall = DateTime.now();
-                    _respawnSkipLogSent = false; // 리스폰 시도 시 스킵 로그 플래그 리셋
-                    final respawnResponse = await RankingAPI().respawn({"user_id": user_id});
-                    if (respawnResponse.success) {
-                      print('리스폰 성공');
-                      // 라이딩 완료: 서버에서 반환한 inserted_count 만큼 세션 카운트 증가
-                      int insertedCount = respawnResponse.data['inserted_count'] ?? 0;
-                      _sessionRideCount += insertedCount;
-                      // 마지막 라이딩 슬로프명 업데이트
-                      String? latestSlopeFullname = respawnResponse.data['latest_slope_fullname'];
-                      if (latestSlopeFullname != null && latestSlopeFullname.isNotEmpty) {
-                        _lastSlopeName = latestSlopeFullname;
+                    _lastRespawnMethodCall = DateTime.now(); // 쿨다운 먼저 기록
+                    _respawnSkipLogSent = false;
+                    futures.add(() async {
+                      try {
+                        final respawnResponse = await RankingAPI().respawn({"user_id": user_id});
+                        if (respawnResponse.success) {
+                          print('리스폰 성공');
+                          int insertedCount = respawnResponse.data['inserted_count'] ?? 0;
+                          _sessionRideCount += insertedCount;
+                          String? latestSlopeFullname = respawnResponse.data['latest_slope_fullname'];
+                          if (latestSlopeFullname != null && latestSlopeFullname.isNotEmpty) {
+                            _lastSlopeName = latestSlopeFullname;
+                          }
+                          if (insertedCount > 0) {
+                            _lastRideAt = DateTime.now();
+                          }
+                          _updateLiveActivity();
+                        }
+                        _sendLiveLog(userId: user_id, requestType: 'fg_respawn', error: respawnResponse.success ? 'success' : respawnResponse.error.toString(), lat: position.latitude, lon: position.longitude);
+                      } catch (e) {
+                        print('포그라운드 리스폰 오류: $e');
+                        _sendLiveLog(userId: user_id, requestType: 'fg_respawn_error', error: e.toString(), lat: position.latitude, lon: position.longitude);
                       }
-                      if (insertedCount > 0) {
-                        _lastRideAt = DateTime.now();
-                      }
-                      // Live Activity 업데이트
-                      _updateLiveActivity();
-                    }
-                    _sendLiveLog(userId: user_id, requestType: 'fg_respawn', error: respawnResponse.success ? 'success' : respawnResponse.error.toString(), lat: position.latitude, lon: position.longitude);
+                    }());
                   } else {
-                    // 쿨다운으로 스킵됨 - 처음 한 번만 로그 전송
                     if (!_respawnSkipLogSent) {
                       _respawnSkipLogSent = true;
                       _sendLiveLog(userId: user_id, requestType: 'fg_respawn_skipped', error: 'cooldown: ${secondsSinceLastRespawn}s < ${cooldownSeconds}s', lat: position.latitude, lon: position.longitude);
                     }
                   }
                 }
+              }
+
+              // 모든 API 호출 병렬 실행 (하나가 실패해도 다른 것들은 정상 동작)
+              if (futures.isNotEmpty) {
+                await Future.wait(futures);
               }
             } else {
               // 경계 외부 debounce 로직: GPS 오차로 인한 오탐 방지
@@ -876,103 +908,136 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
             _respawn_point,
           );
 
+          // 병렬 처리를 위한 Future 리스트
+          List<Future<void>> futures = [];
+
           for (var passPointInfo in passPointInfos) {
+            // 체크포인트 처리
             if (passPointInfo['type'] == 'slope_info') {
               if (_lastCountMethodCall == null || DateTime.now().difference(_lastCountMethodCall!).inSeconds > 10) {
-                final response = await RankingAPI().addCheckPoint({
-                  "user_id": user_id,
-                  "slope_id": passPointInfo['id'],
-                  "coordinates": "${position.latitude}, ${position.longitude}"
-                });
-                final isSuccess = response.statusCode == 201 || response.statusCode == 416;
-                if (isSuccess) {
-                  _lastCountMethodCall = DateTime.now();
-                  // 슬로프명 저장 (리스폰 시 Live Activity에 표시하기 위해)
-                  _lastSlopeName = passPointInfo['fullname'] ?? '';
-                  print('백그라운드 체크포인트 업데이트 성공: $_lastSlopeName');
-                } else {
-                  print('백그라운드 체크포인트 업데이트 실패: ${response.statusCode}');
-                }
-                _sendLiveLog(userId: user_id, requestType: 'bg_checkpoint', error: isSuccess ? 'success' : 'statusCode: ${response.statusCode}', lat: position.latitude, lon: position.longitude);
+                _lastCountMethodCall = DateTime.now(); // 쿨다운 먼저 기록
+                final slopeId = passPointInfo['id'];
+                final slopeFullname = passPointInfo['fullname'] ?? '';
+                futures.add(() async {
+                  try {
+                    final response = await RankingAPI().addCheckPoint({
+                      "user_id": user_id,
+                      "slope_id": slopeId,
+                      "coordinates": "${position.latitude}, ${position.longitude}"
+                    });
+                    final isSuccess = response.statusCode == 201 || response.statusCode == 416;
+                    if (isSuccess) {
+                      _lastSlopeName = slopeFullname;
+                      print('백그라운드 체크포인트 업데이트 성공: $_lastSlopeName');
+                    } else {
+                      print('백그라운드 체크포인트 업데이트 실패: ${response.statusCode}');
+                    }
+                    _sendLiveLog(userId: user_id, requestType: 'bg_checkpoint', error: isSuccess ? 'success' : 'statusCode: ${response.statusCode}', lat: position.latitude, lon: position.longitude);
+                  } catch (e) {
+                    print('백그라운드 체크포인트 오류: $e');
+                    _sendLiveLog(userId: user_id, requestType: 'bg_checkpoint_error', error: e.toString(), lat: position.latitude, lon: position.longitude);
+                  }
+                }());
               }
             }
 
+            // 눈송이 처리
             if (passPointInfo['type'] == 'snowball_info') {
               if (resort_info['snowball'] == true) {
                 int setNum = passPointInfo['set_num'] ?? 0;
                 bool isGoldenSnowball = setNum >= 91;
 
-                // 황금눈송이(set_num >= 91)는 시간 제한 없이 등록, 하얀눈송이는 300초 제한
                 bool canRegister = isGoldenSnowball ||
                     _lastSnowballMethodCall == null ||
                     DateTime.now().difference(_lastSnowballMethodCall!).inSeconds > 300;
 
                 if (canRegister) {
-                  final response = await SnowballAPI().createSnowballRecord({
-                    "user_id": user_id,
-                    "snowball_id": passPointInfo['id'],
-                    "coordinates": "POINT (${position.longitude} ${position.latitude})",
-                    "event_date": _snowballShopViewModel.eventDate.value,
-                  });
-                  if (response.success) {
-                    // 하얀눈송이일 때만 시간 기록 (황금눈송이는 시간 제한 없으므로 기록 안함)
-                    if (!isGoldenSnowball) {
-                      _lastSnowballMethodCall = DateTime.now();
-                    }
-                    print('백그라운드 ${isGoldenSnowball ? "황금" : "하얀"}눈송이 기록 성공');
-                  } else {
-                    print('백그라운드 눈송이 기록 실패: ${response.error}');
+                  if (!isGoldenSnowball) {
+                    _lastSnowballMethodCall = DateTime.now(); // 쿨다운 먼저 기록
                   }
+                  final snowballId = passPointInfo['id'];
+                  futures.add(() async {
+                    try {
+                      final response = await SnowballAPI().createSnowballRecord({
+                        "user_id": user_id,
+                        "snowball_id": snowballId,
+                        "coordinates": "POINT (${position.longitude} ${position.latitude})",
+                        "event_date": _snowballShopViewModel.eventDate.value,
+                      });
+                      if (response.success) {
+                        print('백그라운드 ${isGoldenSnowball ? "황금" : "하얀"}눈송이 기록 성공');
+                      } else {
+                        print('백그라운드 눈송이 기록 실패: ${response.error}');
+                      }
+                    } catch (e) {
+                      print('백그라운드 눈송이 오류: $e');
+                    }
+                  }());
                 }
               }
             }
 
+            // 리셋 처리
             if (passPointInfo['type'] == 'reset_point') {
               if (_lastResetMethodCall == null || DateTime.now().difference(_lastResetMethodCall!).inSeconds > 180) {
-                _lastResetMethodCall = DateTime.now();
-                final resetResponse = await RankingAPI().reset({"user_id": user_id});
-                print('리셋 성공');
-                _sendLiveLog(userId: user_id, requestType: 'bg_reset', error: resetResponse.success ? 'success' : resetResponse.error.toString(), lat: position.latitude, lon: position.longitude);
+                _lastResetMethodCall = DateTime.now(); // 쿨다운 먼저 기록
+                futures.add(() async {
+                  try {
+                    final resetResponse = await RankingAPI().reset({"user_id": user_id});
+                    print('리셋 성공');
+                    _sendLiveLog(userId: user_id, requestType: 'bg_reset', error: resetResponse.success ? 'success' : resetResponse.error.toString(), lat: position.latitude, lon: position.longitude);
+                  } catch (e) {
+                    print('백그라운드 리셋 오류: $e');
+                  }
+                }());
               }
             }
 
+            // 리스폰 처리
             if (passPointInfo['type'] == 'respawn_point') {
               final secondsSinceLastRespawn = _lastRespawnMethodCall != null
                   ? DateTime.now().difference(_lastRespawnMethodCall!).inSeconds
                   : null;
-              // 환타지 슬로프는 30초 쿨다운, 그 외는 180초 쿨다운
               final isFantasySlope = _lastSlopeName == '환타지';
               final cooldownSeconds = isFantasySlope ? 30 : 180;
 
               if (_lastRespawnMethodCall == null || secondsSinceLastRespawn! > cooldownSeconds) {
-                _lastRespawnMethodCall = DateTime.now();
-                _respawnSkipLogSent = false; // 리스폰 시도 시 스킵 로그 플래그 리셋
-                final respawnResponse = await RankingAPI().respawn({"user_id": user_id});
-                if (respawnResponse.success) {
-                  print('리스폰 성공');
-                  // 라이딩 완료: 서버에서 반환한 inserted_count 만큼 세션 카운트 증가
-                  int insertedCount = respawnResponse.data['inserted_count'] ?? 0;
-                  _sessionRideCount += insertedCount;
-                  // 마지막 라이딩 슬로프명 업데이트
-                  String? latestSlopeFullname = respawnResponse.data['latest_slope_fullname'];
-                  if (latestSlopeFullname != null && latestSlopeFullname.isNotEmpty) {
-                    _lastSlopeName = latestSlopeFullname;
+                _lastRespawnMethodCall = DateTime.now(); // 쿨다운 먼저 기록
+                _respawnSkipLogSent = false;
+                futures.add(() async {
+                  try {
+                    final respawnResponse = await RankingAPI().respawn({"user_id": user_id});
+                    if (respawnResponse.success) {
+                      print('리스폰 성공');
+                      int insertedCount = respawnResponse.data['inserted_count'] ?? 0;
+                      _sessionRideCount += insertedCount;
+                      String? latestSlopeFullname = respawnResponse.data['latest_slope_fullname'];
+                      if (latestSlopeFullname != null && latestSlopeFullname.isNotEmpty) {
+                        _lastSlopeName = latestSlopeFullname;
+                      }
+                      if (insertedCount > 0) {
+                        _lastRideAt = DateTime.now();
+                      }
+                      _updateLiveActivity();
+                    }
+                    _sendLiveLog(userId: user_id, requestType: 'bg_respawn', error: respawnResponse.success ? 'success' : respawnResponse.error.toString(), lat: position.latitude, lon: position.longitude);
+                  } catch (e) {
+                    print('백그라운드 리스폰 오류: $e');
+                    _sendLiveLog(userId: user_id, requestType: 'bg_respawn_error', error: e.toString(), lat: position.latitude, lon: position.longitude);
                   }
-                  if (insertedCount > 0) {
-                    _lastRideAt = DateTime.now();
-                  }
-                  // Live Activity 업데이트
-                  _updateLiveActivity();
-                }
-                _sendLiveLog(userId: user_id, requestType: 'bg_respawn', error: respawnResponse.success ? 'success' : respawnResponse.error.toString(), lat: position.latitude, lon: position.longitude);
+                }());
               } else {
-                // 쿨다운으로 스킵됨 - 처음 한 번만 로그 전송
                 if (!_respawnSkipLogSent) {
                   _respawnSkipLogSent = true;
                   _sendLiveLog(userId: user_id, requestType: 'bg_respawn_skipped', error: 'cooldown: ${secondsSinceLastRespawn}s < ${cooldownSeconds}s', lat: position.latitude, lon: position.longitude);
                 }
               }
             }
+          }
+
+          // 모든 API 호출 병렬 실행 (하나가 실패해도 다른 것들은 정상 동작)
+          if (futures.isNotEmpty) {
+            await Future.wait(futures);
           }
 
         } else {
