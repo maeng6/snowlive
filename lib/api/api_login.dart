@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'ApiResponse.dart';
@@ -23,19 +24,30 @@ class LoginAPI {
   }
 
   Future<ApiResponse> compareDeviceId(Map<String, dynamic> body) async {
-    final response = await http.put(
-      Uri.parse('$baseUrl/compare-device-id/'),
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode(body),
-    );
+    const maxRetries = 3;
+    const timeout = Duration(seconds: 10);
 
-    if(response.statusCode==200 || response.statusCode ==201){
-      final data = json.decode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
-      return ApiResponse.success(data);
-    } else {
-      final data = json.decode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
-      return ApiResponse.error(data);
+    for (int attempt = 1; attempt <= maxRetries; attempt++) {
+      try {
+        final response = await http.put(
+          Uri.parse('$baseUrl/compare-device-id/'),
+          headers: {'Content-Type': 'application/json'},
+          body: jsonEncode(body),
+        ).timeout(timeout);
+
+        if (response.statusCode == 200 || response.statusCode == 201) {
+          final data = json.decode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
+          return ApiResponse.success(data);
+        } else {
+          final data = json.decode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
+          return ApiResponse.error(data);
+        }
+      } catch (e) {
+        if (attempt == maxRetries) rethrow;
+        await Future.delayed(Duration(seconds: attempt));
+      }
     }
+    throw Exception('Max retries exceeded');
   }
 
   Future<ApiResponse> findUser(Map<String, dynamic> body) async {
