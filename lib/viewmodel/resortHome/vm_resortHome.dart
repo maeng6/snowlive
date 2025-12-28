@@ -143,6 +143,7 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
   bool get showRecentButton_resortHome_openchat => _showRecentButton_resortHome_openchat.value;
   bool get isParticipate_treasure_hunt => _isParticipate_treasure_hunt.value;
   int get treasureHuntNum => _treasureHuntNum.value;
+  bool get isPositionStreamActive => _positionStreamSubscription != null;
 
   UserViewModel _userViewModel = Get.find<UserViewModel>();
   ScrollController scrollController_resortHome_openchat = ScrollController();
@@ -1214,6 +1215,13 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
       _lastSlopeName = '';
       _lastRideAt = null;
 
+      // ✅ 쿨다운 변수 초기화 (다음 liveOn 시 정상 동작을 위해)
+      _lastCountMethodCall = null;
+      _lastRespawnMethodCall = null;
+      _lastSnowballMethodCall = null;
+      _lastResetMethodCall = null;
+      _respawnSkipLogSent = false;
+
       // 경계 외부 카운트 초기화
       _outOfBoundaryCount = 0;
       _lastOutOfBoundaryTime = null;
@@ -1284,6 +1292,34 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
     }
   }
 
+  /// 앱 재시작 시 liveOn 복구 (비정상 종료 후 재시작 대응)
+  Future<void> restoreLiveOn(int userId) async {
+    try {
+      print('🔄 [restoreLiveOn] 복구 시작 - userId: $userId');
+
+      // 1. 쿨다운 변수 초기화
+      _lastCountMethodCall = null;
+      _lastRespawnMethodCall = null;
+      _lastSnowballMethodCall = null;
+      _lastResetMethodCall = null;
+      _respawnSkipLogSent = false;
+
+      // 2. liveOn API 호출 (slope_info 등 데이터 로드)
+      final response = await liveOn({"user_id": userId});
+
+      // 3. 위치 추적 서비스 시작
+      if (response.success) {
+        await startLiveLocationService(user_id: userId);
+        _sendLiveLog(userId: userId, requestType: 'liveOn_restored', lat: _latitude.value, lon: _longitude.value);
+        print('✅ [restoreLiveOn] 복구 완료');
+      } else {
+        print('❌ [restoreLiveOn] liveOn API 실패: ${response.error}');
+      }
+    } catch (e) {
+      print('❌ [restoreLiveOn] 복구 중 오류: $e');
+      _sendLiveLog(userId: userId, requestType: 'liveOn_restore_error', error: e.toString());
+    }
+  }
 
   /// 배터리 절약 모드 확인 메서드
   Future<bool> isBatterySaverOn() async {
