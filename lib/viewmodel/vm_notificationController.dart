@@ -6,6 +6,8 @@ import 'package:get/get.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:http/http.dart' as http;
+import 'package:com.snowlive/viewmodel/vm_user.dart';
+import 'package:com.snowlive/viewmodel/resortHome/vm_resortHome.dart';
 
 class NotificationController extends GetxController {
   FirebaseMessaging messaging = FirebaseMessaging.instance;
@@ -157,13 +159,65 @@ class NotificationController extends GetxController {
 
     // 알림 클릭 시 앱이 열리는 처리 (StreamSubscription 저장)
     _onMessageOpenedAppSubscription = FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-      //print('알림 클릭 후 앱이 열림: ${message.notification?.title}');
+      print('알림 클릭 후 앱이 열림: ${message.notification?.title}');
+      _handleNotificationClick(message);
     });
 
     // 앱 종료 상태에서 알림 클릭 시 처리
     FirebaseMessaging.instance.getInitialMessage().then((RemoteMessage? message) {
-      //print('앱이 종료된 상태에서 알림을 클릭해 앱이 열림: ${message?.notification?.title}');
+      if (message != null) {
+        print('앱이 종료된 상태에서 알림을 클릭해 앱이 열림: ${message.notification?.title}');
+        // 약간의 딜레이 후 처리 (앱 초기화 완료 대기)
+        Future.delayed(const Duration(seconds: 2), () {
+          _handleNotificationClick(message);
+        });
+      }
     });
+  }
+
+  /// 알림 클릭 시 처리
+  void _handleNotificationClick(RemoteMessage message) {
+    final data = message.data;
+    final type = data['type'];
+
+    print('📬 알림 데이터: $data');
+
+    // 라이브 중단 알림인 경우 복구 시도
+    if (type == 'live_interrupted') {
+      _handleLiveInterruptedNotification();
+    }
+  }
+
+  /// 라이브 중단 알림 처리 - 현재 위치에서 liveOn 재시도
+  Future<void> _handleLiveInterruptedNotification() async {
+    try {
+      // UserViewModel과 ResortHomeViewModel 가져오기
+      if (!Get.isRegistered<UserViewModel>() || !Get.isRegistered<ResortHomeViewModel>()) {
+        print('⚠️ ViewModel이 아직 초기화되지 않음');
+        return;
+      }
+
+      final userViewModel = Get.find<UserViewModel>();
+      final resortHomeViewModel = Get.find<ResortHomeViewModel>();
+
+      final userId = userViewModel.user.user_id;
+      if (userId == null) {
+        print('⚠️ 사용자 ID가 없음');
+        return;
+      }
+
+      // 이미 위치 스트림이 활성화되어 있으면 불필요
+      if (resortHomeViewModel.isPositionStreamActive) {
+        print('ℹ️ 이미 라이브 활성화 상태');
+        return;
+      }
+
+      // 현재 위치에서 liveOn 재시도 (restoreLiveOn이 위치 판별 수행)
+      print('🔄 라이브 재시작 시도 (푸시 알림 클릭)');
+      await resortHomeViewModel.restoreLiveOn(userId);
+    } catch (e) {
+      print('❌ 라이브 재시작 실패: $e');
+    }
   }
 
   Future<void> _showLocalNotification(RemoteMessage message) async {
