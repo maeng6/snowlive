@@ -5,7 +5,7 @@ class LiveActivityService {
   static const MethodChannel _channel = MethodChannel('live_activity');
 
   /// 라이브 액티비티 활성화 여부 (배포 시 true로 변경)
-  static const bool isEnabled = false;
+  static const bool isEnabled = true;
 
   /// iOS와 Android 모두 지원
   /// iOS: Dynamic Island / Lock Screen Live Activity
@@ -15,6 +15,7 @@ class LiveActivityService {
     required int todayRideCount,
     required int sessionRideCount,
     required String lastSlopeName,
+    required String resortName,
     DateTime? lastRideAt,
     int liveFriendCount = 0,
   }) async {
@@ -28,6 +29,7 @@ class LiveActivityService {
       'todayRideCount': todayRideCount,
       'sessionRideCount': sessionRideCount,
       'lastSlopeName': lastSlopeName,
+      'resortName': resortName,
       'liveFriendCount': liveFriendCount,
       if (lastRideAt != null) 'lastRideAtMs': lastRideAt.toUtc().millisecondsSinceEpoch,
     };

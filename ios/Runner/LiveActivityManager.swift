@@ -14,7 +14,8 @@ final class LiveActivityManager {
     func start(liveOnStartAtMs: Int64,
                todayRideCount: Int,
                sessionRideCount: Int,
-               lastSlopeName: String) async throws -> String {
+               lastSlopeName: String,
+               resortName: String) async throws -> String {
 
         // 시스템이 Live Activities를 허용하는지 확인
         guard ActivityAuthorizationInfo().areActivitiesEnabled else {
@@ -24,7 +25,7 @@ final class LiveActivityManager {
         let startDate = Date(timeIntervalSince1970: TimeInterval(liveOnStartAtMs) / 1000.0)
 
         // 고정 속성
-        let attributes = LiveOnActivityAttributes(liveOnStartAt: startDate)
+        let attributes = LiveOnActivityAttributes(liveOnStartAt: startDate, resortName: resortName)
 
         // 가변 상태
         let state = LiveOnActivityAttributes.ContentState(

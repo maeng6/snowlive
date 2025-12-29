@@ -74,3 +74,6 @@ app.*.map.json
 
 .flutter-plugins
 .flutter-plugins-dependencies
+
+# ───────── Claude Code ─────────
+CLAUDE.md
