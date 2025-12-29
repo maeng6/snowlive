@@ -45,7 +45,18 @@ Future<void> setupInteractedMessage() async {
 
 // FCM에서 전송한 data를 처리합니다. /message 페이지로 이동하면서 해당 데이터를 화면에 보여줍니다.
 void _handleMessage(RemoteMessage message) {
+  // live_interrupted 타입은 NotificationController에서 처리
+  final type = message.data['type'];
+  if (type == 'live_interrupted') {
+    return;
+  }
+
   Future.delayed(const Duration(seconds: 1), () {
+    // navigatorKey가 초기화되지 않은 경우 무시
+    if (navigatorKey.currentState == null) {
+      print('⚠️ Navigator가 아직 초기화되지 않음');
+      return;
+    }
     navigatorKey.currentState!.pushNamed("/message", arguments: message);
   });
 }

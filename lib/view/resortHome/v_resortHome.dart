@@ -125,6 +125,15 @@ class _ResortHomeViewState extends State<ResortHomeView> with
       });
     }
 
+    // ✅ 앱 재시작 시 liveOn 복구 (비정상 종료 후 재시작 대응)
+    // 서버에서 within_boundary가 true인데 위치 추적이 비활성화된 경우 복구
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      if (_userViewModel.user.within_boundary == true &&
+          !_resortHomeViewModel.isPositionStreamActive) {
+        print('🔄 [initState] liveOn 복구 필요 감지 - wb: true, stream: inactive');
+        await _resortHomeViewModel.restoreLiveOn(_userViewModel.user.user_id!);
+      }
+    });
 
   }
 

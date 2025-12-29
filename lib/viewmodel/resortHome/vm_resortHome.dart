@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:com.snowlive/api/ApiResponse.dart';
 import 'package:com.snowlive/api/api_friend.dart';
@@ -31,7 +32,6 @@ import 'package:intl/intl.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:synchronized/synchronized.dart';
 import 'package:flutter_background_geolocation/flutter_background_geolocation.dart' as bg;
-import 'dart:io';
 import 'package:android_intent_plus/android_intent.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter/services.dart';
@@ -143,6 +143,7 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
   bool get showRecentButton_resortHome_openchat => _showRecentButton_resortHome_openchat.value;
   bool get isParticipate_treasure_hunt => _isParticipate_treasure_hunt.value;
   int get treasureHuntNum => _treasureHuntNum.value;
+  bool get isPositionStreamActive => _positionStreamSubscription != null;
 
   UserViewModel _userViewModel = Get.find<UserViewModel>();
   ScrollController scrollController_resortHome_openchat = ScrollController();
@@ -248,12 +249,12 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
     }
   }
 
-  /// Heartbeat 타이머 시작 (60초마다 서버로 생존 신호 전송)
+  /// Heartbeat 타이머 시작 (30초마다 서버로 생존 신호 전송)
   /// 이미 위치 스트림에서 _latitude, _longitude가 갱신되므로 추가 GPS 호출 없이 저장된 값 사용
   void _startHeartbeatTimer() {
     _stopHeartbeatTimer(); // 기존 타이머 정리
 
-    _heartbeatTimer = Timer.periodic(const Duration(seconds: 60), (timer) async {
+    _heartbeatTimer = Timer.periodic(const Duration(seconds: 30), (timer) async {
       if (_currentLiveUserId != null) {
         // 위치 스트림에서 이미 갱신된 저장된 위치 사용 (이중 GPS 호출 방지)
         _sendLiveLog(
@@ -264,7 +265,7 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
         );
       }
     });
-    print('💓 Heartbeat 타이머 시작');
+    print('💓 Heartbeat 타이머 시작 (30초 주기)');
   }
 
   /// Heartbeat 타이머 정지
@@ -405,7 +406,7 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
         _sendLiveLog(userId: user_id, requestType: 'liveOn_restart', error: '오류로인한 재시작');
       }
 
-      // Heartbeat 타이머 시작 (60초마다 서버로 생존 신호 전송)
+      // Heartbeat 타이머 시작 (30초마다 서버로 생존 신호 전송)
       _startHeartbeatTimer();
 
       // Android: 배터리 최적화 제외 확인 (백그라운드 kill 방지)
@@ -542,19 +543,42 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
         // 라이브온 성공 시 친구들에게 알림 등록
         _notifyFriendsLiveOn(user_id);
 
-        _positionStreamSubscription = Geolocator.getPositionStream(
-          locationSettings: const LocationSettings(
+        // 플랫폼별 위치 설정
+        late LocationSettings locationSettings;
+        if (Platform.isIOS) {
+          locationSettings = AppleSettings(
             accuracy: LocationAccuracy.high,
             distanceFilter: 5,
-          ),
+            activityType: ActivityType.fitness,
+            pauseLocationUpdatesAutomatically: false,
+            showBackgroundLocationIndicator: true,  // 상태바 파란 표시
+          );
+        } else if (Platform.isAndroid) {
+          locationSettings = AndroidSettings(
+            accuracy: LocationAccuracy.high,
+            distanceFilter: 5,
+            forceLocationManager: false,
+            intervalDuration: const Duration(seconds: 5),
+            foregroundNotificationConfig: const ForegroundNotificationConfig(
+              notificationTitle: '스노우라이브',
+              notificationText: '위치 추적 중',
+              enableWakeLock: true,
+            ),
+          );
+        } else {
+          locationSettings = const LocationSettings(
+            accuracy: LocationAccuracy.high,
+            distanceFilter: 5,
+          );
+        }
+
+        _positionStreamSubscription = Geolocator.getPositionStream(
+          locationSettings: locationSettings,
         ).listen(
           (Position position) async {
             // 현재 좌표 갱신
             _latitude.value = position.latitude;
             _longitude.value = position.longitude;
-
-            // 위치 스트림 수신 로그
-            _sendLiveLog(userId: user_id, requestType: 'fg_position_stream', lat: position.latitude, lon: position.longitude);
 
             await _lock.synchronized(() async {
             bool withinBoundary = _checkPositionWithinBoundary(
@@ -868,6 +892,15 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
       double latitude = location.coords.latitude;
       double longitude = location.coords.longitude;
 
+      // 🔍 진단 로그: onLocation 트리거 확인
+      _sendLiveLog(
+        userId: user_id,
+        requestType: 'bg_onLocation_triggered',
+        lat: latitude,
+        lon: longitude,
+        error: 'slope_info: ${_slope_info.length}, respawn_point: ${_respawn_point.length}',
+      );
+
       // 현재 좌표 갱신
       _latitude.value = latitude;
       _longitude.value = longitude;
@@ -894,6 +927,16 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
             _resort_info['radius']
         );
 
+        // 🔍 진단 로그: withinBoundary 결과
+        if (!withinBoundary) {
+          _sendLiveLog(
+            userId: user_id,
+            requestType: 'bg_outside_boundary',
+            lat: latitude,
+            lon: longitude,
+          );
+        }
+
         if (withinBoundary) {
           // 경계 내부 진입 시 카운터 리셋
           _outOfBoundaryCount = 0;
@@ -907,6 +950,17 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
             _reset_point,
             _respawn_point,
           );
+
+          // 🔍 진단 로그: 영역 매칭 결과
+          if (passPointInfos.isEmpty) {
+            _sendLiveLog(
+              userId: user_id,
+              requestType: 'bg_no_area_match',
+              lat: position.latitude,
+              lon: position.longitude,
+              error: 'slope: ${_slope_info.length}, respawn: ${_respawn_point.length}',
+            );
+          }
 
           // 병렬 처리를 위한 Future 리스트
           List<Future<void>> futures = [];
@@ -993,45 +1047,17 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
               }
             }
 
-            // 리스폰 처리
+            // 리스폰 처리 - Background에서는 비활성화 (캐시된 위치로 인한 오작동 방지)
+            // Foreground에서만 respawn 처리함
             if (passPointInfo['type'] == 'respawn_point') {
-              final secondsSinceLastRespawn = _lastRespawnMethodCall != null
-                  ? DateTime.now().difference(_lastRespawnMethodCall!).inSeconds
-                  : null;
-              final isFantasySlope = _lastSlopeName == '환타지';
-              final cooldownSeconds = isFantasySlope ? 30 : 180;
-
-              if (_lastRespawnMethodCall == null || secondsSinceLastRespawn! > cooldownSeconds) {
-                _lastRespawnMethodCall = DateTime.now(); // 쿨다운 먼저 기록
-                _respawnSkipLogSent = false;
-                futures.add(() async {
-                  try {
-                    final respawnResponse = await RankingAPI().respawn({"user_id": user_id});
-                    if (respawnResponse.success) {
-                      print('리스폰 성공');
-                      int insertedCount = respawnResponse.data['inserted_count'] ?? 0;
-                      _sessionRideCount += insertedCount;
-                      String? latestSlopeFullname = respawnResponse.data['latest_slope_fullname'];
-                      if (latestSlopeFullname != null && latestSlopeFullname.isNotEmpty) {
-                        _lastSlopeName = latestSlopeFullname;
-                      }
-                      if (insertedCount > 0) {
-                        _lastRideAt = DateTime.now();
-                      }
-                      _updateLiveActivity();
-                    }
-                    _sendLiveLog(userId: user_id, requestType: 'bg_respawn', error: respawnResponse.success ? 'success' : respawnResponse.error.toString(), lat: position.latitude, lon: position.longitude);
-                  } catch (e) {
-                    print('백그라운드 리스폰 오류: $e');
-                    _sendLiveLog(userId: user_id, requestType: 'bg_respawn_error', error: e.toString(), lat: position.latitude, lon: position.longitude);
-                  }
-                }());
-              } else {
-                if (!_respawnSkipLogSent) {
-                  _respawnSkipLogSent = true;
-                  _sendLiveLog(userId: user_id, requestType: 'bg_respawn_skipped', error: 'cooldown: ${secondsSinceLastRespawn}s < ${cooldownSeconds}s', lat: position.latitude, lon: position.longitude);
-                }
-              }
+              // 디버깅용: BG에서 respawn 영역 감지는 로그로만 기록
+              _sendLiveLog(
+                userId: user_id,
+                requestType: 'bg_respawn_detected',
+                lat: position.latitude,
+                lon: position.longitude,
+                error: 'bg_disabled - fg_only',
+              );
             }
           }
 
@@ -1214,6 +1240,13 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
       _lastSlopeName = '';
       _lastRideAt = null;
 
+      // ✅ 쿨다운 변수 초기화 (다음 liveOn 시 정상 동작을 위해)
+      _lastCountMethodCall = null;
+      _lastRespawnMethodCall = null;
+      _lastSnowballMethodCall = null;
+      _lastResetMethodCall = null;
+      _respawnSkipLogSent = false;
+
       // 경계 외부 카운트 초기화
       _outOfBoundaryCount = 0;
       _lastOutOfBoundaryTime = null;
@@ -1284,6 +1317,40 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
     }
   }
 
+  /// 앱 재시작 시 liveOn 복구 (비정상 종료 후 재시작 대응)
+  /// 이전 세션 정리(liveOff) 후 현재 위치에서 liveOn 재시도
+  Future<void> restoreLiveOn(int userId) async {
+    CustomFullScreenDialog.showDialog();
+    try {
+      print('🔄 [restoreLiveOn] 복구 시작 - userId: $userId');
+
+      // 1. 이전 세션 정리 (liveOff)
+      // - 서버에 liveOff 요청
+      // - 위치 추적 서비스 정리
+      // - 쿨다운 변수 초기화
+      print('🔄 [restoreLiveOn] 이전 세션 정리 (liveOff)');
+      await liveOff({"user_id": userId}, userId);
+
+      // 2. 현재 위치에서 liveOn 시도
+      // startLiveLocationService → startForegroundLocationService 내부에서:
+      // - 현재 GPS 위치 가져오기
+      // - liveOn API 호출 (서버에서 경계 내부 확인 + slope_info 로드)
+      // - 경계 내부면 위치 스트림 시작, 외부면 중단
+      print('🔄 [restoreLiveOn] liveOn 시도');
+      await startLiveLocationService(user_id: userId);
+
+      // 3. UI 상태 업데이트 (버튼 색상 등)
+      await _userViewModel.updateUserModel_api(userId);
+
+      _sendLiveLog(userId: userId, requestType: 'liveOn_restored', lat: _latitude.value, lon: _longitude.value);
+      print('✅ [restoreLiveOn] 복구 완료');
+    } catch (e) {
+      print('❌ [restoreLiveOn] 복구 중 오류: $e');
+      _sendLiveLog(userId: userId, requestType: 'liveOn_restore_error', error: e.toString());
+    } finally {
+      CustomFullScreenDialog.cancelDialog();
+    }
+  }
 
   /// 배터리 절약 모드 확인 메서드
   Future<bool> isBatterySaverOn() async {

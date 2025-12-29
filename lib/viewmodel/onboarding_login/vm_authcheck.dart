@@ -1,5 +1,7 @@
+import 'dart:async';
 import 'dart:io';
 import 'package:com.snowlive/api/ApiResponse.dart';
+import 'package:http/http.dart' as http;
 import 'package:com.snowlive/api/api_login.dart';
 import 'package:com.snowlive/api/api_ranking.dart';
 import 'package:com.snowlive/routes/routes.dart';
@@ -35,13 +37,31 @@ class AuthCheckViewModel extends GetxController {
         (device_id != null && device_id != '') &&
         (device_token != null && device_token != '')) {
       try {
-         response = await LoginAPI().compareDeviceId({
-          "uid": "$localUid",
-          "device_id": "$device_id",
-          "device_token": "$device_token",
-        });
-
+        // 재시도 로직이 포함된 API 호출 (최대 3회, 2초 간격)
+        response = await _compareDeviceIdWithRetry();
       } catch (e) {
+        // 네트워크 에러인 경우 로그아웃하지 않고 메인홈으로 진입 (오프라인 모드)
+        if (_isNetworkError(e)) {
+          print('⚠️ 네트워크 오류 - 로그아웃하지 않고 메인홈으로 진입');
+          await _sendLogoutLog(
+            reason: 'network_error_offline_mode',
+            errorDetail: e.toString(),
+          );
+          // 기존 인증 정보 유지, 저장된 user_id로 사용자 정보 로드 시도
+          try {
+            String? userIdString = await FlutterSecureStorage().read(key: 'user_id');
+            if (userIdString != null) {
+              int user_id = int.parse(userIdString);
+              await _userViewModel.updateUserModel_api(user_id);
+            }
+          } catch (_) {
+            // 사용자 정보 로드 실패해도 메인홈으로 진입
+          }
+          _gotoMainHome!.value = true;
+          return _gotoMainHome!.value;
+        }
+
+        // 네트워크 에러가 아닌 경우 기존 로직 (로그아웃)
         await _sendLogoutLog(
           reason: 'logout_api_exception',
           errorDetail: e.toString(),
@@ -169,6 +189,49 @@ class AuthCheckViewModel extends GetxController {
     } catch (_) {
       return false;
     }
+  }
+
+  /// 네트워크 에러인지 판별
+  /// SocketException: DNS 실패, 연결 중단 등
+  /// TimeoutException: 응답 시간 초과
+  /// ClientException: HTTP 클라이언트 에러 (네트워크 관련)
+  bool _isNetworkError(dynamic e) {
+    final errorString = e.toString().toLowerCase();
+    return e is SocketException ||
+        e is TimeoutException ||
+        e is http.ClientException ||
+        errorString.contains('socketexception') ||
+        errorString.contains('connection') ||
+        errorString.contains('timeout') ||
+        errorString.contains('host lookup') ||
+        errorString.contains('network');
+  }
+
+  /// 재시도 로직이 포함된 compareDeviceId API 호출
+  /// 네트워크 에러 시 최대 3회 재시도 (2초 간격)
+  Future<ApiResponse?> _compareDeviceIdWithRetry({int maxRetries = 3}) async {
+    for (int attempt = 1; attempt <= maxRetries; attempt++) {
+      try {
+        print('🔄 compareDeviceId 시도 $attempt/$maxRetries');
+        return await LoginAPI().compareDeviceId({
+          "uid": "$localUid",
+          "device_id": "$device_id",
+          "device_token": "$device_token",
+        });
+      } catch (e) {
+        print('❌ compareDeviceId 실패 (시도 $attempt): $e');
+
+        if (_isNetworkError(e) && attempt < maxRetries) {
+          // 네트워크 에러이고 재시도 횟수가 남았으면 2초 대기 후 재시도
+          print('⏳ 2초 후 재시도...');
+          await Future.delayed(const Duration(seconds: 2));
+          continue;
+        }
+        // 마지막 시도 실패 또는 네트워크 에러가 아닌 경우 예외 전파
+        rethrow;
+      }
+    }
+    return null;
   }
 
   /// 로그아웃 발생 시 서버로 로그 전송
