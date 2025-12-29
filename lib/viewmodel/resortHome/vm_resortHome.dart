@@ -1248,7 +1248,8 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
       isLoading(true);
       final ApiResponse response = await RankingAPI().check_wb(body);
       if (response.success) {
-        _resort_info.value   = response.data['resort_info'];
+        final resortInfo = response.data['resort_info'] as Map<String, dynamic>;
+        _resort_info.value   = resortInfo;
         _slope_info.value    = List<Map<String, dynamic>>.from(response.data['slope_info']);
         _snowball_info.value = List<Map<String, dynamic>>.from(response.data['snowball_info']);
         _reset_point.value   = List<Map<String, dynamic>>.from(response.data['reset_point']);
@@ -1259,6 +1260,11 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
         for (var rp in _respawn_point) {
           print('🔍 [liveOn] respawn_point: $rp');
         }
+
+        // 🔍 디버그: resort_info 확인
+        final resortFullname = resortInfo['fullname'] ?? '';
+        print('🔍 [liveOn] resort_info: $resortInfo');
+        print('🔍 [liveOn] resortFullname: $resortFullname');
 
         // ✅ 라이브 액티비티 시작 (iOS, Android 모두 지원)
         _liveOnStartedAt = DateTime.now();
@@ -1272,7 +1278,7 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
           todayRideCount: resortHomeModel?.dailyTotalCount ?? 0,
           sessionRideCount: _sessionRideCount,
           lastSlopeName: '—',
-          resortName: _resort_info['fullname'] ?? '',
+          resortName: resortFullname,
           liveFriendCount: _getLiveFriendCount(),
         );
 
