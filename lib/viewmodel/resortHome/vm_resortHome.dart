@@ -96,7 +96,6 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
 
   String? _liveActivityId;
   DateTime? _liveOnStartedAt; // 시작 시각 표시용 (LockScreen에 타이머로 쓰는 값)
-  Timer? _liveActivityRefreshTimer; // Live Activity 시간 갱신 타이머
   Worker? _liveFriendsWorker; // 친구 라이브 상태 변경 감지 워커
 
   // Live Activity 상태 관리 변수
@@ -313,22 +312,6 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
   int _getLiveFriendCount() {
     final liveOnAlarmViewModel = Get.find<LiveOnAlarmViewModel>();
     return liveOnAlarmViewModel.liveOnFriendIds.length;
-  }
-
-  /// Live Activity 시간 갱신 타이머 시작 (30초마다 업데이트)
-  void _startLiveActivityRefreshTimer() {
-    _stopLiveActivityRefreshTimer();
-    _liveActivityRefreshTimer = Timer.periodic(const Duration(seconds: 30), (timer) {
-      if (_liveActivityId != null) {
-        _updateLiveActivity();
-      }
-    });
-  }
-
-  /// Live Activity 시간 갱신 타이머 중지
-  void _stopLiveActivityRefreshTimer() {
-    _liveActivityRefreshTimer?.cancel();
-    _liveActivityRefreshTimer = null;
   }
 
   /// 친구 라이브 상태 변경 감지 워커 시작 (실시간 업데이트)
@@ -657,8 +640,7 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
                         });
                         final isSuccess = response.statusCode == 201 || response.statusCode == 416;
                         if (isSuccess) {
-                          _lastSlopeName = slopeFullname;
-                          print('포그라운드 체크포인트 업데이트 성공: $_lastSlopeName');
+                          print('포그라운드 체크포인트 업데이트 성공: $slopeFullname');
                         } else {
                           print('포그라운드 체크포인트 업데이트 실패: ${response.statusCode}');
                         }
@@ -749,6 +731,8 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
                           if (insertedCount > 0) {
                             _lastRideAt = DateTime.now();
                           }
+                          // 서버에서 최신 dailyTotalCount 받아오기 (Live Activity 업데이트용)
+                          await fetchResortHome(user_id);
                           _updateLiveActivity();
                         }
                         _sendLiveLog(userId: user_id, requestType: 'fg_respawn', error: respawnResponse.success ? 'success' : respawnResponse.error.toString(), lat: position.latitude, lon: position.longitude);
@@ -981,8 +965,7 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
                     });
                     final isSuccess = response.statusCode == 201 || response.statusCode == 416;
                     if (isSuccess) {
-                      _lastSlopeName = slopeFullname;
-                      print('백그라운드 체크포인트 업데이트 성공: $_lastSlopeName');
+                      print('백그라운드 체크포인트 업데이트 성공: $slopeFullname');
                     } else {
                       print('백그라운드 체크포인트 업데이트 실패: ${response.statusCode}');
                     }
@@ -1226,9 +1209,6 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
       // ✅ 친구들에게서 라이브온 알림 제거 (백그라운드 처리 - 인디케이터와 무관)
       _removeLiveOnNotification();
 
-      // ✅ Live Activity 시간 갱신 타이머 중지
-      _stopLiveActivityRefreshTimer();
-
       // ✅ 친구 라이브 상태 변경 감지 워커 중지
       _stopLiveFriendsWorker();
 
@@ -1268,7 +1248,8 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
       isLoading(true);
       final ApiResponse response = await RankingAPI().check_wb(body);
       if (response.success) {
-        _resort_info.value   = response.data['resort_info'];
+        final resortInfo = response.data['resort_info'] as Map<String, dynamic>;
+        _resort_info.value   = resortInfo;
         _slope_info.value    = List<Map<String, dynamic>>.from(response.data['slope_info']);
         _snowball_info.value = List<Map<String, dynamic>>.from(response.data['snowball_info']);
         _reset_point.value   = List<Map<String, dynamic>>.from(response.data['reset_point']);
@@ -1279,6 +1260,11 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
         for (var rp in _respawn_point) {
           print('🔍 [liveOn] respawn_point: $rp');
         }
+
+        // 🔍 디버그: resort_info 확인
+        final resortFullname = resortInfo['fullname'] ?? '';
+        print('🔍 [liveOn] resort_info: $resortInfo');
+        print('🔍 [liveOn] resortFullname: $resortFullname');
 
         // ✅ 라이브 액티비티 시작 (iOS, Android 모두 지원)
         _liveOnStartedAt = DateTime.now();
@@ -1292,11 +1278,9 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
           todayRideCount: resortHomeModel?.dailyTotalCount ?? 0,
           sessionRideCount: _sessionRideCount,
           lastSlopeName: '—',
+          resortName: resortFullname,
           liveFriendCount: _getLiveFriendCount(),
         );
-
-        // Live Activity 시간 갱신 타이머 시작 (30초마다)
-        _startLiveActivityRefreshTimer();
 
         // 친구 라이브 상태 변경 감지 워커 시작 (실시간 업데이트)
         _startLiveFriendsWorker();

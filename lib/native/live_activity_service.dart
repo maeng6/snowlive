@@ -15,6 +15,7 @@ class LiveActivityService {
     required int todayRideCount,
     required int sessionRideCount,
     required String lastSlopeName,
+    required String resortName,
     DateTime? lastRideAt,
     int liveFriendCount = 0,
   }) async {
@@ -28,6 +29,7 @@ class LiveActivityService {
       'todayRideCount': todayRideCount,
       'sessionRideCount': sessionRideCount,
       'lastSlopeName': lastSlopeName,
+      'resortName': resortName,
       'liveFriendCount': liveFriendCount,
       if (lastRideAt != null) 'lastRideAtMs': lastRideAt.toUtc().millisecondsSinceEpoch,
     };

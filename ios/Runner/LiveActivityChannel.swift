@@ -22,6 +22,10 @@ final class LiveActivityChannel {
                 let today = args["todayRideCount"] as? Int ?? 0
                 let session = args["sessionRideCount"] as? Int ?? 0
                 let last = args["lastSlopeName"] as? String ?? "-"
+                let resort = args["resortName"] as? String ?? ""
+                let friends = args["liveFriendCount"] as? Int ?? 0
+
+                print("[LiveActivityChannel] start - resort: \(resort), friends: \(friends)")
 
                 Task {
                     do {
@@ -29,7 +33,9 @@ final class LiveActivityChannel {
                             liveOnStartAtMs: ms,
                             todayRideCount: today,
                             sessionRideCount: session,
-                            lastSlopeName: last
+                            lastSlopeName: last,
+                            resortName: resort,
+                            liveFriendCount: friends
                         )
                         result(id)  // Flutter로 activityId 반환
                     } catch {
@@ -43,6 +49,7 @@ final class LiveActivityChannel {
                 let today = args["todayRideCount"] as? Int ?? 0
                 let session = args["sessionRideCount"] as? Int ?? 0
                 let last = args["lastSlopeName"] as? String ?? "-"
+                let friends = args["liveFriendCount"] as? Int ?? 0
 
                 Task {
                     do {
@@ -50,7 +57,8 @@ final class LiveActivityChannel {
                             activityId: id,
                             todayRideCount: today,
                             sessionRideCount: session,
-                            lastSlopeName: last
+                            lastSlopeName: last,
+                            liveFriendCount: friends
                         )
                         result(nil)
                     } catch {

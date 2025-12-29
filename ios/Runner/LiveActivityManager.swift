@@ -14,7 +14,9 @@ final class LiveActivityManager {
     func start(liveOnStartAtMs: Int64,
                todayRideCount: Int,
                sessionRideCount: Int,
-               lastSlopeName: String) async throws -> String {
+               lastSlopeName: String,
+               resortName: String,
+               liveFriendCount: Int = 0) async throws -> String {
 
         // 시스템이 Live Activities를 허용하는지 확인
         guard ActivityAuthorizationInfo().areActivitiesEnabled else {
@@ -24,13 +26,14 @@ final class LiveActivityManager {
         let startDate = Date(timeIntervalSince1970: TimeInterval(liveOnStartAtMs) / 1000.0)
 
         // 고정 속성
-        let attributes = LiveOnActivityAttributes(liveOnStartAt: startDate)
+        let attributes = LiveOnActivityAttributes(liveOnStartAt: startDate, resortName: resortName)
 
         // 가변 상태
         let state = LiveOnActivityAttributes.ContentState(
             todayRideCount: todayRideCount,
             sessionRideCount: sessionRideCount,
-            lastSlopeName: lastSlopeName
+            lastSlopeName: lastSlopeName,
+            liveFriendCount: liveFriendCount
         )
 
         // 요청
@@ -45,7 +48,8 @@ final class LiveActivityManager {
     func update(activityId: String,
                 todayRideCount: Int,
                 sessionRideCount: Int,
-                lastSlopeName: String) async throws {
+                lastSlopeName: String,
+                liveFriendCount: Int = 0) async throws {
         guard let activity = activities[activityId] ?? Activity<LiveOnActivityAttributes>.activities.first(where: { $0.id == activityId }) else {
             throw NSError(domain: "LiveActivity", code: -2, userInfo: [NSLocalizedDescriptionKey: "Activity not found"])
         }
@@ -53,7 +57,8 @@ final class LiveActivityManager {
         let state = LiveOnActivityAttributes.ContentState(
             todayRideCount: todayRideCount,
             sessionRideCount: sessionRideCount,
-            lastSlopeName: lastSlopeName
+            lastSlopeName: lastSlopeName,
+            liveFriendCount: liveFriendCount
         )
         await activity.update(using: state)
         activities[activityId] = activity

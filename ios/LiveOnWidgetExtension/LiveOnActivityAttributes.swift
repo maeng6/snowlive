@@ -22,8 +22,10 @@ public struct LiveOnActivityAttributes: ActivityAttributes {
 
     // 변하지 않는 속성(라이브 시작 시 고정값)
     public var liveOnStartAt: Date
+    public var resortName: String
 
-    public init(liveOnStartAt: Date) {
+    public init(liveOnStartAt: Date, resortName: String = "") {
         self.liveOnStartAt = liveOnStartAt
+        self.resortName = resortName
     }
 }
