@@ -11,6 +11,7 @@ import android.os.Build
 import android.os.IBinder
 import android.widget.RemoteViews
 import androidx.core.app.NotificationCompat
+import android.os.SystemClock
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -106,40 +107,36 @@ class LiveActivityService : Service() {
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
 
-        // 경과 시간 계산
+        // 커스텀 레이아웃 생성
+        val remoteViews = RemoteViews(packageName, R.layout.notification_live_activity)
+
+        // 데이터 바인딩
+        remoteViews.setTextViewText(R.id.resort_name, "휘닉스파크")
+        remoteViews.setTextViewText(R.id.ride_count, sessionRideCount.toString())
+        remoteViews.setTextViewText(R.id.friend_count, liveFriendCount.toString())
+        remoteViews.setTextViewText(R.id.last_slope, if (lastSlopeName.isEmpty() || lastSlopeName == "—") "-" else lastSlopeName)
+
+        // Chronometer 설정 (경과 시간 표시)
+        // startTimeMs는 System.currentTimeMillis() 기준, Chronometer는 elapsedRealtime 기준
+        val elapsedSinceStart = System.currentTimeMillis() - startTimeMs
+        val chronometerBase = SystemClock.elapsedRealtime() - elapsedSinceStart
+        remoteViews.setChronometer(R.id.timer, chronometerBase, null, true)
+
+        // 경과 시간 계산 (contentText용)
         val elapsedMs = System.currentTimeMillis() - startTimeMs
         val elapsedMinutes = (elapsedMs / 1000 / 60).toInt()
         val hours = elapsedMinutes / 60
         val minutes = elapsedMinutes % 60
         val elapsedText = if (hours > 0) "${hours}시간 ${minutes}분" else "${minutes}분"
 
-        // 시작 시간 포맷
-        val startTimeFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
-        val startTimeText = startTimeFormat.format(Date(startTimeMs))
-
-        // 내용 텍스트 구성
-        val contentText = buildString {
-            append("라이딩 $sessionRideCount 회")
-            if (liveFriendCount > 0) {
-                append(" | ")
-                append("친구 $liveFriendCount 명")
-            }
-        }
-
-        val bigText = buildString {
-            appendLine("⏱ 시작: $startTimeText (${elapsedText} 경과)")
-            appendLine("🎿 라이딩 횟수: $sessionRideCount 회")
-            appendLine("⛷ 마지막 슬로프: $lastSlopeName")
-            if (liveFriendCount > 0) {
-                append("👥 라이브 친구: $liveFriendCount 명")
-            }
-        }
+        val contentText = "라이딩 $sessionRideCount 회 | $elapsedText 경과"
 
         return NotificationCompat.Builder(this, CHANNEL_ID)
             .setSmallIcon(R.mipmap.launcher_icon)
-            .setContentTitle("🏔 라이브온 중")
+            .setContentTitle("라이브온 중")
             .setContentText(contentText)
-            .setStyle(NotificationCompat.BigTextStyle().bigText(bigText))
+            .setCustomContentView(remoteViews)
+            .setCustomBigContentView(remoteViews)
             .setContentIntent(pendingIntent)
             .setOngoing(true)
             .setShowWhen(false)
