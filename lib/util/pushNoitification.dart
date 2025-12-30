@@ -54,8 +54,13 @@ class PushNotification {
     }
   }
 
+  // 로컬 알림 탭 콜백
+  static void Function(String?)? _onNotificationTap;
+
   // flutter_local_notifications 패키지 관련 초기화
-  static Future localNotiInit() async {
+  static Future localNotiInit({void Function(String?)? onNotificationTap}) async {
+    _onNotificationTap = onNotificationTap;
+
     // initialise the plugin. app_icon needs to be a added as a drawable resource to the Android head project
     const AndroidInitializationSettings initializationSettingsAndroid =
     AndroidInitializationSettings('@mipmap/ic_launcher');
@@ -72,7 +77,35 @@ class PushNotification {
         linux: initializationSettingsLinux
     );
 
-    _flutterLocalNotificationsPlugin.initialize(initializationSettings);
+    await _flutterLocalNotificationsPlugin.initialize(
+      initializationSettings,
+      onDidReceiveNotificationResponse: _handleNotificationTap,
+      onDidReceiveBackgroundNotificationResponse: _backgroundNotificationHandler,
+    );
+  }
+
+  // 포그라운드에서 알림 탭 처리
+  static void _handleNotificationTap(NotificationResponse response) {
+    print('🔔 로컬 알림 탭됨: payload=${response.payload}');
+    _onNotificationTap?.call(response.payload);
+  }
+
+  // 백그라운드에서 알림 탭 처리 (최상위 함수여야 함)
+  @pragma('vm:entry-point')
+  static void _backgroundNotificationHandler(NotificationResponse response) {
+    print('🔔 백그라운드 알림 탭됨: payload=${response.payload}');
+    // 앱이 다시 시작될 때 처리되도록 저장
+    _pendingPayload = response.payload;
+  }
+
+  // 백그라운드 알림에서 저장된 페이로드
+  static String? _pendingPayload;
+
+  // 대기 중인 알림 페이로드 처리
+  static String? consumePendingPayload() {
+    final payload = _pendingPayload;
+    _pendingPayload = null;
+    return payload;
   }
 
   // 포그라운드로 알림을 받아서 알림을 탭했을 때 페이지 이동

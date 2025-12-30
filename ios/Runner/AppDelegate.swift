@@ -94,7 +94,10 @@ import WidgetKit
             let todayRide = (args["todayRideCount"] as? Int) ?? (args["todayRideCount"] as? NSNumber)?.intValue
             let sessionRide = (args["sessionRideCount"] as? Int) ?? (args["sessionRideCount"] as? NSNumber)?.intValue
             let lastSlope = args["lastSlopeName"] as? String
+            let resortName = args["resortName"] as? String ?? ""
             let liveFriendCount = (args["liveFriendCount"] as? Int) ?? (args["liveFriendCount"] as? NSNumber)?.intValue ?? 0
+
+            print("📍 [LA] resortName from Flutter: \(resortName)")
 
             // lastRideAt 파싱 (optional)
             var lastRideAt: Date? = nil
@@ -113,7 +116,7 @@ import WidgetKit
               result(FlutterError(code:"INVALID_ARGS", message:"Bad args", details:nil)); return
             }
 
-            let attributes = LiveOnActivityAttributes(liveOnStartAt: _startAt)
+            let attributes = LiveOnActivityAttributes(liveOnStartAt: _startAt, resortName: resortName)
             let initial = LiveOnActivityAttributes.ContentState(
               todayRideCount: _today,
               sessionRideCount: _session,

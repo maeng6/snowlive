@@ -5,6 +5,8 @@ import 'package:com.snowlive/api/ApiResponse.dart';
 import 'package:com.snowlive/api/api_friend.dart';
 import 'package:com.snowlive/api/api_ranking.dart';
 import 'package:com.snowlive/api/api_resortHome.dart';
+import 'package:com.snowlive/api/api_resort.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:com.snowlive/api/api_snowball.dart';
 import 'package:com.snowlive/api/api_user.dart';
 import 'package:com.snowlive/data/snowliveDesignStyle.dart';
@@ -36,6 +38,7 @@ import 'package:android_intent_plus/android_intent.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter/services.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 final ref = FirebaseFirestore.instance;
 DateTime? _lastFakeLocationCheckTime;
@@ -103,6 +106,9 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
   String _lastSlopeName = '';          // 마지막 라이딩 슬로프명 (체크포인트에서 저장)
   DateTime? _lastRideAt;               // 마지막 라이딩 시간
 
+  // 등록된 Geofence 정보 저장 (초기 위치 체크용)
+  List<Map<String, dynamic>> _registeredGeofences = [];
+
   dynamic weatherTextColors;
   dynamic weatherColors;
   dynamic weatherIcons;
@@ -169,6 +175,9 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
 
     // fetchResortHome 완료 후 날씨 정보 fetch (nx, ny 값 필요)
     await fetchWeatherModel();
+
+    // Geofence 설정 (리조트 진입 감지용, 백그라운드 실행)
+    setupResortGeofences();
   }
 
   /// 앱이 포그라운드로 돌아왔을 때 호출 (배터리 최적화 시스템 팝업 후 자동 라이브온)
@@ -311,18 +320,29 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
   /// 현재 라이브 중인 친구 수 계산 (Firebase 스트림에서 실시간으로 받음)
   int _getLiveFriendCount() {
     final liveOnAlarmViewModel = Get.find<LiveOnAlarmViewModel>();
-    return liveOnAlarmViewModel.liveOnFriendIds.length;
+    final count = liveOnAlarmViewModel.liveOnFriendIds.length;
+    print('👥 [LA] 라이브 친구 수 조회: $count명 (ids: ${liveOnAlarmViewModel.liveOnFriendIds})');
+    return count;
   }
 
   /// 친구 라이브 상태 변경 감지 워커 시작 (실시간 업데이트)
   void _startLiveFriendsWorker() {
     _stopLiveFriendsWorker();
     final liveOnAlarmViewModel = Get.find<LiveOnAlarmViewModel>();
+
+    // 변경 감지 워커 (Firestore 스트림에서 liveOnFriendIds 변경 시 호출)
     _liveFriendsWorker = ever(liveOnAlarmViewModel.liveOnFriendIds, (_) {
       if (_liveActivityId != null) {
+        print('🔄 [LA] 친구 수 변경 감지: ${liveOnAlarmViewModel.liveOnFriendIds.length}명');
         _updateLiveActivity();
       }
     });
+
+    // 현재 값이 있으면 즉시 업데이트
+    if (liveOnAlarmViewModel.liveOnFriendIds.isNotEmpty && _liveActivityId != null) {
+      print('🔄 [LA] 초기 친구 수 반영: ${liveOnAlarmViewModel.liveOnFriendIds.length}명');
+      _updateLiveActivity();
+    }
   }
 
   /// 친구 라이브 상태 변경 감지 워커 중지
@@ -795,13 +815,16 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
     await bg.BackgroundGeolocation.ready(bg.Config(
       desiredAccuracy: bg.Config.DESIRED_ACCURACY_HIGH,
 
-      // 🔥 iOS suspend 방지 / 백그라운드 안정화
-      preventSuspend: true,
+      // 🔥 iOS 백그라운드 안정화
+      // preventSuspend: false - iOS 14+에서 30초 이상 백그라운드 태스크 유지 시 앱 강제 종료됨
+      // iOS 네이티브 백그라운드 위치 모드로 안정적으로 동작
+      preventSuspend: false,
       disableMotionActivityUpdates: false,   // 반드시 false (중요)
       stopOnStationary: false,
 
-      // 🔥 Android foreground service 유지 → 삼성 종료 방지
+      // 🔥 Android foreground service 유지 → 삼성/중국폰 종료 방지
       foregroundService: true,
+      disableStopDetection: true,            // 🆕 정지 감지 비활성화 (삼성 Doze 대응)
 
       // 🔥 위치 업데이트 튜닝
       distanceFilter: 5,                     // 5m 이동 시 업데이트 (더 정밀한 추적)
@@ -811,11 +834,11 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
       // 🔥 앱 종료 / 재부팅 이후에도 계속 동작
       stopOnTerminate: false,
       startOnBoot: true,
-      forceReloadOnBoot: true,               // 🆕 삼성/중국 기기 재부팅 후에도 재시작
+      forceReloadOnBoot: true,               // 삼성/중국 기기 재부팅 후에도 재시작
 
       // 🔥 iOS/Android 백그라운드 유지를 위한 heartbeat
-      heartbeatInterval: 60,                 // 🆕 60초마다 heartbeat (iOS suspend 방지)
-      enableHeadless: true,                  // 🆕 앱 종료 후에도 headless 모드로 동작
+      heartbeatInterval: 60,                 // 60초마다 heartbeat
+      enableHeadless: false,                 // 앱 종료 시 위치 추적 중단 (iOS 미지원, 안정성 우선)
 
       // 🔥 위치 업데이트 속도 (삼성 Doze 정책 준수)
       locationUpdateInterval: 5000,           // 5초
@@ -1236,11 +1259,28 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
         _resortHomeModel.value = ResortHomeModel.fromJson(response_fetchResortHome.data);
       }
       await _userViewModel.updateUserModel_api(_userViewModel.user.user_id);
+
+      // ✅ Geofence 모니터링 재시작 (라이브온 종료 후에도 리조트 진입 감지)
+      _restartGeofenceMonitoring();
+
       print('liveOff 완료');
     } else {
       CustomFullScreenDialog.cancelDialog();
     }
     isLoading(false);
+  }
+
+  /// Geofence 전용 모드 재시작 (liveOff 후 호출)
+  Future<void> _restartGeofenceMonitoring() async {
+    try {
+      // Geofence 리스너 재설정
+      _setupGeofenceListener();
+      // Geofence 전용 모드로 시작
+      await bg.BackgroundGeolocation.startGeofences();
+      print('🌐 Geofence 모니터링 재시작 완료');
+    } catch (e) {
+      print('❌ Geofence 모니터링 재시작 실패: $e');
+    }
   }
 
   Future<ApiResponse> liveOn(Map<String, dynamic> body) async {
@@ -1256,7 +1296,7 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
         _respawn_point.value = List<Map<String, dynamic>>.from(response.data['respawn_point']);
 
         // 🔍 디버그: respawn_point 데이터 확인
-        print('🔍 [liveOn] respawn_point count: ${_respawn_point.length}');
+        //print('🔍 [liveOn] respawn_point count: ${_respawn_point.length}');
         for (var rp in _respawn_point) {
           print('🔍 [liveOn] respawn_point: $rp');
         }
@@ -1811,6 +1851,346 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
         break;
       default:
         print('알 수 없는 accountName: $accountName');
+    }
+  }
+
+  // ============================================
+  // Geofencing - 리조트 진입 감지 및 자동 라이브온
+  // ============================================
+
+  /// 리조트 Geofence 등록 (앱 시작 시 호출)
+  Future<void> setupResortGeofences() async {
+    try {
+      print('🌐 리조트 Geofence 설정 시작...');
+
+      // 0. BackgroundGeolocation 초기화 (Geofence 전용 모드)
+      await bg.BackgroundGeolocation.ready(bg.Config(
+        desiredAccuracy: bg.Config.DESIRED_ACCURACY_LOW,
+        distanceFilter: 100,
+        stopOnTerminate: false,
+        startOnBoot: true,
+        enableHeadless: false,
+        // Geofence 전용 설정
+        geofenceProximityRadius: 5000, // 5km 범위 내 Geofence만 모니터링
+        geofenceInitialTriggerEntry: true, // 이미 영역 내에 있으면 즉시 트리거
+        logLevel: bg.Config.LOG_LEVEL_OFF,
+      ));
+      print('✅ BackgroundGeolocation 초기화 완료');
+
+      // 1. 서버에서 활성 리조트 목록 조회
+      final response = await ResortAPI().getActiveResorts();
+      if (!response.success) {
+        print('❌ 리조트 목록 조회 실패: ${response.error}');
+        return;
+      }
+
+      final List<dynamic> resortList = response.data as List<dynamic>;
+      print('📍 활성 리조트 ${resortList.length}개 조회됨');
+
+      // 2. 기존 Geofence 모두 삭제
+      await bg.BackgroundGeolocation.removeGeofences();
+      print('🗑️ 기존 Geofence 삭제 완료');
+
+      // 3. 새 Geofence 등록
+      int registeredCount = 0;
+      _registeredGeofences.clear(); // 기존 목록 초기화
+
+      for (var resortJson in resortList) {
+        try {
+          print('📋 리조트 JSON: $resortJson');
+
+          // coordinates_geofencing 필드 확인
+          final coordinatesGeofencing = resortJson['coordinates_geofencing'];
+          if (coordinatesGeofencing == null || coordinatesGeofencing.toString().isEmpty) {
+            print('⚠️ coordinates_geofencing 없음, 스킵: ${resortJson['fullname']}');
+            continue;
+          }
+
+          final resort = ResortGeofence.fromJson(resortJson as Map<String, dynamic>);
+
+          // 좌표가 유효한지 확인
+          if (resort.latitude == 0.0 || resort.longitude == 0.0) {
+            print('⚠️ 좌표 파싱 실패, 스킵: ${resort.fullname}');
+            continue;
+          }
+
+          await bg.BackgroundGeolocation.addGeofence(bg.Geofence(
+            identifier: resort.identifier,
+            latitude: resort.latitude,
+            longitude: resort.longitude,
+            radius: resort.radius,
+            notifyOnEntry: true,
+            notifyOnExit: true,
+            extras: {
+              'resort_id': resort.resortId,
+              'fullname': resort.fullname,
+            },
+          ));
+
+          // 초기 위치 체크용으로 정보 저장
+          _registeredGeofences.add({
+            'resort_id': resort.resortId,
+            'fullname': resort.fullname,
+            'latitude': resort.latitude,
+            'longitude': resort.longitude,
+            'radius': resort.radius,
+          });
+
+          registeredCount++;
+          print('✅ Geofence 등록: ${resort.fullname} (lat=${resort.latitude}, lon=${resort.longitude}, r=${resort.radius}m)');
+        } catch (e) {
+          print('⚠️ Geofence 등록 실패: $resortJson - $e');
+        }
+      }
+      print('📊 총 $registeredCount개 Geofence 등록됨');
+
+      // 4. Geofence 이벤트 리스너 설정
+      _setupGeofenceListener();
+
+      // 5. Geofence 전용 모드로 시작 (위치 추적 없이 Geofence만 모니터링)
+      await bg.BackgroundGeolocation.startGeofences();
+      print('🌐 리조트 Geofence 모니터링 시작');
+
+      // 6. 초기 위치 체크 (이미 Geofence 내에 있는지 확인)
+      await _checkInitialGeofenceStatus();
+
+    } catch (e) {
+      print('❌ Geofence 설정 오류: $e');
+    }
+  }
+
+  /// Geofence 이벤트 리스너 설정
+  void _setupGeofenceListener() {
+    bg.BackgroundGeolocation.onGeofence((bg.GeofenceEvent event) {
+      final resortId = event.extras?['resort_id'];
+      final resortName = event.extras?['fullname'] ?? '리조트';
+
+      print('📍 Geofence 이벤트: ${event.action} - $resortName (ID: $resortId)');
+
+      if (event.action == 'ENTER') {
+        _handleGeofenceEnter(resortId, resortName);
+      } else if (event.action == 'EXIT') {
+        _handleGeofenceExit(resortId, resortName);
+      }
+    });
+  }
+
+  /// 리조트 진입 시 처리
+  Future<void> _handleGeofenceEnter(dynamic resortId, String resortName) async {
+    print('🎿 리조트 진입 감지: $resortName');
+
+    // 이미 라이브온 상태면 무시
+    if (isPositionStreamActive || _liveActivityId != null) {
+      print('ℹ️ 이미 라이브온 활성 상태, 알림 생략');
+      return;
+    }
+
+    // 오늘 이미 알림 보낸 리조트인지 확인 (하루에 한 번만)
+    final resortIdInt = resortId is int ? resortId : int.tryParse(resortId.toString()) ?? 0;
+    final alreadyNotifiedToday = await _hasNotifiedTodayForResort(resortIdInt);
+    if (alreadyNotifiedToday) {
+      print('ℹ️ 오늘 이미 알림 보낸 리조트, 스킵: $resortName');
+      return;
+    }
+
+    // 알림 전송 기록 저장 (SharedPreferences)
+    await _saveGeofenceNotificationDate(resortIdInt);
+
+    // 로컬 푸시 알림 전송
+    await _showGeofenceNotification(
+      title: '$resortName에 도착했습니다.',
+      body: '이곳을 눌러, 라이브를 시작해보세요!',
+      payload: 'geofence_enter:$resortId:$resortName',
+    );
+  }
+
+  /// 해당 리조트에 오늘 이미 알림을 보냈는지 확인 (SharedPreferences)
+  Future<bool> _hasNotifiedTodayForResort(int resortId) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final key = 'geofence_notified_$resortId';
+      final lastNotifiedStr = prefs.getString(key);
+
+      print('🔍 [Geofence] resortId=$resortId 알림 기록 확인: key=$key, 저장된 값=$lastNotifiedStr');
+
+      if (lastNotifiedStr == null) {
+        print('🔍 [Geofence] 저장된 기록 없음 → 알림 발송 가능');
+        return false;
+      }
+
+      final lastNotified = DateTime.tryParse(lastNotifiedStr);
+      if (lastNotified == null) {
+        print('🔍 [Geofence] 날짜 파싱 실패 → 알림 발송 가능');
+        return false;
+      }
+
+      final today = DateTime.now();
+      final isToday = lastNotified.year == today.year &&
+                      lastNotified.month == today.month &&
+                      lastNotified.day == today.day;
+
+      print('🔍 [Geofence] 마지막 알림: ${lastNotified.toString()}, 오늘: ${today.toString()}, 오늘 알림 여부: $isToday');
+
+      return isToday;
+    } catch (e) {
+      print('❌ Geofence 알림 기록 확인 실패: $e');
+      return false;
+    }
+  }
+
+  /// 리조트 알림 전송 기록 저장 (SharedPreferences)
+  Future<void> _saveGeofenceNotificationDate(int resortId) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final key = 'geofence_notified_$resortId';
+      final now = DateTime.now().toIso8601String();
+      await prefs.setString(key, now);
+      print('💾 Geofence 알림 기록 저장: resortId=$resortId, date=$now');
+    } catch (e) {
+      print('❌ Geofence 알림 기록 저장 실패: $e');
+    }
+  }
+
+  /// 리조트 이탈 시 처리
+  Future<void> _handleGeofenceExit(dynamic resortId, String resortName) async {
+    print('👋 리조트 이탈 감지: $resortName');
+
+    // 필요시 라이브오프 알림 등 추가 로직
+  }
+
+  /// 앱 시작 시 초기 위치 체크 (이미 Geofence 내에 있는지 확인)
+  Future<void> _checkInitialGeofenceStatus() async {
+    try {
+      print('🔍 [Geofence] 초기 위치 체크 시작...');
+
+      // 등록된 geofence가 없으면 스킵
+      if (_registeredGeofences.isEmpty) {
+        print('ℹ️ [Geofence] 등록된 Geofence 없음, 초기 체크 스킵');
+        return;
+      }
+
+      // 현재 위치 가져오기
+      Position currentPosition;
+      try {
+        currentPosition = await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.medium,
+          timeLimit: Duration(seconds: 10),
+        );
+        print('📍 [Geofence] 현재 위치: lat=${currentPosition.latitude}, lon=${currentPosition.longitude}');
+      } catch (e) {
+        print('⚠️ [Geofence] 현재 위치 가져오기 실패: $e');
+        return;
+      }
+
+      // 각 등록된 geofence와 현재 위치 비교
+      for (final geofence in _registeredGeofences) {
+        final resortId = geofence['resort_id'];
+        final resortName = geofence['fullname'] as String? ?? '리조트';
+        final lat = geofence['latitude'] as double;
+        final lon = geofence['longitude'] as double;
+        final radius = geofence['radius'] as double;
+
+        // 현재 위치와 geofence 중심 간의 거리 계산
+        final distance = Geolocator.distanceBetween(
+          currentPosition.latitude,
+          currentPosition.longitude,
+          lat,
+          lon,
+        );
+
+        print('🔍 [Geofence] $resortName: 거리=${distance.toStringAsFixed(0)}m, 반경=${radius}m');
+
+        // 반경 내에 있으면 진입 처리
+        if (distance <= radius) {
+          print('✅ [Geofence] 이미 $resortName 반경 내에 있음! 알림 트리거');
+          await _handleGeofenceEnter(resortId, resortName);
+          break; // 첫 번째 매칭된 리조트에서만 알림
+        }
+      }
+
+      print('🔍 [Geofence] 초기 위치 체크 완료');
+    } catch (e) {
+      print('❌ [Geofence] 초기 위치 체크 오류: $e');
+    }
+  }
+
+  /// 로컬 푸시 알림 표시매이
+  Future<void> _showGeofenceNotification({
+    required String title,
+    required String body,
+    String? payload,
+  }) async {
+    final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+
+    const androidDetails = AndroidNotificationDetails(
+      'geofence_channel',
+      'Geofence Notifications',
+      channelDescription: '리조트 진입/이탈 알림',
+      importance: Importance.high,
+      priority: Priority.high,
+      icon: '@mipmap/ic_launcher',
+    );
+
+    const iosDetails = DarwinNotificationDetails(
+      presentAlert: true,
+      presentBadge: true,
+      presentSound: true,
+    );
+
+    const details = NotificationDetails(
+      android: androidDetails,
+      iOS: iosDetails,
+    );
+
+    await flutterLocalNotificationsPlugin.show(
+      DateTime.now().millisecondsSinceEpoch ~/ 1000, // 고유 ID
+      title,
+      body,
+      details,
+      payload: payload,
+    );
+
+    print('🔔 로컬 푸시 알림 전송: $title');
+  }
+
+  /// Geofence 알림 탭 시 라이브온 자동 시작 (라이브 시작하기 버튼과 동일하게 동작)
+  Future<void> handleGeofenceNotificationTap(String? payload) async {
+    if (payload == null || !payload.startsWith('geofence_enter:')) return;
+
+    final parts = payload.split(':');
+    if (parts.length < 3) return;
+
+    final resortId = int.tryParse(parts[1]);
+    final resortName = parts[2];
+
+    print('🚀 Geofence 알림 탭: 라이브온 자동 시작 - $resortName (ID: $resortId)');
+
+    // 사용자 ID 확인
+    final userId = _userViewModel.user.user_id;
+    if (userId == null) {
+      print('❌ 사용자 ID 없음, 라이브온 시작 불가');
+      return;
+    }
+
+    // 라이브온 시작 (라이브 시작하기 버튼과 동일한 흐름)
+    try {
+      CustomFullScreenDialog.showDialog();
+      await startLiveLocationService(user_id: userId);
+      await _userViewModel.updateUserModel_api(userId);
+      CustomFullScreenDialog.cancelDialog();
+
+      // 리조트 영역 외부인 경우 안내 메시지
+      if (_userViewModel.user.within_boundary == false) {
+        Get.snackbar(
+          '알림',
+          '리조트 영역 밖입니다. 리조트 영역 내에서 다시 시도해주세요.',
+          snackPosition: SnackPosition.BOTTOM,
+        );
+      }
+      print('✅ 자동 라이브온 시작 완료');
+    } catch (e) {
+      CustomFullScreenDialog.cancelDialog();
+      print('❌ 자동 라이브온 시작 실패: $e');
     }
   }
 

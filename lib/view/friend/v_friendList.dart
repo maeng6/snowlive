@@ -756,6 +756,7 @@ class _FriendListViewState extends State<FriendListView> {
                                                                                     {"friend_id": friend.friendId},
                                                                                   );
                                                                                   await _friendListViewModel.fetchFriendList();
+                                                                                  CustomFullScreenDialog.cancelDialog();
                                                                                 },
                                                                                 style: TextButton.styleFrom(
                                                                                   backgroundColor: Colors.transparent, // 배경색 투명
