@@ -4,6 +4,7 @@ import 'package:com.snowlive/firebase_options.dart';
 import 'package:com.snowlive/util/pushNoitification.dart';
 import 'package:com.snowlive/viewmodel/friend/vm_friendDetail.dart';
 import 'package:com.snowlive/viewmodel/onboarding_login/vm_authcheck.dart';
+import 'package:com.snowlive/viewmodel/resortHome/vm_resortHome.dart';
 import 'package:com.snowlive/viewmodel/vm_notificationController.dart';
 import 'package:com.snowlive/viewmodel/vm_splashController.dart';
 import 'package:com.snowlive/routes/routes.dart';
@@ -61,6 +62,24 @@ void _handleMessage(RemoteMessage message) {
   });
 }
 
+// Geofence 로컬 알림 탭 핸들러
+void _handleLocalNotificationTap(String? payload) {
+  if (payload == null) return;
+
+  print('📍 로컬 알림 탭 처리: $payload');
+
+  // Geofence 진입 알림 처리
+  if (payload.startsWith('geofence_enter:')) {
+    // ResortHomeViewModel이 등록되어 있으면 처리
+    if (Get.isRegistered<ResortHomeViewModel>()) {
+      final resortHomeVM = Get.find<ResortHomeViewModel>();
+      resortHomeVM.handleGeofenceNotificationTap(payload);
+    } else {
+      print('⚠️ ResortHomeViewModel이 아직 등록되지 않음, 알림 무시');
+    }
+  }
+}
+
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -84,7 +103,9 @@ void main() async {
 
   // 푸시 알림 초기화 (순서대로 await하여 권한 요청 오버레이 충돌 방지)
   await PushNotification.init();
-  await PushNotification.localNotiInit();
+  await PushNotification.localNotiInit(
+    onNotificationTap: _handleLocalNotificationTap,
+  );
 
   // NotificationController는 권한 요청 완료 후 초기화
   Get.put(NotificationController(), permanent: true);
