@@ -27,33 +27,28 @@ class MainHomeViewModel extends GetxController {
     _tap_4.value = false;
     _tap_5.value = false;
 
-    // 탭 활성화 처리
-    if (index == 0) _tap_1.value = true;
-    if (index == 1) _tap_2.value = true;
-    if (index == 2) _tap_3.value = true;
-    if (index == 3) _tap_4.value = true; // 슬마켓
-    if (index == 4) _tap_5.value = true;
+    // 탭 활성화 처리 (스라마켓 탭 숨김)
+    if (index == 0) _tap_1.value = true;  // 홈
+    if (index == 1) _tap_2.value = true;  // 중고거래
+    if (index == 2) _tap_3.value = true;  // 랭킹 (기존 index 3)
+    if (index == 3) _tap_5.value = true;  // 더보기 (기존 index 4)
 
     _currentPage.value = index;
 
-    // 슬마켓(커뮤니티)은 PageView에 없으므로 jumpToPage 하지 않음
-    if (index == 2) return;
-
-    // index 4 ("더보기")는 PageView에서는 index 3임!
-    final pageViewIndex = index > 2 ? index - 1 : index;
-    _pageController.value.jumpToPage(pageViewIndex);
+    // 스라마켓 탭이 숨겨져서 BottomNavBar와 PageView 인덱스가 일치
+    _pageController.value.jumpToPage(index);
   }
 
   void changePage(int index) {
-    // PageView는 슬마켓이 빠져 있으므로, 3번부터는 탭 index +1로 매핑
-    _currentPage.value = index >= 2 ? index + 1 : index;
+    // 스라마켓 탭이 숨겨져서 BottomNavBar와 PageView 인덱스가 일치
+    _currentPage.value = index;
 
     // 탭 활성화 상태도 변경
-    _tap_1.value = index == 0;
-    _tap_2.value = index == 1;
-    _tap_4.value = false;      // 슬마켓은 PageView에 없음
-    _tap_3.value = index == 3;
-    _tap_5.value = index == 4;
+    _tap_1.value = index == 0;  // 홈
+    _tap_2.value = index == 1;  // 중고거래
+    _tap_3.value = index == 2;  // 랭킹 (기존 index 3)
+    _tap_4.value = false;        // 스라마켓 탭 숨김
+    _tap_5.value = index == 3;  // 더보기 (기존 index 4)
   }
 
   @override

@@ -14,7 +14,7 @@ class SplashScreenWrapper extends StatefulWidget {
 
 class _SplashScreenWrapperState extends State<SplashScreenWrapper> {
   final SplashController _splashController = Get.find<SplashController>();
-  final defaultSplashUrl = 'https://i.esdrop.com/d/f/yytYSNBROy/spAvUnyvK6.png';
+  final defaultSplashAsset = 'assets/imgs/splash_screen/splash_logo.png';
 
   @override
   void initState() {
@@ -35,16 +35,43 @@ class _SplashScreenWrapperState extends State<SplashScreenWrapper> {
 
   @override
   Widget build(BuildContext context) {
-    final splashUrl = _splashController.url.isNotEmpty
-        ? _splashController.url
-        : defaultSplashUrl;
+    // controller에 URL이 있으면 네트워크 이미지, 없으면 로컬 이미지
+    if (_splashController.url.isEmpty) {
+      return ExtendedImage.asset(
+        defaultSplashAsset,
+        fit: BoxFit.cover,
+        width: double.infinity,
+        height: double.infinity,
+      );
+    }
 
     return ExtendedImage.network(
-      splashUrl,
+      _splashController.url,
       fit: BoxFit.cover,
       width: double.infinity,
       height: double.infinity,
       enableMemoryCache: true,
+      cache: true,
+      loadStateChanged: (ExtendedImageState state) {
+        switch (state.extendedImageLoadState) {
+          case LoadState.loading:
+          case LoadState.failed:
+            // 로딩 중이거나 실패 시 기본 로컬 이미지 표시
+            return ExtendedImage.asset(
+              defaultSplashAsset,
+              fit: BoxFit.cover,
+              width: double.infinity,
+              height: double.infinity,
+            );
+          case LoadState.completed:
+            return ExtendedRawImage(
+              image: state.extendedImageInfo?.image,
+              fit: BoxFit.cover,
+              width: double.infinity,
+              height: double.infinity,
+            );
+        }
+      },
     );
   }
 }

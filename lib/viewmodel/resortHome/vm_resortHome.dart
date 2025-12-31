@@ -734,22 +734,32 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
 
                 // 리스폰 처리
                 if (passPointInfo['type'] == 'respawn_point') {
+                  print('========== 리스폰 디버깅 시작 ==========');
+                  print('📍 _lastSlopeName: "$_lastSlopeName"');
+
                   final secondsSinceLastRespawn = _lastRespawnMethodCall != null
                       ? DateTime.now().difference(_lastRespawnMethodCall!).inSeconds
                       : null;
                   final isFantasySlope = _lastSlopeName == '환타지';
                   final cooldownSeconds = isFantasySlope ? 20 : 180;
-                  print('리스폰 조건 확인: lastCall=$_lastRespawnMethodCall, secondsSince=$secondsSinceLastRespawn, isFantasy=$isFantasySlope, cooldown=$cooldownSeconds');
+
+                  print('🎿 환타지 슬로프 판별: $isFantasySlope');
+                  print('⏱️  쿨타임: $cooldownSeconds초');
+                  print('🕐 마지막 리스폰 시각: $_lastRespawnMethodCall');
+                  print('⏳ 경과 시간: ${secondsSinceLastRespawn ?? "첫 호출"}초');
+                  print('✅ 리스폰 가능 조건: ${_lastRespawnMethodCall == null ? "첫 호출(무조건 실행)" : "경과시간($secondsSinceLastRespawn초) > 쿨타임($cooldownSeconds초) = ${secondsSinceLastRespawn! > cooldownSeconds}"}');
 
                   if (_lastRespawnMethodCall == null || secondsSinceLastRespawn! > cooldownSeconds) {
+                    print('🚀 리스폰 실행!');
                     _lastRespawnMethodCall = DateTime.now(); // 쿨다운 먼저 기록
                     _respawnSkipLogSent = false;
                     futures.add(() async {
                       try {
                         final respawnResponse = await RankingAPI().respawn({"user_id": user_id});
                         if (respawnResponse.success) {
-                          print('리스폰 성공');
+                          print('✅ 리스폰 성공');
                           int insertedCount = respawnResponse.data['inserted_count'] ?? 0;
+                          print('📊 추가된 라이딩 수: $insertedCount');
                           _sessionRideCount += insertedCount;
                           String? latestSlopeFullname = respawnResponse.data['latest_slope_fullname'];
                           if (latestSlopeFullname != null && latestSlopeFullname.isNotEmpty) {
