@@ -12,6 +12,11 @@ import android.os.IBinder
 import android.widget.RemoteViews
 import androidx.core.app.NotificationCompat
 import android.os.SystemClock
+import android.text.SpannableString
+import android.text.style.StyleSpan
+import android.graphics.Typeface
+import android.text.Html
+import android.os.Build as AndroidBuild
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -28,9 +33,10 @@ class LiveActivityService : Service() {
         private var startTimeMs: Long = 0
         private var todayRideCount: Int = 0
         private var sessionRideCount: Int = 0
-        private var lastSlopeName: String = "—"
+        private var lastSlopeName: String = "-"
         private var liveFriendCount: Int = 0
         private var lastRideAtMs: Long? = null
+        private var resortName: String = "-"
 
         fun isServiceRunning(): Boolean = isRunning
     }
@@ -48,9 +54,10 @@ class LiveActivityService : Service() {
                 startTimeMs = intent.getLongExtra("liveOnStartAtMs", System.currentTimeMillis())
                 todayRideCount = intent.getIntExtra("todayRideCount", 0)
                 sessionRideCount = intent.getIntExtra("sessionRideCount", 0)
-                lastSlopeName = intent.getStringExtra("lastSlopeName") ?: "—"
+                lastSlopeName = intent.getStringExtra("lastSlopeName") ?: "-"
                 liveFriendCount = intent.getIntExtra("liveFriendCount", 0)
                 lastRideAtMs = if (intent.hasExtra("lastRideAtMs")) intent.getLongExtra("lastRideAtMs", 0) else null
+                resortName = intent.getStringExtra("resortName") ?: "-"
 
                 isRunning = true
                 startForeground(NOTIFICATION_ID, buildNotification())
@@ -70,6 +77,9 @@ class LiveActivityService : Service() {
                 }
                 if (intent.hasExtra("lastRideAtMs")) {
                     lastRideAtMs = intent.getLongExtra("lastRideAtMs", 0)
+                }
+                if (intent.hasExtra("resortName")) {
+                    resortName = intent.getStringExtra("resortName") ?: resortName
                 }
 
                 updateNotification()
@@ -107,20 +117,24 @@ class LiveActivityService : Service() {
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
 
-        // 커스텀 레이아웃 생성
-        val remoteViews = RemoteViews(packageName, R.layout.notification_live_activity)
+        // 축소 레이아웃 (3개 컬럼만 표시)
+        val collapsedView = RemoteViews(packageName, R.layout.notification_live_activity_collapsed)
+        collapsedView.setTextViewText(R.id.today_ride_count, todayRideCount.toString())
+        collapsedView.setTextViewText(R.id.session_ride_count, sessionRideCount.toString())
+        collapsedView.setTextViewText(R.id.last_slope, if (lastSlopeName.isEmpty() || lastSlopeName == "-") "-" else lastSlopeName)
 
-        // 데이터 바인딩
-        remoteViews.setTextViewText(R.id.resort_name, "휘닉스파크")
-        remoteViews.setTextViewText(R.id.ride_count, sessionRideCount.toString())
-        remoteViews.setTextViewText(R.id.friend_count, liveFriendCount.toString())
-        remoteViews.setTextViewText(R.id.last_slope, if (lastSlopeName.isEmpty() || lastSlopeName == "—") "-" else lastSlopeName)
+        // 확장 레이아웃 (전체 정보 표시)
+        val expandedView = RemoteViews(packageName, R.layout.notification_live_activity)
+        expandedView.setTextViewText(R.id.resort_name, if (resortName.isEmpty()) "-" else resortName)
+        expandedView.setTextViewText(R.id.friend_count, liveFriendCount.toString())
+        expandedView.setTextViewText(R.id.today_ride_count, todayRideCount.toString())
+        expandedView.setTextViewText(R.id.session_ride_count, sessionRideCount.toString())
+        expandedView.setTextViewText(R.id.last_slope, if (lastSlopeName.isEmpty() || lastSlopeName == "-") "-" else lastSlopeName)
 
         // Chronometer 설정 (경과 시간 표시)
-        // startTimeMs는 System.currentTimeMillis() 기준, Chronometer는 elapsedRealtime 기준
         val elapsedSinceStart = System.currentTimeMillis() - startTimeMs
         val chronometerBase = SystemClock.elapsedRealtime() - elapsedSinceStart
-        remoteViews.setChronometer(R.id.timer, chronometerBase, null, true)
+        expandedView.setChronometer(R.id.timer, chronometerBase, null, true)
 
         // 경과 시간 계산 (contentText용)
         val elapsedMs = System.currentTimeMillis() - startTimeMs
@@ -131,15 +145,24 @@ class LiveActivityService : Service() {
 
         val contentText = "라이딩 $sessionRideCount 회 | $elapsedText 경과"
 
+        // 볼드 처리된 subText
+        val boldSubText = if (AndroidBuild.VERSION.SDK_INT >= AndroidBuild.VERSION_CODES.N) {
+            Html.fromHtml("<b>스노우라이브</b>", Html.FROM_HTML_MODE_LEGACY)
+        } else {
+            @Suppress("DEPRECATION")
+            Html.fromHtml("<b>스노우라이브</b>")
+        }
+
         return NotificationCompat.Builder(this, CHANNEL_ID)
             .setSmallIcon(R.mipmap.launcher_icon)
-            .setContentTitle("라이브온 중")
+            .setContentTitle("스노우라이브")
             .setContentText(contentText)
-            .setCustomContentView(remoteViews)
-            .setCustomBigContentView(remoteViews)
+            .setStyle(NotificationCompat.DecoratedCustomViewStyle())
+            .setCustomContentView(collapsedView)
+            .setCustomBigContentView(expandedView)
             .setContentIntent(pendingIntent)
             .setOngoing(true)
-            .setShowWhen(false)
+            .setShowWhen(true)
             .setOnlyAlertOnce(true)
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .setCategory(NotificationCompat.CATEGORY_SERVICE)

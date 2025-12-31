@@ -75,9 +75,10 @@ class MainActivity: FlutterActivity() {
                             val liveOnStartAtMs = call.argument<Long>("liveOnStartAtMs") ?: System.currentTimeMillis()
                             val todayRideCount = call.argument<Int>("todayRideCount") ?: 0
                             val sessionRideCount = call.argument<Int>("sessionRideCount") ?: 0
-                            val lastSlopeName = call.argument<String>("lastSlopeName") ?: "—"
+                            val lastSlopeName = call.argument<String>("lastSlopeName") ?: "-"
                             val liveFriendCount = call.argument<Int>("liveFriendCount") ?: 0
                             val lastRideAtMs = call.argument<Long>("lastRideAtMs")
+                            val resortName = call.argument<String>("resortName") ?: "-"
 
                             val intent = Intent(this, LiveActivityService::class.java).apply {
                                 action = LiveActivityService.ACTION_START
@@ -86,6 +87,7 @@ class MainActivity: FlutterActivity() {
                                 putExtra("sessionRideCount", sessionRideCount)
                                 putExtra("lastSlopeName", lastSlopeName)
                                 putExtra("liveFriendCount", liveFriendCount)
+                                putExtra("resortName", resortName)
                                 lastRideAtMs?.let { putExtra("lastRideAtMs", it) }
                             }
 

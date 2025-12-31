@@ -43,7 +43,7 @@ struct LiveOnLockScreenView: View {
                             .fixedSize(horizontal: true, vertical: false)
                     }
 
-                    // 타이머 (HStack 밖으로)
+                    // 타이머
                     Text(context.attributes.liveOnStartAt, style: .timer)
                         .font(.system(size: 12, weight: .bold))
                         .monospacedDigit()
@@ -85,6 +85,7 @@ struct LiveOnLockScreenView: View {
                     Text(lastSlopeName)
                         .font(.system(size: 18, weight: .bold))
                         .lineLimit(1)
+                        .minimumScaleFactor(0.6)
                         .truncationMode(.tail)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)

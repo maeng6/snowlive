@@ -2,71 +2,17 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:padding="16dp"
-    android:background="@android:color/white">
+    android:orientation="vertical">
 
-    <!-- 상단: 로고 (좌측) + 리조트명/타이머 (우측) -->
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp">
-
-        <!-- SNOWLIVE 로고 (좌측) -->
-        <ImageView
-            android:id="@+id/logo"
-            android:layout_width="70dp"
-            android:layout_height="12dp"
-            android:layout_alignParentStart="true"
-            android:layout_centerVertical="true"
-            android:src="@drawable/img_liveactivity_logo"
-            android:scaleType="fitStart" />
-
-        <!-- 리조트명 + 타이머 (우측) -->
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:orientation="horizontal"
-            android:gravity="center_vertical">
-
-            <!-- 핀 아이콘 -->
-            <ImageView
-                android:id="@+id/pin_icon"
-                android:layout_width="16dp"
-                android:layout_height="16dp"
-                android:src="@drawable/img_liveactivity_pin"
-                android:layout_marginEnd="2dp" />
-
-            <!-- 리조트명 -->
-            <TextView
-                android:id="@+id/resort_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="휘닉스파크"
-                android:textSize="12sp"
-                android:textColor="#000000"
-                android:layout_marginEnd="6dp" />
-
-            <!-- 타이머 -->
-            <Chronometer
-                android:id="@+id/timer"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="12sp"
-                android:textStyle="bold"
-                android:textColor="#000000" />
-        </LinearLayout>
-    </RelativeLayout>
-
-    <!-- 하단: 3개 컬럼 -->
+    <!-- 상단: 3개 컬럼 -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:layout_marginBottom="8dp"
         android:orientation="horizontal">
 
-        <!-- 라이딩 횟수 -->
+        <!-- 오늘 총 라이딩 -->
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -76,22 +22,21 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="라이딩 횟수"
+                android:text="오늘 총 라이딩"
                 android:textSize="12sp"
                 android:textColor="#999999" />
 
             <TextView
-                android:id="@+id/ride_count"
+                android:id="@+id/today_ride_count"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="0"
                 android:textSize="20sp"
                 android:textStyle="bold"
-                android:textColor="#000000"
-                android:layout_marginTop="4dp" />
+                android:textColor="#000000" />
         </LinearLayout>
 
-        <!-- 라이브온 중인 친구 -->
+        <!-- 현재 라이딩 -->
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -101,22 +46,21 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="라이브온 중인 친구"
+                android:text="현재 라이딩"
                 android:textSize="12sp"
                 android:textColor="#999999" />
 
             <TextView
-                android:id="@+id/friend_count"
+                android:id="@+id/session_ride_count"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="0"
                 android:textSize="20sp"
                 android:textStyle="bold"
-                android:textColor="#000000"
-                android:layout_marginTop="4dp" />
+                android:textColor="#000000" />
         </LinearLayout>
 
-        <!-- 마지막 라이딩 슬로프 -->
+        <!-- 마지막 슬로프 -->
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -126,7 +70,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="마지막 라이딩 슬로프"
+                android:text="마지막 슬로프"
                 android:textSize="12sp"
                 android:textColor="#999999" />
 
@@ -138,9 +82,62 @@
                 android:textSize="18sp"
                 android:textStyle="bold"
                 android:textColor="#000000"
-                android:layout_marginTop="4dp"
                 android:maxLines="1"
                 android:ellipsize="end" />
         </LinearLayout>
+    </LinearLayout>
+
+    <!-- 하단: 친구/리조트/타이머 (좌측 정렬) -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <!-- 친구 아이콘 + 숫자 -->
+        <ImageView
+            android:id="@+id/friend_icon"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:src="@drawable/img_liveactivity_friend"
+            android:layout_marginEnd="4dp" />
+
+        <TextView
+            android:id="@+id/friend_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:textColor="#000000"
+            android:layout_marginEnd="12dp" />
+
+        <!-- 핀 아이콘 + 리조트명 -->
+        <ImageView
+            android:id="@+id/pin_icon"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:src="@drawable/img_liveactivity_pin"
+            android:layout_marginEnd="2dp" />
+
+        <TextView
+            android:id="@+id/resort_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="-"
+            android:textSize="12sp"
+            android:textColor="#000000"
+            android:layout_marginEnd="12dp"
+            android:maxLines="1"
+            android:ellipsize="end" />
+
+        <!-- 타이머 -->
+        <Chronometer
+            android:id="@+id/timer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:textColor="#000000" />
     </LinearLayout>
 </LinearLayout>
