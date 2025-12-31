@@ -109,6 +109,10 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
   // 등록된 Geofence 정보 저장 (초기 위치 체크용)
   List<Map<String, dynamic>> _registeredGeofences = [];
 
+  // GPS 조작 탐지용 변수
+  Position? _lastValidationPosition;
+  DateTime? _lastValidationTime;
+
   dynamic weatherTextColors;
   dynamic weatherColors;
   dynamic weatherIcons;
@@ -583,6 +587,9 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
             _latitude.value = position.latitude;
             _longitude.value = position.longitude;
 
+            // 🚨 GPS 조작 탐지: 비정상 속도 감지
+            _validatePosition(position, user_id);
+
             await _lock.synchronized(() async {
             bool withinBoundary = _checkPositionWithinBoundary(
               position.latitude,
@@ -862,6 +869,9 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
       showsBackgroundLocationIndicator: true,
       disableLocationAuthorizationAlert: true,
       logLevel: bg.Config.LOG_LEVEL_OFF,
+
+      // 🆕 캐시 방지: 위치 데이터를 SQLite에 저장하지 않음 (bg_heartbeat 캐시 문제 해결)
+      persistMode: bg.Config.PERSIST_MODE_NONE,
     ));
 
     await bg.BackgroundGeolocation.start();
@@ -924,6 +934,9 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
         altitudeAccuracy: 0,
         headingAccuracy: 0,
       );
+
+      // 🚨 GPS 조작 탐지: 비정상 속도 감지
+      _validatePosition(position, user_id);
 
       await _lock.synchronized(() async {
         bool withinBoundary = _checkPositionWithinBoundary(
@@ -1202,6 +1215,38 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
     );
 
     return distance <= radius;
+  }
+
+  /// GPS 조작 탐지: 비정상 속도 감지
+  void _validatePosition(Position newPosition, int userId) {
+    if (_lastValidationPosition != null && _lastValidationTime != null) {
+      final distance = Geolocator.distanceBetween(
+        _lastValidationPosition!.latitude, _lastValidationPosition!.longitude,
+        newPosition.latitude, newPosition.longitude,
+      );
+
+      final timeDiff = DateTime.now().difference(_lastValidationTime!).inSeconds;
+
+      if (timeDiff > 0) {
+        final speedMps = distance / timeDiff; // m/s
+        final speedKmh = speedMps * 3.6; // km/h
+
+        // 🚨 비정상 속도 감지 (스키 최고속도 ~120km/h 고려, 150km/h 이상은 의심)
+        if (speedKmh > 150) {
+          print('🚨 [GPS] 비정상 속도 감지: ${speedKmh.toStringAsFixed(1)}km/h, 거리: ${distance.toStringAsFixed(0)}m, 시간: ${timeDiff}초');
+          _sendLiveLog(
+            userId: userId,
+            requestType: 'suspicious_speed',
+            error: 'speed: ${speedKmh.toStringAsFixed(1)}km/h, dist: ${distance.toStringAsFixed(0)}m, time: ${timeDiff}s',
+            lat: newPosition.latitude,
+            lon: newPosition.longitude,
+          );
+        }
+      }
+    }
+
+    _lastValidationPosition = newPosition;
+    _lastValidationTime = DateTime.now();
   }
 
   Future<void> liveOff(Map<String, dynamic> body, user_id) async {
