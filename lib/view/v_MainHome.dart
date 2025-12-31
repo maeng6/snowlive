@@ -43,26 +43,7 @@ class MainHomeView extends StatelessWidget {
               type: BottomNavigationBarType.fixed,
               currentIndex: _MainHomeViewModel.currentPage!,
               onTap: (index) {
-                if (index == 2) {
-                  // 스라마켓 탭 클릭 시 별도 처리
-                  FirebaseAnalytics.instance.logEvent(
-                    name: 'visit_slmk',
-                    parameters: {
-                      'user_id': _userViewModel.user.user_id,
-                      'user_name': _userViewModel.user.display_name,
-                    },
-                  );
-
-                  Get.to(() => SlmkScreen())!.then((result) {
-                    if (result != null && result is int) {
-                      _MainHomeViewModel.onItemTapped(result); // 예: 홈으로 복귀
-                    }
-                  });
-
-                  return; // 🔥 슬마켓은 PageView 이동 방지
-                }
-
-                // 슬마켓 외 페이지 전환
+                // 페이지 전환
                 _MainHomeViewModel.onItemTapped(index);
 
                 // GA 트래킹
@@ -79,13 +60,13 @@ class MainHomeView extends StatelessWidget {
                       'user_name': _userViewModel.user.display_name,
                     });
                     break;
-                  case 3:
+                  case 2:
                     FirebaseAnalytics.instance.logEvent(name: 'visit_rankingHome', parameters: {
                       'user_id': _userViewModel.user.user_id,
                       'user_name': _userViewModel.user.display_name,
                     });
                     break;
-                  case 4:
+                  case 3:
                     FirebaseAnalytics.instance.logEvent(name: 'visit_moreTab', parameters: {
                       'user_id': _userViewModel.user.user_id,
                       'user_name': _userViewModel.user.display_name,
@@ -106,12 +87,12 @@ class MainHomeView extends StatelessWidget {
                   activeIcon: Image.asset('assets/imgs/icons/icon_market_on.png', width: 32, height: 32),
                   label: '중고거래',
                 ),
-                BottomNavigationBarItem(
-                  backgroundColor: Colors.transparent,
-                  icon: Image.asset('assets/imgs/icons/icon_b_tabbar_slmk.png', width: 32, height: 32),
-                  activeIcon: Image.asset('assets/imgs/icons/icon_b_tabbar_slmk.png', width: 32, height: 32),
-                  label: '스라마켓',
-                ),
+                // BottomNavigationBarItem(
+                //   backgroundColor: Colors.transparent,
+                //   icon: Image.asset('assets/imgs/icons/icon_b_tabbar_slmk.png', width: 32, height: 32),
+                //   activeIcon: Image.asset('assets/imgs/icons/icon_b_tabbar_slmk.png', width: 32, height: 32),
+                //   label: '스라마켓',
+                // ),
                 BottomNavigationBarItem(
                   backgroundColor: Colors.transparent,
                   icon: Image.asset('assets/imgs/icons/icon_discover_off.png', width: 32, height: 32),
@@ -179,10 +160,10 @@ class MainHomeView extends StatelessWidget {
           onPageChanged: _MainHomeViewModel.changePage,
           physics: NeverScrollableScrollPhysics(),
           children: [
-            ResortHomeView(),       // index 0
-            FleaMarketMainView(),   // index 1
-            RankingHomeView(),      // index 3
-            MoreTabMainView(),      // index 4
+            ResortHomeView(),       // index 0: 홈
+            FleaMarketMainView(),   // index 1: 중고거래
+            RankingHomeView(),      // index 2: 랭킹 (스라마켓 탭 숨김으로 인덱스 변경)
+            MoreTabMainView(),      // index 3: 더보기 (스라마켓 탭 숨김으로 인덱스 변경)
           ],
         )
     ));
