@@ -43,6 +43,14 @@ import 'package:shared_preferences/shared_preferences.dart';
 final ref = FirebaseFirestore.instance;
 DateTime? _lastFakeLocationCheckTime;
 
+// 마지막 액션 타입 (리스폰 로직용)
+enum LastActionType {
+  none,       // 초기 상태
+  checkpoint, // 체크포인트 통과
+  respawn,    // 리스폰 성공
+  reset,      // 리셋 성공
+}
+
 class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
   var _resortHomeModel = ResortHomeModel().obs;
   var isLoading = true.obs;
@@ -104,6 +112,7 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
   // Live Activity 상태 관리 변수
   int _sessionRideCount = 0;          // 현재 세션 라이딩 횟수
   String _lastSlopeName = '';          // 마지막 라이딩 슬로프명 (체크포인트에서 저장)
+  LastActionType _lastActionType = LastActionType.none; // 마지막 액션 타입 (리스폰 조건 판별용)
   DateTime? _lastRideAt;               // 마지막 라이딩 시간
 
   // 등록된 Geofence 정보 저장 (초기 위치 체크용)
@@ -668,6 +677,8 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
                         final isSuccess = response.statusCode == 201 || response.statusCode == 416;
                         if (isSuccess) {
                           print('포그라운드 체크포인트 업데이트 성공: $slopeFullname');
+                          // 체크포인트 성공 시 마지막 액션 타입 기록
+                          _lastActionType = LastActionType.checkpoint;
                         } else {
                           print('포그라운드 체크포인트 업데이트 실패: ${response.statusCode}');
                         }
@@ -723,7 +734,11 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
                     futures.add(() async {
                       try {
                         final resetResponse = await RankingAPI().reset({"user_id": user_id});
-                        print('리셋 성공');
+                        if (resetResponse.success) {
+                          print('리셋 성공');
+                          // 리셋 성공 시 마지막 액션 타입 기록
+                          _lastActionType = LastActionType.reset;
+                        }
                         _sendLiveLog(userId: user_id, requestType: 'fg_reset', error: resetResponse.success ? 'success' : resetResponse.error.toString(), lat: position.latitude, lon: position.longitude);
                       } catch (e) {
                         print('포그라운드 리셋 오류: $e');
@@ -732,24 +747,41 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
                   }
                 }
 
-                // 리스폰 처리
+                // 리스폰 처리 (새로운 액션 기반 로직)
                 if (passPointInfo['type'] == 'respawn_point') {
-                  print('========== 리스폰 디버깅 시작 ==========');
-                  print('📍 _lastSlopeName: "$_lastSlopeName"');
+                  print('========== 리스폰 디버깅 시작 (액션 기반) ==========');
+                  print('📍 마지막 액션 타입: $_lastActionType');
 
-                  final secondsSinceLastRespawn = _lastRespawnMethodCall != null
-                      ? DateTime.now().difference(_lastRespawnMethodCall!).inSeconds
-                      : null;
-                  final isFantasySlope = _lastSlopeName == '환타지';
-                  final cooldownSeconds = isFantasySlope ? 20 : 180;
+                  bool canRespawn = false;
+                  String respawnReason = '';
 
-                  print('🎿 환타지 슬로프 판별: $isFantasySlope');
-                  print('⏱️  쿨타임: $cooldownSeconds초');
-                  print('🕐 마지막 리스폰 시각: $_lastRespawnMethodCall');
-                  print('⏳ 경과 시간: ${secondsSinceLastRespawn ?? "첫 호출"}초');
-                  print('✅ 리스폰 가능 조건: ${_lastRespawnMethodCall == null ? "첫 호출(무조건 실행)" : "경과시간($secondsSinceLastRespawn초) > 쿨타임($cooldownSeconds초) = ${secondsSinceLastRespawn! > cooldownSeconds}"}');
+                  // 액션 타입에 따라 리스폰 가능 여부 판단
+                  if (_lastActionType == LastActionType.checkpoint) {
+                    // 직전 액션이 체크포인트 통과 → 무조건 리스폰 성공
+                    canRespawn = true;
+                    respawnReason = '직전 액션이 체크포인트 통과 → 무조건 성공';
+                  } else if (_lastActionType == LastActionType.respawn) {
+                    // 직전 액션이 리스폰 → 60초 쿨다운 체크
+                    final secondsSinceLastRespawn = _lastRespawnMethodCall != null
+                        ? DateTime.now().difference(_lastRespawnMethodCall!).inSeconds
+                        : 999;
 
-                  if (_lastRespawnMethodCall == null || secondsSinceLastRespawn! > cooldownSeconds) {
+                    if (secondsSinceLastRespawn > 60) {
+                      canRespawn = true;
+                      respawnReason = '직전 액션이 리스폰, 60초 경과 (${secondsSinceLastRespawn}초)';
+                    } else {
+                      canRespawn = false;
+                      respawnReason = '직전 액션이 리스폰, 60초 미경과 (${secondsSinceLastRespawn}초)';
+                    }
+                  } else {
+                    // 첫 리스폰 (none 또는 reset) → 무조건 성공
+                    canRespawn = true;
+                    respawnReason = '첫 리스폰 또는 리셋 후 → 무조건 성공';
+                  }
+
+                  print('✅ 리스폰 가능 여부: $canRespawn ($respawnReason)');
+
+                  if (canRespawn) {
                     print('🚀 리스폰 실행!');
                     _lastRespawnMethodCall = DateTime.now(); // 쿨다운 먼저 기록
                     _respawnSkipLogSent = false;
@@ -758,6 +790,9 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
                         final respawnResponse = await RankingAPI().respawn({"user_id": user_id});
                         if (respawnResponse.success) {
                           print('✅ 리스폰 성공');
+                          // 리스폰 성공 시 마지막 액션 타입 기록
+                          _lastActionType = LastActionType.respawn;
+
                           int insertedCount = respawnResponse.data['inserted_count'] ?? 0;
                           print('📊 추가된 라이딩 수: $insertedCount');
                           _sessionRideCount += insertedCount;
@@ -772,7 +807,7 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
                           await fetchResortHome(user_id);
                           _updateLiveActivity();
                         }
-                        _sendLiveLog(userId: user_id, requestType: 'fg_respawn', error: respawnResponse.success ? 'success' : respawnResponse.error.toString(), lat: position.latitude, lon: position.longitude);
+                        _sendLiveLog(userId: user_id, requestType: 'fg_respawn', error: respawnResponse.success ? 'success: $respawnReason' : respawnResponse.error.toString(), lat: position.latitude, lon: position.longitude);
                       } catch (e) {
                         print('포그라운드 리스폰 오류: $e');
                         _sendLiveLog(userId: user_id, requestType: 'fg_respawn_error', error: e.toString(), lat: position.latitude, lon: position.longitude);
@@ -781,8 +816,9 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
                   } else {
                     if (!_respawnSkipLogSent) {
                       _respawnSkipLogSent = true;
-                      _sendLiveLog(userId: user_id, requestType: 'fg_respawn_skipped', error: 'cooldown: ${secondsSinceLastRespawn}s < ${cooldownSeconds}s', lat: position.latitude, lon: position.longitude);
+                      _sendLiveLog(userId: user_id, requestType: 'fg_respawn_skipped', error: respawnReason, lat: position.latitude, lon: position.longitude);
                     }
+                    print('⏭️  리스폰 스킵: $respawnReason');
                   }
                 }
               }
@@ -1012,6 +1048,8 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
                     final isSuccess = response.statusCode == 201 || response.statusCode == 416;
                     if (isSuccess) {
                       print('백그라운드 체크포인트 업데이트 성공: $slopeFullname');
+                      // 체크포인트 성공 시 마지막 액션 타입 기록
+                      _lastActionType = LastActionType.checkpoint;
                     } else {
                       print('백그라운드 체크포인트 업데이트 실패: ${response.statusCode}');
                     }
@@ -1067,7 +1105,11 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
                 futures.add(() async {
                   try {
                     final resetResponse = await RankingAPI().reset({"user_id": user_id});
-                    print('리셋 성공');
+                    if (resetResponse.success) {
+                      print('리셋 성공');
+                      // 리셋 성공 시 마지막 액션 타입 기록
+                      _lastActionType = LastActionType.reset;
+                    }
                     _sendLiveLog(userId: user_id, requestType: 'bg_reset', error: resetResponse.success ? 'success' : resetResponse.error.toString(), lat: position.latitude, lon: position.longitude);
                   } catch (e) {
                     print('백그라운드 리셋 오류: $e');
@@ -1297,6 +1339,7 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
       _sessionRideCount = 0;
       _lastSlopeName = '';
       _lastRideAt = null;
+      _lastActionType = LastActionType.none; // 액션 타입 초기화
 
       // ✅ 쿨다운 변수 초기화 (다음 liveOn 시 정상 동작을 위해)
       _lastCountMethodCall = null;
