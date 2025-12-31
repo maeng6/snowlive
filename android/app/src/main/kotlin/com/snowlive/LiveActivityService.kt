@@ -61,6 +61,7 @@ class LiveActivityService : Service() {
 
                 isRunning = true
                 startForeground(NOTIFICATION_ID, buildNotification())
+                cancelBackgroundGeolocationNotification()
             }
             ACTION_UPDATE -> {
                 if (intent.hasExtra("todayRideCount")) {
@@ -83,6 +84,7 @@ class LiveActivityService : Service() {
                 }
 
                 updateNotification()
+                cancelBackgroundGeolocationNotification()
             }
             ACTION_STOP -> {
                 isRunning = false
@@ -98,7 +100,7 @@ class LiveActivityService : Service() {
             val channel = NotificationChannel(
                 CHANNEL_ID,
                 "라이브 활동",
-                NotificationManager.IMPORTANCE_DEFAULT
+                NotificationManager.IMPORTANCE_HIGH
             ).apply {
                 description = "라이브온 상태를 표시합니다"
                 setShowBadge(false)
@@ -163,8 +165,10 @@ class LiveActivityService : Service() {
             .setContentIntent(pendingIntent)
             .setOngoing(true)
             .setShowWhen(true)
+            .setWhen(System.currentTimeMillis() + 86400000)  // 미래 시간으로 설정하여 상단 유지
+            .setSortKey("0")  // 정렬 키 - 가장 먼저 표시
             .setOnlyAlertOnce(true)
-            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            .setPriority(NotificationCompat.PRIORITY_MAX)
             .setCategory(NotificationCompat.CATEGORY_SERVICE)
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
             .setForegroundServiceBehavior(NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE)
@@ -174,6 +178,16 @@ class LiveActivityService : Service() {
     private fun updateNotification() {
         val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.notify(NOTIFICATION_ID, buildNotification())
+    }
+
+    private fun cancelBackgroundGeolocationNotification() {
+        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        // 현재 활성화된 모든 알림 중 우리 알림(9999)을 제외한 알림 취소
+        notificationManager.activeNotifications.forEach { statusBarNotification ->
+            if (statusBarNotification.id != NOTIFICATION_ID && statusBarNotification.packageName == packageName) {
+                notificationManager.cancel(statusBarNotification.id)
+            }
+        }
     }
 
     override fun onDestroy() {

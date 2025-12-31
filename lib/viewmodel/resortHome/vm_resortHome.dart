@@ -575,11 +575,7 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
             distanceFilter: 5,
             forceLocationManager: false,
             intervalDuration: const Duration(seconds: 5),
-            foregroundNotificationConfig: const ForegroundNotificationConfig(
-              notificationTitle: '스노우라이브',
-              notificationText: '위치 추적 중',
-              enableWakeLock: true,
-            ),
+            // foregroundNotificationConfig 제거 - LiveActivityService가 포그라운드 서비스 역할 수행
           );
         } else {
           locationSettings = const LocationSettings(
@@ -905,11 +901,13 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
         negativeAction: '취소',
       ),
 
-      // 🔥 Android 알림 설정 (포그라운드 서비스)
+      // 🔥 Android 알림 설정 - 알림 숨김 (LiveActivity 알림만 표시)
       notification: bg.Notification(
+        channelId: "live_activity_channel",  // LiveActivityService와 동일한 채널 사용
         title: "스노우라이브",
         text: "라이브 위치 추적 중...",
-        sticky: true,                         // 🆕 알림 고정 (스와이프로 삭제 불가)
+        sticky: true,
+        priority: bg.Config.NOTIFICATION_PRIORITY_MIN,
       ),
 
       showsBackgroundLocationIndicator: true,

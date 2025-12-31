@@ -24,7 +24,7 @@
                 android:layout_height="wrap_content"
                 android:text="오늘 총 라이딩"
                 android:textSize="12sp"
-                android:textColor="#999999" />
+                android:textColor="#444444" />
 
             <TextView
                 android:id="@+id/today_ride_count"
@@ -48,7 +48,7 @@
                 android:layout_height="wrap_content"
                 android:text="현재 라이딩"
                 android:textSize="12sp"
-                android:textColor="#999999" />
+                android:textColor="#444444" />
 
             <TextView
                 android:id="@+id/session_ride_count"
@@ -72,7 +72,7 @@
                 android:layout_height="wrap_content"
                 android:text="마지막 슬로프"
                 android:textSize="12sp"
-                android:textColor="#999999" />
+                android:textColor="#444444" />
 
             <TextView
                 android:id="@+id/last_slope"
