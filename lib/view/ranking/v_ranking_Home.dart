@@ -49,10 +49,11 @@ class RankingHomeView extends StatelessWidget {
                             onPressed: () async {
                               HapticFeedback.lightImpact();
                               _rankingListViewModel.changeTap('크루랭킹');
-                              _rankingListViewModel.changeDayOrTotal('누적');
+                              _rankingListViewModel.changeDayOrTotal('일간');
                               _rankingListViewModel.changeResortOrTotal('전체스키장');
                               _rankingListViewModel.changeCategory_resort('스키장별 랭킹');
                               _rankingListViewModel.changeCategory_fed('리그별 랭킹');
+                              _rankingListViewModel.toggleDataDayOrTotal_tapFilter();
                               _rankingListViewModel.changeMyBoxText();
                             },
                             style: ElevatedButton.styleFrom(
@@ -91,10 +92,11 @@ class RankingHomeView extends StatelessWidget {
                             onPressed: () async {
                               HapticFeedback.lightImpact();
                               _rankingListViewModel.changeTap('개인랭킹');
-                              _rankingListViewModel.changeDayOrTotal('누적');
+                              _rankingListViewModel.changeDayOrTotal('일간');
                               _rankingListViewModel.changeResortOrTotal('전체스키장');
                               _rankingListViewModel.changeCategory_resort('스키장별 랭킹');
                               _rankingListViewModel.changeCategory_fed('리그별 랭킹');
+                              _rankingListViewModel.toggleDataDayOrTotal_tapFilter();
                               _rankingListViewModel.changeMyBoxText();
                             },
                             style: ElevatedButton.styleFrom(
