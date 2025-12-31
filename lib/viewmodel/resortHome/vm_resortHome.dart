@@ -122,6 +122,14 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
   Position? _lastValidationPosition;
   DateTime? _lastValidationTime;
 
+  // API 타임아웃 설정 (데드락 방지)
+  static const Duration _apiTimeout = Duration(seconds: 10);
+  static const Duration _futureWaitTimeout = Duration(seconds: 15);
+
+  // RxList 데이터 보호 (메모리 압박으로 비워졌을 때 자동 재로드)
+  bool _isReloadingAreaData = false;
+  DateTime? _lastAreaDataReload;
+
   dynamic weatherTextColors;
   dynamic weatherColors;
   dynamic weatherIcons;
@@ -592,6 +600,15 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
             _latitude.value = position.latitude;
             _longitude.value = position.longitude;
 
+            // 🔍 위치 스트림 로그 (디버깅용)
+            _sendLiveLog(
+              userId: user_id,
+              requestType: 'fg_position_stream',
+              lat: position.latitude,
+              lon: position.longitude,
+              error: Platform.isIOS ? 'iOS' : 'Android',
+            );
+
             // 🚨 GPS 조작 탐지: 비정상 속도 감지
             _validatePosition(position, user_id);
 
@@ -612,38 +629,8 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
                 _locationErrorCount = 0;
                 print('포그라운드 판별중');
 
-                // try {
-                //   // 현재 시간 가져오기
-                //   final now = DateTime.now();
-                //
-                //   // 마지막 페이크 위치 감지 시간과의 차이 계산 (10초 초과 시 실행)
-                //   if (_lastFakeLocationCheckTime == null ||
-                //       now.difference(_lastFakeLocationCheckTime!).inSeconds > 10) {
-                //     _lastFakeLocationCheckTime = now; // 마지막 실행 시간 업데이트
-                //
-                //     // 페이크 위치 감지0
-                //     final isFakeLocation = await DetectFakeLocation().detectFakeLocation();
-                //
-                //     if (isFakeLocation) {
-                //       print('페이크 위치가 감지되었습니다. 위치 추적을 중지합니다.');
-                //
-                //       // 위치 추적 서비스 중지
-                //       await stopForegroundLocationService();
-                //       await stopBackgroundLocationService();
-                //
-                //       // 사용자에게 경고 메시지 표시
-                //       Get.snackbar(
-                //         '경고',
-                //         '페이크 위치가 감지되었습니다. 위치 추적 서비스가 중단되었습니다.',
-                //         snackPosition: SnackPosition.BOTTOM,
-                //       );
-                //
-                //       return; // 이후 코드 실행 방지
-                //     }
-                //   }
-                // } catch (e) {
-                //   print('페이크 위치 감지 중 오류 발생: $e');
-                // }
+                // 🛡️ 영역 데이터 보호: 비어있으면 재로드 (메모리 압박 대응)
+                await _reloadAreaDataIfNeeded(user_id, position.latitude, position.longitude);
 
                 List<Map<String, dynamic>> passPointInfos = checkPositionInAreas(
                   position,
@@ -652,6 +639,17 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
                   _reset_point,
                   _respawn_point,
                 );
+
+                // 🔍 디버깅: 영역 데이터가 비어있으면 경고
+                if (_slope_info.isEmpty && _respawn_point.isEmpty) {
+                  _sendLiveLog(
+                    userId: user_id,
+                    requestType: 'fg_area_data_empty',
+                    lat: position.latitude,
+                    lon: position.longitude,
+                    error: 'slope: ${_slope_info.length}, reset: ${_reset_point.length}, respawn: ${_respawn_point.length}',
+                  );
+                }
 
                 // 병렬 처리를 위한 Future 리스트
                 List<Future<void>> futures = [];
@@ -819,9 +817,33 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
                   }
                 }
 
-                // 모든 API 호출 병렬 실행 (하나가 실패해도 다른 것들은 정상 동작)
+                // 모든 API 호출 병렬 실행 (타임아웃 적용으로 데드락 방지)
                 if (futures.isNotEmpty) {
-                  await Future.wait(futures);
+                  try {
+                    await Future.wait(futures).timeout(
+                      _futureWaitTimeout,
+                      onTimeout: () {
+                        print('⚠️ [FG] API 호출 타임아웃 (${_futureWaitTimeout.inSeconds}초)');
+                        _sendLiveLog(
+                          userId: user_id,
+                          requestType: 'fg_api_timeout',
+                          lat: position.latitude,
+                          lon: position.longitude,
+                          error: 'Future.wait timeout after ${_futureWaitTimeout.inSeconds}s',
+                        );
+                        return [];
+                      },
+                    );
+                  } catch (e) {
+                    print('⚠️ [FG] Future.wait 오류: $e');
+                    _sendLiveLog(
+                      userId: user_id,
+                      requestType: 'fg_future_wait_error',
+                      lat: position.latitude,
+                      lon: position.longitude,
+                      error: e.toString(),
+                    );
+                  }
                 }
               } else {
                 // 경계 외부 debounce 로직: GPS 오차로 인한 오탐 방지
@@ -1007,6 +1029,9 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
           _locationErrorCount = 0;
           print('백그라운드 판별중');
 
+          // 🛡️ 영역 데이터 보호: 비어있으면 재로드 (메모리 압박 대응)
+          await _reloadAreaDataIfNeeded(user_id, position.latitude, position.longitude);
+
           List<Map<String, dynamic>> passPointInfos = checkPositionInAreas(
             position,
             _slope_info,
@@ -1130,9 +1155,33 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
             }
           }
 
-          // 모든 API 호출 병렬 실행 (하나가 실패해도 다른 것들은 정상 동작)
+          // 모든 API 호출 병렬 실행 (타임아웃 적용으로 데드락 방지)
           if (futures.isNotEmpty) {
-            await Future.wait(futures);
+            try {
+              await Future.wait(futures).timeout(
+                _futureWaitTimeout,
+                onTimeout: () {
+                  print('⚠️ [BG] API 호출 타임아웃 (${_futureWaitTimeout.inSeconds}초)');
+                  _sendLiveLog(
+                    userId: user_id,
+                    requestType: 'bg_api_timeout',
+                    lat: position.latitude,
+                    lon: position.longitude,
+                    error: 'Future.wait timeout after ${_futureWaitTimeout.inSeconds}s',
+                  );
+                  return [];
+                },
+              );
+            } catch (e) {
+              print('⚠️ [BG] Future.wait 오류: $e');
+              _sendLiveLog(
+                userId: user_id,
+                requestType: 'bg_future_wait_error',
+                lat: position.latitude,
+                lon: position.longitude,
+                error: e.toString(),
+              );
+            }
           }
 
         } else {
@@ -1265,6 +1314,77 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
     );
 
     return distance <= radius;
+  }
+
+  /// 영역 데이터가 비어있으면 재로드 (메모리 압박 대응)
+  /// 반환값: true = 데이터 정상, false = 재로드 실패
+  Future<bool> _reloadAreaDataIfNeeded(int userId, double lat, double lon) async {
+    // 데이터가 있으면 바로 통과
+    if (_slope_info.isNotEmpty) return true;
+
+    // 이미 재로드 중이면 스킵
+    if (_isReloadingAreaData) {
+      print('⏳ [AreaData] 이미 재로드 중, 스킵');
+      return false;
+    }
+
+    // 30초 내 재로드 시도한 적 있으면 스킵 (과도한 API 호출 방지)
+    if (_lastAreaDataReload != null &&
+        DateTime.now().difference(_lastAreaDataReload!).inSeconds < 30) {
+      print('⏳ [AreaData] 30초 내 재로드 시도함, 스킵');
+      return false;
+    }
+
+    print('⚠️ [AreaData] 영역 데이터 비어있음, 재로드 시도');
+    _isReloadingAreaData = true;
+    _lastAreaDataReload = DateTime.now();
+
+    try {
+      // check_wb API 호출하여 영역 데이터 재로드
+      final response = await RankingAPI().check_wb({
+        "user_id": userId,
+        "coordinates": "POINT ($lon $lat)"
+      }).timeout(_apiTimeout);
+
+      if (response.success) {
+        _slope_info.value = List<Map<String, dynamic>>.from(response.data['slope_info']);
+        _snowball_info.value = List<Map<String, dynamic>>.from(response.data['snowball_info']);
+        _reset_point.value = List<Map<String, dynamic>>.from(response.data['reset_point']);
+        _respawn_point.value = List<Map<String, dynamic>>.from(response.data['respawn_point']);
+
+        print('✅ [AreaData] 재로드 성공: slope=${_slope_info.length}, respawn=${_respawn_point.length}');
+        _sendLiveLog(
+          userId: userId,
+          requestType: 'area_data_reloaded',
+          lat: lat,
+          lon: lon,
+          error: 'slope: ${_slope_info.length}, reset: ${_reset_point.length}, respawn: ${_respawn_point.length}',
+        );
+        return true;
+      } else {
+        print('❌ [AreaData] 재로드 실패: ${response.error}');
+        _sendLiveLog(
+          userId: userId,
+          requestType: 'area_data_reload_failed',
+          lat: lat,
+          lon: lon,
+          error: response.error.toString(),
+        );
+        return false;
+      }
+    } catch (e) {
+      print('❌ [AreaData] 재로드 오류: $e');
+      _sendLiveLog(
+        userId: userId,
+        requestType: 'area_data_reload_error',
+        lat: lat,
+        lon: lon,
+        error: e.toString(),
+      );
+      return false;
+    } finally {
+      _isReloadingAreaData = false;
+    }
   }
 
   /// GPS 조작 탐지: 비정상 속도 감지
