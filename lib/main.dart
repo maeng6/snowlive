@@ -83,6 +83,13 @@ void _handleLocalNotificationTap(String? payload) {
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // 🛡️ 메모리 누수 방지: 이미지 캐시 크기 제한
+  // - maximumSize: 최대 100개 이미지
+  // - maximumSizeBytes: 최대 50MB
+  PaintingBinding.instance.imageCache.maximumSize = 100;
+  PaintingBinding.instance.imageCache.maximumSizeBytes = 50 * 1024 * 1024; // 50MB
+
   await initializeDateFormatting('ko', null);
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);

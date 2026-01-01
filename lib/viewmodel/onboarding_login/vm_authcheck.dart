@@ -195,16 +195,21 @@ class AuthCheckViewModel extends GetxController {
   /// SocketException: DNS 실패, 연결 중단 등
   /// TimeoutException: 응답 시간 초과
   /// ClientException: HTTP 클라이언트 에러 (네트워크 관련)
+  /// FormatException: 서버가 HTML 에러 페이지 반환 시 (JSON 파싱 실패)
   bool _isNetworkError(dynamic e) {
     final errorString = e.toString().toLowerCase();
     return e is SocketException ||
         e is TimeoutException ||
         e is http.ClientException ||
+        e is FormatException ||
         errorString.contains('socketexception') ||
         errorString.contains('connection') ||
         errorString.contains('timeout') ||
         errorString.contains('host lookup') ||
-        errorString.contains('network');
+        errorString.contains('network') ||
+        errorString.contains('file descriptor') ||
+        errorString.contains('clientexception') ||
+        errorString.contains('<!doctype');
   }
 
   /// 재시도 로직이 포함된 compareDeviceId API 호출

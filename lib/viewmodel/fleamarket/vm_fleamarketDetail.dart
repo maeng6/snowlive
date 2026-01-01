@@ -49,17 +49,28 @@ class FleamarketDetailViewModel extends GetxController {
   @override
   void onInit() async {
 
-    textEditingController.addListener(() {
-      if (textEditingController.text.trim().isNotEmpty) {
-        isCommentButtonEnabled(true);
-      } else {
-        isCommentButtonEnabled(false);
-      }
-    });
+    textEditingController.addListener(_textEditingListener);
     _scrollController = ScrollController()
       ..addListener(_scrollListener);
 
     super.onInit();
+  }
+
+  void _textEditingListener() {
+    if (textEditingController.text.trim().isNotEmpty) {
+      isCommentButtonEnabled(true);
+    } else {
+      isCommentButtonEnabled(false);
+    }
+  }
+
+  @override
+  void onClose() {
+    textEditingController.removeListener(_textEditingListener);
+    textEditingController.dispose();
+    _scrollController.removeListener(_scrollListener);
+    _scrollController.dispose();
+    super.onClose();
   }
 
   Future<void> _scrollListener() async {

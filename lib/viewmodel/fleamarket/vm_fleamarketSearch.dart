@@ -56,6 +56,14 @@ class FleamarketSearchViewModel extends GetxController {
 
   }
 
+  @override
+  void onClose() {
+    _scrollController.removeListener(_scrollListener);
+    _scrollController.dispose();
+    textEditingController.dispose();
+    super.onClose();
+  }
+
   Future<void> _scrollListener() async {
     // 스크롤이 리스트의 끝에 도달했을 때
     if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent) {

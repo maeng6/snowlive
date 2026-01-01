@@ -51,6 +51,19 @@ class EventAlarmViewModel extends GetxController {
     });
   }
 
+  /// 알람 스트림 구독 중지 (백그라운드 전환 시 호출)
+  void stopListening() {
+    _alarmSubscription?.cancel();
+    _alarmSubscription = null;
+  }
+
+  /// 알람 스트림 재시작 (포어그라운드 복귀 시 호출)
+  void resumeListening() {
+    if (_myUserId != null && _alarmSubscription == null) {
+      startListening(_myUserId!);
+    }
+  }
+
   /// 이벤트 읽음 처리 (내 user_id를 배열에 추가)
   Future<void> markAsRead() async {
     if (_myUserId == null) return;

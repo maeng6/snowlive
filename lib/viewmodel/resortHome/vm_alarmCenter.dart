@@ -41,6 +41,13 @@ class AlarmCenterViewModel extends GetxController {
       ..addListener(_scrollListener_alarm);
   }
 
+  @override
+  void onClose() {
+    scrollController_alarm.removeListener(_scrollListener_alarm);
+    scrollController_alarm.dispose();
+    super.onClose();
+  }
+
 
   Future<void> _scrollListener_alarm() async {
     // 스크롤이 리스트의 끝에 도달했을 때

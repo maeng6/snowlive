@@ -36,6 +36,12 @@ class FriendListViewModel extends GetxController {
     super.onInit();
   }
 
+  @override
+  void onClose() {
+    textEditingController.dispose();
+    super.onClose();
+  }
+
   Future<void> fetchFriendList() async {
     isLoading.value = true;
     try {

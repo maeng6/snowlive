@@ -1062,24 +1062,31 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
                 final slopeId = passPointInfo['id'];
                 final slopeFullname = passPointInfo['fullname'] ?? '';
                 futures.add(() async {
-                  try {
-                    final response = await RankingAPI().addCheckPoint({
-                      "user_id": user_id,
-                      "slope_id": slopeId,
-                      "coordinates": "${position.latitude}, ${position.longitude}"
-                    });
-                    final isSuccess = response.statusCode == 201 || response.statusCode == 416;
-                    if (isSuccess) {
-                      print('백그라운드 체크포인트 업데이트 성공: $slopeFullname');
-                      // 체크포인트 성공 시 마지막 액션 타입 기록
-                      _lastActionType = LastActionType.checkpoint;
-                    } else {
-                      print('백그라운드 체크포인트 업데이트 실패: ${response.statusCode}');
+                  // 🔄 네트워크 재시도 로직 (최대 3회, 1초 간격)
+                  for (int attempt = 1; attempt <= 3; attempt++) {
+                    try {
+                      final response = await RankingAPI().addCheckPoint({
+                        "user_id": user_id,
+                        "slope_id": slopeId,
+                        "coordinates": "${position.latitude}, ${position.longitude}"
+                      });
+                      final isSuccess = response.statusCode == 201 || response.statusCode == 416;
+                      if (isSuccess) {
+                        print('백그라운드 체크포인트 업데이트 성공: $slopeFullname (시도 $attempt)');
+                        _lastActionType = LastActionType.checkpoint;
+                      } else {
+                        print('백그라운드 체크포인트 업데이트 실패: ${response.statusCode}');
+                      }
+                      _sendLiveLog(userId: user_id, requestType: 'bg_checkpoint', error: isSuccess ? 'success (attempt $attempt)' : 'statusCode: ${response.statusCode}', lat: position.latitude, lon: position.longitude);
+                      break; // 성공 시 루프 종료
+                    } catch (e) {
+                      print('백그라운드 체크포인트 오류 (시도 $attempt/3): $e');
+                      if (attempt < 3) {
+                        await Future.delayed(const Duration(seconds: 1));
+                      } else {
+                        _sendLiveLog(userId: user_id, requestType: 'bg_checkpoint_error', error: 'all retries failed: $e', lat: position.latitude, lon: position.longitude);
+                      }
                     }
-                    _sendLiveLog(userId: user_id, requestType: 'bg_checkpoint', error: isSuccess ? 'success' : 'statusCode: ${response.statusCode}', lat: position.latitude, lon: position.longitude);
-                  } catch (e) {
-                    print('백그라운드 체크포인트 오류: $e');
-                    _sendLiveLog(userId: user_id, requestType: 'bg_checkpoint_error', error: e.toString(), lat: position.latitude, lon: position.longitude);
                   }
                 }());
               }
@@ -1126,32 +1133,73 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
               if (_lastResetMethodCall == null || DateTime.now().difference(_lastResetMethodCall!).inSeconds > 180) {
                 _lastResetMethodCall = DateTime.now(); // 쿨다운 먼저 기록
                 futures.add(() async {
-                  try {
-                    final resetResponse = await RankingAPI().reset({"user_id": user_id});
-                    if (resetResponse.success) {
-                      print('리셋 성공');
-                      // 리셋 성공 시 마지막 액션 타입 기록
-                      _lastActionType = LastActionType.reset;
+                  // 🔄 네트워크 재시도 로직 (최대 3회, 1초 간격)
+                  for (int attempt = 1; attempt <= 3; attempt++) {
+                    try {
+                      final resetResponse = await RankingAPI().reset({"user_id": user_id});
+                      if (resetResponse.success) {
+                        print('리셋 성공 (시도 $attempt)');
+                        _lastActionType = LastActionType.reset;
+                      }
+                      _sendLiveLog(userId: user_id, requestType: 'bg_reset', error: resetResponse.success ? 'success (attempt $attempt)' : resetResponse.error.toString(), lat: position.latitude, lon: position.longitude);
+                      break; // 성공 시 루프 종료
+                    } catch (e) {
+                      print('백그라운드 리셋 오류 (시도 $attempt/3): $e');
+                      if (attempt < 3) {
+                        await Future.delayed(const Duration(seconds: 1));
+                      } else {
+                        _sendLiveLog(userId: user_id, requestType: 'bg_reset_error', error: 'all retries failed: $e', lat: position.latitude, lon: position.longitude);
+                      }
                     }
-                    _sendLiveLog(userId: user_id, requestType: 'bg_reset', error: resetResponse.success ? 'success' : resetResponse.error.toString(), lat: position.latitude, lon: position.longitude);
-                  } catch (e) {
-                    print('백그라운드 리셋 오류: $e');
                   }
                 }());
               }
             }
 
-            // 리스폰 처리 - Background에서는 비활성화 (캐시된 위치로 인한 오작동 방지)
-            // Foreground에서만 respawn 처리함
+            // 리스폰 처리 - persistMode: PERSIST_MODE_NONE으로 캐시 문제 해결됨, 백그라운드에서도 활성화
             if (passPointInfo['type'] == 'respawn_point') {
-              // 디버깅용: BG에서 respawn 영역 감지는 로그로만 기록
-              _sendLiveLog(
-                userId: user_id,
-                requestType: 'bg_respawn_detected',
-                lat: position.latitude,
-                lon: position.longitude,
-                error: 'bg_disabled - fg_only',
-              );
+              // 리스폰 조건: 마지막 액션이 체크포인트여야 함 (연속 리스폰 방지)
+              if (_lastActionType != LastActionType.checkpoint) {
+                if (!_respawnSkipLogSent) {
+                  _sendLiveLog(
+                    userId: user_id,
+                    requestType: 'bg_respawn_skip',
+                    lat: position.latitude,
+                    lon: position.longitude,
+                    error: 'lastAction: ${_lastActionType.name}',
+                  );
+                  _respawnSkipLogSent = true;
+                }
+              } else if (_lastRespawnMethodCall == null || DateTime.now().difference(_lastRespawnMethodCall!).inSeconds > 10) {
+                _lastRespawnMethodCall = DateTime.now();
+                _respawnSkipLogSent = false;
+                final respawnId = passPointInfo['id'];
+                futures.add(() async {
+                  // 🔄 네트워크 재시도 로직 (최대 3회, 1초 간격)
+                  for (int attempt = 1; attempt <= 3; attempt++) {
+                    try {
+                      final respawnResponse = await RankingAPI().respawn({
+                        "user_id": user_id,
+                        "respawn_id": respawnId,
+                        "coordinates": "${position.latitude}, ${position.longitude}"
+                      });
+                      if (respawnResponse.success) {
+                        print('백그라운드 리스폰 성공 (시도 $attempt)');
+                        _lastActionType = LastActionType.respawn;
+                      }
+                      _sendLiveLog(userId: user_id, requestType: 'bg_respawn', error: respawnResponse.success ? 'success (attempt $attempt)' : respawnResponse.error.toString(), lat: position.latitude, lon: position.longitude);
+                      break; // 성공 시 루프 종료
+                    } catch (e) {
+                      print('백그라운드 리스폰 오류 (시도 $attempt/3): $e');
+                      if (attempt < 3) {
+                        await Future.delayed(const Duration(seconds: 1));
+                      } else {
+                        _sendLiveLog(userId: user_id, requestType: 'bg_respawn_error', error: 'all retries failed: $e', lat: position.latitude, lon: position.longitude);
+                      }
+                    }
+                  }
+                }());
+              }
             }
           }
 
