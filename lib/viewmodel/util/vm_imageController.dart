@@ -372,8 +372,9 @@ class ImageController extends GetxController {
     XFile newImage, {
     Function(String requestType, String error)? onError,
   }) async {
-    String? uid = auth.currentUser?.uid;
-    if (uid == null) {
+    // Firebase Auth 대신 SecureStorage의 user_id 사용
+    String? userId = await FlutterSecureStorage().read(key: 'user_id');
+    if (userId == null) {
       print('Error: User ID is null');
       onError?.call('profile_image_uid_null', 'User ID is null');
       return '';
@@ -393,9 +394,9 @@ class ImageController extends GetxController {
         fileToUpload = File(newImage.path);
       }
 
-      // 2) 매번 다른 파일명 생성 (uid + timestamp)
+      // 2) 매번 다른 파일명 생성 (user_id + timestamp)
       final timestamp = DateTime.now().millisecondsSinceEpoch;
-      final fileName = '${uid}_$timestamp.jpg';
+      final fileName = '${userId}_$timestamp.jpg';
 
       // 3) Firebase Storage 경로
       final ref = FirebaseStorage.instance.ref('user_profile/$fileName');

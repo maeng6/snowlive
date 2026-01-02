@@ -123,8 +123,34 @@ void main() async {
   runApp(MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  /// 시스템 메모리 경고 시 이미지 캐시 정리 (보라색 이미지 현상 방지)
+  @override
+  void didHaveMemoryPressure() {
+    super.didHaveMemoryPressure();
+    print('⚠️ 메모리 경고 - 이미지 캐시 정리');
+    PaintingBinding.instance.imageCache.clear();
+    PaintingBinding.instance.imageCache.clearLiveImages();
+  }
 
   @override
   Widget build(BuildContext context) {

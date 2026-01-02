@@ -283,7 +283,7 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
   void _startHeartbeatTimer() {
     _stopHeartbeatTimer(); // 기존 타이머 정리
 
-    _heartbeatTimer = Timer.periodic(const Duration(seconds: 30), (timer) async {
+    _heartbeatTimer = Timer.periodic(const Duration(seconds: 60), (timer) async {
       if (_currentLiveUserId != null) {
         // 위치 스트림에서 이미 갱신된 저장된 위치 사용 (이중 GPS 호출 방지)
         _sendLiveLog(
@@ -294,7 +294,7 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
         );
       }
     });
-    print('💓 Heartbeat 타이머 시작 (30초 주기)');
+    print('💓 Heartbeat 타이머 시작 (60초 주기)');
   }
 
   /// Heartbeat 타이머 정지
@@ -975,15 +975,6 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
       double latitude = location.coords.latitude;
       double longitude = location.coords.longitude;
 
-      // 🔍 진단 로그: onLocation 트리거 확인
-      _sendLiveLog(
-        userId: user_id,
-        requestType: 'bg_onLocation_triggered',
-        lat: latitude,
-        lon: longitude,
-        error: 'slope_info: ${_slope_info.length}, respawn_point: ${_respawn_point.length}',
-      );
-
       // 현재 좌표 갱신
       _latitude.value = latitude;
       _longitude.value = longitude;
@@ -1044,10 +1035,10 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
           if (passPointInfos.isEmpty) {
             _sendLiveLog(
               userId: user_id,
-              requestType: 'bg_no_area_match',
+              requestType: 'fg_position_stream',
               lat: position.latitude,
               lon: position.longitude,
-              error: 'slope: ${_slope_info.length}, respawn: ${_respawn_point.length}',
+              error: '${Platform.isIOS ? 'ios' : 'android'}_bg_no_area_match',
             );
           }
 

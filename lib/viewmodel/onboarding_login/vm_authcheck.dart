@@ -40,36 +40,22 @@ class AuthCheckViewModel extends GetxController {
         // 재시도 로직이 포함된 API 호출 (최대 3회, 2초 간격)
         response = await _compareDeviceIdWithRetry();
       } catch (e) {
-        // 네트워크 에러인 경우 로그아웃하지 않고 메인홈으로 진입 (오프라인 모드)
-        if (_isNetworkError(e)) {
-          print('⚠️ 네트워크 오류 - 로그아웃하지 않고 메인홈으로 진입');
-          await _sendLogoutLog(
-            reason: 'network_error_offline_mode',
-            errorDetail: e.toString(),
-          );
-          // 기존 인증 정보 유지, 저장된 user_id로 사용자 정보 로드 시도
-          try {
-            String? userIdString = await FlutterSecureStorage().read(key: 'user_id');
-            if (userIdString != null) {
-              int user_id = int.parse(userIdString);
-              await _userViewModel.updateUserModel_api(user_id);
-            }
-          } catch (_) {
-            // 사용자 정보 로드 실패해도 메인홈으로 진입
-          }
-          _gotoMainHome!.value = true;
-          return _gotoMainHome!.value;
-        }
-
-        // 네트워크 에러가 아닌 경우 기존 로직 (로그아웃)
+        // 모든 에러에 대해 로그아웃하지 않고 메인홈으로 진입 (오프라인 모드)
+        print('⚠️ API 오류 - 로그아웃하지 않고 메인홈으로 진입');
         await _sendLogoutLog(
-          reason: 'logout_api_exception',
+          reason: 'offline_mode_after_retry',
           errorDetail: e.toString(),
         );
-        await FlutterSecureStorage().delete(key: 'localUid');
-        await FlutterSecureStorage().delete(key: 'device_id');
-        await FlutterSecureStorage().delete(key: 'device_token');
-        await FlutterSecureStorage().delete(key: 'user_id');
+        // 기존 인증 정보 유지, 저장된 user_id로 사용자 정보 로드 시도
+        try {
+          String? userIdString = await FlutterSecureStorage().read(key: 'user_id');
+          if (userIdString != null) {
+            int user_id = int.parse(userIdString);
+            await _userViewModel.updateUserModel_api(user_id);
+          }
+        } catch (_) {
+          // 사용자 정보 로드 실패해도 메인홈으로 진입
+        }
         _gotoMainHome!.value = true;
         return _gotoMainHome!.value;
       }
@@ -209,12 +195,24 @@ class AuthCheckViewModel extends GetxController {
         errorString.contains('network') ||
         errorString.contains('file descriptor') ||
         errorString.contains('clientexception') ||
-        errorString.contains('<!doctype');
+        errorString.contains('<!doctype') ||
+        errorString.contains('errno') ||
+        errorString.contains('os error') ||
+        errorString.contains('nodename') ||
+        errorString.contains('servname') ||
+        errorString.contains('no address') ||
+        errorString.contains('no route') ||
+        errorString.contains('unreachable');
   }
 
   /// 재시도 로직이 포함된 compareDeviceId API 호출
-  /// 네트워크 에러 시 최대 3회 재시도 (2초 간격)
-  Future<ApiResponse?> _compareDeviceIdWithRetry({int maxRetries = 3}) async {
+  /// 모든 예외에 대해 최대 5회 재시도 (첫 시도 전 1초 대기, 실패 시 2초 간격)
+  Future<ApiResponse?> _compareDeviceIdWithRetry({int maxRetries = 5}) async {
+    // 네트워크 안정화를 위해 첫 시도 전 1초 대기
+    await Future.delayed(const Duration(seconds: 1));
+
+    Exception? lastException;
+
     for (int attempt = 1; attempt <= maxRetries; attempt++) {
       try {
         print('🔄 compareDeviceId 시도 $attempt/$maxRetries');
@@ -225,16 +223,19 @@ class AuthCheckViewModel extends GetxController {
         });
       } catch (e) {
         print('❌ compareDeviceId 실패 (시도 $attempt): $e');
+        lastException = e is Exception ? e : Exception(e.toString());
 
-        if (_isNetworkError(e) && attempt < maxRetries) {
-          // 네트워크 에러이고 재시도 횟수가 남았으면 2초 대기 후 재시도
+        if (attempt < maxRetries) {
+          // 재시도 횟수가 남았으면 2초 대기 후 재시도
           print('⏳ 2초 후 재시도...');
           await Future.delayed(const Duration(seconds: 2));
           continue;
         }
-        // 마지막 시도 실패 또는 네트워크 에러가 아닌 경우 예외 전파
-        rethrow;
       }
+    }
+    // 모든 재시도 실패 시 마지막 예외 전파
+    if (lastException != null) {
+      throw lastException;
     }
     return null;
   }
