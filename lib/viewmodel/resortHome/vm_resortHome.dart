@@ -902,10 +902,10 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
       stationaryRadius: 25,
       elasticityMultiplier: 1.0,             // disableElasticity 쓰지 않음
 
-      // 🔥 앱 종료 / 재부팅 이후에도 계속 동작
-      stopOnTerminate: false,
-      startOnBoot: true,
-      forceReloadOnBoot: true,               // 삼성/중국 기기 재부팅 후에도 재시작
+      // 🔥 앱 종료 시 위치 추적 중단
+      stopOnTerminate: true,
+      startOnBoot: false,
+      forceReloadOnBoot: false,
 
       // 🔥 iOS/Android 백그라운드 유지를 위한 heartbeat
       heartbeatInterval: 60,                 // 60초마다 heartbeat
@@ -2162,8 +2162,8 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
       await bg.BackgroundGeolocation.ready(bg.Config(
         desiredAccuracy: bg.Config.DESIRED_ACCURACY_LOW,
         distanceFilter: 100,
-        stopOnTerminate: false,
-        startOnBoot: true,
+        stopOnTerminate: true,
+        startOnBoot: false,
         enableHeadless: false,
         // Geofence 전용 설정
         geofenceProximityRadius: 5000, // 5km 범위 내 Geofence만 모니터링
