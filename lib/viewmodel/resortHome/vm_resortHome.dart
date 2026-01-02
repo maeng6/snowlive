@@ -1149,15 +1149,40 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
 
             // 리스폰 처리 - persistMode: PERSIST_MODE_NONE으로 캐시 문제 해결됨, 백그라운드에서도 활성화
             if (passPointInfo['type'] == 'respawn_point') {
-              // 리스폰 조건: 마지막 액션이 체크포인트여야 함 (연속 리스폰 방지)
-              if (_lastActionType != LastActionType.checkpoint) {
+              // 리스폰 조건 판별 (포그라운드와 동일한 로직)
+              bool canRespawn = false;
+              String respawnReason = '';
+
+              if (_lastActionType == LastActionType.checkpoint) {
+                // 직전 액션이 체크포인트 통과 → 무조건 리스폰 성공
+                canRespawn = true;
+                respawnReason = '직전 액션이 체크포인트 통과 → 무조건 성공';
+              } else if (_lastActionType == LastActionType.respawn) {
+                // 직전 액션이 리스폰 → 60초 쿨다운 체크
+                final secondsSinceLastRespawn = _lastRespawnMethodCall != null
+                    ? DateTime.now().difference(_lastRespawnMethodCall!).inSeconds
+                    : 999;
+                if (secondsSinceLastRespawn > 60) {
+                  canRespawn = true;
+                  respawnReason = '직전 액션이 리스폰, 60초 경과 (${secondsSinceLastRespawn}초)';
+                } else {
+                  canRespawn = false;
+                  respawnReason = '직전 액션이 리스폰, 60초 미경과 (${secondsSinceLastRespawn}초)';
+                }
+              } else {
+                // 첫 리스폰 (none 또는 reset) → 무조건 성공
+                canRespawn = true;
+                respawnReason = '첫 리스폰 또는 리셋 후 → 무조건 성공';
+              }
+
+              if (!canRespawn) {
                 if (!_respawnSkipLogSent) {
                   _sendLiveLog(
                     userId: user_id,
                     requestType: 'bg_respawn_skip',
                     lat: position.latitude,
                     lon: position.longitude,
-                    error: 'lastAction: ${_lastActionType.name}',
+                    error: respawnReason,
                   );
                   _respawnSkipLogSent = true;
                 }
@@ -1177,6 +1202,21 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
                       if (respawnResponse.success) {
                         print('백그라운드 리스폰 성공 (시도 $attempt)');
                         _lastActionType = LastActionType.respawn;
+
+                        // 라이브 액티비티 업데이트 (포그라운드와 동일하게 처리)
+                        int insertedCount = respawnResponse.data['inserted_count'] ?? 0;
+                        print('📊 [BG] 추가된 라이딩 수: $insertedCount');
+                        _sessionRideCount += insertedCount;
+                        String? latestSlopeFullname = respawnResponse.data['latest_slope_fullname'];
+                        if (latestSlopeFullname != null && latestSlopeFullname.isNotEmpty) {
+                          _lastSlopeName = latestSlopeFullname;
+                        }
+                        if (insertedCount > 0) {
+                          _lastRideAt = DateTime.now();
+                        }
+                        // 서버에서 최신 dailyTotalCount 받아오기 (Live Activity 업데이트용)
+                        await fetchResortHome(user_id);
+                        _updateLiveActivity();
                       }
                       _sendLiveLog(userId: user_id, requestType: 'bg_respawn', error: respawnResponse.success ? 'success (attempt $attempt)' : respawnResponse.error.toString(), lat: position.latitude, lon: position.longitude);
                       break; // 성공 시 루프 종료
