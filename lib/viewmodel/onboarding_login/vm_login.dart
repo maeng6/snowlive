@@ -16,6 +16,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'dart:math' as math; // math 패키지 추가
 import 'package:crypto/crypto.dart'; // sha256을 위한 crypto 패키지 추가
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 final ref = FirebaseFirestore.instance;
 
@@ -40,6 +41,7 @@ class LoginViewModel extends GetxController {
   void onInit()  async{
     await _getToken();
     await getIsAndroidEmailLogIn();
+    await getLocalSignInMethod(); // 마지막 로그인 방식 불러오기
     super.onInit();
   }
 
@@ -95,7 +97,9 @@ class LoginViewModel extends GetxController {
       User? currentUser = auth.currentUser;
       if (currentUser != null) {
         loginUid!.value = currentUser.uid;
-        await storage.write(key: 'signInMethod', value: 'google');
+        // SharedPreferences로 변경 (앱 삭제 전까지 유지)
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setString('signInMethod', 'google');
         await getLocalSignInMethod();
         await FlutterSecureStorage().write(key: 'localUid', value: loginUid!.value);
         await FlutterSecureStorage().write(key: 'device_id', value: device_id!.value);
@@ -162,7 +166,9 @@ class LoginViewModel extends GetxController {
       User? currentUser = auth.currentUser;
       if (currentUser != null) {
         loginUid!.value = currentUser.uid;
-        await storage.write(key: 'signInMethod', value: 'apple');
+        // SharedPreferences로 변경 (앱 삭제 전까지 유지)
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setString('signInMethod', 'apple');
         await FlutterSecureStorage().write(key: 'localUid', value: loginUid!.value);
         await FlutterSecureStorage().write(key: 'device_id', value: device_id!.value);
         await FlutterSecureStorage().write(key: 'device_token', value: device_token!.value);
@@ -238,16 +244,18 @@ class LoginViewModel extends GetxController {
       }
     }
   }
-  //로컬의 signInMethod 불러오기
+  //로컬의 signInMethod 불러오기 (SharedPreferences 사용 - 앱 삭제 전까지 유지)
   Future<void> getLocalSignInMethod() async {
-    final signInMethod = await FlutterSecureStorage().read(key: 'signInMethod');
+    final prefs = await SharedPreferences.getInstance();
+    final signInMethod = prefs.getString('signInMethod');
     this.signInMethod.value = signInMethod ?? '';
   }
 
   Future<void> signOut_welcome() async {
     User user = FirebaseAuth.instance.currentUser!;
     await user.delete();
-    await FlutterSecureStorage().delete(key: 'signInMethod');
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove('signInMethod');
     // Get.offAll(() => LoginPage());
   }
 
@@ -294,6 +302,10 @@ class LoginViewModel extends GetxController {
       await FlutterSecureStorage().delete(key: 'device_id');
       await FlutterSecureStorage().delete(key: 'device_token');
       await FlutterSecureStorage().delete(key: 'user_id');
+
+      // SharedPreferences의 signInMethod 삭제
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.remove('signInMethod');
 
       // 로그인 페이지로 이동
       Get.offAllNamed(AppRoutes.login);

@@ -382,8 +382,22 @@ class RankingAPI {
     }
   }
 
+  /// 위치 로그 일괄 전송
+  Future<ApiResponse> createErrorLogBulk(List<Map<String, dynamic>> logs) async {
+    final response = await http.post(
+      Uri.parse('$baseUrl/error-log-bulk/'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({'logs': logs}),
+    );
 
-
+    if (response.statusCode == 201) {
+      final data = json.decode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
+      return ApiResponse.success(data);
+    } else {
+      final data = json.decode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
+      return ApiResponse.error(data);
+    }
+  }
 
 
 

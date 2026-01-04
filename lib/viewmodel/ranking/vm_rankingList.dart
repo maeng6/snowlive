@@ -1248,7 +1248,15 @@ class RankingListViewModel extends GetxController {
     _selectedCategory_fed.value = value;
   }
 
-
+  @override
+  void onClose() {
+    // 메모리 누수 방지: ScrollController 리스너 해제 및 dispose
+    scrollController_indiv.removeListener(_scrollListener_indiv);
+    scrollController_crew.removeListener(_scrollListener_crew);
+    scrollController_indiv.dispose();
+    scrollController_crew.dispose();
+    super.onClose();
+  }
 }
 
 enum RankingFilter_resort {
