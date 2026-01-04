@@ -2701,13 +2701,6 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
     }
   }
 
-  /// 백그라운드 진입 시 메모리 정리
-  /// 로그 버퍼는 중요 데이터이므로 유지
-  void clearMemory() {
-    // 로그 버퍼는 유지 (서버 전송 필요)
-    print('🧹 ResortHomeViewModel 메모리 정리 완료');
-  }
-
   @override
   void onClose() {
     // WidgetsBindingObserver 해제

@@ -7,8 +7,6 @@ import 'package:com.snowlive/viewmodel/onboarding_login/vm_authcheck.dart';
 import 'package:com.snowlive/viewmodel/resortHome/vm_resortHome.dart';
 import 'package:com.snowlive/viewmodel/vm_notificationController.dart';
 import 'package:com.snowlive/viewmodel/vm_splashController.dart';
-import 'package:com.snowlive/viewmodel/ranking/vm_rankingList.dart';
-import 'package:com.snowlive/viewmodel/fleamarket/vm_fleamarketList.dart';
 import 'package:com.snowlive/routes/routes.dart';
 import 'package:com.snowlive/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
@@ -153,24 +151,6 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     if (state == AppLifecycleState.paused) {
       // 백그라운드 진입 시 미리 캐시 정리 → 메모리 경고 감소
       _clearImageCaches();
-      _clearViewModelMemory();
-    }
-  }
-
-  /// ViewModel 페이지네이션 리스트 정리 (메모리 절약)
-  /// 앱 복귀 시 자동으로 다시 로드됨
-  void _clearViewModelMemory() {
-    // RankingListViewModel 정리
-    if (Get.isRegistered<RankingListViewModel>()) {
-      Get.find<RankingListViewModel>().clearMemory();
-    }
-    // FleamarketListViewModel 정리
-    if (Get.isRegistered<FleamarketListViewModel>()) {
-      Get.find<FleamarketListViewModel>().clearMemory();
-    }
-    // ResortHomeViewModel 정리
-    if (Get.isRegistered<ResortHomeViewModel>()) {
-      Get.find<ResortHomeViewModel>().clearMemory();
     }
   }
 

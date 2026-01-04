@@ -131,24 +131,6 @@ class FleamarketListViewModel extends GetxController {
       ..addListener(_scrollListener_my);
   }
 
-  /// 백그라운드 진입 시 페이지네이션 리스트 정리 (메모리 절약)
-  void clearMemory() {
-    _fleamarketList_total.clear();
-    _fleamarketList_ski.clear();
-    _fleamarketList_board.clear();
-    _fleamarketList_my.clear();
-    _fleamarketList_favorite.clear();
-
-    // 페이지네이션 URL 초기화
-    _nextPageUrl_total.value = '';
-    _nextPageUrl_ski.value = '';
-    _nextPageUrl_board.value = '';
-    _nextPageUrl_my.value = '';
-    _nextPageUrl_favorite.value = '';
-
-    print('🧹 FleamarketListViewModel 메모리 정리 완료');
-  }
-
   @override
   void onClose() {
     // ScrollController 리스너 해제 및 dispose (메모리 누수 방지)
