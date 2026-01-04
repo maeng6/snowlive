@@ -8,17 +8,14 @@ struct LiveOnLockScreenView: View {
     var body: some View {
         VStack(spacing: 20) {
             // 상단: 로고 (좌측) + 친구 아이콘/숫자 + 리조트명/타이머 (우측)
-            HStack(alignment: .center, spacing: 0) {
+            HStack(alignment: .center, spacing: 6) {
                 // SNOWLIVE 로고 이미지 (좌측)
-                HStack {
-                    Image("img_liveactivity_logo")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(height: 10)
-                    Spacer()
-                }
-                .frame(maxWidth: .infinity, alignment: .leading)
+                Image("img_liveactivity_logo")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(height: 10)
 
+                Spacer()
                 // 우측 영역 (친구 + 리조트 + 타이머)
                 HStack(spacing: 12) {
                     // 친구 아이콘 + 숫자
@@ -30,6 +27,7 @@ struct LiveOnLockScreenView: View {
                         Text("\(context.state.liveFriendCount)")
                             .font(.system(size: 12, weight: .bold))
                     }
+                    .fixedSize(horizontal: true, vertical: false)
 
                     // 리조트명
                     HStack(spacing: 2) {
