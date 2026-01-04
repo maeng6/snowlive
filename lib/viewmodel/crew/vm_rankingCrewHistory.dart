@@ -68,5 +68,11 @@ class RankingCrewHistoryViewModel extends GetxController {
     }
   }
 
-
+  @override
+  void onClose() {
+    // 메모리 누수 방지: ScrollController 리스너 해제 및 dispose
+    scrollControllerCrewBeta.removeListener(_scrollListenerCrewBeta);
+    scrollControllerCrewBeta.dispose();
+    super.onClose();
+  }
 }

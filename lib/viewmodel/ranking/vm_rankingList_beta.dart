@@ -170,4 +170,13 @@ class RankingListBetaViewModel extends GetxController {
     _crewOrIndiv.value = crewOrIndiv;
   }
 
+  @override
+  void onClose() {
+    // 메모리 누수 방지: ScrollController 리스너 해제 및 dispose
+    scrollControllerIndivBeta.removeListener(_scrollListenerIndivBeta);
+    scrollControllerCrewBeta.removeListener(_scrollListenerCrewBeta);
+    scrollControllerIndivBeta.dispose();
+    scrollControllerCrewBeta.dispose();
+    super.onClose();
+  }
 }

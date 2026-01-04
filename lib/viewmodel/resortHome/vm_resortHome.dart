@@ -133,6 +133,9 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
   // 백그라운드 위치 요청 중복 방지 플래그 (getCurrentPosition 무한 루프 방지)
   bool _isGettingBackgroundPosition = false;
 
+  // onLocation 디바운싱 (메모리 누수 방지)
+  DateTime? _lastOnLocationTime;
+
   dynamic weatherTextColors;
   dynamic weatherColors;
   dynamic weatherIcons;
@@ -1151,6 +1154,14 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
       if (_isGettingBackgroundPosition) {
         return;
       }
+
+      // 디바운싱: 3초 내 중복 호출 방지 (메모리 누수 방지)
+      final now = DateTime.now();
+      if (_lastOnLocationTime != null &&
+          now.difference(_lastOnLocationTime!).inSeconds < 3) {
+        return;
+      }
+      _lastOnLocationTime = now;
 
       // 캐시된 위치 대신 항상 새 위치 요청 (포그라운드와 동일하게 실시간 위치 사용)
       _isGettingBackgroundPosition = true;
@@ -2698,6 +2709,16 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
     // StreamSubscription 해제 (메모리 누수 방지)
     _positionStreamSubscription?.cancel();
     _positionStreamSubscription = null;
+
+    // 라이브온 관련 리소스 정리
+    _errorLogSubscription?.cancel();
+    _errorLogSubscription = null;
+    _heartbeatTimer?.cancel();
+    _heartbeatTimer = null;
+    _logFlushTimer?.cancel();
+    _logFlushTimer = null;
+    _liveFriendsWorker?.dispose();
+    _liveFriendsWorker = null;
 
     // ScrollController dispose
     scrollController_resortHome_openchat.dispose();

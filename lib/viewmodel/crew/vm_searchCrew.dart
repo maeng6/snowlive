@@ -121,4 +121,11 @@ class SearchCrewViewModel extends GetxController {
     await prefs.remove('recentSearches_crew');
   }
 
+  @override
+  void onClose() {
+    // 메모리 누수 방지: Controller dispose
+    textEditingController.dispose();
+    scrollController.dispose();
+    super.onClose();
+  }
 }

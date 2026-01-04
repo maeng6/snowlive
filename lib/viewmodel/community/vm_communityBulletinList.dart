@@ -561,8 +561,18 @@ class CommunityBulletinListViewModel extends GetxController {
     fetchCommunityList_room(userId:  _userViewModel.user.user_id,categoryMain: '게시판',categorySub: Community_Category_sub_bulletin.room.korean);
     fetchCommunityList_crew(userId:  _userViewModel.user.user_id,categoryMain: '게시판',categorySub: Community_Category_sub_bulletin.crew.korean);
   }
-}
 
+  @override
+  void onClose() {
+    // 메모리 누수 방지: ScrollController dispose
+    scrollController_total.dispose();
+    scrollController_free.dispose();
+    scrollController_room.dispose();
+    scrollController_crew.dispose();
+    scrollController_event.dispose();
+    super.onClose();
+  }
+}
 
 enum Community_Category_sub_bulletin {
   total("전체", "free"),
