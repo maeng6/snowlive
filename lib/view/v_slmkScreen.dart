@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:com.snowlive/data/snowliveDesignStyle.dart';
@@ -24,16 +25,29 @@ class _SlmkScreenState extends State<SlmkScreen> {
   bool _webViewInitialized = false;
   final ValueNotifier<bool> isOpenNotifier = ValueNotifier(false);
 
+  // 🛡️ 메모리 누수 방지: 스트림 구독 저장
+  StreamSubscription<DocumentSnapshot>? _slmkSubscription;
+
   @override
   void initState() {
     super.initState();
     targetUrl = 'https://m.market-snowlive.kr/?user_id=${_userViewModel.user.user_id}';
 
-    FirebaseFirestore.instance.collection('slmk').doc('slmk').snapshots().listen((snapshot) {
+    // 🛡️ 구독 저장하여 dispose에서 해제 가능하도록
+    _slmkSubscription = FirebaseFirestore.instance.collection('slmk').doc('slmk').snapshots().listen((snapshot) {
       final data = snapshot.data() as Map<String, dynamic>?;
       final open = data?['open'] == true;
       isOpenNotifier.value = open;
     });
+  }
+
+  @override
+  void dispose() {
+    // 🛡️ 메모리 누수 방지: 리소스 해제
+    _slmkSubscription?.cancel();
+    _slmkSubscription = null;
+    isOpenNotifier.dispose();
+    super.dispose();
   }
 
   Future<void> _initWebView() async {

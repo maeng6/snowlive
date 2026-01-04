@@ -19,10 +19,13 @@ class CrewDailyRecordViewModel extends GetxController {
 
   @override
   void onInit() async{
-    // TODO: implement onInit
     super.onInit();
     resetTabs();
-    await fetchCrewRidingRecords(_crewDetailViewModel.crewDetailInfo.crewId!, currentYear.value.toString());
+    // crewId가 null이면 API 호출 스킵
+    final crewId = _crewDetailViewModel.crewDetailInfo.crewId;
+    if (crewId != null) {
+      await fetchCrewRidingRecords(crewId, currentYear.value.toString());
+    }
   }
 
   // 연도 변경

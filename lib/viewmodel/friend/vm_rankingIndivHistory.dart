@@ -32,6 +32,13 @@ class RankingIndivHistoryViewModel extends GetxController {
     await fetchAllRankingBeta();
   }
 
+  @override
+  void onClose() {
+    scrollControllerIndivBeta.removeListener(_scrollListenerIndivBeta);
+    scrollControllerIndivBeta.dispose();
+    super.onClose();
+  }
+
   Future<void> fetchAllRankingBeta() async {
     await fetchRankingDataIndivBeta(userId: _userViewModel.user.user_id);
   }

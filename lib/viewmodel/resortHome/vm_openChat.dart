@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
 import 'package:flutter/cupertino.dart';
@@ -8,6 +9,9 @@ class ChatViewModel extends GetxController {
 
   TextEditingController chatController = TextEditingController();
   final UserViewModel _userViewModel = Get.find<UserViewModel>();
+
+  // 🛡️ 메모리 누수 방지: 스트림 구독 저장
+  StreamSubscription<QuerySnapshot>? _chatStreamSubscription;
 
   RxBool isButtonEnabled = false.obs;
 
@@ -68,15 +72,28 @@ class ChatViewModel extends GetxController {
 
 
   void setupChatStream() {
+    // 기존 구독 해제
+    _chatStreamSubscription?.cancel();
+
     Stream<QuerySnapshot> chatStream = FirebaseFirestore.instance
         .collection('chat')
         .orderBy('createdAt', descending: true)
         .limit(500)
         .snapshots();
 
-    chatStream.listen((event) {
+    // 🛡️ 구독 저장하여 나중에 해제 가능하도록
+    _chatStreamSubscription = chatStream.listen((event) {
       chatDocs.value = event.docs;
     });
+  }
+
+  @override
+  void onClose() {
+    // 🛡️ 메모리 누수 방지: 리소스 해제
+    _chatStreamSubscription?.cancel();
+    _chatStreamSubscription = null;
+    chatController.dispose();
+    super.onClose();
   }
 
   Future<void> reportMessage(String chatId) async {

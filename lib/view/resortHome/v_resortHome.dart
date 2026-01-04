@@ -48,7 +48,8 @@ class ResortHomeView extends StatefulWidget {
 
 class _ResortHomeViewState extends State<ResortHomeView> with
     AutomaticKeepAliveClientMixin,
-    SingleTickerProviderStateMixin{
+    SingleTickerProviderStateMixin,
+    WidgetsBindingObserver {
 
   bool get wantKeepAlive => true;
   int? selectedIndex;
@@ -79,6 +80,7 @@ class _ResortHomeViewState extends State<ResortHomeView> with
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
 
     print('내 유저아이디 : ${_userViewModel.user.user_id}');
 
@@ -140,9 +142,25 @@ class _ResortHomeViewState extends State<ResortHomeView> with
 
   @override
   void dispose() {
-
+    WidgetsBinding.instance.removeObserver(this);
     _controller.dispose();
     super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+    if (state == AppLifecycleState.paused) {
+      // 백그라운드 전환 시 알람 스트림 중지
+      _openChatAlarmViewModel.stopListening();
+      _eventAlarmViewModel.stopListening();
+      print('⏸️ 백그라운드 전환: 알람 스트림 중지');
+    } else if (state == AppLifecycleState.resumed) {
+      // 포어그라운드 복귀 시 알람 스트림 재시작
+      _openChatAlarmViewModel.resumeListening();
+      _eventAlarmViewModel.resumeListening();
+      print('▶️ 포어그라운드 복귀: 알람 스트림 재시작');
+    }
   }
 
   @override

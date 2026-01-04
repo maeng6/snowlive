@@ -83,6 +83,13 @@ void _handleLocalNotificationTap(String? payload) {
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // 🛡️ 메모리 누수 방지: 이미지 캐시 크기 제한
+  // - maximumSize: 최대 100개 이미지
+  // - maximumSizeBytes: 최대 50MB
+  PaintingBinding.instance.imageCache.maximumSize = 100;
+  PaintingBinding.instance.imageCache.maximumSizeBytes = 50 * 1024 * 1024; // 50MB
+
   await initializeDateFormatting('ko', null);
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
@@ -116,8 +123,34 @@ void main() async {
   runApp(MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  /// 시스템 메모리 경고 시 이미지 캐시 정리 (보라색 이미지 현상 방지)
+  @override
+  void didHaveMemoryPressure() {
+    super.didHaveMemoryPressure();
+    print('⚠️ 메모리 경고 - 이미지 캐시 정리');
+    PaintingBinding.instance.imageCache.clear();
+    PaintingBinding.instance.imageCache.clearLiveImages();
+  }
 
   @override
   Widget build(BuildContext context) {

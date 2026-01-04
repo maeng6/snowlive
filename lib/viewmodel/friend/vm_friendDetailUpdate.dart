@@ -94,9 +94,22 @@ class FriendDetailUpdateViewModel extends GetxController {
   }
 
   FriendDetailUpdateViewModel() {
-    textEditingController_displayName.addListener(() {
-      _isCheckedDisplayName.value = false;
-    });
+    textEditingController_displayName.addListener(_displayNameListener);
+  }
+
+  void _displayNameListener() {
+    _isCheckedDisplayName.value = false;
+  }
+
+  @override
+  void onClose() {
+    textEditingController_displayName.removeListener(_displayNameListener);
+    textEditingController_displayName.dispose();
+    textEditingController_stateMsg.dispose();
+    textEditingControllerYYYY.dispose();
+    textEditingControllerMM.dispose();
+    textEditingControllerDD.dispose();
+    super.onClose();
   }
 
   Future<void> uploadImage(ImageSource source) async {

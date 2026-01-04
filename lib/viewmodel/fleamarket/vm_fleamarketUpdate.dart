@@ -23,6 +23,16 @@ class FleamarketUpdateViewModel extends GetxController {
   final TextEditingController textEditingController_desc = TextEditingController();
   final TextEditingController itemPriceTextEditingController = TextEditingController();
 
+  @override
+  void onClose() {
+    textEditingController_title.dispose();
+    textEditingController_productName.dispose();
+    textEditingController_sns.dispose();
+    textEditingController_desc.dispose();
+    itemPriceTextEditingController.dispose();
+    super.onClose();
+  }
+
   RxList<XFile> _imageFiles = <XFile>[].obs;
   RxList<String> _imageUrlList = <String>[].obs;
   RxBool _fleaImageSelected = false.obs;
