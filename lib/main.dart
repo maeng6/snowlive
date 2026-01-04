@@ -85,10 +85,11 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // 🛡️ 메모리 누수 방지: 이미지 캐시 크기 제한
-  // - maximumSize: 최대 100개 이미지
-  // - maximumSizeBytes: 최대 50MB
-  PaintingBinding.instance.imageCache.maximumSize = 100;
-  PaintingBinding.instance.imageCache.maximumSizeBytes = 50 * 1024 * 1024; // 50MB
+  // - maximumSize: 최대 50개 이미지
+  // - maximumSizeBytes: 최대 30MB
+  // (백그라운드 전환 시 메모리 경고 감소)
+  PaintingBinding.instance.imageCache.maximumSize = 50;
+  PaintingBinding.instance.imageCache.maximumSizeBytes = 30 * 1024 * 1024; // 30MB
 
   await initializeDateFormatting('ko', null);
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
@@ -143,13 +144,22 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     super.dispose();
   }
 
-  /// 시스템 메모리 경고 시 이미지 캐시 정리 (보라색 이미지 현상 방지)
+  /// 시스템 메모리 경고 시 공격적인 캐시 정리 (iOS/Android 모두 호출됨)
   @override
   void didHaveMemoryPressure() {
     super.didHaveMemoryPressure();
-    print('⚠️ 메모리 경고 - 이미지 캐시 정리');
+    print('⚠️ 메모리 경고 - 캐시 전체 정리');
+
+    // 1. Flutter 기본 이미지 캐시 정리
     PaintingBinding.instance.imageCache.clear();
     PaintingBinding.instance.imageCache.clearLiveImages();
+
+    // 2. ExtendedImage 메모리 캐시 정리
+    clearMemoryImageCache();
+
+    // 3. 이미지 캐시 크기 임시 축소 (메모리 확보 우선)
+    PaintingBinding.instance.imageCache.maximumSize = 30; // 100 → 30개
+    PaintingBinding.instance.imageCache.maximumSizeBytes = 20 << 20; // 50MB → 20MB
   }
 
   @override
