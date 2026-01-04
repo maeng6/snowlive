@@ -130,6 +130,9 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
   bool _isReloadingAreaData = false;
   DateTime? _lastAreaDataReload;
 
+  // 백그라운드 위치 요청 중복 방지 플래그 (getCurrentPosition 무한 루프 방지)
+  bool _isGettingBackgroundPosition = false;
+
   dynamic weatherTextColors;
   dynamic weatherColors;
   dynamic weatherIcons;
@@ -147,6 +150,12 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
   DateTime? _lastRespawnMethodCall;
   DateTime? _lastSnowballMethodCall;
   bool _respawnSkipLogSent = false; // 스킵 로그 중복 전송 방지
+
+  // 로그 버퍼링 관련 변수
+  final List<Map<String, dynamic>> _logBuffer = [];
+  Timer? _logFlushTimer;
+  static const int _logFlushIntervalSeconds = 60; // 1분마다 일괄 전송
+  static const int _maxBufferSize = 500; // 최대 버퍼 크기
   String get rankingGuideUrl_ios => _rankingGuideUrl_ios.value;
   String get rankingGuideUrl_aos => _rankingGuideUrl_aos.value;
   String get rankingComingSoonUrl => _rankingComingSoonUrl.value;
@@ -199,6 +208,9 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
 
     // Geofence 설정 (리조트 진입 감지용, 백그라운드 실행)
     setupResortGeofences();
+
+    // 앱 비정상 종료 후 복구 체크 (서버는 liveOn인데 앱은 추적 안 하는 경우)
+    _checkAndRecoverFromAbnormalTermination();
   }
 
   /// 앱이 포그라운드로 돌아왔을 때 호출 (배터리 최적화 시스템 팝업 후 자동 라이브온)
@@ -227,6 +239,113 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
     }
   }
 
+  /// 앱 비정상 종료 후 복구 체크
+  /// 서버에서는 within_boundary=true (liveOn 상태)인데 앱에서 위치 추적이 안 되고 있으면 복구 다이얼로그 표시
+  Future<void> _checkAndRecoverFromAbnormalTermination() async {
+    try {
+      final userId = _userViewModel.user.user_id;
+      if (userId == null) return;
+
+      // 서버 상태: within_boundary가 true면 liveOn 상태
+      final isServerLiveOn = _userViewModel.user.within_boundary == true;
+
+      // 앱 상태: 위치 스트림이 활성화되어 있는지
+      final isAppTracking = isPositionStreamActive || _liveActivityId != null;
+
+      print('🔍 [복구 체크] 서버 liveOn: $isServerLiveOn, 앱 추적 중: $isAppTracking');
+
+      // 서버는 liveOn인데 앱은 추적 안 하는 경우 → 비정상 종료됨
+      if (isServerLiveOn && !isAppTracking) {
+        print('⚠️ [복구 체크] 비정상 종료 감지! 복구 다이얼로그 표시');
+        await _showRecoveryDialog(userId);
+      }
+    } catch (e) {
+      print('❌ [복구 체크] 오류: $e');
+    }
+  }
+
+  /// 라이브 복구 다이얼로그 표시
+  Future<void> _showRecoveryDialog(int userId) async {
+    // 약간의 딜레이 (UI가 완전히 로드된 후 표시)
+    await Future.delayed(const Duration(milliseconds: 500));
+
+    final result = await Get.dialog<bool>(
+      AlertDialog(
+        backgroundColor: SDSColor.snowliveWhite,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        contentPadding: const EdgeInsets.only(bottom: 0, left: 28, right: 28, top: 30),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              '라이브가 중단되었습니다',
+              style: SDSTextStyle.bold.copyWith(fontSize: 18, color: SDSColor.gray900),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 8),
+            Text(
+              '앱이 백그라운드에서 종료되어\n라이브 추적이 중단되었습니다.\n다시 시작하시겠습니까?',
+              style: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray600),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 24),
+            Row(
+              children: [
+                Expanded(
+                  child: TextButton(
+                    onPressed: () => Get.back(result: false),
+                    style: TextButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                    ),
+                    child: Text(
+                      '종료하기',
+                      style: SDSTextStyle.regular.copyWith(fontSize: 16, color: SDSColor.gray500),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () => Get.back(result: true),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: SDSColor.snowliveBlue,
+                      elevation: 0,
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                    ),
+                    child: Text(
+                      '다시 시작',
+                      style: SDSTextStyle.bold.copyWith(fontSize: 16, color: SDSColor.snowliveWhite),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+          ],
+        ),
+      ),
+      barrierDismissible: false,
+    );
+
+    if (result == true) {
+      // 라이브 다시 시작 (liveOff → startLiveLocationService)
+      await restoreLiveOn(userId);
+    } else {
+      // 종료하기 선택 → liveOff 호출
+      CustomFullScreenDialog.showDialog();
+      try {
+        await liveOff({"user_id": userId}, userId);
+        await _userViewModel.updateUserModel_api(userId);
+        print('✅ [복구] 라이브 종료 완료');
+      } catch (e) {
+        print('❌ [복구] 라이브 종료 실패: $e');
+      } finally {
+        CustomFullScreenDialog.cancelDialog();
+      }
+    }
+  }
+
   //TODO: 라이브온 관련 메소드****************************************************
 
   /// Firebase error_log 컬렉션 스트림 구독 시작
@@ -251,30 +370,72 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
     });
   }
 
-  /// 서버로 라이브온 로그 전송 (로깅이 활성화된 경우에만)
-  Future<void> _sendLiveLog({
+  /// 서버로 라이브온 로그 전송 (버퍼에 추가 후 1분마다 일괄 전송)
+  void _sendLiveLog({
     required int userId,
     required String requestType,
     String? error,
     double? lat,
     double? lon,
-  }) async {
+  }) {
     if (!_isLoggingOn) return;
 
-    try {
-      final coordinates = (lat != null && lon != null)
-          ? 'POINT($lon $lat)'
-          : null;
+    final coordinates = (lat != null && lon != null)
+        ? 'POINT($lon $lat)'
+        : null;
 
-      await _rankingAPI.createErrorLog({
-        'user_id': userId,
-        if (coordinates != null) 'coordinates': coordinates,
-        if (error != null) 'error': error,
-        'request_type': requestType,
-      });
-      print('📝 로그 전송 완료: $requestType');
+    final logEntry = {
+      'user_id': userId,
+      if (coordinates != null) 'coordinates': coordinates,
+      if (error != null) 'error': error,
+      'request_type': requestType,
+      'created_at': DateTime.now().toUtc().toIso8601String(),
+    };
+
+    _logBuffer.add(logEntry);
+    print('📝 로그 버퍼에 추가: $requestType (버퍼 크기: ${_logBuffer.length})');
+
+    // 버퍼가 최대 크기에 도달하면 즉시 전송
+    if (_logBuffer.length >= _maxBufferSize) {
+      _flushLogBuffer();
+    }
+  }
+
+  /// 로그 버퍼 일괄 전송 타이머 시작
+  void _startLogFlushTimer() {
+    _stopLogFlushTimer();
+    _logFlushTimer = Timer.periodic(
+      const Duration(seconds: _logFlushIntervalSeconds),
+      (_) => _flushLogBuffer(),
+    );
+    print('📤 로그 플러시 타이머 시작 (${_logFlushIntervalSeconds}초 주기)');
+  }
+
+  /// 로그 버퍼 일괄 전송 타이머 정지
+  void _stopLogFlushTimer() {
+    _logFlushTimer?.cancel();
+    _logFlushTimer = null;
+  }
+
+  /// 버퍼에 쌓인 로그를 서버로 일괄 전송
+  Future<void> _flushLogBuffer() async {
+    if (_logBuffer.isEmpty) return;
+
+    // 버퍼 복사 후 비우기 (전송 중 새 로그 추가 대비)
+    final logsToSend = List<Map<String, dynamic>>.from(_logBuffer);
+    _logBuffer.clear();
+
+    try {
+      final response = await _rankingAPI.createErrorLogBulk(logsToSend);
+      if (response.success) {
+        print('📤 로그 일괄 전송 완료: ${logsToSend.length}건');
+      } else {
+        print('❌ 로그 일괄 전송 실패, 버퍼에 다시 추가');
+        _logBuffer.insertAll(0, logsToSend); // 실패 시 다시 버퍼에 추가
+      }
     } catch (e) {
-      print('❌ 로그 전송 실패: $e');
+      print('❌ 로그 일괄 전송 오류: $e');
+      _logBuffer.insertAll(0, logsToSend); // 오류 시 다시 버퍼에 추가
     }
   }
 
@@ -432,6 +593,9 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
 
       // Heartbeat 타이머 시작 (30초마다 서버로 생존 신호 전송)
       _startHeartbeatTimer();
+
+      // 로그 버퍼 일괄 전송 타이머 시작 (1분마다)
+      _startLogFlushTimer();
 
       // Android: 배터리 최적화 제외 확인 (백그라운드 kill 방지)
       if (Platform.isAndroid) {
@@ -923,13 +1087,13 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
         negativeAction: '취소',
       ),
 
-      // 🔥 Android 알림 설정 - 알림 숨김 (LiveActivity 알림만 표시)
+      // 🔥 Android 알림 설정 - 우선순위 높여서 시스템 kill 방지
       notification: bg.Notification(
         channelId: "live_activity_channel",  // LiveActivityService와 동일한 채널 사용
         title: "스노우라이브",
         text: "라이브 위치 추적 중...",
         sticky: true,
-        priority: bg.Config.NOTIFICATION_PRIORITY_MIN,
+        priority: bg.Config.NOTIFICATION_PRIORITY_HIGH,  // HIGH: 시스템 kill 방지 (알림이 눈에 띄게 표시될 수 있음)
       ),
 
       showsBackgroundLocationIndicator: true,
@@ -960,20 +1124,53 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
     });
 
     // 백그라운드 heartbeat 이벤트 (플러그인 내장 heartbeat)
-    bg.BackgroundGeolocation.onHeartbeat((bg.HeartbeatEvent event) {
-      print('💓 백그라운드 Heartbeat: ${event.location?.coords.latitude}, ${event.location?.coords.longitude}');
-      _sendLiveLog(
-        userId: user_id,
-        requestType: 'bg_heartbeat',
-        lat: event.location?.coords.latitude,
-        lon: event.location?.coords.longitude,
-      );
+    bg.BackgroundGeolocation.onHeartbeat((bg.HeartbeatEvent event) async {
+      // 캐시된 위치 사용 안함 - 항상 새 위치 요청
+      try {
+        final freshLocation = await bg.BackgroundGeolocation.getCurrentPosition(
+          samples: 1,
+          timeout: 30,
+          maximumAge: 0,
+          desiredAccuracy: 10,
+        );
+        print('💓 백그라운드 Heartbeat: ${freshLocation.coords.latitude}, ${freshLocation.coords.longitude}');
+        _sendLiveLog(
+          userId: user_id,
+          requestType: 'bg_heartbeat',
+          lat: freshLocation.coords.latitude,
+          lon: freshLocation.coords.longitude,
+        );
+      } catch (e) {
+        print('💓 백그라운드 Heartbeat: 새 위치 획득 실패, 이벤트 무시 ($e)');
+        // 새 위치 획득 실패 시 로그 전송하지 않음
+      }
     });
 
     bg.BackgroundGeolocation.onLocation((bg.Location location) async {
+      // 무한 루프 방지: getCurrentPosition 호출 중이면 스킵
+      if (_isGettingBackgroundPosition) {
+        return;
+      }
 
-      double latitude = location.coords.latitude;
-      double longitude = location.coords.longitude;
+      // 캐시된 위치 대신 항상 새 위치 요청 (포그라운드와 동일하게 실시간 위치 사용)
+      _isGettingBackgroundPosition = true;
+      bg.Location freshLocation;
+      try {
+        freshLocation = await bg.BackgroundGeolocation.getCurrentPosition(
+          samples: 1,
+          timeout: 30,
+          maximumAge: 0,
+          desiredAccuracy: 10,
+        );
+      } catch (e) {
+        print('📍 onLocation: 새 위치 획득 실패, 이벤트 무시 ($e)');
+        _isGettingBackgroundPosition = false;
+        return;
+      }
+      _isGettingBackgroundPosition = false;
+
+      double latitude = freshLocation.coords.latitude;
+      double longitude = freshLocation.coords.longitude;
 
       // 현재 좌표 갱신
       _latitude.value = latitude;
@@ -982,12 +1179,12 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
       Position position = Position(
         latitude: latitude,
         longitude: longitude,
-        accuracy: location.coords.accuracy,
-        altitude: location.coords.altitude,
-        heading: location.coords.heading,
-        speed: location.coords.speed,
-        speedAccuracy: location.coords.speedAccuracy,
-        timestamp: DateTime.parse(location.timestamp),
+        accuracy: freshLocation.coords.accuracy,
+        altitude: freshLocation.coords.altitude,
+        heading: freshLocation.coords.heading,
+        speed: freshLocation.coords.speed,
+        speedAccuracy: freshLocation.coords.speedAccuracy,
+        timestamp: DateTime.parse(freshLocation.timestamp),
         altitudeAccuracy: 0,
         headingAccuracy: 0,
       );
@@ -1517,6 +1714,10 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
       // ✅ Heartbeat 타이머 정지
       _stopHeartbeatTimer();
       _currentLiveUserId = null;
+
+      // ✅ 로그 버퍼 일괄 전송 후 타이머 정지
+      await _flushLogBuffer();
+      _stopLogFlushTimer();
 
       // ✅ 에러 로그 스트림 구독 해제 (로그 전송 후에 해제)
       _errorLogSubscription?.cancel();
