@@ -1248,6 +1248,46 @@ class RankingListViewModel extends GetxController {
     _selectedCategory_fed.value = value;
   }
 
+  /// 백그라운드 진입 시 페이지네이션 리스트 정리 (메모리 절약)
+  /// 앱 복귀 시 자동으로 다시 로드됨
+  void clearMemory() {
+    // 개인랭킹 리스트 정리
+    _rankingListIndivList_total.clear();
+    _rankingListIndivList_resort.clear();
+    _rankingListIndivList_fed.clear();
+    _rankingListIndivList_total_daily.clear();
+    _rankingListIndivList_resort_daily.clear();
+    _rankingListIndivList_fed_daily.clear();
+
+    // 크루랭킹 리스트 정리
+    _rankingListCrewList_total.clear();
+    _rankingListCrewList_resort.clear();
+    _rankingListCrewList_fed.clear();
+    _rankingListCrewList_total_daily.clear();
+    _rankingListCrewList_resort_daily.clear();
+    _rankingListCrewList_fed_daily.clear();
+
+    // 뷰 리스트 정리
+    _rankingListIndivList_view.clear();
+    _rankingListCrewList_view.clear();
+
+    // 페이지네이션 URL 초기화
+    _nextPageUrl_indiv_total.value = '';
+    _nextPageUrl_indiv_resort.value = '';
+    _nextPageUrl_indiv_fed.value = '';
+    _nextPageUrl_indiv_total_daily.value = '';
+    _nextPageUrl_indiv_resort_daily.value = '';
+    _nextPageUrl_indiv_fed_daily.value = '';
+    _nextPageUrl_crew_total.value = '';
+    _nextPageUrl_crew_resort.value = '';
+    _nextPageUrl_crew_fed.value = '';
+    _nextPageUrl_crew_total_daily.value = '';
+    _nextPageUrl_crew_resort_daily.value = '';
+    _nextPageUrl_crew_fed_daily.value = '';
+
+    print('🧹 RankingListViewModel 메모리 정리 완료');
+  }
+
   @override
   void onClose() {
     // 메모리 누수 방지: ScrollController 리스너 해제 및 dispose

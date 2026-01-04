@@ -562,6 +562,24 @@ class CommunityBulletinListViewModel extends GetxController {
     fetchCommunityList_crew(userId:  _userViewModel.user.user_id,categoryMain: '게시판',categorySub: Community_Category_sub_bulletin.crew.korean);
   }
 
+  /// 백그라운드 진입 시 페이지네이션 리스트 정리 (메모리 절약)
+  void clearMemory() {
+    _communityList_total.clear();
+    _communityList_free.clear();
+    _communityList_room.clear();
+    _communityList_crew.clear();
+    _communityList_event.clear();
+
+    // 페이지네이션 URL 초기화
+    _nextPageUrl_total.value = '';
+    _nextPageUrl_free.value = '';
+    _nextPageUrl_room.value = '';
+    _nextPageUrl_crew.value = '';
+    _nextPageUrl_event.value = '';
+
+    print('🧹 CommunityBulletinListViewModel 메모리 정리 완료');
+  }
+
   @override
   void onClose() {
     // 메모리 누수 방지: ScrollController dispose

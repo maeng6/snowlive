@@ -7,6 +7,8 @@ import 'package:com.snowlive/viewmodel/onboarding_login/vm_authcheck.dart';
 import 'package:com.snowlive/viewmodel/resortHome/vm_resortHome.dart';
 import 'package:com.snowlive/viewmodel/vm_notificationController.dart';
 import 'package:com.snowlive/viewmodel/vm_splashController.dart';
+import 'package:com.snowlive/viewmodel/ranking/vm_rankingList.dart';
+import 'package:com.snowlive/viewmodel/fleamarket/vm_fleamarketList.dart';
 import 'package:com.snowlive/routes/routes.dart';
 import 'package:com.snowlive/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
@@ -144,22 +146,51 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     super.dispose();
   }
 
+  /// 앱 라이프사이클 변경 감지 - 백그라운드 진입 시 선제적 메모리 정리
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+    if (state == AppLifecycleState.paused) {
+      // 백그라운드 진입 시 미리 캐시 정리 → 메모리 경고 감소
+      _clearImageCaches();
+      _clearViewModelMemory();
+    }
+  }
+
+  /// ViewModel 페이지네이션 리스트 정리 (메모리 절약)
+  /// 앱 복귀 시 자동으로 다시 로드됨
+  void _clearViewModelMemory() {
+    // RankingListViewModel 정리
+    if (Get.isRegistered<RankingListViewModel>()) {
+      Get.find<RankingListViewModel>().clearMemory();
+    }
+    // FleamarketListViewModel 정리
+    if (Get.isRegistered<FleamarketListViewModel>()) {
+      Get.find<FleamarketListViewModel>().clearMemory();
+    }
+    // ResortHomeViewModel 정리
+    if (Get.isRegistered<ResortHomeViewModel>()) {
+      Get.find<ResortHomeViewModel>().clearMemory();
+    }
+  }
+
   /// 시스템 메모리 경고 시 공격적인 캐시 정리 (iOS/Android 모두 호출됨)
   @override
   void didHaveMemoryPressure() {
     super.didHaveMemoryPressure();
     print('⚠️ 메모리 경고 - 캐시 전체 정리');
+    _clearImageCaches();
 
-    // 1. Flutter 기본 이미지 캐시 정리
+    // 메모리 경고 시 캐시 크기 임시 축소
+    PaintingBinding.instance.imageCache.maximumSize = 30;
+    PaintingBinding.instance.imageCache.maximumSizeBytes = 20 << 20; // 20MB
+  }
+
+  /// 이미지 캐시 정리 (공통)
+  void _clearImageCaches() {
     PaintingBinding.instance.imageCache.clear();
     PaintingBinding.instance.imageCache.clearLiveImages();
-
-    // 2. ExtendedImage 메모리 캐시 정리
-    clearMemoryImageCache();
-
-    // 3. 이미지 캐시 크기 임시 축소 (메모리 확보 우선)
-    PaintingBinding.instance.imageCache.maximumSize = 30; // 100 → 30개
-    PaintingBinding.instance.imageCache.maximumSizeBytes = 20 << 20; // 50MB → 20MB
+    clearMemoryImageCache(); // ExtendedImage 캐시
   }
 
   @override
