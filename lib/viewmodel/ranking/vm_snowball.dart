@@ -80,12 +80,14 @@ class SnowballShopViewModel extends GetxController {
   Rxn<Stream<DocumentSnapshot<Map<String, dynamic>>>> infoStream_snowballShop_entrance = Rxn();
   Rxn<Stream<DocumentSnapshot<Map<String, dynamic>>>> infoStream_snowballShop_entrance_ranking = Rxn();
   Rxn<Stream<DocumentSnapshot<Map<String, dynamic>>>> infoStream_snowballShop_notice_gold = Rxn();
+  Rxn<Stream<DocumentSnapshot<Map<String, dynamic>>>> infoStream_themestore_entrance_resortHome = Rxn();
 
   @override
   Future<void> onInit() async {
     super.onInit();
     await getInfo_snowballMarket();
     await getInfo_snowballMarket_entrance();
+    await getInfo_themestore_resortHome_entrance();
   }
 
   // ============================================================
@@ -121,6 +123,12 @@ class SnowballShopViewModel extends GetxController {
         .snapshots();
   }
 
+  Future<void> getInfo_themestore_resortHome_entrance() async {
+    infoStream_themestore_entrance_resortHome.value = FirebaseFirestore.instance
+        .collection('themestore')
+        .doc('themestore')
+        .snapshots();
+  }
 
 
   Future<void> getInfo_snowballMarket_notice_gold() async {

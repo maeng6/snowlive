@@ -9,6 +9,7 @@ import 'package:com.snowlive/view/ranking/v_entrance_snowballmarket_brandonly_ho
 import 'package:com.snowlive/view/ranking/v_entrance_snowballmarket_home.dart';
 import 'package:com.snowlive/view/resortHome/v_chat_resortHome.dart';
 import 'package:com.snowlive/data/snowliveDesignStyle.dart';
+import 'package:com.snowlive/view/ranking/v_entrance_themestore_resortHome.dart';
 import 'package:com.snowlive/view/resortHome/v_snowliveBrandVideo.dart';
 import 'package:com.snowlive/view/v_entrance_forestPark.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewDetail.dart';
@@ -1834,6 +1835,11 @@ class _ResortHomeViewState extends State<ResortHomeView> with
                               padding: EdgeInsets.only(left: 16, right: 16),
                               child: Entrance_snowballMarket_brandonly_Home(),
                             ),
+                            //TODO: 기획전 진입점
+                            Padding(
+                              padding: EdgeInsets.only(left: 16, right: 16),
+                              child: Entrance_Themestore_Home(),
+                            ),
                             //TODO: 점령전 진입점
                             Padding(
                               padding: EdgeInsets.only(left: 16, right: 16),
@@ -2488,69 +2494,69 @@ class _ResortHomeViewState extends State<ResortHomeView> with
                                       ),
                                     ),
                                   ),
-                                  GestureDetector(
-                                    onTap: (){
-                                      // 스라마켓 탭 클릭 시 별도 처리
-                                      FirebaseAnalytics.instance.logEvent(
-                                        name: 'visit_slmk',
-                                        parameters: {
-                                          'user_id': _userViewModel.user.user_id,
-                                          'user_name': _userViewModel.user.display_name,
-                                        },
-                                      );
-
-                                      Get.to(() => SlmkScreen());
-
-                                      return; // 🔥 슬마켓은 PageView 이동 방지
-                                    },
-                                    child: Padding(
-                                      padding: EdgeInsets.only(bottom : 10),
-                                      child: Container(
-                                        width: _size.width - 32,
-                                        decoration: BoxDecoration(
-                                          color: SDSColor.snowliveWhite,
-                                          borderRadius: BorderRadius.circular(16),
-                                          border: Border.all(width: 1, color: SDSColor.gray100),
-                                        ),
-                                        child: Padding(
-                                          padding: EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-                                          child: Column(
-                                            children: [
-                                              Row(
-                                                crossAxisAlignment: CrossAxisAlignment.center,
-                                                  children: [
-                                                    ExtendedImage.asset(
-                                                      'assets/imgs/imgs/img_slmk_home_banner_1.png',
-                                                      width: 56,
-                                                    ),
-                                                    SizedBox(width: 12),
-                                                    Column(
-                                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                                      children: [
-                                                        Text(
-                                                          '2526 신상 의류와 장비를 둘러보세요',
-                                                          style: SDSTextStyle.bold.copyWith(
-                                                            fontSize: 14,
-                                                            color: SDSColor.gray900,
-                                                          ),
-                                                        ),
-                                                        Text(
-                                                          '스노우라이브 마켓 둘러보기',
-                                                          style: SDSTextStyle.regular.copyWith(
-                                                            fontSize: 13,
-                                                            color: SDSColor.gray500,
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ],
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
+                                  // GestureDetector(
+                                  //   onTap: (){
+                                  //     // 스라마켓 탭 클릭 시 별도 처리
+                                  //     FirebaseAnalytics.instance.logEvent(
+                                  //       name: 'visit_slmk',
+                                  //       parameters: {
+                                  //         'user_id': _userViewModel.user.user_id,
+                                  //         'user_name': _userViewModel.user.display_name,
+                                  //       },
+                                  //     );
+                                  //
+                                  //     Get.to(() => SlmkScreen());
+                                  //
+                                  //     return; // 🔥 슬마켓은 PageView 이동 방지
+                                  //   },
+                                  //   child: Padding(
+                                  //     padding: EdgeInsets.only(bottom : 10),
+                                  //     child: Container(
+                                  //       width: _size.width - 32,
+                                  //       decoration: BoxDecoration(
+                                  //         color: SDSColor.snowliveWhite,
+                                  //         borderRadius: BorderRadius.circular(16),
+                                  //         border: Border.all(width: 1, color: SDSColor.gray100),
+                                  //       ),
+                                  //       child: Padding(
+                                  //         padding: EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                                  //         child: Column(
+                                  //           children: [
+                                  //             Row(
+                                  //               crossAxisAlignment: CrossAxisAlignment.center,
+                                  //                 children: [
+                                  //                   ExtendedImage.asset(
+                                  //                     'assets/imgs/imgs/img_slmk_home_banner_1.png',
+                                  //                     width: 56,
+                                  //                   ),
+                                  //                   SizedBox(width: 12),
+                                  //                   Column(
+                                  //                     crossAxisAlignment: CrossAxisAlignment.start,
+                                  //                     children: [
+                                  //                       Text(
+                                  //                         '2526 신상 의류와 장비를 둘러보세요',
+                                  //                         style: SDSTextStyle.bold.copyWith(
+                                  //                           fontSize: 14,
+                                  //                           color: SDSColor.gray900,
+                                  //                         ),
+                                  //                       ),
+                                  //                       Text(
+                                  //                         '스노우라이브 마켓 둘러보기',
+                                  //                         style: SDSTextStyle.regular.copyWith(
+                                  //                           fontSize: 13,
+                                  //                           color: SDSColor.gray500,
+                                  //                         ),
+                                  //                       ),
+                                  //                     ],
+                                  //                   ),
+                                  //                 ],
+                                  //             ),
+                                  //           ],
+                                  //         ),
+                                  //       ),
+                                  //     ),
+                                  //   ),
+                                  // ),
                                   GestureDetector(
                                     onTap: () async {
                                       if(_userViewModel.user.crew_id == null){
