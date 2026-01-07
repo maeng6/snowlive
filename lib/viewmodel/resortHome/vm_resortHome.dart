@@ -404,6 +404,34 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
     }
   }
 
+  /// Heartbeat 로그 즉시 전송 (버퍼 사용 안함)
+  Future<void> _sendHeartbeatLogDirect({
+    required int userId,
+    required String requestType,
+    double? lat,
+    double? lon,
+  }) async {
+    if (!_isLoggingOn) return;
+
+    final coordinates = (lat != null && lon != null)
+        ? 'POINT($lon $lat)'
+        : null;
+
+    final logEntry = {
+      'user_id': userId,
+      if (coordinates != null) 'coordinates': coordinates,
+      'request_type': requestType,
+      'created_at': DateTime.now().toUtc().toIso8601String(),
+    };
+
+    try {
+      await _rankingAPI.createErrorLog(logEntry);
+      print('💓 Heartbeat 로그 즉시 전송: $requestType');
+    } catch (e) {
+      print('❌ Heartbeat 로그 전송 실패: $e');
+    }
+  }
+
   /// 로그 버퍼 일괄 전송 타이머 시작
   void _startLogFlushTimer() {
     _stopLogFlushTimer();
@@ -450,7 +478,8 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
     _heartbeatTimer = Timer.periodic(const Duration(seconds: 60), (timer) async {
       if (_currentLiveUserId != null) {
         // 위치 스트림에서 이미 갱신된 저장된 위치 사용 (이중 GPS 호출 방지)
-        _sendLiveLog(
+        // Heartbeat는 버퍼 없이 즉시 전송
+        _sendHeartbeatLogDirect(
           userId: _currentLiveUserId!,
           requestType: 'fg_heartbeat',
           lat: _latitude.value,
@@ -684,8 +713,6 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
 
   Future<bool> startForegroundLocationService({required user_id}) async {
     try {
-      _sendLiveLog(userId: user_id, requestType: 'foreground_start_begin');
-
       bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
       if (!serviceEnabled) {
         _sendLiveLog(userId: user_id, requestType: 'foreground_error', error: 'Location services are disabled');
@@ -720,8 +747,6 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
       Position currentPosition = await Geolocator.getCurrentPosition();
       _latitude.value = currentPosition.latitude;
       _longitude.value = currentPosition.longitude;
-
-      _sendLiveLog(userId: user_id, requestType: 'foreground_got_position', lat: _latitude.value, lon: _longitude.value);
 
       // 서버와 라이브 상태 동기화
       ApiResponse response = await liveOn({
@@ -1151,7 +1176,8 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
           desiredAccuracy: 10,
         );
         print('💓 백그라운드 Heartbeat: ${freshLocation.coords.latitude}, ${freshLocation.coords.longitude}');
-        _sendLiveLog(
+        // Heartbeat는 버퍼 없이 즉시 전송
+        _sendHeartbeatLogDirect(
           userId: user_id,
           requestType: 'bg_heartbeat',
           lat: freshLocation.coords.latitude,
@@ -1726,9 +1752,6 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
 
   Future<void> liveOff(Map<String, dynamic> body, user_id) async {
     isLoading(true);
-
-    // 로그 전송 (스트림 구독 해제 전에 전송)
-    _sendLiveLog(userId: user_id, requestType: 'liveOff_start', lat: _latitude.value, lon: _longitude.value);
 
     final ApiResponse response_off = await RankingAPI().liveOff(body);
 
