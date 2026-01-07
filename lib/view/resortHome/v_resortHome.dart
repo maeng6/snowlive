@@ -161,6 +161,11 @@ class _ResortHomeViewState extends State<ResortHomeView> with
       _openChatAlarmViewModel.resumeListening();
       _eventAlarmViewModel.resumeListening();
       print('▶️ 포어그라운드 복귀: 알람 스트림 재시작');
+
+      // 🛡️ iOS 이미지 캐시 복구: 백그라운드에서 메모리 해제된 이미지 다시 로드
+      if (Platform.isIOS && mounted) {
+        setState(() {});
+      }
     }
   }
 

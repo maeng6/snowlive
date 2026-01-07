@@ -144,14 +144,13 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     super.dispose();
   }
 
-  /// 앱 라이프사이클 변경 감지 - 백그라운드 진입 시 선제적 메모리 정리
+  /// 앱 라이프사이클 변경 감지
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     super.didChangeAppLifecycleState(state);
-    if (state == AppLifecycleState.paused) {
-      // 백그라운드 진입 시 미리 캐시 정리 → 메모리 경고 감소
-      _clearImageCaches();
-    }
+    // 🛡️ 백그라운드 진입 시 캐시 클리어 제거
+    // iOS에서 포그라운드 복귀 시 이미지가 보라색으로 깨지는 문제 해결
+    // 메모리가 필요하면 didHaveMemoryPressure에서 시스템이 알려줌
   }
 
   /// 시스템 메모리 경고 시 공격적인 캐시 정리 (iOS/Android 모두 호출됨)

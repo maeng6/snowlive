@@ -763,6 +763,20 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
           locationSettings: locationSettings,
         ).listen(
               (Position position) async {
+            // 🛡️ 캐시된 오래된 위치 필터링 (iOS GPS 점프 방지)
+            final positionAge = DateTime.now().difference(position.timestamp);
+            if (positionAge.inSeconds > 10) {
+              print('⚠️ 캐시된 위치 무시: ${positionAge.inSeconds}초 전 위치');
+              _sendLiveLog(
+                userId: user_id,
+                requestType: 'fg_cached_position_ignored',
+                lat: position.latitude,
+                lon: position.longitude,
+                error: 'age: ${positionAge.inSeconds}s',
+              );
+              return;
+            }
+
             // 현재 좌표 갱신
             _latitude.value = position.latitude;
             _longitude.value = position.longitude;
@@ -1180,6 +1194,21 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
       }
       _isGettingBackgroundPosition = false;
 
+      // 🛡️ 캐시된 오래된 위치 필터링 (iOS GPS 점프 방지)
+      final locationTimestamp = DateTime.parse(freshLocation.timestamp);
+      final positionAge = DateTime.now().difference(locationTimestamp);
+      if (positionAge.inSeconds > 10) {
+        print('⚠️ [백그라운드] 캐시된 위치 무시: ${positionAge.inSeconds}초 전 위치');
+        _sendLiveLog(
+          userId: user_id,
+          requestType: 'bg_cached_position_ignored',
+          lat: freshLocation.coords.latitude,
+          lon: freshLocation.coords.longitude,
+          error: 'age: ${positionAge.inSeconds}s',
+        );
+        return;
+      }
+
       double latitude = freshLocation.coords.latitude;
       double longitude = freshLocation.coords.longitude;
 
@@ -1195,7 +1224,7 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
         heading: freshLocation.coords.heading,
         speed: freshLocation.coords.speed,
         speedAccuracy: freshLocation.coords.speedAccuracy,
-        timestamp: DateTime.parse(freshLocation.timestamp),
+        timestamp: locationTimestamp,
         altitudeAccuracy: 0,
         headingAccuracy: 0,
       );
@@ -1238,17 +1267,6 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
             _reset_point,
             _respawn_point,
           );
-
-          // 🔍 진단 로그: 영역 매칭 결과
-          if (passPointInfos.isEmpty) {
-            _sendLiveLog(
-              userId: user_id,
-              requestType: 'fg_position_stream',
-              lat: position.latitude,
-              lon: position.longitude,
-              error: '${Platform.isIOS ? 'ios' : 'android'}_bg_no_area_match',
-            );
-          }
 
           // 병렬 처리를 위한 Future 리스트
           List<Future<void>> futures = [];
@@ -2458,8 +2476,7 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
       await bg.BackgroundGeolocation.startGeofences();
       print('🌐 리조트 Geofence 모니터링 시작');
 
-      // 6. 초기 위치 체크 (이미 Geofence 내에 있는지 확인)
-      await _checkInitialGeofenceStatus();
+      // 초기 위치 체크 제거 - GPS 활성화 방지 (Geofence 이벤트로만 감지)
 
     } catch (e) {
       print('❌ Geofence 설정 오류: $e');
