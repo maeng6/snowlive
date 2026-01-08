@@ -47,13 +47,6 @@ class _ThemestoreHomeViewState extends State<ThemestoreHomeView> {
           child: AppBar(
             elevation: 0,
             surfaceTintColor: Colors.transparent,
-            title: Text(
-              _themeStoreViewModel.themeStore?.name ?? '기획전',
-              style: SDSTextStyle.bold.copyWith(
-                color: SDSColor.gray900,
-                fontSize: 16,
-              ),
-            ),
             backgroundColor: Colors.white,
             leading: GestureDetector(
               child: Image.asset(
@@ -75,10 +68,11 @@ class _ThemestoreHomeViewState extends State<ThemestoreHomeView> {
                 child: Padding(
                   padding: const EdgeInsets.only(right: 16),
                   child: Center(
-                    child: Icon(
-                      Icons.receipt_long,
-                      color: SDSColor.gray900,
-                      size: 24,
+                    child: Text('구매 내역',
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold
+                    ),
                     ),
                   ),
                 ),
@@ -86,6 +80,33 @@ class _ThemestoreHomeViewState extends State<ThemestoreHomeView> {
             ],
           ),
         ),
+        floatingActionButton: Container(
+          margin: const EdgeInsets.only(bottom: 5),
+          height: 40,
+          child: FloatingActionButton.extended(
+            onPressed: null,
+            backgroundColor: _themeStoreViewModel.isPermitted
+                ? const Color(0xFF3D83ED)
+                : SDSColor.snowliveBlack,
+            elevation: 0,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(40),
+            ),
+            label: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
+              child: Text(
+                _themeStoreViewModel.isPermitted
+                    ? '라이딩 완료! 원하시는 상품 구매가 가능합니다'
+                    : '구매제한 상태에요. 1회 라이딩 완료하면 구매하실 수 있어요',
+                style: SDSTextStyle.bold.copyWith(
+                  fontSize: 12,
+                  color: SDSColor.snowliveWhite,
+                ),
+              ),
+            ),
+          ),
+        ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
         body: _themeStoreViewModel.isLoading.value
             ? Container(
           width: double.infinity,
@@ -123,6 +144,9 @@ class _ThemestoreHomeViewState extends State<ThemestoreHomeView> {
                   child: ExtendedImage.network(
                     _themeStoreViewModel.themeStore!.mainImageUrl!,
                     fit: BoxFit.cover,
+                    cache: true,
+                    enableMemoryCache: true,
+                    clearMemoryCacheWhenDispose: false,
                     loadStateChanged: (ExtendedImageState state) {
                       switch (state.extendedImageLoadState) {
                         case LoadState.loading:
@@ -166,12 +190,11 @@ class _ThemestoreHomeViewState extends State<ThemestoreHomeView> {
 
                     return GestureDetector(
                       onTap: () async {
-                        if (isOutOfStock) return;
 
                         showModalBottomSheet(
                           context: context,
                           isScrollControlled: true,
-                          backgroundColor: const Color(0xFF3D83ED),
+                          backgroundColor: SDSColor.snowliveWhite,
                           builder: (BuildContext context) {
                             return GestureDetector(
                               onTap: () => Navigator.of(context).pop(),
@@ -182,7 +205,7 @@ class _ThemestoreHomeViewState extends State<ThemestoreHomeView> {
                                       topLeft: Radius.circular(16),
                                       topRight: Radius.circular(16),
                                     ),
-                                    color: Color(0xFF3D83ED),
+                                    color: SDSColor.snowliveWhite,
                                   ),
                                   padding: const EdgeInsets.only(
                                     bottom: 16,
@@ -226,14 +249,31 @@ class _ThemestoreHomeViewState extends State<ThemestoreHomeView> {
                                             ),
                                           ),
                                           const SizedBox(height: 16),
+                                          Text(
+                                            item.brandName ?? '브랜드 이름',
+                                            style: SDSTextStyle.bold.copyWith(
+                                              fontSize: 13,
+                                              color: SDSColor.snowliveBlack,
+                                            ),
+                                          ),
                                           // 상품명
                                           Text(
                                             item.name ?? '상품 이름',
                                             style: SDSTextStyle.bold.copyWith(
                                               fontSize: 18,
-                                              color: SDSColor.snowliveWhite,
+                                              color: SDSColor.snowliveBlack,
                                             ),
                                           ),
+                                          // 설명
+                                          if (item.description != null && item.description!.isNotEmpty)
+                                            Text(
+                                              item.description ?? '',
+                                              textAlign: TextAlign.center,
+                                              style: SDSTextStyle.regular.copyWith(
+                                                fontSize: 13,
+                                                color: Colors.black.withOpacity(0.6),
+                                              ),
+                                            ),
                                           const SizedBox(height: 8),
                                           // 가격
                                           if (item.priceEvent != null && item.priceEvent! > 0)
@@ -243,17 +283,25 @@ class _ThemestoreHomeViewState extends State<ThemestoreHomeView> {
                                                 Text(
                                                   '${_formatWon(item.priceOrigin)}원',
                                                   style: SDSTextStyle.regular.copyWith(
-                                                    fontSize: 14,
-                                                    color: Colors.white.withOpacity(0.5),
+                                                    fontSize: 16,
+                                                    color: Colors.black.withOpacity(0.2),
                                                     decoration: TextDecoration.lineThrough,
+                                                  ),
+                                                ),
+                                                const SizedBox(width: 8),
+                                                Text(
+                                                  '${item.discountPerct}%',
+                                                  style: SDSTextStyle.bold.copyWith(
+                                                    fontSize: 16,
+                                                    color: const Color(0xFFFF3B3B),
                                                   ),
                                                 ),
                                                 const SizedBox(width: 8),
                                                 Text(
                                                   '${_formatWon(item.priceEvent)}원',
                                                   style: SDSTextStyle.bold.copyWith(
-                                                    fontSize: 18,
-                                                    color: SDSColor.snowliveWhite,
+                                                    fontSize: 16,
+                                                    color: SDSColor.snowliveBlack,
                                                   ),
                                                 ),
                                               ],
@@ -264,17 +312,6 @@ class _ThemestoreHomeViewState extends State<ThemestoreHomeView> {
                                               style: SDSTextStyle.bold.copyWith(
                                                 fontSize: 18,
                                                 color: SDSColor.snowliveWhite,
-                                              ),
-                                            ),
-                                          const SizedBox(height: 8),
-                                          // 설명
-                                          if (item.description != null && item.description!.isNotEmpty)
-                                            Text(
-                                              item.description ?? '',
-                                              textAlign: TextAlign.center,
-                                              style: SDSTextStyle.regular.copyWith(
-                                                fontSize: 13,
-                                                color: Colors.white.withOpacity(0.7),
                                               ),
                                             ),
                                           const SizedBox(height: 24),
@@ -296,15 +333,15 @@ class _ThemestoreHomeViewState extends State<ThemestoreHomeView> {
                                                     },
                                                     style: TextButton.styleFrom(
                                                       shape: const RoundedRectangleBorder(
-                                                        borderRadius: BorderRadius.all(Radius.circular(6)),
+                                                        borderRadius: BorderRadius.all(Radius.circular(5)),
                                                       ),
                                                       splashFactory: InkRipple.splashFactory,
                                                       elevation: 0,
                                                       minimumSize: const Size(100, 48),
-                                                      backgroundColor: const Color(0xFF1C3F70),
+                                                      backgroundColor: const Color(0xFF7C899D),
                                                     ),
                                                     child: Text(
-                                                      '상세 정보 보기',
+                                                      '제품 정보 보기',
                                                       style: SDSTextStyle.bold.copyWith(
                                                         color: SDSColor.snowliveWhite,
                                                         fontSize: 16,
@@ -317,6 +354,9 @@ class _ThemestoreHomeViewState extends State<ThemestoreHomeView> {
                                               Expanded(
                                                 child: ElevatedButton(
                                                   onPressed: () async {
+
+                                                    if(isOutOfStock || _themeStoreViewModel.isPermitted == false) return;
+
                                                     Navigator.pop(context);
 
                                                     if (item.payUrl != null && item.payUrl!.isNotEmpty) {
@@ -337,17 +377,26 @@ class _ThemestoreHomeViewState extends State<ThemestoreHomeView> {
                                                   },
                                                   style: ElevatedButton.styleFrom(
                                                     shape: const RoundedRectangleBorder(
-                                                      borderRadius: BorderRadius.all(Radius.circular(6)),
+                                                      borderRadius: BorderRadius.all(Radius.circular(5)),
                                                     ),
                                                     splashFactory: InkRipple.splashFactory,
                                                     elevation: 0,
                                                     minimumSize: const Size(100, 48),
-                                                    backgroundColor: SDSColor.snowliveWhite,
+                                                    backgroundColor:
+                                                    isOutOfStock
+                                                        ? SDSColor.snowliveBlack
+                                                        : (!_themeStoreViewModel.isPermitted
+                                                        ? Color(0xFFDEDEDE)
+                                                        : Color(0xFF3D83ED)),
                                                   ),
                                                   child: Text(
-                                                    '구매하기',
+                                                    isOutOfStock
+                                                        ? '품절'
+                                                        : (!_themeStoreViewModel.isPermitted
+                                                        ? '구매제한'
+                                                        : '구매 예약 하기'),
                                                     style: SDSTextStyle.bold.copyWith(
-                                                      color: SDSColor.snowliveBlack,
+                                                      color: SDSColor.snowliveWhite,
                                                       fontSize: 16,
                                                     ),
                                                   ),
@@ -427,10 +476,11 @@ class _ThemestoreHomeViewState extends State<ThemestoreHomeView> {
 
                           if (item.size != null && item.size!.isNotEmpty)
                             Text(
-                              item.size!,
+                              item.brandName ?? '브랜드 이름',
                               style: SDSTextStyle.regular.copyWith(
-                                fontSize: 12,
-                                color: SDSColor.gray500,
+                                fontSize: 11,
+                                fontWeight: FontWeight.bold,
+                                color: SDSColor.snowliveBlack,
                               ),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
@@ -441,7 +491,7 @@ class _ThemestoreHomeViewState extends State<ThemestoreHomeView> {
                           Text(
                             item.name ?? '상품 이름',
                             style: SDSTextStyle.bold.copyWith(
-                              fontSize: 14,
+                              fontSize: 13,
                               color: SDSColor.gray900,
                             ),
                             maxLines: 2,
@@ -452,50 +502,25 @@ class _ThemestoreHomeViewState extends State<ThemestoreHomeView> {
 
                           Row(
                             children: [
-                              if (item.discountPerct != null && item.discountPerct! > 0) ...[
-                                Text(
+                              if (item.discountPerct != null && item.discountPerct! > 0)
+                              Text(
                                   '${item.discountPerct}%',
                                   style: SDSTextStyle.bold.copyWith(
                                     fontSize: 14,
                                     color: const Color(0xFFFF3B3B),
                                   ),
                                 ),
-                                const SizedBox(width: 6),
-                              ],
-                              if (item.priceEvent != null && item.priceEvent! > 0) ...[
-                                Text(
-                                  '${_formatWon(item.priceOrigin)}원',
-                                  style: SDSTextStyle.regular.copyWith(
-                                    fontSize: 12,
-                                    color: SDSColor.gray400,
-                                    decoration: TextDecoration.lineThrough,
-                                  ),
+
+                              const SizedBox(width: 3),
+                              Text(
+                                '${_formatWon(item.priceEvent)}원',
+                                style: SDSTextStyle.bold.copyWith(
+                                  fontSize: 14,
+                                  color: SDSColor.gray900,
                                 ),
-                                const SizedBox(width: 6),
-                                Expanded(
-                                  child: Text(
-                                    '${_formatWon(item.priceEvent)}원',
-                                    style: SDSTextStyle.bold.copyWith(
-                                      fontSize: 14,
-                                      color: SDSColor.gray900,
-                                    ),
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                ),
-                              ] else ...[
-                                Expanded(
-                                  child: Text(
-                                    '${_formatWon(item.priceOrigin)}원',
-                                    style: SDSTextStyle.bold.copyWith(
-                                      fontSize: 14,
-                                      color: SDSColor.gray900,
-                                    ),
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                ),
-                              ],
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
                             ],
                           ),
                         ],

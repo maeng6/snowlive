@@ -57,6 +57,7 @@ class ThemeStore {
 class ThemeStoreItem {
   int? themestoreItemId;
   String? name;
+  String? brandName;
   dynamic size; // ✅ 서버에서 int/문자 혼재 가능해서 안전하게
   int? priceOrigin;
   int? priceEvent;
@@ -74,6 +75,7 @@ class ThemeStoreItem {
   ThemeStoreItem({
     this.themestoreItemId,
     this.name,
+    this.brandName,
     this.size,
     this.priceOrigin,
     this.priceEvent,
@@ -94,6 +96,7 @@ class ThemeStoreItem {
         ? json['themestore_item_id']
         : (json['themestore_item_id'] as num?)?.toInt();
     name = json['name'];
+    brandName = json['brand_name'];
     size = json['size']; // int로도, string으로도 올 수 있음
     priceOrigin = json['price_origin'] is int
         ? json['price_origin']
