@@ -863,7 +863,7 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
                 for (var passPointInfo in passPointInfos) {
                   // 체크포인트 처리
                   if (passPointInfo['type'] == 'slope_info') {
-                    if (_lastCountMethodCall == null || DateTime.now().difference(_lastCountMethodCall!).inSeconds > 10) {
+                    if (_lastCountMethodCall == null || DateTime.now().difference(_lastCountMethodCall!).inSeconds > 5) {
                       _lastCountMethodCall = DateTime.now(); // 쿨다운 먼저 기록 (중복 호출 방지)
                       final slopeId = passPointInfo['id'];
                       final slopeFullname = passPointInfo['fullname'] ?? '';
@@ -1300,7 +1300,7 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
           for (var passPointInfo in passPointInfos) {
             // 체크포인트 처리
             if (passPointInfo['type'] == 'slope_info') {
-              if (_lastCountMethodCall == null || DateTime.now().difference(_lastCountMethodCall!).inSeconds > 10) {
+              if (_lastCountMethodCall == null || DateTime.now().difference(_lastCountMethodCall!).inSeconds > 5) {
                 _lastCountMethodCall = DateTime.now(); // 쿨다운 먼저 기록
                 final slopeId = passPointInfo['id'];
                 final slopeFullname = passPointInfo['fullname'] ?? '';
