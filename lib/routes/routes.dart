@@ -40,6 +40,10 @@ import 'package:com.snowlive/view/ranking/v_snowballmarket_shop_brandonly_premiu
 import 'package:com.snowlive/view/ranking/v_snowballmarket_shop_brandonly_public.dart';
 import 'package:com.snowlive/view/ranking/v_snowballmarket_shop_premium.dart';
 import 'package:com.snowlive/view/ranking/v_snowballmarket_shop_public.dart';
+import 'package:com.snowlive/view/ranking/v_themesotre_home.dart';
+import 'package:com.snowlive/view/ranking/v_themestore_input_info.dart';
+import 'package:com.snowlive/view/ranking/v_themestore_buy_record.dart';
+import 'package:com.snowlive/view/ranking/v_themestore_edit_info.dart';
 import 'package:com.snowlive/view/resortHome/v_alarmCenter.dart';
 import 'package:com.snowlive/view/ranking/v_snowballmarket_home.dart';
 import 'package:com.snowlive/view/v_forestParkShop.dart';
@@ -146,6 +150,10 @@ class AppRoutes {
   static const String slopeRushHome = '/slopeRushHome';
   static const String slopeRushHistoryHome = '/slopeRushHistoryHome';
   static const String eventPage = '/eventPage';
+  static const String themestoreHome = '/themestoreHome';
+  static const String themestoreInputInfo = '/themestoreInputInfo';
+  static const String themestoreBuyRecord = '/themestoreBuyRecord';
+  static const String themestoreEditInfo = '/themestoreEditInfo';
 
 
 
@@ -464,6 +472,22 @@ class AppRoutes {
     GetPage(
       name: eventPage,
       page: () => EventPageView(),
+    ),
+    GetPage(
+      name: themestoreHome,
+      page: () => ThemestoreHomeView(),
+    ),
+    GetPage(
+      name: themestoreInputInfo,
+      page: () => ThemestoreInputInfoView(),
+    ),
+    GetPage(
+      name: themestoreBuyRecord,
+      page: () => ThemestoreBuyRecordView(),
+    ),
+    GetPage(
+      name: themestoreEditInfo,
+      page: () => ThemestoreEditInfoView(),
     ),
   ];
 }

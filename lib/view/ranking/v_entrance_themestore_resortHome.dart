@@ -4,6 +4,7 @@ import 'package:com.snowlive/routes/routes.dart';
 import 'package:com.snowlive/viewmodel/forestPark/vm_forestPark.dart';
 import 'package:com.snowlive/viewmodel/ranking/vm_snowball.dart';
 import 'package:com.snowlive/viewmodel/resortHome/vm_resortHome.dart';
+import 'package:com.snowlive/viewmodel/themeStore/vm_themeStore.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
 import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 import 'package:extended_image/extended_image.dart';
@@ -20,6 +21,7 @@ class _Entrance_Themestore_HomeState extends State<Entrance_Themestore_Home> {
 
   UserViewModel _userViewModel = Get.find<UserViewModel>();
   SnowballShopViewModel _snowballShopViewModel = Get.find<SnowballShopViewModel>();
+  ThemeStoreViewModel _themeStoreViewModel = Get.find<ThemeStoreViewModel>();
 
   @override
   void initState() {
@@ -66,7 +68,9 @@ class _Entrance_Themestore_HomeState extends State<Entrance_Themestore_Home> {
 
           if (isOpen == true && (isToEveryone || isUserInCrewList)) {
             return GestureDetector(
-              onTap: () async {},
+              onTap: () async {
+                Get.toNamed(AppRoutes.themestoreHome);
+              },
               child: Padding(
                 padding: EdgeInsets.only(bottom: 20),
                 child: Container(
