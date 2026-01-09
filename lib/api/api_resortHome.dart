@@ -38,6 +38,33 @@ class ResortHomeAPI {
       return ApiResponse.error(data);
     }
   }
+
+  /// 오픈채팅 메시지 전송
+  Future<ApiResponse> createChat({
+    required int uid,
+    required String text,
+    required String chatId,
+  }) async {
+    final Uri uri = Uri.parse('${baseUrl}chat/create/');
+
+    final response = await http.post(
+      uri,
+      headers: {'Content-Type': 'application/json'},
+      body: json.encode({
+        'uid': uid,
+        'text': text,
+        'chatId': chatId,
+      }),
+    );
+
+    final data = json.decode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
+
+    if (response.statusCode == 201) {
+      return ApiResponse.success(data);
+    } else {
+      return ApiResponse.error(data, statusCode: response.statusCode);
+    }
+  }
 }
 
 

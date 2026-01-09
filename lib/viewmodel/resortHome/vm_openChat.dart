@@ -1,7 +1,9 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:com.snowlive/api/api_resortHome.dart';
+import 'package:com.snowlive/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class ChatViewModel extends GetxController {
@@ -38,10 +40,13 @@ class ChatViewModel extends GetxController {
 
   Future<void> sendMessage(String message) async {
     if (message.isNotEmpty) {
+      final userId = _userViewModel.user.user_id;
+      if (userId == null) return;
+
       // 먼저 해당 유저가 보낸 마지막 메시지를 확인하여 숫자를 증가시킵니다.
       QuerySnapshot lastMessageSnapshot = await FirebaseFirestore.instance
           .collection('chat')
-          .where('uid', isEqualTo: _userViewModel.user.user_id)
+          .where('uid', isEqualTo: userId)
           .orderBy('createdAt', descending: true)
           .limit(1)
           .get();
@@ -53,21 +58,71 @@ class ChatViewModel extends GetxController {
         var lastChatData = lastMessageSnapshot.docs.first.data() as Map<String, dynamic>?;  // null-safe 처리
         if (lastChatData != null && lastChatData.containsKey('chatId')) {
           var lastChatId = lastChatData['chatId'] as String;
-          newChatIdSuffix = int.parse(lastChatId.replaceFirst('${_userViewModel.user.user_id}-', '')) + 1;  // uid를 제외한 숫자 부분을 추출하여 1 증가
+          newChatIdSuffix = int.parse(lastChatId.replaceFirst('$userId-', '')) + 1;  // uid를 제외한 숫자 부분을 추출하여 1 증가
         }
       }
 
-      String newChatId = '${_userViewModel.user.user_id}-$newChatIdSuffix';  // 새로운 chatId 생성
+      String newChatId = '$userId-$newChatIdSuffix';  // 새로운 chatId 생성
 
-      await FirebaseFirestore.instance.collection('chat').add({
-        'chatId': newChatId,
-        'text': message,
-        'createdAt': Timestamp.now(),
-        'uid': _userViewModel.user.user_id,
-        'repoCount': 0
-      });
+      // API 호출로 채팅 전송 (Firebase 직접 등록 대신)
+      final response = await ResortHomeAPI().createChat(
+        uid: userId,
+        text: message,
+        chatId: newChatId,
+      );
 
+      if (!response.success) {
+        // 403 에러 (블락 유저) 또는 기타 에러 처리
+        final errorMessage = response.error?['error'] ?? '메시지 전송에 실패했습니다.';
+        _showBlockedDialog(errorMessage);
+      }
     }
+  }
+
+  /// 블락 유저 또는 에러 다이얼로그 표시
+  void _showBlockedDialog(String message) {
+    Get.dialog(
+      AlertDialog(
+        backgroundColor: SDSColor.snowliveWhite,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        contentPadding: const EdgeInsets.only(bottom: 0, left: 28, right: 28, top: 30),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              '알림',
+              style: SDSTextStyle.bold.copyWith(fontSize: 18, color: SDSColor.gray900),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 16),
+            Text(
+              message,
+              style: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray600),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 24),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: () => Get.back(),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: SDSColor.snowliveBlue,
+                  elevation: 0,
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                ),
+                child: Text(
+                  '확인',
+                  style: SDSTextStyle.bold.copyWith(fontSize: 16, color: SDSColor.snowliveWhite),
+                ),
+              ),
+            ),
+            const SizedBox(height: 16),
+          ],
+        ),
+      ),
+      barrierDismissible: true,
+    );
   }
 
 
