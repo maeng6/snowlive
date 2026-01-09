@@ -118,7 +118,7 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
   // 등록된 Geofence 정보 저장 (초기 위치 체크용)
   List<Map<String, dynamic>> _registeredGeofences = [];
 
-  // GPS 조작 탐지용 변수
+  // GPS 튐 탐지용 변수 (정확도/속도 필터링)
   Position? _lastValidationPosition;
   DateTime? _lastValidationTime;
 
@@ -815,8 +815,10 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
               error: Platform.isIOS ? 'iOS' : 'Android',
             );
 
-            // 🚨 GPS 조작 탐지: 비정상 속도 감지
-            _validatePosition(position, user_id);
+            // 🚨 GPS 튐 탐지: 정확도/속도 필터링
+            if (!_validatePosition(position, user_id)) {
+              return; // 유효하지 않은 위치면 처리 안함
+            }
 
             await _lock.synchronized(() async {
               bool withinBoundary = _checkPositionWithinBoundary(
@@ -1255,8 +1257,10 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
         headingAccuracy: 0,
       );
 
-      // 🚨 GPS 조작 탐지: 비정상 속도 감지
-      _validatePosition(position, user_id);
+      // 🚨 GPS 튐 탐지: 정확도/속도 필터링
+      if (!_validatePosition(position, user_id)) {
+        return; // 유효하지 않은 위치면 처리 안함
+      }
 
       await _lock.synchronized(() async {
         bool withinBoundary = _checkPositionWithinBoundary(
@@ -1718,36 +1722,52 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
     }
   }
 
-  /// GPS 조작 탐지: 비정상 속도 감지
-  void _validatePosition(Position newPosition, int userId) {
+  /// GPS 튐 탐지 (스키/보드용)
+  /// 반환값: true = 유효한 위치, false = 무시해야 할 위치
+  bool _validatePosition(Position newPosition, int userId) {
+    // 1️⃣ 정확도 필터링 (GPS 신호 약하면 무시)
+    if (newPosition.accuracy > 50) {
+      print('⚠️ [GPS] 정확도 낮음 무시: ${newPosition.accuracy.toStringAsFixed(0)}m');
+      _sendLiveLog(
+        userId: userId,
+        requestType: 'gps_low_accuracy_ignored',
+        error: 'accuracy: ${newPosition.accuracy.toStringAsFixed(0)}m',
+        lat: newPosition.latitude,
+        lon: newPosition.longitude,
+      );
+      return false;
+    }
+
+    // 2️⃣ 속도 기반 필터링 (비현실적 속도 감지)
     if (_lastValidationPosition != null && _lastValidationTime != null) {
       final distance = Geolocator.distanceBetween(
         _lastValidationPosition!.latitude, _lastValidationPosition!.longitude,
         newPosition.latitude, newPosition.longitude,
       );
+      final timeDiff = DateTime.now().difference(_lastValidationTime!).inMilliseconds / 1000.0;
 
-      final timeDiff = DateTime.now().difference(_lastValidationTime!).inSeconds;
+      if (timeDiff > 0.5 && timeDiff < 30) { // 0.5초 이상일 때만 (너무 짧은 간격 제외)
+        final speedMps = distance / timeDiff;
+        final speedKmh = speedMps * 3.6;
 
-      if (timeDiff > 0) {
-        final speedMps = distance / timeDiff; // m/s
-        final speedKmh = speedMps * 3.6; // km/h
-
-        // 🚨 비정상 속도 감지 (스키 최고속도 ~120km/h 고려, 150km/h 이상은 의심)
+        // 🚨 비현실적 속도: 150km/h 초과 시 무시 (스키 최고속도 ~120km/h)
         if (speedKmh > 150) {
-          print('🚨 [GPS] 비정상 속도 감지: ${speedKmh.toStringAsFixed(1)}km/h, 거리: ${distance.toStringAsFixed(0)}m, 시간: ${timeDiff}초');
+          print('🚨 [GPS] 비현실적 속도 무시: ${speedKmh.toStringAsFixed(1)}km/h, dist=${distance.toStringAsFixed(0)}m');
           _sendLiveLog(
             userId: userId,
-            requestType: 'suspicious_speed',
-            error: 'speed: ${speedKmh.toStringAsFixed(1)}km/h, dist: ${distance.toStringAsFixed(0)}m, time: ${timeDiff}s',
+            requestType: 'gps_high_speed_ignored',
+            error: 'speed: ${speedKmh.toStringAsFixed(1)}km/h, dist: ${distance.toStringAsFixed(0)}m, time: ${timeDiff.toStringAsFixed(1)}s',
             lat: newPosition.latitude,
             lon: newPosition.longitude,
           );
+          return false;
         }
       }
     }
 
     _lastValidationPosition = newPosition;
     _lastValidationTime = DateTime.now();
+    return true;
   }
 
   Future<void> liveOff(Map<String, dynamic> body, user_id) async {
@@ -2422,6 +2442,8 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
         geofenceProximityRadius: 5000, // 5km 범위 내 Geofence만 모니터링
         geofenceInitialTriggerEntry: true, // 이미 영역 내에 있으면 즉시 트리거
         logLevel: bg.Config.LOG_LEVEL_OFF,
+        // 🔥 iOS 파란색 상태바 표시 안함 (Geofence 전용 모드에서는 불필요)
+        showsBackgroundLocationIndicator: false,
       ));
       print('✅ BackgroundGeolocation 초기화 완료');
 
