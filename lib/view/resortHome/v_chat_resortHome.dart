@@ -58,10 +58,37 @@ class _ChatScreenState extends State<ChatScreen> {
                     itemCount: _chatViewModel.chatDocs.length,
                     itemBuilder: (context, index) {
                       final chatDoc = _chatViewModel.chatDocs[index];
-                      final timestamp = chatDoc['createdAt'] as Timestamp;
+                      final data = chatDoc.data() as Map<String, dynamic>;
+                      final timestamp = data['createdAt'] as Timestamp;
                       final dateTime = timestamp.toDate().toString();
                       final timeString = GetDatetime().getAgoString(dateTime);
+                      final bool isSystemMsg = data.containsKey('system_msg') ? (data['system_msg'] ?? false) : false;
 
+                      // 시스템 메시지인 경우
+                      if (isSystemMsg) {
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                          child: Center(
+                            child: Container(
+                              padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                              decoration: BoxDecoration(
+                                color: SDSColor.gray100,
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: Text(
+                                chatDoc['text'],
+                                style: SDSTextStyle.regular.copyWith(
+                                  fontSize: 12,
+                                  color: SDSColor.gray500,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                          ),
+                        );
+                      }
+
+                      // 일반 채팅 메시지
                       return Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 4),
                         child: ListTile(

@@ -153,6 +153,12 @@ class ChatViewModel extends GetxController {
 
   Future<void> reportMessage(String chatId) async {
     try {
+      final myUserId = _userViewModel.user.user_id;
+      if (myUserId == null) {
+        Get.snackbar('신고 실패', '로그인 정보를 확인해주세요.');
+        return;
+      }
+
       // chatId에 해당하는 문서를 찾기 위한 쿼리
       QuerySnapshot querySnapshot = await FirebaseFirestore.instance
           .collection('chat')
@@ -167,21 +173,44 @@ class ChatViewModel extends GetxController {
       // 문서 참조 가져오기
       DocumentReference docRef = querySnapshot.docs.first.reference;
 
-      // 트랜잭션을 사용하여 신고 카운트 증가
+      // 트랜잭션을 사용하여 repo_list 업데이트 및 block 처리
       await FirebaseFirestore.instance.runTransaction((transaction) async {
         DocumentSnapshot snapshot = await transaction.get(docRef);
+        Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
 
-        // 기존 repoCount 가져오기
-        int newRepoCount = (snapshot.data() as Map<String, dynamic>)['repoCount'] ?? 0;
-        newRepoCount += 1;
+        // 기존 repo_list 가져오기
+        List<dynamic> repoList = List<dynamic>.from(data['repo_list'] ?? []);
 
-        // repoCount 업데이트
-        transaction.update(docRef, {'repoCount': newRepoCount});
+        // 이미 신고한 경우 중복 방지
+        if (repoList.contains(myUserId)) {
+          throw Exception('이미 신고한 메시지입니다.');
+        }
+
+        // 내 유저 ID 추가
+        repoList.add(myUserId);
+
+        // 업데이트할 데이터
+        Map<String, dynamic> updateData = {
+          'repo_list': repoList,
+        };
+
+        // 신고 후 repo_list가 정확히 3개가 되면 block, system_msg를 true로 설정하고 텍스트 변경
+        if (repoList.length == 3) {
+          updateData['block'] = true;
+          updateData['system_msg'] = true;
+          updateData['text'] = '블라인드 처리된 글입니다.';
+        }
+
+        transaction.update(docRef, updateData);
       });
 
       Get.snackbar('신고 완료', '신고가 성공적으로 접수되었습니다.');
     } catch (e) {
-      Get.snackbar('신고 실패', '신고 중 오류가 발생했습니다: $e');
+      if (e.toString().contains('이미 신고한 메시지입니다')) {
+        Get.snackbar('알림', '이미 신고한 메시지입니다.');
+      } else {
+        Get.snackbar('신고 실패', '신고 중 오류가 발생했습니다: $e');
+      }
     }
   }
 
