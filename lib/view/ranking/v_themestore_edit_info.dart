@@ -2,7 +2,9 @@ import 'package:com.snowlive/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/model/m_themeStore.dart';
 import 'package:com.snowlive/viewmodel/themeStore/vm_themeStore.dart';
 import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
 class ThemestoreEditInfoView extends StatefulWidget {
@@ -191,10 +193,10 @@ class _ThemestoreEditInfoViewState extends State<ThemestoreEditInfoView> {
 
   @override
   Widget build(BuildContext context) {
-    final item = record.themestoreItem; // ✅ 변경된 모델 반영
+    final item = record.themestoreItem;
 
     return Scaffold(
-      backgroundColor: const Color(0xFF1D242E),
+      backgroundColor: SDSColor.snowliveWhite,
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(44),
         child: AppBar(
@@ -203,91 +205,117 @@ class _ThemestoreEditInfoViewState extends State<ThemestoreEditInfoView> {
           title: Text(
             '구매 정보 수정',
             style: SDSTextStyle.bold.copyWith(
-              color: SDSColor.snowliveWhite,
+              color: SDSColor.snowliveBlack,
               fontSize: 16,
             ),
           ),
-          backgroundColor: const Color(0xFF1D242E),
+          backgroundColor: SDSColor.snowliveWhite,
           leading: GestureDetector(
             child: Image.asset(
               'assets/imgs/icons/icon_snowLive_back.png',
-              color: SDSColor.snowliveWhite,
+              color: SDSColor.snowliveBlack,
               scale: 4,
               width: 26,
               height: 26,
             ),
-            onTap: () {
-              Get.back();
-            },
+            onTap: () => Get.back(),
           ),
         ),
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(24),
+        padding: const EdgeInsets.all(16),
         child: Form(
           key: _formKey,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // 상품 정보
-              Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: const Color(0xFF2A3342),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      '구매 상품',
-                      style: SDSTextStyle.bold.copyWith(
-                        fontSize: 14,
-                        color: Colors.white.withOpacity(0.6),
+              Row(
+                children: [
+                  // 이미지
+                  SizedBox(
+                    width: 56,
+                    height: 56,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(color: SDSColor.gray200, width: 1),
+                        borderRadius: BorderRadius.circular(6),
                       ),
-                    ),
-                    const SizedBox(height: 12),
-                    Text(
-                      item?.name ?? '',
-                      style: SDSTextStyle.bold.copyWith(
-                        fontSize: 18,
-                        color: SDSColor.snowliveWhite,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-
-                    if (item?.priceEvent != null && (item?.priceEvent ?? 0) > 0)
-                      Row(
-                        children: [
-                          Text(
-                            '${_formatWon(item?.priceOrigin)}원',
-                            style: SDSTextStyle.regular.copyWith(
-                              fontSize: 14,
-                              color: Colors.white.withOpacity(0.5),
-                              decoration: TextDecoration.lineThrough,
-                            ),
-                          ),
-                          const SizedBox(width: 8),
-                          Text(
-                            '${_formatWon(item?.priceEvent)}원',
-                            style: SDSTextStyle.bold.copyWith(
-                              fontSize: 20,
-                              color: SDSColor.snowliveWhite,
-                            ),
-                          ),
-                        ],
-                      ),
-
-                    if (item?.priceEvent == null || (item?.priceEvent ?? 0) == 0)
-                      Text(
-                        '${_formatWon(item?.priceOrigin)}원',
-                        style: SDSTextStyle.bold.copyWith(
-                          fontSize: 20,
-                          color: SDSColor.snowliveWhite,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(6),
+                        child: ExtendedImage.network(
+                          item?.imageUrl ?? '',
+                          fit: BoxFit.cover,
                         ),
                       ),
-                  ],
-                ),
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          '${item?.brandName ?? ''}',
+                          style: SDSTextStyle.bold.copyWith(
+                            fontSize: 12,
+                            color: SDSColor.snowliveBlack,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          item?.name ?? '',
+                          style: SDSTextStyle.bold.copyWith(
+                            fontSize: 13,
+                            color: SDSColor.snowliveBlack,
+                          ),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        const SizedBox(height: 6),
+                        if (item?.priceEvent != null && (item?.priceEvent ?? 0) > 0)
+                          Row(
+                            children: [
+                              Text(
+                                '${_formatWon(item?.priceOrigin)}원',
+                                style: SDSTextStyle.regular.copyWith(
+                                  fontSize: 13,
+                                  color: Colors.black.withOpacity(0.5),
+                                  decoration: TextDecoration.lineThrough,
+                                ),
+                              ),
+                              const SizedBox(width: 8),
+                              Text(
+                                '${item?.discountPerct ?? 0}%',
+                                style: SDSTextStyle.bold.copyWith(
+                                  fontSize: 13,
+                                  color: const Color(0xFFFF3B3B),
+                                ),
+                              ),
+                              const SizedBox(width: 8),
+                              Text(
+                                '${_formatWon(item?.priceEvent)}원',
+                                style: SDSTextStyle.bold.copyWith(
+                                  fontSize: 13,
+                                  color: SDSColor.snowliveBlack,
+                                ),
+                              ),
+                            ],
+                          ),
+                        if (item?.priceEvent == null || (item?.priceEvent ?? 0) == 0)
+                          Text(
+                            '${_formatWon(item?.priceOrigin)}원',
+                            style: SDSTextStyle.bold.copyWith(
+                              fontSize: 13,
+                              color: SDSColor.snowliveBlack,
+                            ),
+                          ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
 
               const SizedBox(height: 32),
@@ -296,19 +324,19 @@ class _ThemestoreEditInfoViewState extends State<ThemestoreEditInfoView> {
               Text(
                 '이름',
                 style: SDSTextStyle.bold.copyWith(
-                  fontSize: 16,
-                  color: SDSColor.snowliveWhite,
+                  fontSize: 13,
+                  color: SDSColor.snowliveBlack,
                 ),
               ),
               const SizedBox(height: 8),
               TextFormField(
                 controller: _nameController,
-                style: TextStyle(color: SDSColor.snowliveWhite),
+                style: TextStyle(color: SDSColor.snowliveBlack),
                 decoration: InputDecoration(
                   hintText: '홍길동',
-                  hintStyle: TextStyle(color: Colors.white.withOpacity(0.4)),
+                  hintStyle: TextStyle(color: Colors.black.withOpacity(0.4)),
                   filled: true,
-                  fillColor: const Color(0xFF2A3342),
+                  fillColor: const Color(0xFFF5F5F5),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8),
                     borderSide: BorderSide.none,
@@ -327,19 +355,19 @@ class _ThemestoreEditInfoViewState extends State<ThemestoreEditInfoView> {
               Text(
                 '전화번호',
                 style: SDSTextStyle.bold.copyWith(
-                  fontSize: 16,
-                  color: SDSColor.snowliveWhite,
+                  fontSize: 13,
+                  color: SDSColor.snowliveBlack,
                 ),
               ),
               const SizedBox(height: 8),
               TextFormField(
                 controller: _phoneController,
-                style: TextStyle(color: SDSColor.snowliveWhite),
+                style: TextStyle(color: SDSColor.snowliveBlack),
                 decoration: InputDecoration(
                   hintText: '010-1234-5678',
-                  hintStyle: TextStyle(color: Colors.white.withOpacity(0.4)),
+                  hintStyle: TextStyle(color: Colors.black.withOpacity(0.4)),
                   filled: true,
-                  fillColor: const Color(0xFF2A3342),
+                  fillColor: const Color(0xFFF5F5F5),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8),
                     borderSide: BorderSide.none,
@@ -347,13 +375,19 @@ class _ThemestoreEditInfoViewState extends State<ThemestoreEditInfoView> {
                   contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                 ),
                 keyboardType: TextInputType.phone,
+                inputFormatters: [
+                  FilteringTextInputFormatter.digitsOnly,
+                  _PhoneNumberFormatter(),
+                ],
                 validator: (value) {
                   if (value == null || value.isEmpty) return '전화번호를 입력해주세요';
+                  final digits = value.replaceAll(RegExp(r'[^0-9]'), '');
+                  if (digits.length < 10) return '전화번호를 정확히 입력해주세요';
                   return null;
                 },
               ),
 
-              const SizedBox(height: 40),
+              const SizedBox(height: 50),
 
               // 제출 버튼
               SizedBox(
@@ -381,6 +415,55 @@ class _ThemestoreEditInfoViewState extends State<ThemestoreEditInfoView> {
           ),
         ),
       ),
+    );
+  }
+}
+
+/// 전화번호 자동 하이픈 포맷터 (010-1234-5678 / 02-123-4567 등)
+class _PhoneNumberFormatter extends TextInputFormatter {
+  @override
+  TextEditingValue formatEditUpdate(
+      TextEditingValue oldValue,
+      TextEditingValue newValue,
+      ) {
+    final digits = newValue.text.replaceAll(RegExp(r'[^0-9]'), '');
+    if (digits.isEmpty) {
+      return newValue.copyWith(text: '');
+    }
+
+    String formatted;
+
+    // 02 지역번호 처리
+    if (digits.startsWith('02')) {
+      if (digits.length <= 2) {
+        formatted = digits;
+      } else if (digits.length <= 5) {
+        formatted = '${digits.substring(0, 2)}-${digits.substring(2)}';
+      } else if (digits.length <= 9) {
+        formatted =
+        '${digits.substring(0, 2)}-${digits.substring(2, digits.length - 4)}-${digits.substring(digits.length - 4)}';
+      } else {
+        formatted =
+        '${digits.substring(0, 2)}-${digits.substring(2, 6)}-${digits.substring(6, 10)}';
+      }
+    } else {
+      // 휴대폰/기타 지역번호(3자리)
+      if (digits.length <= 3) {
+        formatted = digits;
+      } else if (digits.length <= 7) {
+        formatted = '${digits.substring(0, 3)}-${digits.substring(3)}';
+      } else if (digits.length <= 11) {
+        formatted =
+        '${digits.substring(0, 3)}-${digits.substring(3, digits.length - 4)}-${digits.substring(digits.length - 4)}';
+      } else {
+        // 11자리 이상은 잘라서 11자리까지만
+        formatted = '${digits.substring(0, 3)}-${digits.substring(3, 7)}-${digits.substring(7, 11)}';
+      }
+    }
+
+    return TextEditingValue(
+      text: formatted,
+      selection: TextSelection.collapsed(offset: formatted.length),
     );
   }
 }

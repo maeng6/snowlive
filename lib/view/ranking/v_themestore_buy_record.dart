@@ -23,6 +23,14 @@ class _ThemestoreBuyRecordViewState extends State<ThemestoreBuyRecordView> {
     });
   }
 
+  String _formatWon(int? value) {
+    if (value == null) return '';
+    return value.toString().replaceAllMapped(
+      RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
+          (Match m) => '${m[1]},',
+    );
+  }
+
   Future<void> _confirmAndDelete(record) async {
     final confirmed = await Get.dialog<bool>(
       AlertDialog(
@@ -236,24 +244,24 @@ class _ThemestoreBuyRecordViewState extends State<ThemestoreBuyRecordView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF1D242E),
+      backgroundColor: SDSColor.snowliveWhite,
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(44),
         child: AppBar(
           elevation: 0,
           surfaceTintColor: Colors.transparent,
           title: Text(
-            '내 구매 목록',
+            '구매 예약 내역',
             style: SDSTextStyle.bold.copyWith(
-              color: SDSColor.snowliveWhite,
+              color: SDSColor.snowliveBlack,
               fontSize: 16,
             ),
           ),
-          backgroundColor: const Color(0xFF1D242E),
+          backgroundColor: SDSColor.snowliveWhite,
           leading: GestureDetector(
             child: Image.asset(
               'assets/imgs/icons/icon_snowLive_back.png',
-              color: SDSColor.snowliveWhite,
+              color: SDSColor.snowliveBlack,
               scale: 4,
               width: 26,
               height: 26,
@@ -281,14 +289,14 @@ class _ThemestoreBuyRecordViewState extends State<ThemestoreBuyRecordView> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(
-                    Icons.shopping_bag_outlined,
-                    size: 64,
-                    color: Colors.white.withOpacity(0.3),
+                  Image.asset(
+                    'assets/imgs/icons/icon_nodata.png',
+                    scale: 4,
+                    width: 64,
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 6),
                   Text(
-                    '구매 내역이 없습니다',
+                    '구매 예약한 내역이 없어요',
                     style: SDSTextStyle.regular.copyWith(
                       fontSize: 16,
                       color: Colors.white.withOpacity(0.6),
@@ -315,10 +323,6 @@ class _ThemestoreBuyRecordViewState extends State<ThemestoreBuyRecordView> {
                 return Container(
                   margin: const EdgeInsets.only(bottom: 16),
                   padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF2A3342),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
                   child: Column(
                     children: [
                       Row(
@@ -327,9 +331,8 @@ class _ThemestoreBuyRecordViewState extends State<ThemestoreBuyRecordView> {
                           ClipRRect(
                             borderRadius: BorderRadius.circular(8),
                             child: Container(
-                              width: 80,
-                              height: 80,
-                              color: Colors.white,
+                              width: 64,
+                              height: 64,
                               child: (item?.imageUrl != null && item!.imageUrl!.isNotEmpty)
                                   ? ExtendedImage.network(
                                 item.imageUrl!,
@@ -346,46 +349,48 @@ class _ThemestoreBuyRecordViewState extends State<ThemestoreBuyRecordView> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  item?.name ?? '상품명',
+                                  item?.brandName ?? '브랜드 이름',
                                   style: SDSTextStyle.bold.copyWith(
-                                    fontSize: 16,
-                                    color: SDSColor.snowliveWhite,
+                                    fontSize: 12,
+                                    color: SDSColor.snowliveBlack,
                                   ),
                                   maxLines: 2,
                                   overflow: TextOverflow.ellipsis,
                                 ),
-                                const SizedBox(height: 8),
-                                Row(
-                                  children: [
-                                    Icon(
-                                      Icons.person,
-                                      size: 16,
-                                      color: Colors.white.withOpacity(0.6),
-                                    ),
-                                    const SizedBox(width: 4),
-                                    Text(
-                                      record.name ?? '',
-                                      style: SDSTextStyle.regular.copyWith(
-                                        fontSize: 14,
-                                        color: Colors.white.withOpacity(0.8),
-                                      ),
-                                    ),
-                                  ],
+                                Text(
+                                  item?.name ?? '상품명',
+                                  style: SDSTextStyle.bold.copyWith(
+                                    fontSize: 13,
+                                    color: SDSColor.snowliveBlack,
+                                  ),
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
                                 ),
                                 const SizedBox(height: 4),
                                 Row(
                                   children: [
-                                    Icon(
-                                      Icons.phone,
-                                      size: 16,
-                                      color: Colors.white.withOpacity(0.6),
-                                    ),
-                                    const SizedBox(width: 4),
                                     Text(
-                                      record.phoneNumber ?? '',
+                                      '${_formatWon(item!.priceOrigin)}원',
                                       style: SDSTextStyle.regular.copyWith(
-                                        fontSize: 14,
-                                        color: Colors.white.withOpacity(0.8),
+                                        fontSize: 13,
+                                        color: Colors.black.withOpacity(0.5),
+                                        decoration: TextDecoration.lineThrough,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 8),
+                                    Text(
+                                      '${item.discountPerct ?? 0}%',
+                                      style: SDSTextStyle.bold.copyWith(
+                                        fontSize: 13,
+                                        color: const Color(0xFFFF3B3B),
+                                      ),
+                                    ),
+                                    const SizedBox(width: 8),
+                                    Text(
+                                      '${_formatWon(item.priceEvent)}원',
+                                      style: SDSTextStyle.bold.copyWith(
+                                        fontSize: 13,
+                                        color: SDSColor.snowliveBlack,
                                       ),
                                     ),
                                   ],
@@ -395,70 +400,80 @@ class _ThemestoreBuyRecordViewState extends State<ThemestoreBuyRecordView> {
                           ),
                         ],
                       ),
-
+                      const SizedBox(height: 12),
+                      Text('구매 예약 완료된 상품은 입력해주신 정보로 브랜드에서 직접 연락 드릴 예정입니다. 24시간 이내에 최종 결제 완료해야 하며, 완료되지 않은 상품은 자동으로 구매 예약 취소 처리됩니다.',
+                      style: TextStyle(
+                        fontSize: 11,
+                        color: Color(0xFF000000).withOpacity(0.6)
+                      ),
+                      ),
                       const SizedBox(height: 12),
 
                       Row(
                         children: [
-                          // ✅ 정보수정 버튼
-                          Expanded(
-                            child: SizedBox(
-                              height: 44,
-                              child: ElevatedButton(
-                                onPressed: () {
-                                  Get.toNamed(
-                                    AppRoutes.themestoreEditInfo,
-                                    arguments: record,
-                                  );
-                                },
-                                style: ElevatedButton.styleFrom(
-                                  elevation: 0,
-                                  backgroundColor: Colors.white.withOpacity(0.12),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
+                          SizedBox(
+                            height: 30,
+                            child: OutlinedButton(
+                              onPressed: () {
+                                Get.toNamed(
+                                  AppRoutes.themestoreEditInfo,
+                                  arguments: record,
+                                );
+                              },
+                              style: OutlinedButton.styleFrom(
+                                side: BorderSide(
+                                  color: SDSColor.gray300, // 연한 회색 테두리
+                                  width: 1,
                                 ),
-                                child: Text(
-                                  '정보수정',
-                                  style: SDSTextStyle.bold.copyWith(
-                                    color: SDSColor.snowliveWhite,
-                                    fontSize: 14,
-                                  ),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20), // pill 느낌
+                                ),
+                                backgroundColor: Colors.white,
+                                padding: EdgeInsets.zero,
+                              ),
+                              child: Text(
+                                '정보 수정',
+                                style: SDSTextStyle.bold.copyWith(
+                                  color: SDSColor.snowliveBlack,
+                                  fontSize: 13,
                                 ),
                               ),
                             ),
                           ),
-                          const SizedBox(width: 10),
 
-                          // ✅ 구매취소(삭제) 버튼
-                          Expanded(
-                            child: SizedBox(
-                              height: 44,
-                              child: ElevatedButton(
-                                onPressed: () async {
-                                  if (record.themestoreBuyRecordId == null) return;
-                                  await _confirmAndDelete(record);
-                                  await _themeStoreViewModel.fetchThemeStoreMain();
-                                },
-                                style: ElevatedButton.styleFrom(
-                                  elevation: 0,
-                                  backgroundColor: const Color(0xFFFF3B3B),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
+                          const SizedBox(width: 8),
+
+                          SizedBox(
+                            height: 30,
+                            child: OutlinedButton(
+                              onPressed: () async {
+                                if (record.themestoreBuyRecordId == null) return;
+                                await _confirmAndDelete(record);
+                                await _themeStoreViewModel.fetchThemeStoreMain();
+                              },
+                              style: OutlinedButton.styleFrom(
+                                side: BorderSide(
+                                  color: SDSColor.gray300,
+                                  width: 1,
                                 ),
-                                child: Text(
-                                  '구매취소',
-                                  style: SDSTextStyle.bold.copyWith(
-                                    color: SDSColor.snowliveWhite,
-                                    fontSize: 14,
-                                  ),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                backgroundColor: Colors.white,
+                                padding: EdgeInsets.zero,
+                              ),
+                              child: Text(
+                                '구매 취소',
+                                style: SDSTextStyle.bold.copyWith(
+                                  color: SDSColor.snowliveBlack,
+                                  fontSize: 13,
                                 ),
                               ),
                             ),
                           ),
                         ],
                       ),
+
                     ],
                   ),
                 );
