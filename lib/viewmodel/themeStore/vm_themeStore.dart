@@ -100,8 +100,11 @@ class ThemeStoreViewModel extends GetxController {
   }
 
   /// 내 구매 기록 목록 조회
-  Future<void> fetchMyBuyRecords() async {
-    isFetchingRecords(true);
+  /// [showLoading] - true면 풀스크린 로딩 표시, false면 표시 안함 (pull-to-refresh용)
+  Future<void> fetchMyBuyRecords({bool showLoading = true}) async {
+    if (showLoading) {
+      isFetchingRecords(true);
+    }
     try {
       if (_userViewModel.user.user_id == null) {
         print('Error: user_id is null');
