@@ -2643,13 +2643,16 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
       // 0. BackgroundGeolocation 초기화 (Geofence 전용 모드)
       await bg.BackgroundGeolocation.ready(bg.Config(
         desiredAccuracy: bg.Config.DESIRED_ACCURACY_LOW,
-        distanceFilter: 100,
+        distanceFilter: 500, // Geofence만 사용하므로 큰 값 설정
         stopOnTerminate: true,
         startOnBoot: false,
         enableHeadless: false,
+        // 🔥 iOS 포그라운드 전환 시 위치 업데이트 방지
+        pausesLocationUpdatesAutomatically: true,
+        disableLocationAuthorizationAlert: true,
         // Geofence 전용 설정
         geofenceProximityRadius: 5000, // 5km 범위 내 Geofence만 모니터링
-        geofenceInitialTriggerEntry: true, // 이미 영역 내에 있으면 즉시 트리거
+        geofenceInitialTriggerEntry: true, // 앱 시작 시 이미 리조트 내에 있으면 즉시 감지
         logLevel: bg.Config.LOG_LEVEL_OFF,
         // 🔥 iOS 파란색 상태바 표시 안함 (Geofence 전용 모드에서는 불필요)
         showsBackgroundLocationIndicator: false,
