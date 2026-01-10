@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:com.snowlive/util/util_1.dart';
 import 'package:com.snowlive/viewmodel/resortHome/vm_resortHome.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
@@ -30,19 +29,9 @@ class _Banner_resortHomeState extends State<Banner_resortHome> {
   Widget build(BuildContext context) {
     Size _size = MediaQuery.of(context).size;
 
-    return StreamBuilder(
-      stream: _resortHomeViewModel.bannerStream_home.value,
-      builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
-        // 데이터 로드 중이라면
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return SizedBox.shrink();
-        }
-        // 오류가 발생했다면
-        if (snapshot.hasError) {
-          return Text('Error: ${snapshot.error}');
-        }
-
-        var data = snapshot.data?.data() as Map<String, dynamic>?;
+    // 🛡️ 메모리 누수 방지: StreamBuilder → Obx 패턴으로 변경
+    return Obx(() {
+      var data = _resortHomeViewModel.bannerData_home.value;
 
         if (data != null) {
           List<dynamic> imageUrls = data['imageUrl'] ?? [];
@@ -119,12 +108,9 @@ class _Banner_resortHomeState extends State<Banner_resortHome> {
           } else {
             return SizedBox.shrink(); // 표시할 배너가 없을 때
           }
-        } else {
-          return Center(
-            child: Text('No banner data available'),
-          );
-        }
-      },
-    );
+      } else {
+        return SizedBox.shrink();
+      }
+    });
   }
 }

@@ -143,12 +143,22 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
   dynamic weatherColors;
   dynamic weatherIcons;
 
-  Rxn<Stream<DocumentSnapshot<Map<String, dynamic>>>> bannerStream_home = Rxn<Stream<DocumentSnapshot<Map<String, dynamic>>>>();
-  Rxn<Stream<DocumentSnapshot<Map<String, dynamic>>>> bannerStream_fleaMarket = Rxn<Stream<DocumentSnapshot<Map<String, dynamic>>>>();
-  Rxn<Stream<DocumentSnapshot<Map<String, dynamic>>>> bannerStream_moreTab = Rxn<Stream<DocumentSnapshot<Map<String, dynamic>>>>();
-  Rxn<Stream<DocumentSnapshot<Map<String, dynamic>>>> bannerStream_community = Rxn<Stream<DocumentSnapshot<Map<String, dynamic>>>>();
-  Rxn<Stream<DocumentSnapshot<Map<String, dynamic>>>> bannerStream_community_detail = Rxn<Stream<DocumentSnapshot<Map<String, dynamic>>>>();
-  Rxn<Stream<DocumentSnapshot<Map<String, dynamic>>>> bannerStream_ranking = Rxn<Stream<DocumentSnapshot<Map<String, dynamic>>>>();
+  // 🛡️ 메모리 누수 방지: StreamSubscription 패턴으로 변경
+  // 배너 데이터 (reactive)
+  Rxn<Map<String, dynamic>> bannerData_home = Rxn<Map<String, dynamic>>();
+  Rxn<Map<String, dynamic>> bannerData_fleaMarket = Rxn<Map<String, dynamic>>();
+  Rxn<Map<String, dynamic>> bannerData_moreTab = Rxn<Map<String, dynamic>>();
+  Rxn<Map<String, dynamic>> bannerData_community = Rxn<Map<String, dynamic>>();
+  Rxn<Map<String, dynamic>> bannerData_community_detail = Rxn<Map<String, dynamic>>();
+  Rxn<Map<String, dynamic>> bannerData_ranking = Rxn<Map<String, dynamic>>();
+
+  // 배너 스트림 구독
+  StreamSubscription<DocumentSnapshot<Map<String, dynamic>>>? _bannerSub_home;
+  StreamSubscription<DocumentSnapshot<Map<String, dynamic>>>? _bannerSub_fleaMarket;
+  StreamSubscription<DocumentSnapshot<Map<String, dynamic>>>? _bannerSub_moreTab;
+  StreamSubscription<DocumentSnapshot<Map<String, dynamic>>>? _bannerSub_community;
+  StreamSubscription<DocumentSnapshot<Map<String, dynamic>>>? _bannerSub_community_detail;
+  StreamSubscription<DocumentSnapshot<Map<String, dynamic>>>? _bannerSub_ranking;
 
   StreamSubscription<Position>? _positionStreamSubscription;
   DateTime? _lastCountMethodCall;
@@ -2572,6 +2582,7 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
     return useUpdatePopup;
   }
 
+  /// 🛡️ 메모리 누수 방지: StreamSubscription 패턴 사용
   Future<void> getBanner(String accountName) async {
     Stream<DocumentSnapshot<Map<String, dynamic>>> stream = FirebaseFirestore.instance
         .collection('banner')
@@ -2580,22 +2591,40 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
 
     switch (accountName) {
       case 'home':
-        bannerStream_home.value = stream;
+        _bannerSub_home?.cancel();
+        _bannerSub_home = stream.listen((snapshot) {
+          bannerData_home.value = snapshot.data();
+        });
         break;
       case 'fleaMarket':
-        bannerStream_fleaMarket.value = stream;
+        _bannerSub_fleaMarket?.cancel();
+        _bannerSub_fleaMarket = stream.listen((snapshot) {
+          bannerData_fleaMarket.value = snapshot.data();
+        });
         break;
       case 'moreTab':
-        bannerStream_moreTab.value = stream;
+        _bannerSub_moreTab?.cancel();
+        _bannerSub_moreTab = stream.listen((snapshot) {
+          bannerData_moreTab.value = snapshot.data();
+        });
         break;
       case 'community':
-        bannerStream_community.value = stream;
+        _bannerSub_community?.cancel();
+        _bannerSub_community = stream.listen((snapshot) {
+          bannerData_community.value = snapshot.data();
+        });
         break;
       case 'community_detail':
-        bannerStream_community_detail.value = stream;
+        _bannerSub_community_detail?.cancel();
+        _bannerSub_community_detail = stream.listen((snapshot) {
+          bannerData_community_detail.value = snapshot.data();
+        });
         break;
       case 'ranking':
-        bannerStream_ranking.value = stream;
+        _bannerSub_ranking?.cancel();
+        _bannerSub_ranking = stream.listen((snapshot) {
+          bannerData_ranking.value = snapshot.data();
+        });
         break;
       default:
         print('알 수 없는 accountName: $accountName');
@@ -2614,13 +2643,16 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
       // 0. BackgroundGeolocation 초기화 (Geofence 전용 모드)
       await bg.BackgroundGeolocation.ready(bg.Config(
         desiredAccuracy: bg.Config.DESIRED_ACCURACY_LOW,
-        distanceFilter: 100,
+        distanceFilter: 500, // Geofence만 사용하므로 큰 값 설정
         stopOnTerminate: true,
         startOnBoot: false,
         enableHeadless: false,
+        // 🔥 iOS 포그라운드 전환 시 위치 업데이트 방지
+        pausesLocationUpdatesAutomatically: true,
+        disableLocationAuthorizationAlert: true,
         // Geofence 전용 설정
         geofenceProximityRadius: 5000, // 5km 범위 내 Geofence만 모니터링
-        geofenceInitialTriggerEntry: true, // 이미 영역 내에 있으면 즉시 트리거
+        geofenceInitialTriggerEntry: true, // 앱 시작 시 이미 리조트 내에 있으면 즉시 감지
         logLevel: bg.Config.LOG_LEVEL_OFF,
         // 🔥 iOS 파란색 상태바 표시 안함 (Geofence 전용 모드에서는 불필요)
         showsBackgroundLocationIndicator: false,
@@ -2964,6 +2996,20 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
 
     // ScrollController dispose
     scrollController_resortHome_openchat.dispose();
+
+    // 🛡️ 메모리 누수 방지: bannerStream 구독 취소
+    _bannerSub_home?.cancel();
+    _bannerSub_fleaMarket?.cancel();
+    _bannerSub_moreTab?.cancel();
+    _bannerSub_community?.cancel();
+    _bannerSub_community_detail?.cancel();
+    _bannerSub_ranking?.cancel();
+    _bannerSub_home = null;
+    _bannerSub_fleaMarket = null;
+    _bannerSub_moreTab = null;
+    _bannerSub_community = null;
+    _bannerSub_community_detail = null;
+    _bannerSub_ranking = null;
 
     super.onClose();
   }

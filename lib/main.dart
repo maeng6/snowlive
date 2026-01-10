@@ -85,11 +85,11 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // 🛡️ 메모리 누수 방지: 이미지 캐시 크기 제한
-  // - maximumSize: 최대 50개 이미지
-  // - maximumSizeBytes: 최대 30MB
+  // - maximumSize: 최대 30개 이미지
+  // - maximumSizeBytes: 최대 20MB
   // (백그라운드 전환 시 메모리 경고 감소)
-  PaintingBinding.instance.imageCache.maximumSize = 50;
-  PaintingBinding.instance.imageCache.maximumSizeBytes = 30 * 1024 * 1024; // 30MB
+  PaintingBinding.instance.imageCache.maximumSize = 30;
+  PaintingBinding.instance.imageCache.maximumSizeBytes = 20 * 1024 * 1024; // 20MB
 
   await initializeDateFormatting('ko', null);
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
