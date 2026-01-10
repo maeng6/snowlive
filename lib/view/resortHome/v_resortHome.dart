@@ -685,19 +685,19 @@ class _ResortHomeViewState extends State<ResortHomeView> with
                                             '스키장 오픈채팅',
                                             style: SDSTextStyle.bold.copyWith(fontSize: 16, color: SDSColor.gray900),
                                           ),
-                                          SizedBox(height: 10,),
+                                          SizedBox(height: 6,),
                                           Text(
                                             '전국 스키장의 스노우라이브 유저들과',
-                                            style: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray500),
+                                            style: SDSTextStyle.regular.copyWith(fontSize: 13, color: SDSColor.gray500),
                                           ),
                                           Text(
                                             '익명으로 실시간 채팅을 즐겨 보세요',
-                                            style: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray500),
+                                            style: SDSTextStyle.regular.copyWith(fontSize: 13, color: SDSColor.gray500),
                                           ),
                                         ],
                                       ),
                                     ),
-                                    SizedBox(height: 20,),
+                                    SizedBox(height: 12,),
                                     Expanded(child: ChatScreen()),
                                   ],
                                 ), // ChatScreen을 모달 시트로 띄움
