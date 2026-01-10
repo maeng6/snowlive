@@ -68,7 +68,7 @@ class _ThemestoreEditInfoViewState extends State<ThemestoreEditInfoView> {
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
           buttonPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 0),
           content: SizedBox(
-            height: 80,
+            height: 60,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
@@ -107,6 +107,7 @@ class _ThemestoreEditInfoViewState extends State<ThemestoreEditInfoView> {
                     elevation: 0,
                     backgroundColor: const Color(0xFF3D83ED),
                     foregroundColor: Colors.white,
+                    splashFactory: NoSplash.splashFactory,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(6),
                     ),
@@ -171,6 +172,7 @@ class _ThemestoreEditInfoViewState extends State<ThemestoreEditInfoView> {
                     elevation: 0,
                     backgroundColor: const Color(0xFF3D83ED),
                     foregroundColor: Colors.white,
+                    splashFactory: NoSplash.splashFactory,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(6),
                     ),
@@ -222,175 +224,186 @@ class _ThemestoreEditInfoViewState extends State<ThemestoreEditInfoView> {
           ),
         ),
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // 상품 정보
-              Row(
-                children: [
-                  // 이미지
-                  SizedBox(
-                    width: 56,
-                    height: 56,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        border: Border.all(color: SDSColor.gray200, width: 1),
-                        borderRadius: BorderRadius.circular(6),
-                      ),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(6),
-                        child: ExtendedImage.network(
-                          item?.imageUrl ?? '',
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+      body: Column(
+        children: [
+          Expanded(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(16),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // 상품 정보
+                    Row(
                       children: [
-                        Text(
-                          '${item?.brandName ?? ''}',
-                          style: SDSTextStyle.bold.copyWith(
-                            fontSize: 12,
-                            color: SDSColor.snowliveBlack,
+                        // 이미지
+                        SizedBox(
+                          width: 56,
+                          height: 56,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              border: Border.all(color: SDSColor.gray200, width: 0.5),
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(4),
+                              child: ExtendedImage.network(
+                                item?.imageUrl ?? '',
+                                fit: BoxFit.cover,
+                              ),
+                            ),
                           ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
                         ),
-                        const SizedBox(height: 2),
-                        Text(
-                          item?.name ?? '',
-                          style: SDSTextStyle.bold.copyWith(
-                            fontSize: 13,
-                            color: SDSColor.snowliveBlack,
-                          ),
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        const SizedBox(height: 6),
-                        if (item?.priceEvent != null && (item?.priceEvent ?? 0) > 0)
-                          Row(
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                '${_formatWon(item?.priceOrigin)}원',
+                                '${item?.brandName ?? ''}',
+                                style: SDSTextStyle.bold.copyWith(
+                                  fontSize: 12,
+                                  color: SDSColor.snowliveBlack,
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              const SizedBox(height: 2),
+                              Text(
+                                item?.name ?? '',
                                 style: SDSTextStyle.regular.copyWith(
-                                  fontSize: 13,
-                                  color: Colors.black.withOpacity(0.5),
-                                  decoration: TextDecoration.lineThrough,
-                                ),
-                              ),
-                              const SizedBox(width: 8),
-                              Text(
-                                '${item?.discountPerct ?? 0}%',
-                                style: SDSTextStyle.bold.copyWith(
-                                  fontSize: 13,
-                                  color: const Color(0xFFFF3B3B),
-                                ),
-                              ),
-                              const SizedBox(width: 8),
-                              Text(
-                                '${_formatWon(item?.priceEvent)}원',
-                                style: SDSTextStyle.bold.copyWith(
                                   fontSize: 13,
                                   color: SDSColor.snowliveBlack,
                                 ),
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
                               ),
+                              const SizedBox(height: 2),
+                              if (item?.priceEvent != null && (item?.priceEvent ?? 0) > 0)
+                                Row(
+                                  children: [
+                                    Text(
+                                      '${_formatWon(item?.priceOrigin)}원',
+                                      style: SDSTextStyle.regular.copyWith(
+                                        fontSize: 13,
+                                        color: Colors.black.withOpacity(0.3),
+                                        decoration: TextDecoration.lineThrough,
+                                        decorationColor: Colors.black.withOpacity(0.3),
+                                      ),
+                                    ),
+                                    const SizedBox(width: 8),
+                                    Text(
+                                      '${item?.discountPerct ?? 0}%',
+                                      style: SDSTextStyle.bold.copyWith(
+                                        fontSize: 13,
+                                        color: const Color(0xFFFF3B3B),
+                                      ),
+                                    ),
+                                    const SizedBox(width: 2),
+                                    Text(
+                                      '${_formatWon(item?.priceEvent)}원',
+                                      style: SDSTextStyle.bold.copyWith(
+                                        fontSize: 13,
+                                        color: SDSColor.snowliveBlack,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              if (item?.priceEvent == null || (item?.priceEvent ?? 0) == 0)
+                                Text(
+                                  '${_formatWon(item?.priceOrigin)}원',
+                                  style: SDSTextStyle.bold.copyWith(
+                                    fontSize: 13,
+                                    color: SDSColor.snowliveBlack,
+                                  ),
+                                ),
                             ],
                           ),
-                        if (item?.priceEvent == null || (item?.priceEvent ?? 0) == 0)
-                          Text(
-                            '${_formatWon(item?.priceOrigin)}원',
-                            style: SDSTextStyle.bold.copyWith(
-                              fontSize: 13,
-                              color: SDSColor.snowliveBlack,
-                            ),
-                          ),
+                        ),
                       ],
                     ),
-                  ),
-                ],
-              ),
 
-              const SizedBox(height: 32),
+                    const SizedBox(height: 30),
 
-              // 이름 입력
-              Text(
-                '이름',
-                style: SDSTextStyle.bold.copyWith(
-                  fontSize: 13,
-                  color: SDSColor.snowliveBlack,
+                    // 이름 입력
+                    Text(
+                      '이름',
+                      style: SDSTextStyle.regular.copyWith(
+                        fontSize: 13,
+                        color: SDSColor.snowliveBlack,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    TextFormField(
+                      controller: _nameController,
+                      cursorColor: const Color(0xFF3D83ED),
+                      style: TextStyle(color: SDSColor.snowliveBlack, fontSize: 14),
+                      decoration: InputDecoration(
+                        hintText: '이름을 입력해주세요',
+                        hintStyle: TextStyle(color: Color(0xFFb7b7b7), fontSize: 14),
+                        filled: true,
+                        fillColor: const Color(0xFFF5F5F5),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide: BorderSide.none,
+                        ),
+                        contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) return '이름을 입력해주세요';
+                        return null;
+                      },
+                    ),
+
+                    const SizedBox(height: 24),
+
+                    // 전화번호 입력
+                    Text(
+                      '전화번호',
+                      style: SDSTextStyle.regular.copyWith(
+                        fontSize: 13,
+                        color: SDSColor.snowliveBlack,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    TextFormField(
+                      controller: _phoneController,
+                      cursorColor: const Color(0xFF3D83ED),
+                      style: TextStyle(color: SDSColor.snowliveBlack, fontSize: 14),
+                      decoration: InputDecoration(
+                        hintText: '- 없이 숫자만 입력해주세요',
+                        hintStyle: TextStyle(color: Color(0xFFb7b7b7), fontSize: 14),
+                        filled: true,
+                        fillColor: const Color(0xFFF5F5F5),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide: BorderSide.none,
+                        ),
+                        contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                      ),
+                      keyboardType: TextInputType.phone,
+                      inputFormatters: [
+                        FilteringTextInputFormatter.digitsOnly,
+                        _PhoneNumberFormatter(),
+                      ],
+                      validator: (value) {
+                        if (value == null || value.isEmpty) return '전화번호를 입력해주세요';
+                        final digits = value.replaceAll(RegExp(r'[^0-9]'), '');
+                        if (digits.length < 10) return '전화번호를 정확히 입력해주세요';
+                        return null;
+                      },
+                    ),
+                  ],
                 ),
               ),
-              const SizedBox(height: 8),
-              TextFormField(
-                controller: _nameController,
-                style: TextStyle(color: SDSColor.snowliveBlack),
-                decoration: InputDecoration(
-                  hintText: '홍길동',
-                  hintStyle: TextStyle(color: Colors.black.withOpacity(0.4)),
-                  filled: true,
-                  fillColor: const Color(0xFFF5F5F5),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                    borderSide: BorderSide.none,
-                  ),
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-                ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) return '이름을 입력해주세요';
-                  return null;
-                },
-              ),
-
-              const SizedBox(height: 24),
-
-              // 전화번호 입력
-              Text(
-                '전화번호',
-                style: SDSTextStyle.bold.copyWith(
-                  fontSize: 13,
-                  color: SDSColor.snowliveBlack,
-                ),
-              ),
-              const SizedBox(height: 8),
-              TextFormField(
-                controller: _phoneController,
-                style: TextStyle(color: SDSColor.snowliveBlack),
-                decoration: InputDecoration(
-                  hintText: '010-1234-5678',
-                  hintStyle: TextStyle(color: Colors.black.withOpacity(0.4)),
-                  filled: true,
-                  fillColor: const Color(0xFFF5F5F5),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                    borderSide: BorderSide.none,
-                  ),
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-                ),
-                keyboardType: TextInputType.phone,
-                inputFormatters: [
-                  FilteringTextInputFormatter.digitsOnly,
-                  _PhoneNumberFormatter(),
-                ],
-                validator: (value) {
-                  if (value == null || value.isEmpty) return '전화번호를 입력해주세요';
-                  final digits = value.replaceAll(RegExp(r'[^0-9]'), '');
-                  if (digits.length < 10) return '전화번호를 정확히 입력해주세요';
-                  return null;
-                },
-              ),
-
-              const SizedBox(height: 50),
-
-              // 제출 버튼
-              SizedBox(
+            ),
+          ),
+          // 제출 버튼 (하단 고정)
+          SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: SizedBox(
                 width: double.infinity,
                 height: 52,
                 child: ElevatedButton(
@@ -411,9 +424,9 @@ class _ThemestoreEditInfoViewState extends State<ThemestoreEditInfoView> {
                   ),
                 ),
               ),
-            ],
+            ),
           ),
-        ),
+        ],
       ),
     );
   }
