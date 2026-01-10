@@ -85,8 +85,8 @@ class _Entrance_Themestore_HomeState extends State<Entrance_Themestore_Home> {
                         switch (state.extendedImageLoadState) {
                           case LoadState.loading:
                             return Container(
-                              height: _size.width - 70,
-                              color: Colors.grey.shade100,
+                              height: _size.width / 3,
+                              color: Colors.transparent,
                               alignment: Alignment.center,
                               child: CircularProgressIndicator(
                                 color: Colors.black26,
@@ -94,8 +94,8 @@ class _Entrance_Themestore_HomeState extends State<Entrance_Themestore_Home> {
                             );
                           case LoadState.failed:
                             return Container(
-                              height: _size.width - 70,
-                              color: Colors.grey.shade100,
+                              height: _size.width / 3,
+                              color: Colors.transparent,
                               alignment: Alignment.center,
                               child: Icon(Icons.error, color: Colors.red),
                             );

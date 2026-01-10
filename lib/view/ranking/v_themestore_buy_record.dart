@@ -329,7 +329,7 @@ class _ThemestoreBuyRecordViewState extends State<ThemestoreBuyRecordView> {
                 backgroundColor: const Color(0xFF3D83ED),
                 color: SDSColor.snowliveWhite,
                 onRefresh: () async {
-                  await _themeStoreViewModel.fetchMyBuyRecords();
+                  await _themeStoreViewModel.fetchMyBuyRecords(showLoading: false);
                 },
                 child: SingleChildScrollView(
                   physics: const AlwaysScrollableScrollPhysics(),

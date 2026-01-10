@@ -216,7 +216,7 @@ class _ThemestoreHomeViewState extends State<ThemestoreHomeView> {
           backgroundColor: const Color(0xFF3D83ED),
           color: SDSColor.snowliveWhite,
           onRefresh: () async {
-            await _themeStoreViewModel.fetchThemeStoreMain();
+            await _themeStoreViewModel.fetchThemeStoreMain(showLoading: false);
           },
           child: ListView(
             controller: _scrollController,
@@ -276,6 +276,7 @@ class _ThemestoreHomeViewState extends State<ThemestoreHomeView> {
                     final isOutOfStock = (item.remainingCount ?? 0) == 0;
 
                     return GestureDetector(
+                      behavior: HitTestBehavior.opaque,
                       onTap: () async {
 
                         showModalBottomSheet(

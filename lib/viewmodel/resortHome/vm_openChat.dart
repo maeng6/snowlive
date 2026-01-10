@@ -6,8 +6,29 @@ import 'package:com.snowlive/viewmodel/vm_user.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+/// 메시지 전송 상태
+enum MessageStatus { sending, failed }
+
+/// Pending 메시지 모델
+class PendingMessage {
+  final String text;
+  final String chatId;
+  final DateTime createdAt;
+  MessageStatus status;
+
+  PendingMessage({
+    required this.text,
+    required this.chatId,
+    required this.createdAt,
+    this.status = MessageStatus.sending,
+  });
+}
+
 class ChatViewModel extends GetxController {
   var chatDocs = <QueryDocumentSnapshot>[].obs;
+
+  /// 전송 중인 pending 메시지 (chatId -> PendingMessage)
+  var pendingMessages = <String, PendingMessage>{}.obs;
 
   TextEditingController chatController = TextEditingController();
   final UserViewModel _userViewModel = Get.find<UserViewModel>();
@@ -78,19 +99,70 @@ class ChatViewModel extends GetxController {
 
       String newChatId = '$userId-$newChatIdSuffix';  // 새로운 chatId 생성
 
-      // API 호출로 채팅 전송 (Firebase 직접 등록 대신)
+      // 1. 즉시 pending 메시지 추가 (Optimistic UI)
+      pendingMessages[newChatId] = PendingMessage(
+        text: message,
+        chatId: newChatId,
+        createdAt: DateTime.now(),
+        status: MessageStatus.sending,
+      );
+
+      // 2. API 호출로 채팅 전송 (Firebase 직접 등록 대신)
       final response = await ResortHomeAPI().createChat(
         uid: userId,
         text: message,
         chatId: newChatId,
       );
 
-      if (!response.success) {
+      // 3. 결과에 따라 pending 상태 업데이트
+      if (response.success) {
+        // 성공 시 pending 제거 (Firebase 스트림에서 실제 메시지가 옴)
+        pendingMessages.remove(newChatId);
+      } else {
+        // 실패 시 상태를 failed로 변경
+        if (pendingMessages.containsKey(newChatId)) {
+          pendingMessages[newChatId]!.status = MessageStatus.failed;
+          pendingMessages.refresh(); // UI 업데이트 트리거
+        }
         // 403 에러 (블락 유저) 또는 기타 에러 처리
         final errorMessage = response.error?['error'] ?? '메시지 전송에 실패했습니다.';
         _showBlockedDialog(errorMessage);
       }
     }
+  }
+
+  /// 실패한 메시지 재전송
+  Future<void> retryMessage(String chatId) async {
+    final pendingMsg = pendingMessages[chatId];
+    if (pendingMsg == null) return;
+
+    final userId = _userViewModel.user.user_id;
+    if (userId == null) return;
+
+    // 상태를 sending으로 변경
+    pendingMsg.status = MessageStatus.sending;
+    pendingMessages.refresh();
+
+    // API 재호출
+    final response = await ResortHomeAPI().createChat(
+      uid: userId,
+      text: pendingMsg.text,
+      chatId: chatId,
+    );
+
+    if (response.success) {
+      pendingMessages.remove(chatId);
+    } else {
+      pendingMsg.status = MessageStatus.failed;
+      pendingMessages.refresh();
+      final errorMessage = response.error?['error'] ?? '메시지 전송에 실패했습니다.';
+      _showBlockedDialog(errorMessage);
+    }
+  }
+
+  /// 실패한 메시지 삭제
+  void removePendingMessage(String chatId) {
+    pendingMessages.remove(chatId);
   }
 
   /// 블락 유저 또는 에러 다이얼로그 표시
