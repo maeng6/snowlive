@@ -118,9 +118,12 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
   // 등록된 Geofence 정보 저장 (초기 위치 체크용)
   List<Map<String, dynamic>> _registeredGeofences = [];
 
-  // GPS 조작 탐지용 변수
+  // GPS 튐 탐지용 변수 (정확도/속도 필터링)
   Position? _lastValidationPosition;
   DateTime? _lastValidationTime;
+
+  // GPS 보간용 변수 (이전 유효 위치 저장)
+  Position? _previousValidPosition;
 
   // API 타임아웃 설정 (데드락 방지)
   static const Duration _apiTimeout = Duration(seconds: 10);
@@ -815,8 +818,10 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
               error: Platform.isIOS ? 'iOS' : 'Android',
             );
 
-            // 🚨 GPS 조작 탐지: 비정상 속도 감지
-            _validatePosition(position, user_id);
+            // 🚨 GPS 튐 탐지: 정확도/속도 필터링
+            if (!_validatePosition(position, user_id)) {
+              return; // 유효하지 않은 위치면 처리 안함
+            }
 
             await _lock.synchronized(() async {
               bool withinBoundary = _checkPositionWithinBoundary(
@@ -838,12 +843,14 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
                 // 🛡️ 영역 데이터 보호: 비어있으면 재로드 (메모리 압박 대응)
                 await _reloadAreaDataIfNeeded(user_id, position.latitude, position.longitude);
 
-                List<Map<String, dynamic>> passPointInfos = checkPositionInAreas(
+                // 📍 GPS 보간 적용: 이전 위치와 현재 위치 사이의 중간점들도 체크
+                List<Map<String, dynamic>> passPointInfos = _checkPositionsWithInterpolation(
                   position,
                   _slope_info,
                   _snowball_info,
                   _reset_point,
                   _respawn_point,
+                  user_id,
                 );
 
                 // 🔍 디버깅: 영역 데이터가 비어있으면 경고
@@ -864,28 +871,41 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
                   // 체크포인트 처리
                   if (passPointInfo['type'] == 'slope_info') {
                     if (_lastCountMethodCall == null || DateTime.now().difference(_lastCountMethodCall!).inSeconds > 5) {
-                      _lastCountMethodCall = DateTime.now(); // 쿨다운 먼저 기록 (중복 호출 방지)
                       final slopeId = passPointInfo['id'];
                       final slopeFullname = passPointInfo['fullname'] ?? '';
+                      // 📍 보간점 정보 (error 필드에 추가용)
+                      final detectedLat = passPointInfo['detected_lat'];
+                      final detectedLon = passPointInfo['detected_lon'];
+                      final detectedInfo = (detectedLat != null && detectedLon != null)
+                          ? ', detected: ${detectedLat.toStringAsFixed(6)},${detectedLon.toStringAsFixed(6)}'
+                          : '';
                       futures.add(() async {
-                        try {
-                          final response = await RankingAPI().addCheckPoint({
-                            "user_id": user_id,
-                            "slope_id": slopeId,
-                            "coordinates": "${position.latitude}, ${position.longitude}"
-                          });
-                          final isSuccess = response.statusCode == 201 || response.statusCode == 416;
-                          if (isSuccess) {
-                            print('포그라운드 체크포인트 업데이트 성공: $slopeFullname');
-                            // 체크포인트 성공 시 마지막 액션 타입 기록
-                            _lastActionType = LastActionType.checkpoint;
-                          } else {
-                            print('포그라운드 체크포인트 업데이트 실패: ${response.statusCode}');
+                        // 🔄 네트워크 재시도 로직 (최대 3회, 1초 간격)
+                        for (int attempt = 1; attempt <= 3; attempt++) {
+                          try {
+                            final response = await RankingAPI().addCheckPoint({
+                              "user_id": user_id,
+                              "slope_id": slopeId,
+                              "coordinates": "${position.latitude}, ${position.longitude}"
+                            });
+                            final isSuccess = response.statusCode == 201 || response.statusCode == 416;
+                            if (isSuccess) {
+                              print('포그라운드 체크포인트 업데이트 성공: $slopeFullname (시도 $attempt)');
+                              _lastCountMethodCall = DateTime.now(); // ✅ 성공 시에만 쿨다운 설정
+                              _lastActionType = LastActionType.checkpoint;
+                            } else {
+                              print('포그라운드 체크포인트 업데이트 실패: ${response.statusCode}');
+                            }
+                            _sendLiveLog(userId: user_id, requestType: 'fg_checkpoint', error: (isSuccess ? 'success (attempt $attempt)' : 'statusCode: ${response.statusCode}') + detectedInfo, lat: position.latitude, lon: position.longitude);
+                            break; // API 호출 완료 시 루프 종료
+                          } catch (e) {
+                            print('포그라운드 체크포인트 오류 (시도 $attempt/3): $e');
+                            if (attempt < 3) {
+                              await Future.delayed(const Duration(seconds: 1));
+                            } else {
+                              _sendLiveLog(userId: user_id, requestType: 'fg_checkpoint_error', error: 'all retries failed: $e$detectedInfo', lat: position.latitude, lon: position.longitude);
+                            }
                           }
-                          _sendLiveLog(userId: user_id, requestType: 'fg_checkpoint', error: isSuccess ? 'success' : 'statusCode: ${response.statusCode}', lat: position.latitude, lon: position.longitude);
-                        } catch (e) {
-                          print('포그라운드 체크포인트 오류: $e');
-                          _sendLiveLog(userId: user_id, requestType: 'fg_checkpoint_error', error: e.toString(), lat: position.latitude, lon: position.longitude);
                         }
                       }());
                     }
@@ -902,9 +922,6 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
                           DateTime.now().difference(_lastSnowballMethodCall!).inSeconds > 300;
 
                       if (canRegister) {
-                        if (!isGoldenSnowball) {
-                          _lastSnowballMethodCall = DateTime.now(); // 쿨다운 먼저 기록
-                        }
                         final snowballId = passPointInfo['id'];
                         futures.add(() async {
                           try {
@@ -916,6 +933,9 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
                             });
                             if (response.success) {
                               print('포그라운드 ${isGoldenSnowball ? "황금" : "하얀"}눈송이 기록 성공');
+                              if (!isGoldenSnowball) {
+                                _lastSnowballMethodCall = DateTime.now(); // ✅ 성공 시에만 쿨다운 설정
+                              }
                             } else {
                               print('포그라운드 눈송이 기록 실패: ${response.error}');
                             }
@@ -930,18 +950,32 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
                   // 리셋 처리
                   if (passPointInfo['type'] == 'reset_point') {
                     if (_lastResetMethodCall == null || DateTime.now().difference(_lastResetMethodCall!).inSeconds > 180) {
-                      _lastResetMethodCall = DateTime.now(); // 쿨다운 먼저 기록
+                      // 📍 보간점 정보 (error 필드에 추가용)
+                      final detectedLat = passPointInfo['detected_lat'];
+                      final detectedLon = passPointInfo['detected_lon'];
+                      final detectedInfo = (detectedLat != null && detectedLon != null)
+                          ? ', detected: ${detectedLat.toStringAsFixed(6)},${detectedLon.toStringAsFixed(6)}'
+                          : '';
                       futures.add(() async {
-                        try {
-                          final resetResponse = await RankingAPI().reset({"user_id": user_id});
-                          if (resetResponse.success) {
-                            print('리셋 성공');
-                            // 리셋 성공 시 마지막 액션 타입 기록
-                            _lastActionType = LastActionType.reset;
+                        // 🔄 네트워크 재시도 로직 (최대 3회, 1초 간격)
+                        for (int attempt = 1; attempt <= 3; attempt++) {
+                          try {
+                            final resetResponse = await RankingAPI().reset({"user_id": user_id});
+                            if (resetResponse.success) {
+                              print('리셋 성공 (시도 $attempt)');
+                              _lastResetMethodCall = DateTime.now(); // ✅ 성공 시에만 쿨다운 설정
+                              _lastActionType = LastActionType.reset;
+                            }
+                            _sendLiveLog(userId: user_id, requestType: 'fg_reset', error: (resetResponse.success ? 'success (attempt $attempt)' : resetResponse.error.toString()) + detectedInfo, lat: position.latitude, lon: position.longitude);
+                            break; // API 호출 완료 시 루프 종료
+                          } catch (e) {
+                            print('포그라운드 리셋 오류 (시도 $attempt/3): $e');
+                            if (attempt < 3) {
+                              await Future.delayed(const Duration(seconds: 1));
+                            } else {
+                              _sendLiveLog(userId: user_id, requestType: 'fg_reset_error', error: 'all retries failed: $e$detectedInfo', lat: position.latitude, lon: position.longitude);
+                            }
                           }
-                          _sendLiveLog(userId: user_id, requestType: 'fg_reset', error: resetResponse.success ? 'success' : resetResponse.error.toString(), lat: position.latitude, lon: position.longitude);
-                        } catch (e) {
-                          print('포그라운드 리셋 오류: $e');
                         }
                       }());
                     }
@@ -981,42 +1015,56 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
 
                     print('✅ 리스폰 가능 여부: $canRespawn ($respawnReason)');
 
+                    // 📍 보간점 정보 (error 필드에 추가용)
+                    final detectedLat = passPointInfo['detected_lat'];
+                    final detectedLon = passPointInfo['detected_lon'];
+                    final detectedInfo = (detectedLat != null && detectedLon != null)
+                        ? ', detected: ${detectedLat.toStringAsFixed(6)},${detectedLon.toStringAsFixed(6)}'
+                        : '';
+
                     if (canRespawn) {
                       print('🚀 리스폰 실행!');
-                      _lastRespawnMethodCall = DateTime.now(); // 쿨다운 먼저 기록
                       _respawnSkipLogSent = false;
                       futures.add(() async {
-                        try {
-                          final respawnResponse = await RankingAPI().respawn({"user_id": user_id});
-                          if (respawnResponse.success) {
-                            print('✅ 리스폰 성공');
-                            // 리스폰 성공 시 마지막 액션 타입 기록
-                            _lastActionType = LastActionType.respawn;
+                        // 🔄 네트워크 재시도 로직 (최대 3회, 1초 간격)
+                        for (int attempt = 1; attempt <= 3; attempt++) {
+                          try {
+                            final respawnResponse = await RankingAPI().respawn({"user_id": user_id});
+                            if (respawnResponse.success) {
+                              print('✅ 리스폰 성공 (시도 $attempt)');
+                              _lastRespawnMethodCall = DateTime.now(); // ✅ 성공 시에만 쿨다운 설정
+                              _lastActionType = LastActionType.respawn;
 
-                            int insertedCount = respawnResponse.data['inserted_count'] ?? 0;
-                            print('📊 추가된 라이딩 수: $insertedCount');
-                            _sessionRideCount += insertedCount;
-                            String? latestSlopeFullname = respawnResponse.data['latest_slope_fullname'];
-                            if (latestSlopeFullname != null && latestSlopeFullname.isNotEmpty) {
-                              _lastSlopeName = latestSlopeFullname;
+                              int insertedCount = respawnResponse.data['inserted_count'] ?? 0;
+                              print('📊 추가된 라이딩 수: $insertedCount');
+                              _sessionRideCount += insertedCount;
+                              String? latestSlopeFullname = respawnResponse.data['latest_slope_fullname'];
+                              if (latestSlopeFullname != null && latestSlopeFullname.isNotEmpty) {
+                                _lastSlopeName = latestSlopeFullname;
+                              }
+                              if (insertedCount > 0) {
+                                _lastRideAt = DateTime.now();
+                              }
+                              // 서버에서 최신 dailyTotalCount 받아오기 (Live Activity 업데이트용)
+                              await fetchResortHome(user_id);
+                              _updateLiveActivity();
                             }
-                            if (insertedCount > 0) {
-                              _lastRideAt = DateTime.now();
+                            _sendLiveLog(userId: user_id, requestType: 'fg_respawn', error: (respawnResponse.success ? 'success (attempt $attempt): $respawnReason' : respawnResponse.error.toString()) + detectedInfo, lat: position.latitude, lon: position.longitude);
+                            break; // API 호출 완료 시 루프 종료
+                          } catch (e) {
+                            print('포그라운드 리스폰 오류 (시도 $attempt/3): $e');
+                            if (attempt < 3) {
+                              await Future.delayed(const Duration(seconds: 1));
+                            } else {
+                              _sendLiveLog(userId: user_id, requestType: 'fg_respawn_error', error: 'all retries failed: $e$detectedInfo', lat: position.latitude, lon: position.longitude);
                             }
-                            // 서버에서 최신 dailyTotalCount 받아오기 (Live Activity 업데이트용)
-                            await fetchResortHome(user_id);
-                            _updateLiveActivity();
                           }
-                          _sendLiveLog(userId: user_id, requestType: 'fg_respawn', error: respawnResponse.success ? 'success: $respawnReason' : respawnResponse.error.toString(), lat: position.latitude, lon: position.longitude);
-                        } catch (e) {
-                          print('포그라운드 리스폰 오류: $e');
-                          _sendLiveLog(userId: user_id, requestType: 'fg_respawn_error', error: e.toString(), lat: position.latitude, lon: position.longitude);
                         }
                       }());
                     } else {
                       if (!_respawnSkipLogSent) {
                         _respawnSkipLogSent = true;
-                        _sendLiveLog(userId: user_id, requestType: 'fg_respawn_skipped', error: respawnReason, lat: position.latitude, lon: position.longitude);
+                        _sendLiveLog(userId: user_id, requestType: 'fg_respawn_skipped', error: respawnReason + detectedInfo, lat: position.latitude, lon: position.longitude);
                       }
                       print('⏭️  리스폰 스킵: $respawnReason');
                     }
@@ -1255,8 +1303,10 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
         headingAccuracy: 0,
       );
 
-      // 🚨 GPS 조작 탐지: 비정상 속도 감지
-      _validatePosition(position, user_id);
+      // 🚨 GPS 튐 탐지: 정확도/속도 필터링
+      if (!_validatePosition(position, user_id)) {
+        return; // 유효하지 않은 위치면 처리 안함
+      }
 
       await _lock.synchronized(() async {
         bool withinBoundary = _checkPositionWithinBoundary(
@@ -1286,12 +1336,14 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
           // 🛡️ 영역 데이터 보호: 비어있으면 재로드 (메모리 압박 대응)
           await _reloadAreaDataIfNeeded(user_id, position.latitude, position.longitude);
 
-          List<Map<String, dynamic>> passPointInfos = checkPositionInAreas(
+          // 📍 GPS 보간 적용: 이전 위치와 현재 위치 사이의 중간점들도 체크
+          List<Map<String, dynamic>> passPointInfos = _checkPositionsWithInterpolation(
             position,
             _slope_info,
             _snowball_info,
             _reset_point,
             _respawn_point,
+            user_id,
           );
 
           // 병렬 처리를 위한 Future 리스트
@@ -1301,9 +1353,14 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
             // 체크포인트 처리
             if (passPointInfo['type'] == 'slope_info') {
               if (_lastCountMethodCall == null || DateTime.now().difference(_lastCountMethodCall!).inSeconds > 5) {
-                _lastCountMethodCall = DateTime.now(); // 쿨다운 먼저 기록
                 final slopeId = passPointInfo['id'];
                 final slopeFullname = passPointInfo['fullname'] ?? '';
+                // 📍 보간점 정보 (error 필드에 추가용)
+                final detectedLat = passPointInfo['detected_lat'];
+                final detectedLon = passPointInfo['detected_lon'];
+                final detectedInfo = (detectedLat != null && detectedLon != null)
+                    ? ', detected: ${detectedLat.toStringAsFixed(6)},${detectedLon.toStringAsFixed(6)}'
+                    : '';
                 futures.add(() async {
                   // 🔄 네트워크 재시도 로직 (최대 3회, 1초 간격)
                   for (int attempt = 1; attempt <= 3; attempt++) {
@@ -1316,18 +1373,19 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
                       final isSuccess = response.statusCode == 201 || response.statusCode == 416;
                       if (isSuccess) {
                         print('백그라운드 체크포인트 업데이트 성공: $slopeFullname (시도 $attempt)');
+                        _lastCountMethodCall = DateTime.now(); // ✅ 성공 시에만 쿨다운 설정
                         _lastActionType = LastActionType.checkpoint;
                       } else {
                         print('백그라운드 체크포인트 업데이트 실패: ${response.statusCode}');
                       }
-                      _sendLiveLog(userId: user_id, requestType: 'bg_checkpoint', error: isSuccess ? 'success (attempt $attempt)' : 'statusCode: ${response.statusCode}', lat: position.latitude, lon: position.longitude);
-                      break; // 성공 시 루프 종료
+                      _sendLiveLog(userId: user_id, requestType: 'bg_checkpoint', error: (isSuccess ? 'success (attempt $attempt)' : 'statusCode: ${response.statusCode}') + detectedInfo, lat: position.latitude, lon: position.longitude);
+                      break; // API 호출 완료 시 루프 종료
                     } catch (e) {
                       print('백그라운드 체크포인트 오류 (시도 $attempt/3): $e');
                       if (attempt < 3) {
                         await Future.delayed(const Duration(seconds: 1));
                       } else {
-                        _sendLiveLog(userId: user_id, requestType: 'bg_checkpoint_error', error: 'all retries failed: $e', lat: position.latitude, lon: position.longitude);
+                        _sendLiveLog(userId: user_id, requestType: 'bg_checkpoint_error', error: 'all retries failed: $e' + detectedInfo, lat: position.latitude, lon: position.longitude);
                       }
                     }
                   }
@@ -1346,9 +1404,6 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
                     DateTime.now().difference(_lastSnowballMethodCall!).inSeconds > 300;
 
                 if (canRegister) {
-                  if (!isGoldenSnowball) {
-                    _lastSnowballMethodCall = DateTime.now(); // 쿨다운 먼저 기록
-                  }
                   final snowballId = passPointInfo['id'];
                   futures.add(() async {
                     try {
@@ -1360,6 +1415,9 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
                       });
                       if (response.success) {
                         print('백그라운드 ${isGoldenSnowball ? "황금" : "하얀"}눈송이 기록 성공');
+                        if (!isGoldenSnowball) {
+                          _lastSnowballMethodCall = DateTime.now(); // ✅ 성공 시에만 쿨다운 설정
+                        }
                       } else {
                         print('백그라운드 눈송이 기록 실패: ${response.error}');
                       }
@@ -1374,7 +1432,12 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
             // 리셋 처리
             if (passPointInfo['type'] == 'reset_point') {
               if (_lastResetMethodCall == null || DateTime.now().difference(_lastResetMethodCall!).inSeconds > 180) {
-                _lastResetMethodCall = DateTime.now(); // 쿨다운 먼저 기록
+                // 📍 보간점 정보 (error 필드에 추가용)
+                final detectedLat = passPointInfo['detected_lat'];
+                final detectedLon = passPointInfo['detected_lon'];
+                final detectedInfo = (detectedLat != null && detectedLon != null)
+                    ? ', detected: ${detectedLat.toStringAsFixed(6)},${detectedLon.toStringAsFixed(6)}'
+                    : '';
                 futures.add(() async {
                   // 🔄 네트워크 재시도 로직 (최대 3회, 1초 간격)
                   for (int attempt = 1; attempt <= 3; attempt++) {
@@ -1382,16 +1445,17 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
                       final resetResponse = await RankingAPI().reset({"user_id": user_id});
                       if (resetResponse.success) {
                         print('리셋 성공 (시도 $attempt)');
+                        _lastResetMethodCall = DateTime.now(); // ✅ 성공 시에만 쿨다운 설정
                         _lastActionType = LastActionType.reset;
                       }
-                      _sendLiveLog(userId: user_id, requestType: 'bg_reset', error: resetResponse.success ? 'success (attempt $attempt)' : resetResponse.error.toString(), lat: position.latitude, lon: position.longitude);
-                      break; // 성공 시 루프 종료
+                      _sendLiveLog(userId: user_id, requestType: 'bg_reset', error: (resetResponse.success ? 'success (attempt $attempt)' : resetResponse.error.toString()) + detectedInfo, lat: position.latitude, lon: position.longitude);
+                      break; // API 호출 완료 시 루프 종료
                     } catch (e) {
                       print('백그라운드 리셋 오류 (시도 $attempt/3): $e');
                       if (attempt < 3) {
                         await Future.delayed(const Duration(seconds: 1));
                       } else {
-                        _sendLiveLog(userId: user_id, requestType: 'bg_reset_error', error: 'all retries failed: $e', lat: position.latitude, lon: position.longitude);
+                        _sendLiveLog(userId: user_id, requestType: 'bg_reset_error', error: 'all retries failed: $e' + detectedInfo, lat: position.latitude, lon: position.longitude);
                       }
                     }
                   }
@@ -1427,6 +1491,13 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
                 respawnReason = '첫 리스폰 또는 리셋 후 → 무조건 성공';
               }
 
+              // 📍 보간점 정보 (error 필드에 추가용)
+              final detectedLat = passPointInfo['detected_lat'];
+              final detectedLon = passPointInfo['detected_lon'];
+              final detectedInfo = (detectedLat != null && detectedLon != null)
+                  ? ', detected: ${detectedLat.toStringAsFixed(6)},${detectedLon.toStringAsFixed(6)}'
+                  : '';
+
               if (!canRespawn) {
                 if (!_respawnSkipLogSent) {
                   _sendLiveLog(
@@ -1434,12 +1505,11 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
                     requestType: 'bg_respawn_skip',
                     lat: position.latitude,
                     lon: position.longitude,
-                    error: respawnReason,
+                    error: respawnReason + detectedInfo,
                   );
                   _respawnSkipLogSent = true;
                 }
               } else if (_lastRespawnMethodCall == null || DateTime.now().difference(_lastRespawnMethodCall!).inSeconds > 10) {
-                _lastRespawnMethodCall = DateTime.now();
                 _respawnSkipLogSent = false;
                 final respawnId = passPointInfo['id'];
                 futures.add(() async {
@@ -1453,6 +1523,7 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
                       });
                       if (respawnResponse.success) {
                         print('백그라운드 리스폰 성공 (시도 $attempt)');
+                        _lastRespawnMethodCall = DateTime.now(); // ✅ 성공 시에만 쿨다운 설정
                         _lastActionType = LastActionType.respawn;
 
                         // 라이브 액티비티 업데이트 (포그라운드와 동일하게 처리)
@@ -1470,14 +1541,14 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
                         await fetchResortHome(user_id);
                         _updateLiveActivity();
                       }
-                      _sendLiveLog(userId: user_id, requestType: 'bg_respawn', error: respawnResponse.success ? 'success (attempt $attempt)' : respawnResponse.error.toString(), lat: position.latitude, lon: position.longitude);
-                      break; // 성공 시 루프 종료
+                      _sendLiveLog(userId: user_id, requestType: 'bg_respawn', error: (respawnResponse.success ? 'success (attempt $attempt): $respawnReason' : respawnResponse.error.toString()) + detectedInfo, lat: position.latitude, lon: position.longitude);
+                      break; // API 호출 완료 시 루프 종료
                     } catch (e) {
                       print('백그라운드 리스폰 오류 (시도 $attempt/3): $e');
                       if (attempt < 3) {
                         await Future.delayed(const Duration(seconds: 1));
                       } else {
-                        _sendLiveLog(userId: user_id, requestType: 'bg_respawn_error', error: 'all retries failed: $e', lat: position.latitude, lon: position.longitude);
+                        _sendLiveLog(userId: user_id, requestType: 'bg_respawn_error', error: 'all retries failed: $e' + detectedInfo, lat: position.latitude, lon: position.longitude);
                       }
                     }
                   }
@@ -1718,36 +1789,161 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
     }
   }
 
-  /// GPS 조작 탐지: 비정상 속도 감지
-  void _validatePosition(Position newPosition, int userId) {
+  /// GPS 튐 탐지 (스키/보드용)
+  /// 반환값: true = 유효한 위치, false = 무시해야 할 위치
+  bool _validatePosition(Position newPosition, int userId) {
+    // 1️⃣ 정확도 필터링 (GPS 신호 약하면 무시)
+    if (newPosition.accuracy > 50) {
+      print('⚠️ [GPS] 정확도 낮음 무시: ${newPosition.accuracy.toStringAsFixed(0)}m');
+      _sendLiveLog(
+        userId: userId,
+        requestType: 'gps_low_accuracy_ignored',
+        error: 'accuracy: ${newPosition.accuracy.toStringAsFixed(0)}m',
+        lat: newPosition.latitude,
+        lon: newPosition.longitude,
+      );
+      return false;
+    }
+
+    // 2️⃣ 속도 기반 필터링 (비현실적 속도 감지)
     if (_lastValidationPosition != null && _lastValidationTime != null) {
       final distance = Geolocator.distanceBetween(
         _lastValidationPosition!.latitude, _lastValidationPosition!.longitude,
         newPosition.latitude, newPosition.longitude,
       );
+      final timeDiff = DateTime.now().difference(_lastValidationTime!).inMilliseconds / 1000.0;
 
-      final timeDiff = DateTime.now().difference(_lastValidationTime!).inSeconds;
+      if (timeDiff > 0.5 && timeDiff < 30) { // 0.5초 이상일 때만 (너무 짧은 간격 제외)
+        final speedMps = distance / timeDiff;
+        final speedKmh = speedMps * 3.6;
 
-      if (timeDiff > 0) {
-        final speedMps = distance / timeDiff; // m/s
-        final speedKmh = speedMps * 3.6; // km/h
-
-        // 🚨 비정상 속도 감지 (스키 최고속도 ~120km/h 고려, 150km/h 이상은 의심)
+        // 🚨 비현실적 속도: 150km/h 초과 시 무시 (스키 최고속도 ~120km/h)
         if (speedKmh > 150) {
-          print('🚨 [GPS] 비정상 속도 감지: ${speedKmh.toStringAsFixed(1)}km/h, 거리: ${distance.toStringAsFixed(0)}m, 시간: ${timeDiff}초');
+          print('🚨 [GPS] 비현실적 속도 무시: ${speedKmh.toStringAsFixed(1)}km/h, dist=${distance.toStringAsFixed(0)}m');
           _sendLiveLog(
             userId: userId,
-            requestType: 'suspicious_speed',
-            error: 'speed: ${speedKmh.toStringAsFixed(1)}km/h, dist: ${distance.toStringAsFixed(0)}m, time: ${timeDiff}s',
+            requestType: 'gps_high_speed_ignored',
+            error: 'speed: ${speedKmh.toStringAsFixed(1)}km/h, dist: ${distance.toStringAsFixed(0)}m, time: ${timeDiff.toStringAsFixed(1)}s',
             lat: newPosition.latitude,
             lon: newPosition.longitude,
           );
+          return false;
         }
       }
     }
 
     _lastValidationPosition = newPosition;
     _lastValidationTime = DateTime.now();
+    return true;
+  }
+
+  /// GPS 보간: 두 위치 사이에 중간 점들을 생성
+  /// [prev]: 이전 유효 위치
+  /// [curr]: 현재 위치
+  /// 반환값: 보간된 Position 리스트 (이전 위치 제외, 현재 위치 포함)
+  List<Position> _generateInterpolatedPositions(Position prev, Position curr) {
+    final List<Position> positions = [];
+
+    final distance = Geolocator.distanceBetween(
+      prev.latitude, prev.longitude,
+      curr.latitude, curr.longitude,
+    );
+
+    // 20m 이상 거리일 때만 보간 (스키장 체크포인트 반경이 보통 15~30m)
+    if (distance > 20) {
+      // 10m 간격으로 보간점 생성
+      final int numPoints = (distance / 10).floor();
+
+      for (int i = 1; i < numPoints; i++) {
+        final ratio = i / numPoints;
+        final interpolatedLat = prev.latitude + (curr.latitude - prev.latitude) * ratio;
+        final interpolatedLon = prev.longitude + (curr.longitude - prev.longitude) * ratio;
+
+        // 보간된 Position 생성 (timestamp, accuracy 등은 현재 위치 기준)
+        positions.add(Position(
+          latitude: interpolatedLat,
+          longitude: interpolatedLon,
+          timestamp: DateTime.now(),
+          accuracy: curr.accuracy,
+          altitude: prev.altitude + (curr.altitude - prev.altitude) * ratio,
+          altitudeAccuracy: curr.altitudeAccuracy,
+          heading: curr.heading,
+          headingAccuracy: curr.headingAccuracy,
+          speed: curr.speed,
+          speedAccuracy: curr.speedAccuracy,
+        ));
+      }
+    }
+
+    // 현재 위치는 항상 마지막에 추가
+    positions.add(curr);
+
+    return positions;
+  }
+
+  /// GPS 보간을 적용하여 영역 체크 수행
+  /// 이전 위치와 현재 위치 사이의 모든 보간점에서 영역 체크
+  List<Map<String, dynamic>> _checkPositionsWithInterpolation(
+    Position currentPosition,
+    List<Map<String, dynamic>> slopeInfo,
+    List<Map<String, dynamic>> treasureHuntInfo,
+    List<Map<String, dynamic>> resetPoint,
+    List<Map<String, dynamic>> respawnPoint,
+    int userId,
+  ) {
+    final List<Map<String, dynamic>> allDetectedAreas = [];
+    final Set<String> detectedAreaKeys = {}; // 중복 방지용
+
+    // 이전 유효 위치가 있으면 보간 수행
+    List<Position> positionsToCheck;
+    if (_previousValidPosition != null) {
+      positionsToCheck = _generateInterpolatedPositions(_previousValidPosition!, currentPosition);
+
+      // 보간점이 2개 이상이면 (중간점이 생성됨) 로그 기록
+      if (positionsToCheck.length > 1) {
+        print('📍 [GPS보간] ${positionsToCheck.length - 1}개 중간점 생성 (거리: ${Geolocator.distanceBetween(
+          _previousValidPosition!.latitude, _previousValidPosition!.longitude,
+          currentPosition.latitude, currentPosition.longitude,
+        ).toStringAsFixed(0)}m)');
+        _sendLiveLog(
+          userId: userId,
+          requestType: 'gps_interpolation',
+          lat: currentPosition.latitude,
+          lon: currentPosition.longitude,
+          error: 'points: ${positionsToCheck.length}, prevLat: ${_previousValidPosition!.latitude.toStringAsFixed(6)}',
+        );
+      }
+    } else {
+      positionsToCheck = [currentPosition];
+    }
+
+    // 모든 위치(보간점 + 현재점)에서 영역 체크
+    for (final position in positionsToCheck) {
+      final detectedAreas = checkPositionInAreas(
+        position,
+        slopeInfo,
+        treasureHuntInfo,
+        resetPoint,
+        respawnPoint,
+      );
+
+      // 중복 제거하며 추가 (감지된 위치 좌표 포함)
+      for (final area in detectedAreas) {
+        final key = '${area['type']}_${area['id']}';
+        if (!detectedAreaKeys.contains(key)) {
+          detectedAreaKeys.add(key);
+          // 감지된 위치 좌표 추가 (보간점일 수 있음)
+          area['detected_lat'] = position.latitude;
+          area['detected_lon'] = position.longitude;
+          allDetectedAreas.add(area);
+        }
+      }
+    }
+
+    // 현재 위치를 이전 위치로 저장 (다음 보간용)
+    _previousValidPosition = currentPosition;
+
+    return allDetectedAreas;
   }
 
   Future<void> liveOff(Map<String, dynamic> body, user_id) async {
@@ -1797,6 +1993,9 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
       _lastSnowballMethodCall = null;
       _lastResetMethodCall = null;
       _respawnSkipLogSent = false;
+
+      // ✅ GPS 보간용 이전 위치 초기화 (다음 liveOn 시 잘못된 보간 방지)
+      _previousValidPosition = null;
 
       // 경계 외부 카운트 초기화
       _outOfBoundaryCount = 0;
@@ -1860,6 +2059,7 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
         _sessionRideCount = 0;
         _lastSlopeName = '';
         _lastRideAt = null;
+        _previousValidPosition = null; // GPS 보간용 이전 위치 초기화
 
         _liveActivityId = await LiveActivityService.start(
           liveOnStartAt: _liveOnStartedAt!,
@@ -2422,6 +2622,8 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
         geofenceProximityRadius: 5000, // 5km 범위 내 Geofence만 모니터링
         geofenceInitialTriggerEntry: true, // 이미 영역 내에 있으면 즉시 트리거
         logLevel: bg.Config.LOG_LEVEL_OFF,
+        // 🔥 iOS 파란색 상태바 표시 안함 (Geofence 전용 모드에서는 불필요)
+        showsBackgroundLocationIndicator: false,
       ));
       print('✅ BackgroundGeolocation 초기화 완료');
 
