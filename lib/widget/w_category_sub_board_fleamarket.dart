@@ -4,6 +4,9 @@ import 'package:flutter/services.dart';
 
 
 class CategorySubBoardFleamarketWidget extends StatefulWidget {
+  final String? categoryMain;
+
+  const CategorySubBoardFleamarketWidget({Key? key, this.categoryMain}) : super(key: key);
 
   @override
   _CategorySubBoardFleamarketWidgetState createState() => _CategorySubBoardFleamarketWidgetState();
@@ -38,6 +41,23 @@ class _CategorySubBoardFleamarketWidgetState extends State<CategorySubBoardFleam
               ),
             ),
           ),
+          if (widget.categoryMain != null) ...[
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+              decoration: BoxDecoration(
+                color: SDSColor.snowliveBlue.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(4),
+              ),
+              child: Text(
+                widget.categoryMain!,
+                style: SDSTextStyle.bold.copyWith(
+                  fontSize: 13,
+                  color: SDSColor.snowliveBlue,
+                ),
+              ),
+            ),
+            SizedBox(height: 12),
+          ],
           Text(
             '하위 카테고리를 선택해 주세요.',
             style: SDSTextStyle.bold.copyWith(fontSize: 16, color: SDSColor.gray900),

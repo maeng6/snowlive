@@ -432,6 +432,11 @@ class FleamarketDetailViewModel extends GetxController {
       if (response.success) {
         // 성공 시 상세 정보 새로고침
         await fetchFleamarketDetailFromAPI(fleamarketId: fleaId, userId: userId);
+        // 모든 리스트 새로고침 (끌올 반영)
+        _fleamarketListViewModel.onRefresh_flea_total();
+        _fleamarketListViewModel.onRefresh_flea_ski();
+        _fleamarketListViewModel.onRefresh_flea_board();
+        _fleamarketListViewModel.onRefresh_flea_my();
         _showBumpResultDialog(
           isSuccess: true,
           message: bumpResponse.message ?? '끌어올리기 완료',
@@ -504,10 +509,10 @@ class FleamarketDetailViewModel extends GetxController {
                 _buildInfoRow('총 남은 횟수', '${remainingTotal ?? 0}회'),
               ] else ...[
                 if (bumpCount != null)
-                  _buildInfoRow('현재 끌어올리기 횟수', '${bumpCount}회'),
+                  _buildInfoRow('일일 끌올 횟수', '${bumpCount}회'),
                 if (dailyBumpCount != null) ...[
                   SizedBox(height: 8),
-                  _buildInfoRow('오늘 사용한 횟수', '${dailyBumpCount}회'),
+                  _buildInfoRow('오늘 사용 횟수', '${dailyBumpCount}회'),
                 ],
               ],
               SizedBox(height: 24),

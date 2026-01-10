@@ -41,15 +41,18 @@ class _FleamarketAlertSettingsViewState extends State<FleamarketAlertSettingsVie
         surfaceTintColor: SDSColor.snowliveWhite,
         elevation: 0,
         leading: GestureDetector(
-          onTap: () => Get.back(),
           child: Image.asset(
-            'assets/imgs/icons/icon_back.png',
-            width: 24,
-            height: 24,
+            'assets/imgs/icons/icon_snowLive_back.png',
+            scale: 4,
+            width: 26,
+            height: 26,
           ),
+          onTap: () {
+            Get.back();
+          },
         ),
         title: Text(
-          '새 매물 알림 설정',
+          '키워드 알림 설정',
           style: SDSTextStyle.bold.copyWith(
             color: SDSColor.gray900,
             fontSize: 16,
@@ -451,9 +454,9 @@ class _FleamarketAlertSettingsViewState extends State<FleamarketAlertSettingsVie
       backgroundColor: Colors.transparent,
       builder: (context) {
         if (categoryMain == '스키') {
-          return CategorySubSkiFleamarketWidget();
+          return CategorySubSkiFleamarketWidget(categoryMain: categoryMain);
         } else {
-          return CategorySubBoardFleamarketWidget();
+          return CategorySubBoardFleamarketWidget(categoryMain: categoryMain);
         }
       },
     );
