@@ -59,5 +59,7 @@ struct LiveOnWidgetExtensionLiveActivity: Widget {
                     .onAppear { logger.info("🟢 [DynamicIsland] minimal appeared") }
             }
         }
+        // 🔥 Apple Watch 잠금화면에 전체 내용 표시 (iOS 16.2+, watchOS 9.1+)
+        .supplementalActivityFamilies([.small, .medium])
     }
 }
