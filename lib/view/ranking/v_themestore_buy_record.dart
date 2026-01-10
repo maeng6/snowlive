@@ -299,23 +299,26 @@ class _ThemestoreBuyRecordViewState extends State<ThemestoreBuyRecordView> {
 
           if (_themeStoreViewModel.buyRecords.isEmpty) {
             return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Image.asset(
-                    'assets/imgs/icons/icon_nodata.png',
-                    scale: 4,
-                    width: 64,
-                  ),
-                  const SizedBox(height: 6),
-                  Text(
-                    '구매 예약한 내역이 없어요',
-                    style: SDSTextStyle.regular.copyWith(
-                      fontSize: 16,
-                      color: Colors.white.withOpacity(0.6),
+              child: Padding(
+                padding: EdgeInsets.only(bottom: 80),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Image.asset(
+                      'assets/imgs/icons/icon_nodata.png',
+                      scale: 4,
+                      width: 64,
                     ),
-                  ),
-                ],
+                    const SizedBox(height: 6),
+                    Text(
+                      '구매 예약한 내역이 없어요',
+                      style: SDSTextStyle.regular.copyWith(
+                        fontSize: 15,
+                        color: Colors.black.withOpacity(0.6),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             );
           }
