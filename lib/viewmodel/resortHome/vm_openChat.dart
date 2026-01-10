@@ -131,7 +131,7 @@ class ChatViewModel extends GetxController {
                 ),
               ),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 28),
           ],
         ),
       ),
