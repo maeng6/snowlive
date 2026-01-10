@@ -233,7 +233,7 @@ class _ThemestoreInputInfoViewState extends State<ThemestoreInputInfoView> {
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
             buttonPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 0),
             content: SizedBox(
-              height: 60,
+              height: 146,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
@@ -247,7 +247,7 @@ class _ThemestoreInputInfoViewState extends State<ThemestoreInputInfoView> {
                   ),
                   const SizedBox(height: 6),
                   Text(
-                    '구매가 성공적으로 완료되었습니다.',
+                    '구매가 성공적으로 완료되었습니다. 구매 예약 완료된 상품은 입력해주신 정보로 연락을 드릴 예정입니다. 24시간 이내에 최종 구매 확정까지 진행해주셔야 되며, 완료되지 않은 상품은 자동 구매 취소 처리가 됩니다.',
                     textAlign: TextAlign.center,
                     style: SDSTextStyle.regular.copyWith(
                       color: SDSColor.gray500,
@@ -261,7 +261,7 @@ class _ThemestoreInputInfoViewState extends State<ThemestoreInputInfoView> {
               Padding(
                 padding: const EdgeInsets.only(top: 24),
                 child: SizedBox(
-                  width: 240,
+                  width: double.infinity,
                   height: 48,
                   child: ElevatedButton(
                     onPressed: () {

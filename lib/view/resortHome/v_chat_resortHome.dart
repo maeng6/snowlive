@@ -83,13 +83,13 @@ class _ChatScreenState extends State<ChatScreen> {
                               padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                               decoration: BoxDecoration(
                                 color: SDSColor.gray100,
-                                borderRadius: BorderRadius.circular(12),
+                                borderRadius: BorderRadius.circular(24),
                               ),
                               child: Text(
                                 chatDoc['text'],
                                 style: SDSTextStyle.regular.copyWith(
                                   fontSize: 12,
-                                  color: SDSColor.gray500,
+                                  color: SDSColor.gray600,
                                 ),
                                 textAlign: TextAlign.center,
                               ),
@@ -99,94 +99,92 @@ class _ChatScreenState extends State<ChatScreen> {
                       }
 
                       // 일반 채팅 메시지
-                      return Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 4),
-                        child: ListTile(
-                          title: Row(
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              Container(
-                                constraints: BoxConstraints(
-                                  maxWidth: _size.width * 0.6,
-                                ),
-                                child: Bubble(
-                                  margin: BubbleEdges.only(top: 8),
-                                  color: SDSColor.blue50,
-                                  shadowColor: Colors.transparent,
-                                  padding: BubbleEdges.symmetric(horizontal: 10, vertical: 8),
-                                  child: Text(chatDoc['text'],
-                                      style: SDSTextStyle.regular.copyWith(
-                                          fontSize: 15,
-                                          color: SDSColor.gray700)),
-                                ),
+                      return ListTile(
+                        contentPadding: const EdgeInsets.only(left: 16, right: 12),
+                        title: Row(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Container(
+                              constraints: BoxConstraints(
+                                maxWidth: _size.width * 0.70,
                               ),
-                              Padding(
-                                padding: const EdgeInsets.only(bottom: 1, left: 8),
-                                child: Text(
-                                  timeString,
-                                  style: SDSTextStyle.regular.copyWith(fontSize: 12, color: SDSColor.gray400),
-                                  softWrap: true,
-                                ),
+                              child: Bubble(
+                                margin: BubbleEdges.only(top: 2),
+                                color: SDSColor.blue50,
+                                shadowColor: Colors.transparent,
+                                padding: BubbleEdges.symmetric(horizontal: 10, vertical: 8),
+                                child: Text(chatDoc['text'],
+                                    style: SDSTextStyle.regular.copyWith(
+                                        fontSize: 14,
+                                        color: SDSColor.gray700)),
                               ),
-                              Spacer(),
-                              GestureDetector(
-                                onTap: () {
-                                  textFocus.unfocus();
-                                  showModalBottomSheet(
-                                    enableDrag: false,
-                                    isScrollControlled: true,
-                                    backgroundColor: Colors.transparent,
-                                    context: context,
-                                    builder: (context) {
-                                      return SafeArea(
-                                        child: Padding(
-                                          padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 20),
-                                          child: Container(
-                                            margin: EdgeInsets.only(left: 16, right: 16, top: 16),
-                                            padding: EdgeInsets.all(16),
-                                            decoration: BoxDecoration(
-                                              color: Colors.white,
-                                              borderRadius: BorderRadius.circular(16),
-                                            ),
-                                            child: Wrap(
-                                              children: [
-                                                Column(
-                                                  children: [
-                                                    GestureDetector(
-                                                      child: ListTile(
-                                                        contentPadding: EdgeInsets.zero,
-                                                        title: Center(
-                                                          child: Text(
-                                                            '신고하기',
-                                                            style: SDSTextStyle.bold.copyWith(
-                                                                fontSize: 15, color: SDSColor.gray900),
-                                                          ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(bottom: 1, left: 6),
+                              child: Text(
+                                timeString,
+                                style: SDSTextStyle.regular.copyWith(fontSize: 11, color: SDSColor.gray400),
+                                softWrap: true,
+                              ),
+                            ),
+                            Spacer(),
+                            GestureDetector(
+                              onTap: () {
+                                textFocus.unfocus();
+                                showModalBottomSheet(
+                                  enableDrag: false,
+                                  isScrollControlled: true,
+                                  backgroundColor: Colors.transparent,
+                                  context: context,
+                                  builder: (context) {
+                                    return SafeArea(
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 20),
+                                        child: Container(
+                                          margin: EdgeInsets.only(left: 16, right: 16, top: 16),
+                                          padding: EdgeInsets.all(16),
+                                          decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            borderRadius: BorderRadius.circular(16),
+                                          ),
+                                          child: Wrap(
+                                            children: [
+                                              Column(
+                                                children: [
+                                                  GestureDetector(
+                                                    child: ListTile(
+                                                      contentPadding: EdgeInsets.zero,
+                                                      title: Center(
+                                                        child: Text(
+                                                          '신고하기',
+                                                          style: SDSTextStyle.bold.copyWith(
+                                                              fontSize: 15, color: SDSColor.gray900),
                                                         ),
-                                                        onTap: () async {
-                                                          Navigator.pop(context);
-                                                          await _chatViewModel.reportMessage(chatDoc['chatId']);
-                                                          FocusScope.of(context).unfocus();
-                                                          textFocus.unfocus();
-                                                        },
                                                       ),
+                                                      onTap: () async {
+                                                        Navigator.pop(context);
+                                                        await _chatViewModel.reportMessage(chatDoc['chatId']);
+                                                        FocusScope.of(context).unfocus();
+                                                        textFocus.unfocus();
+                                                      },
                                                     ),
-                                                  ],
-                                                ),
-                                              ],
-                                            ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ],
                                           ),
                                         ),
-                                      );
-                                    },
-                                  );},
-                                child: Icon(
-                                  Icons.more_vert,
-                                  color: SDSColor.gray200,
-                                  size: 20,
-                                ),
+                                      ),
+                                    );
+                                  },
+                                );},
+                              child: Icon(
+                                Icons.more_vert,
+                                color: SDSColor.gray200,
+                                size: 20,
                               ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
                       );
                     },

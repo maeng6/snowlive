@@ -260,7 +260,7 @@ class _ThemestoreHomeViewState extends State<ThemestoreHomeView> {
 
               // 상품 그리드
               Padding(
-                padding: const EdgeInsets.only(left: 16, right: 16, top: 40, bottom: 80),
+                padding: const EdgeInsets.only(left: 16, right: 16, top: 40, bottom: 0),
                 child: GridView.builder(
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
@@ -570,14 +570,25 @@ class _ThemestoreHomeViewState extends State<ThemestoreHomeView> {
                                     child: Container(
                                       decoration: BoxDecoration(
                                         color: Colors.black.withOpacity(0.55),
-                                        borderRadius: BorderRadius.circular(10),
+                                        borderRadius: BorderRadius.circular(6),
                                       ),
-                                      child: Center(
-                                        child: Text(
-                                          '품절',
-                                          style: SDSTextStyle.bold.copyWith(
-                                            fontSize: 14,
-                                            color: SDSColor.snowliveWhite,
+                                      child: Align(
+                                        alignment: Alignment.topLeft,
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(10),
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.circular(4),
+                                              color: Colors.white,
+                                            ),
+                                            padding: EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+                                            child: Text(
+                                              '품절',
+                                              style: SDSTextStyle.bold.copyWith(
+                                                fontSize: 13,
+                                                color: SDSColor.snowliveBlack,
+                                              ),
+                                            ),
                                           ),
                                         ),
                                       ),
@@ -639,10 +650,65 @@ class _ThemestoreHomeViewState extends State<ThemestoreHomeView> {
                   },
                 ),
               ),
+
+              // 안내사항
+              Container(
+                margin: const EdgeInsets.only(top: 10, left: 16, right: 16, bottom: 120),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      '안내사항',
+                      style: SDSTextStyle.bold.copyWith(
+                        fontSize: 14,
+                        color: SDSColor.snowliveBlack,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    _buildNoticeItem('라이딩 시 꼭 라이브온 상태에서 라이딩을 완료해주셔야 구매 예약 버튼이 활성화됩니다.'),
+                    const SizedBox(height: 6),
+                    _buildNoticeItem('구매 예약 완료된 상품은 입력해주신 정보로 연락을 드릴 예정입니다.'),
+                    const SizedBox(height: 6),
+                    _buildNoticeItem('24시간 이내에 최종 결제까지 완료해주셔야 되며, 완료되지 않은 상품은 자동 구매 취소 처리가 됩니다.'),
+                    const SizedBox(height: 6),
+                    _buildNoticeItem('상품은 브랜드 재고 상황에 따라 조기 품절될 수 있는 점 양해 부탁 드립니다.'),
+                  ],
+                ),
+              ),
             ],
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildNoticeItem(String text) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(top: 8),
+          child: Container(
+            width: 2,
+            height: 2,
+            decoration: BoxDecoration(
+              color: SDSColor.gray500,
+              shape: BoxShape.circle,
+            ),
+          ),
+        ),
+        const SizedBox(width: 4),
+        Expanded(
+          child: Text(
+            text,
+            style: SDSTextStyle.regular.copyWith(
+              fontSize: 13,
+              color: SDSColor.gray600,
+              height: 1.4,
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
