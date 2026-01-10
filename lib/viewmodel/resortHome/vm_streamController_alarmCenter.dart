@@ -22,6 +22,12 @@ class StreamController_AlarmCenter extends GetxController {
         .collection('alarmCenter')
         .orderBy('timeStamp', descending: true)
         .snapshots();
+  }
 
-}
+  @override
+  void onClose() {
+    // 🛡️ 메모리 누수 방지: 스트림 정리
+    alarmStream.value = null;
+    super.onClose();
+  }
 }

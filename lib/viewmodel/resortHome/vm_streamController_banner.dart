@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
 import 'package:get/get.dart';
@@ -8,8 +9,10 @@ class StreamController_Banner extends GetxController {
   UserViewModel _userViewModel = Get.find<UserViewModel>();
   //TODO: Dependency Injection**************************************************
 
-
-  final Rxn<Stream<QuerySnapshot<Map<String, dynamic>>>> bannerStream_resortHome = Rxn<Stream<QuerySnapshot<Map<String, dynamic>>>>();
+  // 🛡️ 메모리 누수 방지: StreamSubscription 패턴 사용
+  final RxList<QueryDocumentSnapshot<Map<String, dynamic>>> bannerDocs_resortHome =
+      <QueryDocumentSnapshot<Map<String, dynamic>>>[].obs;
+  StreamSubscription<QuerySnapshot<Map<String, dynamic>>>? _bannerSub_resortHome;
 
   @override
   void onInit() async {
@@ -18,20 +21,25 @@ class StreamController_Banner extends GetxController {
   }
 
   Future<void> setupStreams() async {
+    // 기존 구독 취소
+    _bannerSub_resortHome?.cancel();
 
-    bannerStream_resortHome.value = FirebaseFirestore.instance
+    _bannerSub_resortHome = FirebaseFirestore.instance
         .collection('discover_banner_url')
         .doc('${_userViewModel.user.instant_resort}')
         .collection('1')
         .where('visable', isEqualTo: true)
-        .snapshots();
-
+        .snapshots()
+        .listen((snapshot) {
+          bannerDocs_resortHome.value = snapshot.docs;
+        });
   }
 
   @override
   void onClose() {
-    // 🛡️ 메모리 누수 방지: 스트림 정리
-    bannerStream_resortHome.value = null;
+    // 🛡️ 메모리 누수 방지: 구독 취소
+    _bannerSub_resortHome?.cancel();
+    _bannerSub_resortHome = null;
     super.onClose();
   }
 }
