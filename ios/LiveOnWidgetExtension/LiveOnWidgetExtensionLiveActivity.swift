@@ -8,17 +8,16 @@ private let logger = Logger(subsystem: "com.snowlive.LiveOnWidgetExtension", cat
 struct LiveOnWidgetExtensionLiveActivity: Widget {
     var body: some WidgetConfiguration {
         ActivityConfiguration(for: LiveOnActivityAttributes.self) { context in
-            // 🔒 Lock Screen / Banner
+            // 🔒 Lock Screen / Banner / Apple Watch (공용)
             LiveOnLockScreenView(context: context)
-            .onAppear {
-                logger.info("🔵 [LockScreen] view appeared")
-                logger.info("🧩 [LockScreen] attributes: \(String(describing: context.attributes))")
-                logger.info("🧩 [LockScreen] state: today=\(context.state.todayRideCount), session=\(context.state.sessionRideCount), last=\(context.state.lastSlopeName)")
-            }
-            .onDisappear {
-                logger.info("⚫️ [LockScreen] view disappeared")
-            }
-
+                .onAppear {
+                    logger.info("🔵 [LockScreen] view appeared")
+                    logger.info("🧩 [LockScreen] attributes: \(String(describing: context.attributes))")
+                    logger.info("🧩 [LockScreen] state: today=\(context.state.todayRideCount), session=\(context.state.sessionRideCount), last=\(context.state.lastSlopeName)")
+                }
+                .onDisappear {
+                    logger.info("⚫️ [LockScreen] view disappeared")
+                }
         } dynamicIsland: { context in
             DynamicIsland {
                 DynamicIslandExpandedRegion(.center) {
@@ -37,8 +36,6 @@ struct LiveOnWidgetExtensionLiveActivity: Widget {
                     }
                     .onAppear {
                         logger.info("🟣 [DynamicIsland] expanded")
-                        logger.info("🧩 [DynamicIsland] attributes: \(String(describing: context.attributes))")
-                        logger.info("🧩 [DynamicIsland] state: today=\(context.state.todayRideCount), session=\(context.state.sessionRideCount), last=\(context.state.lastSlopeName)")
                     }
                     .onDisappear {
                         logger.info("⚫️ [DynamicIsland] collapsed")
@@ -46,7 +43,6 @@ struct LiveOnWidgetExtensionLiveActivity: Widget {
                 }
             } compactLeading: {
                 Label("\(context.state.sessionRideCount)", systemImage: "figure.skiing.downhill")
-                    .onAppear { logger.info("🟢 [DynamicIsland] compactLeading appeared") }
             } compactTrailing: {
                 if let lastRideAt = context.state.lastRideAt {
                     Text(lastRideAt, style: .relative)
@@ -56,10 +52,9 @@ struct LiveOnWidgetExtensionLiveActivity: Widget {
                 }
             } minimal: {
                 Text("🏂")
-                    .onAppear { logger.info("🟢 [DynamicIsland] minimal appeared") }
             }
         }
-        // 🔥 Apple Watch 잠금화면에 전체 내용 표시 (iOS 16.2+, watchOS 9.1+)
+        // Apple Watch 지원 활성화
         .supplementalActivityFamilies([.small, .medium])
     }
 }
