@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:bubble/bubble.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class ChatScreen extends StatefulWidget {
   @override
@@ -76,13 +77,9 @@ class _ChatScreenState extends State<ChatScreen> {
           Padding(
             padding: const EdgeInsets.only(bottom: 1, left: 6),
             child: isSending
-                ? SizedBox(
-              width: 12,
-              height: 12,
-              child: CircularProgressIndicator(
-                strokeWidth: 1.5,
-                color: SDSColor.gray400,
-              ),
+                ? LoadingAnimationWidget.waveDots(
+              color: SDSColor.gray400,
+              size: 16,
             )
                 : isFailed
                 ? GestureDetector(
