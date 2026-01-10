@@ -44,6 +44,86 @@ class _ChatScreenState extends State<ChatScreen> {
     }
   }
 
+  /// Pending 메시지 타일 빌드 (로딩/실패 상태 표시)
+  Widget _buildPendingMessageTile(PendingMessage pendingMsg, Size size) {
+    final isSending = pendingMsg.status == MessageStatus.sending;
+    final isFailed = pendingMsg.status == MessageStatus.failed;
+
+    return ListTile(
+      contentPadding: const EdgeInsets.only(left: 16, right: 12),
+      title: Row(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          Container(
+            constraints: BoxConstraints(
+              maxWidth: size.width * 0.70,
+            ),
+            child: Bubble(
+              margin: BubbleEdges.only(top: 2),
+              // 실패 시 연한 빨간색, 전송 중엔 연한 파란색
+              color: isFailed ? SDSColor.red.withOpacity(0.1) : SDSColor.blue50,
+              shadowColor: Colors.transparent,
+              padding: BubbleEdges.symmetric(horizontal: 10, vertical: 8),
+              child: Text(
+                pendingMsg.text,
+                style: SDSTextStyle.regular.copyWith(
+                  fontSize: 14,
+                  color: isFailed ? SDSColor.gray500 : SDSColor.gray700,
+                ),
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 1, left: 6),
+            child: isSending
+                ? SizedBox(
+              width: 12,
+              height: 12,
+              child: CircularProgressIndicator(
+                strokeWidth: 1.5,
+                color: SDSColor.gray400,
+              ),
+            )
+                : isFailed
+                ? GestureDetector(
+              onTap: () => _chatViewModel.retryMessage(pendingMsg.chatId),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    Icons.error_outline,
+                    color: SDSColor.red,
+                    size: 14,
+                  ),
+                  SizedBox(width: 4),
+                  Text(
+                    '재시도',
+                    style: SDSTextStyle.regular.copyWith(
+                      fontSize: 11,
+                      color: SDSColor.red,
+                    ),
+                  ),
+                ],
+              ),
+            )
+                : SizedBox.shrink(),
+          ),
+          Spacer(),
+          // 실패 시 삭제 버튼
+          if (isFailed)
+            GestureDetector(
+              onTap: () => _chatViewModel.removePendingMessage(pendingMsg.chatId),
+              child: Icon(
+                Icons.close,
+                color: SDSColor.gray400,
+                size: 18,
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     Size _size = MediaQuery.of(context).size;
@@ -65,9 +145,21 @@ class _ChatScreenState extends State<ChatScreen> {
                     controller: _scrollController,
                     shrinkWrap: true,
                     reverse: true,
-                    itemCount: _chatViewModel.chatDocs.length,
+                    // pending 메시지 + Firebase 메시지 합산
+                    itemCount: _chatViewModel.pendingMessages.length + _chatViewModel.chatDocs.length,
                     itemBuilder: (context, index) {
-                      final chatDoc = _chatViewModel.chatDocs[index];
+                      final pendingCount = _chatViewModel.pendingMessages.length;
+
+                      // Pending 메시지 표시 (맨 위 = 최신)
+                      if (index < pendingCount) {
+                        final pendingList = _chatViewModel.pendingMessages.values.toList().reversed.toList();
+                        final pendingMsg = pendingList[index];
+                        return _buildPendingMessageTile(pendingMsg, _size);
+                      }
+
+                      // Firebase 메시지 표시
+                      final chatDocIndex = index - pendingCount;
+                      final chatDoc = _chatViewModel.chatDocs[chatDocIndex];
                       final data = chatDoc.data() as Map<String, dynamic>;
                       final timestamp = data['createdAt'] as Timestamp;
                       final dateTime = timestamp.toDate().toString();

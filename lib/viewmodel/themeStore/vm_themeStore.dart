@@ -19,8 +19,11 @@ class ThemeStoreViewModel extends GetxController {
   final UserViewModel _userViewModel = Get.find<UserViewModel>();
 
   /// 테마스토어 메인 데이터 조회
-  Future<void> fetchThemeStoreMain() async {
-    isLoading(true);
+  /// [showLoading] - true면 풀스크린 로딩 표시, false면 표시 안함 (pull-to-refresh용)
+  Future<void> fetchThemeStoreMain({bool showLoading = true}) async {
+    if (showLoading) {
+      isLoading(true);
+    }
     try {
       // user_id가 null이면 early return
       if (_userViewModel.user.user_id == null) {
