@@ -494,81 +494,49 @@ class _SnowballMarketBrandOnlyHomeViewState extends State<SnowballMarketBrandOnl
                             bottom: -10,
                             left: 0,
                             right: 0,
-                            child: StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
-                              stream: _snowballShopViewModel.infoStream_snowballShop_notice_gold.value,
-                              builder: (context, snapshot) {
-                                if (snapshot.connectionState == ConnectionState.waiting) {
-                                  return Center(
-                                    child: LoadingAnimationWidget.waveDots(
-                                        color: SDSColor.blue500,
-                                        size: 30
-                                    ),
-                                  );
-                                }
-                                if (snapshot.hasError) {
-                                  return Center(
-                                    child: Text(
-                                      '황금 눈송이 소식이 아직 없네요..',
-                                      style: SDSTextStyle.regular.copyWith(color: Colors.white, fontSize: 13),
-                                    ),
-                                  );
-                                }
+                            child: Obx(() {
+                              final data = _snowballShopViewModel.infoData_snowballShop_notice_gold.value;
+                              if (data == null || data.isEmpty) {
+                                return Center(
+                                  child: Text(
+                                    '황금 눈송이 소식이 아직 없네요..',
+                                    style: SDSTextStyle.regular.copyWith(color: Colors.white, fontSize: 13),
+                                  ),
+                                );
+                              }
 
-                                if (snapshot.hasData) {
-                                  final data = snapshot.data!.data(); // 문서의 데이터 접근
-                                  if (data == null || data.isEmpty) {
-                                    return Center(
-                                      child: Text(
-                                        '황금 눈송이 소식이 아직 없네요..',
-                                        style: SDSTextStyle.regular.copyWith(color: Colors.white, fontSize: 13),
+                              final ment = data['ment'] ?? '';
+                              final displayText = ment.isEmpty
+                                  ? '황금 눈송이 소식이 아직 없네요..'
+                                  : '$ment';
+
+                              return Center(
+                                child: Column(
+                                  children: [
+                                    Padding(
+                                      padding: EdgeInsets.only(left: 50),
+                                      child: Image.asset(
+                                          'assets/imgs/imgs/snowballShop/icon_snowballshop_bubble.png',
+                                          width: 17
                                       ),
-                                    );
-                                  }
-
-                                  // slope_name 필드 가져오기
-                                  final ment = data['ment'] ?? '';
-
-                                  // 필드 값이 비었을 때와 아닐 때 처리
-                                  final displayText = ment.isEmpty
-                                      ? '황금 눈송이 소식이 아직 없네요..'
-                                      : '$ment';
-
-                                  return Center(
-                                    child: Column(
-                                      children: [
-                                        Padding(
-                                          padding: EdgeInsets.only(left: 50),
-                                          child: Image.asset(
-                                              'assets/imgs/imgs/snowballShop/icon_snowballshop_bubble.png',
-                                              width: 17
-                                          ),
-                                        ),
-                                        IntrinsicWidth(
-                                          child: Container(
-                                            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 13),
-                                            decoration: BoxDecoration(
-                                              color: SDSColor.snowliveWhite,
-                                              borderRadius: BorderRadius.circular(8),
-                                            ),
-                                            child: Text(
-                                              displayText,
-                                              style: SDSTextStyle.bold.copyWith(color: SDSColor.snowliveBlack, fontSize: 13),
-                                            ),
-                                          ),
-                                        ),
-                                      ],
                                     ),
-                                  );
-                                } else {
-                                  return Center(
-                                    child: Text(
-                                      '황금 눈송이 소식이 아직 없네요..',
-                                      style: SDSTextStyle.regular.copyWith(color: SDSColor.snowliveBlack, fontSize: 13),
+                                    IntrinsicWidth(
+                                      child: Container(
+                                        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 13),
+                                        decoration: BoxDecoration(
+                                          color: SDSColor.snowliveWhite,
+                                          borderRadius: BorderRadius.circular(8),
+                                        ),
+                                        child: Text(
+                                          displayText,
+                                          style: SDSTextStyle.bold.copyWith(color: SDSColor.snowliveBlack, fontSize: 13),
+                                        ),
+                                      ),
                                     ),
-                                  );
-                                }
-                              },
-                            ),
+                                  ],
+                                ),
+                              );
+                            }),
                           ),
                         ],
                       ),

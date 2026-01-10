@@ -1,6 +1,7 @@
 import 'package:com.snowlive/api/ApiResponse.dart';
 import 'package:com.snowlive/api/api_fleamarket.dart';
 import 'package:com.snowlive/model/m_comment_flea.dart';
+import 'package:com.snowlive/model/m_fleamarket_bump.dart';
 import 'package:com.snowlive/model/m_fleamarketDetail.dart';
 import 'package:com.snowlive/util/util_1.dart';
 import 'package:com.snowlive/viewmodel/fleamarket/vm_fleamarketList.dart';
@@ -406,6 +407,158 @@ class FleamarketDetailViewModel extends GetxController {
 
   void changeFleamarketCommentsInputText(value) {
     _fleamarketCommentsInputText.value = value;
+  }
+
+  /// 게시글 끌어올리기
+  Future<FleamarketBumpResponse?> bumpFleamarket({required int fleaId}) async {
+    final userId = _userViewModel.user.user_id;
+    if (userId == null) {
+      Get.snackbar('알림', '로그인이 필요합니다.');
+      return null;
+    }
+
+    try {
+      CustomFullScreenDialog.showDialog();
+      final response = await FleamarketAPI().bumpFleamarket(
+        userId: userId,
+        fleaId: fleaId,
+      );
+      CustomFullScreenDialog.cancelDialog();
+
+      final bumpResponse = FleamarketBumpResponse.fromJson(
+        response.success ? response.data! : response.error!,
+      );
+
+      if (response.success) {
+        // 성공 시 상세 정보 새로고침
+        await fetchFleamarketDetailFromAPI(fleamarketId: fleaId, userId: userId);
+        _showBumpResultDialog(
+          isSuccess: true,
+          message: bumpResponse.message ?? '끌어올리기 완료',
+          remainingToday: bumpResponse.remainingToday,
+          remainingTotal: bumpResponse.remainingTotal,
+        );
+      } else {
+        // 실패 시 에러 메시지 표시
+        _showBumpResultDialog(
+          isSuccess: false,
+          message: bumpResponse.error ?? '끌어올리기에 실패했습니다.',
+          bumpCount: bumpResponse.bumpCount,
+          dailyBumpCount: bumpResponse.dailyBumpCount,
+        );
+      }
+
+      return bumpResponse;
+    } catch (e) {
+      CustomFullScreenDialog.cancelDialog();
+      print('Error bumping fleamarket: $e');
+      Get.snackbar('오류', '끌어올리기 중 오류가 발생했습니다.');
+      return null;
+    }
+  }
+
+  void _showBumpResultDialog({
+    required bool isSuccess,
+    required String message,
+    int? remainingToday,
+    int? remainingTotal,
+    int? bumpCount,
+    int? dailyBumpCount,
+  }) {
+    Get.dialog(
+      Dialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                isSuccess ? Icons.check_circle : Icons.info_outline,
+                color: isSuccess ? Colors.green : Colors.orange,
+                size: 48,
+              ),
+              SizedBox(height: 16),
+              Text(
+                isSuccess ? '끌어올리기 완료' : '알림',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              SizedBox(height: 8),
+              Text(
+                message,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 14,
+                  color: Colors.grey[600],
+                ),
+              ),
+              SizedBox(height: 16),
+              if (isSuccess) ...[
+                _buildInfoRow('오늘 남은 횟수', '${remainingToday ?? 0}회'),
+                SizedBox(height: 8),
+                _buildInfoRow('총 남은 횟수', '${remainingTotal ?? 0}회'),
+              ] else ...[
+                if (bumpCount != null)
+                  _buildInfoRow('현재 끌어올리기 횟수', '${bumpCount}회'),
+                if (dailyBumpCount != null) ...[
+                  SizedBox(height: 8),
+                  _buildInfoRow('오늘 사용한 횟수', '${dailyBumpCount}회'),
+                ],
+              ],
+              SizedBox(height: 24),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () => Get.back(),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: isSuccess ? Colors.green : Colors.grey[800],
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    padding: EdgeInsets.symmetric(vertical: 12),
+                  ),
+                  child: Text(
+                    '확인',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+      barrierDismissible: true,
+    );
+  }
+
+  Widget _buildInfoRow(String label, String value) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          label,
+          style: TextStyle(
+            fontSize: 14,
+            color: Colors.grey[600],
+          ),
+        ),
+        Text(
+          value,
+          style: TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ],
+    );
   }
 }
 

@@ -51,6 +51,22 @@ class _FleaMarketMainViewState extends State<FleaMarketMainView>
               ),
             ),
           ),
+          actions: [
+            GestureDetector(
+              onTap: () {
+                HapticFeedback.lightImpact();
+                Get.toNamed(AppRoutes.fleamarketAlertSettings);
+              },
+              child: Padding(
+                padding: const EdgeInsets.only(right: 16),
+                child: Icon(
+                  Icons.notifications_none_rounded,
+                  size: 24,
+                  color: SDSColor.gray900,
+                ),
+              ),
+            ),
+          ],
           backgroundColor: SDSColor.snowliveWhite,
           surfaceTintColor: SDSColor.snowliveWhite,
           elevation: 0.0,

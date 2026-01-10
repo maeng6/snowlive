@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:com.snowlive/api/api_snowball.dart';
 import 'package:com.snowlive/model/m_snowball.dart';
@@ -74,13 +75,19 @@ class SnowballShopViewModel extends GetxController {
   bool? lastIsForMission;
 
   // ------------------------
-  // Firestore Streams
+  // Firestore Streams - 🛡️ StreamSubscription 패턴으로 메모리 누수 방지
   // ------------------------
-  Rxn<Stream<DocumentSnapshot<Map<String, dynamic>>>> infoStream_snowballShop = Rxn();
-  Rxn<Stream<DocumentSnapshot<Map<String, dynamic>>>> infoStream_snowballShop_entrance = Rxn();
-  Rxn<Stream<DocumentSnapshot<Map<String, dynamic>>>> infoStream_snowballShop_entrance_ranking = Rxn();
-  Rxn<Stream<DocumentSnapshot<Map<String, dynamic>>>> infoStream_snowballShop_notice_gold = Rxn();
-  Rxn<Stream<DocumentSnapshot<Map<String, dynamic>>>> infoStream_themestore_entrance_resortHome = Rxn();
+  Rxn<Map<String, dynamic>> infoData_snowballShop = Rxn();
+  Rxn<Map<String, dynamic>> infoData_snowballShop_entrance = Rxn();
+  Rxn<Map<String, dynamic>> infoData_snowballShop_entrance_ranking = Rxn();
+  Rxn<Map<String, dynamic>> infoData_snowballShop_notice_gold = Rxn();
+  Rxn<Map<String, dynamic>> infoData_themestore_entrance_resortHome = Rxn();
+
+  StreamSubscription<DocumentSnapshot<Map<String, dynamic>>>? _sub_snowballShop;
+  StreamSubscription<DocumentSnapshot<Map<String, dynamic>>>? _sub_snowballShop_entrance;
+  StreamSubscription<DocumentSnapshot<Map<String, dynamic>>>? _sub_snowballShop_entrance_ranking;
+  StreamSubscription<DocumentSnapshot<Map<String, dynamic>>>? _sub_snowballShop_notice_gold;
+  StreamSubscription<DocumentSnapshot<Map<String, dynamic>>>? _sub_themestore_entrance_resortHome;
 
   @override
   Future<void> onInit() async {
@@ -95,47 +102,60 @@ class SnowballShopViewModel extends GetxController {
   // ============================================================
 
   Future<void> getInfo_snowballMarket() async {
-    infoStream_snowballShop.value = FirebaseFirestore.instance
+    _sub_snowballShop?.cancel();
+    _sub_snowballShop = FirebaseFirestore.instance
         .collection('snowball_market')
         .doc('snowball_market')
-        .snapshots();
-
-    final doc = await FirebaseFirestore.instance
-        .collection('snowball_market')
-        .doc('snowball_market')
-        .get();
-
-    final eventDateInt = (doc.data()?['event_date'] as num?)?.toInt();
-    if (eventDateInt != null) eventDate.value = eventDateInt;
+        .snapshots()
+        .listen((snapshot) {
+          infoData_snowballShop.value = snapshot.data();
+          final eventDateInt = (snapshot.data()?['event_date'] as num?)?.toInt();
+          if (eventDateInt != null) eventDate.value = eventDateInt;
+        });
   }
 
   Future<void> getInfo_snowballMarket_entrance() async {
-    infoStream_snowballShop_entrance.value = FirebaseFirestore.instance
+    _sub_snowballShop_entrance?.cancel();
+    _sub_snowballShop_entrance = FirebaseFirestore.instance
         .collection('snowball_market')
         .doc('snowball_market')
-        .snapshots();
+        .snapshots()
+        .listen((snapshot) {
+          infoData_snowballShop_entrance.value = snapshot.data();
+        });
   }
 
   Future<void> getInfo_snowballMarket_entrance_ranking() async {
-    infoStream_snowballShop_entrance_ranking.value = FirebaseFirestore.instance
+    _sub_snowballShop_entrance_ranking?.cancel();
+    _sub_snowballShop_entrance_ranking = FirebaseFirestore.instance
         .collection('snowball_market')
         .doc('snowball_market')
-        .snapshots();
+        .snapshots()
+        .listen((snapshot) {
+          infoData_snowballShop_entrance_ranking.value = snapshot.data();
+        });
   }
 
   Future<void> getInfo_themestore_resortHome_entrance() async {
-    infoStream_themestore_entrance_resortHome.value = FirebaseFirestore.instance
+    _sub_themestore_entrance_resortHome?.cancel();
+    _sub_themestore_entrance_resortHome = FirebaseFirestore.instance
         .collection('themestore')
         .doc('themestore')
-        .snapshots();
+        .snapshots()
+        .listen((snapshot) {
+          infoData_themestore_entrance_resortHome.value = snapshot.data();
+        });
   }
 
-
   Future<void> getInfo_snowballMarket_notice_gold() async {
-    infoStream_snowballShop_notice_gold.value = FirebaseFirestore.instance
+    _sub_snowballShop_notice_gold?.cancel();
+    _sub_snowballShop_notice_gold = FirebaseFirestore.instance
         .collection('snowball_market')
         .doc('gold_snowball_notice')
-        .snapshots();
+        .snapshots()
+        .listen((snapshot) {
+          infoData_snowballShop_notice_gold.value = snapshot.data();
+        });
   }
 
   // ============================================================
@@ -573,6 +593,22 @@ class SnowballShopViewModel extends GetxController {
     } finally {
       isLoading(false);
     }
+  }
+
+  // 🛡️ 메모리 누수 방지: 모든 구독 취소
+  @override
+  void onClose() {
+    _sub_snowballShop?.cancel();
+    _sub_snowballShop_entrance?.cancel();
+    _sub_snowballShop_entrance_ranking?.cancel();
+    _sub_snowballShop_notice_gold?.cancel();
+    _sub_themestore_entrance_resortHome?.cancel();
+    _sub_snowballShop = null;
+    _sub_snowballShop_entrance = null;
+    _sub_snowballShop_entrance_ranking = null;
+    _sub_snowballShop_notice_gold = null;
+    _sub_themestore_entrance_resortHome = null;
+    super.onClose();
   }
 }
 

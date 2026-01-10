@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:com.snowlive/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/routes/routes.dart';
 import 'package:com.snowlive/viewmodel/forestPark/vm_forestPark.dart';
@@ -34,25 +33,11 @@ class _Entrance_snowballMarket_brandonly_HomeState extends State<Entrance_snowba
     Size _size = MediaQuery.of(context).size;
 
     return Obx(() {
-      final stream = _snowballShopViewModel.infoStream_snowballShop_entrance.value;
+      final data = _snowballShopViewModel.infoData_snowballShop_entrance.value;
 
-      if (stream == null) {
+      if (data == null) {
         return SizedBox.shrink();
       }
-
-      return StreamBuilder(
-        stream: stream,
-        builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
-          // 데이터 로드 중이라면
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return SizedBox.shrink();
-          }
-          // 오류가 발생했다면
-          if (snapshot.hasError) {
-            return Text('Error: ${snapshot.error}');
-          }
-
-          var data = snapshot.data?.data() as Map<String, dynamic>?;
           // open 필드가 true인지 확인
           bool isOpen = data?['open'] ?? false;
 
@@ -149,12 +134,9 @@ class _Entrance_snowballMarket_brandonly_HomeState extends State<Entrance_snowba
                 ),
               ),
             );
-          } else {
-            return SizedBox.shrink(); // banner 필드가 없거나 비어있으면 빈 공간 반환
-          }
-
-        },
-      );
+      } else {
+        return SizedBox.shrink();
+      }
     });
   }
 }

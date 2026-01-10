@@ -17,6 +17,7 @@ import 'package:com.snowlive/view/crew/v_dailyRecord.dart';
 import 'package:com.snowlive/view/crew/v_managerPermission.dart';
 import 'package:com.snowlive/view/crew/v_searchCrew.dart';
 import 'package:com.snowlive/view/crew/v_updateCrewImageAndColor.dart';
+import 'package:com.snowlive/view/fleamarket/v_fleaMarketAlertSettings.dart';
 import 'package:com.snowlive/view/fleamarket/v_fleaMarketCommentDetail.dart';
 import 'package:com.snowlive/view/fleamarket/v_fleaMarketList_search.dart';
 import 'package:com.snowlive/view/fleamarket/v_fleamarketUpdate.dart';
@@ -92,6 +93,7 @@ class AppRoutes {
   static const String fleamarketCommentDetail = '/fleamarketCommentDetail';
   static const String fleamarketUpload = '/fleamarketUpload';
   static const String fleamarketUpdate = '/fleamarketUpdate';
+  static const String fleamarketAlertSettings = '/fleamarketAlertSettings';
   static const String friendDetailUpdate = '/friendDetailUpdate';
   static const String searchFriend = '/searchFriend';
   static const String invitaionFriend = '/invitaionFriend';
@@ -228,6 +230,10 @@ class AppRoutes {
     GetPage(
       name: fleamarketUpdate,
       page: () => FleamarketUpdateView(),
+    ),
+    GetPage(
+      name: fleamarketAlertSettings,
+      page: () => FleamarketAlertSettingsView(),
     ),
     GetPage(
       name: friendDetailUpdate,

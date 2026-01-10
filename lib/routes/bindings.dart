@@ -14,6 +14,7 @@ import 'package:com.snowlive/viewmodel/crew/vm_crewRecordRoom.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_dailyRecord.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_rankingCrewHistory.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_searchCrew.dart';
+import 'package:com.snowlive/viewmodel/fleamarket/vm_fleamarketAlert.dart';
 import 'package:com.snowlive/viewmodel/fleamarket/vm_fleamarketCommentDetail.dart';
 import 'package:com.snowlive/viewmodel/fleamarket/vm_fleamarketDetail.dart';
 import 'package:com.snowlive/viewmodel/fleamarket/vm_fleamarketList.dart';
@@ -86,6 +87,7 @@ class MainHomeBinding extends Bindings {
     Get.put(RankingCrewHistoryViewModel());
     Get.put(SlopeRushViewModel());
     Get.put(ThemeStoreViewModel());
+    Get.put(FleamarketAlertViewModel());
 
   }
 }

@@ -8,6 +8,9 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:http/http.dart' as http;
 import 'package:com.snowlive/viewmodel/vm_user.dart';
 import 'package:com.snowlive/viewmodel/resortHome/vm_resortHome.dart';
+import 'package:com.snowlive/viewmodel/fleamarket/vm_fleamarketDetail.dart';
+import 'package:com.snowlive/routes/routes.dart';
+import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 
 class NotificationController extends GetxController {
   FirebaseMessaging messaging = FirebaseMessaging.instance;
@@ -185,6 +188,59 @@ class NotificationController extends GetxController {
     // 라이브 중단 알림인 경우 복구 시도
     if (type == 'live_interrupted') {
       _handleLiveInterruptedNotification();
+    }
+    // 중고거래 키워드/카테고리 알림인 경우 상세페이지로 이동
+    else if (type == 'fleamarket_alert') {
+      _handleFleamarketAlertNotification(data);
+    }
+  }
+
+  /// 중고거래 알림 처리 - 상세페이지로 이동
+  Future<void> _handleFleamarketAlertNotification(Map<String, dynamic> data) async {
+    try {
+      final fleaIdStr = data['flea_id'];
+      if (fleaIdStr == null) {
+        print('⚠️ flea_id가 없음');
+        return;
+      }
+
+      final fleaId = int.tryParse(fleaIdStr.toString());
+      if (fleaId == null) {
+        print('⚠️ flea_id 파싱 실패: $fleaIdStr');
+        return;
+      }
+
+      // ViewModel 확인
+      if (!Get.isRegistered<UserViewModel>() || !Get.isRegistered<FleamarketDetailViewModel>()) {
+        print('⚠️ ViewModel이 아직 초기화되지 않음');
+        return;
+      }
+
+      final userViewModel = Get.find<UserViewModel>();
+      final fleamarketDetailViewModel = Get.find<FleamarketDetailViewModel>();
+
+      final userId = userViewModel.user.user_id;
+      if (userId == null) {
+        print('⚠️ 사용자 ID가 없음');
+        return;
+      }
+
+      // 상세페이지 데이터 로드 후 이동
+      CustomFullScreenDialog.showDialog();
+      try {
+        await fleamarketDetailViewModel.fetchFleamarketDetailFromAPI(
+          fleamarketId: fleaId,
+          userId: userId,
+        );
+        CustomFullScreenDialog.cancelDialog();
+        Get.toNamed(AppRoutes.fleamarketDetail);
+      } catch (e) {
+        CustomFullScreenDialog.cancelDialog();
+        print('❌ 중고거래 상세페이지 로드 실패: $e');
+        Get.snackbar('알림', '게시글을 불러올 수 없습니다.');
+      }
+    } catch (e) {
+      print('❌ 중고거래 알림 처리 실패: $e');
     }
   }
 
