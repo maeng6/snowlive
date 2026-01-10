@@ -19,8 +19,18 @@ class _ChatScreenState extends State<ChatScreen> {
   FocusNode textFocus = FocusNode();
 
   @override
+  void initState() {
+    super.initState();
+    // 🛡️ 메모리 최적화: 화면 진입 시 스트림 시작
+    _chatViewModel.startChatStream();
+  }
+
+  @override
   void dispose() {
-    textFocus.dispose(); // FocusNode 해제하지롱
+    // 🛡️ 메모리 최적화: 화면 이탈 시 스트림 중지
+    _chatViewModel.stopChatStream();
+    _scrollController.dispose();
+    textFocus.dispose();
     super.dispose();
   }
 

@@ -20,7 +20,8 @@ class ChatViewModel extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    setupChatStream();
+    // 🛡️ 메모리 최적화: onInit에서 스트림 시작하지 않음
+    // 채팅 화면 진입 시 startChatStream() 호출 필요
     chatController.addListener(() {
       if (chatController.text.trim().isNotEmpty) {
         isButtonEnabled.value = true;
@@ -28,6 +29,19 @@ class ChatViewModel extends GetxController {
         isButtonEnabled.value = false;
       }
     });
+  }
+
+  /// 채팅 화면 진입 시 호출 - 스트림 구독 시작
+  void startChatStream() {
+    if (_chatStreamSubscription != null) return; // 이미 구독 중이면 스킵
+    setupChatStream();
+  }
+
+  /// 채팅 화면 이탈 시 호출 - 스트림 구독 중지 및 메모리 해제
+  void stopChatStream() {
+    _chatStreamSubscription?.cancel();
+    _chatStreamSubscription = null;
+    chatDocs.clear(); // 🛡️ 메모리 해제
   }
 
   void handleTextChange() {
@@ -133,7 +147,7 @@ class ChatViewModel extends GetxController {
     Stream<QuerySnapshot> chatStream = FirebaseFirestore.instance
         .collection('chat')
         .orderBy('createdAt', descending: true)
-        .limit(500)
+        .limit(100)  // 🛡️ 메모리 최적화: 500 → 100
         .snapshots();
 
     // 🛡️ 구독 저장하여 나중에 해제 가능하도록

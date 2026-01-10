@@ -27,4 +27,11 @@ class StreamController_Banner extends GetxController {
         .snapshots();
 
   }
+
+  @override
+  void onClose() {
+    // 🛡️ 메모리 누수 방지: 스트림 정리
+    bannerStream_resortHome.value = null;
+    super.onClose();
+  }
 }
