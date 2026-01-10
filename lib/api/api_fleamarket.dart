@@ -386,4 +386,159 @@ class FleamarketAPI {
     }
   }
 
+  // ============ 끌어올리기 API ============
+
+  /// 게시글 끌어올리기
+  Future<ApiResponse> bumpFleamarket({
+    required int userId,
+    required int fleaId,
+  }) async {
+    final response = await http.post(
+      Uri.parse('$baseUrl/bump/'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({
+        'user_id': userId,
+        'flea_id': fleaId,
+      }),
+    );
+
+    final data = json.decode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
+
+    if (response.statusCode == 200) {
+      return ApiResponse.success(data);
+    } else {
+      return ApiResponse.error(data);
+    }
+  }
+
+  // ============ 키워드 알림 API ============
+
+  /// 키워드 알림 목록 조회
+  Future<ApiResponse> fetchKeywordAlerts({required int userId}) async {
+    final uri = Uri.parse('$baseUrl/keyword-alerts/').replace(
+      queryParameters: {'user_id': userId.toString()},
+    );
+    final response = await http.get(uri);
+
+    if (response.statusCode == 200) {
+      final data = json.decode(utf8.decode(response.bodyBytes)) as List<dynamic>;
+      return ApiResponse.success(data);
+    } else {
+      final data = json.decode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
+      return ApiResponse.error(data);
+    }
+  }
+
+  /// 키워드 알림 등록
+  Future<ApiResponse> createKeywordAlert({
+    required int userId,
+    required String keyword,
+  }) async {
+    final response = await http.post(
+      Uri.parse('$baseUrl/keyword-alerts/create/'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({
+        'user_id': userId,
+        'keyword': keyword,
+      }),
+    );
+
+    if (response.statusCode == 201 || response.statusCode == 200) {
+      final data = json.decode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
+      return ApiResponse.success(data);
+    } else {
+      final data = json.decode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
+      return ApiResponse.error(data);
+    }
+  }
+
+  /// 키워드 알림 삭제
+  Future<ApiResponse> deleteKeywordAlert({
+    required int userId,
+    required int keywordAlertId,
+  }) async {
+    final response = await http.post(
+      Uri.parse('$baseUrl/keyword-alerts/delete/'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({
+        'user_id': userId,
+        'keyword_alert_id': keywordAlertId,
+      }),
+    );
+
+    if (response.statusCode == 200 || response.statusCode == 204) {
+      final data = json.decode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
+      return ApiResponse.success(data);
+    } else {
+      final data = json.decode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
+      return ApiResponse.error(data);
+    }
+  }
+
+  // ============ 카테고리 알림 API ============
+
+  /// 카테고리 알림 목록 조회
+  Future<ApiResponse> fetchCategoryAlerts({required int userId}) async {
+    final uri = Uri.parse('$baseUrl/category-alerts/').replace(
+      queryParameters: {'user_id': userId.toString()},
+    );
+    final response = await http.get(uri);
+
+    if (response.statusCode == 200) {
+      final data = json.decode(utf8.decode(response.bodyBytes)) as List<dynamic>;
+      return ApiResponse.success(data);
+    } else {
+      final data = json.decode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
+      return ApiResponse.error(data);
+    }
+  }
+
+  /// 카테고리 알림 등록
+  Future<ApiResponse> createCategoryAlert({
+    required int userId,
+    required String categoryMain,
+    required String categorySub,
+  }) async {
+    final response = await http.post(
+      Uri.parse('$baseUrl/category-alerts/create/'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({
+        'user_id': userId,
+        'category_main': categoryMain,
+        'category_sub': categorySub,
+      }),
+    );
+
+    if (response.statusCode == 201 || response.statusCode == 200) {
+      final data = json.decode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
+      return ApiResponse.success(data);
+    } else {
+      final data = json.decode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
+      return ApiResponse.error(data);
+    }
+  }
+
+  /// 카테고리 알림 삭제
+  Future<ApiResponse> deleteCategoryAlert({
+    required int userId,
+    required int categoryAlertId,
+  }) async {
+    final response = await http.post(
+      Uri.parse('$baseUrl/category-alerts/delete/'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({
+        'user_id': userId,
+        'category_alert_id': categoryAlertId,
+      }),
+    );
+
+    if (response.statusCode == 200 || response.statusCode == 204) {
+      final data = json.decode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
+      return ApiResponse.success(data);
+    } else {
+      final data = json.decode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
+      return ApiResponse.error(data);
+    }
+  }
+
 }

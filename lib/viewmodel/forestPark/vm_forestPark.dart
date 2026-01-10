@@ -29,8 +29,9 @@ class ForestParkViewModel extends GetxController {
   RxBool isForestParkOpen_toEveryone = false.obs;
 
   RxInt eventDate = 0.obs;
-  StreamSubscription? _entranceStreamSub; // 🔁 스트림 중복 구독 방지용
-  Rxn<Stream<DocumentSnapshot<Map<String, dynamic>>>> infoStream_forestPark_entrance = Rxn<Stream<DocumentSnapshot<Map<String, dynamic>>>>();
+  StreamSubscription<DocumentSnapshot<Map<String, dynamic>>>? _entranceStreamSub;
+  // 🔥 StreamSubscription 패턴용 데이터 (필요시 사용)
+  Rxn<Map<String, dynamic>> infoData_forestPark_entrance = Rxn<Map<String, dynamic>>();
 
   // 현재 선택된 아이템 정보
   var selectedItem = LeafItem().obs;

@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:com.snowlive/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/routes/routes.dart';
 import 'package:com.snowlive/viewmodel/ranking/vm_snowball.dart';
@@ -48,37 +47,17 @@ class _Entrance_snowballShop_rankingState extends State<Entrance_snowballShop_ra
     Size _size = MediaQuery.of(context).size;
 
     return Obx(() {
-      final stream = _snowballShopViewModel.infoStream_snowballShop_entrance_ranking.value;
+      final data = _snowballShopViewModel.infoData_snowballShop_entrance_ranking.value;
 
-      if (stream == null) {
+      if (data == null) {
         return SizedBox.shrink();
       }
 
-      return StreamBuilder(
-        stream: stream,
-        builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
-        // 데이터 로드 중이라면
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return SizedBox.shrink();
-        }
-        // 오류가 발생했다면
-        if (snapshot.hasError) {
-          return Text('Error: ${snapshot.error}');
-        }
-
-        var data = snapshot.data?.data() as Map<String, dynamic>?;
-        // open 필드가 true인지 확인
-        bool isOpen = data?['open'] ?? false;
-
-        // to_everyone 필드가 true인지 확인
-        bool isToEveryone = data?['to_everyone'] ?? false;
-
-        // brand_only 필드가 true인지 확인
-        bool isBrandOnly = data?['brand_only'] ?? false;
-
-        // crew_list 필드가 리스트인지 확인하고, 유저의 크루가 리스트에 포함되어 있는지 확인
-        List<dynamic> crewList = data?['crew_list'] ?? [];
-        bool isUserInCrewList = _userViewModel.user.crew_id != null && crewList.contains(_userViewModel.user.crew_id);
+      bool isOpen = data['open'] ?? false;
+      bool isToEveryone = data['to_everyone'] ?? false;
+      bool isBrandOnly = data['brand_only'] ?? false;
+      List<dynamic> crewList = data['crew_list'] ?? [];
+      bool isUserInCrewList = _userViewModel.user.crew_id != null && crewList.contains(_userViewModel.user.crew_id);
 
 
 
@@ -306,12 +285,9 @@ class _Entrance_snowballShop_rankingState extends State<Entrance_snowballShop_ra
               ],
             ),
           );
-        } else {
-          return SizedBox.shrink(); // banner 필드가 없거나 비어있으면 빈 공간 반환
-        }
-
-        },
-      );
+      } else {
+        return SizedBox.shrink();
+      }
     });
   }
 }
