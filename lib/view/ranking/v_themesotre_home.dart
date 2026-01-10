@@ -276,6 +276,7 @@ class _ThemestoreHomeViewState extends State<ThemestoreHomeView> {
                     final isOutOfStock = (item.remainingCount ?? 0) == 0;
 
                     return GestureDetector(
+                      behavior: HitTestBehavior.opaque,
                       onTap: () async {
 
                         showModalBottomSheet(
