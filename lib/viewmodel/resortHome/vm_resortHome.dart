@@ -853,14 +853,13 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
                 // 🛡️ 영역 데이터 보호: 비어있으면 재로드 (메모리 압박 대응)
                 await _reloadAreaDataIfNeeded(user_id, position.latitude, position.longitude);
 
-                // 📍 GPS 보간 적용: 이전 위치와 현재 위치 사이의 중간점들도 체크
-                List<Map<String, dynamic>> passPointInfos = _checkPositionsWithInterpolation(
+                // 현재 위치에서 영역 체크 (보간 제거)
+                List<Map<String, dynamic>> passPointInfos = checkPositionInAreas(
                   position,
                   _slope_info,
                   _snowball_info,
                   _reset_point,
                   _respawn_point,
-                  user_id,
                 );
 
                 // 🔍 디버깅: 영역 데이터가 비어있으면 경고
@@ -1346,14 +1345,13 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
           // 🛡️ 영역 데이터 보호: 비어있으면 재로드 (메모리 압박 대응)
           await _reloadAreaDataIfNeeded(user_id, position.latitude, position.longitude);
 
-          // 📍 GPS 보간 적용: 이전 위치와 현재 위치 사이의 중간점들도 체크
-          List<Map<String, dynamic>> passPointInfos = _checkPositionsWithInterpolation(
+          // 현재 위치에서 영역 체크 (보간 제거)
+          List<Map<String, dynamic>> passPointInfos = checkPositionInAreas(
             position,
             _slope_info,
             _snowball_info,
             _reset_point,
             _respawn_point,
-            user_id,
           );
 
           // 병렬 처리를 위한 Future 리스트
@@ -1845,115 +1843,6 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
     _lastValidationPosition = newPosition;
     _lastValidationTime = DateTime.now();
     return true;
-  }
-
-  /// GPS 보간: 두 위치 사이에 중간 점들을 생성
-  /// [prev]: 이전 유효 위치
-  /// [curr]: 현재 위치
-  /// 반환값: 보간된 Position 리스트 (이전 위치 제외, 현재 위치 포함)
-  List<Position> _generateInterpolatedPositions(Position prev, Position curr) {
-    final List<Position> positions = [];
-
-    final distance = Geolocator.distanceBetween(
-      prev.latitude, prev.longitude,
-      curr.latitude, curr.longitude,
-    );
-
-    // 20m 이상 거리일 때만 보간 (스키장 체크포인트 반경이 보통 15~30m)
-    if (distance > 20) {
-      // 10m 간격으로 보간점 생성
-      final int numPoints = (distance / 10).floor();
-
-      for (int i = 1; i < numPoints; i++) {
-        final ratio = i / numPoints;
-        final interpolatedLat = prev.latitude + (curr.latitude - prev.latitude) * ratio;
-        final interpolatedLon = prev.longitude + (curr.longitude - prev.longitude) * ratio;
-
-        // 보간된 Position 생성 (timestamp, accuracy 등은 현재 위치 기준)
-        positions.add(Position(
-          latitude: interpolatedLat,
-          longitude: interpolatedLon,
-          timestamp: DateTime.now(),
-          accuracy: curr.accuracy,
-          altitude: prev.altitude + (curr.altitude - prev.altitude) * ratio,
-          altitudeAccuracy: curr.altitudeAccuracy,
-          heading: curr.heading,
-          headingAccuracy: curr.headingAccuracy,
-          speed: curr.speed,
-          speedAccuracy: curr.speedAccuracy,
-        ));
-      }
-    }
-
-    // 현재 위치는 항상 마지막에 추가
-    positions.add(curr);
-
-    return positions;
-  }
-
-  /// GPS 보간을 적용하여 영역 체크 수행
-  /// 이전 위치와 현재 위치 사이의 모든 보간점에서 영역 체크
-  List<Map<String, dynamic>> _checkPositionsWithInterpolation(
-    Position currentPosition,
-    List<Map<String, dynamic>> slopeInfo,
-    List<Map<String, dynamic>> treasureHuntInfo,
-    List<Map<String, dynamic>> resetPoint,
-    List<Map<String, dynamic>> respawnPoint,
-    int userId,
-  ) {
-    final List<Map<String, dynamic>> allDetectedAreas = [];
-    final Set<String> detectedAreaKeys = {}; // 중복 방지용
-
-    // 이전 유효 위치가 있으면 보간 수행
-    List<Position> positionsToCheck;
-    if (_previousValidPosition != null) {
-      positionsToCheck = _generateInterpolatedPositions(_previousValidPosition!, currentPosition);
-
-      // 보간점이 2개 이상이면 (중간점이 생성됨) 로그 기록
-      if (positionsToCheck.length > 1) {
-        print('📍 [GPS보간] ${positionsToCheck.length - 1}개 중간점 생성 (거리: ${Geolocator.distanceBetween(
-          _previousValidPosition!.latitude, _previousValidPosition!.longitude,
-          currentPosition.latitude, currentPosition.longitude,
-        ).toStringAsFixed(0)}m)');
-        _sendLiveLog(
-          userId: userId,
-          requestType: 'gps_interpolation',
-          lat: currentPosition.latitude,
-          lon: currentPosition.longitude,
-          error: 'points: ${positionsToCheck.length}, prevLat: ${_previousValidPosition!.latitude.toStringAsFixed(6)}',
-        );
-      }
-    } else {
-      positionsToCheck = [currentPosition];
-    }
-
-    // 모든 위치(보간점 + 현재점)에서 영역 체크
-    for (final position in positionsToCheck) {
-      final detectedAreas = checkPositionInAreas(
-        position,
-        slopeInfo,
-        treasureHuntInfo,
-        resetPoint,
-        respawnPoint,
-      );
-
-      // 중복 제거하며 추가 (감지된 위치 좌표 포함)
-      for (final area in detectedAreas) {
-        final key = '${area['type']}_${area['id']}';
-        if (!detectedAreaKeys.contains(key)) {
-          detectedAreaKeys.add(key);
-          // 감지된 위치 좌표 추가 (보간점일 수 있음)
-          area['detected_lat'] = position.latitude;
-          area['detected_lon'] = position.longitude;
-          allDetectedAreas.add(area);
-        }
-      }
-    }
-
-    // 현재 위치를 이전 위치로 저장 (다음 보간용)
-    _previousValidPosition = currentPosition;
-
-    return allDetectedAreas;
   }
 
   Future<void> liveOff(Map<String, dynamic> body, user_id) async {
