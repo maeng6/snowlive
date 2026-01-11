@@ -1,5 +1,6 @@
 import 'package:com.snowlive/api/ApiResponse.dart';
 import 'package:com.snowlive/api/api_fleamarket.dart';
+import 'package:com.snowlive/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/model/m_comment_flea.dart';
 import 'package:com.snowlive/model/m_fleamarket_bump.dart';
 import 'package:com.snowlive/model/m_fleamarketDetail.dart';
@@ -471,74 +472,64 @@ class FleamarketDetailViewModel extends GetxController {
     int? dailyBumpCount,
   }) {
     Get.dialog(
-      Dialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(
-                isSuccess ? Icons.check_circle : Icons.info_outline,
-                color: isSuccess ? Colors.green : Colors.orange,
-                size: 48,
-              ),
-              SizedBox(height: 16),
-              Text(
-                isSuccess ? '끌어올리기 완료' : '알림',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
+      AlertDialog(
+        backgroundColor: SDSColor.snowliveWhite,
+        contentPadding: EdgeInsets.only(bottom: 0, left: 28, right: 28, top: 36),
+        elevation: 0,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Text(
+              isSuccess ? '끌어올리기 완료' : '알림',
+              style: SDSTextStyle.bold.copyWith(fontSize: 16, color: SDSColor.gray900),
+              textAlign: TextAlign.center,
+            ),
+            SizedBox(height: 6),
+            Text(
+              message,
+              textAlign: TextAlign.center,
+              style: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray500),
+            ),
+            SizedBox(height: 20),
+            if (isSuccess) ...[
+              _buildInfoRow('오늘 남은 횟수', '${remainingToday ?? 0}회'),
               SizedBox(height: 8),
-              Text(
-                message,
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 14,
-                  color: Colors.grey[600],
-                ),
-              ),
-              SizedBox(height: 16),
-              if (isSuccess) ...[
-                _buildInfoRow('오늘 남은 횟수', '${remainingToday ?? 0}회'),
+              _buildInfoRow('총 남은 횟수', '${remainingTotal ?? 0}회'),
+            ] else ...[
+              if (bumpCount != null)
+                _buildInfoRow('일일 끌올 횟수', '${bumpCount}회'),
+              if (dailyBumpCount != null) ...[
                 SizedBox(height: 8),
-                _buildInfoRow('총 남은 횟수', '${remainingTotal ?? 0}회'),
-              ] else ...[
-                if (bumpCount != null)
-                  _buildInfoRow('일일 끌올 횟수', '${bumpCount}회'),
-                if (dailyBumpCount != null) ...[
-                  SizedBox(height: 8),
-                  _buildInfoRow('오늘 사용 횟수', '${dailyBumpCount}회'),
-                ],
+                _buildInfoRow('오늘 사용 횟수', '${dailyBumpCount}회'),
               ],
-              SizedBox(height: 24),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: () => Get.back(),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: isSuccess ? Colors.green : Colors.grey[800],
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
+            ],
+          ],
+        ),
+        actions: [
+          Padding(
+            padding: EdgeInsets.only(top: 20, left: 6, right: 6, bottom: 0),
+            child: Row(
+              children: [
+                Expanded(
+                  child: TextButton(
+                    onPressed: () => Get.back(),
+                    style: TextButton.styleFrom(
+                      backgroundColor: Colors.transparent,
+                      splashFactory: NoSplash.splashFactory,
                     ),
-                    padding: EdgeInsets.symmetric(vertical: 12),
-                  ),
-                  child: Text(
-                    '확인',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w600,
+                    child: Text(
+                      '확인',
+                      style: SDSTextStyle.bold.copyWith(fontSize: 15, color: SDSColor.snowliveBlue),
                     ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-        ),
+        ],
       ),
       barrierDismissible: true,
     );
@@ -550,17 +541,11 @@ class FleamarketDetailViewModel extends GetxController {
       children: [
         Text(
           label,
-          style: TextStyle(
-            fontSize: 14,
-            color: Colors.grey[600],
-          ),
+          style: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray500),
         ),
         Text(
           value,
-          style: TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.w600,
-          ),
+          style: SDSTextStyle.bold.copyWith(fontSize: 14, color: SDSColor.gray900),
         ),
       ],
     );

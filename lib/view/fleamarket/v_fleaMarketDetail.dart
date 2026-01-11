@@ -1307,23 +1307,12 @@ class _FleaMarketDetailViewState extends State<FleaMarketDetailView> {
                                                       ),
                                                       padding: EdgeInsets.symmetric(horizontal: 5, vertical: 10),
                                                       child: Center(
-                                                        child: Row(
-                                                          mainAxisAlignment: MainAxisAlignment.center,
-                                                          children: [
-                                                            Icon(
-                                                              Icons.arrow_upward_rounded,
-                                                              size: 16,
-                                                              color: SDSColor.snowliveBlue,
-                                                            ),
-                                                            SizedBox(width: 4),
-                                                            Text(
-                                                              '끌어올리기',
-                                                              style: SDSTextStyle.bold.copyWith(
-                                                                color: SDSColor.snowliveBlue,
-                                                                fontSize: 15,
-                                                              ),
-                                                            ),
-                                                          ],
+                                                        child: Text(
+                                                          '끌어올리기',
+                                                          style: SDSTextStyle.bold.copyWith(
+                                                            color: SDSColor.snowliveBlue,
+                                                            fontSize: 15,
+                                                          ),
                                                         ),
                                                       ),
                                                     ),
