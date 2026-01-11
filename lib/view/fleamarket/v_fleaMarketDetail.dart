@@ -1284,8 +1284,9 @@ class _FleaMarketDetailViewState extends State<FleaMarketDetailView> {
                                                   ),
                                                 ),
                                               ),
-                                              // 끌어올리기 버튼 (거래완료가 아닐 때만 표시)
-                                              if (_fleamarketDetailViewModel.fleamarketDetail.status != FleamarketStatus.soldOut.korean)
+                                              // 끌어올리기 버튼 (내 게시물이고 거래완료가 아닐 때만 표시)
+                                              if (_fleamarketDetailViewModel.fleamarketDetail.userId == _userViewModel.user.user_id &&
+                                                  _fleamarketDetailViewModel.fleamarketDetail.status != FleamarketStatus.soldOut.korean)
                                                 Padding(
                                                   padding: EdgeInsets.only(top: 10),
                                                   child: GestureDetector(
