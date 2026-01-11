@@ -25,46 +25,44 @@ class _CategorySubSkiFleamarketWidgetState extends State<CategorySubSkiFleamarke
         borderRadius: BorderRadius.only(topLeft: Radius.circular(16), topRight: Radius.circular(16)),
         color: SDSColor.snowliveWhite,
       ),
-      padding: EdgeInsets.only(bottom: 20, right: 20, left: 20, top: 12),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(bottom: 20),
-            child: Container(
-              height: 4,
-              width: 36,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                color: SDSColor.gray200,
-              ),
-            ),
-          ),
-          if (widget.categoryMain != null) ...[
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-              decoration: BoxDecoration(
-                color: SDSColor.snowliveBlue.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(4),
-              ),
-              child: Text(
-                widget.categoryMain!,
-                style: SDSTextStyle.bold.copyWith(
-                  fontSize: 13,
-                  color: SDSColor.snowliveBlue,
+      child: SafeArea(
+        top: false,
+        child: Container(
+        padding: EdgeInsets.only(bottom: 20, right: 20, left: 20, top: 12),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(bottom: 20),
+              child: Container(
+                height: 4,
+                width: 36,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: SDSColor.gray200,
                 ),
               ),
             ),
-            SizedBox(height: 12),
-          ],
-          Text(
-            '하위 카테고리를 선택해 주세요.',
-            style: SDSTextStyle.bold.copyWith(fontSize: 16, color: SDSColor.gray900),
-          ),
-          SizedBox(height: 24),
-          Expanded(
-            child: ListView.builder(
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+              if (widget.categoryMain != null) ...[
+                Text(
+                  widget.categoryMain!,
+                  style: SDSTextStyle.bold.copyWith(fontSize: 16, color: SDSColor.gray900),
+                ),
+                ],
+                Text(
+                  ' 하위 카테고리를 선택해 주세요.',
+                  style: SDSTextStyle.bold.copyWith(fontSize: 16, color: SDSColor.gray900),
+                ),
+              ],
+            ),
+            SizedBox(height: 16),
+            ListView.builder(
               shrinkWrap: true,
+              physics: NeverScrollableScrollPhysics(),
               itemCount: 5,
               itemBuilder: (context, index) {
                 return Column(
@@ -101,29 +99,30 @@ class _CategorySubSkiFleamarketWidgetState extends State<CategorySubSkiFleamarke
                 );
               },
             ),
-          ),
-          Container(
-            width: _size.width,
-            padding: EdgeInsets.only(top: 16),
-            child: ElevatedButton(
-              onPressed: () {
-                Navigator.pop(context, category_sub_ski);
-                FocusScope.of(context).unfocus();
-              },
-              child: Text(
-                '선택 완료',
-                style: SDSTextStyle.bold.copyWith(color: Colors.white, fontSize: 16),
-              ),
-              style: TextButton.styleFrom(
-                shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(6))),
-                elevation: 0,
-                splashFactory: InkRipple.splashFactory,
-                minimumSize: Size(double.infinity, 48),
-                backgroundColor: SDSColor.snowliveBlue,
+            Container(
+              width: _size.width,
+              padding: EdgeInsets.only(top: 16),
+              child: ElevatedButton(
+                onPressed: () {
+                  Navigator.pop(context, category_sub_ski);
+                  FocusScope.of(context).unfocus();
+                },
+                child: Text(
+                  '선택 완료',
+                  style: SDSTextStyle.bold.copyWith(color: Colors.white, fontSize: 16),
+                ),
+                style: TextButton.styleFrom(
+                  shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(6))),
+                  elevation: 0,
+                  splashFactory: InkRipple.splashFactory,
+                  minimumSize: Size(double.infinity, 48),
+                  backgroundColor: SDSColor.snowliveBlue,
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
+        ),
       ),
     );
   }

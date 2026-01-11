@@ -94,9 +94,10 @@ class _FleaMarketMainViewState extends State<FleaMarketMainView>
               },
               child: Padding(
                 padding: const EdgeInsets.only(right: 16),
-                child: Icon(
-                  Icons.notifications_none_rounded,
-                  size: 24,
+                child: Image.asset(
+                  'assets/imgs/icons/icon_header_setting.png',
+                  width: 26,
+                  height: 26,
                   color: SDSColor.gray900,
                 ),
               ),
@@ -340,9 +341,9 @@ class _FleaMarketMainViewState extends State<FleaMarketMainView>
         children: [
           // 말풍선 꼬리 (삼각형)
           Padding(
-            padding: const EdgeInsets.only(right: 12),
+            padding: const EdgeInsets.only(right: 14),
             child: CustomPaint(
-              size: const Size(12, 8),
+              size: const Size(10, 6),
               painter: _TooltipArrowPainter(),
             ),
           ),
@@ -381,7 +382,7 @@ class _FleaMarketMainViewState extends State<FleaMarketMainView>
                     child: Icon(
                       Icons.close,
                       size: 14,
-                      color: SDSColor.gray400,
+                      color: SDSColor.gray300,
                     ),
                   ),
                 ),

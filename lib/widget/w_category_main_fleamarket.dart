@@ -23,29 +23,33 @@ class _CategoryMainFleamarketWidgetState extends State<CategoryMainFleamarketWid
         borderRadius: BorderRadius.only(topLeft: Radius.circular(16), topRight: Radius.circular(16)),
         color: SDSColor.snowliveWhite,
       ),
-      padding: EdgeInsets.only(bottom: 20, right: 20, left: 20, top: 12),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(bottom: 20),
-            child: Container(
-              height: 4,
-              width: 36,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                color: SDSColor.gray200,
+      child: SafeArea(
+        top: false,
+        child: Container(
+        padding: EdgeInsets.only(bottom: 20, right: 20, left: 20, top: 12),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(bottom: 20),
+              child: Container(
+                height: 4,
+                width: 36,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: SDSColor.gray200,
+                ),
               ),
             ),
-          ),
-          Text(
-            '상위 카테고리를 선택해 주세요.',
-            style: SDSTextStyle.bold.copyWith(fontSize: 16, color: SDSColor.gray900),
-          ),
-          SizedBox(height: 24),
-          Expanded(
-            child: ListView.builder(
+            Text(
+              '상위 카테고리를 선택해 주세요.',
+              style: SDSTextStyle.bold.copyWith(fontSize: 16, color: SDSColor.gray900),
+            ),
+            SizedBox(height: 24),
+            ListView.builder(
               shrinkWrap: true,
+              physics: NeverScrollableScrollPhysics(),
               itemCount: 2,
               itemBuilder: (context, index) {
                 return Column(
@@ -82,29 +86,30 @@ class _CategoryMainFleamarketWidgetState extends State<CategoryMainFleamarketWid
                 );
               },
             ),
-          ),
-          Container(
-            width: _size.width,
-            padding: EdgeInsets.only(top: 16),
-            child: ElevatedButton(
-              onPressed: () {
-                Navigator.pop(context, category_main);
-                FocusScope.of(context).unfocus();
-              },
-              child: Text(
-                '선택 완료',
-                style: SDSTextStyle.bold.copyWith(color: Colors.white, fontSize: 16),
-              ),
-              style: TextButton.styleFrom(
-                shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(6))),
-                elevation: 0,
-                splashFactory: InkRipple.splashFactory,
-                minimumSize: Size(double.infinity, 48),
-                backgroundColor: SDSColor.snowliveBlue,
+            Container(
+              width: _size.width,
+              padding: EdgeInsets.only(top: 16),
+              child: ElevatedButton(
+                onPressed: () {
+                  Navigator.pop(context, category_main);
+                  FocusScope.of(context).unfocus();
+                },
+                child: Text(
+                  '선택 완료',
+                  style: SDSTextStyle.bold.copyWith(color: Colors.white, fontSize: 16),
+                ),
+                style: TextButton.styleFrom(
+                  shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(6))),
+                  elevation: 0,
+                  splashFactory: InkRipple.splashFactory,
+                  minimumSize: Size(double.infinity, 48),
+                  backgroundColor: SDSColor.snowliveBlue,
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
+        ),
       ),
     );
   }

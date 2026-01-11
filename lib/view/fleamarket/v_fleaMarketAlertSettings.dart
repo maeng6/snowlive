@@ -5,6 +5,7 @@ import 'package:com.snowlive/widget/w_category_main_fleamarket.dart';
 import 'package:com.snowlive/widget/w_category_sub_ski_fleamarket.dart';
 import 'package:com.snowlive/widget/w_category_sub_board_fleamarket.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
 class FleamarketAlertSettingsView extends StatefulWidget {
@@ -14,26 +15,20 @@ class FleamarketAlertSettingsView extends StatefulWidget {
   State<FleamarketAlertSettingsView> createState() => _FleamarketAlertSettingsViewState();
 }
 
-class _FleamarketAlertSettingsViewState extends State<FleamarketAlertSettingsView>
-    with SingleTickerProviderStateMixin {
+class _FleamarketAlertSettingsViewState extends State<FleamarketAlertSettingsView> {
   final FleamarketAlertViewModel _alertViewModel = Get.find<FleamarketAlertViewModel>();
-  late TabController _tabController;
+  String _currentTab = '키워드 알림';
 
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 2, vsync: this);
     _alertViewModel.fetchAllAlerts();
   }
 
   @override
-  void dispose() {
-    _tabController.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
+    final Size _size = MediaQuery.of(context).size;
+
     return Scaffold(
       backgroundColor: SDSColor.snowliveWhite,
       appBar: AppBar(
@@ -59,24 +54,82 @@ class _FleamarketAlertSettingsViewState extends State<FleamarketAlertSettingsVie
           ),
         ),
         centerTitle: true,
-        bottom: TabBar(
-          controller: _tabController,
-          labelColor: SDSColor.snowliveBlue,
-          unselectedLabelColor: SDSColor.gray500,
-          indicatorColor: SDSColor.snowliveBlue,
-          labelStyle: SDSTextStyle.bold.copyWith(fontSize: 14),
-          unselectedLabelStyle: SDSTextStyle.regular.copyWith(fontSize: 14),
-          tabs: const [
-            Tab(text: '키워드 알림'),
-            Tab(text: '카테고리 알림'),
-          ],
-        ),
       ),
-      body: TabBarView(
-        controller: _tabController,
+      body: Column(
         children: [
-          _buildKeywordTab(),
-          _buildCategoryTab(),
+          // 탭 메뉴
+          Stack(
+            children: [
+              Positioned(
+                bottom: 0,
+                child: Container(
+                  width: _size.width,
+                  height: 1,
+                  color: SDSColor.gray100,
+                ),
+              ),
+              Container(
+                color: Colors.transparent,
+                child: Padding(
+                  padding: EdgeInsets.only(left: 20, right: 20),
+                  child: Row(
+                    children: [
+                      _buildTabButton('키워드 알림', '키워드 알림'),
+                      _buildTabButton('카테고리 알림', '카테고리 알림'),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+          // 탭 콘텐츠
+          Expanded(
+            child: _currentTab == '키워드 알림'
+                ? _buildKeywordTab()
+                : _buildCategoryTab(),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTabButton(String title, String tabName) {
+    bool isSelected = _currentTab == tabName;
+    return Expanded(
+      child: Column(
+        children: [
+          Container(
+            height: 40,
+            child: ElevatedButton(
+              onPressed: () {
+                HapticFeedback.lightImpact();
+                setState(() {
+                  _currentTab = tabName;
+                });
+              },
+              child: Text(
+                title,
+                style: SDSTextStyle.bold.copyWith(
+                  color: isSelected ? SDSColor.gray900 : SDSColor.gray400,
+                  fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                  fontSize: 15,
+                ),
+              ),
+              style: ElevatedButton.styleFrom(
+                minimumSize: Size(40, 40),
+                backgroundColor: SDSColor.snowliveWhite,
+                surfaceTintColor: Colors.transparent,
+                overlayColor: Colors.transparent,
+                shadowColor: Colors.transparent,
+                elevation: 0,
+              ),
+            ),
+          ),
+          Container(
+            height: 3,
+            width: 72,
+            color: isSelected ? Color(0xFF111111) : Colors.transparent,
+          ),
         ],
       ),
     );
@@ -92,7 +145,7 @@ class _FleamarketAlertSettingsViewState extends State<FleamarketAlertSettingsVie
         children: [
           // 상단 안내 + 등록 개수
           Padding(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 16),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -100,15 +153,26 @@ class _FleamarketAlertSettingsViewState extends State<FleamarketAlertSettingsVie
                   '등록된 키워드',
                   style: SDSTextStyle.regular.copyWith(
                     fontSize: 14,
-                    color: SDSColor.gray600,
+                    color: SDSColor.gray500,
                   ),
                 ),
-                Text(
-                  '${keywords.length}/${FleamarketAlertViewModel.maxKeywordCount}',
-                  style: SDSTextStyle.bold.copyWith(
-                    fontSize: 14,
-                    color: SDSColor.snowliveBlue,
-                  ),
+                Row(
+                  children: [
+                    Text(
+                      '${keywords.length}',
+                      style: SDSTextStyle.bold.copyWith(
+                        fontSize: 14,
+                        color: SDSColor.snowliveBlack,
+                      ),
+                    ),
+                    Text(
+                      ' / ${FleamarketAlertViewModel.maxKeywordCount}',
+                      style: SDSTextStyle.regular.copyWith(
+                        fontSize: 14,
+                        color: SDSColor.snowliveBlack,
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
@@ -117,7 +181,16 @@ class _FleamarketAlertSettingsViewState extends State<FleamarketAlertSettingsVie
           // 키워드 목록
           Expanded(
             child: isLoading
-                ? const Center(child: CircularProgressIndicator())
+                ? Center(
+                    child: SizedBox(
+                      width: 24,
+                      height: 24,
+                      child: CircularProgressIndicator(
+                        color: SDSColor.snowliveBlue,
+                        strokeWidth: 3,
+                      ),
+                    ),
+                  )
                 : keywords.isEmpty
                     ? _buildEmptyState('등록된 키워드가 없습니다.\n관심 키워드를 등록해보세요!')
                     : ListView.separated(
@@ -150,7 +223,7 @@ class _FleamarketAlertSettingsViewState extends State<FleamarketAlertSettingsVie
                     elevation: 0,
                   ),
                   child: Text(
-                    '+ 키워드 추가',
+                    '키워드 추가',
                     style: SDSTextStyle.bold.copyWith(
                       color: Colors.white,
                       fontSize: 16,
@@ -175,7 +248,7 @@ class _FleamarketAlertSettingsViewState extends State<FleamarketAlertSettingsVie
         children: [
           // 상단 안내 + 등록 개수
           Padding(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 16),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -183,15 +256,26 @@ class _FleamarketAlertSettingsViewState extends State<FleamarketAlertSettingsVie
                   '등록된 카테고리',
                   style: SDSTextStyle.regular.copyWith(
                     fontSize: 14,
-                    color: SDSColor.gray600,
+                    color: SDSColor.gray500,
                   ),
                 ),
-                Text(
-                  '${categories.length}/${FleamarketAlertViewModel.maxCategoryCount}',
-                  style: SDSTextStyle.bold.copyWith(
-                    fontSize: 14,
-                    color: SDSColor.snowliveBlue,
-                  ),
+                Row(
+                  children: [
+                    Text(
+                      '${categories.length}',
+                      style: SDSTextStyle.bold.copyWith(
+                        fontSize: 14,
+                        color: SDSColor.snowliveBlack,
+                      ),
+                    ),
+                    Text(
+                      ' / ${FleamarketAlertViewModel.maxCategoryCount}',
+                      style: SDSTextStyle.regular.copyWith(
+                        fontSize: 14,
+                        color: SDSColor.snowliveBlack,
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
@@ -200,7 +284,16 @@ class _FleamarketAlertSettingsViewState extends State<FleamarketAlertSettingsVie
           // 카테고리 목록
           Expanded(
             child: isLoading
-                ? const Center(child: CircularProgressIndicator())
+                ? Center(
+                    child: SizedBox(
+                      width: 24,
+                      height: 24,
+                      child: CircularProgressIndicator(
+                        color: SDSColor.snowliveBlue,
+                        strokeWidth: 3,
+                      ),
+                    ),
+                  )
                 : categories.isEmpty
                     ? _buildEmptyState('등록된 카테고리가 없습니다.\n관심 카테고리를 등록해보세요!')
                     : ListView.separated(
@@ -233,7 +326,7 @@ class _FleamarketAlertSettingsViewState extends State<FleamarketAlertSettingsVie
                     elevation: 0,
                   ),
                   child: Text(
-                    '+ 카테고리 추가',
+                    '카테고리 추가',
                     style: SDSTextStyle.bold.copyWith(
                       color: Colors.white,
                       fontSize: 16,
@@ -254,10 +347,10 @@ class _FleamarketAlertSettingsViewState extends State<FleamarketAlertSettingsVie
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
-            Icons.notifications_none_rounded,
-            size: 48,
-            color: SDSColor.gray300,
+          Image.asset(
+            'assets/imgs/icons/icon_nodata.png',
+            width: 72,
+            height: 72,
           ),
           const SizedBox(height: 16),
           Text(
@@ -276,9 +369,10 @@ class _FleamarketAlertSettingsViewState extends State<FleamarketAlertSettingsVie
   /// 키워드 아이템 위젯
   Widget _buildKeywordItem(KeywordAlert keyword) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      padding: const EdgeInsets.only(left: 16, right: 10, top: 8, bottom: 8),
       decoration: BoxDecoration(
-        color: SDSColor.gray50,
+        // color: SDSColor.blue50,
+        border: Border.all(color: SDSColor.gray100, width: 1),
         borderRadius: BorderRadius.circular(8),
       ),
       child: Row(
@@ -288,16 +382,20 @@ class _FleamarketAlertSettingsViewState extends State<FleamarketAlertSettingsVie
               keyword.keyword ?? '',
               style: SDSTextStyle.regular.copyWith(
                 fontSize: 15,
-                color: SDSColor.gray900,
+                color: SDSColor.snowliveBlack,
               ),
             ),
           ),
           GestureDetector(
             onTap: () => _showDeleteKeywordDialog(keyword),
-            child: Icon(
-              Icons.close,
-              size: 20,
-              color: SDSColor.gray500,
+            child: Container(
+              width: 32,
+              height: 32,
+              child: Icon(
+                Icons.cancel,
+                size: 18,
+                color: SDSColor.gray500,
+              ),
             ),
           ),
         ],
@@ -308,9 +406,9 @@ class _FleamarketAlertSettingsViewState extends State<FleamarketAlertSettingsVie
   /// 카테고리 아이템 위젯
   Widget _buildCategoryItem(CategoryAlert category) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      padding: const EdgeInsets.only(left: 16, right: 10, top: 8, bottom: 8),
       decoration: BoxDecoration(
-        color: SDSColor.gray50,
+        border: Border.all(color: SDSColor.gray100, width: 1),
         borderRadius: BorderRadius.circular(8),
       ),
       child: Row(
@@ -335,16 +433,20 @@ class _FleamarketAlertSettingsViewState extends State<FleamarketAlertSettingsVie
               category.categorySub ?? '',
               style: SDSTextStyle.regular.copyWith(
                 fontSize: 15,
-                color: SDSColor.gray900,
+                color: SDSColor.snowliveBlack,
               ),
             ),
           ),
           GestureDetector(
             onTap: () => _showDeleteCategoryDialog(category),
-            child: Icon(
-              Icons.close,
-              size: 20,
-              color: SDSColor.gray500,
+            child: Container(
+              width: 32,
+              height: 32,
+              child: Icon(
+                Icons.cancel,
+                size: 18,
+                color: SDSColor.gray500,
+              ),
             ),
           ),
         ],
@@ -358,25 +460,32 @@ class _FleamarketAlertSettingsViewState extends State<FleamarketAlertSettingsVie
 
     Get.dialog(
       AlertDialog(
+        backgroundColor: SDSColor.snowliveWhite,
+        contentPadding: EdgeInsets.only(bottom: 0, left: 20, right: 20, top: 30),
+        elevation: 0,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: Text(
-          '키워드 알림 추가',
-          style: SDSTextStyle.bold.copyWith(fontSize: 16, color: SDSColor.gray900),
-          textAlign: TextAlign.center,
-        ),
+        buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
         content: Column(
           mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Text(
-              '알림 받고 싶은 키워드를 입력해주세요.',
-              style: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray600),
+              '키워드 알림 추가',
+              style: SDSTextStyle.bold.copyWith(fontSize: 16, color: SDSColor.gray900),
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 16),
+            SizedBox(height: 6),
+            Text(
+              '알림 받고 싶은 키워드를 입력해주세요.',
+              style: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray500),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 24),
             TextField(
               controller: textController,
               autofocus: true,
               maxLength: 20,
+              cursorColor: SDSColor.snowliveBlue,
               decoration: InputDecoration(
                 hintText: '예: 버튼, 플레이트',
                 hintStyle: SDSTextStyle.regular.copyWith(
@@ -386,10 +495,14 @@ class _FleamarketAlertSettingsViewState extends State<FleamarketAlertSettingsVie
                 filled: true,
                 fillColor: SDSColor.gray50,
                 border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: BorderRadius.circular(6),
                   borderSide: BorderSide.none,
                 ),
-                contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(6),
+                  borderSide: BorderSide(color: SDSColor.snowliveBlue, width: 1.5),
+                ),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                 counterText: '',
               ),
               style: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray900),
@@ -397,40 +510,46 @@ class _FleamarketAlertSettingsViewState extends State<FleamarketAlertSettingsVie
           ],
         ),
         actions: [
-          Row(
-            children: [
-              Expanded(
-                child: TextButton(
-                  onPressed: () => Get.back(),
-                  child: Text(
-                    '취소',
-                    style: SDSTextStyle.bold.copyWith(fontSize: 14, color: SDSColor.gray500),
+          Padding(
+            padding: EdgeInsets.only(top: 20, left: 6, right: 6, bottom: 0),
+            child: Row(
+              children: [
+                Expanded(
+                  child: TextButton(
+                    onPressed: () => Get.back(),
+                    style: TextButton.styleFrom(
+                      backgroundColor: Colors.transparent,
+                      splashFactory: NoSplash.splashFactory,
+                    ),
+                    child: Text(
+                      '취소',
+                      style: SDSTextStyle.bold.copyWith(fontSize: 15, color: SDSColor.gray500),
+                    ),
                   ),
                 ),
-              ),
-              Expanded(
-                child: ElevatedButton(
-                  onPressed: () async {
-                    final keyword = textController.text.trim();
-                    if (keyword.isEmpty) {
-                      Get.snackbar('알림', '키워드를 입력해주세요.');
-                      return;
-                    }
-                    Get.back();
-                    await _alertViewModel.createKeywordAlert(keyword: keyword);
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: SDSColor.snowliveBlue,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                    elevation: 0,
-                  ),
-                  child: Text(
-                    '등록',
-                    style: SDSTextStyle.bold.copyWith(fontSize: 14, color: Colors.white),
+                Expanded(
+                  child: TextButton(
+                    onPressed: () async {
+                      final keyword = textController.text.trim();
+                      if (keyword.isEmpty) {
+                        Get.snackbar('알림', '키워드를 입력해주세요.');
+                        return;
+                      }
+                      Get.back();
+                      await _alertViewModel.createKeywordAlert(keyword: keyword);
+                    },
+                    style: TextButton.styleFrom(
+                      backgroundColor: Colors.transparent,
+                      splashFactory: NoSplash.splashFactory,
+                    ),
+                    child: Text(
+                      '등록',
+                      style: SDSTextStyle.bold.copyWith(fontSize: 15, color: SDSColor.snowliveBlue),
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ],
       ),
@@ -442,6 +561,7 @@ class _FleamarketAlertSettingsViewState extends State<FleamarketAlertSettingsVie
     // 1. 상위 카테고리 선택
     final categoryMain = await showModalBottomSheet<String>(
       context: context,
+      isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (context) => CategoryMainFleamarketWidget(),
     );
@@ -451,6 +571,7 @@ class _FleamarketAlertSettingsViewState extends State<FleamarketAlertSettingsVie
     // 2. 하위 카테고리 선택 (상위 카테고리에 따라 다름)
     final categorySub = await showModalBottomSheet<String>(
       context: context,
+      isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (context) {
         if (categoryMain == '스키') {
@@ -474,49 +595,60 @@ class _FleamarketAlertSettingsViewState extends State<FleamarketAlertSettingsVie
   void _showDeleteKeywordDialog(KeywordAlert keyword) {
     Get.dialog(
       AlertDialog(
+        backgroundColor: SDSColor.snowliveWhite,
+        contentPadding: EdgeInsets.only(bottom: 0, left: 28, right: 28, top: 36),
+        elevation: 0,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: Text(
-          '키워드 삭제',
-          style: SDSTextStyle.bold.copyWith(fontSize: 16, color: SDSColor.gray900),
-          textAlign: TextAlign.center,
-        ),
-        content: Text(
-          '"${keyword.keyword}" 키워드를\n삭제하시겠습니까?',
-          style: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray600),
-          textAlign: TextAlign.center,
+        buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Text(
+              '"${keyword.keyword}" 키워드를\n삭제하시겠습니까?',
+              style: SDSTextStyle.bold.copyWith(fontSize: 16, color: SDSColor.gray900),
+              textAlign: TextAlign.center,
+            ),
+          ],
         ),
         actions: [
-          Row(
-            children: [
-              Expanded(
-                child: TextButton(
-                  onPressed: () => Get.back(),
-                  child: Text(
-                    '취소',
-                    style: SDSTextStyle.bold.copyWith(fontSize: 14, color: SDSColor.gray500),
+          Padding(
+            padding: EdgeInsets.only(top: 20, left: 6, right: 6, bottom: 0),
+            child: Row(
+              children: [
+                Expanded(
+                  child: TextButton(
+                    onPressed: () => Get.back(),
+                    style: TextButton.styleFrom(
+                      backgroundColor: Colors.transparent,
+                      splashFactory: NoSplash.splashFactory,
+                    ),
+                    child: Text(
+                      '취소',
+                      style: SDSTextStyle.bold.copyWith(fontSize: 15, color: SDSColor.gray500),
+                    ),
                   ),
                 ),
-              ),
-              Expanded(
-                child: ElevatedButton(
-                  onPressed: () async {
-                    Get.back();
-                    await _alertViewModel.deleteKeywordAlert(
-                      keywordAlertId: keyword.keywordAlertId!,
-                    );
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: SDSColor.red,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                    elevation: 0,
-                  ),
-                  child: Text(
-                    '삭제',
-                    style: SDSTextStyle.bold.copyWith(fontSize: 14, color: Colors.white),
+                Expanded(
+                  child: TextButton(
+                    onPressed: () async {
+                      Get.back();
+                      await _alertViewModel.deleteKeywordAlert(
+                        keywordAlertId: keyword.keywordAlertId!,
+                      );
+                    },
+                    style: TextButton.styleFrom(
+                      backgroundColor: Colors.transparent,
+                      splashFactory: NoSplash.splashFactory,
+                    ),
+                    child: Text(
+                      '삭제',
+                      style: SDSTextStyle.bold.copyWith(fontSize: 15, color: SDSColor.snowliveBlue),
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ],
       ),
@@ -527,49 +659,60 @@ class _FleamarketAlertSettingsViewState extends State<FleamarketAlertSettingsVie
   void _showDeleteCategoryDialog(CategoryAlert category) {
     Get.dialog(
       AlertDialog(
+        backgroundColor: SDSColor.snowliveWhite,
+        contentPadding: EdgeInsets.only(bottom: 0, left: 28, right: 28, top: 36),
+        elevation: 0,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: Text(
-          '카테고리 삭제',
-          style: SDSTextStyle.bold.copyWith(fontSize: 16, color: SDSColor.gray900),
-          textAlign: TextAlign.center,
-        ),
-        content: Text(
-          '"${category.categoryMain} > ${category.categorySub}"\n카테고리를 삭제하시겠습니까?',
-          style: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray600),
-          textAlign: TextAlign.center,
+        buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Text(
+              '"${category.categoryMain} > ${category.categorySub}"\n카테고리를 삭제하시겠습니까?',
+              style: SDSTextStyle.bold.copyWith(fontSize: 16, color: SDSColor.gray900),
+              textAlign: TextAlign.center,
+            ),
+          ],
         ),
         actions: [
-          Row(
-            children: [
-              Expanded(
-                child: TextButton(
-                  onPressed: () => Get.back(),
-                  child: Text(
-                    '취소',
-                    style: SDSTextStyle.bold.copyWith(fontSize: 14, color: SDSColor.gray500),
+          Padding(
+            padding: EdgeInsets.only(top: 20, left: 6, right: 6, bottom: 0),
+            child: Row(
+              children: [
+                Expanded(
+                  child: TextButton(
+                    onPressed: () => Get.back(),
+                    style: TextButton.styleFrom(
+                      backgroundColor: Colors.transparent,
+                      splashFactory: NoSplash.splashFactory,
+                    ),
+                    child: Text(
+                      '취소',
+                      style: SDSTextStyle.bold.copyWith(fontSize: 15, color: SDSColor.gray500),
+                    ),
                   ),
                 ),
-              ),
-              Expanded(
-                child: ElevatedButton(
-                  onPressed: () async {
-                    Get.back();
-                    await _alertViewModel.deleteCategoryAlert(
-                      categoryAlertId: category.categoryAlertId!,
-                    );
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: SDSColor.red,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                    elevation: 0,
-                  ),
-                  child: Text(
-                    '삭제',
-                    style: SDSTextStyle.bold.copyWith(fontSize: 14, color: Colors.white),
+                Expanded(
+                  child: TextButton(
+                    onPressed: () async {
+                      Get.back();
+                      await _alertViewModel.deleteCategoryAlert(
+                        categoryAlertId: category.categoryAlertId!,
+                      );
+                    },
+                    style: TextButton.styleFrom(
+                      backgroundColor: Colors.transparent,
+                      splashFactory: NoSplash.splashFactory,
+                    ),
+                    child: Text(
+                      '삭제',
+                      style: SDSTextStyle.bold.copyWith(fontSize: 15, color: SDSColor.snowliveBlue),
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ],
       ),
