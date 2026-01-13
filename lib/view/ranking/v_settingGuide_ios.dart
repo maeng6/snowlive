@@ -51,6 +51,7 @@ class IosSettingGuideView extends StatelessWidget {
           child: ExtendedImage.network(
             _resortHomeViewModel.rankingGuideUrl_ios,
             cache: true,
+            cacheWidth: 800,
             fit: BoxFit.cover,
             loadStateChanged: (ExtendedImageState state) {
               switch (state.extendedImageLoadState) {

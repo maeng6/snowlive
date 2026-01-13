@@ -54,41 +54,39 @@ import 'package:com.snowlive/viewmodel/ranking/vm_rankingList_recordRoom.dart';
 class MainHomeBinding extends Bindings {
   @override
   void dependencies() {
+    // 🔴 핵심 ViewModel - 즉시 로드 (홈 화면에서 바로 필요)
     Get.put(MainHomeViewModel());
-    Get.put(FleamarketCommentDetailViewModel());
-    Get.put(CommunityCommentDetailViewModel());
-    Get.put(AlarmCenterViewModel());
-    Get.put(StreamController_Banner());
-    Get.put(SnowballShopViewModel());
+    Get.put(SnowballShopViewModel());  // ResortHomeViewModel에서 의존
     Get.put(ResortHomeViewModel());
-    //Get.put(ForestParkViewModel());
-    Get.put(GenderCategoryViewModel());
-    Get.put(ChatViewModel());
-    Get.put(OpenChatAlarmViewModel());
-    Get.put(LiveOnAlarmViewModel());
-    Get.put(EventAlarmViewModel());
-    Get.put(FriendDetailUpdateViewModel());
+    Get.put(StreamController_Banner());
+    Get.put(AlarmCenterViewModel());
     Get.put(FleamarketListViewModel());
-    Get.put(FleamarketDetailViewModel());
-    Get.put(FleamarketUpdateViewModel());
-    Get.put(ImageController());
-    Get.put(FriendListViewModel());
     Get.put(RankingListViewModel());
-    Get.put(CommunityBulletinListViewModel());
-    Get.put(CommunityDetailViewModel());
-    Get.put(CrewMemberListViewModel());
-    Get.put(CrewRankingListViewModel());
-    Get.put(CrewNoticeViewModel());
-    Get.put(CrewApplyViewModel());
-    Get.put(SearchCrewViewModel());
-    Get.put(CrewDetailViewModel());
-    Get.put(SetCrewViewModel());
-    Get.put(RankingListBetaViewModel());
-    Get.put(RankingCrewHistoryViewModel());
-    Get.put(SlopeRushViewModel());
-    Get.put(ThemeStoreViewModel());
-    Get.put(FleamarketAlertViewModel());
 
+    // 🟢 서브 화면용 ViewModel - 지연 로드 (해당 화면 진입 시 생성)
+    Get.lazyPut(() => FleamarketCommentDetailViewModel(), fenix: true);
+    Get.lazyPut(() => GenderCategoryViewModel(), fenix: true);
+    Get.lazyPut(() => ChatViewModel(), fenix: true);
+    Get.lazyPut(() => OpenChatAlarmViewModel(), fenix: true);
+    Get.lazyPut(() => LiveOnAlarmViewModel(), fenix: true);
+    Get.lazyPut(() => EventAlarmViewModel(), fenix: true);
+    Get.lazyPut(() => FriendDetailUpdateViewModel(), fenix: true);
+    Get.lazyPut(() => FleamarketDetailViewModel(), fenix: true);
+    Get.lazyPut(() => FleamarketUpdateViewModel(), fenix: true);
+    Get.lazyPut(() => ImageController(), fenix: true);
+    Get.lazyPut(() => FriendListViewModel(), fenix: true);
+    Get.lazyPut(() => CrewMemberListViewModel(), fenix: true);
+    Get.lazyPut(() => CrewRankingListViewModel(), fenix: true);
+    Get.lazyPut(() => CrewNoticeViewModel(), fenix: true);
+    Get.lazyPut(() => CrewApplyViewModel(), fenix: true);
+    Get.lazyPut(() => SearchCrewViewModel(), fenix: true);
+    Get.lazyPut(() => CrewDetailViewModel(), fenix: true);
+    Get.lazyPut(() => SetCrewViewModel(), fenix: true);
+    Get.lazyPut(() => RankingListBetaViewModel(), fenix: true);
+    Get.lazyPut(() => RankingCrewHistoryViewModel(), fenix: true);
+    Get.lazyPut(() => SlopeRushViewModel(), fenix: true);
+    Get.lazyPut(() => ThemeStoreViewModel(), fenix: true);
+    Get.lazyPut(() => FleamarketAlertViewModel(), fenix: true);
   }
 }
 

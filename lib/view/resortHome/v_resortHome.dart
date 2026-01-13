@@ -979,6 +979,7 @@ class _ResortHomeViewState extends State<ResortHomeView> with
                                                                   ? ExtendedImage.network(
                                                                 BFdoc.friendInfo.profileImageUrlUser,
                                                                 enableMemoryCache: true,
+                                                                cacheHeight: 204,  // 메모리 최적화: 68 * 3 (3x 레티나)
                                                                 shape: BoxShape.circle,
                                                                 borderRadius: BorderRadius.circular(100),
                                                                 width: 68,

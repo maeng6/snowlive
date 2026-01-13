@@ -819,9 +819,9 @@ class _SlopeRushHomeViewState extends State<SlopeRushHomeView> {
               Container(
                 color: Color(0xFFC9DEE9), // 원하는 색상으로 변경 가능
               ),
-              Image.asset(defaultPath, fit: BoxFit.cover),
+              Image.asset(defaultPath, fit: BoxFit.cover, cacheWidth: 800),
               if (highlightPath != null)
-                Image.asset(highlightPath, fit: BoxFit.cover),
+                Image.asset(highlightPath, fit: BoxFit.cover, cacheWidth: 800),
               ...markers,
             ],
           );
@@ -1405,6 +1405,7 @@ class _Marker extends StatelessWidget {
                   ? ExtendedImage.network(
                 crewLogo,
                 cache: true,
+                cacheHeight: 108,
                 width: selected ? 36 : 24,
                 height: selected ? 36 : 24,
                 fit: BoxFit.cover,
