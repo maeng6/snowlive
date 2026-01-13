@@ -52,6 +52,7 @@ class AndroidSettingGuideView extends StatelessWidget {
           child: ExtendedImage.network(
             _resortHomeViewModel.rankingGuideUrl_aos,
             cache: true,
+            cacheWidth: 800,
             fit: BoxFit.cover, // 이미지를 부모 너비에 맞추어 조정
             loadStateChanged: (ExtendedImageState state) {
               switch (state.extendedImageLoadState) {

@@ -787,7 +787,7 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
             accuracy: LocationAccuracy.high,
             distanceFilter: 5,
             forceLocationManager: false,
-            intervalDuration: const Duration(seconds: 5),
+            intervalDuration: const Duration(seconds: 1),
             // foregroundNotificationConfig 제거 - LiveActivityService가 포그라운드 서비스 역할 수행
           );
         } else {
@@ -1175,7 +1175,7 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
       enableHeadless: false,                 // 앱 종료 시 위치 추적 중단 (iOS 미지원, 안정성 우선)
 
       // 🔥 위치 업데이트 속도 (삼성 Doze 정책 준수)
-      locationUpdateInterval: 5000,           // 5초
+      locationUpdateInterval: 5000,           // 5초 (백업용, 포그라운드가 주력)
       fastestLocationUpdateInterval: 3000,    // 3초
 
       // 🔥 Android 배터리 최적화 안내
@@ -2532,16 +2532,13 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
       // 0. BackgroundGeolocation 초기화 (Geofence 전용 모드)
       await bg.BackgroundGeolocation.ready(bg.Config(
         desiredAccuracy: bg.Config.DESIRED_ACCURACY_LOW,
-        distanceFilter: 500, // Geofence만 사용하므로 큰 값 설정
+        distanceFilter: 100,
         stopOnTerminate: true,
         startOnBoot: false,
         enableHeadless: false,
-        // 🔥 iOS 포그라운드 전환 시 위치 업데이트 방지
-        pausesLocationUpdatesAutomatically: true,
-        disableLocationAuthorizationAlert: true,
         // Geofence 전용 설정
         geofenceProximityRadius: 5000, // 5km 범위 내 Geofence만 모니터링
-        geofenceInitialTriggerEntry: true, // 앱 시작 시 이미 리조트 내에 있으면 즉시 감지
+        geofenceInitialTriggerEntry: true, // 이미 영역 내에 있으면 즉시 트리거
         logLevel: bg.Config.LOG_LEVEL_OFF,
         // 🔥 iOS 파란색 상태바 표시 안함 (Geofence 전용 모드에서는 불필요)
         showsBackgroundLocationIndicator: false,

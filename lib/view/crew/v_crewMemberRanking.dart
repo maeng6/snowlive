@@ -237,6 +237,7 @@ class CrewMemberRankingListView extends StatelessWidget {
                               child: ExtendedImage.network(
                                 '${ranking.tierIconUrl}',
                                 enableMemoryCache: true,
+                                cacheHeight: 108,
                                 fit: BoxFit.cover,
                                 width: 36,
                               ),

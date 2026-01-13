@@ -58,6 +58,7 @@ class RankingGuideMainView extends StatelessWidget {
                     child: ExtendedImage.network(
                       _resortHomeViewModel.rankingGuideUrl_main,
                       cache: true,
+                      cacheWidth: 800,
                       width: _size.width,
                       fit: BoxFit.cover,
                       loadStateChanged: (ExtendedImageState state) {

@@ -40,6 +40,7 @@ class _SplashScreenWrapperState extends State<SplashScreenWrapper> {
       return ExtendedImage.asset(
         defaultSplashAsset,
         fit: BoxFit.cover,
+        cacheWidth: 800,
         width: double.infinity,
         height: double.infinity,
       );
@@ -48,6 +49,7 @@ class _SplashScreenWrapperState extends State<SplashScreenWrapper> {
     return ExtendedImage.network(
       _splashController.url,
       fit: BoxFit.cover,
+      cacheWidth: 800,
       width: double.infinity,
       height: double.infinity,
       enableMemoryCache: true,
@@ -60,6 +62,7 @@ class _SplashScreenWrapperState extends State<SplashScreenWrapper> {
             return ExtendedImage.asset(
               defaultSplashAsset,
               fit: BoxFit.cover,
+              cacheWidth: 800,
               width: double.infinity,
               height: double.infinity,
             );
