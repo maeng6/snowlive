@@ -5,6 +5,7 @@ import 'package:com.snowlive/view/moreTab/v_licenseListPage.dart';
 import 'package:com.snowlive/view/v_webPage.dart';
 import 'package:com.snowlive/viewmodel/onboarding_login/vm_authcheck.dart';
 import 'package:com.snowlive/viewmodel/onboarding_login/vm_login.dart';
+import 'package:com.snowlive/viewmodel/resortHome/vm_resortHome.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
 import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -17,6 +18,7 @@ class Setting_moreTabView extends StatelessWidget {
   final AuthCheckViewModel _authCheckViewModel = Get.find<AuthCheckViewModel>();
   final LoginViewModel _loginViewModel = Get.find<LoginViewModel>();
   final UserViewModel _userViewModel = Get.find<UserViewModel>();
+  final ResortHomeViewModel _resortHomeViewModel = Get.find<ResortHomeViewModel>();
 
   @override
   Widget build(BuildContext context) {
@@ -126,6 +128,46 @@ class Setting_moreTabView extends StatelessWidget {
                     width: 24,
                   ),
                 ),
+                Divider(height: 1, color: SDSColor.gray100),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              '자동 라이브온',
+                              style: SDSTextStyle.bold.copyWith(
+                                  fontSize: 15,
+                                  color: SDSColor.gray900),
+                            ),
+                            SizedBox(height: 4),
+                            Text(
+                              '스키장에 도착하면 자동으로 라이브를 시작해요',
+                              style: SDSTextStyle.regular.copyWith(
+                                  fontSize: 12,
+                                  color: SDSColor.gray500),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Obx(() => Switch(
+                        value: _resortHomeViewModel.isAutoLiveOnEnabled,
+                        onChanged: (value) {
+                          _resortHomeViewModel.setAutoLiveOnEnabled(value);
+                        },
+                        activeColor: SDSColor.snowliveBlue,
+                        activeTrackColor: SDSColor.snowliveBlue.withOpacity(0.3),
+                        inactiveThumbColor: SDSColor.gray400,
+                        inactiveTrackColor: SDSColor.gray200,
+                      )),
+                    ],
+                  ),
+                ),
+                Divider(height: 1, color: SDSColor.gray100),
                 ListTile(
                   contentPadding: EdgeInsets.symmetric(horizontal: 16),
                   minVerticalPadding: 20,

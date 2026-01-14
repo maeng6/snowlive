@@ -72,4 +72,20 @@ final class LiveActivityManager {
         await activity.end(dismissalPolicy: .immediate)
         activities.removeValue(forKey: activityId)
     }
+
+    // 모든 라이브 액티비티 종료 (앱 강제 종료 후 재시작 시 정리용)
+    func endAll() async {
+        // 1. 메모리에 캐시된 액티비티 종료
+        for (id, activity) in activities {
+            await activity.end(dismissalPolicy: .immediate)
+            print("[LiveActivityManager] Ended cached activity: \(id)")
+        }
+        activities.removeAll()
+
+        // 2. 시스템에 남아있는 액티비티도 모두 종료 (강제 종료로 캐시가 없는 경우)
+        for activity in Activity<LiveOnActivityAttributes>.activities {
+            await activity.end(dismissalPolicy: .immediate)
+            print("[LiveActivityManager] Ended orphan activity: \(activity.id)")
+        }
+    }
 }

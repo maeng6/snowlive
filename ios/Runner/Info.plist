@@ -62,6 +62,8 @@
 		<string>위치를 사용하시면 라이브 기능을 통해 랭킹 서비스를 이용할 수 있고, 친구와 라이브 상태를 공유할 수 있어요.</string>
 		<key>NSMotionUsageDescription</key>
 		<string>This app needs access to motion sensor for tracking movement.</string>
+		<key>NSPhotoLibraryAddUsageDescription</key>
+		<string>라이딩 결과 이미지를 갤러리에 저장하기 위해 사진 추가 권한이 필요합니다.</string>
 		<key>NSPhotoLibraryUsageDescription</key>
 		<string>프로필 사진 설정 및 변경을 위해 사진 라이브러리에 접근하도록 허용합니다.</string>
 		<key>NSSupportsLiveActivities</key>

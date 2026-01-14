@@ -12,6 +12,7 @@ import 'package:com.snowlive/viewmodel/crew/vm_crewRecordRoom.dart';
 import 'package:com.snowlive/viewmodel/friend/vm_friendDetail.dart';
 import 'package:com.snowlive/viewmodel/friend/vm_friendList.dart';
 import 'package:com.snowlive/viewmodel/ranking/vm_rankingList_recordRoom.dart';
+import 'package:com.snowlive/viewmodel/resortHome/vm_resortHome.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
 import 'package:com.snowlive/viewmodel/vm_eventAlarm.dart';
 import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
@@ -30,6 +31,7 @@ class MoreTabMainView extends StatelessWidget {
   final CrewDetailViewModel _crewDetailViewModel = Get.find<CrewDetailViewModel>();
   final CrewMemberListViewModel _crewMemberListViewModel = Get.find<CrewMemberListViewModel>();
   final EventAlarmViewModel _eventAlarmViewModel = Get.find<EventAlarmViewModel>();
+  final ResortHomeViewModel _resortHomeViewModel = Get.find<ResortHomeViewModel>();
 
   @override
   Widget build(BuildContext context) {
@@ -489,7 +491,141 @@ class MoreTabMainView extends StatelessWidget {
                 left: 0,
                 bottom: 0,
                 child: Banner_moreTab()),
+            // 자동 라이브온 설정 안내 툴팁 오버레이
+            Obx(() => _resortHomeViewModel.shouldShowAutoLiveOnTooltip
+                ? GestureDetector(
+                    onTap: () {
+                      _resortHomeViewModel.markAutoLiveOnTooltipShown();
+                      Get.toNamed(AppRoutes.setting_moreTab);
+                    },
+                    child: Container(
+                      color: Colors.black.withOpacity(0.6),
+                      child: Stack(
+                        children: [
+                          // 설정 버튼 위치 근처에 툴팁 표시
+                          Positioned(
+                            bottom: 140,
+                            left: 16,
+                            right: 16,
+                            child: Container(
+                              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                              decoration: BoxDecoration(
+                                color: SDSColor.snowliveWhite,
+                                borderRadius: BorderRadius.circular(16),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.15),
+                                    blurRadius: 20,
+                                    offset: Offset(0, 4),
+                                  ),
+                                ],
+                              ),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Row(
+                                    children: [
+                                      Container(
+                                        padding: EdgeInsets.all(8),
+                                        decoration: BoxDecoration(
+                                          color: SDSColor.snowliveBlue.withOpacity(0.1),
+                                          borderRadius: BorderRadius.circular(8),
+                                        ),
+                                        child: Image.asset(
+                                          'assets/imgs/icons/icon_moretab_setting.png',
+                                          width: 24,
+                                        ),
+                                      ),
+                                      SizedBox(width: 12),
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              '여기서 자동 라이브온 설정을 할 수 있어요',
+                                              style: SDSTextStyle.bold.copyWith(
+                                                fontSize: 15,
+                                                color: SDSColor.gray900,
+                                              ),
+                                            ),
+                                            SizedBox(height: 4),
+                                            Text(
+                                              '설정 > 자동 라이브온에서 켜고 끌 수 있어요',
+                                              style: SDSTextStyle.regular.copyWith(
+                                                fontSize: 13,
+                                                color: SDSColor.gray500,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(height: 16),
+                                  Container(
+                                    width: double.infinity,
+                                    child: ElevatedButton(
+                                      onPressed: () {
+                                        _resortHomeViewModel.markAutoLiveOnTooltipShown();
+                                        Get.toNamed(AppRoutes.setting_moreTab);
+                                      },
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: SDSColor.snowliveBlue,
+                                        elevation: 0,
+                                        padding: EdgeInsets.symmetric(vertical: 14),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(12),
+                                        ),
+                                      ),
+                                      child: Text(
+                                        '설정으로 이동',
+                                        style: SDSTextStyle.bold.copyWith(
+                                          fontSize: 15,
+                                          color: SDSColor.snowliveWhite,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          // 아래쪽 화살표 표시
+                          Positioned(
+                            bottom: 130,
+                            left: _size.width / 2 - 10,
+                            child: CustomPaint(
+                              size: Size(20, 10),
+                              painter: _TrianglePainter(),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  )
+                : SizedBox.shrink()),
           ],
         ));
   }
+}
+
+/// 화살표 삼각형 페인터
+class _TrianglePainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = SDSColor.snowliveWhite
+      ..style = PaintingStyle.fill;
+
+    final path = Path()
+      ..moveTo(size.width / 2, size.height)
+      ..lineTo(0, 0)
+      ..lineTo(size.width, 0)
+      ..close();
+
+    canvas.drawPath(path, paint);
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }

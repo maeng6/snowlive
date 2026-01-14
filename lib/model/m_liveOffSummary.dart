@@ -1,0 +1,68 @@
+class LiveOffSummaryModel {
+  late int userId;
+  late bool withinBoundary;
+  late bool revealWb;
+  late String date;
+  late String weekday;
+  late String displayName;
+  late String profileImageUrlUser;
+  late int totalSlopeCount;
+  late Map<String, int> slopeCountsByName;
+  late double totalDistance;
+  late double topSpeed;
+
+  LiveOffSummaryModel({
+    this.userId = 0,
+    this.withinBoundary = false,
+    this.revealWb = true,
+    this.date = '',
+    this.weekday = '',
+    this.displayName = '',
+    this.profileImageUrlUser = '',
+    this.totalSlopeCount = 0,
+    Map<String, int>? slopeCountsByName,
+    this.totalDistance = 0,
+    this.topSpeed = 0,
+  }) : slopeCountsByName = slopeCountsByName ?? {};
+
+  LiveOffSummaryModel.fromJson(Map<String, dynamic> json) {
+    userId = json['user_id'] ?? 0;
+    withinBoundary = json['within_boundary'] ?? false;
+    revealWb = json['reveal_wb'] ?? true;
+    date = json['date'] ?? '';
+    weekday = json['weekday'] ?? '';
+    displayName = json['display_name'] ?? '';
+    profileImageUrlUser = json['profile_image_url_user'] ?? '';
+    totalSlopeCount = json['total_slope_count'] ?? 0;
+
+    // slope_counts_by_name 파싱
+    if (json['slope_counts_by_name'] != null) {
+      slopeCountsByName = Map<String, int>.from(
+        (json['slope_counts_by_name'] as Map).map(
+          (key, value) => MapEntry(key.toString(), (value as num).toInt()),
+        ),
+      );
+    } else {
+      slopeCountsByName = {};
+    }
+
+    totalDistance = (json['total_distance'] ?? 0).toDouble();
+    topSpeed = (json['top_speed'] ?? 0).toDouble();
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'user_id': userId,
+      'within_boundary': withinBoundary,
+      'reveal_wb': revealWb,
+      'date': date,
+      'weekday': weekday,
+      'display_name': displayName,
+      'profile_image_url_user': profileImageUrlUser,
+      'total_slope_count': totalSlopeCount,
+      'slope_counts_by_name': slopeCountsByName,
+      'total_distance': totalDistance,
+      'top_speed': topSpeed,
+    };
+  }
+}

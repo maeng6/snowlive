@@ -79,6 +79,12 @@ final class LiveActivityChannel {
                     }
                 }
 
+            case "endAll":
+                Task {
+                    await LiveActivityManager.shared.endAll()
+                    result(nil)
+                }
+
             default:
                 result(FlutterMethodNotImplemented)
             }

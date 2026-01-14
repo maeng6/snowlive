@@ -2,7 +2,7 @@ buildscript {
     ext.kotlin_version = '2.1.0'  // ✅ Kotlin 버전 업그레이드
 
     ext {
-        compileSdkVersion   = 35    // ✅ compileSdk, targetSdk 상향
+        compileSdkVersion   = 36    // ✅ compileSdk 상향 (mobile_scanner 요구)
         targetSdkVersion    = 35
         minSdkVersion       = 23
         appCompatVersion    = "1.4.2"
@@ -40,6 +40,7 @@ subprojects {
 subprojects {
     project.evaluationDependsOn(':app')
 }
+
 
 tasks.register("clean", Delete) {
     delete rootProject.buildDir
