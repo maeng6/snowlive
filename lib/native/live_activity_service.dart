@@ -83,4 +83,17 @@ class LiveActivityService {
       print('LiveActivity end error: $e');
     }
   }
+
+  /// 모든 라이브 액티비티 종료 (앱 강제 종료 후 재시작 시 정리용)
+  /// iOS에서만 동작 (Android는 앱 종료 시 Foreground Notification 자동 해제)
+  static Future<void> endAll() async {
+    if (!isEnabled) return;
+    if (!Platform.isIOS) return;
+    try {
+      await _channel.invokeMethod('endAll');
+      print('[LiveActivityService] endAll completed');
+    } on PlatformException catch (e) {
+      print('LiveActivity endAll error: $e');
+    }
+  }
 }

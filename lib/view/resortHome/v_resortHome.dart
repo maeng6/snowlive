@@ -579,6 +579,11 @@ class _ResortHomeViewState extends State<ResortHomeView> with
                             await _userViewModel.updateUserModel_api(_userViewModel.user.user_id);
                             CustomFullScreenDialog.cancelDialog();
 
+                            // 라이브온 성공 시 자동 라이브온 다이얼로그 표시
+                            if(_userViewModel.user.within_boundary == true){
+                              _resortHomeViewModel.showAutoLiveOnDialog();
+                            }
+
                             if(_userViewModel.user.within_boundary == false){
                               Get.snackbar(
                                 '라이브 불가 지역입니다',
