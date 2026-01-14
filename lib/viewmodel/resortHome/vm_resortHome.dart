@@ -130,7 +130,8 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
 
   // API 타임아웃 설정 (데드락 방지)
   static const Duration _apiTimeout = Duration(seconds: 10);
-  static const Duration _futureWaitTimeout = Duration(seconds: 15);
+  static const Duration _futureWaitTimeout = Duration(seconds: 5);
+  static const int _staleRequestThresholdSeconds = 5; // 🔥 오래된 요청 스킵 기준
 
   // RxList 데이터 보호 (메모리 압박으로 비워졌을 때 자동 재로드)
   bool _isReloadingAreaData = false;
@@ -956,7 +957,15 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
                       final detectedInfo = (detectedLat != null && detectedLon != null)
                           ? ', detected: ${detectedLat.toStringAsFixed(6)},${detectedLon.toStringAsFixed(6)}'
                           : '';
+                      final callTime = DateTime.now(); // 🔥 요청 생성 시간 캡처
                       futures.add(() async {
+                        // 🔥 타임아웃 후 지연 실행 방지 (5초 이상 지연된 요청은 스킵)
+                        final elapsed = DateTime.now().difference(callTime).inSeconds;
+                        if (elapsed > _staleRequestThresholdSeconds) {
+                          print('⚠️ [FG] 체크포인트 스킵: ${elapsed}초 지연');
+                          _sendLiveLog(userId: user_id, requestType: 'fg_checkpoint_stale', error: 'skipped: ${elapsed}s delay$detectedInfo', lat: position.latitude, lon: position.longitude);
+                          return;
+                        }
                         // 🔄 네트워크 재시도 로직 (최대 3회, 1초 간격)
                         for (int attempt = 1; attempt <= 3; attempt++) {
                           try {
@@ -1038,11 +1047,11 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
                       futures.add(() async {
                         // 🔄 네트워크 재시도 로직 (최대 3회, 1초 간격)
                         for (int attempt = 1; attempt <= 3; attempt++) {
-                          // 🕐 위치 데이터 신선도 체크 (15초 이상 지나면 스킵)
+                          // 🕐 위치 데이터 신선도 체크 (5초 이상 지나면 스킵)
                           final positionAge = DateTime.now().difference(positionCapturedAt).inSeconds;
-                          if (positionAge > 15) {
+                          if (positionAge > _staleRequestThresholdSeconds) {
                             print('⏰ 리셋 스킵: 위치 데이터가 ${positionAge}초 경과 (stale)');
-                            _sendLiveLog(userId: user_id, requestType: 'fg_reset_stale', error: 'position age ${positionAge}s > 15s, skipped$detectedInfo', lat: position.latitude, lon: position.longitude, speed: position.speed, distance: distanceFromLast);
+                            _sendLiveLog(userId: user_id, requestType: 'fg_reset_stale', error: 'position age ${positionAge}s > ${_staleRequestThresholdSeconds}s, skipped$detectedInfo', lat: position.latitude, lon: position.longitude, speed: position.speed, distance: distanceFromLast);
                             break; // 오래된 데이터는 재시도하지 않고 종료
                           }
                           try {
@@ -1116,11 +1125,11 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
                       futures.add(() async {
                         // 🔄 네트워크 재시도 로직 (최대 3회, 1초 간격)
                         for (int attempt = 1; attempt <= 3; attempt++) {
-                          // 🕐 위치 데이터 신선도 체크 (15초 이상 지나면 스킵)
+                          // 🕐 위치 데이터 신선도 체크 (5초 이상 지나면 스킵)
                           final positionAge = DateTime.now().difference(positionCapturedAt).inSeconds;
-                          if (positionAge > 15) {
+                          if (positionAge > _staleRequestThresholdSeconds) {
                             print('⏰ 리스폰 스킵: 위치 데이터가 ${positionAge}초 경과 (stale)');
-                            _sendLiveLog(userId: user_id, requestType: 'fg_respawn_stale', error: 'position age ${positionAge}s > 15s, skipped$detectedInfo', lat: position.latitude, lon: position.longitude);
+                            _sendLiveLog(userId: user_id, requestType: 'fg_respawn_stale', error: 'position age ${positionAge}s > ${_staleRequestThresholdSeconds}s, skipped$detectedInfo', lat: position.latitude, lon: position.longitude);
                             break; // 오래된 데이터는 재시도하지 않고 종료
                           }
                           try {
@@ -1471,9 +1480,18 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
                 final detectedInfo = (detectedLat != null && detectedLon != null)
                     ? ', detected: ${detectedLat.toStringAsFixed(6)},${detectedLon.toStringAsFixed(6)}'
                     : '';
+                // 📌 위치 데이터 캡처 시간 기록 (신선도 체크용)
+                final positionCapturedAt = DateTime.now();
                 futures.add(() async {
                   // 🔄 네트워크 재시도 로직 (최대 3회, 1초 간격)
                   for (int attempt = 1; attempt <= 3; attempt++) {
+                    // 🕐 위치 데이터 신선도 체크 (5초 이상 지나면 스킵)
+                    final positionAge = DateTime.now().difference(positionCapturedAt).inSeconds;
+                    if (positionAge > _staleRequestThresholdSeconds) {
+                      print('⏰ 백그라운드 체크포인트 스킵: 위치 데이터가 ${positionAge}초 경과 (stale)');
+                      _sendLiveLog(userId: user_id, requestType: 'bg_checkpoint_stale', error: 'position age ${positionAge}s > ${_staleRequestThresholdSeconds}s, skipped$detectedInfo', lat: position.latitude, lon: position.longitude, speed: position.speed, distance: distanceFromLast);
+                      break;
+                    }
                     try {
                       final response = await RankingAPI().addCheckPoint({
                         "user_id": user_id,
@@ -1553,11 +1571,11 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
                 futures.add(() async {
                   // 🔄 네트워크 재시도 로직 (최대 3회, 1초 간격)
                   for (int attempt = 1; attempt <= 3; attempt++) {
-                    // 🕐 위치 데이터 신선도 체크 (15초 이상 지나면 스킵)
+                    // 🕐 위치 데이터 신선도 체크 (5초 이상 지나면 스킵)
                     final positionAge = DateTime.now().difference(positionCapturedAt).inSeconds;
-                    if (positionAge > 15) {
+                    if (positionAge > _staleRequestThresholdSeconds) {
                       print('⏰ 백그라운드 리셋 스킵: 위치 데이터가 ${positionAge}초 경과 (stale)');
-                      _sendLiveLog(userId: user_id, requestType: 'bg_reset_stale', error: 'position age ${positionAge}s > 15s, skipped$detectedInfo', lat: position.latitude, lon: position.longitude, speed: position.speed, distance: distanceFromLast);
+                      _sendLiveLog(userId: user_id, requestType: 'bg_reset_stale', error: 'position age ${positionAge}s > ${_staleRequestThresholdSeconds}s, skipped$detectedInfo', lat: position.latitude, lon: position.longitude, speed: position.speed, distance: distanceFromLast);
                       break; // 오래된 데이터는 재시도하지 않고 종료
                     }
                     try {
@@ -1636,11 +1654,11 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
                 futures.add(() async {
                   // 🔄 네트워크 재시도 로직 (최대 3회, 1초 간격)
                   for (int attempt = 1; attempt <= 3; attempt++) {
-                    // 🕐 위치 데이터 신선도 체크 (15초 이상 지나면 스킵)
+                    // 🕐 위치 데이터 신선도 체크 (5초 이상 지나면 스킵)
                     final positionAge = DateTime.now().difference(positionCapturedAt).inSeconds;
-                    if (positionAge > 15) {
+                    if (positionAge > _staleRequestThresholdSeconds) {
                       print('⏰ 백그라운드 리스폰 스킵: 위치 데이터가 ${positionAge}초 경과 (stale)');
-                      _sendLiveLog(userId: user_id, requestType: 'bg_respawn_stale', error: 'position age ${positionAge}s > 15s, skipped$detectedInfo', lat: position.latitude, lon: position.longitude, speed: position.speed, distance: distanceFromLast);
+                      _sendLiveLog(userId: user_id, requestType: 'bg_respawn_stale', error: 'position age ${positionAge}s > ${_staleRequestThresholdSeconds}s, skipped$detectedInfo', lat: position.latitude, lon: position.longitude, speed: position.speed, distance: distanceFromLast);
                       break; // 오래된 데이터는 재시도하지 않고 종료
                     }
                     try {
