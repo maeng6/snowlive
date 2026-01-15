@@ -2782,15 +2782,25 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
         stopOnTerminate: false,
         startOnBoot: true,
         enableHeadless: true,
+        // 🔥 iOS: "항상 허용" 권한 요청 (백그라운드 지오펜스에 필수)
+        locationAuthorizationRequest: 'Always',
         // Geofence 전용 설정
-        geofenceProximityRadius: 5000, // 5km 범위 내 Geofence만 모니터링
+        geofenceProximityRadius: 100000, // 100km 범위 내 Geofence 모니터링
         geofenceInitialTriggerEntry: false, // false: 실제로 반경 밖→안으로 진입할 때만 트리거
         logLevel: bg.Config.LOG_LEVEL_OFF,
         // 🔥 iOS 파란색 상태바 표시 안함 (Geofence 전용 모드에서는 불필요)
         showsBackgroundLocationIndicator: false,
-        // 🔥 Android: Geofence 전용 모드에서는 포그라운드 서비스 알림 비활성화
-        // startGeofences()는 시스템 Geofence API를 사용하므로 포그라운드 서비스 불필요
-        foregroundService: false,
+        // 🔥 Android: Geofence 백그라운드 작동을 위해 포그라운드 서비스 필수
+        // foregroundService: false로 하면 Android가 백그라운드에서 앱을 kill함
+        foregroundService: Platform.isAndroid,
+        // 🔥 Android 알림 최소화 (조용한 알림)
+        notification: bg.Notification(
+          title: '스노우라이브',
+          text: '스키장 도착 시 자동으로 라이브가 시작됩니다',
+          sticky: false,
+          priority: bg.Config.NOTIFICATION_PRIORITY_MIN,
+          channelName: 'Geofence Service',
+        ),
       ));
       print('✅ BackgroundGeolocation 초기화 완료');
 
