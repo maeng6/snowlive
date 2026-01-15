@@ -872,7 +872,7 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
           _sendLiveLog(userId: user_id, requestType: 'foreground_error', error: 'Location accuracy is reduced, not precise');
           await showSettingsPopup(
             title: '정확한 위치 설정 필요',
-            message: '라이브 기능을 사용하려면 "정확한 위치" 옵션을 켜주세요.\n\n설정 > 스노우라이브 > 위치 > 정확한 위치 활성화',
+            message: '라이브 기능을 사용하려면 \n"정확한 위치" 옵션을 켜주세요.\n설정 > 스노우라이브 >\n위치 > 정확한 위치 활성화',
             action: () => openAppSettings(),
           );
           return false;
@@ -3343,28 +3343,13 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
     await Get.dialog(
       AlertDialog(
         backgroundColor: SDSColor.snowliveWhite,
-        contentPadding: EdgeInsets.only(bottom: 28, left: 28, right: 28, top: 16),
+        contentPadding: EdgeInsets.only(bottom: 28, left: 28, right: 28, top: 30),
         elevation: 0,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            // X 버튼 (다음에 다시 표시됨)
-            Align(
-              alignment: Alignment.topRight,
-              child: GestureDetector(
-                onTap: () => Get.back(),
-                child: Padding(
-                  padding: const EdgeInsets.only(bottom: 8),
-                  child: Icon(
-                    Icons.close,
-                    size: 24,
-                    color: SDSColor.gray400,
-                  ),
-                ),
-              ),
-            ),
             Text(
               '자동 라이브온 설정',
               style: SDSTextStyle.bold.copyWith(fontSize: 18, height: 1.4, color: SDSColor.gray900),
@@ -3372,58 +3357,74 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
             ),
             SizedBox(height: 8),
             Text(
-              '다음부터 스키장에 오면 자동으로\n라이브가 켜지게 설정할까요?\n\n더보기 탭에서 언제든 설정할 수 있어요.',
+              '다음부터 스키장에 오면 자동으로\n라이브가 켜지게 설정할까요?\n더보기 탭에서 언제든 설정할 수 있어요.',
               style: SDSTextStyle.regular.copyWith(fontSize: 14, height: 1.4, color: SDSColor.gray600),
               textAlign: TextAlign.center,
             ),
-            SizedBox(height: 24),
-            Row(
-              children: [
-                Expanded(
-                  child: ElevatedButton(
-                    onPressed: () async {
-                      // 다시보지않기: 다이얼로그 표시 기록 후 닫기
-                      await prefs.setBool(_autoLiveOnDialogShownKey, true);
-                      Get.back();
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: SDSColor.gray200,
-                      elevation: 0,
-                      padding: const EdgeInsets.symmetric(vertical: 14),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
-                    child: Text(
-                      '다시보지않기',
-                      style: SDSTextStyle.bold.copyWith(fontSize: 14, color: SDSColor.gray600),
-                    ),
+            SizedBox(height: 30),
+            // 확인 버튼 (블루, 상단)
+            Container(
+              width: double.infinity,
+              height: 48,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(5),
+                color: SDSColor.snowliveBlue,
+              ),
+              child: TextButton(
+                onPressed: () async {
+                  // 확인: 자동 라이브온 활성화 + 다이얼로그 표시 기록 후 닫기
+                  await setAutoLiveOnEnabled(true);
+                  await prefs.setBool(_autoLiveOnDialogShownKey, true);
+                  Get.back();
+                },
+                child: Text(
+                  '확인',
+                  style: SDSTextStyle.bold.copyWith(
+                    fontSize: 16,
+                    color: SDSColor.snowliveWhite,
                   ),
                 ),
-                SizedBox(width: 12),
-                Expanded(
-                  child: ElevatedButton(
-                    onPressed: () async {
-                      // 확인: 자동 라이브온 활성화 + 다이얼로그 표시 기록 후 닫기
-                      await setAutoLiveOnEnabled(true);
-                      await prefs.setBool(_autoLiveOnDialogShownKey, true);
-                      Get.back();
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: SDSColor.snowliveBlue,
-                      elevation: 0,
-                      padding: const EdgeInsets.symmetric(vertical: 14),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
-                    child: Text(
-                      '확인',
-                      style: SDSTextStyle.bold.copyWith(fontSize: 14, color: SDSColor.snowliveWhite),
-                    ),
+              ),
+            ),
+            SizedBox(height: 8),
+            // 취소 버튼 (그레이, 중간)
+            Container(
+              width: double.infinity,
+              height: 48,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(5),
+                color: SDSColor.gray100,
+              ),
+              child: TextButton(
+                onPressed: () {
+                  // 취소: 그냥 닫기 (다음에 다시 표시됨)
+                  Get.back();
+                },
+                child: Text(
+                  '취소',
+                  style: SDSTextStyle.bold.copyWith(
+                    fontSize: 16,
+                    color: SDSColor.gray600,
                   ),
                 ),
-              ],
+              ),
+            ),
+            SizedBox(height: 16),
+            // 다시보지않기 (텍스트 버튼, 하단)
+            GestureDetector(
+              onTap: () async {
+                // 다시보지않기: 다이얼로그 표시 기록 후 닫기
+                await prefs.setBool(_autoLiveOnDialogShownKey, true);
+                Get.back();
+              },
+              child: Text(
+                '다시보지않기',
+                style: SDSTextStyle.regular.copyWith(
+                  fontSize: 14,
+                  color: SDSColor.gray600,
+                  decorationColor: SDSColor.gray400,
+                ),
+              ),
             ),
           ],
         ),
