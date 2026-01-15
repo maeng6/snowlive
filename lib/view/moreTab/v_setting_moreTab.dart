@@ -160,6 +160,9 @@ class Setting_moreTabView extends StatelessWidget {
                           _resortHomeViewModel.setAutoLiveOnEnabled(value);
                         },
                         activeColor: SDSColor.snowliveBlue,
+                        inactiveThumbColor: SDSColor.snowliveWhite,
+                        inactiveTrackColor: SDSColor.gray200,
+                        trackOutlineColor: WidgetStateProperty.all(Colors.transparent),
                       )),
                     ],
                   ),
