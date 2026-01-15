@@ -28,25 +28,28 @@ class SplashController extends GetxController{
       gotoMainHome = await controller.userCheck();
       print('3');
     }catch(e){
-      this._url = 'https://i.esdrop.com/d/f/yytYSNBROy/spAvUnyvK6.png';
+      // 에러 시 _url 수정하지 않음 - loadLocalSplashUrl()에서 로드한 URL 유지
+      print('userCheck 실패: $e');
     }
   }
 
   Future<void> loadSplashImage() async {
     try {
       SplashModel splashModel = await SplashModel().getSplashImage();
-      _url = splashModel.modelUrl;
+      final newUrl = splashModel.modelUrl;
 
-      // SharedPreferences에 splashUrl 저장
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.setString('splashUrl', _url);
-
+      // URL이 유효한 경우에만 저장
+      if (newUrl.isNotEmpty) {
+        _url = newUrl;
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setString('splashUrl', _url);
+        print('스플래시 url 새로 저장: $_url');
+      }
     } catch (e) {
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.setString('splashUrl', 'https://i.esdrop.com/d/f/yytYSNBROy/it36mfOyr1.png');
+      // 에러 시 기존 저장된 URL 유지 (덮어쓰지 않음)
+      print('스플래시 url 다운로드 실패: $e');
     } finally {
       isLoadingUrl.value = false;
-      print('스플래시 url 다운완료');
     }
   }
 

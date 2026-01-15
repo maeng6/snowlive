@@ -204,6 +204,23 @@ import WidgetKit
           result(FlutterError(code:"UNSUPPORTED_IOS", message:"Requires iOS 16.1+", details:nil))
         }
 
+      // ---------- 모두 종료 ----------
+      case "endAll":
+        if #available(iOS 16.1, *) {
+          print("🧹 [LA] endAll() called from Flutter")
+          Task {
+            for activity in Activity<LiveOnActivityAttributes>.activities {
+              await activity.end(dismissalPolicy: .immediate)
+              print("🛑 [LA] ended activity id=\(activity.id)")
+            }
+            self.liveActivities.removeAll()
+            print("✅ [LA] endAll completed")
+          }
+          result(nil)
+        } else {
+          result(nil)  // iOS 16.1 미만은 무시
+        }
+
       default:
         result(FlutterMethodNotImplemented)
       }
