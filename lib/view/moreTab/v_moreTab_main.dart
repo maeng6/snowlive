@@ -61,10 +61,21 @@ class MoreTabMainView extends StatelessWidget {
             ),
           ),
         ),
-        body: Stack(
+        body: Obx(() {
+          // 배너 visible 여부 확인
+          // 데이터가 null이면 아직 로딩 중이므로 배너 영역 유지 (getBanner 호출 필요)
+          // 데이터가 있고 visible이 모두 false일 때만 숨김
+          final bannerData = _resortHomeViewModel.bannerData_moreTab.value;
+          bool hasBanner = true; // 기본값 true (로딩 중일 때 영역 유지)
+          if (bannerData != null) {
+            List<dynamic> visibleList = bannerData['visible'] ?? [];
+            hasBanner = visibleList.any((v) => v == true);
+          }
+
+          return Stack(
           children: [
             Padding(
-              padding: EdgeInsets.only(bottom: 60),
+              padding: EdgeInsets.only(bottom: hasBanner ? 60 : 0),
               child: Container(
                 color: Colors.white,
                 child: ListView(
@@ -486,11 +497,12 @@ class MoreTabMainView extends StatelessWidget {
                 ),
               ),
             ),
-            Positioned(
-                right: 0,
-                left: 0,
-                bottom: 0,
-                child: Banner_moreTab()),
+            if (hasBanner)
+              Positioned(
+                  right: 0,
+                  left: 0,
+                  bottom: 0,
+                  child: Banner_moreTab()),
             // 자동 라이브온 설정 안내 툴팁 오버레이
             Obx(() => _resortHomeViewModel.shouldShowAutoLiveOnTooltip
                 ? GestureDetector(
@@ -605,7 +617,8 @@ class MoreTabMainView extends StatelessWidget {
                   )
                 : SizedBox.shrink()),
           ],
-        ));
+        );
+        }));
   }
 }
 

@@ -82,6 +82,8 @@ class _LiveOffSummaryDialogState extends State<LiveOffSummaryDialog> {
         '저장 완료',
         '이미지가 갤러리에 저장되었습니다.',
         snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.white,
+        colorText: SDSColor.gray900,
       );
     } catch (e) {
       print('이미지 저장 오류: $e');
@@ -97,337 +99,280 @@ class _LiveOffSummaryDialogState extends State<LiveOffSummaryDialog> {
   Widget build(BuildContext context) {
     final summary = widget.summary;
 
-    // 슬로프별 카운트 정렬 (내림차순)
-    final sortedSlopes = summary.slopeCountsByName.entries.toList()
-      ..sort((a, b) => b.value.compareTo(a.value));
-
-    // 최대 카운트 (막대 그래프 비율 계산용)
-    final maxCount = sortedSlopes.isNotEmpty
-        ? sortedSlopes.first.value
-        : 1;
-
     return Dialog(
       backgroundColor: Colors.transparent,
-      insetPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 40),
+      insetPadding: const EdgeInsets.symmetric(horizontal: 0, vertical: 40),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           // 캡처 영역
           RepaintBoundary(
             key: _repaintBoundaryKey,
-            child: Container(
-              decoration: BoxDecoration(
-                color: SDSColor.snowliveWhite,
-                borderRadius: BorderRadius.circular(20),
-              ),
-              padding: const EdgeInsets.all(24),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  // 날짜 & 요일
-                  Text(
-                    '${summary.date} ${summary.weekday}',
-                    style: SDSTextStyle.regular.copyWith(
-                      fontSize: 14,
-                      color: SDSColor.gray500,
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-
-                  // 프로필 이미지
-                  Container(
-                    width: 80,
-                    height: 80,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      border: Border.all(color: SDSColor.gray100, width: 2),
-                    ),
-                    child: ClipOval(
-                      child: summary.profileImageUrlUser.isNotEmpty
-                          ? ExtendedImage.network(
-                              summary.profileImageUrlUser,
-                              fit: BoxFit.cover,
-                              cache: true,
-                              loadStateChanged: (state) {
-                                if (state.extendedImageLoadState == LoadState.failed) {
-                                  return Image.asset(
-                                    'assets/imgs/profile/img_profile_default_circle.png',
-                                    fit: BoxFit.cover,
-                                  );
-                                }
-                                return null;
-                              },
-                            )
-                          : Image.asset(
-                              'assets/imgs/profile/img_profile_default_circle.png',
-                              fit: BoxFit.cover,
-                            ),
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-
-                  // 닉네임
-                  Text(
-                    summary.displayName,
-                    style: SDSTextStyle.bold.copyWith(
-                      fontSize: 18,
-                      color: SDSColor.gray900,
-                    ),
-                  ),
-                  const SizedBox(height: 24),
-
-                  // 오늘 총 라이딩 횟수
-                  Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    decoration: BoxDecoration(
-                      color: SDSColor.snowliveBlue.withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Column(
-                      children: [
-                        Text(
-                          '오늘 총 라이딩',
-                          style: SDSTextStyle.regular.copyWith(
-                            fontSize: 14,
-                            color: SDSColor.gray600,
-                          ),
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          '${summary.totalSlopeCount}회',
-                          style: SDSTextStyle.extraBold.copyWith(
-                            fontSize: 32,
-                            color: SDSColor.snowliveBlue,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-
-                  // 슬로프별 라이딩 횟수
-                  if (sortedSlopes.isNotEmpty) ...[
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        '슬로프별 라이딩',
-                        style: SDSTextStyle.bold.copyWith(
-                          fontSize: 14,
-                          color: SDSColor.gray900,
-                        ),
+            child: SizedBox(
+              width: 320,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(24),
+                child: AspectRatio(
+                  aspectRatio: 960 / 1524, // 배경 이미지 비율
+                child: Stack(
+                  children: [
+                    // 배경 이미지
+                    Positioned.fill(
+                      child: Image.asset(
+                        'assets/imgs/imgs/img_summury_bg.png',
+                        fit: BoxFit.cover,
                       ),
                     ),
-                    const SizedBox(height: 12),
-                    ...sortedSlopes.take(5).map((entry) {
-                      final ratio = entry.value / maxCount;
-                      return Padding(
-                        padding: const EdgeInsets.only(bottom: 8),
-                        child: Row(
-                          children: [
-                            SizedBox(
-                              width: 80,
-                              child: Text(
-                                entry.key,
-                                style: SDSTextStyle.regular.copyWith(
-                                  fontSize: 13,
-                                  color: SDSColor.gray700,
-                                ),
-                                overflow: TextOverflow.ellipsis,
-                              ),
+                    // 상단: 프로필 이미지, 닉네임, 날짜 (상단 기준 70px)
+                    Positioned(
+                      top: 60,
+                      left: 32,
+                      right: 32,
+                      child: Column(
+                        children: [
+                          // 프로필 이미지
+                          Container(
+                            width: 100,
+                            height: 100,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
                             ),
-                            const SizedBox(width: 8),
-                            Expanded(
-                              child: Stack(
+                            child: ClipOval(
+                              child: summary.profileImageUrlUser.isNotEmpty
+                                  ? ExtendedImage.network(
+                                      summary.profileImageUrlUser,
+                                      fit: BoxFit.cover,
+                                      cache: true,
+                                      loadStateChanged: (state) {
+                                        if (state.extendedImageLoadState == LoadState.failed) {
+                                          return Image.asset(
+                                            'assets/imgs/profile/img_profile_default_circle.png',
+                                            fit: BoxFit.cover,
+                                          );
+                                        }
+                                        return null;
+                                      },
+                                    )
+                                  : Image.asset(
+                                      'assets/imgs/profile/img_profile_default_circle.png',
+                                      fit: BoxFit.cover,
+                                    ),
+                            ),
+                          ),
+                          const SizedBox(height: 12),
+
+                          // 닉네임
+                          Text(
+                            summary.displayName,
+                            style: SDSTextStyle.bold.copyWith(
+                              fontSize: 20,
+                              color: Colors.white,
+                            ),
+                          ),
+
+                          // 날짜
+                          Text(
+                            summary.date,
+                            style: SDSTextStyle.regular.copyWith(
+                              fontSize: 13,
+                              color: Colors.white.withOpacity(0.8),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    // 중앙: 라이딩 정보 (상단/하단 영역 사이 중앙 배치)
+                    Positioned(
+                      top: 220, // 상단 영역 아래
+                      bottom: 80, // 하단 영역 위
+                      left: 32,
+                      right: 32,
+                      child: Center(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 0),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              // 오늘 총 라이딩 숫자
+                              Text(
+                                '${summary.totalSlopeCount}',
+                                style: SDSTextStyle.extraBold.copyWith(
+                                  fontSize: 40,
+                                  color: Colors.white,
+                                  height: 1.0,
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+
+                              // 오늘 총 라이딩 라벨
+                              Text(
+                                '오늘 총 라이딩',
+                                style: SDSTextStyle.regular.copyWith(
+                                  fontSize: 12,
+                                  color: Colors.white.withOpacity(0.7),
+                                ),
+                              ),
+                              const SizedBox(height: 20),
+
+                              // 총 이동거리 & 최고 속도
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Container(
-                                    height: 20,
-                                    decoration: BoxDecoration(
-                                      color: SDSColor.gray100,
-                                      borderRadius: BorderRadius.circular(4),
+                                  // 총 이동거리
+                                  Expanded(
+                                    child: Column(
+                                      children: [
+                                        Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          crossAxisAlignment: CrossAxisAlignment.baseline,
+                                          textBaseline: TextBaseline.alphabetic,
+                                          children: [
+                                            Text(
+                                              _formatDistanceValue(summary.totalDistance),
+                                              style: SDSTextStyle.extraBold.copyWith(
+                                                fontSize: 24,
+                                                color: Colors.white,
+                                              ),
+                                            ),
+                                            const SizedBox(width: 2),
+                                            Text(
+                                              _formatDistanceUnit(summary.totalDistance),
+                                              style: SDSTextStyle.extraBold.copyWith(
+                                                fontSize: 16,
+                                                color: Colors.white,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        const SizedBox(height: 2),
+                                        Text(
+                                          '총 이동거리',
+                                          style: SDSTextStyle.regular.copyWith(
+                                            fontSize: 12,
+                                            color: Colors.white.withOpacity(0.7),
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ),
-                                  FractionallySizedBox(
-                                    widthFactor: ratio,
-                                    child: Container(
-                                      height: 20,
-                                      decoration: BoxDecoration(
-                                        color: SDSColor.snowliveBlue,
-                                        borderRadius: BorderRadius.circular(4),
-                                      ),
+                                  // 최고 속도
+                                  Expanded(
+                                    child: Column(
+                                      children: [
+                                        Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          crossAxisAlignment: CrossAxisAlignment.baseline,
+                                          textBaseline: TextBaseline.alphabetic,
+                                          children: [
+                                            Text(
+                                              summary.topSpeed.toStringAsFixed(1),
+                                              style: SDSTextStyle.extraBold.copyWith(
+                                                fontSize: 24,
+                                                color: Colors.white,
+                                              ),
+                                            ),
+                                            const SizedBox(width: 2),
+                                            Text(
+                                              'km/h',
+                                              style: SDSTextStyle.extraBold.copyWith(
+                                                fontSize: 16,
+                                                color: Colors.white,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        const SizedBox(height: 2),
+                                        Text(
+                                          '최고 속도',
+                                          style: SDSTextStyle.regular.copyWith(
+                                            fontSize: 12,
+                                            color: Colors.white.withOpacity(0.7),
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ),
                                 ],
                               ),
-                            ),
-                            const SizedBox(width: 8),
-                            SizedBox(
-                              width: 36,
-                              child: Text(
-                                '${entry.value}회',
-                                style: SDSTextStyle.bold.copyWith(
-                                  fontSize: 13,
-                                  color: SDSColor.gray900,
-                                ),
-                                textAlign: TextAlign.right,
-                              ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
-                      );
-                    }).toList(),
-                    const SizedBox(height: 16),
+                      ),
+                    ),
+                    // 하단: 스노우라이브 로고 (하단 기준 40px)
+                    Positioned(
+                      bottom: 40,
+                      left: 0,
+                      right: 0,
+                      child: Center(
+                        child: Image.asset(
+                          'assets/imgs/logos/snowliveLogo_main_white.png',
+                          height: 12,
+                        ),
+                      ),
+                    ),
                   ],
-
-                  // 총 이동 거리 & 최고 속도
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
-                          decoration: BoxDecoration(
-                            color: SDSColor.gray50,
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: Column(
-                            children: [
-                              Text(
-                                '총 이동 거리',
-                                style: SDSTextStyle.regular.copyWith(
-                                  fontSize: 12,
-                                  color: SDSColor.gray500,
-                                ),
-                              ),
-                              const SizedBox(height: 4),
-                              FittedBox(
-                                fit: BoxFit.scaleDown,
-                                child: Text(
-                                  _formatDistance(summary.totalDistance),
-                                  style: SDSTextStyle.bold.copyWith(
-                                    fontSize: 18,
-                                    color: SDSColor.gray900,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
-                          decoration: BoxDecoration(
-                            color: SDSColor.gray50,
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: Column(
-                            children: [
-                              Text(
-                                '최고 속도',
-                                style: SDSTextStyle.regular.copyWith(
-                                  fontSize: 12,
-                                  color: SDSColor.gray500,
-                                ),
-                              ),
-                              const SizedBox(height: 4),
-                              FittedBox(
-                                fit: BoxFit.scaleDown,
-                                child: Text(
-                                  '${summary.topSpeed.toStringAsFixed(1)} km/h',
-                                  style: SDSTextStyle.bold.copyWith(
-                                    fontSize: 18,
-                                    color: SDSColor.gray900,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 16),
-
-                  // 스노우라이브 로고
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Image.asset(
-                        'assets/imgs/logos/snowliveLogo_main_new_blue.png',
-                        width: 20,
-                        height: 20,
-                      ),
-                      const SizedBox(width: 6),
-                      Text(
-                        'SNOWLIVE',
-                        style: SDSTextStyle.bold.copyWith(
-                          fontSize: 12,
-                          color: SDSColor.gray400,
-                          letterSpacing: 1.5,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
+                ),
+              ),
               ),
             ),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 30),
 
           // 버튼 영역 (캡처 영역 밖)
           Row(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Expanded(
-                child: ElevatedButton(
-                  onPressed: () => Get.back(),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: SDSColor.gray200,
-                    elevation: 0,
-                    padding: const EdgeInsets.symmetric(vertical: 14),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
+              // X 버튼 (닫기)
+              GestureDetector(
+                onTap: () => Get.back(),
+                child: Container(
+                  width: 56,
+                  height: 56,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(28),
                   ),
-                  child: Text(
-                    '닫기',
-                    style: SDSTextStyle.bold.copyWith(
-                      fontSize: 16,
-                      color: SDSColor.gray600,
+                  child: Center(
+                    child: Icon(
+                      Icons.close,
+                      size: 24,
+                      color: SDSColor.gray900,
                     ),
                   ),
                 ),
               ),
               const SizedBox(width: 12),
-              Expanded(
-                child: ElevatedButton(
-                  onPressed: _isSaving ? null : _saveImage,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: SDSColor.snowliveBlue,
-                    elevation: 0,
-                    padding: const EdgeInsets.symmetric(vertical: 14),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
+              // 이미지 저장 버튼
+              GestureDetector(
+                onTap: _isSaving ? null : _saveImage,
+                child: Container(
+                  width: 180,
+                  height: 56,
+                  decoration: BoxDecoration(
+                    color: SDSColor.snowliveBlue,
+                    borderRadius: BorderRadius.circular(28),
                   ),
-                  child: _isSaving
-                      ? SizedBox(
-                          width: 20,
-                          height: 20,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            valueColor: AlwaysStoppedAnimation<Color>(
-                              SDSColor.snowliveWhite,
+                  child: Center(
+                    child: _isSaving
+                        ? SizedBox(
+                            width: 20,
+                            height: 20,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                Colors.white,
+                              ),
+                            ),
+                          )
+                        : Text(
+                            '이미지 저장',
+                            style: SDSTextStyle.bold.copyWith(
+                              fontSize: 16,
+                              color: Colors.white,
                             ),
                           ),
-                        )
-                      : Text(
-                          '이미지 저장',
-                          style: SDSTextStyle.bold.copyWith(
-                            fontSize: 16,
-                            color: SDSColor.snowliveWhite,
-                          ),
-                        ),
+                  ),
                 ),
               ),
             ],
@@ -443,6 +388,21 @@ class _LiveOffSummaryDialogState extends State<LiveOffSummaryDialog> {
     } else {
       return '${meters.toInt()} m';
     }
+  }
+
+  String _formatDistanceValue(double meters) {
+    return _formatNumberWithComma(meters.toInt());
+  }
+
+  String _formatDistanceUnit(double meters) {
+    return 'm';
+  }
+
+  String _formatNumberWithComma(int number) {
+    return number.toString().replaceAllMapped(
+      RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
+      (Match m) => '${m[1]},',
+    );
   }
 
   /// 권한 설정 안내 다이얼로그
@@ -524,5 +484,6 @@ Future<void> showLiveOffSummaryDialog(LiveOffSummaryModel summary) async {
   await Get.dialog(
     LiveOffSummaryDialog(summary: summary),
     barrierDismissible: true,
+    barrierColor: Colors.black.withOpacity(0.8),
   );
 }

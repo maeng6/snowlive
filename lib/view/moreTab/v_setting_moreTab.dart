@@ -128,9 +128,9 @@ class Setting_moreTabView extends StatelessWidget {
                     width: 24,
                   ),
                 ),
-                Divider(height: 1, color: SDSColor.gray100),
+                Divider(height: 50, color: SDSColor.gray100),
                 Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -148,26 +148,26 @@ class Setting_moreTabView extends StatelessWidget {
                             Text(
                               '스키장에 도착하면 자동으로 라이브를 시작해요',
                               style: SDSTextStyle.regular.copyWith(
-                                  fontSize: 12,
+                                  fontSize: 13,
                                   color: SDSColor.gray500),
                             ),
                           ],
                         ),
                       ),
-                      Obx(() => Switch(
+                      Obx(() => Switch.adaptive(
                         value: _resortHomeViewModel.isAutoLiveOnEnabled,
                         onChanged: (value) {
                           _resortHomeViewModel.setAutoLiveOnEnabled(value);
                         },
                         activeColor: SDSColor.snowliveBlue,
-                        activeTrackColor: SDSColor.snowliveBlue.withOpacity(0.3),
-                        inactiveThumbColor: SDSColor.gray400,
+                        inactiveThumbColor: SDSColor.snowliveWhite,
                         inactiveTrackColor: SDSColor.gray200,
+                        trackOutlineColor: WidgetStateProperty.all(Colors.transparent),
                       )),
                     ],
                   ),
                 ),
-                Divider(height: 1, color: SDSColor.gray100),
+                Divider(height: 50, color: SDSColor.gray100),
                 ListTile(
                   contentPadding: EdgeInsets.symmetric(horizontal: 16),
                   minVerticalPadding: 20,

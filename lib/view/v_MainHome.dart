@@ -226,6 +226,7 @@ class _MainHomeViewState extends State<MainHomeView> {
                   style: SDSTextStyle.regular.copyWith(
                     fontSize: 13,
                     color: Colors.white,
+                    decoration: TextDecoration.none,
                   ),
                 ),
                 const SizedBox(width: 4),
@@ -239,7 +240,7 @@ class _MainHomeViewState extends State<MainHomeView> {
                     child: Icon(
                       Icons.close,
                       size: 14,
-                      color: SDSColor.gray300,
+                      color: SDSColor.gray500,
                     ),
                   ),
                 ),
@@ -248,7 +249,7 @@ class _MainHomeViewState extends State<MainHomeView> {
           ),
           // 말풍선 꼬리 (삼각형, 아래를 가리킴)
           Padding(
-            padding: const EdgeInsets.only(right: 14),
+            padding: const EdgeInsets.only(right: 34),
             child: CustomPaint(
               size: const Size(10, 6),
               painter: _TooltipDownArrowPainter(),
