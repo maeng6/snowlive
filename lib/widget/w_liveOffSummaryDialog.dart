@@ -169,6 +169,18 @@ class _LiveOffSummaryDialogState extends State<LiveOffSummaryDialog> {
                               color: Colors.white,
                             ),
                           ),
+                          const SizedBox(height: 4),
+
+                          // 라이더 타이틀
+                          if (summary.riderTitle.isNotEmpty)
+                            Text(
+                              summary.riderTitle,
+                              style: SDSTextStyle.regular.copyWith(
+                                fontSize: 14,
+                                color: Colors.white.withOpacity(0.9),
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
 
                           // 날짜
                           Text(

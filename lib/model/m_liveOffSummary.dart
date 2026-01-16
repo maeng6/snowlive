@@ -10,6 +10,7 @@ class LiveOffSummaryModel {
   late Map<String, int> slopeCountsByName;
   late double totalDistance;
   late double topSpeed;
+  late String riderTitle;
 
   LiveOffSummaryModel({
     this.userId = 0,
@@ -23,6 +24,7 @@ class LiveOffSummaryModel {
     Map<String, int>? slopeCountsByName,
     this.totalDistance = 0,
     this.topSpeed = 0,
+    this.riderTitle = '',
   }) : slopeCountsByName = slopeCountsByName ?? {};
 
   LiveOffSummaryModel.fromJson(Map<String, dynamic> json) {
@@ -48,6 +50,7 @@ class LiveOffSummaryModel {
 
     totalDistance = (json['total_distance'] ?? 0).toDouble();
     topSpeed = (json['top_speed'] ?? 0).toDouble();
+    riderTitle = json['rider_title'] ?? '';
   }
 
   Map<String, dynamic> toJson() {
@@ -63,6 +66,7 @@ class LiveOffSummaryModel {
       'slope_counts_by_name': slopeCountsByName,
       'total_distance': totalDistance,
       'top_speed': topSpeed,
+      'rider_title': riderTitle,
     };
   }
 }

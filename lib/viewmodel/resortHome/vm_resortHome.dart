@@ -66,6 +66,11 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
   RxString _rankingGuideUrl_main = ''.obs;
   RxDouble _latitude = 0.0.obs;
   RxDouble _longitude = 0.0.obs;
+  double _currentSpeed = 0.0; // 현재 속도 (m/s)
+  double _currentAltitude = 0.0; // 현재 고도 (m)
+  double? _lastHeartbeatLat; // 마지막 heartbeat 위치 (거리 계산용)
+  double? _lastHeartbeatLon;
+  double? _lastHeartbeatAltitude; // 마지막 heartbeat 고도 (리프트/슬로프 판별용)
   RxDouble _initialHeightFriend = 0.0.obs;
   RxMap _resort_info = {}.obs;
   RxMap _weatherInfo = {}.obs;
@@ -531,6 +536,10 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
     required String requestType,
     double? lat,
     double? lon,
+    double? speed,
+    double? distance,
+    double? altitude,
+    String? locationType, // 'slope', 'lift', 'unknown'
   }) async {
     if (!_isLoggingOn) return;
 
@@ -543,11 +552,15 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
       if (coordinates != null) 'coordinates': coordinates,
       'request_type': requestType,
       'created_at': DateTime.now().toUtc().toIso8601String(),
+      if (speed != null) 'speed': speed,
+      if (distance != null) 'distance': distance,
+      if (altitude != null) 'altitude': altitude,
+      'location_type': locationType ?? 'unknown',
     };
 
     try {
       await _rankingAPI.createErrorLog(logEntry);
-      print('💓 Heartbeat 로그 즉시 전송: $requestType');
+      print('💓 Heartbeat: $locationType (속도: ${speed?.toStringAsFixed(1)}m/s, 고도: ${altitude?.toStringAsFixed(0)}m, 거리: ${distance?.toStringAsFixed(1)}m)');
     } catch (e) {
       print('❌ Heartbeat 로그 전송 실패: $e');
     }
@@ -591,24 +604,106 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
     }
   }
 
-  /// Heartbeat 타이머 시작 (30초마다 서버로 생존 신호 전송)
-  /// 이미 위치 스트림에서 _latitude, _longitude가 갱신되므로 추가 GPS 호출 없이 저장된 값 사용
+  /// Heartbeat 타이머 시작 (60초마다 서버로 생존 신호 전송)
+  /// 이미 위치 스트림에서 _latitude, _longitude, _currentSpeed, _currentAltitude가 갱신되므로 추가 GPS 호출 없이 저장된 값 사용
   void _startHeartbeatTimer() {
     _stopHeartbeatTimer(); // 기존 타이머 정리
 
+    // 첫 heartbeat 위치/고도 초기화
+    _lastHeartbeatLat = null;
+    _lastHeartbeatLon = null;
+    _lastHeartbeatAltitude = null;
+
     _heartbeatTimer = Timer.periodic(const Duration(seconds: 60), (timer) async {
       if (_currentLiveUserId != null) {
-        // 위치 스트림에서 이미 갱신된 저장된 위치 사용 (이중 GPS 호출 방지)
-        // Heartbeat는 버퍼 없이 즉시 전송
+        final currentLat = _latitude.value;
+        final currentLon = _longitude.value;
+        final currentAltitude = _currentAltitude;
+        final currentSpeed = _currentSpeed;
+
+        // 이전 heartbeat 위치와의 거리 계산
+        double? distanceFromLastHeartbeat;
+        if (_lastHeartbeatLat != null && _lastHeartbeatLon != null) {
+          distanceFromLastHeartbeat = Geolocator.distanceBetween(
+            _lastHeartbeatLat!,
+            _lastHeartbeatLon!,
+            currentLat,
+            currentLon,
+          );
+        }
+
+        // 🎿 리프트/슬로프 판별 로직
+        String locationType = _determineLocationType(
+          currentAltitude: currentAltitude,
+          lastAltitude: _lastHeartbeatAltitude,
+          speed: currentSpeed,
+        );
+
+        // Heartbeat는 버퍼 없이 즉시 전송 (속도, 거리, 고도, 위치타입 포함)
         _sendHeartbeatLogDirect(
           userId: _currentLiveUserId!,
           requestType: 'fg_heartbeat',
-          lat: _latitude.value,
-          lon: _longitude.value,
+          lat: currentLat,
+          lon: currentLon,
+          speed: currentSpeed,
+          distance: distanceFromLastHeartbeat,
+          altitude: currentAltitude,
+          locationType: locationType,
         );
+
+        // 현재 위치/고도를 마지막 heartbeat로 저장
+        _lastHeartbeatLat = currentLat;
+        _lastHeartbeatLon = currentLon;
+        _lastHeartbeatAltitude = currentAltitude;
       }
     });
     print('💓 Heartbeat 타이머 시작 (60초 주기)');
+  }
+
+  /// 🎿 리프트/슬로프 판별 (고도 변화 + 속도 조합)
+  /// - slope: 고도 하강 또는 빠른 속도 (스키/보드 타는 중)
+  /// - lift: 고도 상승 + 속도 느림 (리프트 탑승 중)
+  /// - unknown: 판별 불가 (정지, 걷기 등)
+  String _determineLocationType({
+    required double currentAltitude,
+    required double? lastAltitude,
+    required double speed,
+  }) {
+    final speedKmh = speed * 3.6; // m/s → km/h 변환
+
+    // 1️⃣ 속도 기반 우선 판별 (고도 변화 없어도 빠르면 슬로프)
+    if (speedKmh >= 15.0) {
+      return 'slope'; // 15km/h 이상 = 슬로프 (라이딩 중)
+    }
+
+    // 이전 고도 데이터 없으면 속도로만 판별
+    if (lastAltitude == null) {
+      if (speedKmh >= 5.0) return 'slope'; // 5km/h 이상 = 슬로프 추정
+      return 'unknown';
+    }
+
+    final altitudeDiff = currentAltitude - lastAltitude; // 양수: 상승, 음수: 하강
+
+    // 고도 변화 임계값 (60초 간격 고려하여 낮춤)
+    const double altitudeThreshold = 1.0; // 1m 이상 변화면 판별
+
+    // 2️⃣ 슬로프: 고도 하강 + 이동 중
+    if (altitudeDiff < -altitudeThreshold && speedKmh >= 3.0) {
+      return 'slope';
+    }
+
+    // 3️⃣ 리프트: 고도 상승 + 느린 속도 (0~15km/h)
+    if (altitudeDiff > altitudeThreshold && speedKmh <= 15.0 && speedKmh > 0) {
+      return 'lift';
+    }
+
+    // 4️⃣ 중간 속도인데 고도 변화 없음 = 슬로프 추정 (평지 구간)
+    if (speedKmh >= 5.0) {
+      return 'slope';
+    }
+
+    // 그 외: 정지, 걷기 등
+    return 'unknown';
   }
 
   /// Heartbeat 타이머 정지
@@ -744,12 +839,6 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
         _sendLiveLog(userId: user_id, requestType: 'liveOn_restart', error: '오류로인한 재시작');
       }
 
-      // Heartbeat 타이머 시작 (30초마다 서버로 생존 신호 전송)
-      _startHeartbeatTimer();
-
-      // 로그 버퍼 일괄 전송 타이머 시작 (1분마다)
-      _startLogFlushTimer();
-
       // Android: 배터리 최적화 제외 확인 (백그라운드 kill 방지)
       if (Platform.isAndroid) {
         final shouldProceed = await showBatteryOptimizationDialog(userId: user_id);
@@ -764,15 +853,26 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
 
       if (foregroundSuccess) {
         print('포그라운드 서비스 실행 성공, 백그라운드 서비스 시작');
+
+        // 🔥 liveOn 성공 후에만 타이머 시작 (실패 시 heartbeat 방지)
+        _startHeartbeatTimer();
+        _startLogFlushTimer();
+
         await startBackgroundLocationService(user_id: user_id);
         // 자동 라이브온 다이얼로그는 뷰에서 로딩 다이얼로그 닫힌 후 호출
       } else {
         print('포그라운드 서비스 실패로 백그라운드 실행 중단');
+        // 🔥 liveOn 실패 시 모든 서비스 정리
+        _stopHeartbeatTimer();
+        _stopLogFlushTimer();
+        _currentLiveUserId = null;
       }
     } catch (error) {
       // 포그라운드 실행 실패 및 모든 서비스 정리
       await stopForegroundLocationService();
       await stopBackgroundLocationService();
+      _stopHeartbeatTimer();
+      _stopLogFlushTimer();
       await liveOff({"user_id": user_id}, user_id, showSummary: false);
       print('라이브 위치 서비스 실행 실패: $error');
     }
@@ -938,9 +1038,11 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
               return;
             }
 
-            // 현재 좌표 갱신
+            // 현재 좌표, 속도, 고도 갱신
             _latitude.value = position.latitude;
             _longitude.value = position.longitude;
+            _currentSpeed = position.speed >= 0 ? position.speed : 0.0; // 음수 속도 방지
+            _currentAltitude = position.altitude; // 고도 (m)
 
             // 🔍 위치 스트림 로그 (디버깅용)
             double? distanceFromLast;
