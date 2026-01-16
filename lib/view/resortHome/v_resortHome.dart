@@ -364,8 +364,6 @@ class _ResortHomeViewState extends State<ResortHomeView> with
                                                   CustomFullScreenDialog.cancelDialog();
                                                   Get.back();
                                                   await _userViewModel.updateUserModel_api(_userViewModel.user.user_id);
-                                                  await _resortHomeViewModel.stopForegroundLocationService();
-                                                  await _resortHomeViewModel.stopBackgroundLocationService();
                                                   print('라이브 OFF');
                                                 },
                                                 child: Text(
@@ -474,9 +472,12 @@ class _ResortHomeViewState extends State<ResortHomeView> with
 
                                           HapticFeedback.lightImpact();
                                           CustomFullScreenDialog.showDialog();
-                                          await _resortHomeViewModel.startLiveLocationService(user_id: _userViewModel.user.user_id, isRestart: true);
-                                          await _userViewModel.updateUserModel_api(_userViewModel.user.user_id);
-                                          CustomFullScreenDialog.cancelDialog();
+                                          try {
+                                            await _resortHomeViewModel.startLiveLocationService(user_id: _userViewModel.user.user_id, isRestart: true);
+                                            await _userViewModel.updateUserModel_api(_userViewModel.user.user_id);
+                                          } finally {
+                                            CustomFullScreenDialog.cancelDialog();
+                                          }
                                           Get.back();
 
                                           if(_userViewModel.user.within_boundary == false){
@@ -520,8 +521,6 @@ class _ResortHomeViewState extends State<ResortHomeView> with
                                                 CustomFullScreenDialog.cancelDialog();
                                                 Get.back();
                                                 await _userViewModel.updateUserModel_api(_userViewModel.user.user_id);
-                                                await _resortHomeViewModel.stopForegroundLocationService();
-                                                await _resortHomeViewModel.stopBackgroundLocationService();
                                                 print('라이브 OFF');
                                               },
                                               child: Text(
@@ -575,9 +574,14 @@ class _ResortHomeViewState extends State<ResortHomeView> with
                             }
 
                             CustomFullScreenDialog.showDialog();
-                            await _resortHomeViewModel.startLiveLocationService(user_id: _userViewModel.user.user_id);
-                            await _userViewModel.updateUserModel_api(_userViewModel.user.user_id);
-                            CustomFullScreenDialog.cancelDialog();
+                            try {
+                              await _resortHomeViewModel.startLiveLocationService(user_id: _userViewModel.user.user_id);
+                              await _userViewModel.updateUserModel_api(_userViewModel.user.user_id);
+                              // 🔍 디버그: within_boundary 상태 확인
+                              print('🔍 [라이브 버튼] updateUserModel_api 후 within_boundary: ${_userViewModel.user.within_boundary}');
+                            } finally {
+                              CustomFullScreenDialog.cancelDialog();
+                            }
 
                             // 라이브온 성공 시 자동 라이브온 다이얼로그 표시
                             if(_userViewModel.user.within_boundary == true){

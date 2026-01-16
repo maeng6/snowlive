@@ -155,6 +155,9 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
   bool _isAutoLiveOnInProgress = false;  // 🔥 자동 라이브온 중복 실행 방지
   bool _isLiveOffInProgress = false;      // 🔥 liveOff 중복 실행 방지
 
+  // 🔥 백그라운드에서 liveOn 시 Live Activity 시작 지연용
+  Map<String, dynamic>? _pendingLiveActivityData;
+
   // 자동 라이브온 getter
   bool get isAutoLiveOnEnabled => _isAutoLiveOnEnabled.value;
   bool get shouldShowAutoLiveOnTooltip => _shouldShowAutoLiveOnTooltip.value;
@@ -233,30 +236,53 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
     await LiveActivityService.endAll();
 
     final UserViewModel _userViewModel = Get.find<UserViewModel>();
+    final userId = _userViewModel.user.user_id;
+
+    // user_id가 없으면 초기화 중단 (로그인 전 상태)
+    if (userId == null) {
+      print('⚠️ user_id가 null - 초기화 스킵');
+      isLoading_weather(false);
+      return;
+    }
 
     // 독립적인 작업들 병렬 처리 (약 60% 시간 단축)
+    // 에러가 발생해도 다른 작업은 계속 진행
     await Future.wait([
-      fetchBestFriendList(user_id: _userViewModel.user.user_id),
-      getRankingGuideUrl(),
-      fetchResortHome(_userViewModel.user.user_id!),
-      checkForPopUp(),
-      _splashController.loadSplashImage(),
+      _safeCall('fetchBestFriendList', () => fetchBestFriendList(user_id: userId)),
+      _safeCall('getRankingGuideUrl', () => getRankingGuideUrl()),
+      _safeCall('fetchResortHome', () => fetchResortHome(userId)),
+      _safeCall('checkForPopUp', () => checkForPopUp()),
+      _safeCall('loadSplashImage', () => _splashController.loadSplashImage()),
     ]);
 
     // fetchResortHome 완료 후 날씨 정보 fetch (nx, ny 값 필요)
+    // 에러 발생해도 반드시 호출 (isLoading_weather를 false로 설정)
     await fetchWeatherModel();
 
-    // Geofence 설정 (리조트 진입 감지용, 백그라운드 실행)
-    setupResortGeofences();
-
-    // 자동 라이브온 설정 로드
+    // 자동 라이브온 설정 로드 (Geofence 설정보다 먼저!)
     await _loadAutoLiveOnPreference();
 
+    // Geofence 설정 (자동 라이브온 설정 로드 후 호출)
+    await setupResortGeofences();
+
     // 앱 종료 상태에서 저장된 pending 지오펜스 확인 및 자동 라이브온
-    _checkPendingGeofenceFromHeadless();
+    // 🔥 await 추가 - 순차 실행으로 충돌 방지
+    await _checkPendingGeofenceFromHeadless();
 
     // 앱 비정상 종료 후 복구 체크 (서버는 liveOn인데 앱은 추적 안 하는 경우)
-    _checkAndRecoverFromAbnormalTermination();
+    // 🔥 await 추가 - pending 지오펜스 처리 완료 후 실행
+    await _checkAndRecoverFromAbnormalTermination();
+  }
+
+  /// 개별 작업 에러 로깅 헬퍼
+  Future<void> _safeCall(String name, Future<void> Function() fn) async {
+    try {
+      await fn();
+      print('✅ [onInit] $name 완료');
+    } catch (e, stackTrace) {
+      print('❌ [onInit] $name 실패: $e');
+      print('📍 스택트레이스: $stackTrace');
+    }
   }
 
   /// 앱이 포그라운드로 돌아왔을 때 호출 (배터리 최적화 시스템 팝업 후 자동 라이브온)
@@ -266,6 +292,9 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
     if (state == AppLifecycleState.resumed) {
       _isAppInForeground = true;
       print('📱 앱 상태: 포그라운드');
+
+      // 🔥 백그라운드에서 지연된 Live Activity 시작
+      _startPendingLiveActivity();
     } else if (state == AppLifecycleState.paused || state == AppLifecycleState.inactive) {
       _isAppInForeground = false;
       print('📱 앱 상태: 백그라운드');
@@ -274,6 +303,36 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
     if (state == AppLifecycleState.resumed && _isWaitingForBatteryOptimization) {
       _isWaitingForBatteryOptimization = false;
       _checkBatteryOptimizationAndStartLive();
+    }
+  }
+
+  /// 백그라운드에서 지연된 Live Activity 시작 (포그라운드 복귀 시 호출)
+  /// iOS 전용: Android는 백그라운드에서도 ForegroundService 시작 가능
+  Future<void> _startPendingLiveActivity() async {
+    if (_pendingLiveActivityData == null) return;
+    if (_liveActivityId != null) {
+      // 이미 Live Activity가 실행 중이면 스킵
+      _pendingLiveActivityData = null;
+      return;
+    }
+
+    try {
+      print('📱 [LA] iOS 지연된 Live Activity 시작');
+      final data = _pendingLiveActivityData!;
+      _pendingLiveActivityData = null;
+
+      _liveActivityId = await LiveActivityService.start(
+        liveOnStartAt: data['liveOnStartAt'] as DateTime,
+        todayRideCount: data['todayRideCount'] as int,
+        sessionRideCount: data['sessionRideCount'] as int,
+        lastSlopeName: data['lastSlopeName'] as String,
+        resortName: data['resortName'] as String,
+        liveFriendCount: data['liveFriendCount'] as int,
+      );
+      print('📱 [LA] 지연된 Live Activity 시작 완료: $_liveActivityId');
+    } catch (e) {
+      print('❌ [LA] 지연된 Live Activity 시작 실패: $e');
+      _pendingLiveActivityData = null;
     }
   }
 
@@ -298,6 +357,12 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
   /// 서버에서는 within_boundary=true (liveOn 상태)인데 앱에서 위치 추적이 안 되고 있으면 복구 다이얼로그 표시
   Future<void> _checkAndRecoverFromAbnormalTermination() async {
     try {
+      // 🔥 자동 라이브온이 진행 중이면 복구 체크 스킵
+      if (_isAutoLiveOnInProgress) {
+        print('ℹ️ [복구 체크] 자동 라이브온 진행 중, 복구 체크 스킵');
+        return;
+      }
+
       final userId = _userViewModel.user.user_id;
       if (userId == null) return;
 
@@ -1251,8 +1316,8 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
       disableMotionActivityUpdates: false,   // 반드시 false (중요)
       stopOnStationary: false,
 
-      // 🔥 Android foreground service 유지 → 삼성/중국폰 종료 방지
-      foregroundService: true,
+      // 🔥 Android: 포그라운드 서비스 알림 비활성화 (LiveActivityService가 대신 표시)
+      foregroundService: false,
       disableStopDetection: true,            // 🆕 정지 감지 비활성화 (삼성 Doze 대응)
 
       // 🔥 위치 업데이트 튜닝
@@ -1281,18 +1346,9 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
         negativeAction: '취소',
       ),
 
-      // 🔥 Android 알림 설정 - 우선순위 높여서 시스템 kill 방지
-      notification: bg.Notification(
-        channelId: "live_activity_channel",  // LiveActivityService와 동일한 채널 사용
-        title: "스노우라이브",
-        text: "라이브 위치 추적 중...",
-        sticky: true,
-        priority: bg.Config.NOTIFICATION_PRIORITY_HIGH,  // HIGH: 시스템 kill 방지 (알림이 눈에 띄게 표시될 수 있음)
-      ),
-
       showsBackgroundLocationIndicator: true,
       disableLocationAuthorizationAlert: true,
-      logLevel: bg.Config.LOG_LEVEL_OFF,
+      logLevel: bg.Config.LOG_LEVEL_VERBOSE,
 
       // 🆕 캐시 방지: 위치 데이터를 SQLite에 저장하지 않음 (bg_heartbeat 캐시 문제 해결)
       persistMode: bg.Config.PERSIST_MODE_NONE,
@@ -1994,18 +2050,18 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
     try {
       isLoading(true);
 
+      // 🔥 API 호출 전에 위치 서비스 먼저 종료 (API 실패해도 위치 추적은 반드시 중단)
+      await Future.wait([
+        stopBackgroundLocationService(),
+        stopForegroundLocationService(),
+      ]);
+      print('🛑 위치 추적 서비스 종료 완료');
+
       final ApiResponse response_off = await RankingAPI().liveOff(body);
 
       if (response_off.success) {
         // 🔥 로그 전송 (비동기, await 안함)
         _sendLiveLog(userId: user_id, requestType: 'liveOff_success', lat: _latitude.value, lon: _longitude.value);
-
-        // ✅ 위치 추적 서비스 완전 종료 (병렬 실행으로 속도 개선)
-        await Future.wait([
-          stopBackgroundLocationService(),
-          stopForegroundLocationService(),
-        ]);
-        print('🛑 위치 추적 서비스 종료 완료');
 
         // ✅ 동기 작업들 (빠름)
         _stopHeartbeatTimer();
@@ -2052,7 +2108,15 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
 
         return;
       } else {
+        // API 실패해도 정리 작업 수행
+        _stopHeartbeatTimer();
+        _currentLiveUserId = null;
+        _stopLogFlushTimer();
+        _stopLiveFriendsWorker();
+        await _endLiveActivity('liveOff() - API failed');
         CustomFullScreenDialog.cancelDialog();
+        print('⚠️ liveOff API 실패, 위치 서비스는 종료됨');
+        print('⚠️ liveOff API 실패 상세: success=${response_off.success}, error=${response_off.error}, statusCode=${response_off.statusCode}, data=${response_off.data}');
       }
       isLoading(false);
     } finally {
@@ -2089,11 +2153,10 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
   /// Geofence 전용 모드 재시작 (liveOff 후 호출)
   Future<void> _restartGeofenceMonitoring() async {
     try {
-      // Geofence 리스너 재설정
-      _setupGeofenceListener();
-      // Geofence 전용 모드로 시작
-      await bg.BackgroundGeolocation.startGeofences();
-      print('🌐 Geofence 모니터링 재시작 완료');
+      // 🔥 기존 지오펜스 상태 초기화를 위해 완전히 새로 등록
+      // (INSIDE 상태로 남아있으면 재진입 감지가 안됨)
+      await setupResortGeofences();
+      print('🌐 Geofence 모니터링 재시작 완료 (지오펜스 재등록됨)');
     } catch (e) {
       print('❌ Geofence 모니터링 재시작 실패: $e');
     }
@@ -2130,14 +2193,34 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
         _lastRideAt = null;
         _previousValidPosition = null; // GPS 보간용 이전 위치 초기화
 
-        _liveActivityId = await LiveActivityService.start(
-          liveOnStartAt: _liveOnStartedAt!,
-          todayRideCount: resortHomeModel?.dailyTotalCount ?? 0,
-          sessionRideCount: _sessionRideCount,
-          lastSlopeName: '—',
-          resortName: resortFullname,
-          liveFriendCount: _getLiveFriendCount(),
-        );
+        // 🔥 플랫폼별 Live Activity 시작 처리
+        // - Android: 지오펜스 이벤트에서 ForegroundService 시작 허용 → 항상 시도
+        // - iOS: 백그라운드에서 Live Activity 시작 불가 → 포그라운드에서만 시작
+        final bool shouldStartNow = Platform.isAndroid || _isAppInForeground;
+
+        if (shouldStartNow) {
+          _liveActivityId = await LiveActivityService.start(
+            liveOnStartAt: _liveOnStartedAt!,
+            todayRideCount: resortHomeModel?.dailyTotalCount ?? 0,
+            sessionRideCount: _sessionRideCount,
+            lastSlopeName: '—',
+            resortName: resortFullname,
+            liveFriendCount: _getLiveFriendCount(),
+          );
+          _pendingLiveActivityData = null;
+          print('📱 [liveOn] Live Activity 시작 시도 (${Platform.isAndroid ? "Android" : "iOS"})');
+        } else {
+          // iOS 백그라운드 상태: Live Activity 데이터 저장 (포그라운드 복귀 시 시작)
+          print('📱 [liveOn] iOS 백그라운드 상태 - Live Activity 시작 지연');
+          _pendingLiveActivityData = {
+            'liveOnStartAt': _liveOnStartedAt!,
+            'todayRideCount': resortHomeModel?.dailyTotalCount ?? 0,
+            'sessionRideCount': _sessionRideCount,
+            'lastSlopeName': '—',
+            'resortName': resortFullname,
+            'liveFriendCount': _getLiveFriendCount(),
+          };
+        }
 
         // 친구 라이브 상태 변경 감지 워커 시작 (실시간 업데이트)
         _startLiveFriendsWorker();
@@ -2708,26 +2791,40 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
       }
 
       // 0. BackgroundGeolocation 초기화 (Geofence 전용 모드)
+      // 🔋 배터리 최적화 + 안정적인 지오펜스 감지를 위한 설정
       await bg.BackgroundGeolocation.ready(bg.Config(
-        desiredAccuracy: bg.Config.DESIRED_ACCURACY_LOW,
-        distanceFilter: 100,
+        // 📍 위치 정확도: Android는 MEDIUM 필수, iOS는 LOW로도 충분
+        desiredAccuracy: Platform.isAndroid
+            ? bg.Config.DESIRED_ACCURACY_MEDIUM
+            : bg.Config.DESIRED_ACCURACY_LOW,
+        // 📏 거리 필터: 50m 이동 시 위치 업데이트 (더 정밀한 지오펜스 감지)
+        distanceFilter: 50,
         // 🔥 앱 종료 후에도 지오펜스 모니터링 유지
         stopOnTerminate: false,
         startOnBoot: true,
         enableHeadless: true,
+        // 🔥 iOS: "항상 허용" 권한 요청 (백그라운드 지오펜스에 필수)
+        locationAuthorizationRequest: 'Always',
         // Geofence 전용 설정
-        geofenceProximityRadius: 5000, // 5km 범위 내 Geofence만 모니터링
-        geofenceInitialTriggerEntry: false, // false: 실제로 반경 밖→안으로 진입할 때만 트리거
-        logLevel: bg.Config.LOG_LEVEL_OFF,
+        geofenceProximityRadius: 100000, // 100km 범위 내 Geofence 모니터링
+        geofenceInitialTriggerEntry: false, // false: 실제 반경 진입 시에만 ENTER 트리거 (이미 안에 있으면 무시)
+        logLevel: bg.Config.LOG_LEVEL_VERBOSE,
         // 🔥 iOS 파란색 상태바 표시 안함 (Geofence 전용 모드에서는 불필요)
         showsBackgroundLocationIndicator: false,
-        // 🔥 Android Geofence 전용 알림 (라이브온과 구분)
+        // 🔥 Android: Geofence 백그라운드 작동을 위해 포그라운드 서비스 필수
+        // foregroundService: false로 하면 Android가 백그라운드에서 앱을 kill함
+        foregroundService: Platform.isAndroid,
+        // ⏱️ 위치 업데이트 주기 (배터리 절약 + 안정적 감지)
+        // - 차량 60km/h 기준: 1분에 1km 이동 → 리조트 반경(1-5km) 내 충분히 감지
+        locationUpdateInterval: 60000, // 1분마다 위치 확인
+        fastestLocationUpdateInterval: 30000, // 최소 30초 간격 (너무 빠른 업데이트 방지)
+        // 🔥 Android 알림 최소화 (조용한 알림)
         notification: bg.Notification(
-          channelId: "geofence_channel",
-          title: "스노우라이브",
-          text: "스키장 감지 대기모드",
-          sticky: true,
-          priority: bg.Config.NOTIFICATION_PRIORITY_LOW,  // LOW: 눈에 띄지 않게
+          title: '스노우라이브',
+          text: '스키장 도착 시 자동으로 라이브가 시작됩니다',
+          sticky: false,
+          priority: bg.Config.NOTIFICATION_PRIORITY_MIN,
+          channelName: 'Geofence Service',
         ),
       ));
       print('✅ BackgroundGeolocation 초기화 완료');
@@ -2806,9 +2903,13 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
       // 4. Geofence 이벤트 리스너 설정
       _setupGeofenceListener();
 
-      // 5. Geofence 전용 모드로 시작 (위치 추적 없이 Geofence만 모니터링)
+      // 5. Geofence 모니터링 시작
       await bg.BackgroundGeolocation.startGeofences();
       print('🌐 리조트 Geofence 모니터링 시작');
+
+      // 현재 상태 로그
+      final state = await bg.BackgroundGeolocation.state;
+      print('📊 BackgroundGeolocation 상태: enabled=${state.enabled}, trackingMode=${state.trackingMode}');
 
       // 초기 위치 체크 제거 - GPS 활성화 방지 (Geofence 이벤트로만 감지)
 
@@ -2858,6 +2959,12 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
   Future<void> _handleGeofenceEnter(dynamic resortId, String resortName) async {
     print('🎿 리조트 진입 감지: $resortName');
 
+    // 🔥 중복 실행 방지 - 이미 자동 라이브온 진행 중이면 무시
+    if (_isAutoLiveOnInProgress) {
+      print('⚠️ 자동 라이브온 이미 진행 중, 중복 호출 무시');
+      return;
+    }
+
     // 이미 라이브온 상태면 무시
     if (isPositionStreamActive || _liveActivityId != null) {
       print('ℹ️ 이미 라이브온 활성 상태, 자동 라이브온 생략');
@@ -2876,6 +2983,9 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
       print('❌ 사용자 ID 없음, 자동 라이브온 시작 불가');
       return;
     }
+
+    // 🔥 자동 라이브온 시작 플래그 설정
+    _isAutoLiveOnInProgress = true;
 
     // 🚀 자동 라이브온 시작 (라이브 시작하기 버튼과 동일한 흐름)
     try {
@@ -2898,6 +3008,9 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
       }
     } catch (e) {
       print('❌ 자동 라이브온 시작 실패: $e');
+    } finally {
+      // 🔥 자동 라이브온 완료 플래그 해제
+      _isAutoLiveOnInProgress = false;
     }
   }
 

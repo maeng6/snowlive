@@ -36,28 +36,51 @@ class WeatherModel {
         .format(DateTime.now().subtract(Duration(days: 1)));
   }
 
-  Future<Map> parseWeatherData(int nX, int nY) async {
+  Future<Map<String, dynamic>> parseWeatherData(int nX, int nY) async {
     var getWeatherJson = await getJsonData(nX, nY);
-    this.temp =
-    getWeatherJson['response']['body']['items']['item'][3]['obsrValue'];
-    this.rain =
-    getWeatherJson["response"]["body"]["items"]["item"][2]["obsrValue"];
-    this.wind =
-    getWeatherJson["response"]["body"]["items"]["item"][7]["obsrValue"];
-    this.wet =
-    getWeatherJson["response"]["body"]["items"]["item"][1]["obsrValue"];
-    this.pty =
-    getWeatherJson['response']['body']['items']['item'][0]['obsrValue'];
+
+    // API 응답이 없거나 올바르지 않으면 기본값 반환
+    if (getWeatherJson == null ||
+        getWeatherJson['response']?['body']?['items']?['item'] == null) {
+      print('날씨 API 응답 없음 - 기본값 반환');
+      return _getDefaultWeatherMap();
+    }
+
+    try {
+      var items = getWeatherJson['response']['body']['items']['item'] as List;
+      this.temp = items.length > 3 ? items[3]['obsrValue'] : '-';
+      this.rain = items.length > 2 ? items[2]['obsrValue'] : '0';
+      this.wind = items.length > 7 ? items[7]['obsrValue'] : '-';
+      this.wet = items.length > 1 ? items[1]['obsrValue'] : '-';
+      this.pty = items.isNotEmpty ? items[0]['obsrValue'] : '0';
+    } catch (e) {
+      print('날씨 데이터 파싱 에러: $e');
+      return _getDefaultWeatherMap();
+    }
+
     var getMaxMinTempJson = await getMaxMinJsonData(nX, nY);
-    this.maxTemp = getMaxMinTempJson["response"]["body"]["items"]["item"][157]
-    ["fcstValue"];
-    this.minTemp =
-    getMaxMinTempJson["response"]["body"]["items"]["item"][48]["fcstValue"];
-    this.sky =
-    getMaxMinTempJson["response"]["body"]["items"]["item"][114]["fcstValue"];
 
+    // 최고/최저 온도 API 응답이 없으면 기본값 사용
+    if (getMaxMinTempJson == null ||
+        getMaxMinTempJson['response']?['body']?['items']?['item'] == null) {
+      this.maxTemp = '-';
+      this.minTemp = '-';
+      this.sky = '1';
+    } else {
+      try {
+        var maxMinItems = getMaxMinTempJson['response']['body']['items']['item'] as List;
+        this.maxTemp = maxMinItems.length > 157 ? maxMinItems[157]['fcstValue'] : '-';
+        this.minTemp = maxMinItems.length > 48 ? maxMinItems[48]['fcstValue'] : '-';
+        this.sky = maxMinItems.length > 114 ? maxMinItems[114]['fcstValue'] : '1';
+      } catch (e) {
+        print('최고/최저 온도 파싱 에러: $e');
+        this.maxTemp = '-';
+        this.minTemp = '-';
+        this.sky = '1';
+      }
+    }
 
-    Map<String, dynamic> weatherInfoMap = {
+    return {
       'temp': this.temp,
       'rain': this.rain,
       'wind': this.wind,
@@ -67,10 +90,19 @@ class WeatherModel {
       'pty': this.pty,
       'sky': this.sky
     };
+  }
 
-
-    return weatherInfoMap;
-
+  Map<String, dynamic> _getDefaultWeatherMap() {
+    return {
+      'temp': '-',
+      'rain': '0',
+      'wind': '-',
+      'wet': '-',
+      'maxTemp': '-',
+      'minTemp': '-',
+      'pty': '0',
+      'sky': '1'
+    };
   }
 
   void currentWeatherDate() {
@@ -105,42 +137,52 @@ class WeatherModel {
 
     var date = baseDate_2am;
     var time = baseTime_2am;
-    http.Response response = await http.get(Uri.parse(
-        'http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst'
-            '?serviceKey=$apiKey'
-            '&numOfRows=1000'
-            '&pageNo=1'
-            '&base_date=$date'
-            '&base_time=$time'
-            '&nx=$nX'
-            '&ny=$nY'
-            '&dataType=JSON'));
-    if (response.statusCode == 200) {
-      String jsonData = response.body;
-      var parsingData = jsonDecode(jsonData);
-      return parsingData;
-    } else {}
+    try {
+      http.Response response = await http.get(Uri.parse(
+          'https://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst'
+              '?serviceKey=$apiKey'
+              '&numOfRows=1000'
+              '&pageNo=1'
+              '&base_date=$date'
+              '&base_time=$time'
+              '&nx=$nX'
+              '&ny=$nY'
+              '&dataType=JSON')).timeout(Duration(seconds: 10));
+      if (response.statusCode == 200) {
+        String jsonData = response.body;
+        var parsingData = jsonDecode(jsonData);
+        return parsingData;
+      }
+    } catch (e) {
+      print('getMaxMinJsonData error: $e');
+    }
+    return null;
   }
 
   Future<dynamic> getJsonData(int nX, int nY) async {
     currentWeatherDate();
     var date = currentBaseDate;
     var time = currentBaseTime;
-    http.Response response = await http.get(Uri.parse(
-        'https://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getUltraSrtNcst'
-            '?serviceKey=$apiKey'
-            '&numOfRows=1000'
-            '&pageNo=1'
-            '&base_date=$date'
-            '&base_time=$time'
-            '&nx=$nX'
-            '&ny=$nY'
-            '&dataType=JSON'));
-    if (response.statusCode == 200) {
-      String jsonData = response.body;
-      var parsingData = await jsonDecode(jsonData);
-      return parsingData;
+    try {
+      http.Response response = await http.get(Uri.parse(
+          'https://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getUltraSrtNcst'
+              '?serviceKey=$apiKey'
+              '&numOfRows=1000'
+              '&pageNo=1'
+              '&base_date=$date'
+              '&base_time=$time'
+              '&nx=$nX'
+              '&ny=$nY'
+              '&dataType=JSON')).timeout(Duration(seconds: 10));
+      if (response.statusCode == 200) {
+        String jsonData = response.body;
+        var parsingData = jsonDecode(jsonData);
+        return parsingData;
+      }
+    } catch (e) {
+      print('getJsonData error: $e');
     }
+    return null;
   }
 
   Color? getWeatherColor(String pty, String sky) {
