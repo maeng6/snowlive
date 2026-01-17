@@ -902,6 +902,42 @@ class _FleaMarketDetailViewState extends State<FleaMarketDetailView> {
                                                         ),
                                                       ],
                                                     ),
+                                                    //TODO: 카카오톡 버튼
+                                                    if (_fleamarketDetailViewModel.fleamarketDetail.snsUrl != null &&
+                                                        _fleamarketDetailViewModel.fleamarketDetail.snsUrl != '' &&
+                                                        _fleamarketDetailViewModel.fleamarketDetail.status != FleamarketStatus.soldOut.korean)
+                                                      GestureDetector(
+                                                        onTap: () {
+                                                          textFocus.unfocus();
+                                                          otherShare(contents: '${_fleamarketDetailViewModel.fleamarketDetail.snsUrl}');
+                                                        },
+                                                        child: Container(
+                                                          padding: EdgeInsets.only(left: 10, right: 12, top: 6, bottom: 6),
+                                                          decoration: BoxDecoration(
+                                                            color: Color(0xFFFEE500),
+                                                            borderRadius: BorderRadius.circular(20),
+                                                          ),
+                                                          child: Row(
+                                                            mainAxisSize: MainAxisSize.min,
+                                                            children: [
+                                                              Image.asset(
+                                                                'assets/imgs/logos/kakao_logo.png',
+                                                                width: 18,
+                                                                height: 18,
+                                                                fit: BoxFit.cover,
+                                                              ),
+                                                              SizedBox(width: 2),
+                                                              Text(
+                                                                '카카오톡으로 문의하기',
+                                                                style: SDSTextStyle.bold.copyWith(
+                                                                  fontSize: 13,
+                                                                  color: Color(0xFF3C1E1E),
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      ),
                                                   ],
                                                 ),
                                                 Divider(
@@ -2019,30 +2055,6 @@ class _FleaMarketDetailViewState extends State<FleaMarketDetailView> {
                             padding: EdgeInsets.only(top: 12, left: 12, right: 12, bottom: 12),
                             child: Row(
                               children: [
-                                if(_fleamarketDetailViewModel.fleamarketDetail.snsUrl != null && _fleamarketDetailViewModel.fleamarketDetail.snsUrl != '' && (_fleamarketDetailViewModel.fleamarketDetail.status != FleamarketStatus.soldOut.korean))
-                                  GestureDetector(
-                                    onTap: () {
-                                      textFocus.unfocus();
-                                      otherShare(contents: '${_fleamarketDetailViewModel.fleamarketDetail.snsUrl}');
-                                    },
-                                    child: Padding(
-                                      padding: EdgeInsets.only(right: 8),
-                                      child: Container(
-                                        width: 36,
-                                        decoration: BoxDecoration(
-                                          shape: BoxShape.circle,
-                                          color: Color(0xFFFEE500),
-                                        ),
-                                        padding: EdgeInsets.all(8),
-                                        child: Image.asset(
-                                          'assets/imgs/logos/kakao_logo.png',
-                                          width: 20,
-                                          fit: BoxFit.cover,
-                                        )
-                                        ,
-                                      ),
-                                    ),
-                                  ),
                                 GestureDetector(
                                   onTap: (){
                                     _fleamarketDetailViewModel.changeSecret();
