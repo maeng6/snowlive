@@ -2200,11 +2200,13 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
         // 🔥 비필수 작업들은 백그라운드에서 처리 (다이얼로그와 병렬 실행)
         _performPostLiveOffTasks(user_id);
 
-        // ✅ 라이브오프 요약 다이얼로그 표시 (showSummary가 true일 때만)
+        // ✅ 라이브오프 요약 다이얼로그 표시 (showSummary가 true이고 라이딩 횟수가 1회 이상일 때만)
         if (showSummary) {
           try {
             final summary = LiveOffSummaryModel.fromJson(response_off.data);
-            await showLiveOffSummaryDialog(summary);
+            if (summary.totalSlopeCount > 0) {
+              await showLiveOffSummaryDialog(summary);
+            }
           } catch (e) {
             print('❌ 라이브오프 요약 다이얼로그 오류: $e');
           }
