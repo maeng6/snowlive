@@ -125,7 +125,7 @@ class _LiveOffSummaryDialogState extends State<LiveOffSummaryDialog> {
                     ),
                     // 상단: 프로필 이미지, 닉네임, 날짜 (상단 기준 70px)
                     Positioned(
-                      top: 60,
+                      top: 40,
                       left: 32,
                       right: 32,
                       child: Column(
@@ -159,7 +159,7 @@ class _LiveOffSummaryDialogState extends State<LiveOffSummaryDialog> {
                                     ),
                             ),
                           ),
-                          const SizedBox(height: 12),
+                          const SizedBox(height: 10),
 
                           // 닉네임
                           Text(
@@ -169,33 +169,43 @@ class _LiveOffSummaryDialogState extends State<LiveOffSummaryDialog> {
                               color: Colors.white,
                             ),
                           ),
-                          const SizedBox(height: 4),
+                          // 날짜
+                          Padding(
+                            padding: EdgeInsets.only(bottom: 6),
+                            child: Text(
+                              summary.date,
+                              style: SDSTextStyle.regular.copyWith(
+                                fontSize: 13,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
 
                           // 라이더 타이틀
                           if (summary.riderTitle.isNotEmpty)
-                            Text(
-                              summary.riderTitle,
-                              style: SDSTextStyle.regular.copyWith(
-                                fontSize: 14,
-                                color: Colors.white.withOpacity(0.9),
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 3),
+                              decoration: BoxDecoration(
+                                color: const Color(0xFF1B3A5C),
+                                borderRadius: BorderRadius.circular(20),
                               ),
-                              textAlign: TextAlign.center,
+                              child: Text(
+                                summary.riderTitle,
+                                style: SDSTextStyle.regular.copyWith(
+                                  fontSize: 13,
+                                  color: Colors.white,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
                             ),
 
-                          // 날짜
-                          Text(
-                            summary.date,
-                            style: SDSTextStyle.regular.copyWith(
-                              fontSize: 13,
-                              color: Colors.white.withOpacity(0.8),
-                            ),
-                          ),
+
                         ],
                       ),
                     ),
                     // 중앙: 라이딩 정보 (상단/하단 영역 사이 중앙 배치)
                     Positioned(
-                      top: 220, // 상단 영역 아래
+                      top: 224, // 상단 영역 아래
                       bottom: 80, // 하단 영역 위
                       left: 32,
                       right: 32,
@@ -224,7 +234,7 @@ class _LiveOffSummaryDialogState extends State<LiveOffSummaryDialog> {
                                   color: Colors.white.withOpacity(0.7),
                                 ),
                               ),
-                              const SizedBox(height: 20),
+                              const SizedBox(height: 16),
 
                               // 총 이동거리 & 최고 속도
                               Row(
