@@ -8,7 +8,8 @@ class LiveOffSummaryModel {
   late String profileImageUrlUser;
   late int totalSlopeCount;
   late Map<String, int> slopeCountsByName;
-  late double totalDistance;
+  late String mostRiddenSlope;
+  late int mostRiddenCount;
   late double topSpeed;
   late String riderTitle;
 
@@ -22,7 +23,8 @@ class LiveOffSummaryModel {
     this.profileImageUrlUser = '',
     this.totalSlopeCount = 0,
     Map<String, int>? slopeCountsByName,
-    this.totalDistance = 0,
+    this.mostRiddenSlope = '',
+    this.mostRiddenCount = 0,
     this.topSpeed = 0,
     this.riderTitle = '',
   }) : slopeCountsByName = slopeCountsByName ?? {};
@@ -48,7 +50,8 @@ class LiveOffSummaryModel {
       slopeCountsByName = {};
     }
 
-    totalDistance = (json['total_distance'] ?? 0).toDouble();
+    mostRiddenSlope = json['most_ridden_slope'] ?? '';
+    mostRiddenCount = json['most_ridden_count'] ?? 0;
     topSpeed = (json['top_speed'] ?? 0).toDouble();
     riderTitle = json['rider_title'] ?? '';
   }
@@ -64,7 +67,8 @@ class LiveOffSummaryModel {
       'profile_image_url_user': profileImageUrlUser,
       'total_slope_count': totalSlopeCount,
       'slope_counts_by_name': slopeCountsByName,
-      'total_distance': totalDistance,
+      'most_ridden_slope': mostRiddenSlope,
+      'most_ridden_count': mostRiddenCount,
       'top_speed': topSpeed,
       'rider_title': riderTitle,
     };

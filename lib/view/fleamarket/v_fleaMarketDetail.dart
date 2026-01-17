@@ -928,7 +928,7 @@ class _FleaMarketDetailViewState extends State<FleaMarketDetailView> {
                                                               ),
                                                               SizedBox(width: 2),
                                                               Text(
-                                                                '카카오톡으로 문의하기',
+                                                                '카카오톡으로 연락하기',
                                                                 style: SDSTextStyle.bold.copyWith(
                                                                   fontSize: 13,
                                                                   color: Color(0xFF3C1E1E),
@@ -1093,18 +1093,28 @@ class _FleaMarketDetailViewState extends State<FleaMarketDetailView> {
                                                 crossAxisAlignment: CrossAxisAlignment.start,
                                                 children: [
                                                   (_fleamarketDetailViewModel.fleamarketDetail.status != FleamarketStatus.soldOut.korean)
-                                                      ? Container(
-                                                    width: _size.width,
-                                                    child: SelectableText(
-                                                      '${_fleamarketDetailViewModel.fleamarketDetail.description}',
-                                                      style: SDSTextStyle.regular.copyWith(
-                                                          fontSize: 15,
-                                                          color: SDSColor.gray900),
+                                                      ? GestureDetector(
+                                                    onLongPress: () {
+                                                      Clipboard.setData(ClipboardData(
+                                                          text: _fleamarketDetailViewModel.fleamarketDetail.description ?? ''));
+                                                      Get.snackbar('복사 완료', '설명이 클립보드에 복사되었습니다.',
+                                                        snackPosition: SnackPosition.BOTTOM,
+                                                        duration: Duration(seconds: 2),
+                                                      );
+                                                    },
+                                                    child: Container(
+                                                      width: _size.width,
+                                                      child: Text(
+                                                        '${_fleamarketDetailViewModel.fleamarketDetail.description}',
+                                                        style: SDSTextStyle.regular.copyWith(
+                                                            fontSize: 15,
+                                                            color: SDSColor.gray900),
+                                                      ),
                                                     ),
                                                   )
                                                       : Container(
                                                     width: _size.width,
-                                                    child: SelectableText(
+                                                    child: Text(
                                                       '거래가 완료된 물품입니다.',
                                                       style: SDSTextStyle.regular.copyWith(
                                                           fontSize: 15,

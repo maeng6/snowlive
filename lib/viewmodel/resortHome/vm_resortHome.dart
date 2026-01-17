@@ -640,12 +640,14 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
         );
 
         // Heartbeat는 버퍼 없이 즉시 전송 (속도, 거리, 고도, 위치타입 포함)
+        // 속도: m/s → km/h 변환
+        final speedKmh = currentSpeed * 3.6;
         _sendHeartbeatLogDirect(
           userId: _currentLiveUserId!,
           requestType: 'fg_heartbeat',
           lat: currentLat,
           lon: currentLon,
-          speed: currentSpeed,
+          speed: speedKmh,
           distance: distanceFromLastHeartbeat,
           altitude: currentAltitude,
           locationType: locationType,
