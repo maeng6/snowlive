@@ -85,14 +85,18 @@ class _ResortHomeViewState extends State<ResortHomeView> with
 
     print('내 유저아이디 : ${_userViewModel.user.user_id}');
 
-    // 오픈채팅 알람 스트림 구독 시작
-    _openChatAlarmViewModel.startListening(_userViewModel.user.user_id!);
+    // 유저 ID가 있을 때만 알람 스트림 구독 시작
+    final userId = _userViewModel.user.user_id;
+    if (userId != null) {
+      // 오픈채팅 알람 스트림 구독 시작
+      _openChatAlarmViewModel.startListening(userId);
 
-    // 라이브온 알람 스트림 구독 시작 (친구 라이브온 알림)
-    _liveOnAlarmViewModel.startListening(_userViewModel.user.user_id!);
+      // 라이브온 알람 스트림 구독 시작 (친구 라이브온 알림)
+      _liveOnAlarmViewModel.startListening(userId);
 
-    // 이벤트 알람 스트림 구독 시작
-    _eventAlarmViewModel.startListening(_userViewModel.user.user_id!);
+      // 이벤트 알람 스트림 구독 시작
+      _eventAlarmViewModel.startListening(userId);
+    }
 
     _controller = AnimationController(
       vsync: this,
@@ -131,10 +135,12 @@ class _ResortHomeViewState extends State<ResortHomeView> with
     // ✅ 앱 재시작 시 liveOn 복구 (비정상 종료 후 재시작 대응)
     // 서버에서 within_boundary가 true인데 위치 추적이 비활성화된 경우 복구
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      if (_userViewModel.user.within_boundary == true &&
+      final restoreUserId = _userViewModel.user.user_id;
+      if (restoreUserId != null &&
+          _userViewModel.user.within_boundary == true &&
           !_resortHomeViewModel.isPositionStreamActive) {
         print('🔄 [initState] liveOn 복구 필요 감지 - wb: true, stream: inactive');
-        await _resortHomeViewModel.restoreLiveOn(_userViewModel.user.user_id!);
+        await _resortHomeViewModel.restoreLiveOn(restoreUserId);
       }
     });
 

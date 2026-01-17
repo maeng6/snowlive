@@ -4,7 +4,7 @@ buildscript {
     ext {
         compileSdkVersion   = 36    // ✅ compileSdk 상향 (mobile_scanner 요구)
         targetSdkVersion    = 35
-        minSdkVersion       = 23
+        minSdkVersion       = 24
         appCompatVersion    = "1.4.2"
         layServicesLocationVersion = "20.0.0"
         playServicesLocationVersion = "21.0.1"

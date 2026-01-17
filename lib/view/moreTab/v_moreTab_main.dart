@@ -109,11 +109,11 @@ class MoreTabMainView extends StatelessWidget {
                               children: [
                                 Row(
                                   children: [
-                                    (_userViewModel.user.profile_image_url_user != '')
+                                    (_userViewModel.user.profile_image_url_user != null && _userViewModel.user.profile_image_url_user != '')
                                         ? Container(
                                       width: 56,
                                       child: ExtendedImage.network(
-                                        _userViewModel.user.profile_image_url_user,
+                                        _userViewModel.user.profile_image_url_user ?? '',
                                         shape: BoxShape.circle,
                                         width: 56,
                                         height: 56,
@@ -165,21 +165,21 @@ class MoreTabMainView extends StatelessWidget {
                                       child: Container(
                                         width: _size.width - 160,
                                         child: Column(
-                                          mainAxisAlignment:  _userViewModel.user.state_msg != ''
+                                          mainAxisAlignment:  (_userViewModel.user.state_msg != null && _userViewModel.user.state_msg != '')
                                               ? MainAxisAlignment.center
                                               : MainAxisAlignment.start,
                                           crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
                                             Text(
-                                              _userViewModel.user.display_name,
+                                              _userViewModel.user.display_name ?? '',
                                               style: SDSTextStyle.bold.copyWith(
                                                 color: SDSColor.gray900,
                                                 fontSize: 16,
                                               ),
                                             ),
-                                            if (_userViewModel.user.state_msg != '' && _userViewModel.user.state_msg != null)
+                                            if (_userViewModel.user.state_msg != null && _userViewModel.user.state_msg != '')
                                               Text(
-                                                _userViewModel.user.state_msg,
+                                                _userViewModel.user.state_msg ?? '',
                                                 style: SDSTextStyle.regular.copyWith(
                                                   color: SDSColor.gray500,
                                                   fontSize: 13,
