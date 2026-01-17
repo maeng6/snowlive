@@ -236,11 +236,11 @@ class _LiveOffSummaryDialogState extends State<LiveOffSummaryDialog> {
                               ),
                               const SizedBox(height: 16),
 
-                              // 총 이동거리 & 최고 속도
+                              // 최다 라이딩 슬로프 & 최고 속도
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  // 총 이동거리
+                                  // 최다 라이딩 슬로프
                                   Expanded(
                                     child: Column(
                                       children: [
@@ -250,25 +250,29 @@ class _LiveOffSummaryDialogState extends State<LiveOffSummaryDialog> {
                                           textBaseline: TextBaseline.alphabetic,
                                           children: [
                                             Text(
-                                              _formatDistanceValue(summary.totalDistance),
+                                              summary.mostRiddenSlope.isNotEmpty
+                                                  ? summary.mostRiddenSlope
+                                                  : '-',
                                               style: SDSTextStyle.extraBold.copyWith(
-                                                fontSize: 24,
+                                                fontSize: 18,
                                                 color: Colors.white,
                                               ),
                                             ),
-                                            const SizedBox(width: 2),
-                                            Text(
-                                              _formatDistanceUnit(summary.totalDistance),
-                                              style: SDSTextStyle.extraBold.copyWith(
-                                                fontSize: 16,
-                                                color: Colors.white,
+                                            if (summary.mostRiddenCount > 0) ...[
+                                              const SizedBox(width: 4),
+                                              Text(
+                                                '${summary.mostRiddenCount}회',
+                                                style: SDSTextStyle.regular.copyWith(
+                                                  fontSize: 14,
+                                                  color: Colors.white.withOpacity(0.8),
+                                                ),
                                               ),
-                                            ),
+                                            ],
                                           ],
                                         ),
                                         const SizedBox(height: 2),
                                         Text(
-                                          '총 이동거리',
+                                          '최다 슬로프',
                                           style: SDSTextStyle.regular.copyWith(
                                             fontSize: 12,
                                             color: Colors.white.withOpacity(0.7),
@@ -401,29 +405,6 @@ class _LiveOffSummaryDialogState extends State<LiveOffSummaryDialog> {
           ),
         ],
       ),
-    );
-  }
-
-  String _formatDistance(double meters) {
-    if (meters >= 1000) {
-      return '${(meters / 1000).toStringAsFixed(1)} km';
-    } else {
-      return '${meters.toInt()} m';
-    }
-  }
-
-  String _formatDistanceValue(double meters) {
-    return _formatNumberWithComma(meters.toInt());
-  }
-
-  String _formatDistanceUnit(double meters) {
-    return 'm';
-  }
-
-  String _formatNumberWithComma(int number) {
-    return number.toString().replaceAllMapped(
-      RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
-      (Match m) => '${m[1]},',
     );
   }
 
