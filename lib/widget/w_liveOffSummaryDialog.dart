@@ -262,9 +262,9 @@ class _LiveOffSummaryDialogState extends State<LiveOffSummaryDialog> {
                                               const SizedBox(width: 4),
                                               Text(
                                                 '${summary.mostRiddenCount}회',
-                                                style: SDSTextStyle.regular.copyWith(
+                                                style: SDSTextStyle.extraBold.copyWith(
                                                   fontSize: 14,
-                                                  color: Colors.white.withOpacity(0.8),
+                                                  color: Colors.white,
                                                 ),
                                               ),
                                             ],
