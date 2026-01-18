@@ -504,6 +504,8 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
     double? lon,
     double? speed,
     double? distance,
+    double? altitude,
+    String? locationType,
   }) {
     if (!_isLoggingOn) return;
 
@@ -519,6 +521,8 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
       'created_at': DateTime.now().toUtc().toIso8601String(),
       if (speed != null) 'speed': speed,
       if (distance != null) 'distance': distance,
+      if (altitude != null) 'altitude': altitude,
+      'location_type': locationType ?? 'unknown',
     };
 
     _logBuffer.add(logEntry);
@@ -1056,6 +1060,13 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
                 position.longitude,
               );
             }
+            // 🎿 리프트/슬로프 판별
+            final locationType = _determineLocationType(
+              currentAltitude: position.altitude,
+              lastAltitude: _lastHeartbeatAltitude,
+              speed: position.speed,
+            );
+
             _sendLiveLog(
               userId: user_id,
               requestType: 'fg_position_stream',
@@ -1064,6 +1075,8 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
               error: Platform.isIOS ? 'iOS' : 'Android',
               speed: position.speed,
               distance: distanceFromLast,
+              altitude: position.altitude,
+              locationType: locationType,
             );
 
             // 🚨 GPS 튐 탐지: 정확도/속도 필터링
@@ -1211,8 +1224,8 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
                       final detectedInfo = (detectedLat != null && detectedLon != null)
                           ? ', detected: ${detectedLat.toStringAsFixed(6)},${detectedLon.toStringAsFixed(6)}'
                           : '';
-                      // 📌 위치 데이터 캡처 시간 기록 (신선도 체크용)
-                      final positionCapturedAt = DateTime.now();
+                      // 📌 실제 GPS 측정 시간 사용 (타임아웃 후 지연 실행 방지)
+                      final positionCapturedAt = position.timestamp;
                       futures.add(() async {
                         // 🔄 네트워크 재시도 로직 (최대 3회, 1초 간격)
                         for (int attempt = 1; attempt <= 3; attempt++) {
@@ -1289,8 +1302,8 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
                     if (canRespawn) {
                       print('🚀 리스폰 실행!');
                       _respawnSkipLogSent = false;
-                      // 📌 위치 데이터 캡처 시간 기록 (신선도 체크용)
-                      final positionCapturedAt = DateTime.now();
+                      // 📌 실제 GPS 측정 시간 사용 (타임아웃 후 지연 실행 방지)
+                      final positionCapturedAt = position.timestamp;
                       futures.add(() async {
                         // 🔄 네트워크 재시도 로직 (최대 3회, 1초 간격)
                         for (int attempt = 1; attempt <= 3; attempt++) {
@@ -1640,8 +1653,8 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
                 final detectedInfo = (detectedLat != null && detectedLon != null)
                     ? ', detected: ${detectedLat.toStringAsFixed(6)},${detectedLon.toStringAsFixed(6)}'
                     : '';
-                // 📌 위치 데이터 캡처 시간 기록 (신선도 체크용)
-                final positionCapturedAt = DateTime.now();
+                // 📌 실제 GPS 측정 시간 사용 (타임아웃 후 지연 실행 방지)
+                final positionCapturedAt = position.timestamp;
                 futures.add(() async {
                   // 🔄 네트워크 재시도 로직 (최대 3회, 1초 간격)
                   for (int attempt = 1; attempt <= 3; attempt++) {
@@ -1726,8 +1739,8 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
                 final detectedInfo = (detectedLat != null && detectedLon != null)
                     ? ', detected: ${detectedLat.toStringAsFixed(6)},${detectedLon.toStringAsFixed(6)}'
                     : '';
-                // 📌 위치 데이터 캡처 시간 기록 (신선도 체크용)
-                final positionCapturedAt = DateTime.now();
+                // 📌 실제 GPS 측정 시간 사용 (타임아웃 후 지연 실행 방지)
+                final positionCapturedAt = position.timestamp;
                 futures.add(() async {
                   // 🔄 네트워크 재시도 로직 (최대 3회, 1초 간격)
                   for (int attempt = 1; attempt <= 3; attempt++) {
@@ -1809,8 +1822,8 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
               } else if (_lastRespawnMethodCall == null || DateTime.now().difference(_lastRespawnMethodCall!).inSeconds > 10) {
                 _respawnSkipLogSent = false;
                 final respawnId = passPointInfo['id'];
-                // 📌 위치 데이터 캡처 시간 기록 (신선도 체크용)
-                final positionCapturedAt = DateTime.now();
+                // 📌 실제 GPS 측정 시간 사용 (타임아웃 후 지연 실행 방지)
+                final positionCapturedAt = position.timestamp;
                 futures.add(() async {
                   // 🔄 네트워크 재시도 로직 (최대 3회, 1초 간격)
                   for (int attempt = 1; attempt <= 3; attempt++) {
