@@ -23,6 +23,7 @@ class LiveOffSummaryDialog extends StatefulWidget {
 class _LiveOffSummaryDialogState extends State<LiveOffSummaryDialog> {
   final GlobalKey _repaintBoundaryKey = GlobalKey();
   bool _isSaving = false;
+  int _cardType = 0; // 0: 기본 카드, 1: 슬로프 리스트 카드
 
   Future<void> _saveImage() async {
     if (_isSaving) return;
@@ -95,6 +96,187 @@ class _LiveOffSummaryDialogState extends State<LiveOffSummaryDialog> {
     }
   }
 
+  // 카드 타입 0: 오늘 총 라이딩 (기존 디자인)
+  Widget _buildCardType0Content(LiveOffSummaryModel summary) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        // 오늘 총 라이딩 숫자
+        Text(
+          '${summary.totalSlopeCount}',
+          style: SDSTextStyle.extraBold.copyWith(
+            fontSize: 40,
+            color: Colors.white,
+            height: 1.0,
+          ),
+        ),
+        const SizedBox(height: 4),
+        // 오늘 총 라이딩 라벨
+        Text(
+          '오늘 총 라이딩',
+          style: SDSTextStyle.regular.copyWith(
+            fontSize: 12,
+            color: Colors.white.withOpacity(0.7),
+          ),
+        ),
+        const SizedBox(height: 16),
+        // 최다 라이딩 슬로프 & 최고 속도
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            // 최다 라이딩 슬로프
+            Expanded(
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.baseline,
+                    textBaseline: TextBaseline.alphabetic,
+                    children: [
+                      Text(
+                        summary.mostRiddenSlope.isNotEmpty
+                            ? summary.mostRiddenSlope
+                            : '-',
+                        style: SDSTextStyle.extraBold.copyWith(
+                          fontSize: 24,
+                          color: Colors.white,
+                        ),
+                      ),
+                      if (summary.mostRiddenCount > 0) ...[
+                        const SizedBox(width: 4),
+                        Text(
+                          '${summary.mostRiddenCount}회',
+                          style: SDSTextStyle.extraBold.copyWith(
+                            fontSize: 16,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ],
+                    ],
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    '최다 슬로프',
+                    style: SDSTextStyle.regular.copyWith(
+                      fontSize: 12,
+                      color: Colors.white.withOpacity(0.7),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            // 최고 속도
+            Expanded(
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.baseline,
+                    textBaseline: TextBaseline.alphabetic,
+                    children: [
+                      Text(
+                        summary.topSpeed.toStringAsFixed(1),
+                        style: SDSTextStyle.extraBold.copyWith(
+                          fontSize: 24,
+                          color: Colors.white,
+                        ),
+                      ),
+                      const SizedBox(width: 2),
+                      Text(
+                        'km/h',
+                        style: SDSTextStyle.extraBold.copyWith(
+                          fontSize: 16,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    '최고 속도',
+                    style: SDSTextStyle.regular.copyWith(
+                      fontSize: 12,
+                      color: Colors.white.withOpacity(0.7),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  // 카드 타입 1: 라이딩 슬로프 리스트
+  Widget _buildCardType1Content(LiveOffSummaryModel summary) {
+    final slopeEntries = summary.slopeCountsByName.entries.toList();
+    final firstSlope = slopeEntries.isNotEmpty ? slopeEntries.first : null;
+    final restSlopes = slopeEntries.length > 1 ? slopeEntries.sublist(1) : <MapEntry<String, int>>[];
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        // 오늘 총 라이딩 숫자
+        Text(
+          '${summary.totalSlopeCount}',
+          style: SDSTextStyle.extraBold.copyWith(
+            fontSize: 40,
+            color: Colors.white,
+            height: 1.0,
+          ),
+        ),
+        const SizedBox(height: 4),
+        // 오늘 총 라이딩 라벨
+        Text(
+          '오늘 총 라이딩',
+          style: SDSTextStyle.regular.copyWith(
+            fontSize: 12,
+            color: Colors.white.withOpacity(0.7),
+          ),
+        ),
+        const SizedBox(height: 24),
+        // 첫 번째 슬로프 이름 (큰 글씨)
+        Text(
+          firstSlope?.key ?? '-',
+          style: SDSTextStyle.extraBold.copyWith(
+            fontSize: 24,
+            color: Colors.white,
+            height: 1.0,
+          ),
+          textAlign: TextAlign.center,
+        ),
+        const SizedBox(height: 4),
+        // 라이딩 슬로프 라벨
+        Text(
+          '라이딩 슬로프',
+          style: SDSTextStyle.regular.copyWith(
+            fontSize: 12,
+            color: Colors.white.withOpacity(0.7),
+          ),
+        ),
+        // 나머지 슬로프들 (작은 텍스트)
+        if (restSlopes.isNotEmpty) ...[
+          const SizedBox(height: 16),
+          Wrap(
+            alignment: WrapAlignment.center,
+            spacing: 8,
+            runSpacing: 4,
+            children: restSlopes.map((entry) {
+              return Text(
+                entry.key,
+                style: SDSTextStyle.regular.copyWith(
+                  fontSize: 14,
+                  color: Colors.white.withOpacity(0.8),
+                ),
+              );
+            }).toList(),
+          ),
+        ],
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final summary = widget.summary;
@@ -119,11 +301,13 @@ class _LiveOffSummaryDialogState extends State<LiveOffSummaryDialog> {
                     // 배경 이미지
                     Positioned.fill(
                       child: Image.asset(
-                        'assets/imgs/imgs/img_summury_bg.png',
+                        _cardType == 0
+                            ? 'assets/imgs/imgs/img_summury_bg.png'
+                            : 'assets/imgs/imgs/img_summury_bg_2.png',
                         fit: BoxFit.cover,
                       ),
                     ),
-                    // 상단: 프로필 이미지, 닉네임, 날짜 (상단 기준 70px)
+                    // 상단: 프로필 이미지, 닉네임, 날짜
                     Positioned(
                       top: 40,
                       left: 32,
@@ -160,7 +344,6 @@ class _LiveOffSummaryDialogState extends State<LiveOffSummaryDialog> {
                             ),
                           ),
                           const SizedBox(height: 10),
-
                           // 닉네임
                           Text(
                             summary.displayName,
@@ -180,7 +363,6 @@ class _LiveOffSummaryDialogState extends State<LiveOffSummaryDialog> {
                               ),
                             ),
                           ),
-
                           // 라이더 타이틀
                           if (summary.riderTitle.isNotEmpty)
                             Container(
@@ -198,134 +380,25 @@ class _LiveOffSummaryDialogState extends State<LiveOffSummaryDialog> {
                                 textAlign: TextAlign.center,
                               ),
                             ),
-
-
                         ],
                       ),
                     ),
-                    // 중앙: 라이딩 정보 (상단/하단 영역 사이 중앙 배치)
+                    // 중앙: 라이딩 정보
                     Positioned(
-                      top: 224, // 상단 영역 아래
-                      bottom: 80, // 하단 영역 위
+                      top: 224,
+                      bottom: 80,
                       left: 32,
                       right: 32,
                       child: Center(
                         child: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 0),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              // 오늘 총 라이딩 숫자
-                              Text(
-                                '${summary.totalSlopeCount}',
-                                style: SDSTextStyle.extraBold.copyWith(
-                                  fontSize: 40,
-                                  color: Colors.white,
-                                  height: 1.0,
-                                ),
-                              ),
-                              const SizedBox(height: 4),
-
-                              // 오늘 총 라이딩 라벨
-                              Text(
-                                '오늘 총 라이딩',
-                                style: SDSTextStyle.regular.copyWith(
-                                  fontSize: 12,
-                                  color: Colors.white.withOpacity(0.7),
-                                ),
-                              ),
-                              const SizedBox(height: 16),
-
-                              // 최다 라이딩 슬로프 & 최고 속도
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  // 최다 라이딩 슬로프
-                                  Expanded(
-                                    child: Column(
-                                      children: [
-                                        Row(
-                                          mainAxisSize: MainAxisSize.min,
-                                          crossAxisAlignment: CrossAxisAlignment.baseline,
-                                          textBaseline: TextBaseline.alphabetic,
-                                          children: [
-                                            Text(
-                                              summary.mostRiddenSlope.isNotEmpty
-                                                  ? summary.mostRiddenSlope
-                                                  : '-',
-                                              style: SDSTextStyle.extraBold.copyWith(
-                                                fontSize: 18,
-                                                color: Colors.white,
-                                              ),
-                                            ),
-                                            if (summary.mostRiddenCount > 0) ...[
-                                              const SizedBox(width: 4),
-                                              Text(
-                                                '${summary.mostRiddenCount}회',
-                                                style: SDSTextStyle.extraBold.copyWith(
-                                                  fontSize: 14,
-                                                  color: Colors.white,
-                                                ),
-                                              ),
-                                            ],
-                                          ],
-                                        ),
-                                        const SizedBox(height: 2),
-                                        Text(
-                                          '최다 슬로프',
-                                          style: SDSTextStyle.regular.copyWith(
-                                            fontSize: 12,
-                                            color: Colors.white.withOpacity(0.7),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  // 최고 속도
-                                  Expanded(
-                                    child: Column(
-                                      children: [
-                                        Row(
-                                          mainAxisSize: MainAxisSize.min,
-                                          crossAxisAlignment: CrossAxisAlignment.baseline,
-                                          textBaseline: TextBaseline.alphabetic,
-                                          children: [
-                                            Text(
-                                              summary.topSpeed.toStringAsFixed(1),
-                                              style: SDSTextStyle.extraBold.copyWith(
-                                                fontSize: 24,
-                                                color: Colors.white,
-                                              ),
-                                            ),
-                                            const SizedBox(width: 2),
-                                            Text(
-                                              'km/h',
-                                              style: SDSTextStyle.extraBold.copyWith(
-                                                fontSize: 16,
-                                                color: Colors.white,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                        const SizedBox(height: 2),
-                                        Text(
-                                          '최고 속도',
-                                          style: SDSTextStyle.regular.copyWith(
-                                            fontSize: 12,
-                                            color: Colors.white.withOpacity(0.7),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
+                          child: _cardType == 0
+                              ? _buildCardType0Content(summary)
+                              : _buildCardType1Content(summary),
                         ),
                       ),
                     ),
-                    // 하단: 스노우라이브 로고 (하단 기준 40px)
+                    // 하단: 스노우라이브 로고
                     Positioned(
                       bottom: 40,
                       left: 0,
@@ -343,65 +416,98 @@ class _LiveOffSummaryDialogState extends State<LiveOffSummaryDialog> {
               ),
             ),
           ),
-          const SizedBox(height: 30),
 
           // 버튼 영역 (캡처 영역 밖)
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              // X 버튼 (닫기)
-              GestureDetector(
-                onTap: () => Get.back(),
-                child: Container(
-                  width: 56,
-                  height: 56,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(28),
-                  ),
-                  child: Center(
-                    child: Icon(
-                      Icons.close,
-                      size: 24,
-                      color: SDSColor.gray900,
+          Padding(
+            padding: EdgeInsets.only(top: 20),
+            child: Column(
+              children: [
+                // 닫기 버튼 + 카드 변경 버튼
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    // X 버튼 (닫기)
+                    GestureDetector(
+                      onTap: () => Get.back(),
+                      child: Container(
+                        width: 56,
+                        height: 56,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(28),
+                        ),
+                        child: Center(
+                          child: Icon(
+                            Icons.close,
+                            size: 24,
+                            color: SDSColor.gray900,
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 24),
+                    // 카드 변경 버튼
+                    GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          _cardType = _cardType == 0 ? 1 : 0;
+                        });
+                      },
+                      child: Container(
+                        width: 56,
+                        height: 56,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(28),
+                        ),
+                        child: Center(
+                          child: Icon(
+                            Icons.swap_horiz,
+                            size: 24,
+                            color: SDSColor.gray900,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                // 이미지 저장 버튼
+                Padding(
+                  padding: EdgeInsets.only(top: 30),
+                  child: GestureDetector(
+                    onTap: _isSaving ? null : _saveImage,
+                    child: Container(
+                      width: 220,
+                      height: 56,
+                      decoration: BoxDecoration(
+                        color: SDSColor.snowliveBlue,
+                        borderRadius: BorderRadius.circular(28),
+                      ),
+                      child: Center(
+                        child: _isSaving
+                            ? SizedBox(
+                                width: 20,
+                                height: 20,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  valueColor: AlwaysStoppedAnimation<Color>(
+                                    Colors.white,
+                                  ),
+                                ),
+                              )
+                            : Text(
+                                '이미지 저장',
+                                style: SDSTextStyle.bold.copyWith(
+                                  fontSize: 16,
+                                  color: Colors.white,
+                                ),
+                              ),
+                      ),
                     ),
                   ),
                 ),
-              ),
-              const SizedBox(width: 12),
-              // 이미지 저장 버튼
-              GestureDetector(
-                onTap: _isSaving ? null : _saveImage,
-                child: Container(
-                  width: 180,
-                  height: 56,
-                  decoration: BoxDecoration(
-                    color: SDSColor.snowliveBlue,
-                    borderRadius: BorderRadius.circular(28),
-                  ),
-                  child: Center(
-                    child: _isSaving
-                        ? SizedBox(
-                            width: 20,
-                            height: 20,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                              valueColor: AlwaysStoppedAnimation<Color>(
-                                Colors.white,
-                              ),
-                            ),
-                          )
-                        : Text(
-                            '이미지 저장',
-                            style: SDSTextStyle.bold.copyWith(
-                              fontSize: 16,
-                              color: Colors.white,
-                            ),
-                          ),
-                  ),
-                ),
-              ),
-            ],
+              ],
+            ),
           ),
         ],
       ),
