@@ -76,9 +76,7 @@ class RankingIndiView extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: Container(
                     child: (_rankingListViewModel.rankingListIndivList_view!.length != 0)
-                        ? Scrollbar(
-                      controller: _rankingListViewModel.scrollController_indiv,
-                      child: ListView.builder(
+                        ? ListView.builder(
                         shrinkWrap: true,
                         physics: AlwaysScrollableScrollPhysics(),
                         controller:  _rankingListViewModel.scrollController_indiv,
@@ -1615,11 +1613,8 @@ class RankingIndiView extends StatelessWidget {
                           }
                         },
                         padding: EdgeInsets.only(bottom: 80),
-                      ),
-                    )
-                        : Scrollbar(
-                      controller: _rankingListViewModel.scrollController_indiv,
-                      child: ListView.builder(
+                      )
+                        : ListView.builder(
                         shrinkWrap: true,
                         physics: AlwaysScrollableScrollPhysics(),
                         controller:  _rankingListViewModel.scrollController_indiv,
@@ -2915,7 +2910,6 @@ class RankingIndiView extends StatelessWidget {
                         },
                         padding: EdgeInsets.only(bottom: 80),
                       ),
-                    )
                 ),
               ),
             )

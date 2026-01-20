@@ -34,8 +34,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -1102,15 +1102,16 @@ class _ResortHomeViewState extends State<ResortHomeView> with
                                     ),)
                                 ),
                                 Positioned(
-                                  left: 16,
-                                  right: 16,
+                                  left: 0,
+                                  right: 0,
                                   bottom: 0,
-                                  child: SafeArea(
-                                    child: Container(
-                                      color: SDSColor.snowliveWhite,
-                                      width: _size.width,
-                                      padding: EdgeInsets.only(top: 12, bottom: 20),
-                                      child: ElevatedButton(
+                                  child: Container(
+                                    color: SDSColor.snowliveWhite,
+                                    child: SafeArea(
+                                      top: false,
+                                      child: Container(
+                                        padding: EdgeInsets.only(left: 16, right: 16, top: 12, bottom: 20),
+                                        child: ElevatedButton(
                                         onPressed: () async {
                                           Navigator.pop(context);
                                           Get.toNamed(AppRoutes.friendList);
@@ -1133,6 +1134,7 @@ class _ResortHomeViewState extends State<ResortHomeView> with
                                       ),
                                     ),
                                   ),
+                                ),
                                 ),
                               ],
                             );

@@ -83,9 +83,7 @@ class RankingCrewView extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: Container(
                     child: (_rankingListViewModel.rankingListCrewList_view!.length != 0)
-                        ? Scrollbar(
-                      controller: _rankingListViewModel.scrollController_crew,
-                      child: ListView.builder(
+                        ? ListView.builder(
                         shrinkWrap: true,
                         physics: AlwaysScrollableScrollPhysics(),
                         controller: _rankingListViewModel.scrollController_crew,
@@ -1513,11 +1511,8 @@ class RankingCrewView extends StatelessWidget {
                           }
                         },
                         padding: EdgeInsets.only(bottom: 80),
-                      ),
-                    )
-                        : Scrollbar(
-                      controller: _rankingListViewModel.scrollController_crew,
-                      child: ListView.builder(
+                      )
+                        : ListView.builder(
                         shrinkWrap: true,
                         physics: AlwaysScrollableScrollPhysics(),
                         controller: _rankingListViewModel.scrollController_crew,
@@ -2737,7 +2732,6 @@ class RankingCrewView extends StatelessWidget {
                         },
                         padding: EdgeInsets.only(bottom: 80),
                       ),
-                    ),
                   ),
                 )
 

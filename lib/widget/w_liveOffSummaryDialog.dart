@@ -10,6 +10,7 @@ import 'package:get/get.dart';
 import 'package:gal/gal.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart' show openAppSettings;
+import 'package:share_plus/share_plus.dart';
 
 class LiveOffSummaryDialog extends StatefulWidget {
   final LiveOffSummaryModel summary;
@@ -23,6 +24,7 @@ class LiveOffSummaryDialog extends StatefulWidget {
 class _LiveOffSummaryDialogState extends State<LiveOffSummaryDialog> {
   final GlobalKey _repaintBoundaryKey = GlobalKey();
   bool _isSaving = false;
+  bool _isSharing = false;
   int _cardType = 0; // 0: 기본 카드, 1: 슬로프 리스트 카드
 
   Future<void> _saveImage() async {
@@ -96,6 +98,54 @@ class _LiveOffSummaryDialogState extends State<LiveOffSummaryDialog> {
     }
   }
 
+  Future<void> _shareImage() async {
+    if (_isSharing) return;
+
+    setState(() {
+      _isSharing = true;
+    });
+
+    try {
+      // RepaintBoundary에서 이미지 캡처
+      RenderRepaintBoundary boundary = _repaintBoundaryKey.currentContext!
+          .findRenderObject() as RenderRepaintBoundary;
+      ui.Image image = await boundary.toImage(pixelRatio: 3.0);
+      ByteData? byteData = await image.toByteData(format: ui.ImageByteFormat.png);
+
+      if (byteData == null) {
+        Get.snackbar('오류', '이미지 생성에 실패했습니다.');
+        setState(() {
+          _isSharing = false;
+        });
+        return;
+      }
+
+      Uint8List pngBytes = byteData.buffer.asUint8List();
+
+      // 임시 파일로 저장
+      final tempDir = await getTemporaryDirectory();
+      final fileName = 'snowlive_summary_${DateTime.now().millisecondsSinceEpoch}.png';
+      final tempFile = File('${tempDir.path}/$fileName');
+      await tempFile.writeAsBytes(pngBytes);
+
+      // 공유 시트 열기
+      await Share.shareXFiles(
+        [XFile(tempFile.path)],
+        text: '스노우라이브에서 ${widget.summary.displayName} 님이 오늘의 라이딩 기록을 공유합니다!',
+      );
+
+      // 임시 파일 삭제
+      await tempFile.delete();
+    } catch (e) {
+      print('이미지 공유 오류: $e');
+      Get.snackbar('오류', '이미지 공유 중 오류가 발생했습니다.');
+    } finally {
+      setState(() {
+        _isSharing = false;
+      });
+    }
+  }
+
   // 카드 타입 0: 오늘 총 라이딩 (기존 디자인)
   Widget _buildCardType0Content(LiveOffSummaryModel summary) {
     return Column(
@@ -146,7 +196,7 @@ class _LiveOffSummaryDialogState extends State<LiveOffSummaryDialog> {
                         const SizedBox(width: 4),
                         Text(
                           '${summary.mostRiddenCount}회',
-                          style: SDSTextStyle.extraBold.copyWith(
+                          style: SDSTextStyle.regular.copyWith(
                             fontSize: 16,
                             color: Colors.white,
                           ),
@@ -181,10 +231,10 @@ class _LiveOffSummaryDialogState extends State<LiveOffSummaryDialog> {
                           color: Colors.white,
                         ),
                       ),
-                      const SizedBox(width: 2),
+                      const SizedBox(width: 4),
                       Text(
                         'km/h',
-                        style: SDSTextStyle.extraBold.copyWith(
+                        style: SDSTextStyle.regular.copyWith(
                           fontSize: 16,
                           color: Colors.white,
                         ),
@@ -208,11 +258,79 @@ class _LiveOffSummaryDialogState extends State<LiveOffSummaryDialog> {
     );
   }
 
+  // 텍스트 너비 계산
+  double _getTextWidth(String text, TextStyle style) {
+    final textPainter = TextPainter(
+      text: TextSpan(text: text, style: style),
+      maxLines: 1,
+      textDirection: TextDirection.ltr,
+    )..layout();
+    return textPainter.width;
+  }
+
+  // 2줄에 맞는 슬로프 개수 계산 (+N 포함 고려)
+  int _getSlopeCountForTwoLines(List<MapEntry<String, int>> slopes, double maxWidth, TextStyle style, double spacing) {
+    double currentLineWidth = 0;
+    int lineCount = 1;
+    int count = 0;
+
+    for (int i = 0; i < slopes.length; i++) {
+      final textWidth = _getTextWidth(slopes[i].key, style);
+
+      if (currentLineWidth + textWidth > maxWidth) {
+        lineCount++;
+        if (lineCount > 2) {
+          // 2줄 초과 시, "+N" 공간 확보를 위해 마지막 아이템 제거 필요할 수 있음
+          final plusNWidth = _getTextWidth('+${slopes.length - count}', style);
+          // 현재 줄에 +N이 들어갈 수 있는지 확인
+          while (count > 0) {
+            double lastLineWidth = 0;
+            int tempLineCount = 1;
+            for (int j = 0; j < count; j++) {
+              final w = _getTextWidth(slopes[j].key, style);
+              if (lastLineWidth + w > maxWidth) {
+                tempLineCount++;
+                lastLineWidth = w + spacing;
+              } else {
+                lastLineWidth += w + spacing;
+              }
+            }
+            // +N이 현재 줄에 들어가는지 확인
+            if (tempLineCount <= 2 && lastLineWidth + plusNWidth <= maxWidth) {
+              break;
+            }
+            if (tempLineCount < 2) {
+              break;
+            }
+            count--;
+          }
+          return count;
+        }
+        currentLineWidth = textWidth + spacing;
+      } else {
+        currentLineWidth += textWidth + spacing;
+      }
+      count++;
+    }
+
+    return slopes.length; // 모든 슬로프가 2줄에 들어감
+  }
+
   // 카드 타입 1: 라이딩 슬로프 리스트
   Widget _buildCardType1Content(LiveOffSummaryModel summary) {
     final slopeEntries = summary.slopeCountsByName.entries.toList();
     final firstSlope = slopeEntries.isNotEmpty ? slopeEntries.first : null;
     final restSlopes = slopeEntries.length > 1 ? slopeEntries.sublist(1) : <MapEntry<String, int>>[];
+
+    // 사용 가능한 너비 (카드 너비 320 - 좌우 패딩 24*2)
+    const double availableWidth = 320 - 48;
+    const double spacing = 8;
+    final textStyle = SDSTextStyle.bold.copyWith(fontSize: 14, color: Colors.white);
+
+    // 2줄에 맞는 슬로프 개수 계산
+    final displayCount = _getSlopeCountForTwoLines(restSlopes, availableWidth, textStyle, spacing);
+    final displaySlopes = restSlopes.take(displayCount).toList();
+    final remainingCount = restSlopes.length - displayCount;
 
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -246,6 +364,39 @@ class _LiveOffSummaryDialogState extends State<LiveOffSummaryDialog> {
           ),
           textAlign: TextAlign.center,
         ),
+        // 나머지 슬로프들 (작은 텍스트, 최대 2줄)
+        if (displaySlopes.isNotEmpty) ...[
+          const SizedBox(height: 6),
+          Wrap(
+            alignment: WrapAlignment.center,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            spacing: spacing,
+            runSpacing: 2,
+            children: [
+              ...displaySlopes.map((entry) {
+                return Text(
+                  entry.key,
+                  style: textStyle,
+                );
+              }),
+              if (remainingCount > 0)
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 0),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Text(
+                    '+$remainingCount',
+                    style: SDSTextStyle.bold.copyWith(
+                      fontSize: 11,
+                      color: Colors.black,
+                    ),
+                  ),
+                ),
+            ],
+          ),
+        ],
         const SizedBox(height: 4),
         // 라이딩 슬로프 라벨
         Text(
@@ -255,24 +406,6 @@ class _LiveOffSummaryDialogState extends State<LiveOffSummaryDialog> {
             color: Colors.white.withOpacity(0.7),
           ),
         ),
-        // 나머지 슬로프들 (작은 텍스트)
-        if (restSlopes.isNotEmpty) ...[
-          const SizedBox(height: 16),
-          Wrap(
-            alignment: WrapAlignment.center,
-            spacing: 8,
-            runSpacing: 4,
-            children: restSlopes.map((entry) {
-              return Text(
-                entry.key,
-                style: SDSTextStyle.regular.copyWith(
-                  fontSize: 14,
-                  color: Colors.white.withOpacity(0.8),
-                ),
-              );
-            }).toList(),
-          ),
-        ],
       ],
     );
   }
@@ -283,10 +416,11 @@ class _LiveOffSummaryDialogState extends State<LiveOffSummaryDialog> {
 
     return Dialog(
       backgroundColor: Colors.transparent,
-      insetPadding: const EdgeInsets.symmetric(horizontal: 0, vertical: 40),
+      insetPadding: const EdgeInsets.symmetric(horizontal: 0, vertical: 0),
       child: Column(
-        mainAxisSize: MainAxisSize.min,
+        mainAxisSize: MainAxisSize.max,
         children: [
+          const Spacer(),
           // 캡처 영역
           RepaintBoundary(
             key: _repaintBoundaryKey,
@@ -368,14 +502,18 @@ class _LiveOffSummaryDialogState extends State<LiveOffSummaryDialog> {
                             Container(
                               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 3),
                               decoration: BoxDecoration(
-                                color: const Color(0xFF1B3A5C),
+                                color: _cardType == 0
+                                    ? const Color(0xFF1B3A5C)
+                                    : const Color(0xFFC1CDD7),
                                 borderRadius: BorderRadius.circular(20),
                               ),
                               child: Text(
                                 summary.riderTitle,
                                 style: SDSTextStyle.regular.copyWith(
                                   fontSize: 13,
-                                  color: Colors.white,
+                                  color: _cardType == 0
+                                      ? Colors.white
+                                      : const Color(0xFF000000),
                                 ),
                                 textAlign: TextAlign.center,
                               ),
@@ -385,10 +523,10 @@ class _LiveOffSummaryDialogState extends State<LiveOffSummaryDialog> {
                     ),
                     // 중앙: 라이딩 정보
                     Positioned(
-                      top: 224,
+                      top: 236,
                       bottom: 80,
-                      left: 32,
-                      right: 32,
+                      left: 24,
+                      right: 24,
                       child: Center(
                         child: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 0),
@@ -417,92 +555,129 @@ class _LiveOffSummaryDialogState extends State<LiveOffSummaryDialog> {
             ),
           ),
 
-          // 버튼 영역 (캡처 영역 밖)
+          // 닫기 버튼 + 카드 변경 버튼
           Padding(
-            padding: EdgeInsets.only(top: 20),
-            child: Column(
+            padding: EdgeInsets.only(top: 16),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                // 닫기 버튼 + 카드 변경 버튼
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    // X 버튼 (닫기)
-                    GestureDetector(
-                      onTap: () => Get.back(),
-                      child: Container(
-                        width: 56,
-                        height: 56,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(28),
-                        ),
-                        child: Center(
-                          child: Icon(
-                            Icons.close,
-                            size: 24,
-                            color: SDSColor.gray900,
-                          ),
-                        ),
+                // X 버튼 (닫기)
+                GestureDetector(
+                  onTap: () => Get.back(),
+                  child: Container(
+                    width: 56,
+                    height: 56,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(28),
+                    ),
+                    child: Center(
+                      child: Icon(
+                        Icons.close,
+                        size: 26,
+                        color: SDSColor.gray900,
                       ),
                     ),
-                    const SizedBox(width: 24),
-                    // 카드 변경 버튼
-                    GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          _cardType = _cardType == 0 ? 1 : 0;
-                        });
-                      },
-                      child: Container(
-                        width: 56,
-                        height: 56,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(28),
-                        ),
-                        child: Center(
-                          child: Icon(
-                            Icons.swap_horiz,
-                            size: 24,
-                            color: SDSColor.gray900,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
-                // 이미지 저장 버튼
-                Padding(
-                  padding: EdgeInsets.only(top: 30),
-                  child: GestureDetector(
-                    onTap: _isSaving ? null : _saveImage,
-                    child: Container(
-                      width: 220,
-                      height: 56,
-                      decoration: BoxDecoration(
-                        color: SDSColor.snowliveBlue,
-                        borderRadius: BorderRadius.circular(28),
+                const SizedBox(width: 16),
+                // 카드 변경 버튼
+                GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      _cardType = _cardType == 0 ? 1 : 0;
+                    });
+                  },
+                  child: Container(
+                    width: 56,
+                    height: 56,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(28),
+                    ),
+                    child: Center(
+                      child: Icon(
+                        Icons.swap_horiz,
+                        size: 26,
+                        color: Colors.black,
                       ),
-                      child: Center(
-                        child: _isSaving
-                            ? SizedBox(
-                                width: 20,
-                                height: 20,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 2,
-                                  valueColor: AlwaysStoppedAnimation<Color>(
-                                    Colors.white,
-                                  ),
-                                ),
-                              )
-                            : Text(
-                                '이미지 저장',
-                                style: SDSTextStyle.bold.copyWith(
-                                  fontSize: 16,
-                                  color: Colors.white,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+
+          const Spacer(),
+
+          
+          // 공유 + 이미지 저장 버튼 (하단 고정)
+          Padding(
+            padding: EdgeInsets.only(bottom: 30),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                // 공유 버튼
+                GestureDetector(
+                  onTap: _isSharing ? null : _shareImage,
+                  child: Container(
+                    width: 56,
+                    height: 56,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(28),
+                    ),
+                    child: Center(
+                      child: _isSharing
+                          ? SizedBox(
+                              width: 20,
+                              height: 20,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                  Colors.black54,
                                 ),
                               ),
-                      ),
+                            )
+                          : Icon(
+                              Icons.share,
+                              size: 26,
+                              color: Colors.black,
+                            ),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 16),
+                // 이미지 저장 버튼
+                GestureDetector(
+                  onTap: _isSaving ? null : _saveImage,
+                  child: Container(
+                    width: 160,
+                    height: 56,
+                    decoration: BoxDecoration(
+                      color: SDSColor.snowliveBlue,
+                      borderRadius: BorderRadius.circular(28),
+                    ),
+                    child: Center(
+                      child: _isSaving
+                          ? SizedBox(
+                              width: 20,
+                              height: 20,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                  Colors.white,
+                                ),
+                              ),
+                            )
+                          : Text(
+                              '이미지 저장',
+                              style: SDSTextStyle.bold.copyWith(
+                                fontSize: 16,
+                                color: Colors.white,
+                              ),
+                            ),
                     ),
                   ),
                 ),
@@ -593,6 +768,6 @@ Future<void> showLiveOffSummaryDialog(LiveOffSummaryModel summary) async {
   await Get.dialog(
     LiveOffSummaryDialog(summary: summary),
     barrierDismissible: true,
-    barrierColor: Colors.black.withOpacity(0.8),
+    barrierColor: Colors.black.withOpacity(0.85),
   );
 }
