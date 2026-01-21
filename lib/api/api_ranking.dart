@@ -399,6 +399,23 @@ class RankingAPI {
     }
   }
 
+  /// 라이딩 기록 카드 조회
+  Future<ApiResponse> fetchRidingRecordCard(Map<String, dynamic> body) async {
+    final response = await http.post(
+      Uri.parse('$baseUrl/riding-record-card/'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode(body),
+    );
+
+    if (response.statusCode == 200) {
+      final data = json.decode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
+      return ApiResponse.success(data);
+    } else {
+      final data = json.decode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
+      return ApiResponse.error(data);
+    }
+  }
+
 
 
 

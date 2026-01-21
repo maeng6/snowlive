@@ -13,6 +13,7 @@ import 'package:com.snowlive/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/model/m_bestFriendListModel.dart';
 import 'package:com.snowlive/model/m_liveOffSummary.dart';
 import 'package:com.snowlive/model/m_treasure_record.dart';
+import 'package:com.snowlive/model/m_ridingRecordCard.dart';
 import 'package:com.snowlive/model/m_weatherModel.dart';
 import 'package:com.snowlive/widget/w_liveOffSummaryDialog.dart';
 import 'package:com.snowlive/native/live_activity_service.dart';
@@ -129,6 +130,7 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
   // GPS 튐 탐지용 변수 (정확도/속도 필터링)
   Position? _lastValidationPosition;
   DateTime? _lastValidationTime;
+  double? _lastValidatedSpeed; // 가속도 필터용 이전 속도 (m/s)
 
   // GPS 보간용 변수 (이전 유효 위치 저장)
   Position? _previousValidPosition;
@@ -643,16 +645,12 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
           speed: currentSpeed,
         );
 
-        // Heartbeat는 버퍼 없이 즉시 전송 (속도, 거리, 고도, 위치타입 포함)
-        // 속도: m/s → km/h 변환
-        final speedKmh = currentSpeed * 3.6;
+        // Heartbeat는 버퍼 없이 즉시 전송 (고도, 위치타입 포함)
         _sendHeartbeatLogDirect(
           userId: _currentLiveUserId!,
           requestType: 'fg_heartbeat',
           lat: currentLat,
           lon: currentLon,
-          speed: speedKmh,
-          distance: distanceFromLastHeartbeat,
           altitude: currentAltitude,
           locationType: locationType,
         );
@@ -2148,11 +2146,36 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
           );
           return false;
         }
+
+        // 3️⃣ 가속도 필터링 (급격한 속도 변화 감지)
+        if (_lastValidatedSpeed != null) {
+          final currentSpeedKmh = newPosition.speed * 3.6;
+          final lastSpeedKmh = _lastValidatedSpeed! * 3.6;
+          final accelerationKmhPerSec = (currentSpeedKmh - lastSpeedKmh).abs() / timeDiff;
+
+          // 🚨 비현실적 가속도: 20km/h/s 초과 시 속도를 0으로 (스키 최대 가속 ~15-18km/h/s)
+          if (accelerationKmhPerSec > 20) {
+            print('🚨 [GPS] 비현실적 가속도 감지: ${accelerationKmhPerSec.toStringAsFixed(1)}km/h/s, speed=${currentSpeedKmh.toStringAsFixed(1)}km/h → 0');
+            _sendLiveLog(
+              userId: userId,
+              requestType: 'gps_high_acceleration_reset',
+              error: 'accel: ${accelerationKmhPerSec.toStringAsFixed(1)}km/h/s, speed: ${currentSpeedKmh.toStringAsFixed(1)}→0km/h, time: ${timeDiff.toStringAsFixed(1)}s',
+              lat: newPosition.latitude,
+              lon: newPosition.longitude,
+            );
+            _currentSpeed = 0.0; // 속도를 0으로 리셋
+            _lastValidatedSpeed = 0.0; // 이전 속도도 리셋
+            _lastValidationPosition = newPosition;
+            _lastValidationTime = DateTime.now();
+            return true; // 위치는 유효, 속도만 0으로
+          }
+        }
       }
     }
 
     _lastValidationPosition = newPosition;
     _lastValidationTime = DateTime.now();
+    _lastValidatedSpeed = newPosition.speed >= 0 ? newPosition.speed : 0.0;
     return true;
   }
 
@@ -3561,6 +3584,32 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
       print('📱 자동 라이브온 툴팁 표시 완료 기록');
     } catch (e) {
       print('❌ 자동 라이브온 툴팁 표시 완료 기록 실패: $e');
+    }
+  }
+
+  // 라이딩 기록 카드 관련 변수
+  Rxn<RidingRecordCard> ridingRecordCard = Rxn<RidingRecordCard>();
+  RxBool isLoadingRidingRecordCard = false.obs;
+
+  /// 라이딩 기록 카드 조회
+  Future<void> fetchRidingRecordCard({required int userId}) async {
+    try {
+      isLoadingRidingRecordCard.value = true;
+      final response = await RankingAPI().fetchRidingRecordCard({
+        'user_id': userId,
+      });
+
+      if (response.success) {
+        ridingRecordCard.value = RidingRecordCard.fromJson(response.data);
+      } else {
+        ridingRecordCard.value = null;
+        print('❌ 라이딩 기록 카드 조회 실패: ${response.error}');
+      }
+    } catch (e) {
+      ridingRecordCard.value = null;
+      print('❌ 라이딩 기록 카드 조회 에러: $e');
+    } finally {
+      isLoadingRidingRecordCard.value = false;
     }
   }
 
