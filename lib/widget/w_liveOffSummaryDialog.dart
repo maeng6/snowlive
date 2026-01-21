@@ -11,6 +11,7 @@ import 'package:gal/gal.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart' show openAppSettings;
 import 'package:share_plus/share_plus.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class LiveOffSummaryDialog extends StatefulWidget {
   final LiveOffSummaryModel summary;
@@ -24,6 +25,7 @@ class LiveOffSummaryDialog extends StatefulWidget {
 class _LiveOffSummaryDialogState extends State<LiveOffSummaryDialog> {
   final GlobalKey _repaintBoundaryKey = GlobalKey();
   bool _isSaving = false;
+  bool _isSaved = false;
   bool _isSharing = false;
   int _cardType = 0; // 0: 기본 카드, 1: 슬로프 리스트 카드
 
@@ -81,16 +83,21 @@ class _LiveOffSummaryDialogState extends State<LiveOffSummaryDialog> {
       // 임시 파일 삭제
       await tempFile.delete();
 
-      Get.snackbar(
-        '저장 완료',
-        '이미지가 갤러리에 저장되었습니다.',
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.white,
-        colorText: SDSColor.gray900,
-      );
+      print('✅ 이미지 저장 완료');
+      setState(() {
+        _isSaved = true;
+      });
+
+      // 1초 후 버튼 상태 원래대로 복원 (카드 변경 후 재저장 가능하도록)
+      Future.delayed(const Duration(seconds: 1), () {
+        if (mounted) {
+          setState(() {
+            _isSaved = false;
+          });
+        }
+      });
     } catch (e) {
-      print('이미지 저장 오류: $e');
-      Get.snackbar('오류', '이미지 저장 중 오류가 발생했습니다.');
+      print('❌ 이미지 저장 오류: $e');
     } finally {
       setState(() {
         _isSaving = false;
@@ -504,7 +511,7 @@ class _LiveOffSummaryDialogState extends State<LiveOffSummaryDialog> {
                               decoration: BoxDecoration(
                                 color: _cardType == 0
                                     ? const Color(0xFF1B3A5C)
-                                    : const Color(0xFFC1CDD7),
+                                    : const Color(0xFFE2EDF8),
                                 borderRadius: BorderRadius.circular(20),
                               ),
                               child: Text(
@@ -563,6 +570,7 @@ class _LiveOffSummaryDialogState extends State<LiveOffSummaryDialog> {
               children: [
                 // X 버튼 (닫기)
                 GestureDetector(
+                  behavior: HitTestBehavior.opaque,
                   onTap: () => Get.back(),
                   child: Container(
                     width: 56,
@@ -596,10 +604,10 @@ class _LiveOffSummaryDialogState extends State<LiveOffSummaryDialog> {
                       borderRadius: BorderRadius.circular(28),
                     ),
                     child: Center(
-                      child: Icon(
-                        Icons.swap_horiz,
-                        size: 26,
-                        color: Colors.black,
+                      child: SvgPicture.asset(
+                        'assets/imgs/icons/icon_summury_change.svg',
+                        width: 24,
+                        height: 24,
                       ),
                     ),
                   ),
@@ -640,10 +648,10 @@ class _LiveOffSummaryDialogState extends State<LiveOffSummaryDialog> {
                                 ),
                               ),
                             )
-                          : Icon(
-                              Icons.share,
-                              size: 26,
-                              color: Colors.black,
+                          : SvgPicture.asset(
+                              'assets/imgs/icons/icon_summury_share.svg',
+                              width: 26,
+                              height: 26,
                             ),
                     ),
                   ),
@@ -651,12 +659,12 @@ class _LiveOffSummaryDialogState extends State<LiveOffSummaryDialog> {
                 const SizedBox(width: 16),
                 // 이미지 저장 버튼
                 GestureDetector(
-                  onTap: _isSaving ? null : _saveImage,
+                  onTap: (_isSaving || _isSaved) ? null : _saveImage,
                   child: Container(
                     width: 160,
                     height: 56,
                     decoration: BoxDecoration(
-                      color: SDSColor.snowliveBlue,
+                      color: _isSaved ? const Color(0xFF34C759) : SDSColor.snowliveBlue,
                       borderRadius: BorderRadius.circular(28),
                     ),
                     child: Center(
@@ -671,13 +679,19 @@ class _LiveOffSummaryDialogState extends State<LiveOffSummaryDialog> {
                                 ),
                               ),
                             )
-                          : Text(
-                              '이미지 저장',
-                              style: SDSTextStyle.bold.copyWith(
-                                fontSize: 16,
-                                color: Colors.white,
-                              ),
-                            ),
+                          : _isSaved
+                              ? Icon(
+                                  Icons.check,
+                                  size: 28,
+                                  color: Colors.white,
+                                )
+                              : Text(
+                                  '이미지 저장',
+                                  style: SDSTextStyle.bold.copyWith(
+                                    fontSize: 16,
+                                    color: Colors.white,
+                                  ),
+                                ),
                     ),
                   ),
                 ),
