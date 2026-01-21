@@ -13,6 +13,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:com.snowlive/util/secure_storage_helper.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -667,12 +668,12 @@ class SetProfileView extends StatelessWidget {
                         });
                         if (isSuccess) {
                           _userViewModel.updateUserModel_data(_setProfileViewModel.startSnowliveReturn);
-                          await FlutterSecureStorage().write(key: 'localUid', value: FirebaseAuth.instance.currentUser!.uid);
-                          await FlutterSecureStorage().write(key: 'device_id', value: '1');
-                          await FlutterSecureStorage().write(key: 'device_token', value: '1');
-                          //await FlutterSecureStorage().write(key: 'device_id', value: _notificationController.deviceID);
-                          //await FlutterSecureStorage().write(key: 'device_token', value: _notificationController.deviceToken);
-                          await FlutterSecureStorage().write(key: 'user_id', value: _userViewModel.user.user_id.toString());
+                          await getSecureStorage().write(key: 'localUid', value: FirebaseAuth.instance.currentUser!.uid);
+                          await getSecureStorage().write(key: 'device_id', value: '1');
+                          await getSecureStorage().write(key: 'device_token', value: '1');
+                          //await getSecureStorage().write(key: 'device_id', value: _notificationController.deviceID);
+                          //await getSecureStorage().write(key: 'device_token', value: _notificationController.deviceToken);
+                          await getSecureStorage().write(key: 'user_id', value: _userViewModel.user.user_id.toString());
                           CustomFullScreenDialog.cancelDialog();
                           Get.offAllNamed(AppRoutes.mainHome); // 성공 시 메인 홈 이동
                         } else {

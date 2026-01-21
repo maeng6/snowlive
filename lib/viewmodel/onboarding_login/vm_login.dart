@@ -9,6 +9,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_udid/flutter_udid.dart';
 import 'package:get/get.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:com.snowlive/util/secure_storage_helper.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
@@ -29,7 +30,7 @@ class LoginViewModel extends GetxController {
   bool? get isAndroidEmailLogIn => _isAndroidEmailLogIn!.value;
 
   final auth = FirebaseAuth.instance;
-  final storage = FlutterSecureStorage();
+  final storage = getSecureStorage();
   final googleSignIn = GoogleSignIn();
   final loginAPI = LoginAPI();
   RxString signInMethod = ''.obs;
@@ -101,9 +102,9 @@ class LoginViewModel extends GetxController {
         final prefs = await SharedPreferences.getInstance();
         await prefs.setString('signInMethod', 'google');
         await getLocalSignInMethod();
-        await FlutterSecureStorage().write(key: 'localUid', value: loginUid!.value);
-        await FlutterSecureStorage().write(key: 'device_id', value: device_id!.value);
-        await FlutterSecureStorage().write(key: 'device_token', value: device_token!.value);
+        await getSecureStorage().write(key: 'localUid', value: loginUid!.value);
+        await getSecureStorage().write(key: 'device_id', value: device_id!.value);
+        await getSecureStorage().write(key: 'device_token', value: device_token!.value);
         await findUserAPI();
         CustomFullScreenDialog.cancelDialog();
         await getLocalSignInMethod();
@@ -169,9 +170,9 @@ class LoginViewModel extends GetxController {
         // SharedPreferences로 변경 (앱 삭제 전까지 유지)
         final prefs = await SharedPreferences.getInstance();
         await prefs.setString('signInMethod', 'apple');
-        await FlutterSecureStorage().write(key: 'localUid', value: loginUid!.value);
-        await FlutterSecureStorage().write(key: 'device_id', value: device_id!.value);
-        await FlutterSecureStorage().write(key: 'device_token', value: device_token!.value);
+        await getSecureStorage().write(key: 'localUid', value: loginUid!.value);
+        await getSecureStorage().write(key: 'device_id', value: device_id!.value);
+        await getSecureStorage().write(key: 'device_token', value: device_token!.value);
         await findUserAPI();
         CustomFullScreenDialog.cancelDialog();
         await getLocalSignInMethod();
@@ -201,15 +202,15 @@ class LoginViewModel extends GetxController {
       if (message == '새로운기기' || message == '이관성공') {
         print('새로운기기 or 이관성공');
 
-        await FlutterSecureStorage().write(key: 'localUid', value: loginUid!.value);
+        await getSecureStorage().write(key: 'localUid', value: loginUid!.value);
 
-        await FlutterSecureStorage().write(key: 'device_id', value: device_id!.value);
+        await getSecureStorage().write(key: 'device_id', value: device_id!.value);
 
-        await FlutterSecureStorage().write(key: 'device_token', value: device_token!.value);
+        await getSecureStorage().write(key: 'device_token', value: device_token!.value);
 
-        await FlutterSecureStorage().write(key: 'user_id', value: data['user']['user_id'].toString());
+        await getSecureStorage().write(key: 'user_id', value: data['user']['user_id'].toString());
 
-        String? userIdString = await FlutterSecureStorage().read(key: 'user_id');
+        String? userIdString = await getSecureStorage().read(key: 'user_id');
         print(userIdString);
         int user_id = int.parse(userIdString!);
 
@@ -218,15 +219,15 @@ class LoginViewModel extends GetxController {
         Get.offAllNamed(AppRoutes.mainHome);
       } else if (message == '기존기기') {
 
-        await FlutterSecureStorage().write(key: 'localUid', value: loginUid!.value);
+        await getSecureStorage().write(key: 'localUid', value: loginUid!.value);
 
-        await FlutterSecureStorage().write(key: 'user_id', value: data['user']['user_id'].toString());
+        await getSecureStorage().write(key: 'user_id', value: data['user']['user_id'].toString());
 
-        await FlutterSecureStorage().write(key: 'device_id', value: device_id!.value);
+        await getSecureStorage().write(key: 'device_id', value: device_id!.value);
 
-        await FlutterSecureStorage().write(key: 'device_token', value: device_token!.value);
+        await getSecureStorage().write(key: 'device_token', value: device_token!.value);
 
-        String? userIdString = await FlutterSecureStorage().read(key: 'user_id');
+        String? userIdString = await getSecureStorage().read(key: 'user_id');
         print(userIdString);
         int user_id = int.parse(userIdString!);
 
@@ -298,10 +299,10 @@ class LoginViewModel extends GetxController {
       }
 
       // SecureStorage 데이터 삭제
-      await FlutterSecureStorage().delete(key: 'localUid');
-      await FlutterSecureStorage().delete(key: 'device_id');
-      await FlutterSecureStorage().delete(key: 'device_token');
-      await FlutterSecureStorage().delete(key: 'user_id');
+      await getSecureStorage().delete(key: 'localUid');
+      await getSecureStorage().delete(key: 'device_id');
+      await getSecureStorage().delete(key: 'device_token');
+      await getSecureStorage().delete(key: 'user_id');
 
       // SharedPreferences의 signInMethod 삭제
       final prefs = await SharedPreferences.getInstance();

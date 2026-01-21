@@ -8,6 +8,7 @@ import 'package:com.snowlive/routes/routes.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
 import 'package:get/get.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:com.snowlive/util/secure_storage_helper.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -17,7 +18,7 @@ final ref = FirebaseFirestore.instance;
 
 class AuthCheckViewModel extends GetxController {
   final auth = FirebaseAuth.instance;
-  final storage = FlutterSecureStorage();
+  final storage = getSecureStorage();
   final messaging = FirebaseMessaging.instance;
   RxString? localUid = ''.obs;
   RxString? device_id = ''.obs;
@@ -48,7 +49,7 @@ class AuthCheckViewModel extends GetxController {
         );
         // 기존 인증 정보 유지, 저장된 user_id로 사용자 정보 로드 시도
         try {
-          String? userIdString = await FlutterSecureStorage().read(key: 'user_id');
+          String? userIdString = await getSecureStorage().read(key: 'user_id');
           if (userIdString != null) {
             int user_id = int.parse(userIdString);
             await _userViewModel.updateUserModel_api(user_id);
@@ -63,21 +64,21 @@ class AuthCheckViewModel extends GetxController {
       if(response!.success){
         if (response!.data['message'] == '새로운기기') {
           //print('compareDeviceId 결과 : ${response!.data['message']}');
-          await FlutterSecureStorage()
+          await getSecureStorage()
               .write(key: 'localUid', value: localUid!.value);
-          await FlutterSecureStorage()
+          await getSecureStorage()
               .write(key: 'device_id', value: device_id!.value);
-          await FlutterSecureStorage()
+          await getSecureStorage()
               .write(key: 'device_token', value: device_token!.value);
           try {
-            String? userIdString = await FlutterSecureStorage().read(key: 'user_id');
+            String? userIdString = await getSecureStorage().read(key: 'user_id');
             int user_id = int.parse(userIdString!);
             await _userViewModel.updateUserModel_api(user_id, fcm_token: fcm_token!.value);
             _gotoMainHome!.value = true;
             return _gotoMainHome!.value;
           }catch(e){
-            await FlutterSecureStorage().write(key: 'user_id', value: response!.data['user_id']);
-            String? userIdString = await FlutterSecureStorage().read(key: 'user_id');
+            await getSecureStorage().write(key: 'user_id', value: response!.data['user_id']);
+            String? userIdString = await getSecureStorage().read(key: 'user_id');
             int user_id = int.parse(userIdString!);
             await _userViewModel.updateUserModel_api(user_id, fcm_token: fcm_token!.value);
             _gotoMainHome!.value = true;
@@ -86,14 +87,14 @@ class AuthCheckViewModel extends GetxController {
         } else if (response!.data['message'] == '기존기기') {
           //print('compareDeviceId 결과 : ${response!.data['message']}');
           try {
-            String? userIdString = await FlutterSecureStorage().read(key: 'user_id');
+            String? userIdString = await getSecureStorage().read(key: 'user_id');
             int user_id = int.parse(userIdString!);
             await _userViewModel.updateUserModel_api(user_id, fcm_token: fcm_token!.value);
             _gotoMainHome!.value = true;
             return _gotoMainHome!.value;
           }catch(e){
-            await FlutterSecureStorage().write(key: 'user_id', value: response!.data['user_id'].toString());
-            String? userIdString = await FlutterSecureStorage().read(key: 'user_id');
+            await getSecureStorage().write(key: 'user_id', value: response!.data['user_id'].toString());
+            String? userIdString = await getSecureStorage().read(key: 'user_id');
             int user_id = int.parse(userIdString!);
             await _userViewModel.updateUserModel_api(user_id, fcm_token: fcm_token!.value);
             _gotoMainHome!.value = true;
@@ -106,10 +107,10 @@ class AuthCheckViewModel extends GetxController {
           reason: 'logout_api_failure',
           errorDetail: response!.error['error']?.toString(),
         );
-        await FlutterSecureStorage().delete(key: 'localUid');
-        await FlutterSecureStorage().delete(key: 'device_id');
-        await FlutterSecureStorage().delete(key: 'device_token');
-        await FlutterSecureStorage().delete(key: 'user_id');
+        await getSecureStorage().delete(key: 'localUid');
+        await getSecureStorage().delete(key: 'device_id');
+        await getSecureStorage().delete(key: 'device_token');
+        await getSecureStorage().delete(key: 'user_id');
         _gotoMainHome!.value = false;
         return _gotoMainHome!.value;
       }
@@ -120,10 +121,10 @@ class AuthCheckViewModel extends GetxController {
         reason: 'logout_missing_credentials',
         errorDetail: 'localUid=${localUid?.value?.isEmpty ?? true}, device_id=${device_id?.value?.isEmpty ?? true}, device_token=${device_token?.value?.isEmpty ?? true}',
       );
-      await FlutterSecureStorage().delete(key: 'localUid');
-      await FlutterSecureStorage().delete(key: 'device_id');
-      await FlutterSecureStorage().delete(key: 'device_token');
-      await FlutterSecureStorage().delete(key: 'user_id');
+      await getSecureStorage().delete(key: 'localUid');
+      await getSecureStorage().delete(key: 'device_id');
+      await getSecureStorage().delete(key: 'device_token');
+      await getSecureStorage().delete(key: 'user_id');
       Get.offAllNamed(AppRoutes.login);
       return _gotoMainHome!.value;
     }

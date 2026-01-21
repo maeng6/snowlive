@@ -1,6 +1,7 @@
 import 'package:com.snowlive/routes/routes.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:com.snowlive/util/secure_storage_helper.dart';
 import 'package:get/get.dart';
 import 'package:get/get_rx/get_rx.dart';
 
@@ -48,14 +49,14 @@ class TermsOfServiceViewModel extends GetxController {
   Future<void> signOut_welcome() async {
     User user = FirebaseAuth.instance.currentUser!;
     await user.delete();
-    await FlutterSecureStorage().delete(key: 'signInMethod');
+    await getSecureStorage().delete(key: 'signInMethod');
     Get.toNamed(AppRoutes.login);
   }
 
   Future<void> goBack() async {
-    await FlutterSecureStorage().delete(key: 'localUid');
-    await FlutterSecureStorage().delete(key: 'device_id');
-    await FlutterSecureStorage().delete(key: 'device_token');
+    await getSecureStorage().delete(key: 'localUid');
+    await getSecureStorage().delete(key: 'device_id');
+    await getSecureStorage().delete(key: 'device_token');
     if (FirebaseAuth.instance.currentUser!.providerData[0].providerId ==
         'password') {
       Get.toNamed(AppRoutes.login);

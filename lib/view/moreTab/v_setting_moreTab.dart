@@ -11,6 +11,7 @@ import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:com.snowlive/util/secure_storage_helper.dart';
 import 'package:get/get.dart';
 
 class Setting_moreTabView extends StatelessWidget {
@@ -240,10 +241,10 @@ class Setting_moreTabView extends StatelessWidget {
                                             onPressed: () async {
                                               Navigator.pop(context);
                                               Get.toNamed(AppRoutes.mainHome);
-                                              await FlutterSecureStorage().delete(key: 'localUid');
-                                              await FlutterSecureStorage().delete(key: 'device_id');
-                                              await FlutterSecureStorage().delete(key: 'device_token');
-                                              await FlutterSecureStorage().delete(key: 'user_id');
+                                              await getSecureStorage().delete(key: 'localUid');
+                                              await getSecureStorage().delete(key: 'device_id');
+                                              await getSecureStorage().delete(key: 'device_token');
+                                              await getSecureStorage().delete(key: 'user_id');
                                               await FirebaseAuth.instance.signOut();
                                               await _authCheckViewModel.userCheck();
                                             },

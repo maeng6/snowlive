@@ -8,6 +8,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:com.snowlive/util/secure_storage_helper.dart';
 import 'package:get/get.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
@@ -373,7 +374,7 @@ class ImageController extends GetxController {
     Function(String requestType, String error)? onError,
   }) async {
     // Firebase Auth 대신 SecureStorage의 user_id 사용
-    String? userId = await FlutterSecureStorage().read(key: 'user_id');
+    String? userId = await getSecureStorage().read(key: 'user_id');
     if (userId == null) {
       print('Error: User ID is null');
       onError?.call('profile_image_uid_null', 'User ID is null');
@@ -482,7 +483,7 @@ class ImageController extends GetxController {
   }
 
   Future<String> _uploadImage(String localPath, int bulletinFreeCount) async {
-    String? uid = await FlutterSecureStorage().read(key: 'uid');
+    String? uid = await getSecureStorage().read(key: 'uid');
     var metaData = SettableMetadata(contentType: 'image/jpeg');
     String downloadUrl = '';
 
