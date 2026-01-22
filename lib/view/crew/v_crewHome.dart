@@ -759,7 +759,7 @@ class CrewHomeView extends StatelessWidget {
                                               ),
                                               Container(
                                                 height: 14,
-                                                width: (_size.width - 166) * barWidthRatio,
+                                                width: (_size.width - 170) * barWidthRatio,
                                                 decoration: BoxDecoration(
                                                   color: (slopeData == _crewDetailViewModel.countInfo.first)
                                                       ? SDSColor.snowliveBlue
