@@ -33,12 +33,16 @@ class UpdateCrewImageAndColorView extends StatelessWidget {
           appBar: PreferredSize(
             preferredSize: Size.fromHeight(44),
             child: AppBar(
-              leading: GestureDetector(
-                child: Padding(padding: EdgeInsets.all(14), child: SvgPicture.asset('assets/imgs/icons/icon_snowLive_back.svg', width: 26, height: 26)),
-                onTap: () {
-                  _setCrewViewModel.resetImageAndColor(); // 이미지와 색상만 초기화
-                  Navigator.pop(context);
-                },
+              leading: Padding(
+                padding: EdgeInsets.only(left: 8),
+                child: IconButton(
+                  onPressed: () {
+                    _setCrewViewModel.resetImageAndColor(); // 이미지와 색상만 초기화
+                    Navigator.pop(context);
+                  },
+                  icon: SvgPicture.asset('assets/imgs/icons/icon_snowLive_back.svg', width: 26, height: 26),
+                  highlightColor: Colors.transparent,
+                ),
               ),
               backgroundColor: Colors.white,
               surfaceTintColor: Colors.transparent,

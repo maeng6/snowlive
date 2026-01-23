@@ -106,13 +106,14 @@ class _FleaMarketDetailViewState extends State<FleaMarketDetailView> {
                     ),
                   ),
                   elevation: 0.0,
-                  leading: GestureDetector(
-                    child: Padding(
-                      padding: EdgeInsets.all(14),
-                      child: SvgPicture.asset(
+                  leading: Padding(
+                    padding: EdgeInsets.only(left: 8),
+                    child: IconButton(
+                      onPressed: () => Get.back(),
+                      icon: SvgPicture.asset(
                         'assets/imgs/icons/icon_snowLive_back.svg',
-                        width: 22,
-                        height: 22,
+                        width: 26,
+                        height: 26,
                         colorFilter: ColorFilter.mode(
                           (_fleamarketDetailViewModel.fleamarketDetail.photos!.isNotEmpty)
                               ? _isAppBarCollapsed ? SDSColor.gray900 : SDSColor.snowliveWhite
@@ -120,10 +121,8 @@ class _FleaMarketDetailViewState extends State<FleaMarketDetailView> {
                           BlendMode.srcIn,
                         ),
                       ),
+                      highlightColor: Colors.transparent,
                     ),
-                    onTap: () async{
-                      Get.back();
-                    },
                   ),
                   actions: [
                     if((_fleamarketDetailViewModel.fleamarketDetail.userId != _userViewModel.user.user_id )

@@ -43,9 +43,13 @@ class _SnowballMarketBrandOnlyPublicShopViewState extends State<SnowballMarketBr
               surfaceTintColor: Colors.transparent,
               backgroundColor: const Color(0xFF0C7519),
               title: Text('일반 눈송이 상점', style: SDSTextStyle.bold.copyWith(color: SDSColor.snowliveWhite, fontSize: 16)),
-              leading: GestureDetector(
-                onTap: () => Get.back(),
-                child: Padding(padding: EdgeInsets.all(14), child: SvgPicture.asset('assets/imgs/icons/icon_snowLive_back.svg', width: 26, height: 26, colorFilter: ColorFilter.mode(SDSColor.snowliveWhite, BlendMode.srcIn))),
+              leading: Padding(
+                padding: EdgeInsets.only(left: 8),
+                child: IconButton(
+                  onPressed: () => Get.back(),
+                  icon: SvgPicture.asset('assets/imgs/icons/icon_snowLive_back.svg', width: 26, height: 26, colorFilter: ColorFilter.mode(SDSColor.snowliveWhite, BlendMode.srcIn)),
+                  highlightColor: Colors.transparent,
+                ),
               ),
               actions: [
                 Padding(

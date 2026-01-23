@@ -41,13 +41,17 @@ class _InvitationFriendViewState extends State<InvitationFriendView> {
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(44),
         child: AppBar(
-          leading: GestureDetector(
-            child: Padding(padding: EdgeInsets.all(14), child: SvgPicture.asset('assets/imgs/icons/icon_snowLive_back.svg', width: 26, height: 26)),
-            onTap: () {
+          leading: Padding(
+          padding: EdgeInsets.only(left: 8),
+          child: IconButton(
+            onPressed: () {
               _friendListViewModel.fetchFriendList();
               Get.back();
             },
+            icon: SvgPicture.asset('assets/imgs/icons/icon_snowLive_back.svg', width: 26, height: 26),
+            highlightColor: Colors.transparent,
           ),
+        ),
           centerTitle: true,
           titleSpacing: 0,
           title: Text(

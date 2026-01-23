@@ -39,11 +39,13 @@ class _QrScannerForestParkState extends State<QrScannerForestPark> {
                 fontSize: 18
             ),
           ),
-          leading: GestureDetector(
-            child: Padding(padding: EdgeInsets.all(14), child: SvgPicture.asset('assets/imgs/icons/icon_snowLive_back.svg', width: 26, height: 26, colorFilter: ColorFilter.mode(SDSColor.snowliveWhite, BlendMode.srcIn))),
-            onTap: () {
-              Navigator.pop(context);
-            },
+          leading: Padding(
+            padding: EdgeInsets.only(left: 8),
+            child: IconButton(
+              onPressed: () => Navigator.pop(context),
+              icon: SvgPicture.asset('assets/imgs/icons/icon_snowLive_back.svg', width: 26, height: 26, colorFilter: ColorFilter.mode(SDSColor.snowliveWhite, BlendMode.srcIn)),
+              highlightColor: Colors.transparent,
+            ),
           ),
           backgroundColor: Color(0xFF12341E),
           surfaceTintColor: Colors.transparent,

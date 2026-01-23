@@ -35,17 +35,13 @@ class SnowliveDetailPage extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Color(0xFFF1F1F3),
         systemOverlayStyle: SystemUiOverlayStyle.dark,
-        leading:
-        GestureDetector(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Padding(padding: EdgeInsets.all(14), child: SvgPicture.asset('assets/imgs/icons/icon_snowLive_back.svg', width: 26, height: 26)),
-            ],
+        leading: Padding(
+          padding: EdgeInsets.only(left: 8),
+          child: IconButton(
+            onPressed: () => Get.back(),
+            icon: SvgPicture.asset('assets/imgs/icons/icon_snowLive_back.svg', width: 26, height: 26),
+            highlightColor: Colors.transparent,
           ),
-          onTap: () {
-            Get.back();
-          },
         ),
         elevation: 0.0,
         titleSpacing: 0,

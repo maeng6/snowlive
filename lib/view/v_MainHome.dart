@@ -1,4 +1,5 @@
 import 'package:com.snowlive/data/snowliveDesignStyle.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:com.snowlive/view/community/v_community_main.dart';
 import 'package:com.snowlive/view/fleamarket/v_fleaMarketMain.dart';
 import 'package:com.snowlive/view/moreTab/v_moreTab_main.dart';
@@ -112,7 +113,7 @@ class _MainHomeViewState extends State<MainHomeView> {
                   icon: Stack(
                     clipBehavior: Clip.none,
                     children: [
-                      Image.asset('assets/imgs/icons/icon_community_off.png', width: 32, height: 32),
+                      SvgPicture.asset('assets/imgs/icons/icon_bottom_community_off.svg', width: 32, height: 32),
                       if (_eventAlarmViewModel.hasNewEvent.value)
                         Positioned(
                           right: 0,
@@ -131,7 +132,7 @@ class _MainHomeViewState extends State<MainHomeView> {
                   activeIcon: Stack(
                     clipBehavior: Clip.none,
                     children: [
-                      Image.asset('assets/imgs/icons/icon_community_on.png', width: 32, height: 32),
+                      SvgPicture.asset('assets/imgs/icons/icon_bottom_community_on.svg', width: 32, height: 32),
                       if (_eventAlarmViewModel.hasNewEvent.value)
                         Positioned(
                           right: 0,

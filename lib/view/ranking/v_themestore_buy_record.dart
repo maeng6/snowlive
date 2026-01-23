@@ -272,12 +272,14 @@ class _ThemestoreBuyRecordViewState extends State<ThemestoreBuyRecordView> {
             ),
           ),
           backgroundColor: SDSColor.snowliveWhite,
-          leading: GestureDetector(
-            child: Padding(padding: EdgeInsets.all(14), child: SvgPicture.asset('assets/imgs/icons/icon_snowLive_back.svg', width: 26, height: 26, colorFilter: ColorFilter.mode(SDSColor.snowliveBlack, BlendMode.srcIn))),
-            onTap: () {
-              Get.back();
-            },
+          leading: Padding(
+          padding: EdgeInsets.only(left: 8),
+          child: IconButton(
+            onPressed: () => Get.back(),
+            icon: SvgPicture.asset('assets/imgs/icons/icon_snowLive_back.svg', width: 26, height: 26, colorFilter: ColorFilter.mode(SDSColor.snowliveBlack, BlendMode.srcIn)),
+            highlightColor: Colors.transparent,
           ),
+        ),
         ),
       ),
       body: Obx(

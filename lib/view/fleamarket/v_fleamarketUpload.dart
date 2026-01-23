@@ -63,12 +63,14 @@ class FleamarketUploadView extends StatelessWidget {
                   ],
                 ),
               ),
-              leading: GestureDetector(
-                child: Padding(padding: EdgeInsets.all(14), child: SvgPicture.asset('assets/imgs/icons/icon_snowLive_back.svg', width: 26, height: 26)),
-                onTap: () {
-                  Get.back();
-                },
-              ),
+              leading: Padding(
+          padding: EdgeInsets.only(left: 8),
+          child: IconButton(
+            onPressed: () => Get.back(),
+            icon: SvgPicture.asset('assets/imgs/icons/icon_snowLive_back.svg', width: 26, height: 26),
+            highlightColor: Colors.transparent,
+          ),
+        ),
               backgroundColor: Colors.white,
               foregroundColor: Colors.transparent,
               surfaceTintColor: Colors.transparent,

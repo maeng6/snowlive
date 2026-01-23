@@ -1,9 +1,11 @@
 import 'package:com.snowlive/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/viewmodel/vm_event.dart';
 import 'package:com.snowlive/viewmodel/vm_eventAlarm.dart';
+import 'package:com.snowlive/viewmodel/community/vm_communityBulletinList.dart';
 import 'package:com.snowlive/model/m_event.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart' show HapticFeedback;
 import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -21,12 +23,29 @@ class _EventPageEmbeddedViewState extends State<EventPageEmbeddedView> {
   final EventViewModel _eventViewModel = Get.put(EventViewModel());
   final EventAlarmViewModel _eventAlarmViewModel = Get.find<EventAlarmViewModel>();
   final UserViewModel _userViewModel = Get.find<UserViewModel>();
+  final CommunityBulletinListViewModel _communityBulletinListViewModel = Get.find<CommunityBulletinListViewModel>();
 
   @override
   void initState() {
     super.initState();
     _eventViewModel.fetchEventList();
     _eventAlarmViewModel.markAsRead();
+    // 스크롤 리스너 추가
+    _eventViewModel.scrollController.addListener(_onScroll);
+  }
+
+  @override
+  void dispose() {
+    _eventViewModel.scrollController.removeListener(_onScroll);
+    super.dispose();
+  }
+
+  void _onScroll() {
+    if (_eventViewModel.scrollController.position.userScrollDirection == ScrollDirection.reverse) {
+      _communityBulletinListViewModel.setCategoryChipsVisible(false);
+    } else if (_eventViewModel.scrollController.position.userScrollDirection == ScrollDirection.forward) {
+      _communityBulletinListViewModel.setCategoryChipsVisible(true);
+    }
   }
 
   Future<void> _launchURL(String url) async {
@@ -74,103 +93,72 @@ class _EventPageEmbeddedViewState extends State<EventPageEmbeddedView> {
     return Column(
       children: [
         /// 카테고리 필터 버튼
-        Obx(() => Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-          child: Row(
-            children: [
-              Stack(
+        Obx(() => TweenAnimationBuilder<double>(
+          tween: Tween(end: _communityBulletinListViewModel.showCategoryChips ? 1.0 : 0.0),
+          duration: Duration(milliseconds: 200),
+          curve: Curves.easeInOut,
+          builder: (context, value, child) {
+            return ClipRect(
+              child: Align(
+                alignment: Alignment.topLeft,
+                heightFactor: value,
+                child: Transform.translate(
+                  offset: Offset(0, -68 * (1 - value)),
+                  child: child,
+                ),
+              ),
+            );
+          },
+          child: SizedBox(
+            height: 68,
+            child: Padding(
+              padding: const EdgeInsets.only(top: 16, bottom: 16, left: 16),
+              child: Row(
                 children: [
-                  SizedBox(
-                    height: 32,
-                    child: ElevatedButton(
-                        onPressed: () async {
-                          HapticFeedback.lightImpact();
-                          _showCategoryBottomSheet(context);
-                        },
-                        style: ElevatedButton.styleFrom(
-                            shadowColor: Colors.transparent,
-                            overlayColor: Colors.transparent,
-                            padding: EdgeInsets.only(right: 32, left: 12, top: 3, bottom: 2),
-                            side: BorderSide(
-                              width: 1,
-                              color: (_eventViewModel.selectedCategory != '전체') ? SDSColor.gray900 : SDSColor.gray100,
+                  GestureDetector(
+                    onTap: () {
+                      HapticFeedback.lightImpact();
+                      _showCategoryBottomSheet(context);
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: (_eventViewModel.selectedCategory != '전체')
+                            ? SDSColor.gray900 : SDSColor.snowliveWhite,
+                        borderRadius: BorderRadius.circular(30.0),
+                        border: Border.all(
+                            color: (_eventViewModel.selectedCategory != '전체')
+                                ? SDSColor.gray900 : SDSColor.gray100),
+                      ),
+                      padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                      height: 36,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text('${_eventViewModel.selectedCategory}',
+                            style: SDSTextStyle.bold.copyWith(
+                              fontSize: 13,
+                              fontWeight: (_eventViewModel.selectedCategory != '전체') ? FontWeight.bold : FontWeight.w300,
+                              color: (_eventViewModel.selectedCategory != '전체') ? SDSColor.snowliveWhite : SDSColor.snowliveBlack,
                             ),
-                            backgroundColor: (_eventViewModel.selectedCategory != '전체') ? SDSColor.gray900 : SDSColor.snowliveWhite,
-                            elevation: 0,
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50))),
-                        child: Text('${_eventViewModel.selectedCategory}',
-                            style: SDSTextStyle.bold.copyWith(fontSize: 13, color: (_eventViewModel.selectedCategory != '전체') ? Color(0xFFFFFFFF) : Color(0xFF111111)))),
-                  ),
-                  Positioned(
-                    right: 10,
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(vertical: 8.5),
-                      child: GestureDetector(
-                        onTap: () async {
-                          _showCategoryBottomSheet(context);
-                        },
-                        child: (_eventViewModel.selectedCategory != '전체')
-                            ? Image.asset(
-                          'assets/imgs/icons/icon_check_round.png',
-                          fit: BoxFit.cover,
-                          width: 16,
-                          height: 16,
-                        )
-                            : Image.asset(
-                          'assets/imgs/icons/icon_check_round_black.png',
-                          fit: BoxFit.cover,
-                          width: 16,
-                          height: 16,
-                        ),
+                          ),
+                          SizedBox(width: 4),
+                          Image.asset(
+                            (_eventViewModel.selectedCategory != '전체')
+                                ? 'assets/imgs/icons/icon_check_round.png'
+                                : 'assets/imgs/icons/icon_check_round_black.png',
+                            fit: BoxFit.cover,
+                            width: 16,
+                            height: 16,
+                          ),
+                        ],
                       ),
                     ),
                   ),
                 ],
               ),
-            ],
+            ),
           ),
         )),
-
-        /// 테이블 헤더
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-          color: SDSColor.snowliveWhite,
-          child: Row(
-            children: const [
-              SizedBox(
-                width: 56,
-                child: Center(
-                  child: Text(
-                    '분류',
-                    style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: SDSColor.snowliveBlack),
-                  ),
-                ),
-              ),
-              Expanded(
-                child: Center(
-                  child: Text(
-                    '제목',
-                    style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: SDSColor.snowliveBlack),
-                  ),
-                ),
-              ),
-              SizedBox(
-                width: 72,
-                child: Center(
-                  child: Text(
-                    '등록일',
-                    style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: SDSColor.snowliveBlack),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-        Container(
-          width: _size.width,
-          height: 1,
-          color: SDSColor.gray50,
-        ),
 
         /// 리스트
         Expanded(

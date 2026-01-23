@@ -319,12 +319,14 @@ class _ForestParkHomeState extends State<ForestParkHome> {
               backgroundColor: _showAppBarBackground
                   ? Color(0xFF12341E) // 너가 쓰던 배경색과 비슷하게
                   : Colors.transparent,
-              leading: GestureDetector(
-                child: Padding(padding: EdgeInsets.all(14), child: SvgPicture.asset('assets/imgs/icons/icon_snowLive_back.svg', width: 26, height: 26, colorFilter: ColorFilter.mode(SDSColor.snowliveWhite, BlendMode.srcIn))),
-                onTap: () {
-                  Get.back();
-                },
-              ),
+              leading: Padding(
+          padding: EdgeInsets.only(left: 8),
+          child: IconButton(
+            onPressed: () => Get.back(),
+            icon: SvgPicture.asset('assets/imgs/icons/icon_snowLive_back.svg', width: 26, height: 26, colorFilter: ColorFilter.mode(SDSColor.snowliveWhite, BlendMode.srcIn)),
+            highlightColor: Colors.transparent,
+          ),
+        ),
             ),
           ),
           extendBodyBehindAppBar: true, // AppBar가 body 위에 겹쳐 보이도록

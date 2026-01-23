@@ -46,6 +46,9 @@ class CommunityBulletinListViewModel extends GetxController {
   RxBool _isVisible_crew = false.obs;
   RxBool _isVisible_event = false.obs;
 
+  // 카테고리 칩 영역 표시/숨김 상태
+  RxBool _showCategoryChips = true.obs;
+
   RxBool _isLoadingList_total = false.obs;
   RxBool _isLoadingList_free = false.obs;
   RxBool _isLoadingList_room = false.obs;
@@ -82,6 +85,8 @@ class CommunityBulletinListViewModel extends GetxController {
   bool get isVisible_crew  => _isVisible_crew .value;
   bool get isVisible_event  => _isVisible_event .value;
 
+  bool get showCategoryChips => _showCategoryChips.value;
+
   bool get isLoadingList_total => _isLoadingList_total .value;
   bool get isLoadingList_free  => _isLoadingList_free .value;
   bool get isLoadingList_room  => _isLoadingList_room .value;
@@ -108,18 +113,14 @@ class CommunityBulletinListViewModel extends GetxController {
   @override
   void onInit() async {
     super.onInit();
-    await fetchAllCommunity();
-    scrollController_total = ScrollController()
-      ..addListener(_scrollListener_total);
-    scrollController_free = ScrollController()
-      ..addListener(_scrollListener_free);
-    scrollController_room = ScrollController()
-      ..addListener(_scrollListener_room);
-    scrollController_crew = ScrollController()
-      ..addListener(_scrollListener_crew);
-    scrollController_event = ScrollController()
-      ..addListener(_scrollListener_event);
+    // 스크롤 리스너를 먼저 추가 (기존 컨트롤러에)
+    scrollController_total.addListener(_scrollListener_total);
+    scrollController_free.addListener(_scrollListener_free);
+    scrollController_room.addListener(_scrollListener_room);
+    scrollController_crew.addListener(_scrollListener_crew);
+    scrollController_event.addListener(_scrollListener_event);
 
+    await fetchAllCommunity();
   }
 
   Future<void> fetchAllCommunity() async{
@@ -163,9 +164,10 @@ class CommunityBulletinListViewModel extends GetxController {
     // 숨김/표시 여부 결정
     if (scrollController_total.position.userScrollDirection == ScrollDirection.reverse) {
       _isVisible_total.value = true;
-    } else if (scrollController_total.position.userScrollDirection == ScrollDirection.forward ||
-        scrollController_total.position.pixels <= scrollController_total.position.maxScrollExtent) {
+      _showCategoryChips.value = false; // 스크롤 올릴 때 (컨텐츠 아래로) 숨김
+    } else if (scrollController_total.position.userScrollDirection == ScrollDirection.forward) {
       _isVisible_total.value = false;
+      _showCategoryChips.value = true; // 스크롤 내릴 때 (컨텐츠 위로) 표시
     }
   }
 
@@ -207,9 +209,10 @@ class CommunityBulletinListViewModel extends GetxController {
     // 숨김/표시 여부 결정
     if (scrollController_room.position.userScrollDirection == ScrollDirection.reverse) {
       _isVisible_room.value = true;
-    } else if (scrollController_room.position.userScrollDirection == ScrollDirection.forward ||
-        scrollController_room.position.pixels <= scrollController_room.position.maxScrollExtent) {
+      _showCategoryChips.value = false;
+    } else if (scrollController_room.position.userScrollDirection == ScrollDirection.forward) {
       _isVisible_room.value = false;
+      _showCategoryChips.value = true;
     }
   }
 
@@ -229,9 +232,10 @@ class CommunityBulletinListViewModel extends GetxController {
     // 숨김/표시 여부 결정
     if (scrollController_crew.position.userScrollDirection == ScrollDirection.reverse) {
       _isVisible_crew.value = true;
-    } else if (scrollController_crew.position.userScrollDirection == ScrollDirection.forward ||
-        scrollController_crew.position.pixels <= scrollController_crew.position.maxScrollExtent) {
+      _showCategoryChips.value = false;
+    } else if (scrollController_crew.position.userScrollDirection == ScrollDirection.forward) {
       _isVisible_crew.value = false;
+      _showCategoryChips.value = true;
     }
   }
 
@@ -519,11 +523,18 @@ class CommunityBulletinListViewModel extends GetxController {
 
   void changeTap(value) {
     _tapName.value = value;
+    _showCategoryChips.value = true; // 탭 변경 시 카테고리 칩 표시
   }
 
   void changeChip(value) {
     _chipName.value = value;
+    _showCategoryChips.value = true; // 칩 변경 시 카테고리 칩 표시
     print('칩네임 $_chipName로 변경');
+  }
+
+  // 카테고리 칩 표시/숨김 설정 (외부 호출용)
+  void setCategoryChipsVisible(bool visible) {
+    _showCategoryChips.value = visible;
   }
 
   Future<void> onRefresh_bulletin_total() async {

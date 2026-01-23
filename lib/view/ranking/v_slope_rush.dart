@@ -502,17 +502,19 @@ class _SlopeRushHomeViewState extends State<SlopeRushHomeView> {
               ),
             ),
           ],
-          leading: GestureDetector(
-            child: Padding(
-              padding: EdgeInsets.all(14),
-              child: SvgPicture.asset(
+          leading: Padding(
+            padding: EdgeInsets.only(left: 8),
+            child: IconButton(
+              onPressed: () => Get.back(),
+              icon: SvgPicture.asset(
                 'assets/imgs/icons/icon_snowLive_back.svg',
-                width: 22,
-                height: 22,
+                width: 26,
+                height: 26,
                 colorFilter: isScrolled ? ColorFilter.mode(SDSColor.gray900, BlendMode.srcIn) : null, // 🔥 스크롤 시 아이콘 색 변경
+              
               ),
+              highlightColor: Colors.transparent,
             ),
-            onTap: () => Get.back(),
           ),
 
           title: Text(

@@ -10,11 +10,13 @@ class NoUserScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        leading: GestureDetector(
-          child: Padding(padding: EdgeInsets.all(14), child: SvgPicture.asset('assets/imgs/icons/icon_snowLive_back.svg', width: 26, height: 26)),
-          onTap: () {
-            Navigator.pop(context);
-          },
+        leading: Padding(
+          padding: EdgeInsets.only(left: 8),
+          child: IconButton(
+            onPressed: () => Navigator.pop(context),
+            icon: SvgPicture.asset('assets/imgs/icons/icon_snowLive_back.svg', width: 26, height: 26),
+            highlightColor: Colors.transparent,
+          ),
         ),
         backgroundColor: Colors.white,
         foregroundColor: Colors.transparent,

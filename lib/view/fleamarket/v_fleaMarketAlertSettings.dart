@@ -36,11 +36,13 @@ class _FleamarketAlertSettingsViewState extends State<FleamarketAlertSettingsVie
         backgroundColor: SDSColor.snowliveWhite,
         surfaceTintColor: SDSColor.snowliveWhite,
         elevation: 0,
-        leading: GestureDetector(
-          child: Padding(padding: EdgeInsets.all(14), child: SvgPicture.asset('assets/imgs/icons/icon_snowLive_back.svg', width: 26, height: 26)),
-          onTap: () {
-            Get.back();
-          },
+        leading: Padding(
+          padding: EdgeInsets.only(left: 8),
+          child: IconButton(
+            onPressed: () => Get.back(),
+            icon: SvgPicture.asset('assets/imgs/icons/icon_snowLive_back.svg', width: 26, height: 26),
+            highlightColor: Colors.transparent,
+          ),
         ),
         title: Text(
           '키워드 알림 설정',

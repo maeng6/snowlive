@@ -67,14 +67,18 @@ class _SearchCrewViewState extends State<SearchCrewView> {
             backgroundColor: SDSColor.snowliveWhite,
             foregroundColor: SDSColor.snowliveWhite,
             surfaceTintColor: SDSColor.snowliveWhite,
-            leading: GestureDetector(
-              child: Padding(padding: EdgeInsets.all(14), child: SvgPicture.asset('assets/imgs/icons/icon_snowLive_back.svg', width: 26, height: 26)),
-              onTap: () {
-                _searchCrewViewModel.textEditingController.clear();
-                _searchCrewViewModel.crewList.clear();
-                _searchCrewViewModel.showRecentSearch.value = true;
-                Get.back();
-              },
+            leading: Padding(
+              padding: EdgeInsets.only(left: 8),
+              child: IconButton(
+                onPressed: () {
+                  _searchCrewViewModel.textEditingController.clear();
+                  _searchCrewViewModel.crewList.clear();
+                  _searchCrewViewModel.showRecentSearch.value = true;
+                  Get.back();
+                },
+                icon: SvgPicture.asset('assets/imgs/icons/icon_snowLive_back.svg', width: 26, height: 26),
+                highlightColor: Colors.transparent,
+              ),
             ),
             elevation: 0.0,
             titleSpacing: 0,

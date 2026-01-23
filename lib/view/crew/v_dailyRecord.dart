@@ -47,12 +47,16 @@ class _CrewDailyRecordViewState extends State<CrewDailyRecordView> {
         surfaceTintColor: Colors.transparent,
         toolbarHeight: 44,
         elevation: 0.0,
-        leading: GestureDetector(
-          child: Padding(padding: EdgeInsets.all(14), child: SvgPicture.asset('assets/imgs/icons/icon_snowLive_back.svg', width: 26, height: 26)),
-          onTap: () {
-            Get.back();
-            //_crewRecordRoomViewModel.resetTabs();
-          },
+        leading: Padding(
+          padding: EdgeInsets.only(left: 8),
+          child: IconButton(
+            onPressed: () {
+              Get.back();
+              //_crewRecordRoomViewModel.resetTabs();
+            },
+            icon: SvgPicture.asset('assets/imgs/icons/icon_snowLive_back.svg', width: 26, height: 26),
+            highlightColor: Colors.transparent,
+          ),
         ),
         centerTitle: true,
         title: Text(
