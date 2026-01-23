@@ -299,52 +299,6 @@ class MoreTabMainView extends StatelessWidget {
                             ),
                           ),
                         ),
-                        Obx(() => Container(
-                          height: 52,
-                          child: ListTile(
-                            contentPadding: EdgeInsets.symmetric(horizontal: 16),
-                            onTap: () async {
-                              Get.toNamed(AppRoutes.eventPage);
-                            },
-                            leading: Image.asset('assets/imgs/icons/icon_moretab_event.png', width: 30),
-                            title: Transform.translate(
-                              offset: Offset(-8, 0),
-                              child: Row(
-                                children: [
-                                  Text(
-                                    '이벤트·소식',
-                                    style: SDSTextStyle.regular.copyWith(
-                                        fontSize: 15,
-                                        color: SDSColor.gray900),
-                                  ),
-                                  if (_eventAlarmViewModel.hasNewEvent.value)
-                                    Padding(
-                                      padding: const EdgeInsets.only(left: 4),
-                                      child: Container(
-                                        padding: EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                                        decoration: BoxDecoration(
-                                          color: Color(0xFFEB5757),
-                                          borderRadius: BorderRadius.circular(20),
-                                        ),
-                                        child: Text(
-                                          'N',
-                                          style: SDSTextStyle.extraBold.copyWith(
-                                            fontSize: 10,
-                                            color: Colors.white,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                ],
-                              ),
-                            ),
-                            trailing: Image.asset(
-                              'assets/imgs/icons/icon_arrow_g.png',
-                              height: 24,
-                              width: 24,
-                            ),
-                          ),
-                        )),
                         SizedBox(height: 30),
                         Padding(
                           padding: EdgeInsets.symmetric(horizontal: 20),

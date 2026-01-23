@@ -109,22 +109,10 @@ class _MainHomeViewState extends State<MainHomeView> {
                 ),
                 BottomNavigationBarItem(
                   backgroundColor: Colors.transparent,
-                  icon: Image.asset('assets/imgs/icons/icon_community_off.png', width: 32, height: 32),
-                  activeIcon: Image.asset('assets/imgs/icons/icon_community_on.png', width: 32, height: 32),
-                  label: '커뮤니티',
-                ),
-                BottomNavigationBarItem(
-                  backgroundColor: Colors.transparent,
-                  icon: Image.asset('assets/imgs/icons/icon_discover_off.png', width: 32, height: 32),
-                  activeIcon: Image.asset('assets/imgs/icons/icon_discover_on.png', width: 32, height: 32),
-                  label: '랭킹',
-                ),
-                BottomNavigationBarItem(
-                  backgroundColor: Colors.transparent,
                   icon: Stack(
                     clipBehavior: Clip.none,
                     children: [
-                      Image.asset('assets/imgs/icons/icon_more_off.png', width: 32, height: 32),
+                      Image.asset('assets/imgs/icons/icon_community_off.png', width: 32, height: 32),
                       if (_eventAlarmViewModel.hasNewEvent.value)
                         Positioned(
                           right: 0,
@@ -143,7 +131,7 @@ class _MainHomeViewState extends State<MainHomeView> {
                   activeIcon: Stack(
                     clipBehavior: Clip.none,
                     children: [
-                      Image.asset('assets/imgs/icons/icon_more_on.png', width: 32, height: 32),
+                      Image.asset('assets/imgs/icons/icon_community_on.png', width: 32, height: 32),
                       if (_eventAlarmViewModel.hasNewEvent.value)
                         Positioned(
                           right: 0,
@@ -159,6 +147,18 @@ class _MainHomeViewState extends State<MainHomeView> {
                         ),
                     ],
                   ),
+                  label: '커뮤니티',
+                ),
+                BottomNavigationBarItem(
+                  backgroundColor: Colors.transparent,
+                  icon: Image.asset('assets/imgs/icons/icon_discover_off.png', width: 32, height: 32),
+                  activeIcon: Image.asset('assets/imgs/icons/icon_discover_on.png', width: 32, height: 32),
+                  label: '랭킹',
+                ),
+                BottomNavigationBarItem(
+                  backgroundColor: Colors.transparent,
+                  icon: Image.asset('assets/imgs/icons/icon_more_off.png', width: 32, height: 32),
+                  activeIcon: Image.asset('assets/imgs/icons/icon_more_on.png', width: 32, height: 32),
                   label: '더보기',
                 ),
               ],

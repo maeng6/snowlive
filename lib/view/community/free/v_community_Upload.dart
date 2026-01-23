@@ -463,7 +463,7 @@ class CommunityBulletinUpload extends StatelessWidget {
                                 (_communityBulletinListViewModel.tapName=='게시판')
                                     ? await _communityBulletinListViewModel.fetchAllCommunity()
                                     :await _communityBulletinListViewModel.fetchEventCommunity();
-                                if(_communityBulletinListViewModel.tapName=='행사·클리닉')
+                                if(_communityBulletinListViewModel.tapName=='이벤트·소식')
                                   await _alarmCenterViewModel.updateEventTabNotice(_userViewModel.user.user_id, true);
                               }
 

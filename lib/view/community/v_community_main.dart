@@ -2,10 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:com.snowlive/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/view/banner/v_banner_community.dart';
 import 'package:com.snowlive/view/community/free/v_community_Bulletin_Crew.dart';
-import 'package:com.snowlive/view/community/free/v_community_Event.dart';
-import 'package:com.snowlive/view/community/free/v_community_Bulletin_Free.dart';
 import 'package:com.snowlive/view/community/free/v_community_Bulletin_Total.dart';
 import 'package:com.snowlive/view/community/free/v_community_Bulletin_Room.dart';
+import 'package:com.snowlive/view/moreTab/w_eventPageEmbedded.dart';
 import 'package:com.snowlive/viewmodel/community/vm_communityBulletinList.dart';
 import 'package:com.snowlive/viewmodel/resortHome/vm_alarmCenter.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
@@ -141,12 +140,12 @@ class CommunityMainView extends StatelessWidget {
                                             mainAxisAlignment: MainAxisAlignment.center,
                                             children: [
                                               Text(
-                                                '행사·클리닉',
+                                                '이벤트·소식',
                                                 style: SDSTextStyle.extraBold.copyWith(
-                                                  color: (_communityBulletinListViewModel.tapName == '행사·클리닉')
+                                                  color: (_communityBulletinListViewModel.tapName == '이벤트·소식')
                                                       ? SDSColor.gray900
                                                       : SDSColor.gray900.withOpacity(0.2),
-                                                  fontWeight: (_communityBulletinListViewModel.tapName == '행사·클리닉')
+                                                  fontWeight: (_communityBulletinListViewModel.tapName == '이벤트·소식')
                                                       ? FontWeight.w900
                                                       : FontWeight.w300,
                                                   fontSize: 16,
@@ -178,7 +177,7 @@ class CommunityMainView extends StatelessWidget {
                                           ),
                                           onPressed: () async{
                                             HapticFeedback.lightImpact();
-                                            _communityBulletinListViewModel.changeTap('행사·클리닉');
+                                            _communityBulletinListViewModel.changeTap('이벤트·소식');
                                             if(showNewBadge){
                                               await _communityBulletinListViewModel.fetchCommunityList_event(userId:  _userViewModel.user.user_id,categoryMain: '이벤트');
                                               await _alarmCenterViewModel.updateEventTabNotice(_userViewModel.user.user_id, false);
@@ -207,7 +206,7 @@ class CommunityMainView extends StatelessWidget {
                             Container(
                               width: 104,
                               height: 3,
-                              color: (_communityBulletinListViewModel.tapName == '행사·클리닉')
+                              color: (_communityBulletinListViewModel.tapName == '이벤트·소식')
                                   ? Color(0xFF111111)
                                   : Colors.transparent,
                             ),
@@ -253,29 +252,6 @@ class CommunityMainView extends StatelessWidget {
                                                   color: (_communityBulletinListViewModel.chipName==Community_Category_sub_bulletin.total.korean) ? SDSColor.snowliveWhite : SDSColor.snowliveBlack
                                               ),)
                                         ),
-                                      ),
-                                    ),
-                                    SizedBox(width: 6),
-                                    GestureDetector(
-                                      onTap: (){
-                                        HapticFeedback.lightImpact();
-                                        _communityBulletinListViewModel.changeChip(Community_Category_sub_bulletin.free.korean);
-                                      },
-                                      child: Container(
-                                          decoration: BoxDecoration(
-                                            color: (_communityBulletinListViewModel.chipName==Community_Category_sub_bulletin.free.korean) ? SDSColor.gray900 : SDSColor.snowliveWhite,
-                                            borderRadius: BorderRadius.circular(30.0),
-                                            border: Border.all(
-                                                color: (_communityBulletinListViewModel.chipName==Community_Category_sub_bulletin.free.korean) ? SDSColor.gray900 : SDSColor.gray100),
-                                          ),
-                                          padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                                          height: 36,
-                                          child: Text('${Community_Category_sub_bulletin.free.korean}',
-                                            style: SDSTextStyle.bold.copyWith(
-                                                fontSize: 13,
-                                                fontWeight: (_communityBulletinListViewModel.chipName==Community_Category_sub_bulletin.free.korean) ? FontWeight.bold : FontWeight.w300,
-                                                color: (_communityBulletinListViewModel.chipName==Community_Category_sub_bulletin.free.korean) ? SDSColor.snowliveWhite : SDSColor.snowliveBlack
-                                            ),)
                                       ),
                                     ),
                                     SizedBox(width: 6),
@@ -340,12 +316,6 @@ class CommunityMainView extends StatelessWidget {
                       && _communityBulletinListViewModel.chipName == Community_Category_sub_bulletin.total.korean)
                     Expanded(child: CommunityBulletinTotalListView()),
                   if(_communityBulletinListViewModel.tapName=='게시판'
-                      && _communityBulletinListViewModel.chipName == Community_Category_sub_bulletin.free.korean)
-                    Banner_community(),
-                  if(_communityBulletinListViewModel.tapName=='게시판'
-                      && _communityBulletinListViewModel.chipName == Community_Category_sub_bulletin.free.korean)
-                    Expanded(child: CommunityBulletinFreeListView()),
-                  if(_communityBulletinListViewModel.tapName=='게시판'
                       && _communityBulletinListViewModel.chipName == Community_Category_sub_bulletin.room.korean)
                     Banner_community(),
                   if(_communityBulletinListViewModel.tapName=='게시판'
@@ -357,8 +327,8 @@ class CommunityMainView extends StatelessWidget {
                   if(_communityBulletinListViewModel.tapName=='게시판'
                       && _communityBulletinListViewModel.chipName == Community_Category_sub_bulletin.crew.korean)
                     Expanded(child: CommunityBulletinCrewListView()),
-                  if(_communityBulletinListViewModel.tapName=='행사·클리닉')
-                    Expanded(child: CommunityEventListView()),
+                  if(_communityBulletinListViewModel.tapName=='이벤트·소식')
+                    Expanded(child: EventPageEmbeddedView()),
                 ],
               ),
             ],
