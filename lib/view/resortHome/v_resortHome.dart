@@ -2476,57 +2476,96 @@ class _ResortHomeViewState extends State<ResortHomeView> with
                               padding: EdgeInsets.only(right: 16, left: 16, top: 12, bottom: 20),
                               child: Column(
                                 children: [
-                                  GestureDetector(
-                                    onTap: () async {
-                                      Get.toNamed(AppRoutes.eventPage);
-                                    },
-                                    child: Padding(
-                                      padding: EdgeInsets.only(bottom : 10),
-                                      child: Container(
-                                        width: _size.width - 32,
-                                        decoration: BoxDecoration(
-                                          color: SDSColor.snowliveWhite,
-                                          borderRadius: BorderRadius.circular(16),
-                                          border: Border.all(width: 1, color: SDSColor.gray100),
-                                        ),
+                                  StreamBuilder<QuerySnapshot>(
+                                    stream: FirebaseFirestore.instance
+                                        .collection('eventTab_notice')
+                                        .snapshots(),
+                                    builder: (context, snapshot) {
+                                      bool showNewBadge = false;
+                                      if (snapshot.connectionState == ConnectionState.active && snapshot.hasData) {
+                                        for (var doc in snapshot.data!.docs) {
+                                          final data = doc.data() as Map<String, dynamic>;
+                                          final uidList = List<int>.from(data['uid'] ?? []);
+                                          if (!uidList.contains(_userViewModel.user.user_id)) {
+                                            showNewBadge = true;
+                                            break;
+                                          }
+                                        }
+                                      }
+                                      return GestureDetector(
+                                        onTap: () async {
+                                          Get.toNamed(AppRoutes.eventPage);
+                                          if (showNewBadge) {
+                                            await _alarmCenterViewModel.updateEventTabNotice(_userViewModel.user.user_id, false);
+                                          }
+                                        },
                                         child: Padding(
-                                          padding: EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-                                          child: Column(
-                                            children: [
-                                              Row(
-                                                crossAxisAlignment: CrossAxisAlignment.center,
+                                          padding: EdgeInsets.only(bottom : 10),
+                                          child: Container(
+                                            width: _size.width - 32,
+                                            decoration: BoxDecoration(
+                                              color: SDSColor.snowliveWhite,
+                                              borderRadius: BorderRadius.circular(16),
+                                              border: Border.all(width: 1, color: SDSColor.gray100),
+                                            ),
+                                            child: Padding(
+                                              padding: EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                                              child: Column(
                                                 children: [
-                                                  ExtendedImage.asset(
-                                                    'assets/imgs/imgs/img_slmk_home_banner_5.png',
-                                                    width: 56,
-                                                  ),
-                                                  SizedBox(width: 12),
-                                                  Column(
-                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                  Row(
+                                                    crossAxisAlignment: CrossAxisAlignment.center,
                                                     children: [
-                                                      Text(
-                                                        '스키장 관련 이벤트와 소식을 한눈에!',
-                                                        style: SDSTextStyle.bold.copyWith(
-                                                          fontSize: 14,
-                                                          color: SDSColor.gray900,
-                                                        ),
+                                                      ExtendedImage.asset(
+                                                        'assets/imgs/imgs/img_slmk_home_banner_5.png',
+                                                        width: 56,
                                                       ),
-                                                      Text(
-                                                        '이벤트·소식 둘러보기',
-                                                        style: SDSTextStyle.regular.copyWith(
-                                                          fontSize: 13,
-                                                          color: SDSColor.gray500,
+                                                      SizedBox(width: 12),
+                                                      Expanded(
+                                                        child: Column(
+                                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                                          children: [
+                                                            Row(
+                                                              children: [
+                                                                Text(
+                                                                  '스키장 관련 이벤트와 소식을 한눈에!',
+                                                                  style: SDSTextStyle.bold.copyWith(
+                                                                    fontSize: 14,
+                                                                    color: SDSColor.gray900,
+                                                                  ),
+                                                                ),
+                                                                if (showNewBadge)
+                                                                  Padding(
+                                                                    padding: EdgeInsets.only(left: 6),
+                                                                    child: Container(
+                                                                      width: 6,
+                                                                      height: 6,
+                                                                      decoration: BoxDecoration(
+                                                                        color: Color(0xFFD6382B),
+                                                                        borderRadius: BorderRadius.circular(6),
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                              ],
+                                                            ),
+                                                            Text(
+                                                              '이벤트·소식 둘러보기',
+                                                              style: SDSTextStyle.regular.copyWith(
+                                                                fontSize: 13,
+                                                                color: SDSColor.gray500,
+                                                              ),
+                                                            ),
+                                                          ],
                                                         ),
                                                       ),
                                                     ],
                                                   ),
                                                 ],
                                               ),
-                                            ],
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                    ),
+                                      );
+                                    },
                                   ),
                                   GestureDetector(
                                     onTap: () async {

@@ -9,7 +9,7 @@ class CategorySubCommuBulletinWidget extends StatefulWidget {
 }
 
 class _CategorySubCommuBulletinWidgetState extends State<CategorySubCommuBulletinWidget> {
-  List<bool?> _isSelected = List<bool?>.filled(3, false);
+  List<bool?> _isSelected = List<bool?>.filled(2, false);
   String? category_main;
 
   @override
@@ -45,7 +45,7 @@ class _CategorySubCommuBulletinWidgetState extends State<CategorySubCommuBulleti
           Expanded(
             child: ListView.builder(
               shrinkWrap: true,
-              itemCount: 3,
+              itemCount: 2,
               itemBuilder: (context, index) {
                 return Column(
                   children: [
@@ -69,14 +69,14 @@ class _CategorySubCommuBulletinWidgetState extends State<CategorySubCommuBulleti
                       selected: _isSelected[index]!,
                       onTap: () {
                         setState(() {
-                          _isSelected = List<bool?>.filled(3, false);
+                          _isSelected = List<bool?>.filled(2, false);
                           _isSelected[index] = true;
                           category_main = category_main_list[index];
                         });
                       },
                     ),
-                    if (index != 2) Divider(height: 4, thickness: 0.5, color: SDSColor.snowliveWhite),
-                    if (index == 2) Container(height: 12),
+                    if (index != 1) Divider(height: 4, thickness: 0.5, color: SDSColor.snowliveWhite),
+                    if (index == 1) Container(height: 12),
                   ],
                 );
               },
@@ -110,7 +110,6 @@ class _CategorySubCommuBulletinWidgetState extends State<CategorySubCommuBulleti
 }
 
 List<String?> category_main_list = [
-  '자유',
   '시즌방',
   '단톡방·동호회'
 ];
