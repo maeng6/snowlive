@@ -75,12 +75,18 @@ class _MainHomeViewState extends State<MainHomeView> {
                     });
                     break;
                   case 2:
-                    FirebaseAnalytics.instance.logEvent(name: 'visit_rankingHome', parameters: {
+                    FirebaseAnalytics.instance.logEvent(name: 'visit_community', parameters: {
                       'user_id': _userViewModel.user.user_id,
                       'user_name': _userViewModel.user.display_name,
                     });
                     break;
                   case 3:
+                    FirebaseAnalytics.instance.logEvent(name: 'visit_rankingHome', parameters: {
+                      'user_id': _userViewModel.user.user_id,
+                      'user_name': _userViewModel.user.display_name,
+                    });
+                    break;
+                  case 4:
                     FirebaseAnalytics.instance.logEvent(name: 'visit_moreTab', parameters: {
                       'user_id': _userViewModel.user.user_id,
                       'user_name': _userViewModel.user.display_name,
@@ -101,12 +107,12 @@ class _MainHomeViewState extends State<MainHomeView> {
                   activeIcon: Image.asset('assets/imgs/icons/icon_market_on.png', width: 32, height: 32),
                   label: '중고거래',
                 ),
-                // BottomNavigationBarItem(
-                //   backgroundColor: Colors.transparent,
-                //   icon: Image.asset('assets/imgs/icons/icon_b_tabbar_slmk.png', width: 32, height: 32),
-                //   activeIcon: Image.asset('assets/imgs/icons/icon_b_tabbar_slmk.png', width: 32, height: 32),
-                //   label: '스라마켓',
-                // ),
+                BottomNavigationBarItem(
+                  backgroundColor: Colors.transparent,
+                  icon: Image.asset('assets/imgs/icons/icon_community_off.png', width: 32, height: 32),
+                  activeIcon: Image.asset('assets/imgs/icons/icon_community_on.png', width: 32, height: 32),
+                  label: '커뮤니티',
+                ),
                 BottomNavigationBarItem(
                   backgroundColor: Colors.transparent,
                   icon: Image.asset('assets/imgs/icons/icon_discover_off.png', width: 32, height: 32),
@@ -176,8 +182,9 @@ class _MainHomeViewState extends State<MainHomeView> {
           children: [
             ResortHomeView(),       // index 0: 홈
             FleaMarketMainView(),   // index 1: 중고거래
-            RankingHomeView(),      // index 2: 랭킹 (스라마켓 탭 숨김으로 인덱스 변경)
-            MoreTabMainView(),      // index 3: 더보기 (스라마켓 탭 숨김으로 인덱스 변경)
+            CommunityMainView(),    // index 2: 커뮤니티
+            RankingHomeView(),      // index 3: 랭킹
+            MoreTabMainView(),      // index 4: 더보기
           ],
         ),
       ),
@@ -199,7 +206,7 @@ class _MainHomeViewState extends State<MainHomeView> {
         HapticFeedback.lightImpact();
         _dismissTooltip();
         // 더보기 탭으로 이동
-        _MainHomeViewModel.onItemTapped(3);
+        _MainHomeViewModel.onItemTapped(4);
       },
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.end,

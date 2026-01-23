@@ -61,6 +61,9 @@ class MainHomeBinding extends Bindings {
     Get.put(StreamController_Banner());
     Get.put(AlarmCenterViewModel());
     Get.put(FleamarketListViewModel());
+    Get.put(CommunityBulletinListViewModel());
+    Get.put(CommunityDetailViewModel());
+    Get.put(CommunityCommentDetailViewModel());
     Get.put(RankingListViewModel());
 
     // 🟢 서브 화면용 ViewModel - 지연 로드 (해당 화면 진입 시 생성)

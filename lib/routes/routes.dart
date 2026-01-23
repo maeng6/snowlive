@@ -264,20 +264,20 @@ class AppRoutes {
       name: bulletinMain,
       page: () => CommunityMainView(),
     ),
-    // GetPage(
-    //   name: bulletinUpload,
-    //   page: () => CommunityBulletinUpload(),
-    //   binding: BulletinUploadBinding(),
-    // ),
-    // GetPage(
-    //     name: bulletinDetail,
-    //     page: () => CommunityBulletinDetailView(),
-    //     binding: BulletinDetailBinding()
-    // ),
-    // GetPage(
-    //   name: bulletinDetailUpdate,
-    //   page: () => CommunityBulletinUpdateView(),
-    // ),
+    GetPage(
+      name: bulletinUpload,
+      page: () => CommunityBulletinUpload(),
+      binding: BulletinUploadBinding(),
+    ),
+    GetPage(
+        name: bulletinDetail,
+        page: () => CommunityBulletinDetailView(),
+        binding: BulletinDetailBinding()
+    ),
+    GetPage(
+      name: bulletinDetailUpdate,
+      page: () => CommunityBulletinUpdateView(),
+    ),
     GetPage(
       name: bulletinCommentDetail,
       page: () => CommunityCommentDetailView(),

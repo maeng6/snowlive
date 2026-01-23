@@ -108,7 +108,7 @@ class CommunityBulletinListViewModel extends GetxController {
   @override
   void onInit() async {
     super.onInit();
-    //await fetchAllCommunity();
+    await fetchAllCommunity();
     scrollController_total = ScrollController()
       ..addListener(_scrollListener_total);
     scrollController_free = ScrollController()

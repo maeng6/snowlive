@@ -27,28 +27,26 @@ class MainHomeViewModel extends GetxController {
     _tap_4.value = false;
     _tap_5.value = false;
 
-    // 탭 활성화 처리 (스라마켓 탭 숨김)
+    // 탭 활성화 처리 (5개 탭)
     if (index == 0) _tap_1.value = true;  // 홈
     if (index == 1) _tap_2.value = true;  // 중고거래
-    if (index == 2) _tap_3.value = true;  // 랭킹 (기존 index 3)
-    if (index == 3) _tap_5.value = true;  // 더보기 (기존 index 4)
+    if (index == 2) _tap_3.value = true;  // 커뮤니티
+    if (index == 3) _tap_4.value = true;  // 랭킹
+    if (index == 4) _tap_5.value = true;  // 더보기
 
     _currentPage.value = index;
-
-    // 스라마켓 탭이 숨겨져서 BottomNavBar와 PageView 인덱스가 일치
     _pageController.value.jumpToPage(index);
   }
 
   void changePage(int index) {
-    // 스라마켓 탭이 숨겨져서 BottomNavBar와 PageView 인덱스가 일치
     _currentPage.value = index;
 
-    // 탭 활성화 상태도 변경
+    // 탭 활성화 상태도 변경 (5개 탭)
     _tap_1.value = index == 0;  // 홈
     _tap_2.value = index == 1;  // 중고거래
-    _tap_3.value = index == 2;  // 랭킹 (기존 index 3)
-    _tap_4.value = false;        // 스라마켓 탭 숨김
-    _tap_5.value = index == 3;  // 더보기 (기존 index 4)
+    _tap_3.value = index == 2;  // 커뮤니티
+    _tap_4.value = index == 3;  // 랭킹
+    _tap_5.value = index == 4;  // 더보기
   }
 
   @override
