@@ -31,6 +31,7 @@ class CommunityMainView extends StatelessWidget {
             elevation: 0.0,
             titleSpacing: 16,
             centerTitle: false,
+            systemOverlayStyle: SystemUiOverlayStyle.dark,
             title: Text(
               '커뮤니티',
               style: SDSTextStyle.extraBold.copyWith(

@@ -18,6 +18,7 @@ import 'package:com.snowlive/viewmodel/vm_eventAlarm.dart';
 import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:com.snowlive/view/moreTab/v_setting_moreTab.dart';
 import 'package:shimmer/shimmer.dart';
@@ -48,6 +49,7 @@ class MoreTabMainView extends StatelessWidget {
             backgroundColor: Colors.white,
             surfaceTintColor: Colors.transparent,
             elevation: 0.0,
+            systemOverlayStyle: SystemUiOverlayStyle.dark,
             centerTitle: false,
             titleSpacing: 0,
             title: Padding(

@@ -23,16 +23,20 @@ class RankingHomeView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-      statusBarColor: Colors.transparent, // 상태바 투명하게
-      statusBarIconBrightness: Brightness.dark, // 상태바 아이콘 밝기
-    ));
-
     Size _size = MediaQuery.of(context).size;
 
     return Obx(()=>Scaffold(
         backgroundColor: Colors.white,
         extendBodyBehindAppBar: true,
+        appBar: PreferredSize(
+          preferredSize: Size.fromHeight(0),
+          child: AppBar(
+            backgroundColor: Colors.white,
+            surfaceTintColor: Colors.transparent,
+            elevation: 0.0,
+            systemOverlayStyle: SystemUiOverlayStyle.dark,
+          ),
+        ),
         body: Obx(()=>SafeArea(
           child: Column(
             children: [

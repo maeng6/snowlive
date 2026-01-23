@@ -73,6 +73,7 @@ class _FleaMarketMainViewState extends State<FleaMarketMainView>
           automaticallyImplyLeading: false,
           centerTitle: false,
           titleSpacing: 0,
+          systemOverlayStyle: SystemUiOverlayStyle.dark,
           title: Padding(
             padding: const EdgeInsets.only(left: 16),
             child: Text(
