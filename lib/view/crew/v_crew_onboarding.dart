@@ -8,6 +8,7 @@ import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class OnBoardingCrewMainView extends StatelessWidget {
   OnBoardingCrewMainView({Key? key}) : super(key: key);
@@ -160,12 +161,7 @@ class OnBoardingCrewMainView extends StatelessWidget {
             preferredSize: Size.fromHeight(58),
             child: AppBar(
               leading: GestureDetector(
-                child: Image.asset(
-                  'assets/imgs/icons/icon_snowLive_back.png',
-                  scale: 4,
-                  width: 26,
-                  height: 26,
-                ),
+                child: Padding(padding: EdgeInsets.all(14), child: SvgPicture.asset('assets/imgs/icons/icon_snowLive_back.svg', width: 26, height: 26)),
                 onTap: () {
                   Get.back();
                 },

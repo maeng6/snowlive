@@ -7,6 +7,7 @@ import 'package:com.snowlive/widget/w_category_sub_board_fleamarket.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class FleamarketAlertSettingsView extends StatefulWidget {
   const FleamarketAlertSettingsView({Key? key}) : super(key: key);
@@ -36,12 +37,7 @@ class _FleamarketAlertSettingsViewState extends State<FleamarketAlertSettingsVie
         surfaceTintColor: SDSColor.snowliveWhite,
         elevation: 0,
         leading: GestureDetector(
-          child: Image.asset(
-            'assets/imgs/icons/icon_snowLive_back.png',
-            scale: 4,
-            width: 26,
-            height: 26,
-          ),
+          child: Padding(padding: EdgeInsets.all(14), child: SvgPicture.asset('assets/imgs/icons/icon_snowLive_back.svg', width: 26, height: 26)),
           onTap: () {
             Get.back();
           },

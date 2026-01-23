@@ -12,6 +12,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class CommunityBulletinRoomListView extends StatelessWidget {
 
@@ -67,7 +68,7 @@ class CommunityBulletinRoomListView extends StatelessWidget {
                         onPressed: () {
                           _communityBulletinListViewModel.scrollController_room.jumpTo(0);
                         },
-                        child: Image.asset( 'assets/imgs/icons/icon_top_page.png',
+                        child: SvgPicture.asset( 'assets/imgs/icons/icon_top_page.svg',
                           fit: BoxFit.cover,
                           width: 16,
                           height: 16,),

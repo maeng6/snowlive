@@ -8,6 +8,7 @@ import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class QuizPageForestPark extends StatefulWidget {
   @override
@@ -708,13 +709,7 @@ class _QuizPageForestParkState extends State<QuizPageForestPark> {
           surfaceTintColor: Colors.transparent,
           backgroundColor: Color(0xFF12341E),
           leading: GestureDetector(
-            child: Image.asset(
-              'assets/imgs/icons/icon_snowLive_back.png',
-              color: SDSColor.snowliveWhite,
-              scale: 4,
-              width: 26,
-              height: 26,
-            ),
+            child: Padding(padding: EdgeInsets.all(14), child: SvgPicture.asset('assets/imgs/icons/icon_snowLive_back.svg', width: 26, height: 26, colorFilter: ColorFilter.mode(SDSColor.snowliveWhite, BlendMode.srcIn))),
             onTap: () {
               Get.back();
             },

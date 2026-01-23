@@ -6,6 +6,7 @@ import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class SetCrewNameAndResortView extends StatelessWidget {
   // 뷰모델 선언
@@ -29,12 +30,7 @@ class SetCrewNameAndResortView extends StatelessWidget {
           preferredSize: Size.fromHeight(44),
           child: AppBar(
             leading: GestureDetector(
-              child: Image.asset(
-                'assets/imgs/icons/icon_snowLive_back.png',
-                scale: 4,
-                width: 26,
-                height: 26,
-              ),
+              child: Padding(padding: EdgeInsets.all(14), child: SvgPicture.asset('assets/imgs/icons/icon_snowLive_back.svg', width: 26, height: 26)),
               onTap: () {
                 _setCrewViewModel.resetAll();
                 Navigator.pop(context);

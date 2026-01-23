@@ -15,6 +15,7 @@ import '../../data/imgaUrls/Data_url_image.dart';
 import '../../data/snowliveDesignStyle.dart';
 import '../../viewmodel/fleamarket/vm_fleamarketCommentDetail.dart';
 import '../../viewmodel/vm_user.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class FleamarketCommentDetailView extends StatelessWidget {
 
@@ -47,12 +48,7 @@ class FleamarketCommentDetailView extends StatelessWidget {
               preferredSize: Size.fromHeight(44),
               child: AppBar(
                 leading: GestureDetector(
-                  child: Image.asset(
-                    'assets/imgs/icons/icon_snowLive_back.png',
-                    scale: 4,
-                    width: 26,
-                    height: 26,
-                  ),
+                  child: Padding(padding: EdgeInsets.all(14), child: SvgPicture.asset('assets/imgs/icons/icon_snowLive_back.svg', width: 26, height: 26)),
                   onTap: () {
                     Get.back();
                   },

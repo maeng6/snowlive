@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:shimmer/shimmer.dart'; // 날짜 형식 변환을 위한 패키지
+import 'package:flutter_svg/flutter_svg.dart';
 
 class SnowballMarketBuyRecordView extends StatelessWidget {
 
@@ -47,12 +48,7 @@ class SnowballMarketBuyRecordView extends StatelessWidget {
           surfaceTintColor: Colors.transparent,
           elevation: 0.0,
           leading: GestureDetector(
-            child: Image.asset(
-              'assets/imgs/icons/icon_snowLive_back.png',
-              scale: 4,
-              width: 26,
-              height: 26,
-            ),
+            child: Padding(padding: EdgeInsets.all(14), child: SvgPicture.asset('assets/imgs/icons/icon_snowLive_back.svg', width: 26, height: 26)),
             onTap: () {
               Get.back();
             },

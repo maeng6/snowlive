@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 import 'package:com.snowlive/viewmodel/forestPark/vm_forestPark.dart';
 import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class ForestParkHome extends StatefulWidget {
   @override
@@ -319,13 +320,7 @@ class _ForestParkHomeState extends State<ForestParkHome> {
                   ? Color(0xFF12341E) // 너가 쓰던 배경색과 비슷하게
                   : Colors.transparent,
               leading: GestureDetector(
-                child: Image.asset(
-                  'assets/imgs/icons/icon_snowLive_back.png',
-                  color: SDSColor.snowliveWhite,
-                  scale: 4,
-                  width: 26,
-                  height: 26,
-                ),
+                child: Padding(padding: EdgeInsets.all(14), child: SvgPicture.asset('assets/imgs/icons/icon_snowLive_back.svg', width: 26, height: 26, colorFilter: ColorFilter.mode(SDSColor.snowliveWhite, BlendMode.srcIn))),
                 onTap: () {
                   Get.back();
                 },

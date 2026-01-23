@@ -15,6 +15,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
 import '../../viewmodel/fleamarket/vm_fleamarketUpdate.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class FleamarketUploadView extends StatelessWidget {
 
@@ -63,12 +64,7 @@ class FleamarketUploadView extends StatelessWidget {
                 ),
               ),
               leading: GestureDetector(
-                child: Image.asset(
-                  'assets/imgs/icons/icon_snowLive_back.png',
-                  scale: 4,
-                  width: 26,
-                  height: 26,
-                ),
+                child: Padding(padding: EdgeInsets.all(14), child: SvgPicture.asset('assets/imgs/icons/icon_snowLive_back.svg', width: 26, height: 26)),
                 onTap: () {
                   Get.back();
                 },

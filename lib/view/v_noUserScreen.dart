@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class NoUserScreen extends StatelessWidget {
   const NoUserScreen({Key? key}) : super(key: key);
@@ -10,12 +11,7 @@ class NoUserScreen extends StatelessWidget {
       backgroundColor: Colors.white,
       appBar: AppBar(
         leading: GestureDetector(
-          child: Image.asset(
-            'assets/imgs/icons/icon_snowLive_back.png',
-            scale: 4,
-            width: 26,
-            height: 26,
-          ),
+          child: Padding(padding: EdgeInsets.all(14), child: SvgPicture.asset('assets/imgs/icons/icon_snowLive_back.svg', width: 26, height: 26)),
           onTap: () {
             Navigator.pop(context);
           },

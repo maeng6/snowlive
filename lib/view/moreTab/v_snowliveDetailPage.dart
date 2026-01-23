@@ -5,6 +5,7 @@ import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class SnowliveDetailPage extends StatelessWidget {
   SnowliveDetailPage({Key? key}) : super(key: key);
@@ -39,12 +40,7 @@ class SnowliveDetailPage extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Image.asset(
-                'assets/imgs/icons/icon_snowLive_back.png',
-                scale: 4,
-                width: 26,
-                height: 26,
-              ),
+              Padding(padding: EdgeInsets.all(14), child: SvgPicture.asset('assets/imgs/icons/icon_snowLive_back.svg', width: 26, height: 26)),
             ],
           ),
           onTap: () {

@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kpostal/kpostal.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class RewardExchangeView extends StatefulWidget {
   const RewardExchangeView({Key? key}) : super(key: key);
@@ -88,12 +89,7 @@ class _RewardExchangeViewState extends State<RewardExchangeView> {
           preferredSize: Size.fromHeight(44),
           child: AppBar(
             leading: GestureDetector(
-              child: Image.asset(
-                'assets/imgs/icons/icon_snowLive_back.png',
-                scale: 4,
-                width: 26,
-                height: 26,
-              ),
+              child: Padding(padding: EdgeInsets.all(14), child: SvgPicture.asset('assets/imgs/icons/icon_snowLive_back.svg', width: 26, height: 26)),
               onTap: () => Navigator.pop(context),
             ),
             title: Text(

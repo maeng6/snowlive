@@ -8,6 +8,7 @@ import 'package:flutter/services.dart' show HapticFeedback;
 import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class EventPageView extends StatefulWidget {
   const EventPageView({Key? key}) : super(key: key);
@@ -77,12 +78,7 @@ class _EventPageViewState extends State<EventPageView> {
         backgroundColor: Colors.white,
         surfaceTintColor: Colors.transparent,
         leading: GestureDetector(
-          child: Image.asset(
-            'assets/imgs/icons/icon_snowLive_back.png',
-            scale: 4,
-            width: 26,
-            height: 26,
-          ),
+          child: Padding(padding: EdgeInsets.all(14), child: SvgPicture.asset('assets/imgs/icons/icon_snowLive_back.svg', width: 26, height: 26)),
           onTap: () {
             Navigator.pop(context);
           },

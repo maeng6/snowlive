@@ -18,6 +18,8 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class FleaMarketDetailView extends StatefulWidget {
 
@@ -105,15 +107,19 @@ class _FleaMarketDetailViewState extends State<FleaMarketDetailView> {
                   ),
                   elevation: 0.0,
                   leading: GestureDetector(
-                    child: Image.asset(
-                      'assets/imgs/icons/icon_snowLive_back.png',
-                      scale: 4,
-                      width: 26,
-                      height: 26,
-                      color:
-                      (_fleamarketDetailViewModel.fleamarketDetail.photos!.isNotEmpty)
-                          ? _isAppBarCollapsed ? SDSColor.gray900 : SDSColor.snowliveWhite
-                          : SDSColor.gray900,
+                    child: Padding(
+                      padding: EdgeInsets.all(14),
+                      child: SvgPicture.asset(
+                        'assets/imgs/icons/icon_snowLive_back.svg',
+                        width: 22,
+                        height: 22,
+                        colorFilter: ColorFilter.mode(
+                          (_fleamarketDetailViewModel.fleamarketDetail.photos!.isNotEmpty)
+                              ? _isAppBarCollapsed ? SDSColor.gray900 : SDSColor.snowliveWhite
+                              : SDSColor.gray900,
+                          BlendMode.srcIn,
+                        ),
+                      ),
                     ),
                     onTap: () async{
                       Get.back();

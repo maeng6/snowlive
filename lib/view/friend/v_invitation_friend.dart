@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class InvitationFriendView extends StatefulWidget {
   InvitationFriendView({Key? key}) : super(key: key);
@@ -41,12 +42,7 @@ class _InvitationFriendViewState extends State<InvitationFriendView> {
         preferredSize: Size.fromHeight(44),
         child: AppBar(
           leading: GestureDetector(
-            child: Image.asset(
-              'assets/imgs/icons/icon_snowLive_back.png',
-              scale: 4,
-              width: 26,
-              height: 26,
-            ),
+            child: Padding(padding: EdgeInsets.all(14), child: SvgPicture.asset('assets/imgs/icons/icon_snowLive_back.svg', width: 26, height: 26)),
             onTap: () {
               _friendListViewModel.fetchFriendList();
               Get.back();

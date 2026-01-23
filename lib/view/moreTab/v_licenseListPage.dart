@@ -3,6 +3,7 @@ import 'package:com.snowlive/model/m_licenseModel.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:com.snowlive/view/moreTab/v_licenseDetailPage.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class LicenseListPage extends StatelessWidget {
   const LicenseListPage({Key? key}) : super(key: key);
@@ -18,12 +19,7 @@ class LicenseListPage extends StatelessWidget {
         backgroundColor: Colors.white,
         surfaceTintColor: Colors.transparent,
         leading: GestureDetector(
-          child: Image.asset(
-            'assets/imgs/icons/icon_snowLive_back.png',
-            scale: 4,
-            width: 26,
-            height: 26,
-          ),
+          child: Padding(padding: EdgeInsets.all(14), child: SvgPicture.asset('assets/imgs/icons/icon_snowLive_back.svg', width: 26, height: 26)),
           onTap: () {
             Navigator.pop(context);
           },

@@ -40,6 +40,7 @@ import 'package:lottie/lottie.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 import '../v_slmkScreen.dart';
 
@@ -724,10 +725,10 @@ class _ResortHomeViewState extends State<ResortHomeView> with
                           ),
                         );
                       },
-                      icon: Image.asset(
-                        'assets/imgs/icons/icon_talk_resortHome.png',
-                        width: 26,
-                        height: 26,
+                      icon: SvgPicture.asset(
+                        'assets/imgs/icons/icon_talk_resortHome.svg',
+                        width: 28,
+                        height: 28,
                       ),
                     ),
                     // N 뱃지 (새 메시지 있을 때만 표시)

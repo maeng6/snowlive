@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class FriendListView extends StatefulWidget {
   FriendListView({Key? key}) : super(key: key);
@@ -137,12 +138,7 @@ class _FriendListViewState extends State<FriendListView> {
           )
         ],
         leading: GestureDetector(
-          child: Image.asset(
-            'assets/imgs/icons/icon_snowLive_back.png',
-            scale: 4,
-            width: 26,
-            height: 26,
-          ),
+          child: Padding(padding: EdgeInsets.all(14), child: SvgPicture.asset('assets/imgs/icons/icon_snowLive_back.svg', width: 26, height: 26)),
           onTap: () {
             Get.back();
           },

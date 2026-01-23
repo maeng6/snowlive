@@ -21,6 +21,7 @@ import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class SnowballMarketBrandOnlyHomeView extends StatefulWidget {
   @override
@@ -312,13 +313,7 @@ class _SnowballMarketBrandOnlyHomeViewState extends State<SnowballMarketBrandOnl
               surfaceTintColor: Colors.transparent,
               backgroundColor: Colors.transparent,
               leading: GestureDetector(
-                child: Image.asset(
-                  'assets/imgs/icons/icon_snowLive_back.png',
-                  color: SDSColor.snowliveWhite,
-                  scale: 4,
-                  width: 26,
-                  height: 26,
-                ),
+                child: Padding(padding: EdgeInsets.all(14), child: SvgPicture.asset('assets/imgs/icons/icon_snowLive_back.svg', width: 26, height: 26, colorFilter: ColorFilter.mode(SDSColor.snowliveWhite, BlendMode.srcIn))),
                 onTap: () {
                   Get.back();
                 },

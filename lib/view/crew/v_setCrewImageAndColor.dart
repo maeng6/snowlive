@@ -12,6 +12,7 @@ import 'package:extended_image/extended_image.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_setCrew.dart';
 import 'package:com.snowlive/data/snowliveDesignStyle.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class SetCrewImageAndColorView extends StatelessWidget {
   final SetCrewViewModel _setCrewViewModel = Get.find<SetCrewViewModel>();
@@ -34,12 +35,7 @@ class SetCrewImageAndColorView extends StatelessWidget {
             preferredSize: Size.fromHeight(44),
             child: AppBar(
               leading: GestureDetector(
-                child: Image.asset(
-                  'assets/imgs/icons/icon_snowLive_back.png',
-                  scale: 4,
-                  width: 26,
-                  height: 26,
-                ),
+                child: Padding(padding: EdgeInsets.all(14), child: SvgPicture.asset('assets/imgs/icons/icon_snowLive_back.svg', width: 26, height: 26)),
                 onTap: () {
                   Navigator.pop(context);
                   _setCrewViewModel.resetImageAndColor(); // 이미지와 색상만 초기화

@@ -21,6 +21,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:photo_view/photo_view.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class FriendDetailView extends StatefulWidget {
   @override
@@ -74,12 +75,7 @@ class _FriendDetailViewState extends State<FriendDetailView> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Image.asset(
-                  'assets/imgs/icons/icon_snowLive_back.png',
-                  scale: 4,
-                  width: 26,
-                  height: 26,
-                ),
+                Padding(padding: EdgeInsets.all(14), child: SvgPicture.asset('assets/imgs/icons/icon_snowLive_back.svg', width: 26, height: 26)),
               ],
             ),
             onTap: () {

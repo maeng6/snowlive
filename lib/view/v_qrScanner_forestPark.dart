@@ -3,6 +3,7 @@ import 'package:com.snowlive/routes/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class QrScannerForestPark extends StatefulWidget {
   @override
@@ -39,13 +40,7 @@ class _QrScannerForestParkState extends State<QrScannerForestPark> {
             ),
           ),
           leading: GestureDetector(
-            child: Image.asset(
-              'assets/imgs/icons/icon_snowLive_back.png',
-              color: SDSColor.snowliveWhite,
-              scale: 4,
-              width: 26,
-              height: 26,
-            ),
+            child: Padding(padding: EdgeInsets.all(14), child: SvgPicture.asset('assets/imgs/icons/icon_snowLive_back.svg', width: 26, height: 26, colorFilter: ColorFilter.mode(SDSColor.snowliveWhite, BlendMode.srcIn))),
             onTap: () {
               Navigator.pop(context);
             },

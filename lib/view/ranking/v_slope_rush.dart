@@ -11,6 +11,7 @@ import 'package:get/get.dart';
 import 'package:com.snowlive/viewmodel/ranking/vm_slope_rush.dart';
 import 'package:com.snowlive/model/m_slolpe_rush.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class SlopeRushHomeView extends StatefulWidget {
   const SlopeRushHomeView({super.key});
@@ -502,12 +503,14 @@ class _SlopeRushHomeViewState extends State<SlopeRushHomeView> {
             ),
           ],
           leading: GestureDetector(
-            child: Image.asset(
-              'assets/imgs/icons/icon_snowLive_back.png',
-              scale: 4,
-              width: 26,
-              height: 26,
-              color: isScrolled ? SDSColor.gray900 : null, // 🔥 스크롤 시 아이콘 색 변경
+            child: Padding(
+              padding: EdgeInsets.all(14),
+              child: SvgPicture.asset(
+                'assets/imgs/icons/icon_snowLive_back.svg',
+                width: 22,
+                height: 22,
+                colorFilter: isScrolled ? ColorFilter.mode(SDSColor.gray900, BlendMode.srcIn) : null, // 🔥 스크롤 시 아이콘 색 변경
+              ),
             ),
             onTap: () => Get.back(),
           ),

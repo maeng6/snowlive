@@ -4,6 +4,7 @@ import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class AndroidSettingGuideView extends StatelessWidget {
   final ResortHomeViewModel _resortHomeViewModel = Get.find<ResortHomeViewModel>();
@@ -17,12 +18,9 @@ class AndroidSettingGuideView extends StatelessWidget {
         preferredSize: Size.fromHeight(44),
         child: AppBar(
           leading: GestureDetector(
-            child: Image.asset(
-              'assets/imgs/icons/icon_snowLive_back.png',
-              scale: 4,
-              width: 26,
-              height: 26,
-              color: SDSColor.snowliveWhite,
+            child: Padding(
+              padding: EdgeInsets.all(14),
+              child: SvgPicture.asset('assets/imgs/icons/icon_snowLive_back.svg', width: 26, height: 26, colorFilter: ColorFilter.mode(SDSColor.snowliveWhite, BlendMode.srcIn)),
             ),
             onTap: () {
               Get.back();

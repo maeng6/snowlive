@@ -2,6 +2,7 @@ import 'package:com.snowlive/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/routes/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class FriendSettingView extends StatelessWidget {
   const FriendSettingView({Key? key}) : super(key: key);
@@ -13,12 +14,7 @@ class FriendSettingView extends StatelessWidget {
       backgroundColor: Colors.white,
       appBar: AppBar(
         leading: GestureDetector(
-          child: Image.asset(
-            'assets/imgs/icons/icon_snowLive_back.png',
-            scale: 4,
-            width: 26,
-            height: 26,
-          ),
+          child: Padding(padding: EdgeInsets.all(14), child: SvgPicture.asset('assets/imgs/icons/icon_snowLive_back.svg', width: 26, height: 26)),
           onTap: () {
             Navigator.pop(context);
           },

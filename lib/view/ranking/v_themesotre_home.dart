@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class ThemestoreHomeView extends StatefulWidget {
   @override
@@ -89,13 +90,7 @@ class _ThemestoreHomeViewState extends State<ThemestoreHomeView> {
             surfaceTintColor: Colors.transparent,
             backgroundColor: Colors.white,
             leading: GestureDetector(
-              child: Image.asset(
-                'assets/imgs/icons/icon_snowLive_back.png',
-                color: SDSColor.gray900,
-                scale: 4,
-                width: 26,
-                height: 26,
-              ),
+              child: Padding(padding: EdgeInsets.all(14), child: SvgPicture.asset('assets/imgs/icons/icon_snowLive_back.svg', width: 26, height: 26, colorFilter: ColorFilter.mode(SDSColor.gray900, BlendMode.srcIn))),
               onTap: () {
                 Get.back();
               },

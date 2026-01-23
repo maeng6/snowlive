@@ -6,6 +6,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class ThemestoreBuyRecordView extends StatefulWidget {
   @override
@@ -272,13 +273,7 @@ class _ThemestoreBuyRecordViewState extends State<ThemestoreBuyRecordView> {
           ),
           backgroundColor: SDSColor.snowliveWhite,
           leading: GestureDetector(
-            child: Image.asset(
-              'assets/imgs/icons/icon_snowLive_back.png',
-              color: SDSColor.snowliveBlack,
-              scale: 4,
-              width: 26,
-              height: 26,
-            ),
+            child: Padding(padding: EdgeInsets.all(14), child: SvgPicture.asset('assets/imgs/icons/icon_snowLive_back.svg', width: 26, height: 26, colorFilter: ColorFilter.mode(SDSColor.snowliveBlack, BlendMode.srcIn))),
             onTap: () {
               Get.back();
             },
