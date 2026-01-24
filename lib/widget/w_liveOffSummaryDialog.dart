@@ -140,7 +140,7 @@ class _LiveOffSummaryDialogState extends State<LiveOffSummaryDialog> {
       // 공유 시트 열기 (await 제거 - 공유창이 열리면 바로 상태 업데이트)
       Share.shareXFiles(
         [XFile(tempFile.path)],
-        text: '${widget.summary.displayName}님의 라이딩 기록',
+        text: '스노우라이브에서 ${widget.summary.displayName}님이 오늘의 라이딩 기록을 공유합니다!',
       );
     } catch (e) {
       print('이미지 공유 오류: $e');
