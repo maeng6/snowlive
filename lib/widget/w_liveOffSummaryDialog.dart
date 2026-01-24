@@ -637,22 +637,11 @@ class _LiveOffSummaryDialogState extends State<LiveOffSummaryDialog> {
                       borderRadius: BorderRadius.circular(28),
                     ),
                     child: Center(
-                      child: _isSharing
-                          ? SizedBox(
-                              width: 20,
-                              height: 20,
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2,
-                                valueColor: AlwaysStoppedAnimation<Color>(
-                                  Colors.black54,
-                                ),
-                              ),
-                            )
-                          : SvgPicture.asset(
-                              'assets/imgs/icons/icon_summury_share.svg',
-                              width: 26,
-                              height: 26,
-                            ),
+                      child: SvgPicture.asset(
+                        'assets/imgs/icons/icon_summury_share.svg',
+                        width: 26,
+                        height: 26,
+                      ),
                     ),
                   ),
                 ),
