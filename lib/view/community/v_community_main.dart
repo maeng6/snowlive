@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:com.snowlive/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/view/banner/v_banner_community.dart';
 import 'package:com.snowlive/view/community/free/v_community_Bulletin_Crew.dart';
+import 'package:com.snowlive/view/community/free/v_community_Bulletin_Free.dart';
 import 'package:com.snowlive/view/community/free/v_community_Bulletin_Total.dart';
 import 'package:com.snowlive/view/community/free/v_community_Bulletin_Room.dart';
 import 'package:com.snowlive/view/moreTab/w_eventPageEmbedded.dart';
@@ -276,6 +277,29 @@ class CommunityMainView extends StatelessWidget {
                                       GestureDetector(
                                         onTap: (){
                                           HapticFeedback.lightImpact();
+                                          _communityBulletinListViewModel.changeChip(Community_Category_sub_bulletin.chat.korean);
+                                        },
+                                        child: Container(
+                                            decoration: BoxDecoration(
+                                              color: (_communityBulletinListViewModel.chipName==Community_Category_sub_bulletin.chat.korean) ? SDSColor.gray900 : SDSColor.snowliveWhite,
+                                              borderRadius: BorderRadius.circular(30.0),
+                                              border: Border.all(
+                                                  color: (_communityBulletinListViewModel.chipName==Community_Category_sub_bulletin.chat.korean) ? SDSColor.gray900 : SDSColor.gray100),
+                                            ),
+                                            padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                                            height: 36,
+                                            child: Text('${Community_Category_sub_bulletin.chat.korean}',
+                                              style: SDSTextStyle.bold.copyWith(
+                                                  fontSize: 13,
+                                                  fontWeight: (_communityBulletinListViewModel.chipName==Community_Category_sub_bulletin.chat.korean) ? FontWeight.bold : FontWeight.w300,
+                                                  color: (_communityBulletinListViewModel.chipName==Community_Category_sub_bulletin.chat.korean) ? SDSColor.snowliveWhite : SDSColor.snowliveBlack
+                                              ),)
+                                        ),
+                                      ),
+                                      SizedBox(width: 6),
+                                      GestureDetector(
+                                        onTap: (){
+                                          HapticFeedback.lightImpact();
                                           _communityBulletinListViewModel.changeChip(Community_Category_sub_bulletin.room.korean);
                                         },
                                         child: Container(
@@ -334,6 +358,12 @@ class CommunityMainView extends StatelessWidget {
                   if(_communityBulletinListViewModel.tapName=='게시판'
                       && _communityBulletinListViewModel.chipName == Community_Category_sub_bulletin.total.korean)
                     Expanded(child: CommunityBulletinTotalListView()),
+                  if(_communityBulletinListViewModel.tapName=='게시판'
+                      && _communityBulletinListViewModel.chipName == Community_Category_sub_bulletin.chat.korean)
+                    Banner_community(),
+                  if(_communityBulletinListViewModel.tapName=='게시판'
+                      && _communityBulletinListViewModel.chipName == Community_Category_sub_bulletin.chat.korean)
+                    Expanded(child: CommunityBulletinFreeListView()),
                   if(_communityBulletinListViewModel.tapName=='게시판'
                       && _communityBulletinListViewModel.chipName == Community_Category_sub_bulletin.room.korean)
                     Banner_community(),

@@ -238,13 +238,12 @@ class Setting_moreTabView extends StatelessWidget {
                                           child: ElevatedButton(
                                             onPressed: () async {
                                               Navigator.pop(context);
-                                              Get.toNamed(AppRoutes.mainHome);
                                               await getSecureStorage().delete(key: 'localUid');
                                               await getSecureStorage().delete(key: 'device_id');
                                               await getSecureStorage().delete(key: 'device_token');
                                               await getSecureStorage().delete(key: 'user_id');
                                               await FirebaseAuth.instance.signOut();
-                                              await _authCheckViewModel.userCheck();
+                                              Get.offAllNamed(AppRoutes.login);
                                             },
                                             child: Text(
                                               '확인',
