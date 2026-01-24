@@ -67,16 +67,16 @@ class _SlopeRushHistoryHomeViewState extends State<SlopeRushHistoryHomeView> {
   // 서버 슬로프명 → 이미지키
   static const Map<int, Map<String, String>> _slopeKeyByResort = {
     1: {
-      'CNP1': 'CNP1',
-      'CNP2': 'CNP2',
+      'CNP1': 'cnp1',
+      'CNP2': 'cnp2',
+      '퓨리1': 'puri1',
+      '퓨리3': 'puri3',
+      '퓨리2': 'puri2',
+      '퓨리B': 'puriB',
       '씽큐1': 'thinq1',
       '씽큐2': 'thinq2',
-      '씽큐3': 'thinq3',
-      '씽큐B': 'thinqB',
-      '그램1': 'gram1',
-      '그램2': 'gram2',
-      '와이낫': 'whynot',
-      '휘센': 'whisen',
+      '익시오': 'ixio',
+      '그램': 'gram',
     },
     2: {
       '알레그로': 'allegro',
@@ -197,6 +197,8 @@ class _SlopeRushHistoryHomeViewState extends State<SlopeRushHistoryHomeView> {
       '5': '5',
       '6': '6',
       '7': '7',
+      '뉴오렌': 'newOrange',
+      '3': '3',
     },
     12: {
       '아폴로1': 'apolo1',
@@ -239,16 +241,16 @@ class _SlopeRushHistoryHomeViewState extends State<SlopeRushHistoryHomeView> {
   // 이미지 기준 0~1 포지션
   Map<int, Map<String, Offset>> get _markerPos => {
     1: {
-      'CNP1': const Offset(0.29, 0.22),
-      'CNP2': const Offset(0.30, 0.68),
-      'thinq1': const Offset(0.41, 0.05),
-      'thinq2': const Offset(0.47, 0.62),
-      'thinq3': const Offset(0.46, 0.32),
-      'thinqB': const Offset(0.33, 0.47),
-      'gram1': const Offset(0.48, 0.16),
-      'gram2': const Offset(0.71, 0.20),
-      'whynot': const Offset(0.69, 0.50),
-      'whisen': const Offset(0.68, 0.90),
+      'cnp1': const Offset(0.29, 0.22),
+      'cnp2': const Offset(0.30, 0.68),
+      'puri1': const Offset(0.41, 0.05),
+      'puri3': const Offset(0.47, 0.62),
+      'puri2': const Offset(0.46, 0.32),
+      'puriB': const Offset(0.33, 0.47),
+      'thinq1': const Offset(0.48, 0.16),
+      'thinq2': const Offset(0.71, 0.20),
+      'ixio': const Offset(0.69, 0.50),
+      'gram': const Offset(0.68, 0.90),
     },
     2: {
       'allegro':const Offset(0.45, 0.15),
@@ -370,6 +372,8 @@ class _SlopeRushHistoryHomeViewState extends State<SlopeRushHistoryHomeView> {
       '5': const Offset(0.47, 0.30),
       '6': const Offset(0.64, 0.40),
       '7': const Offset(0.74, 0.64),
+      'newOrange': const Offset(0.10, 0.10),
+      '3': const Offset(0.27, 0.27),
     },
     12: {
       'apolo1': const Offset(0.74, 0.40),
