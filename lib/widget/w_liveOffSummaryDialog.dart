@@ -121,9 +121,11 @@ class _LiveOffSummaryDialogState extends State<LiveOffSummaryDialog> {
 
       if (byteData == null) {
         Get.snackbar('오류', '이미지 생성에 실패했습니다.');
-        setState(() {
-          _isSharing = false;
-        });
+        if (mounted) {
+          setState(() {
+            _isSharing = false;
+          });
+        }
         return;
       }
 
@@ -135,21 +137,19 @@ class _LiveOffSummaryDialogState extends State<LiveOffSummaryDialog> {
       final tempFile = File('${tempDir.path}/$fileName');
       await tempFile.writeAsBytes(pngBytes);
 
-      // 공유 시트 열기
-      await Share.shareXFiles(
+      // 공유 시트 열기 (await 제거 - 공유창이 열리면 바로 상태 업데이트)
+      Share.shareXFiles(
         [XFile(tempFile.path)],
-        text: '스노우라이브에서 ${widget.summary.displayName} 님이 오늘의 라이딩 기록을 공유합니다!',
+        text: '${widget.summary.displayName}님의 라이딩 기록',
       );
-
-      // 임시 파일 삭제
-      await tempFile.delete();
     } catch (e) {
       print('이미지 공유 오류: $e');
-      Get.snackbar('오류', '이미지 공유 중 오류가 발생했습니다.');
     } finally {
-      setState(() {
-        _isSharing = false;
-      });
+      if (mounted) {
+        setState(() {
+          _isSharing = false;
+        });
+      }
     }
   }
 
