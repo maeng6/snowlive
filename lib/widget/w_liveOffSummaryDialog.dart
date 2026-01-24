@@ -3,7 +3,9 @@ import 'dart:typed_data';
 import 'dart:ui' as ui;
 import 'package:com.snowlive/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/model/m_liveOffSummary.dart';
+import 'package:com.snowlive/viewmodel/vm_user.dart';
 import 'package:extended_image/extended_image.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:get/get.dart';
@@ -82,6 +84,13 @@ class _LiveOffSummaryDialogState extends State<LiveOffSummaryDialog> {
 
       // 임시 파일 삭제
       await tempFile.delete();
+
+      // GA 이벤트 로깅
+      final userViewModel = Get.find<UserViewModel>();
+      FirebaseAnalytics.instance.logEvent(name: 'tap_save_DailyRideCard', parameters: {
+        'user_id': userViewModel.user.user_id,
+        'user_name': userViewModel.user.display_name,
+      });
 
       print('✅ 이미지 저장 완료');
       setState(() {
