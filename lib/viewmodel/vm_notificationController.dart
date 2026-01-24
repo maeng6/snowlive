@@ -9,6 +9,7 @@ import 'package:http/http.dart' as http;
 import 'package:com.snowlive/viewmodel/vm_user.dart';
 import 'package:com.snowlive/viewmodel/resortHome/vm_resortHome.dart';
 import 'package:com.snowlive/viewmodel/fleamarket/vm_fleamarketDetail.dart';
+import 'package:com.snowlive/viewmodel/community/vm_communityDetail.dart';
 import 'package:com.snowlive/routes/routes.dart';
 import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 
@@ -193,6 +194,10 @@ class NotificationController extends GetxController {
     else if (type == 'fleamarket_alert') {
       _handleFleamarketAlertNotification(data);
     }
+    // 커뮤니티 댓글/답글 알림인 경우 상세페이지로 이동
+    else if (type == 'community_comment' || type == 'community_reply') {
+      _handleCommunityNotification(data);
+    }
   }
 
   /// 중고거래 알림 처리 - 상세페이지로 이동
@@ -241,6 +246,52 @@ class NotificationController extends GetxController {
       }
     } catch (e) {
       print('❌ 중고거래 알림 처리 실패: $e');
+    }
+  }
+
+  /// 커뮤니티 알림 처리 - 상세페이지로 이동
+  Future<void> _handleCommunityNotification(Map<String, dynamic> data) async {
+    try {
+      final communityIdStr = data['community_id'];
+      if (communityIdStr == null) {
+        print('⚠️ community_id가 없음');
+        return;
+      }
+
+      final communityId = int.tryParse(communityIdStr.toString());
+      if (communityId == null) {
+        print('⚠️ community_id 파싱 실패: $communityIdStr');
+        return;
+      }
+
+      // ViewModel 확인
+      if (!Get.isRegistered<UserViewModel>() || !Get.isRegistered<CommunityDetailViewModel>()) {
+        print('⚠️ ViewModel이 아직 초기화되지 않음');
+        return;
+      }
+
+      final userViewModel = Get.find<UserViewModel>();
+      final communityDetailViewModel = Get.find<CommunityDetailViewModel>();
+
+      final userId = userViewModel.user.user_id;
+      if (userId == null) {
+        print('⚠️ 사용자 ID가 없음');
+        return;
+      }
+
+      // 상세페이지 데이터 로드 후 이동
+      CustomFullScreenDialog.showDialog();
+      try {
+        await communityDetailViewModel.fetchCommunityDetail(communityId, userId);
+        CustomFullScreenDialog.cancelDialog();
+        Get.toNamed(AppRoutes.bulletinDetail);
+      } catch (e) {
+        CustomFullScreenDialog.cancelDialog();
+        print('❌ 커뮤니티 상세페이지 로드 실패: $e');
+        Get.snackbar('알림', '게시글을 불러올 수 없습니다.');
+      }
+    } catch (e) {
+      print('❌ 커뮤니티 알림 처리 실패: $e');
     }
   }
 

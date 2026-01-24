@@ -113,5 +113,5 @@ class _CategorySub2CommuBulletinRoomWidgetState extends State<CategorySub2CommuB
 List<String?> category_sub_room_list = [
   '방 임대',
   '방 구해요',
-  '주주모집',
+  '멤버모집',
 ];

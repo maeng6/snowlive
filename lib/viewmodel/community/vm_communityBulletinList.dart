@@ -612,7 +612,7 @@ enum Community_Category_sub_event {
 enum Community_Category_sub2_bulletin {
   search("방 구해요", "free"),
   rent("방 임대", "deck"),
-  invest("주주모집", "binding");
+  invest("멤버모집", "binding");
 
   final String korean;
   final String english;
