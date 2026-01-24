@@ -65,8 +65,8 @@ class _SlopeRushHomeViewState extends State<SlopeRushHomeView> {
   // 서버 슬로프명 → 이미지키
   static const Map<int, Map<String, String>> _slopeKeyByResort = {
     1: {
-      'CNP1': 'CNP1',
-      'CNP2': 'CNP2',
+      'CNP1': 'cnp1',
+      'CNP2': 'cnp2',
       '퓨리1': 'puri1',
       '퓨리3': 'puri3',
       '퓨리2': 'puri2',
@@ -196,6 +196,7 @@ class _SlopeRushHomeViewState extends State<SlopeRushHomeView> {
       '6': '6',
       '7': '7',
       '뉴오렌': 'newOrange',
+      '3': '3',
     },
     12: {
       '아폴로1': 'apolo1',
@@ -238,8 +239,8 @@ class _SlopeRushHomeViewState extends State<SlopeRushHomeView> {
   // 이미지 기준 0~1 포지션
   Map<int, Map<String, Offset>> get _markerPos => {
     1: {
-      'CNP1': const Offset(0.29, 0.22),
-      'CNP2': const Offset(0.30, 0.68),
+      'cnp1': const Offset(0.29, 0.22),
+      'cnp2': const Offset(0.30, 0.68),
       'puri1': const Offset(0.41, 0.05),
       'puri3': const Offset(0.47, 0.62),
       'puri2': const Offset(0.46, 0.32),
@@ -369,7 +370,8 @@ class _SlopeRushHomeViewState extends State<SlopeRushHomeView> {
       '5': const Offset(0.47, 0.30),
       '6': const Offset(0.64, 0.40),
       '7': const Offset(0.74, 0.64),
-      'newOrange': const Offset(0.07, 0.07),
+      'newOrange': const Offset(0.10, 0.10),
+      '3': const Offset(0.27, 0.27),
     },
     12: {
       'apolo1': const Offset(0.74, 0.40),
