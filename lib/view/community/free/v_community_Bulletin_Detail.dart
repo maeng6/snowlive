@@ -71,8 +71,12 @@ class CommunityBulletinDetailView extends StatelessWidget {
               ),
               actions: [
                 (_communityDetailViewModel.communityDetail.userId != _userViewModel.user.user_id)
-                    ? GestureDetector(
-                  onTap: (){
+                    ? Padding(
+                  padding: const EdgeInsets.only(right: 6),
+                  child: IconButton(
+                  splashColor: Colors.transparent,
+                  highlightColor: Colors.transparent,
+                  onPressed: (){
                     textFocus.unfocus();
                     showModalBottomSheet(
                         enableDrag: false,
@@ -325,18 +329,19 @@ class CommunityBulletinDetailView extends StatelessWidget {
                           );
                         });
                   },
-                  child: Padding(
-                    padding: const EdgeInsets.only(right: 14),
-                    child: Image.asset(
-                      'assets/imgs/icons/icon_flea_appbar_more.png',
-                      scale: 4,
-                      width: 26,
-                      height: 26,
-                    ),
+                  icon: Image.asset(
+                    'assets/imgs/icons/icon_flea_appbar_more.png',
+                    scale: 4,
+                    width: 26,
+                    height: 26,
                   ),
-                )
-                    : GestureDetector(
-                  onTap: () {
+                ),)
+                    : Padding(
+                  padding: const EdgeInsets.only(right: 6),
+                  child: IconButton(
+                  splashColor: Colors.transparent,
+                  highlightColor: Colors.transparent,
+                  onPressed: () {
                     textFocus.unfocus();
                     showModalBottomSheet(
                         enableDrag: false,
@@ -505,16 +510,13 @@ class CommunityBulletinDetailView extends StatelessWidget {
                           );
                         });
                   },
-                  child: Padding(
-                    padding: const EdgeInsets.only(right: 16),
-                    child: Image.asset(
-                      'assets/imgs/icons/icon_flea_appbar_more.png',
-                      scale: 4,
-                      width: 26,
-                      height: 26,
-                    ),
+                  icon: Image.asset(
+                    'assets/imgs/icons/icon_flea_appbar_more.png',
+                    scale: 4,
+                    width: 26,
+                    height: 26,
                   ),
-                )
+                ),)
               ],
               backgroundColor: Colors.white,
               surfaceTintColor: Colors.transparent,
