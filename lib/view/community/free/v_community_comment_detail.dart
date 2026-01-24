@@ -49,7 +49,15 @@ class CommunityCommentDetailView extends StatelessWidget {
                 leading: Padding(
           padding: EdgeInsets.only(left: 8),
           child: IconButton(
-            onPressed: () => Get.back(),
+            onPressed: () {
+              final args = Get.arguments;
+              if (args != null && args['fromNotification'] == true) {
+                // 알림에서 진입한 경우 게시글 상세로 이동
+                Get.offNamed(AppRoutes.bulletinDetail);
+              } else {
+                Get.back();
+              }
+            },
             icon: SvgPicture.asset('assets/imgs/icons/icon_snowLive_back.svg', width: 26, height: 26),
             highlightColor: Colors.transparent,
           ),

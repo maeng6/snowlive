@@ -9,6 +9,7 @@ import 'package:http/http.dart' as http;
 import 'package:com.snowlive/viewmodel/vm_user.dart';
 import 'package:com.snowlive/viewmodel/resortHome/vm_resortHome.dart';
 import 'package:com.snowlive/viewmodel/fleamarket/vm_fleamarketDetail.dart';
+import 'package:com.snowlive/viewmodel/fleamarket/vm_fleamarketCommentDetail.dart';
 import 'package:com.snowlive/viewmodel/community/vm_communityDetail.dart';
 import 'package:com.snowlive/viewmodel/community/vm_communityCommentDetail.dart';
 import 'package:com.snowlive/routes/routes.dart';
@@ -203,6 +204,14 @@ class NotificationController extends GetxController {
     else if (type == 'community_reply') {
       _handleCommunityReplyNotification(data);
     }
+    // 중고거래 댓글 알림인 경우 댓글 디테일페이지로 이동
+    else if (type == 'fleamarket_comment') {
+      _handleFleamarketCommentNotification(data);
+    }
+    // 중고거래 답글 알림인 경우 댓글 디테일페이지로 이동
+    else if (type == 'fleamarket_reply') {
+      _handleFleamarketReplyNotification(data);
+    }
   }
 
   /// 중고거래 알림 처리 - 상세페이지로 이동
@@ -270,6 +279,10 @@ class NotificationController extends GetxController {
         _handleCommunityReplyNotification(data);
       } else if (type == 'fleamarket_alert') {
         _handleFleamarketAlertNotification(data);
+      } else if (type == 'fleamarket_comment') {
+        _handleFleamarketCommentNotification(data);
+      } else if (type == 'fleamarket_reply') {
+        _handleFleamarketReplyNotification(data);
       } else if (type == 'live_interrupted') {
         _handleLiveInterruptedNotification();
       }
@@ -278,24 +291,30 @@ class NotificationController extends GetxController {
     }
   }
 
-  /// 커뮤니티 댓글 알림 처리 - 게시글 상세페이지로 이동
-  /// 뒤로가기: 게시글 상세 → 커뮤니티 목록
+  /// 커뮤니티 댓글 알림 처리 - 댓글 디테일페이지로 이동
+  /// comment_id가 없으면 게시글 상세로 fallback
+  /// 뒤로가기: 댓글 디테일 → 게시글 상세
   Future<void> _handleCommunityCommentNotification(Map<String, dynamic> data) async {
     try {
       final communityIdStr = data['community_id'];
+      final commentIdStr = data['comment_id'];
+
       if (communityIdStr == null) {
         print('⚠️ community_id가 없음');
         return;
       }
 
       final communityId = int.tryParse(communityIdStr.toString());
+      final commentId = commentIdStr != null ? int.tryParse(commentIdStr.toString()) : null;
+
       if (communityId == null) {
         print('⚠️ community_id 파싱 실패: $communityIdStr');
         return;
       }
 
       // ViewModel 확인
-      if (!Get.isRegistered<UserViewModel>() || !Get.isRegistered<CommunityDetailViewModel>()) {
+      if (!Get.isRegistered<UserViewModel>() ||
+          !Get.isRegistered<CommunityDetailViewModel>()) {
         print('⚠️ ViewModel이 아직 초기화되지 않음');
         return;
       }
@@ -309,15 +328,23 @@ class NotificationController extends GetxController {
         return;
       }
 
-      // 상세페이지 데이터 로드 후 이동
       CustomFullScreenDialog.showDialog();
       try {
         await communityDetailViewModel.fetchCommunityDetail(communityId, userId);
-        CustomFullScreenDialog.cancelDialog();
-        Get.toNamed(AppRoutes.bulletinDetail);
+
+        // comment_id가 있으면 댓글 디테일로, 없으면 게시글 상세로 이동
+        if (commentId != null && Get.isRegistered<CommunityCommentDetailViewModel>()) {
+          final communityCommentDetailViewModel = Get.find<CommunityCommentDetailViewModel>();
+          await communityCommentDetailViewModel.fetchCommunityCommentDetail(commentId: commentId);
+          CustomFullScreenDialog.cancelDialog();
+          Get.toNamed(AppRoutes.bulletinCommentDetail, arguments: {'fromNotification': true});
+        } else {
+          CustomFullScreenDialog.cancelDialog();
+          Get.toNamed(AppRoutes.bulletinDetail);
+        }
       } catch (e) {
         CustomFullScreenDialog.cancelDialog();
-        print('❌ 커뮤니티 상세페이지 로드 실패: $e');
+        print('❌ 커뮤니티 댓글 알림 처리 실패: $e');
         Get.snackbar('알림', '게시글을 불러올 수 없습니다.');
       }
     } catch (e) {
@@ -377,7 +404,7 @@ class NotificationController extends GetxController {
         await communityDetailViewModel.fetchCommunityDetail(communityId, userId);
         await communityCommentDetailViewModel.fetchCommunityCommentDetail(commentId: commentId);
         CustomFullScreenDialog.cancelDialog();
-        Get.toNamed(AppRoutes.bulletinCommentDetail);
+        Get.toNamed(AppRoutes.bulletinCommentDetail, arguments: {'fromNotification': true});
       } catch (e) {
         CustomFullScreenDialog.cancelDialog();
         print('❌ 커뮤니티 댓글 디테일 로드 실패: $e');
@@ -385,6 +412,136 @@ class NotificationController extends GetxController {
       }
     } catch (e) {
       print('❌ 커뮤니티 답글 알림 처리 실패: $e');
+    }
+  }
+
+  /// 중고거래 댓글 알림 처리 - 댓글 디테일페이지로 이동
+  /// comment_id가 없으면 게시글 상세로 fallback
+  /// 뒤로가기: 댓글 디테일 → 게시글 상세
+  Future<void> _handleFleamarketCommentNotification(Map<String, dynamic> data) async {
+    try {
+      final fleaIdStr = data['flea_id'];
+      final commentIdStr = data['comment_id'];
+
+      if (fleaIdStr == null) {
+        print('⚠️ flea_id가 없음');
+        return;
+      }
+
+      final fleaId = int.tryParse(fleaIdStr.toString());
+      final commentId = commentIdStr != null ? int.tryParse(commentIdStr.toString()) : null;
+
+      if (fleaId == null) {
+        print('⚠️ flea_id 파싱 실패: $fleaIdStr');
+        return;
+      }
+
+      // ViewModel 확인
+      if (!Get.isRegistered<UserViewModel>() ||
+          !Get.isRegistered<FleamarketDetailViewModel>()) {
+        print('⚠️ ViewModel이 아직 초기화되지 않음');
+        return;
+      }
+
+      final userViewModel = Get.find<UserViewModel>();
+      final fleamarketDetailViewModel = Get.find<FleamarketDetailViewModel>();
+
+      final userId = userViewModel.user.user_id;
+      if (userId == null) {
+        print('⚠️ 사용자 ID가 없음');
+        return;
+      }
+
+      CustomFullScreenDialog.showDialog();
+      try {
+        await fleamarketDetailViewModel.fetchFleamarketDetailFromAPI(
+          fleamarketId: fleaId,
+          userId: userId,
+        );
+
+        // comment_id가 있으면 댓글 디테일로, 없으면 게시글 상세로 이동
+        if (commentId != null && Get.isRegistered<FleamarketCommentDetailViewModel>()) {
+          final fleamarketCommentDetailViewModel = Get.find<FleamarketCommentDetailViewModel>();
+          await fleamarketCommentDetailViewModel.fetchFleamarketCommentDetail(commentId: commentId);
+          CustomFullScreenDialog.cancelDialog();
+          Get.toNamed(AppRoutes.fleamarketCommentDetail, arguments: {'fromNotification': true});
+        } else {
+          CustomFullScreenDialog.cancelDialog();
+          Get.toNamed(AppRoutes.fleamarketDetail);
+        }
+      } catch (e) {
+        CustomFullScreenDialog.cancelDialog();
+        print('❌ 중고거래 댓글 알림 처리 실패: $e');
+        Get.snackbar('알림', '게시글을 불러올 수 없습니다.');
+      }
+    } catch (e) {
+      print('❌ 중고거래 댓글 알림 처리 실패: $e');
+    }
+  }
+
+  /// 중고거래 답글 알림 처리 - 댓글 디테일페이지로 이동
+  /// 뒤로가기: 댓글 디테일 → 게시글 상세
+  Future<void> _handleFleamarketReplyNotification(Map<String, dynamic> data) async {
+    try {
+      final fleaIdStr = data['flea_id'];
+      final commentIdStr = data['comment_id'];
+
+      if (commentIdStr == null) {
+        print('⚠️ comment_id가 없음');
+        return;
+      }
+      if (fleaIdStr == null) {
+        print('⚠️ flea_id가 없음');
+        return;
+      }
+
+      final commentId = int.tryParse(commentIdStr.toString());
+      final fleaId = int.tryParse(fleaIdStr.toString());
+
+      if (commentId == null) {
+        print('⚠️ comment_id 파싱 실패: $commentIdStr');
+        return;
+      }
+      if (fleaId == null) {
+        print('⚠️ flea_id 파싱 실패: $fleaIdStr');
+        return;
+      }
+
+      // ViewModel 확인
+      if (!Get.isRegistered<UserViewModel>() ||
+          !Get.isRegistered<FleamarketDetailViewModel>() ||
+          !Get.isRegistered<FleamarketCommentDetailViewModel>()) {
+        print('⚠️ ViewModel이 아직 초기화되지 않음');
+        return;
+      }
+
+      final userViewModel = Get.find<UserViewModel>();
+      final fleamarketDetailViewModel = Get.find<FleamarketDetailViewModel>();
+      final fleamarketCommentDetailViewModel = Get.find<FleamarketCommentDetailViewModel>();
+
+      final userId = userViewModel.user.user_id;
+      if (userId == null) {
+        print('⚠️ 사용자 ID가 없음');
+        return;
+      }
+
+      // 게시글 상세 + 댓글 디테일 데이터 로드 후 이동
+      CustomFullScreenDialog.showDialog();
+      try {
+        await fleamarketDetailViewModel.fetchFleamarketDetailFromAPI(
+          fleamarketId: fleaId,
+          userId: userId,
+        );
+        await fleamarketCommentDetailViewModel.fetchFleamarketCommentDetail(commentId: commentId);
+        CustomFullScreenDialog.cancelDialog();
+        Get.toNamed(AppRoutes.fleamarketCommentDetail, arguments: {'fromNotification': true});
+      } catch (e) {
+        CustomFullScreenDialog.cancelDialog();
+        print('❌ 중고거래 댓글 디테일 로드 실패: $e');
+        Get.snackbar('알림', '댓글을 불러올 수 없습니다.');
+      }
+    } catch (e) {
+      print('❌ 중고거래 답글 알림 처리 실패: $e');
     }
   }
 
