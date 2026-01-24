@@ -186,10 +186,16 @@ void main() async {
 
   // 푸시 알림 초기화 (순서대로 await하여 권한 요청 오버레이 충돌 방지)
   await PushNotification.init();
-  await PushNotification.localNotiInit();
 
-  // NotificationController는 권한 요청 완료 후 초기화
-  Get.put(NotificationController(), permanent: true);
+  // NotificationController를 먼저 초기화
+  final notificationController = Get.put(NotificationController(), permanent: true);
+
+  // 로컬 알림 초기화 (탭 콜백 연결)
+  await PushNotification.localNotiInit(
+    onNotificationTap: (payload) {
+      notificationController.handleLocalNotificationPayload(payload);
+    },
+  );
 
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   setupInteractedMessage();

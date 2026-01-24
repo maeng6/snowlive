@@ -10,6 +10,7 @@ import 'package:com.snowlive/viewmodel/vm_user.dart';
 import 'package:com.snowlive/viewmodel/resortHome/vm_resortHome.dart';
 import 'package:com.snowlive/viewmodel/fleamarket/vm_fleamarketDetail.dart';
 import 'package:com.snowlive/viewmodel/community/vm_communityDetail.dart';
+import 'package:com.snowlive/viewmodel/community/vm_communityCommentDetail.dart';
 import 'package:com.snowlive/routes/routes.dart';
 import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 
@@ -194,9 +195,13 @@ class NotificationController extends GetxController {
     else if (type == 'fleamarket_alert') {
       _handleFleamarketAlertNotification(data);
     }
-    // 커뮤니티 댓글/답글 알림인 경우 상세페이지로 이동
-    else if (type == 'community_comment' || type == 'community_reply') {
-      _handleCommunityNotification(data);
+    // 커뮤니티 댓글 알림인 경우 게시글 상세페이지로 이동
+    else if (type == 'community_comment') {
+      _handleCommunityCommentNotification(data);
+    }
+    // 커뮤니티 답글 알림인 경우 댓글 디테일페이지로 이동
+    else if (type == 'community_reply') {
+      _handleCommunityReplyNotification(data);
     }
   }
 
@@ -249,8 +254,33 @@ class NotificationController extends GetxController {
     }
   }
 
-  /// 커뮤니티 알림 처리 - 상세페이지로 이동
-  Future<void> _handleCommunityNotification(Map<String, dynamic> data) async {
+  /// 로컬 알림 payload 처리 (외부 호출용)
+  void handleLocalNotificationPayload(String? payload) {
+    if (payload == null || payload.isEmpty) return;
+
+    try {
+      final data = json.decode(payload) as Map<String, dynamic>;
+      final type = data['type'];
+
+      print('📬 로컬 알림 클릭 데이터: $data');
+
+      if (type == 'community_comment') {
+        _handleCommunityCommentNotification(data);
+      } else if (type == 'community_reply') {
+        _handleCommunityReplyNotification(data);
+      } else if (type == 'fleamarket_alert') {
+        _handleFleamarketAlertNotification(data);
+      } else if (type == 'live_interrupted') {
+        _handleLiveInterruptedNotification();
+      }
+    } catch (e) {
+      print('❌ 로컬 알림 payload 파싱 실패: $e');
+    }
+  }
+
+  /// 커뮤니티 댓글 알림 처리 - 게시글 상세페이지로 이동
+  /// 뒤로가기: 게시글 상세 → 커뮤니티 목록
+  Future<void> _handleCommunityCommentNotification(Map<String, dynamic> data) async {
     try {
       final communityIdStr = data['community_id'];
       if (communityIdStr == null) {
@@ -291,7 +321,70 @@ class NotificationController extends GetxController {
         Get.snackbar('알림', '게시글을 불러올 수 없습니다.');
       }
     } catch (e) {
-      print('❌ 커뮤니티 알림 처리 실패: $e');
+      print('❌ 커뮤니티 댓글 알림 처리 실패: $e');
+    }
+  }
+
+  /// 커뮤니티 답글 알림 처리 - 댓글 디테일페이지로 이동
+  /// 뒤로가기: 댓글 디테일 → 게시글 상세 → 커뮤니티 목록
+  Future<void> _handleCommunityReplyNotification(Map<String, dynamic> data) async {
+    try {
+      final communityIdStr = data['community_id'];
+      final commentIdStr = data['comment_id'];
+
+      if (commentIdStr == null) {
+        print('⚠️ comment_id가 없음');
+        return;
+      }
+      if (communityIdStr == null) {
+        print('⚠️ community_id가 없음');
+        return;
+      }
+
+      final commentId = int.tryParse(commentIdStr.toString());
+      final communityId = int.tryParse(communityIdStr.toString());
+
+      if (commentId == null) {
+        print('⚠️ comment_id 파싱 실패: $commentIdStr');
+        return;
+      }
+      if (communityId == null) {
+        print('⚠️ community_id 파싱 실패: $communityIdStr');
+        return;
+      }
+
+      // ViewModel 확인
+      if (!Get.isRegistered<UserViewModel>() ||
+          !Get.isRegistered<CommunityDetailViewModel>() ||
+          !Get.isRegistered<CommunityCommentDetailViewModel>()) {
+        print('⚠️ ViewModel이 아직 초기화되지 않음');
+        return;
+      }
+
+      final userViewModel = Get.find<UserViewModel>();
+      final communityDetailViewModel = Get.find<CommunityDetailViewModel>();
+      final communityCommentDetailViewModel = Get.find<CommunityCommentDetailViewModel>();
+
+      final userId = userViewModel.user.user_id;
+      if (userId == null) {
+        print('⚠️ 사용자 ID가 없음');
+        return;
+      }
+
+      // 게시글 상세 + 댓글 디테일 데이터 로드 후 이동
+      CustomFullScreenDialog.showDialog();
+      try {
+        await communityDetailViewModel.fetchCommunityDetail(communityId, userId);
+        await communityCommentDetailViewModel.fetchCommunityCommentDetail(commentId: commentId);
+        CustomFullScreenDialog.cancelDialog();
+        Get.toNamed(AppRoutes.bulletinCommentDetail);
+      } catch (e) {
+        CustomFullScreenDialog.cancelDialog();
+        print('❌ 커뮤니티 댓글 디테일 로드 실패: $e');
+        Get.snackbar('알림', '댓글을 불러올 수 없습니다.');
+      }
+    } catch (e) {
+      print('❌ 커뮤니티 답글 알림 처리 실패: $e');
     }
   }
 

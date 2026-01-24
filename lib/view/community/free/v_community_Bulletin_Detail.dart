@@ -1665,19 +1665,20 @@ class CommunityBulletinDetailView extends StatelessWidget {
                                           "user_id": _userViewModel.user.user_id,
                                         });
                                         _communityDetailViewModel.textEditingController.clear();
+                                        CustomFullScreenDialog.cancelDialog();
                                         _communityDetailViewModel.scrollController.jumpTo(
                                           _communityDetailViewModel.scrollController.position.maxScrollExtent,
                                         );
                                         FocusScope.of(context).unfocus();
-                                        await _communityDetailViewModel.fetchCommunityDetail(_communityDetailViewModel.communityDetail.communityId!, _userViewModel.user.user_id);
-                                        CustomFullScreenDialog.cancelDialog();
+                                        // 백그라운드에서 실행
+                                        _communityDetailViewModel.fetchCommunityDetail(_communityDetailViewModel.communityDetail.communityId!, _userViewModel.user.user_id);
                                         if(_communityBulletinListViewModel.tapName =='게시판') {
-                                          await _communityBulletinListViewModel.fetchAllCommunity();
+                                          _communityBulletinListViewModel.fetchAllCommunity();
                                         }else{
-                                          await _communityBulletinListViewModel.fetchEventCommunity();
+                                          _communityBulletinListViewModel.fetchEventCommunity();
                                         }
                                         if(_communityDetailViewModel.communityDetail.userId != _userViewModel.user.user_id)
-                                          await _alarmCenterViewModel.updateNotification(
+                                          _alarmCenterViewModel.updateNotification(
                                               _communityDetailViewModel.communityDetail.userId!,
                                               total: true
                                           );
