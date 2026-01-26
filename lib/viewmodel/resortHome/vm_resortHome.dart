@@ -72,6 +72,7 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
   double? _lastHeartbeatLat; // 마지막 heartbeat 위치 (거리 계산용)
   double? _lastHeartbeatLon;
   double? _lastHeartbeatAltitude; // 마지막 heartbeat 고도 (리프트/슬로프 판별용)
+  double? _lastStreamAltitude; // 마지막 position stream 고도 (리프트/슬로프 판별용)
   RxDouble _initialHeightFriend = 0.0.obs;
   RxMap _resort_info = {}.obs;
   RxMap _weatherInfo = {}.obs;
@@ -688,16 +689,13 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
 
     final altitudeDiff = currentAltitude - lastAltitude; // 양수: 상승, 음수: 하강
 
-    // 고도 변화 임계값 (60초 간격 고려하여 낮춤)
-    const double altitudeThreshold = 1.0; // 1m 이상 변화면 판별
-
-    // 2️⃣ 슬로프: 고도 하강 + 이동 중
-    if (altitudeDiff < -altitudeThreshold && speedKmh >= 3.0) {
+    // 2️⃣ 슬로프: 고도가 조금이라도 하강 + 8km/h 이상
+    if (altitudeDiff < 0 && speedKmh >= 8.0) {
       return 'slope';
     }
 
     // 3️⃣ 리프트: 고도 상승 + 느린 속도 (0~15km/h)
-    if (altitudeDiff > altitudeThreshold && speedKmh <= 15.0 && speedKmh > 0) {
+    if (altitudeDiff > 0 && speedKmh <= 15.0 && speedKmh > 0) {
       return 'lift';
     }
 
@@ -1024,6 +1022,7 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
           );
         }
 
+        _lastStreamAltitude = null; // position stream 시작 시 초기화
         _positionStreamSubscription = Geolocator.getPositionStream(
           locationSettings: locationSettings,
         ).listen(
@@ -1058,12 +1057,13 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
                 position.longitude,
               );
             }
-            // 🎿 리프트/슬로프 판별
+            // 🎿 리프트/슬로프 판별 (직전 position stream 고도와 비교)
             final locationType = _determineLocationType(
               currentAltitude: position.altitude,
-              lastAltitude: _lastHeartbeatAltitude,
+              lastAltitude: _lastStreamAltitude,
               speed: position.speed,
             );
+            _lastStreamAltitude = position.altitude;
 
             _sendLiveLog(
               userId: user_id,
@@ -1959,6 +1959,7 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
   Future<void> stopForegroundLocationService() async {
     await _positionStreamSubscription?.cancel();
     _positionStreamSubscription = null;
+    _lastStreamAltitude = null;
     print('stopForegroundLocationService 완료');
   }
 

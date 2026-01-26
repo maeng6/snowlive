@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:com.snowlive/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/view/banner/v_banner_community.dart';
 import 'package:com.snowlive/view/community/free/v_community_Bulletin_Crew.dart';
@@ -7,7 +6,7 @@ import 'package:com.snowlive/view/community/free/v_community_Bulletin_Total.dart
 import 'package:com.snowlive/view/community/free/v_community_Bulletin_Room.dart';
 import 'package:com.snowlive/view/moreTab/w_eventPageEmbedded.dart';
 import 'package:com.snowlive/viewmodel/community/vm_communityBulletinList.dart';
-import 'package:com.snowlive/viewmodel/resortHome/vm_alarmCenter.dart';
+import 'package:com.snowlive/viewmodel/vm_eventAlarm.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -16,7 +15,7 @@ import 'package:get/get.dart';
 class CommunityMainView extends StatelessWidget {
 
   final CommunityBulletinListViewModel _communityBulletinListViewModel = Get.find<CommunityBulletinListViewModel>();
-  final AlarmCenterViewModel _alarmCenterViewModel = Get.find<AlarmCenterViewModel>();
+  final EventAlarmViewModel _eventAlarmViewModel = Get.find<EventAlarmViewModel>();
   UserViewModel _userViewModel = Get.find<UserViewModel>();
 
   @override
@@ -111,98 +110,75 @@ class CommunityMainView extends StatelessWidget {
                           children: [
                             Padding(
                               padding: EdgeInsets.only(bottom: 2),
-                              child: StreamBuilder<QuerySnapshot>(
-                                stream: FirebaseFirestore.instance
-                                    .collection('eventTab_notice')
-                                    .snapshots(),
-                                builder: (context, snapshot) {
-                                  bool showNewBadge = false; // 기본적으로 NEW 배지를 숨김
-
-                                  // 스냅샷 데이터가 있을 경우 처리
-                                  if (snapshot.connectionState == ConnectionState.active && snapshot.hasData) {
-                                    for (var doc in snapshot.data!.docs) {
-                                      final data = doc.data() as Map<String, dynamic>;
-                                      final uidList = List<int>.from(data['uid'] ?? []);
-
-                                      // uidList에 현재 사용자의 user_id가 없을 경우 NEW 배지 표시
-                                      if (!uidList.contains(_userViewModel.user.user_id)) {
-                                        showNewBadge = true;
-                                        break;
-                                      }
-                                    }
-                                  }
-
-                                  return Row(
-                                    children: [
-                                      Container(
-                                        width: (_size.width - 40) / 2,
-                                        height: 40,
-                                        child: ElevatedButton(
-                                          child: Row(
-                                            mainAxisAlignment: MainAxisAlignment.center,
-                                            children: [
-                                              Text(
-                                                '이벤트·소식',
-                                                style: SDSTextStyle.extraBold.copyWith(
-                                                  color: (_communityBulletinListViewModel.tapName == '이벤트·소식')
-                                                      ? SDSColor.gray900
-                                                      : SDSColor.gray900.withOpacity(0.2),
-                                                  fontWeight: (_communityBulletinListViewModel.tapName == '이벤트·소식')
-                                                      ? FontWeight.w900
-                                                      : FontWeight.w300,
-                                                  fontSize: 16,
+                              child: Row(
+                                children: [
+                                  Container(
+                                    width: (_size.width - 40) / 2,
+                                    height: 40,
+                                    child: ElevatedButton(
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          Text(
+                                            '이벤트·소식',
+                                            style: SDSTextStyle.extraBold.copyWith(
+                                              color: (_communityBulletinListViewModel.tapName == '이벤트·소식')
+                                                  ? SDSColor.gray900
+                                                  : SDSColor.gray900.withOpacity(0.2),
+                                              fontWeight: (_communityBulletinListViewModel.tapName == '이벤트·소식')
+                                                  ? FontWeight.w900
+                                                  : FontWeight.w300,
+                                              fontSize: 16,
+                                            ),
+                                          ),
+                                          if (_eventAlarmViewModel.hasNewEventTab.value)
+                                            Padding(
+                                              padding: EdgeInsets.only(left: 4),
+                                              child: Container(
+                                                width: 20,
+                                                height: 20,
+                                                decoration: BoxDecoration(
+                                                  color: Color(0xFFD6382B),
+                                                  borderRadius: BorderRadius.circular(20),
                                                 ),
-                                              ),
-                                              if (showNewBadge)
-                                                Padding(
-                                                  padding: EdgeInsets.only(left: 4),
-                                                  child: Container(
-                                                    width: 20,
-                                                    height: 20,
-                                                    decoration: BoxDecoration(
-                                                      color: Color(0xFFD6382B),
-                                                      borderRadius: BorderRadius.circular(20),
-                                                    ),
-                                                    child: Center(
-                                                      child: Text(
-                                                        'N',
-                                                        style: SDSTextStyle.extraBold.copyWith(
-                                                          fontSize: 11,
-                                                          fontWeight: FontWeight.bold,
-                                                          color: Color(0xFFFFFFFF),
-                                                        ),
-                                                      ),
+                                                child: Center(
+                                                  child: Text(
+                                                    'N',
+                                                    style: SDSTextStyle.extraBold.copyWith(
+                                                      fontSize: 11,
+                                                      fontWeight: FontWeight.bold,
+                                                      color: Color(0xFFFFFFFF),
                                                     ),
                                                   ),
                                                 ),
-                                            ],
-                                          ),
-                                          onPressed: () async{
-                                            HapticFeedback.lightImpact();
-                                            _communityBulletinListViewModel.changeTap('이벤트·소식');
-                                            if(showNewBadge){
-                                              await _communityBulletinListViewModel.fetchCommunityList_event(userId:  _userViewModel.user.user_id,categoryMain: '이벤트');
-                                              await _alarmCenterViewModel.updateEventTabNotice(_userViewModel.user.user_id, false);
-                                            }
-                                          },
-                                          style: ElevatedButton.styleFrom(
-                                            splashFactory: NoSplash.splashFactory,
-                                            padding: EdgeInsets.only(top: 0),
-                                            minimumSize: Size(40, 10),
-                                            backgroundColor: SDSColor.snowliveWhite,
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.circular(8),
+                                              ),
                                             ),
-                                            elevation: 0,
-                                            shadowColor: Colors.transparent,
-                                            overlayColor: Colors.transparent,
-                                            surfaceTintColor: Colors.transparent,
-                                          ),
-                                        ),
+                                        ],
                                       ),
-                                    ],
-                                  );
-                                },
+                                      onPressed: () async{
+                                        HapticFeedback.lightImpact();
+                                        _communityBulletinListViewModel.changeTap('이벤트·소식');
+                                        if(_eventAlarmViewModel.hasNewEventTab.value){
+                                          await _communityBulletinListViewModel.fetchCommunityList_event(userId:  _userViewModel.user.user_id,categoryMain: '이벤트');
+                                          await _eventAlarmViewModel.markEventTabAsRead();
+                                        }
+                                      },
+                                      style: ElevatedButton.styleFrom(
+                                        splashFactory: NoSplash.splashFactory,
+                                        padding: EdgeInsets.only(top: 0),
+                                        minimumSize: Size(40, 10),
+                                        backgroundColor: SDSColor.snowliveWhite,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(8),
+                                        ),
+                                        elevation: 0,
+                                        shadowColor: Colors.transparent,
+                                        overlayColor: Colors.transparent,
+                                        surfaceTintColor: Colors.transparent,
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
                             Container(
