@@ -62,6 +62,10 @@ class MainActivity: FlutterActivity() {
                             result.success(false)
                         }
                     }
+                    "isMockLocationEnabled" -> {
+                        val mockLocationApp = Settings.Secure.getString(contentResolver, "mock_location")
+                        result.success(!mockLocationApp.isNullOrEmpty())
+                    }
                     else -> result.notImplemented()
                 }
             }
