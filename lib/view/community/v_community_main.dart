@@ -131,7 +131,7 @@ class CommunityMainView extends StatelessWidget {
                                               fontSize: 16,
                                             ),
                                           ),
-                                          if (_eventAlarmViewModel.hasNewEventTab.value)
+                                          if (_eventAlarmViewModel.hasNewEvent.value)
                                             Padding(
                                               padding: EdgeInsets.only(left: 4),
                                               child: Container(
@@ -158,9 +158,9 @@ class CommunityMainView extends StatelessWidget {
                                       onPressed: () async{
                                         HapticFeedback.lightImpact();
                                         _communityBulletinListViewModel.changeTap('이벤트·소식');
-                                        if(_eventAlarmViewModel.hasNewEventTab.value){
+                                        if(_eventAlarmViewModel.hasNewEvent.value){
                                           await _communityBulletinListViewModel.fetchCommunityList_event(userId:  _userViewModel.user.user_id,categoryMain: '이벤트');
-                                          await _eventAlarmViewModel.markEventTabAsRead();
+                                          await _eventAlarmViewModel.markAsRead();
                                         }
                                       },
                                       style: ElevatedButton.styleFrom(
