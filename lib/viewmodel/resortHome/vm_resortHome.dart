@@ -45,7 +45,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:com.snowlive/main.dart' show backgroundGeolocationHeadlessTask;
 
 final ref = FirebaseFirestore.instance;
-DateTime? _lastFakeLocationCheckTime;
 
 // 마지막 액션 타입 (리스폰 로직용)
 enum LastActionType {
@@ -72,6 +71,7 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
   double? _lastHeartbeatLat; // 마지막 heartbeat 위치 (거리 계산용)
   double? _lastHeartbeatLon;
   double? _lastHeartbeatAltitude; // 마지막 heartbeat 고도 (리프트/슬로프 판별용)
+  double? _lastStreamAltitude; // 마지막 position stream 고도 (리프트/슬로프 판별용)
   RxDouble _initialHeightFriend = 0.0.obs;
   RxMap _resort_info = {}.obs;
   RxMap _weatherInfo = {}.obs;
@@ -161,6 +161,7 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
   static const String _autoLiveOnTooltipShownKey = 'auto_liveon_tooltip_shown';
   bool _isAutoLiveOnInProgress = false;  // 🔥 자동 라이브온 중복 실행 방지
   bool _isLiveOffInProgress = false;      // 🔥 liveOff 중복 실행 방지
+  bool _isMockDetectedLiveOffTriggered = false; // 🛡️ GPS 조작 감지 중복 호출 방지
 
   // 🔥 백그라운드에서 liveOn 시 Live Activity 시작 지연용
   Map<String, dynamic>? _pendingLiveActivityData;
@@ -622,6 +623,16 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
 
     _heartbeatTimer = Timer.periodic(const Duration(seconds: 60), (timer) async {
       if (_currentLiveUserId != null) {
+        // 🛡️ 개발자옵션 Mock Location 앱 설정 주기적 체크 (60초마다)
+        if (Platform.isAndroid) {
+          final mockEnabled = await isMockLocationEnabled();
+          if (mockEnabled) {
+            print('🚨 [Mock] heartbeat에서 개발자옵션 Mock Location 앱 감지!');
+            _handleMockLocationDetected('dev_options_mock_detected');
+            return;
+          }
+        }
+
         final currentLat = _latitude.value;
         final currentLon = _longitude.value;
         final currentAltitude = _currentAltitude;
@@ -688,16 +699,13 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
 
     final altitudeDiff = currentAltitude - lastAltitude; // 양수: 상승, 음수: 하강
 
-    // 고도 변화 임계값 (60초 간격 고려하여 낮춤)
-    const double altitudeThreshold = 1.0; // 1m 이상 변화면 판별
-
-    // 2️⃣ 슬로프: 고도 하강 + 이동 중
-    if (altitudeDiff < -altitudeThreshold && speedKmh >= 3.0) {
+    // 2️⃣ 슬로프: 고도가 조금이라도 하강 + 8km/h 이상
+    if (altitudeDiff < 0 && speedKmh >= 8.0) {
       return 'slope';
     }
 
     // 3️⃣ 리프트: 고도 상승 + 느린 속도 (0~15km/h)
-    if (altitudeDiff > altitudeThreshold && speedKmh <= 15.0 && speedKmh > 0) {
+    if (altitudeDiff > 0 && speedKmh <= 15.0 && speedKmh > 0) {
       return 'lift';
     }
 
@@ -832,6 +840,9 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
 
   Future<void> startLiveLocationService({required user_id, bool isRestart = false}) async {
     try {
+      // 🛡️ GPS 조작 감지 플래그 초기화
+      _isMockDetectedLiveOffTriggered = false;
+
       // 현재 라이브온 사용자 ID 저장
       _currentLiveUserId = user_id;
 
@@ -848,6 +859,33 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
         final shouldProceed = await showBatteryOptimizationDialog(userId: user_id);
         if (!shouldProceed) {
           // 시스템 팝업이 뜬 경우 - 앱이 resumed 되면 자동으로 재시도됨
+          return;
+        }
+      }
+
+      // 🛡️ Android: 개발자옵션 Mock Location 앱 설정 확인 (시작 시 차단)
+      if (Platform.isAndroid) {
+        final mockEnabled = await isMockLocationEnabled();
+        if (mockEnabled) {
+          print('🚨 [Mock] 개발자옵션 Mock Location 앱 감지 - 라이브 시작 차단');
+          // 로그 전송
+          try {
+            await _rankingAPI.createErrorLog({
+              'user_id': user_id,
+              'request_type': 'dev_options_mock_detected_at_start',
+              'error': 'Mock location app enabled in developer options - live start blocked',
+              'created_at': DateTime.now().toUtc().toIso8601String(),
+            });
+          } catch (e) {
+            print('❌ [Mock] 로그 전송 실패: $e');
+          }
+          // 팝업 표시
+          await showSettingsPopup(
+            title: 'GPS 조작 앱 감지',
+            message: '개발자 옵션에서 가상 위치 앱을\n비활성화해주세요.',
+            action: () {},
+          );
+          _currentLiveUserId = null;
           return;
         }
       }
@@ -1024,6 +1062,7 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
           );
         }
 
+        _lastStreamAltitude = null; // position stream 시작 시 초기화
         _positionStreamSubscription = Geolocator.getPositionStream(
           locationSettings: locationSettings,
         ).listen(
@@ -1042,13 +1081,25 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
               return;
             }
 
-            // 현재 좌표, 속도, 고도 갱신
+            // 🛡️ GPS 조작 감지 (Android isMocked)
+            if (Platform.isAndroid && position.isMocked) {
+              print('🚨 [Mock] 포그라운드 GPS 조작 감지!');
+              _handleMockLocationDetected('fg_mock_detected');
+              return;
+            }
+
+            // 🚨 GPS 튐 탐지: 정확도/속도 필터링 (좌표 갱신 전에 먼저 검증)
+            if (!_validatePosition(position, user_id)) {
+              return; // 유효하지 않은 위치면 좌표 갱신/로그 없이 즉시 무시
+            }
+
+            // 현재 좌표, 속도, 고도 갱신 (검증 통과한 위치만)
             _latitude.value = position.latitude;
             _longitude.value = position.longitude;
             _currentSpeed = position.speed >= 0 ? position.speed : 0.0; // 음수 속도 방지
             _currentAltitude = position.altitude; // 고도 (m)
 
-            // 🔍 위치 스트림 로그 (디버깅용)
+            // 🔍 위치 스트림 로그 (디버깅용 - 검증 통과한 위치만 기록)
             double? distanceFromLast;
             if (_lastValidationPosition != null) {
               distanceFromLast = Geolocator.distanceBetween(
@@ -1058,12 +1109,13 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
                 position.longitude,
               );
             }
-            // 🎿 리프트/슬로프 판별
+            // 🎿 리프트/슬로프 판별 (직전 position stream 고도와 비교)
             final locationType = _determineLocationType(
               currentAltitude: position.altitude,
-              lastAltitude: _lastHeartbeatAltitude,
+              lastAltitude: _lastStreamAltitude,
               speed: position.speed,
             );
+            _lastStreamAltitude = position.altitude;
 
             _sendLiveLog(
               userId: user_id,
@@ -1076,11 +1128,6 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
               altitude: position.altitude,
               locationType: locationType,
             );
-
-            // 🚨 GPS 튐 탐지: 정확도/속도 필터링
-            if (!_validatePosition(position, user_id)) {
-              return; // 유효하지 않은 위치면 처리 안함
-            }
 
             await _lock.synchronized(() async {
               bool withinBoundary = _checkPositionWithinBoundary(
@@ -1543,6 +1590,13 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
       }
       _isGettingBackgroundPosition = false;
 
+      // 🛡️ GPS 조작 감지 (Android mock)
+      if (Platform.isAndroid && (location.mock == true || freshLocation.mock == true)) {
+        print('🚨 [Mock] 백그라운드 GPS 조작 감지!');
+        _handleMockLocationDetected('bg_mock_detected');
+        return;
+      }
+
       // 🛡️ 캐시된 오래된 위치 필터링 (iOS GPS 점프 방지)
       final locationTimestamp = DateTime.parse(freshLocation.timestamp);
       final positionAge = DateTime.now().difference(locationTimestamp);
@@ -1959,6 +2013,7 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
   Future<void> stopForegroundLocationService() async {
     await _positionStreamSubscription?.cancel();
     _positionStreamSubscription = null;
+    _lastStreamAltitude = null;
     print('stopForegroundLocationService 완료');
   }
 
@@ -2106,11 +2161,64 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
     }
   }
 
+  /// 🛡️ GPS 조작(Mock Location) 감지 시 처리 (로그 전송 + liveOff)
+  Future<void> _handleMockLocationDetected(String requestType) async {
+    if (_isMockDetectedLiveOffTriggered) {
+      print('⚠️ [Mock] 이미 처리 중, 중복 호출 무시');
+      return;
+    }
+    _isMockDetectedLiveOffTriggered = true;
+
+    final userId = _currentLiveUserId;
+    if (userId == null) return;
+
+    print('🚨 [Mock] GPS 조작 감지! type=$requestType, userId=$userId');
+
+    // 즉시 로그 전송 (버퍼 없이 직접 호출)
+    try {
+      await _rankingAPI.createErrorLog({
+        'user_id': userId,
+        'coordinates': 'POINT(${_longitude.value} ${_latitude.value})',
+        'request_type': requestType,
+        'error': 'Mock location detected - live off triggered',
+        'created_at': DateTime.now().toUtc().toIso8601String(),
+      });
+    } catch (e) {
+      print('❌ [Mock] 즉시 로그 전송 실패: $e');
+    }
+
+    // 버퍼 로그도 추가 + 플러시
+    _sendLiveLog(
+      userId: userId,
+      requestType: requestType,
+      lat: _latitude.value,
+      lon: _longitude.value,
+      error: 'Mock location detected - live off triggered',
+    );
+    _flushLogBuffer();
+
+    // liveOff 호출 (요약 다이얼로그 미표시)
+    await liveOff({"user_id": userId}, userId, showSummary: false);
+  }
+
+  /// 🛡️ Android 개발자옵션 Mock Location 앱 설정 확인 (MethodChannel)
+  Future<bool> isMockLocationEnabled() async {
+    if (!Platform.isAndroid) return false;
+    try {
+      const channel = MethodChannel('detect_battery_saver');
+      final result = await channel.invokeMethod('isMockLocationEnabled');
+      return result == true;
+    } catch (e) {
+      print('⚠️ [Mock] 개발자옵션 확인 오류: $e');
+      return false;
+    }
+  }
+
   /// GPS 튐 탐지 (스키/보드용)
   /// 반환값: true = 유효한 위치, false = 무시해야 할 위치
   bool _validatePosition(Position newPosition, int userId) {
     // 1️⃣ 정확도 필터링 (GPS 신호 약하면 무시)
-    if (newPosition.accuracy > 50) {
+    if (newPosition.accuracy > 10) {
       print('⚠️ [GPS] 정확도 낮음 무시: ${newPosition.accuracy.toStringAsFixed(0)}m');
       _sendLiveLog(
         userId: userId,
@@ -2122,7 +2230,21 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
       return false;
     }
 
-    // 2️⃣ 속도 기반 필터링 (비현실적 속도 감지)
+    // 2️⃣ position.speed 필터링 (GPS가 보고한 순간 속도가 비현실적이면 무시)
+    final reportedSpeedKmh = newPosition.speed * 3.6;
+    if (newPosition.speed > 0 && reportedSpeedKmh > 120) {
+      print('🚨 [GPS] position.speed 비정상 무시: ${reportedSpeedKmh.toStringAsFixed(1)}km/h');
+      _sendLiveLog(
+        userId: userId,
+        requestType: 'gps_reported_speed_ignored',
+        error: 'position.speed: ${reportedSpeedKmh.toStringAsFixed(1)}km/h (${newPosition.speed.toStringAsFixed(1)}m/s)',
+        lat: newPosition.latitude,
+        lon: newPosition.longitude,
+      );
+      return false;
+    }
+
+    // 3️⃣ 거리/시간 기반 속도 필터링 (비현실적 이동 감지)
     if (_lastValidationPosition != null && _lastValidationTime != null) {
       final distance = Geolocator.distanceBetween(
         _lastValidationPosition!.latitude, _lastValidationPosition!.longitude,
@@ -2134,8 +2256,8 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
         final speedMps = distance / timeDiff;
         final speedKmh = speedMps * 3.6;
 
-        // 🚨 비현실적 속도: 150km/h 초과 시 무시 (스키 최고속도 ~120km/h)
-        if (speedKmh > 150) {
+        // 🚨 비현실적 속도: 120km/h 초과 시 무시 (스키 최고속도 ~120km/h)
+        if (speedKmh > 120) {
           print('🚨 [GPS] 비현실적 속도 무시: ${speedKmh.toStringAsFixed(1)}km/h, dist=${distance.toStringAsFixed(0)}m');
           _sendLiveLog(
             userId: userId,
@@ -2225,6 +2347,7 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
         _previousValidPosition = null;
         _outOfBoundaryCount = 0;
         _lastOutOfBoundaryTime = null;
+        _isMockDetectedLiveOffTriggered = false; // 🛡️ GPS 조작 감지 플래그 초기화
 
         // ✅ 라이브 액티비티 알림 종료 (await 필수 - 알림이 사라진 후 다이얼로그 표시)
         await _endLiveActivity('liveOff()');
@@ -2255,6 +2378,7 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
         _currentLiveUserId = null;
         _stopLogFlushTimer();
         _stopLiveFriendsWorker();
+        _isMockDetectedLiveOffTriggered = false; // 🛡️ GPS 조작 감지 플래그 초기화
         await _endLiveActivity('liveOff() - API failed');
         CustomFullScreenDialog.cancelDialog();
         print('⚠️ liveOff API 실패, 위치 서비스는 종료됨');
