@@ -106,6 +106,7 @@ class FleamarketDetailViewModel extends GetxController {
   void fetchFleamarketDetailFromList({
     required var fleamarketResponse
   }) {
+    _currentIndex.value = 0; // 이미지 인덱스 초기화
     _fleamarketDetail.value = FleamarketDetailModel.fromFleamarketModel(fleamarketResponse);
     _time.value = GetDatetime().getAgoString(_fleamarketDetail.value.uploadTime!);
   }
