@@ -11,6 +11,7 @@ class RidingRecordCard {
   String? mostRiddenSlope;
   int? mostRiddenCount;
   double? topSpeed;
+  double? totalDistance;
   String? riderTitle;
 
   RidingRecordCard({
@@ -26,6 +27,7 @@ class RidingRecordCard {
     this.mostRiddenSlope,
     this.mostRiddenCount,
     this.topSpeed,
+    this.totalDistance,
     this.riderTitle,
   });
 
@@ -44,6 +46,7 @@ class RidingRecordCard {
     mostRiddenSlope = json['most_ridden_slope'];
     mostRiddenCount = json['most_ridden_count'];
     topSpeed = json['top_speed']?.toDouble();
+    totalDistance = json['total_distance']?.toDouble();
     riderTitle = json['rider_title'];
   }
 
@@ -61,6 +64,7 @@ class RidingRecordCard {
       'most_ridden_slope': mostRiddenSlope,
       'most_ridden_count': mostRiddenCount,
       'top_speed': topSpeed,
+      'total_distance': totalDistance,
       'rider_title': riderTitle,
     };
   }
