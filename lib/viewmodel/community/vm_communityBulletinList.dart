@@ -161,6 +161,13 @@ class CommunityBulletinListViewModel extends GetxController {
     // 버튼 표시 여부 결정
     _showAddButton_total.value = scrollController_total.offset <= 0;
 
+    // 스크롤이 최상단에 가까우면 항상 칩 표시
+    if (scrollController_total.offset <= 10) {
+      _isVisible_total.value = false;
+      _showCategoryChips.value = true;
+      return;
+    }
+
     // 숨김/표시 여부 결정
     if (scrollController_total.position.userScrollDirection == ScrollDirection.reverse) {
       _isVisible_total.value = true;
@@ -184,12 +191,20 @@ class CommunityBulletinListViewModel extends GetxController {
     // 버튼 표시 여부 결정
     _showAddButton_free.value = scrollController_free.offset <= 0;
 
+    // 스크롤이 최상단에 가까우면 항상 칩 표시
+    if (scrollController_free.offset <= 10) {
+      _isVisible_free.value = false;
+      _showCategoryChips.value = true;
+      return;
+    }
+
     // 숨김/표시 여부 결정
     if (scrollController_free.position.userScrollDirection == ScrollDirection.reverse) {
       _isVisible_free.value = true;
-    } else if (scrollController_free.position.userScrollDirection == ScrollDirection.forward ||
-        scrollController_free.position.pixels <= scrollController_free.position.maxScrollExtent) {
+      _showCategoryChips.value = false;
+    } else if (scrollController_free.position.userScrollDirection == ScrollDirection.forward) {
       _isVisible_free.value = false;
+      _showCategoryChips.value = true;
     }
   }
 
@@ -205,6 +220,13 @@ class CommunityBulletinListViewModel extends GetxController {
 
     // 버튼 표시 여부 결정
     _showAddButton_room.value = scrollController_room.offset <= 0;
+
+    // 스크롤이 최상단에 가까우면 항상 칩 표시
+    if (scrollController_room.offset <= 10) {
+      _isVisible_room.value = false;
+      _showCategoryChips.value = true;
+      return;
+    }
 
     // 숨김/표시 여부 결정
     if (scrollController_room.position.userScrollDirection == ScrollDirection.reverse) {
@@ -228,6 +250,13 @@ class CommunityBulletinListViewModel extends GetxController {
 
     // 버튼 표시 여부 결정
     _showAddButton_crew.value = scrollController_crew.offset <= 0;
+
+    // 스크롤이 최상단에 가까우면 항상 칩 표시
+    if (scrollController_crew.offset <= 10) {
+      _isVisible_crew.value = false;
+      _showCategoryChips.value = true;
+      return;
+    }
 
     // 숨김/표시 여부 결정
     if (scrollController_crew.position.userScrollDirection == ScrollDirection.reverse) {
@@ -530,6 +559,106 @@ class CommunityBulletinListViewModel extends GetxController {
     _chipName.value = value;
     _showCategoryChips.value = true; // 칩 변경 시 카테고리 칩 표시
     print('칩네임 $_chipName로 변경');
+  }
+
+  /// 커뮤니티 탭으로 돌아왔을 때 스크롤 위치에 따라 칩 표시 상태 업데이트
+  void updateChipsVisibility() {
+    try {
+      double currentOffset = 0;
+
+      if (_tapName.value == '게시판') {
+        switch (_chipName.value) {
+          case '전체':
+            if (scrollController_total.hasClients) {
+              currentOffset = scrollController_total.offset;
+            }
+            break;
+          case '잡담':
+            if (scrollController_free.hasClients) {
+              currentOffset = scrollController_free.offset;
+            }
+            break;
+          case '시즌방':
+            if (scrollController_room.hasClients) {
+              currentOffset = scrollController_room.offset;
+            }
+            break;
+          case '단톡방·동호회':
+            if (scrollController_crew.hasClients) {
+              currentOffset = scrollController_crew.offset;
+            }
+            break;
+        }
+      } else if (_tapName.value == '이벤트·소식') {
+        if (scrollController_event.hasClients) {
+          currentOffset = scrollController_event.offset;
+        }
+      }
+
+      // 스크롤이 최상단에 가까우면 칩 표시
+      if (currentOffset <= 10) {
+        _showCategoryChips.value = true;
+      }
+    } catch (e) {
+      print('updateChipsVisibility error: $e');
+    }
+  }
+
+  /// 현재 탭의 스크롤을 최상단으로 이동
+  void scrollToTop() {
+    try {
+      if (_tapName.value == '게시판') {
+        switch (_chipName.value) {
+          case '전체':
+            if (scrollController_total.hasClients) {
+              scrollController_total.animateTo(
+                0,
+                duration: Duration(milliseconds: 300),
+                curve: Curves.easeOut,
+              );
+            }
+            break;
+          case '잡담':
+            if (scrollController_free.hasClients) {
+              scrollController_free.animateTo(
+                0,
+                duration: Duration(milliseconds: 300),
+                curve: Curves.easeOut,
+              );
+            }
+            break;
+          case '시즌방':
+            if (scrollController_room.hasClients) {
+              scrollController_room.animateTo(
+                0,
+                duration: Duration(milliseconds: 300),
+                curve: Curves.easeOut,
+              );
+            }
+            break;
+          case '단톡방·동호회':
+            if (scrollController_crew.hasClients) {
+              scrollController_crew.animateTo(
+                0,
+                duration: Duration(milliseconds: 300),
+                curve: Curves.easeOut,
+              );
+            }
+            break;
+        }
+      } else if (_tapName.value == '이벤트·소식') {
+        if (scrollController_event.hasClients) {
+          scrollController_event.animateTo(
+            0,
+            duration: Duration(milliseconds: 300),
+            curve: Curves.easeOut,
+          );
+        }
+      }
+      _showCategoryChips.value = true; // 스크롤 최상단 이동 시 카테고리 칩 표시
+    } catch (e) {
+      print('scrollToTop error: $e');
+    }
   }
 
   // 카테고리 칩 표시/숨김 설정 (외부 호출용)

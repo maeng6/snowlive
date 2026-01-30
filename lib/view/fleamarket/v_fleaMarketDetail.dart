@@ -699,12 +699,14 @@ class _FleaMarketDetailViewState extends State<FleaMarketDetailView> {
                                       SizedBox(height: totalAppBarHeight),
                                     if (_fleamarketDetailViewModel.fleamarketDetail.photos!.length != 0)
                                       Stack(
+                                        key: ValueKey(_fleamarketDetailViewModel.fleamarketDetail.fleaId),
                                         children: [
                                           CarouselSlider.builder(
                                             options: CarouselOptions(
                                               height: _size.width,
                                               viewportFraction: 1,
                                               enableInfiniteScroll: false,
+                                              initialPage: 0,
                                               onPageChanged: (index, reason) {
                                                 _fleamarketDetailViewModel.updateCurrentIndex(index);
                                               },
