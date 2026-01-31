@@ -2083,65 +2083,6 @@ class _ResortHomeViewState extends State<ResortHomeView> with
                                                   ),
                                                 ),
                                               ),
-                                            // 오늘의 라이딩 기록 카드 보기 버튼 (라이브온 중이 아닐 때만 표시)
-                                            if(_resortHomeViewModel.resortHomeModel.dailyTotalCount != null && _resortHomeViewModel.resortHomeModel.dailyTotalCount! >= 1 && _userViewModel.user.within_boundary != true)
-                                              Padding(
-                                                padding: EdgeInsets.only(top: 24, bottom: 12),
-                                                child: GestureDetector(
-                                                  onTap: () async {
-                                                    // 이미 다이얼로그가 열려 있거나 열리는 중이면 무시
-                                                    if (_isShowingRecordCardDialog) return;
-                                                    if (Get.isDialogOpen == true) return;
-                                                    _isShowingRecordCardDialog = true;
-
-                                                    try {
-                                                      // 풀스크린 로딩 다이얼로그 표시
-                                                      CustomFullScreenDialog.showDialog();
-
-                                                      await _resortHomeViewModel.fetchRidingRecordCard(userId: _userViewModel.user.user_id);
-
-                                                      // 로딩 다이얼로그 닫기
-                                                      CustomFullScreenDialog.cancelDialog();
-
-                                                      final card = _resortHomeViewModel.ridingRecordCard.value;
-                                                      if (card != null) {
-                                                        final summary = LiveOffSummaryModel(
-                                                          userId: card.userId ?? 0,
-                                                          withinBoundary: card.withinBoundary ?? false,
-                                                          revealWb: card.revealWb ?? true,
-                                                          date: card.date ?? '',
-                                                          weekday: card.weekday ?? '',
-                                                          displayName: card.displayName ?? '',
-                                                          profileImageUrlUser: card.profileImageUrlUser ?? '',
-                                                          totalSlopeCount: card.totalSlopeCount ?? 0,
-                                                          slopeCountsByName: card.slopeCountsByName,
-                                                          mostRiddenSlope: card.mostRiddenSlope ?? '',
-                                                          mostRiddenCount: card.mostRiddenCount ?? 0,
-                                                          topSpeed: card.topSpeed ?? 0,
-                                                          riderTitle: card.riderTitle ?? '',
-                                                        );
-                                                        await showLiveOffSummaryDialog(summary);
-                                                      }
-                                                    } finally {
-                                                      _isShowingRecordCardDialog = false;
-                                                    }
-                                                  },
-                                                  child: Container(
-                                                    padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                                                    decoration: BoxDecoration(
-                                                      color: SDSColor.gray900,
-                                                      borderRadius: BorderRadius.circular(20),
-                                                    ),
-                                                    child: Text(
-                                                      '오늘의 라이딩 기록 카드 보기',
-                                                      style: SDSTextStyle.bold.copyWith(
-                                                        fontSize: 13,
-                                                        color: Colors.white,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
                                             if(_userViewModel.user.within_boundary == true)
                                               Padding(
                                                 padding: EdgeInsets.only(top : 24, bottom: 12),

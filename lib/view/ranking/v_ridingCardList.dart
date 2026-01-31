@@ -44,6 +44,9 @@ class _RidingCardListViewState extends State<RidingCardListView> {
   }
 
   Future<void> _loadData() async {
+    // 저장된 카드 타입 불러오기
+    await _ridingCardViewModel.loadCardTypeMap();
+
     await _ridingCardViewModel.fetchSeasonRidingCard(
       userId: _userViewModel.user.user_id,
       season: _ridingCardViewModel.selectedSeasonDb.value,
@@ -808,7 +811,20 @@ class _RidingCardListViewState extends State<RidingCardListView> {
   Widget _buildDailyCardSection() {
     final groupedCards = _ridingCardViewModel.groupedDailyCardsByMonth;
 
-    if (groupedCards.isEmpty) {
+    // 데일리 카드가 없거나, 모든 카드의 기록이 0인지 확인
+    bool hasNoValidRecord = groupedCards.isEmpty;
+    if (!hasNoValidRecord) {
+      // 모든 카드가 0인지 확인
+      hasNoValidRecord = groupedCards.values.every((cards) {
+        return cards.every((card) {
+          return (card.totalSlopeCount ?? 0) == 0 &&
+              (card.totalDistance ?? 0) == 0 &&
+              (card.topSpeed ?? 0) == 0;
+        });
+      });
+    }
+
+    if (hasNoValidRecord) {
       return SizedBox(
         height: 200,
         child: Center(
@@ -822,7 +838,7 @@ class _RidingCardListViewState extends State<RidingCardListView> {
               ),
               SizedBox(height: 8),
               Text(
-                '데일리 기록이 없습니다',
+                '일일 기록이 없습니다',
                 style: SDSTextStyle.regular.copyWith(
                   color: SDSColor.gray500,
                   fontSize: 14,
@@ -906,94 +922,101 @@ class _RidingCardListViewState extends State<RidingCardListView> {
   Widget _buildDailyListItem(DailyRidingCard card) {
     final day = _getDayFromDate(card.date);
 
-    return GestureDetector(
-      onTap: () {
-        HapticFeedback.lightImpact();
-        _showDailyCardDetail(card);
-      },
-      child: Container(
-        margin: EdgeInsets.only(bottom: 12),
-        padding: EdgeInsets.all(12),
-        decoration: BoxDecoration(
-          color: SDSColor.gray50,
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: Row(
-          children: [
-            // 좌측: 날짜 + 요일
-            SizedBox(
-              width: 50,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text(
-                    '${day}일',
-                    style: SDSTextStyle.extraBold.copyWith(
-                      fontSize: 18,
-                      color: SDSColor.gray900,
-                    ),
-                  ),
-                  Text(
-                    '(${card.weekday ?? ''})',
-                    style: SDSTextStyle.regular.copyWith(
-                      fontSize: 12,
-                      color: SDSColor.gray500,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(width: 12),
-            // 중앙: 라이더 타이틀 + 총 라이딩
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  if (card.riderTitle != null && card.riderTitle!.isNotEmpty)
+    return Obx(() {
+      // cardTypeMap 변경 감지를 위해 Obx로 감싸기
+      final _ = _ridingCardViewModel.cardTypeMap[card.cardId ?? 0];
+      final currentCardType = _ridingCardViewModel.getCardType(card.cardId ?? 0);
+
+      return GestureDetector(
+        onTap: () {
+          HapticFeedback.lightImpact();
+          _showDailyCardDetail(card);
+        },
+        child: Container(
+          margin: EdgeInsets.only(bottom: 12),
+          padding: EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: SDSColor.gray50,
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Row(
+            children: [
+              // 좌측: 날짜 + 요일
+              SizedBox(
+                width: 50,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
                     Text(
-                      card.riderTitle!,
-                      style: SDSTextStyle.bold.copyWith(
-                        fontSize: 14,
+                      '${day}일',
+                      style: SDSTextStyle.extraBold.copyWith(
+                        fontSize: 18,
                         color: SDSColor.gray900,
                       ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    )
-                  else
+                    ),
                     Text(
-                      '-',
-                      style: SDSTextStyle.bold.copyWith(
-                        fontSize: 14,
-                        color: SDSColor.gray400,
+                      '(${card.weekday ?? ''})',
+                      style: SDSTextStyle.regular.copyWith(
+                        fontSize: 12,
+                        color: SDSColor.gray500,
                       ),
                     ),
-                  SizedBox(height: 2),
-                  Text(
-                    '총 ${card.totalSlopeCount ?? 0}회 라이딩',
-                    style: SDSTextStyle.regular.copyWith(
-                      fontSize: 13,
-                      color: SDSColor.gray600,
-                    ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-            SizedBox(width: 12),
-            // 우측: 미니 카드 이미지 (그리드 카드와 동일한 구조)
-            ClipRRect(
-              borderRadius: BorderRadius.circular(8),
-              child: SizedBox(
-                width: 48,
-                height: 76,
-                child: Stack(
+              SizedBox(width: 12),
+              // 중앙: 라이더 타이틀 + 총 라이딩
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // 배경 이미지
-                    Positioned.fill(
-                      child: Image.asset(
-                        'assets/imgs/imgs/img_summury_bg.png',
-                        fit: BoxFit.cover,
+                    if (card.riderTitle != null && card.riderTitle!.isNotEmpty)
+                      Text(
+                        card.riderTitle!,
+                        style: SDSTextStyle.bold.copyWith(
+                          fontSize: 14,
+                          color: SDSColor.gray900,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      )
+                    else
+                      Text(
+                        '-',
+                        style: SDSTextStyle.bold.copyWith(
+                          fontSize: 14,
+                          color: SDSColor.gray400,
+                        ),
+                      ),
+                    SizedBox(height: 2),
+                    Text(
+                      '총 ${card.totalSlopeCount ?? 0}회 라이딩',
+                      style: SDSTextStyle.regular.copyWith(
+                        fontSize: 13,
+                        color: SDSColor.gray600,
                       ),
                     ),
+                  ],
+                ),
+              ),
+              SizedBox(width: 12),
+              // 우측: 미니 카드 이미지 (그리드 카드와 동일한 구조)
+              ClipRRect(
+                borderRadius: BorderRadius.circular(8),
+                child: SizedBox(
+                  width: 48,
+                  height: 76,
+                  child: Stack(
+                    children: [
+                      // 배경 이미지 (카드 타입에 따라 다름)
+                      Positioned.fill(
+                        child: Image.asset(
+                          currentCardType == 0
+                              ? 'assets/imgs/imgs/img_summury_bg.png'
+                              : 'assets/imgs/imgs/img_summury_bg_2.png',
+                          fit: BoxFit.cover,
+                        ),
+                      ),
                     // 좌상단: 날짜 뱃지
                     Positioned(
                       top: 3,
@@ -1128,30 +1151,38 @@ class _RidingCardListViewState extends State<RidingCardListView> {
           ],
         ),
       ),
-    );
+      );
+    });
   }
 
   Widget _buildDailyCardItem(DailyRidingCard card) {
     final day = _getDayFromDate(card.date);
 
-    return GestureDetector(
-      onTap: () {
-        HapticFeedback.lightImpact();
-        _showDailyCardDetail(card);
-      },
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(12),
-        child: AspectRatio(
-          aspectRatio: 960 / 1524,
-          child: Stack(
-            children: [
-              // 배경 이미지
-              Positioned.fill(
-                child: Image.asset(
-                  'assets/imgs/imgs/img_summury_bg.png',
-                  fit: BoxFit.cover,
+    return Obx(() {
+      // cardTypeMap 변경 감지를 위해 Obx로 감싸기
+      final _ = _ridingCardViewModel.cardTypeMap[card.cardId ?? 0];
+      final currentCardType = _ridingCardViewModel.getCardType(card.cardId ?? 0);
+
+      return GestureDetector(
+        onTap: () {
+          HapticFeedback.lightImpact();
+          _showDailyCardDetail(card);
+        },
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(12),
+          child: AspectRatio(
+            aspectRatio: 960 / 1524,
+            child: Stack(
+              children: [
+                // 배경 이미지 (카드 타입에 따라 다름)
+                Positioned.fill(
+                  child: Image.asset(
+                    currentCardType == 0
+                        ? 'assets/imgs/imgs/img_summury_bg.png'
+                        : 'assets/imgs/imgs/img_summury_bg_2.png',
+                    fit: BoxFit.cover,
+                  ),
                 ),
-              ),
               // 좌상단: 날짜 뱃지
               Positioned(
                 top: 8,
@@ -1355,7 +1386,8 @@ class _RidingCardListViewState extends State<RidingCardListView> {
           ),
         ),
       ),
-    );
+      );
+    });
   }
 
   void _showDailyCardDetail(DailyRidingCard card) {
@@ -1367,6 +1399,7 @@ class _RidingCardListViewState extends State<RidingCardListView> {
         return DailyCardDetailDialog(
           card: card,
           userViewModel: _userViewModel,
+          ridingCardViewModel: _ridingCardViewModel,
         );
       },
     );
@@ -1377,11 +1410,13 @@ class _RidingCardListViewState extends State<RidingCardListView> {
 class DailyCardDetailDialog extends StatefulWidget {
   final DailyRidingCard card;
   final UserViewModel userViewModel;
+  final RidingCardViewModel ridingCardViewModel;
 
   const DailyCardDetailDialog({
     Key? key,
     required this.card,
     required this.userViewModel,
+    required this.ridingCardViewModel,
   }) : super(key: key);
 
   @override
@@ -1393,7 +1428,14 @@ class _DailyCardDetailDialogState extends State<DailyCardDetailDialog> {
   bool _isSaving = false;
   bool _isSaved = false;
   bool _isSharing = false;
-  int _cardType = 0; // 0: 기본 카드, 1: 슬로프 리스트 카드
+  late int _cardType; // 0: 기본 카드, 1: 슬로프 리스트 카드
+
+  @override
+  void initState() {
+    super.initState();
+    // 저장된 카드 타입 불러오기
+    _cardType = widget.ridingCardViewModel.getCardType(widget.card.cardId ?? 0);
+  }
 
   Future<void> _saveImage() async {
     if (_isSaving) return;
@@ -2016,6 +2058,11 @@ class _DailyCardDetailDialogState extends State<DailyCardDetailDialog> {
                   onTap: () {
                     setState(() {
                       _cardType = _cardType == 0 ? 1 : 0;
+                      // ViewModel에 카드 타입 저장
+                      widget.ridingCardViewModel.setCardType(
+                        widget.card.cardId ?? 0,
+                        _cardType,
+                      );
                     });
                   },
                   child: Container(

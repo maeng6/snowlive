@@ -1,8 +1,10 @@
+import 'dart:convert';
 import 'package:com.snowlive/api/api_ranking.dart';
 import 'package:com.snowlive/model/m_seasonRidingCard.dart';
 import 'package:com.snowlive/model/m_dailyRidingCard.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class RidingCardViewModel extends GetxController {
   final RankingAPI _api = RankingAPI();
@@ -37,6 +39,48 @@ class RidingCardViewModel extends GetxController {
 
   void toggleViewMode() {
     isGridView.value = !isGridView.value;
+  }
+
+  // ============================================
+  // 데일리 카드 스킨 타입 (cardId -> cardType)
+  // ============================================
+  RxMap<int, int> cardTypeMap = <int, int>{}.obs;
+  static const String _cardTypeMapKey = 'daily_card_type_map';
+
+  /// 카드 스킨 타입 설정 (SharedPreferences에도 저장)
+  Future<void> setCardType(int cardId, int cardType) async {
+    cardTypeMap[cardId] = cardType;
+    await _saveCardTypeMap();
+  }
+
+  /// 카드 스킨 타입 조회 (기본값 0)
+  int getCardType(int cardId) {
+    return cardTypeMap[cardId] ?? 0;
+  }
+
+  /// SharedPreferences에서 카드 타입 맵 불러오기
+  Future<void> loadCardTypeMap() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final jsonString = prefs.getString(_cardTypeMapKey);
+      if (jsonString != null && jsonString.isNotEmpty) {
+        final Map<String, dynamic> decoded = json.decode(jsonString);
+        cardTypeMap.value = decoded.map((key, value) => MapEntry(int.parse(key), value as int));
+      }
+    } catch (e) {
+      print('❌ 카드 타입 맵 불러오기 오류: $e');
+    }
+  }
+
+  /// SharedPreferences에 카드 타입 맵 저장하기
+  Future<void> _saveCardTypeMap() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final Map<String, int> stringKeyMap = cardTypeMap.map((key, value) => MapEntry(key.toString(), value));
+      await prefs.setString(_cardTypeMapKey, json.encode(stringKeyMap));
+    } catch (e) {
+      print('❌ 카드 타입 맵 저장 오류: $e');
+    }
   }
 
   final List<Map<String, String>> seasonList = [
