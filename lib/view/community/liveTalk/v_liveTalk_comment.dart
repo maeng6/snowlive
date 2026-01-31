@@ -52,9 +52,11 @@ class _LiveTalkCommentViewState extends State<LiveTalkCommentView> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: SDSColor.snowliveWhite,
-      appBar: AppBar(
+    return GestureDetector(
+      onTap: () => FocusScope.of(context).unfocus(),
+      child: Scaffold(
+        backgroundColor: SDSColor.snowliveWhite,
+        appBar: AppBar(
         backgroundColor: SDSColor.snowliveWhite,
         elevation: 0,
         leading: IconButton(
@@ -216,6 +218,7 @@ class _LiveTalkCommentViewState extends State<LiveTalkCommentView> {
           // 댓글 입력 영역
           _buildCommentInput(),
         ],
+      ),
       ),
     );
   }

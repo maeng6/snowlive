@@ -32,9 +32,11 @@ class _LiveTalkMainViewState extends State<LiveTalkMainView> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: SDSColor.gray50,
-      body: Stack(
+    return GestureDetector(
+      onTap: () => FocusScope.of(context).unfocus(),
+      child: Scaffold(
+        backgroundColor: SDSColor.gray50,
+        body: Stack(
         children: [
           // 피드 목록
           Obx(() {
@@ -137,6 +139,7 @@ class _LiveTalkMainViewState extends State<LiveTalkMainView> {
             return const SizedBox.shrink();
           }),
         ],
+      ),
       ),
     );
   }
