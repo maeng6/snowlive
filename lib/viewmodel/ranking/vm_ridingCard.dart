@@ -25,6 +25,62 @@ class RidingCardViewModel extends GetxController {
   RxList<DailyRidingCard> dailyRidingCardList = <DailyRidingCard>[].obs;
 
   // ============================================
+  // 시즌 선택 상태
+  // ============================================
+  RxString selectedSeason = '25/26시즌'.obs;
+  RxString selectedSeasonDb = '2526'.obs;
+
+  // ============================================
+  // 데일리 카드 보기 모드 (grid / list)
+  // ============================================
+  RxBool isGridView = true.obs;
+
+  void toggleViewMode() {
+    isGridView.value = !isGridView.value;
+  }
+
+  final List<Map<String, String>> seasonList = [
+    {'display': '25/26시즌', 'db': '2526'},
+  ];
+
+  /// 시즌 변경
+  void changeSeason(String display, String dbValue) {
+    selectedSeason.value = display;
+    selectedSeasonDb.value = dbValue;
+  }
+
+  /// 데일리 카드 최신순 정렬
+  List<DailyRidingCard> get sortedDailyCards {
+    final sorted = List<DailyRidingCard>.from(dailyRidingCardList);
+    sorted.sort((a, b) => (b.date ?? '').compareTo(a.date ?? ''));
+    return sorted;
+  }
+
+  /// 데일리 카드 월별 그룹화 (최신순)
+  Map<String, List<DailyRidingCard>> get groupedDailyCardsByMonth {
+    final sorted = sortedDailyCards;
+    final Map<String, List<DailyRidingCard>> grouped = {};
+
+    for (final card in sorted) {
+      if (card.date == null || card.date!.isEmpty) continue;
+
+      // date 형식: "2025-01-30" -> "1월"
+      final parts = card.date!.split('-');
+      if (parts.length >= 2) {
+        final month = int.tryParse(parts[1]) ?? 0;
+        final monthKey = '$month월';
+
+        if (!grouped.containsKey(monthKey)) {
+          grouped[monthKey] = [];
+        }
+        grouped[monthKey]!.add(card);
+      }
+    }
+
+    return grouped;
+  }
+
+  // ============================================
   // 시즌 기록 카드 조회
   // ============================================
 

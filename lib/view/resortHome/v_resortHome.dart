@@ -1867,6 +1867,103 @@ class _ResortHomeViewState extends State<ResortHomeView> with
                               padding: EdgeInsets.only(left: 16, right: 16),
                               child: Entrance_Themestore_Home(),
                             ),
+                            //TODO: 라이딩기록카드 진입점
+                            Padding(
+                              padding: EdgeInsets.only(left: 16, right: 16),
+                              child: Container(
+                                height: 160,
+                                decoration: BoxDecoration(
+                                  color: Color(0xFFF1E9FF),
+                                  borderRadius: BorderRadius.circular(16),
+                                ),
+                                child: Stack (
+                                  children: [
+                                    Positioned(
+                                      bottom: 0,
+                                      right: 10,
+                                      child: Padding(
+                                        padding: EdgeInsets.only(bottom: 10, right: 16),
+                                        child: Image.asset(
+                                          'assets/imgs/imgs/img_resorthome_slopecraft_banner.png',
+                                          fit: BoxFit.cover,
+                                          width: 130,
+                                        ),
+                                      ),
+                                    ),
+                                    Row(
+                                      children: [
+                                        Padding(
+                                          padding: const EdgeInsets.only(left: 24, top: 22, right: 24, bottom: 20),
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            mainAxisAlignment: MainAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                '라이딩 기록 카드',
+                                                style: SDSTextStyle.bold.copyWith(
+                                                  fontSize: 16,
+                                                  color: SDSColor.gray900,
+                                                ),
+                                              ),
+                                              Padding(
+                                                padding: const EdgeInsets.only(top: 4),
+                                                child: Text(
+                                                  '라이딩 기록 카드를 확인해 보세요!.',
+                                                  style: SDSTextStyle.regular.copyWith(
+                                                    fontSize: 13,
+                                                    color: SDSColor.gray600,
+                                                  ),
+                                                ),
+                                              ),
+                                              Padding(
+                                                padding: EdgeInsets.only(top: 12),
+                                                child: GestureDetector(
+                                                  onTap: () {
+                                                    Get.toNamed(AppRoutes.ridingCardList);
+                                                  },
+                                                  child: Container(
+                                                    padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                                                    decoration: BoxDecoration(
+                                                        color: SDSColor.snowliveWhite,
+                                                        borderRadius: BorderRadius.circular(20),
+                                                        border: Border.all(
+                                                            color: SDSColor.gray200,
+                                                            width: 1
+                                                        )
+                                                    ),
+                                                    child: Row(
+                                                      children: [
+                                                        Padding(
+                                                          padding: const EdgeInsets.only(right: 6),
+                                                          child: Text(
+                                                            '더 알아보기',
+                                                            style: SDSTextStyle.extraBold.copyWith(
+                                                                color: SDSColor.snowliveBlack,
+                                                                fontSize: 13
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        Image.asset(
+                                                          'assets/imgs/icons/icon_arrow_round_black.png',
+                                                          fit: BoxFit.cover,
+                                                          width: 18,
+                                                          height: 18,
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            SizedBox(height: 12),
                             //TODO: 점령전 진입점
                             Padding(
                               padding: EdgeInsets.only(left: 16, right: 16),

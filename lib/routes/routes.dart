@@ -45,6 +45,7 @@ import 'package:com.snowlive/view/ranking/v_themesotre_home.dart';
 import 'package:com.snowlive/view/ranking/v_themestore_input_info.dart';
 import 'package:com.snowlive/view/ranking/v_themestore_buy_record.dart';
 import 'package:com.snowlive/view/ranking/v_themestore_edit_info.dart';
+import 'package:com.snowlive/view/ranking/v_ridingCardList.dart';
 import 'package:com.snowlive/view/resortHome/v_alarmCenter.dart';
 import 'package:com.snowlive/view/ranking/v_snowballmarket_home.dart';
 import 'package:com.snowlive/view/v_forestParkShop.dart';
@@ -156,6 +157,7 @@ class AppRoutes {
   static const String themestoreInputInfo = '/themestoreInputInfo';
   static const String themestoreBuyRecord = '/themestoreBuyRecord';
   static const String themestoreEditInfo = '/themestoreEditInfo';
+  static const String ridingCardList = '/ridingCardList';
 
 
 
@@ -494,6 +496,10 @@ class AppRoutes {
     GetPage(
       name: themestoreEditInfo,
       page: () => ThemestoreEditInfoView(),
+    ),
+    GetPage(
+      name: ridingCardList,
+      page: () => RidingCardListView(),
     ),
   ];
 }
