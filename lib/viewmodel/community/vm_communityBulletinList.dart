@@ -8,7 +8,7 @@ import 'package:get/get.dart';
 class CommunityBulletinListViewModel extends GetxController {
 
   var isLoading = true.obs;
-  RxString _tapName = '게시판'.obs;
+  RxString _tapName = '라이브톡'.obs;
   RxString _chipName = '전체'.obs;
   var _communityList_total = <Community>[].obs;
   var _communityList_free = <Community>[].obs;

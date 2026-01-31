@@ -3,6 +3,7 @@ import 'package:com.snowlive/viewmodel/community/vm_communityCommentDetail.dart'
 import 'package:com.snowlive/viewmodel/community/vm_communityDetail.dart';
 import 'package:com.snowlive/viewmodel/community/vm_communityUpdate.dart';
 import 'package:com.snowlive/viewmodel/community/vm_communityUpload.dart';
+import 'package:com.snowlive/viewmodel/liveTalk/vm_liveTalk.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewApply.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewDetail.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewDetail_recordRoom.dart';
@@ -67,6 +68,7 @@ class MainHomeBinding extends Bindings {
     Get.put(CommunityCommentDetailViewModel());
     Get.put(RankingListViewModel());
     Get.put(RidingCardViewModel());
+    Get.put(LiveTalkViewModel());
 
     // 🟢 서브 화면용 ViewModel - 지연 로드 (해당 화면 진입 시 생성)
     Get.lazyPut(() => FleamarketCommentDetailViewModel(), fenix: true);

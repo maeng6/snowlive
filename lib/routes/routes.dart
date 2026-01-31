@@ -3,6 +3,7 @@ import 'package:com.snowlive/view/community/free/v_community_Upload.dart';
 import 'package:com.snowlive/view/community/free/v_community_update.dart';
 import 'package:com.snowlive/view/community/free/v_community_comment_detail.dart';
 import 'package:com.snowlive/view/community/v_community_main.dart';
+import 'package:com.snowlive/view/community/liveTalk/v_liveTalk_comment.dart';
 import 'package:com.snowlive/view/crew/v_crewApplication_crew.dart';
 import 'package:com.snowlive/view/crew/v_crewApplication_user.dart';
 import 'package:com.snowlive/view/crew/v_crewDescription.dart';
@@ -158,6 +159,7 @@ class AppRoutes {
   static const String themestoreBuyRecord = '/themestoreBuyRecord';
   static const String themestoreEditInfo = '/themestoreEditInfo';
   static const String ridingCardList = '/ridingCardList';
+  static const String liveTalkComment = '/liveTalkComment';
 
 
 
@@ -500,6 +502,10 @@ class AppRoutes {
     GetPage(
       name: ridingCardList,
       page: () => RidingCardListView(),
+    ),
+    GetPage(
+      name: liveTalkComment,
+      page: () => LiveTalkCommentView(),
     ),
   ];
 }

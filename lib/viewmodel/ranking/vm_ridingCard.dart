@@ -58,6 +58,13 @@ class RidingCardViewModel extends GetxController {
     return cardTypeMap[cardId] ?? 0;
   }
 
+  /// 카드 스킨 타입 토글 (0 <-> 1)
+  Future<void> toggleCardType(int cardId) async {
+    final currentType = getCardType(cardId);
+    final newType = currentType == 0 ? 1 : 0;
+    await setCardType(cardId, newType);
+  }
+
   /// SharedPreferences에서 카드 타입 맵 불러오기
   Future<void> loadCardTypeMap() async {
     try {
