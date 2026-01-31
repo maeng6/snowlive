@@ -11,6 +11,7 @@ class LiveOffSummaryModel {
   late String mostRiddenSlope;
   late int mostRiddenCount;
   late double topSpeed;
+  late double totalDistance;
   late String riderTitle;
 
   LiveOffSummaryModel({
@@ -26,6 +27,7 @@ class LiveOffSummaryModel {
     this.mostRiddenSlope = '',
     this.mostRiddenCount = 0,
     this.topSpeed = 0,
+    this.totalDistance = 0,
     this.riderTitle = '',
   }) : slopeCountsByName = slopeCountsByName ?? {};
 
@@ -53,6 +55,7 @@ class LiveOffSummaryModel {
     mostRiddenSlope = json['most_ridden_slope'] ?? '';
     mostRiddenCount = json['most_ridden_count'] ?? 0;
     topSpeed = (json['top_speed'] ?? 0).toDouble();
+    totalDistance = (json['total_distance'] ?? 0).toDouble();
     riderTitle = json['rider_title'] ?? '';
   }
 
@@ -70,6 +73,7 @@ class LiveOffSummaryModel {
       'most_ridden_slope': mostRiddenSlope,
       'most_ridden_count': mostRiddenCount,
       'top_speed': topSpeed,
+      'total_distance': totalDistance,
       'rider_title': riderTitle,
     };
   }

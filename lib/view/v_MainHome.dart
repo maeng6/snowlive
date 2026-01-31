@@ -10,6 +10,7 @@ import 'package:com.snowlive/viewmodel/vm_mainHome.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
 import 'package:com.snowlive/viewmodel/vm_eventAlarm.dart';
 import 'package:com.snowlive/viewmodel/resortHome/vm_resortHome.dart';
+import 'package:com.snowlive/viewmodel/community/vm_communityBulletinList.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -25,6 +26,7 @@ class _MainHomeViewState extends State<MainHomeView> {
   final UserViewModel _userViewModel = Get.find<UserViewModel>();
   final EventAlarmViewModel _eventAlarmViewModel = Get.find<EventAlarmViewModel>();
   final ResortHomeViewModel _resortHomeViewModel = Get.find<ResortHomeViewModel>();
+  final CommunityBulletinListViewModel _communityBulletinListViewModel = Get.find<CommunityBulletinListViewModel>();
 
   @override
   Widget build(BuildContext context) {
@@ -58,6 +60,15 @@ class _MainHomeViewState extends State<MainHomeView> {
               type: BottomNavigationBarType.fixed,
               currentIndex: _MainHomeViewModel.currentPage!,
               onTap: (index) {
+                // 커뮤니티 탭을 다시 누르면 스크롤 최상단으로 이동
+                if (index == 2 && _MainHomeViewModel.currentPage == 2) {
+                  _communityBulletinListViewModel.scrollToTop();
+                }
+                // 다른 탭에서 커뮤니티 탭으로 전환 시 칩 표시 상태 업데이트
+                else if (index == 2 && _MainHomeViewModel.currentPage != 2) {
+                  _communityBulletinListViewModel.updateChipsVisibility();
+                }
+
                 // 페이지 전환
                 _MainHomeViewModel.onItemTapped(index);
 

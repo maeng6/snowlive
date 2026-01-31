@@ -416,7 +416,39 @@ class RankingAPI {
     }
   }
 
+  /// 시즌 기록 카드 조회
+  Future<ApiResponse> fetchSeasonRidingCard(Map<String, dynamic> body) async {
+    final response = await http.post(
+      Uri.parse('$baseUrl/season-riding-card/'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode(body),
+    );
 
+    if (response.statusCode == 200) {
+      final data = json.decode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
+      return ApiResponse.success(data);
+    } else {
+      final data = json.decode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
+      return ApiResponse.error(data);
+    }
+  }
+
+  /// 데일리 기록 카드 리스트 조회
+  Future<ApiResponse> fetchDailyRidingCardList(Map<String, dynamic> body) async {
+    final response = await http.post(
+      Uri.parse('$baseUrl/daily-riding-card-list/'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode(body),
+    );
+
+    if (response.statusCode == 200) {
+      final data = json.decode(utf8.decode(response.bodyBytes)) as List<dynamic>;
+      return ApiResponse.success(data);
+    } else {
+      final data = json.decode(utf8.decode(response.bodyBytes));
+      return ApiResponse.error(data);
+    }
+  }
 
 
 

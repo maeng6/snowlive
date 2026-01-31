@@ -1,71 +1,72 @@
-class RidingRecordCard {
+/// 데일리 기록 카드 모델
+class DailyRidingCard {
+  int? cardId;
   int? userId;
-  bool? withinBoundary;
-  bool? revealWb;
   String? date;
   String? weekday;
-  String? displayName;
-  String? profileImageUrlUser;
   int? totalSlopeCount;
+  double? totalDistance;
   Map<String, int>? slopeCountsByName;
   String? mostRiddenSlope;
   int? mostRiddenCount;
   double? topSpeed;
-  double? totalDistance;
   String? riderTitle;
+  String? createdAt;
+  String? updatedAt;
 
-  RidingRecordCard({
+  DailyRidingCard({
+    this.cardId,
     this.userId,
-    this.withinBoundary,
-    this.revealWb,
     this.date,
     this.weekday,
-    this.displayName,
-    this.profileImageUrlUser,
     this.totalSlopeCount,
+    this.totalDistance,
     this.slopeCountsByName,
     this.mostRiddenSlope,
     this.mostRiddenCount,
     this.topSpeed,
-    this.totalDistance,
     this.riderTitle,
+    this.createdAt,
+    this.updatedAt,
   });
 
-  RidingRecordCard.fromJson(Map<String, dynamic> json) {
+  DailyRidingCard.fromJson(Map<String, dynamic> json) {
+    cardId = json['card_id'];
     userId = json['user_id'];
-    withinBoundary = json['within_boundary'];
-    revealWb = json['reveal_wb'];
     date = json['date'];
     weekday = json['weekday'];
-    displayName = json['display_name'];
-    profileImageUrlUser = json['profile_image_url_user'];
     totalSlopeCount = json['total_slope_count'];
-    slopeCountsByName = json['slope_counts_by_name'] != null
-        ? Map<String, int>.from(json['slope_counts_by_name'])
-        : null;
+    totalDistance = json['total_distance']?.toDouble();
+    if (json['slope_counts_by_name'] != null) {
+      slopeCountsByName = Map<String, int>.from(
+        (json['slope_counts_by_name'] as Map).map(
+          (key, value) => MapEntry(key.toString(), (value as num).toInt()),
+        ),
+      );
+    }
     mostRiddenSlope = json['most_ridden_slope'];
     mostRiddenCount = json['most_ridden_count'];
     topSpeed = json['top_speed']?.toDouble();
-    totalDistance = json['total_distance']?.toDouble();
     riderTitle = json['rider_title'];
+    createdAt = json['created_at'];
+    updatedAt = json['updated_at'];
   }
 
   Map<String, dynamic> toJson() {
     return {
+      'card_id': cardId,
       'user_id': userId,
-      'within_boundary': withinBoundary,
-      'reveal_wb': revealWb,
       'date': date,
       'weekday': weekday,
-      'display_name': displayName,
-      'profile_image_url_user': profileImageUrlUser,
       'total_slope_count': totalSlopeCount,
+      'total_distance': totalDistance,
       'slope_counts_by_name': slopeCountsByName,
       'most_ridden_slope': mostRiddenSlope,
       'most_ridden_count': mostRiddenCount,
       'top_speed': topSpeed,
-      'total_distance': totalDistance,
       'rider_title': riderTitle,
+      'created_at': createdAt,
+      'updated_at': updatedAt,
     };
   }
 }
