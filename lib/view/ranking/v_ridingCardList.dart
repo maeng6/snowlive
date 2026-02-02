@@ -284,33 +284,48 @@ class _RidingCardListViewState extends State<RidingCardListView> {
         ),
         centerTitle: true,
         actions: [
-          Obx(() => GestureDetector(
-            onTap: () => _showSeasonBottomSheet(),
-            child: Container(
-              margin: EdgeInsets.only(right: 16),
-              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-              decoration: BoxDecoration(
-                color: SDSColor.gray100,
-                borderRadius: BorderRadius.circular(50),
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    _ridingCardViewModel.selectedSeason.value,
-                    style: SDSTextStyle.bold.copyWith(
-                      fontSize: 13,
-                      color: SDSColor.gray900,
+          Obx(() => Padding(
+            padding: EdgeInsets.only(right: 16),
+            child: Stack(
+              children: [
+                ElevatedButton(
+                  onPressed: () => _showSeasonBottomSheet(),
+                  style: ElevatedButton.styleFrom(
+                    shadowColor: Colors.transparent,
+                    overlayColor: Colors.transparent,
+                    padding: EdgeInsets.only(right: 32, left: 12, top: 3, bottom: 2),
+                    side: BorderSide(
+                      width: 1,
+                      color: SDSColor.gray100,
+                    ),
+                    backgroundColor: SDSColor.snowliveWhite,
+                    elevation: 0,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(50),
                     ),
                   ),
-                  SizedBox(width: 2),
-                  Icon(
-                    Icons.keyboard_arrow_down_rounded,
-                    size: 18,
-                    color: SDSColor.gray900,
+                  child: Text(
+                    _ridingCardViewModel.selectedSeason.value.replaceAll('/', ''),
+                    style: SDSTextStyle.bold.copyWith(
+                      fontSize: 13,
+                      color: Color(0xFF111111),
+                    ),
                   ),
-                ],
-              ),
+                ),
+                Positioned(
+                  top: 14,
+                  right: 10,
+                  child: GestureDetector(
+                    onTap: () => _showSeasonBottomSheet(),
+                    child: Image.asset(
+                      'assets/imgs/icons/icon_check_round_black.png',
+                      fit: BoxFit.cover,
+                      width: 16,
+                      height: 16,
+                    ),
+                  ),
+                ),
+              ],
             ),
           )),
         ],
@@ -340,10 +355,10 @@ class _RidingCardListViewState extends State<RidingCardListView> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(height: 12),
+            SizedBox(height: 20),
             // 시즌 카드
             _buildSeasonCard(),
-            SizedBox(height: 24),
+            SizedBox(height: 48),
             // 데일리 카드 타이틀 + 보기 전환 버튼
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 16),
@@ -351,15 +366,15 @@ class _RidingCardListViewState extends State<RidingCardListView> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    '일일 라이딩 기록 카드',
+                    '라이딩 기록 카드 리스트',
                     style: SDSTextStyle.bold.copyWith(
                       fontSize: 16,
-                      color: SDSColor.gray900,
+                      color: SDSColor.snowliveBlack,
                     ),
                   ),
                   Row(
                     children: [
-                      // 그리드 버튼
+                      // 카드 버튼
                       GestureDetector(
                         onTap: () {
                           if (!_ridingCardViewModel.isGridView.value) {
@@ -367,21 +382,12 @@ class _RidingCardListViewState extends State<RidingCardListView> {
                             _ridingCardViewModel.isGridView.value = true;
                           }
                         },
-                        child: Container(
-                          padding: EdgeInsets.all(6),
-                          decoration: BoxDecoration(
-                            color: _ridingCardViewModel.isGridView.value
-                                ? SDSColor.snowliveBlue
-                                : SDSColor.gray100,
-                            borderRadius: BorderRadius.circular(6),
-                          ),
-                          child: Icon(
-                            Icons.grid_view_rounded,
-                            size: 18,
-                            color: _ridingCardViewModel.isGridView.value
-                                ? Colors.white
-                                : SDSColor.gray500,
-                          ),
+                        child: Image.asset(
+                          _ridingCardViewModel.isGridView.value
+                              ? 'assets/imgs/icons/icon_view_card_on.png'
+                              : 'assets/imgs/icons/icon_view_card_off.png',
+                          width: 32,
+                          height: 32,
                         ),
                       ),
                       SizedBox(width: 6),
@@ -393,21 +399,12 @@ class _RidingCardListViewState extends State<RidingCardListView> {
                             _ridingCardViewModel.isGridView.value = false;
                           }
                         },
-                        child: Container(
-                          padding: EdgeInsets.all(6),
-                          decoration: BoxDecoration(
-                            color: !_ridingCardViewModel.isGridView.value
-                                ? SDSColor.snowliveBlue
-                                : SDSColor.gray100,
-                            borderRadius: BorderRadius.circular(6),
-                          ),
-                          child: Icon(
-                            Icons.view_list_rounded,
-                            size: 18,
-                            color: !_ridingCardViewModel.isGridView.value
-                                ? Colors.white
-                                : SDSColor.gray500,
-                          ),
+                        child: Image.asset(
+                          !_ridingCardViewModel.isGridView.value
+                              ? 'assets/imgs/icons/icon_view_list_on.png'
+                              : 'assets/imgs/icons/icon_view_list_off.png',
+                          width: 32,
+                          height: 32,
                         ),
                       ),
                     ],
@@ -416,7 +413,7 @@ class _RidingCardListViewState extends State<RidingCardListView> {
               ),
             ),
 
-            SizedBox(height: 12),
+            SizedBox(height: 24),
 
             // 데일리 카드 (월별 그룹화)
             _buildDailyCardSection(),
@@ -550,7 +547,7 @@ class _RidingCardListViewState extends State<RidingCardListView> {
                       // 배경 이미지
                       Positioned.fill(
                         child: Image.asset(
-                          'assets/imgs/imgs/img_summury_bg.png',
+                          'assets/imgs/imgs/img_summury_bg_3.png',
                           fit: BoxFit.cover,
                         ),
                       ),
@@ -812,15 +809,19 @@ class _RidingCardListViewState extends State<RidingCardListView> {
                 width: 44,
                 height: 44,
                 decoration: BoxDecoration(
-                  color: SDSColor.gray100,
-                  borderRadius: BorderRadius.circular(22),
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(
+                    color: SDSColor.gray200,
+                    width: 1,
+                  ),
                 ),
                 child: Center(
                   child: SvgPicture.asset(
                     'assets/imgs/icons/icon_summury_share.svg',
                     width: 20,
                     height: 20,
-                    colorFilter: ColorFilter.mode(SDSColor.gray600, BlendMode.srcIn),
+                    colorFilter: ColorFilter.mode(SDSColor.gray900, BlendMode.srcIn),
                   ),
                 ),
               ),
@@ -830,10 +831,10 @@ class _RidingCardListViewState extends State<RidingCardListView> {
             GestureDetector(
               onTap: (_isSeasonSaving || _isSeasonSaved) ? null : _saveSeasonCardImage,
               child: Container(
-                width: 100,
                 height: 44,
+                padding: EdgeInsets.symmetric(horizontal: 20),
                 decoration: BoxDecoration(
-                  color: _isSeasonSaved ? const Color(0xFF34C759) : SDSColor.snowliveBlue,
+                  color: _isSeasonSaved ? const Color(0xFF34C759) : SDSColor.gray900,
                   borderRadius: BorderRadius.circular(22),
                 ),
                 child: Center(
@@ -855,7 +856,7 @@ class _RidingCardListViewState extends State<RidingCardListView> {
                           : Text(
                               '이미지 저장',
                               style: SDSTextStyle.bold.copyWith(
-                                fontSize: 13,
+                                fontSize: 14,
                                 color: Colors.white,
                               ),
                             ),
@@ -932,27 +933,19 @@ class _RidingCardListViewState extends State<RidingCardListView> {
             // 월 타이틀
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 16),
-              child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                decoration: BoxDecoration(
-                  color: SDSColor.gray100,
-                  borderRadius: BorderRadius.circular(6),
-                ),
-                child: Text(
-                  monthTitle,
-                  style: SDSTextStyle.bold.copyWith(
-                    fontSize: 13,
-                    color: SDSColor.gray700,
-                  ),
+              child: Text(
+                monthTitle,
+                style: SDSTextStyle.bold.copyWith(
+                  fontSize: 18,
+                  color: SDSColor.gray900,
                 ),
               ),
             ),
-            SizedBox(height: 12),
             // 그리드 또는 리스트
             _ridingCardViewModel.isGridView.value
                 ? _buildMonthlyGrid(cards)
                 : _buildMonthlyList(cards),
-            SizedBox(height: 20),
+            SizedBox(height: 40),
           ],
         );
       }).toList(),
@@ -966,9 +959,9 @@ class _RidingCardListViewState extends State<RidingCardListView> {
         shrinkWrap: true,
         physics: NeverScrollableScrollPhysics(),
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 3,
+          crossAxisCount: 4,
           mainAxisSpacing: 12,
-          crossAxisSpacing: 12,
+          crossAxisSpacing: 8,
           childAspectRatio: 960 / 1524,
         ),
         itemCount: cards.length,
@@ -1003,49 +996,40 @@ class _RidingCardListViewState extends State<RidingCardListView> {
           _showDailyCardDetail(card);
         },
         child: Container(
-          margin: EdgeInsets.only(bottom: 12),
-          padding: EdgeInsets.all(12),
+          padding: EdgeInsets.symmetric(vertical: 16),
           decoration: BoxDecoration(
-            color: SDSColor.gray50,
-            borderRadius: BorderRadius.circular(12),
+            color: Colors.white,
+            border: Border(
+              bottom: BorderSide(
+                color: SDSColor.gray100,
+                width: 1,
+              ),
+            ),
           ),
           child: Row(
             children: [
               // 좌측: 날짜 + 요일
               SizedBox(
-                width: 50,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Text(
-                      '${day}일',
-                      style: SDSTextStyle.extraBold.copyWith(
-                        fontSize: 18,
-                        color: SDSColor.gray900,
-                      ),
-                    ),
-                    Text(
-                      '(${card.weekday ?? ''})',
-                      style: SDSTextStyle.regular.copyWith(
-                        fontSize: 12,
-                        color: SDSColor.gray500,
-                      ),
-                    ),
-                  ],
+                width: 90,
+                child: Text(
+                  '${day}일 (${card.weekday ?? ''})',
+                  style: SDSTextStyle.regular.copyWith(
+                    fontSize: 15,
+                    color: SDSColor.snowliveBlack,
+                  ),
                 ),
               ),
-              SizedBox(width: 12),
               // 중앙: 라이더 타이틀 + 총 라이딩
               Expanded(
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     if (card.riderTitle != null && card.riderTitle!.isNotEmpty)
                       Text(
                         card.riderTitle!,
-                        style: SDSTextStyle.bold.copyWith(
-                          fontSize: 14,
-                          color: SDSColor.gray900,
+                        style: SDSTextStyle.regular.copyWith(
+                          fontSize: 13,
+                          color: SDSColor.gray500,
                         ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
@@ -1053,151 +1037,40 @@ class _RidingCardListViewState extends State<RidingCardListView> {
                     else
                       Text(
                         '-',
-                        style: SDSTextStyle.bold.copyWith(
-                          fontSize: 14,
-                          color: SDSColor.gray400,
+                        style: SDSTextStyle.regular.copyWith(
+                          fontSize: 13,
+                          color: SDSColor.gray500,
                         ),
                       ),
                     SizedBox(height: 2),
                     Text(
                       '총 ${card.totalSlopeCount ?? 0}회 라이딩',
-                      style: SDSTextStyle.regular.copyWith(
-                        fontSize: 13,
-                        color: SDSColor.gray600,
+                      style: SDSTextStyle.bold.copyWith(
+                        fontSize: 15,
+                        color: SDSColor.snowliveBlack,
                       ),
                     ),
                   ],
                 ),
               ),
-              SizedBox(width: 12),
-              // 우측: 미니 카드 이미지 (상세 다이얼로그와 동일한 구조)
+              SizedBox(width: 20),
+              // 우측: 미니 카드 이미지 (단순 배경)
               ClipRRect(
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: BorderRadius.circular(6),
                 child: SizedBox(
-                  width: 48,
-                  height: 76,
-                  child: Stack(
-                    children: [
-                      // 배경 이미지 (카드 타입에 따라 다름)
-                      Positioned.fill(
-                        child: Image.asset(
-                          currentCardType == 0
-                              ? 'assets/imgs/imgs/img_summury_bg.png'
-                              : 'assets/imgs/imgs/img_summury_bg_2.png',
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                    // 상단: 프로필 이미지 + 닉네임 + 날짜
-                    Positioned(
-                      top: 4,
-                      left: 0,
-                      right: 0,
-                      child: Column(
-                        children: [
-                          // 프로필 이미지
-                          Container(
-                            width: 14,
-                            height: 14,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                            ),
-                            child: ClipOval(
-                              child: (_userViewModel.user.profile_image_url_user?.isNotEmpty ?? false)
-                                  ? ExtendedImage.network(
-                                      _userViewModel.user.profile_image_url_user!,
-                                      fit: BoxFit.cover,
-                                      cache: true,
-                                      loadStateChanged: (state) {
-                                        if (state.extendedImageLoadState == LoadState.failed) {
-                                          return Image.asset(
-                                            'assets/imgs/profile/img_profile_default_circle.png',
-                                            fit: BoxFit.cover,
-                                          );
-                                        }
-                                        return null;
-                                      },
-                                    )
-                                  : Image.asset(
-                                      'assets/imgs/profile/img_profile_default_circle.png',
-                                      fit: BoxFit.cover,
-                                    ),
-                            ),
-                          ),
-                          SizedBox(height: 1),
-                          // 닉네임
-                          Text(
-                            _userViewModel.user.display_name ?? '',
-                            style: SDSTextStyle.bold.copyWith(
-                              fontSize: 3,
-                              color: Colors.white,
-                            ),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          // 날짜 + 요일
-                          Text(
-                            card.weekday ?? '',
-                            style: SDSTextStyle.regular.copyWith(
-                              fontSize: 3,
-                              color: Colors.white,
-                            ),
-                          ),
-                          // 라이더 타이틀
-                          if (card.riderTitle != null && card.riderTitle!.isNotEmpty) ...[
-                            SizedBox(height: 1),
-                            Container(
-                              padding: EdgeInsets.symmetric(horizontal: 2, vertical: 0),
-                              decoration: BoxDecoration(
-                                color: currentCardType == 0
-                                    ? const Color(0xFF1B3A5C)
-                                    : const Color(0xFFE2EDF8),
-                                borderRadius: BorderRadius.circular(3),
-                              ),
-                              child: Text(
-                                card.riderTitle!,
-                                style: SDSTextStyle.regular.copyWith(
-                                  fontSize: 2,
-                                  color: currentCardType == 0
-                                      ? Colors.white
-                                      : const Color(0xFF000000),
-                                ),
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ),
-                          ],
-                        ],
-                      ),
-                    ),
-                    // 중앙: 라이딩 정보 (카드 타입에 따라 다른 내용)
-                    Positioned(
-                      top: 34,
-                      bottom: 8,
-                      left: 2,
-                      right: 2,
-                      child: currentCardType == 0
-                          ? _buildMiniCardType0Content(card)
-                          : _buildMiniCardType1Content(card),
-                    ),
-                    // 하단: 로고
-                    Positioned(
-                      bottom: 2,
-                      left: 0,
-                      right: 0,
-                      child: Center(
-                        child: Image.asset(
-                          'assets/imgs/logos/snowliveLogo_main_white.png',
-                          height: 3,
-                        ),
-                      ),
-                    ),
-                  ],
+                  width: 40,
+                  height: 64,
+                  child: Image.asset(
+                    currentCardType == 0
+                        ? 'assets/imgs/imgs/img_summury_bg.png'
+                        : 'assets/imgs/imgs/img_summury_bg_2.png',
+                    fit: BoxFit.cover,
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
-      ),
       );
     });
   }

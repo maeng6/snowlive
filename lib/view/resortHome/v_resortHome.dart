@@ -1873,14 +1873,14 @@ class _ResortHomeViewState extends State<ResortHomeView> with
                               child: Container(
                                 height: 160,
                                 decoration: BoxDecoration(
-                                  color: Color(0xFFC5D0DC),
+                                  color: Color(0xFFC6D4E6),
                                   borderRadius: BorderRadius.circular(16),
                                 ),
                                 child: Stack (
                                   children: [
                                     Positioned(
                                       bottom: 0,
-                                      right: 10,
+                                      right: 0,
                                       child: Padding(
                                         padding: EdgeInsets.only(bottom: 10, right: 16),
                                         child: Image.asset(
@@ -1926,10 +1926,6 @@ class _ResortHomeViewState extends State<ResortHomeView> with
                                                     decoration: BoxDecoration(
                                                         color: SDSColor.snowliveWhite,
                                                         borderRadius: BorderRadius.circular(20),
-                                                        border: Border.all(
-                                                            color: SDSColor.gray200,
-                                                            width: 1
-                                                        )
                                                     ),
                                                     child: Row(
                                                       children: [
