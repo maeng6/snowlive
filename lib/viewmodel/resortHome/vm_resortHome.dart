@@ -161,7 +161,6 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
   static const String _autoLiveOnDialogShownKey = 'auto_liveon_dialog_shown';
   static const String _autoLiveOnTooltipShownKey = 'auto_liveon_tooltip_shown';
   bool _isAutoLiveOnInProgress = false;  // 🔥 자동 라이브온 중복 실행 방지
-  bool _isLiveOffInProgress = false;      // 🔥 liveOff 중복 실행 방지
   bool _isMockDetectedLiveOffTriggered = false; // 🛡️ GPS 조작 감지 중복 호출 방지
 
   // 🔥 백그라운드에서 liveOn 시 Live Activity 시작 지연용
