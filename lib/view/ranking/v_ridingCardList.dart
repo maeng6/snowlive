@@ -32,6 +32,9 @@ class _RidingCardListViewState extends State<RidingCardListView> {
   bool _isSeasonSaved = false;
   bool _isSeasonSharing = false;
 
+  // pull-to-refresh 중인지 여부
+  bool _isRefreshing = false;
+
   @override
   void initState() {
     super.initState();
@@ -54,6 +57,12 @@ class _RidingCardListViewState extends State<RidingCardListView> {
     await _ridingCardViewModel.fetchDailyRidingCardList(
       userId: _userViewModel.user.user_id,
     );
+  }
+
+  Future<void> _onRefresh() async {
+    _isRefreshing = true;
+    await _loadData();
+    _isRefreshing = false;
   }
 
   Future<void> _saveSeasonCardImage() async {
@@ -313,7 +322,8 @@ class _RidingCardListViewState extends State<RidingCardListView> {
     final isLoading = _ridingCardViewModel.isLoadingSeasonCard.value ||
         _ridingCardViewModel.isLoadingDailyList.value;
 
-    if (isLoading) {
+    // 초기 로딩 시에만 전체 화면 로딩 표시 (당겨서 새로고침 시에는 표시 안함)
+    if (isLoading && !_isRefreshing) {
       return Center(
         child: CircularProgressIndicator(
           strokeWidth: 4,
@@ -324,7 +334,7 @@ class _RidingCardListViewState extends State<RidingCardListView> {
     }
 
     return RefreshIndicator(
-      onRefresh: _loadData,
+      onRefresh: _onRefresh,
       child: SingleChildScrollView(
         physics: AlwaysScrollableScrollPhysics(),
         child: Column(

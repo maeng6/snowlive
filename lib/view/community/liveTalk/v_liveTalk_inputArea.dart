@@ -87,9 +87,40 @@ class LiveTalkInputArea extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
+            // 업로드 중 표시
+            Obx(() {
+              if (_liveTalkViewModel.isPosting.value) {
+                return Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                  color: SDSColor.gray100,
+                  child: Row(
+                    children: [
+                      SizedBox(
+                        width: 14,
+                        height: 14,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: SDSColor.gray600,
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      Text(
+                        _liveTalkViewModel.isEditMode.value ? '게시물 수정 중...' : '게시물 업로드 중...',
+                        style: SDSTextStyle.regular.copyWith(
+                          fontSize: 13,
+                          color: SDSColor.gray600,
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              }
+              return const SizedBox.shrink();
+            }),
+
             // 수정 모드 표시
             Obx(() {
-              if (_liveTalkViewModel.isEditMode.value) {
+              if (_liveTalkViewModel.isEditMode.value && !_liveTalkViewModel.isPosting.value) {
                 return Container(
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   color: SDSColor.snowliveBlue.withOpacity(0.1),
@@ -213,8 +244,11 @@ class LiveTalkInputArea extends StatelessWidget {
                     final isPosting = _liveTalkViewModel.isPosting.value;
                     final isEditMode = _liveTalkViewModel.isEditMode.value;
 
+                    // 업로드 중이면 비활성화 (로딩 인디케이터 대신 버튼만 비활성화)
+                    final canTap = isEnabled && !isPosting;
+
                     return GestureDetector(
-                      onTap: isEnabled && !isPosting
+                      onTap: canTap
                           ? () async {
                               FocusScope.of(context).unfocus();
                               if (isEditMode) {
@@ -228,26 +262,18 @@ class LiveTalkInputArea extends StatelessWidget {
                         width: 40,
                         height: 40,
                         decoration: BoxDecoration(
-                          color: isEnabled
+                          color: canTap
                               ? SDSColor.snowliveBlue
                               : SDSColor.gray200,
                           borderRadius: BorderRadius.circular(20),
                         ),
-                        child: isPosting
-                            ? const Padding(
-                                padding: EdgeInsets.all(10),
-                                child: CircularProgressIndicator(
-                                  color: SDSColor.snowliveWhite,
-                                  strokeWidth: 2,
-                                ),
-                              )
-                            : Icon(
-                                isEditMode ? Icons.check : Icons.send_rounded,
-                                color: isEnabled
-                                    ? SDSColor.snowliveWhite
-                                    : SDSColor.gray400,
-                                size: 20,
-                              ),
+                        child: Icon(
+                          isEditMode ? Icons.check : Icons.send_rounded,
+                          color: canTap
+                              ? SDSColor.snowliveWhite
+                              : SDSColor.gray400,
+                          size: 20,
+                        ),
                       ),
                     );
                   }),
@@ -318,47 +344,31 @@ class LiveTalkInputArea extends StatelessWidget {
             ),
           ),
 
-          // 삭제 버튼
-          Positioned(
-            top: 4,
-            right: 4,
-            child: GestureDetector(
-              onTap: () => viewModel.removeImage(),
-              child: Container(
-                width: 24,
-                height: 24,
-                decoration: BoxDecoration(
-                  color: Colors.black.withOpacity(0.6),
-                  shape: BoxShape.circle,
-                ),
-                child: const Icon(
-                  Icons.close,
-                  color: Colors.white,
-                  size: 16,
-                ),
-              ),
-            ),
-          ),
-
-          // 업로드 중 표시
+          // 삭제 버튼 (업로드 중에는 숨김)
           Obx(() {
             if (viewModel.isUploadingImage.value) {
-              return Positioned.fill(
+              return const SizedBox.shrink();
+            }
+            return Positioned(
+              top: 4,
+              right: 4,
+              child: GestureDetector(
+                onTap: () => viewModel.removeImage(),
                 child: Container(
+                  width: 24,
+                  height: 24,
                   decoration: BoxDecoration(
-                    color: Colors.black.withOpacity(0.5),
-                    borderRadius: BorderRadius.circular(12),
+                    color: Colors.black.withOpacity(0.6),
+                    shape: BoxShape.circle,
                   ),
-                  child: const Center(
-                    child: CircularProgressIndicator(
-                      color: SDSColor.snowliveWhite,
-                      strokeWidth: 2,
-                    ),
+                  child: const Icon(
+                    Icons.close,
+                    color: Colors.white,
+                    size: 16,
                   ),
                 ),
-              );
-            }
-            return const SizedBox.shrink();
+              ),
+            );
           }),
         ],
       ),
@@ -510,51 +520,31 @@ class LiveTalkInputArea extends StatelessWidget {
             ),
           ),
 
-          // 삭제 버튼
-          Positioned(
-            top: 4,
-            left: cardWidth - 20,
-            child: GestureDetector(
-              onTap: () => viewModel.removeRidingCard(),
-              child: Container(
-                width: 24,
-                height: 24,
-                decoration: BoxDecoration(
-                  color: Colors.black.withOpacity(0.6),
-                  shape: BoxShape.circle,
-                ),
-                child: const Icon(
-                  Icons.close,
-                  color: Colors.white,
-                  size: 16,
-                ),
-              ),
-            ),
-          ),
-
-          // 업로드 중 표시
+          // 삭제 버튼 (업로드 중에는 숨김)
           Obx(() {
             if (viewModel.isUploadingImage.value) {
-              return Positioned(
-                left: 0,
-                top: 0,
+              return const SizedBox.shrink();
+            }
+            return Positioned(
+              top: 4,
+              left: cardWidth - 20,
+              child: GestureDetector(
+                onTap: () => viewModel.removeRidingCard(),
                 child: Container(
-                  width: cardWidth,
-                  height: cardHeight,
+                  width: 24,
+                  height: 24,
                   decoration: BoxDecoration(
-                    color: Colors.black.withOpacity(0.5),
-                    borderRadius: BorderRadius.circular(16),
+                    color: Colors.black.withOpacity(0.6),
+                    shape: BoxShape.circle,
                   ),
-                  child: const Center(
-                    child: CircularProgressIndicator(
-                      color: SDSColor.snowliveWhite,
-                      strokeWidth: 2,
-                    ),
+                  child: const Icon(
+                    Icons.close,
+                    color: Colors.white,
+                    size: 16,
                   ),
                 ),
-              );
-            }
-            return const SizedBox.shrink();
+              ),
+            );
           }),
         ],
       ),
