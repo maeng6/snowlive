@@ -167,30 +167,34 @@ class _LiveOffSummaryDialogState extends State<LiveOffSummaryDialog> {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        // 오늘 총 라이딩 숫자
-        Text(
-          '${summary.totalSlopeCount}',
-          style: SDSTextStyle.extraBold.copyWith(
-            fontSize: 40,
-            color: Colors.white,
-            height: 1.0,
-          ),
-        ),
-        const SizedBox(height: 4),
-        // 오늘 총 라이딩 라벨
-        Text(
-          '오늘 총 라이딩',
-          style: SDSTextStyle.regular.copyWith(
-            fontSize: 12,
-            color: Colors.white.withOpacity(0.7),
-          ),
-        ),
-        const SizedBox(height: 16),
-        // 최다 라이딩 슬로프 & 최고 속도
+        // 오늘 총 라이딩 & 최다 슬로프 (2열)
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // 최다 라이딩 슬로프
+            // 오늘 총 라이딩
+            Expanded(
+              child: Column(
+                children: [
+                  Text(
+                    summary.totalSlopeCount == 0 ? '-' : '${summary.totalSlopeCount}',
+                    style: SDSTextStyle.extraBold.copyWith(
+                      fontSize: 32,
+                      color: Colors.white,
+                      height: 1.0,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    '오늘 총 라이딩',
+                    style: SDSTextStyle.regular.copyWith(
+                      fontSize: 11,
+                      color: Colors.white.withOpacity(0.7),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            // 최다 슬로프
             Expanded(
               child: Column(
                 children: [
@@ -213,18 +217,115 @@ class _LiveOffSummaryDialogState extends State<LiveOffSummaryDialog> {
                         Text(
                           '${summary.mostRiddenCount}회',
                           style: SDSTextStyle.regular.copyWith(
-                            fontSize: 16,
+                            fontSize: 14,
                             color: Colors.white,
                           ),
                         ),
                       ],
                     ],
                   ),
-                  const SizedBox(height: 2),
+                  const SizedBox(height: 4),
                   Text(
                     '최다 슬로프',
                     style: SDSTextStyle.regular.copyWith(
-                      fontSize: 12,
+                      fontSize: 11,
+                      color: Colors.white.withOpacity(0.7),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 16),
+        // 라이딩 거리 & 평균 경사도 & 최고 속도
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            // 라이딩 거리
+            Expanded(
+              child: Column(
+                children: [
+                  summary.totalDistance == 0
+                      ? Text(
+                          '-',
+                          style: SDSTextStyle.extraBold.copyWith(
+                            fontSize: 18,
+                            color: Colors.white,
+                          ),
+                        )
+                      : Row(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.baseline,
+                          textBaseline: TextBaseline.alphabetic,
+                          children: [
+                            Text(
+                              summary.totalDistance.toStringAsFixed(0),
+                              style: SDSTextStyle.extraBold.copyWith(
+                                fontSize: 18,
+                                color: Colors.white,
+                              ),
+                            ),
+                            const SizedBox(width: 2),
+                            Text(
+                              'km',
+                              style: SDSTextStyle.regular.copyWith(
+                                fontSize: 12,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ],
+                        ),
+                  const SizedBox(height: 2),
+                  Text(
+                    '라이딩 거리',
+                    style: SDSTextStyle.regular.copyWith(
+                      fontSize: 10,
+                      color: Colors.white.withOpacity(0.7),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            // 평균 경사도
+            Expanded(
+              child: Column(
+                children: [
+                  summary.avgSlope == 0
+                      ? Text(
+                          '-',
+                          style: SDSTextStyle.extraBold.copyWith(
+                            fontSize: 18,
+                            color: Colors.white,
+                          ),
+                        )
+                      : Row(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.baseline,
+                          textBaseline: TextBaseline.alphabetic,
+                          children: [
+                            Text(
+                              summary.avgSlope.toStringAsFixed(1),
+                              style: SDSTextStyle.extraBold.copyWith(
+                                fontSize: 18,
+                                color: Colors.white,
+                              ),
+                            ),
+                            const SizedBox(width: 2),
+                            Text(
+                              '°',
+                              style: SDSTextStyle.regular.copyWith(
+                                fontSize: 12,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ],
+                        ),
+                  const SizedBox(height: 2),
+                  Text(
+                    '평균 경사도',
+                    style: SDSTextStyle.regular.copyWith(
+                      fontSize: 10,
                       color: Colors.white.withOpacity(0.7),
                     ),
                   ),
@@ -235,33 +336,41 @@ class _LiveOffSummaryDialogState extends State<LiveOffSummaryDialog> {
             Expanded(
               child: Column(
                 children: [
-                  Row(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.baseline,
-                    textBaseline: TextBaseline.alphabetic,
-                    children: [
-                      Text(
-                        summary.topSpeed.toStringAsFixed(1),
-                        style: SDSTextStyle.extraBold.copyWith(
-                          fontSize: 24,
-                          color: Colors.white,
+                  summary.topSpeed == 0
+                      ? Text(
+                          '-',
+                          style: SDSTextStyle.extraBold.copyWith(
+                            fontSize: 18,
+                            color: Colors.white,
+                          ),
+                        )
+                      : Row(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.baseline,
+                          textBaseline: TextBaseline.alphabetic,
+                          children: [
+                            Text(
+                              summary.topSpeed.toStringAsFixed(0),
+                              style: SDSTextStyle.extraBold.copyWith(
+                                fontSize: 18,
+                                color: Colors.white,
+                              ),
+                            ),
+                            const SizedBox(width: 2),
+                            Text(
+                              'km/h',
+                              style: SDSTextStyle.regular.copyWith(
+                                fontSize: 12,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ],
                         ),
-                      ),
-                      const SizedBox(width: 4),
-                      Text(
-                        'km/h',
-                        style: SDSTextStyle.regular.copyWith(
-                          fontSize: 16,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ],
-                  ),
                   const SizedBox(height: 2),
                   Text(
                     '최고 속도',
                     style: SDSTextStyle.regular.copyWith(
-                      fontSize: 12,
+                      fontSize: 10,
                       color: Colors.white.withOpacity(0.7),
                     ),
                   ),

@@ -17,7 +17,7 @@ class RidingCardViewModel extends GetxController {
   RxBool isLoadingDailyList = false.obs;
 
   // ============================================
-  // 시즌 기록 카드
+  // 시즌 기록 카드!
   // ============================================
   Rxn<SeasonRidingCard> seasonRidingCard = Rxn<SeasonRidingCard>();
 

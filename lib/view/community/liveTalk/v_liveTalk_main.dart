@@ -24,21 +24,36 @@ class _LiveTalkMainViewState extends State<LiveTalkMainView> {
   final UserViewModel _userViewModel = Get.find<UserViewModel>();
   final RidingCardViewModel _ridingCardViewModel = Get.find<RidingCardViewModel>();
 
+  // pull-to-refresh 중인지 여부
+  bool _isRefreshing = false;
+
   @override
   void initState() {
     super.initState();
     _liveTalkViewModel.fetchLiveTalkList(refresh: true);
   }
 
+  Future<void> _onRefresh() async {
+    _isRefreshing = true;
+    await _liveTalkViewModel.onRefresh();
+    _isRefreshing = false;
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: SDSColor.gray50,
-      body: Stack(
+    return GestureDetector(
+      onTap: () => FocusScope.of(context).unfocus(),
+      child: Scaffold(
+        backgroundColor: SDSColor.gray50,
+        body: Stack(
         children: [
           // 피드 목록
           Obx(() {
-            if (_liveTalkViewModel.isLoading.value) {
+            // 초기 로딩 시에만 전체 화면 로딩 표시
+            // (당겨서 새로고침 또는 게시물 업로드 후 새로고침 시에는 표시 안함)
+            if (_liveTalkViewModel.isLoading.value &&
+                !_isRefreshing &&
+                !_liveTalkViewModel.isPosting.value) {
               return const Center(
                 child: CircularProgressIndicator(
                   color: SDSColor.snowliveBlue,
@@ -46,13 +61,19 @@ class _LiveTalkMainViewState extends State<LiveTalkMainView> {
               );
             }
 
+            // 빈 상태
             if (_liveTalkViewModel.liveTalkList.isEmpty) {
               return _buildEmptyState();
             }
 
+            // 리스트 표시 (당겨서 새로고침 시 화면 유지, 핀만 회전)
             return RefreshIndicator(
-              onRefresh: _liveTalkViewModel.onRefresh,
-              color: SDSColor.snowliveBlue,
+              onRefresh: _onRefresh,
+              strokeWidth: 2,
+              edgeOffset: -100,
+              displacement: 100,
+              backgroundColor: SDSColor.snowliveBlue,
+              color: SDSColor.snowliveWhite,
               child: ListView.builder(
                 controller: _liveTalkViewModel.scrollController,
                 padding: EdgeInsets.only(
@@ -137,6 +158,7 @@ class _LiveTalkMainViewState extends State<LiveTalkMainView> {
             return const SizedBox.shrink();
           }),
         ],
+      ),
       ),
     );
   }

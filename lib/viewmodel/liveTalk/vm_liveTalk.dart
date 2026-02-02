@@ -184,8 +184,8 @@ class LiveTalkViewModel extends GetxController {
 
   /// 전체 게시글 목록 조회
   Future<void> fetchLiveTalkList({bool refresh = false}) async {
+    // refresh 시에는 리스트를 먼저 clear하지 않음 (데이터 받은 후 교체)
     if (refresh) {
-      liveTalkList.clear();
       nextPageUrl.value = null;
     }
     isLoading.value = true;
