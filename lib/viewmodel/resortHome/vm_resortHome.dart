@@ -97,6 +97,7 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
   int _outOfBoundaryCount = 0;
   static const int _outOfBoundaryThreshold = 3; // 3회 연속 경계 외부일 때만 종료
   DateTime? _lastOutOfBoundaryTime;
+  bool _isLiveOffInProgress = false; // 🛡️ 경계 외부 확정 후 liveOff 진행 중 플래그 (race condition 방지)
 
   // 백그라운드 서비스 재시작을 위한 변수
   int _locationErrorCount = 0;
@@ -858,6 +859,7 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
     try {
       // 🛡️ GPS 조작 감지 플래그 초기화
       _isMockDetectedLiveOffTriggered = false;
+      _isLiveOffInProgress = false; // 🛡️ liveOff 진행 플래그 초기화
 
       // 현재 라이브온 사용자 ID 저장
       _currentLiveUserId = user_id;
@@ -1083,6 +1085,12 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
           locationSettings: locationSettings,
         ).listen(
               (Position position) async {
+            // 🛡️ liveOff 진행 중이면 새 위치 이벤트 무시 (경계 외부 확정 후 race condition 방지)
+            if (_isLiveOffInProgress) {
+              print('⚠️ liveOff 진행 중 - 위치 이벤트 무시');
+              return;
+            }
+
             // 🛡️ 캐시된 오래된 위치 필터링 (iOS GPS 점프 방지)
             final positionAge = DateTime.now().difference(position.timestamp);
             if (positionAge.inSeconds > 10) {
@@ -1452,11 +1460,28 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
                 _lastOutOfBoundaryTime = DateTime.now();
                 print('포그라운드 경계 외부 감지 ($_outOfBoundaryCount/$_outOfBoundaryThreshold)');
 
+                // 🔍 디버그: 경계 외부 감지 로그 (3회 미만일 때도 기록)
+                final resortLat = _resort_info['coordinates']?['latitude'];
+                final resortLon = _resort_info['coordinates']?['longitude'];
+                final resortRadius = _resort_info['radius'];
+                final distance = Geolocator.distanceBetween(
+                  position.latitude, position.longitude,
+                  resortLat ?? 0, resortLon ?? 0,
+                );
+                _sendLiveLog(
+                  userId: user_id,
+                  requestType: 'fg_boundary_outside_count',
+                  lat: position.latitude,
+                  lon: position.longitude,
+                  error: 'count: $_outOfBoundaryCount/$_outOfBoundaryThreshold, dist: ${distance.toStringAsFixed(0)}m, radius: ${resortRadius}m',
+                );
+
                 // 연속 3회 이상 경계 외부일 때만 종료
                 if (_outOfBoundaryCount >= _outOfBoundaryThreshold) {
                   print('경계 외부 확정 - 위치 서비스 종료');
                   _sendLiveLog(userId: user_id, requestType: 'fg_out_of_boundary', lat: position.latitude, lon: position.longitude, speed: position.speed, distance: distanceFromLast);
                   _outOfBoundaryCount = 0; // 카운터 리셋
+                  _isLiveOffInProgress = true; // 🛡️ 새 위치 이벤트 차단 (race condition 방지)
                   // 🔥 스트림 콜백 내에서 자기 subscription cancel 시 이후 코드 실행 안될 수 있음
                   // Future.microtask로 콜백 외부에서 실행하여 liveOff까지 정상 완료되도록 보장
                   Future.microtask(() async {
@@ -1582,6 +1607,12 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
     bg.BackgroundGeolocation.onLocation((bg.Location location) async {
       // 무한 루프 방지: getCurrentPosition 호출 중이면 스킵
       if (_isGettingBackgroundPosition) {
+        return;
+      }
+
+      // 🛡️ liveOff 진행 중이면 새 위치 이벤트 무시 (경계 외부 확정 후 race condition 방지)
+      if (_isLiveOffInProgress) {
+        print('⚠️ [백그라운드] liveOff 진행 중 - 위치 이벤트 무시');
         return;
       }
 
@@ -1988,6 +2019,7 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
             print('경계 외부 확정 - 위치 서비스 종료');
             _sendLiveLog(userId: user_id, requestType: 'bg_out_of_boundary', lat: position.latitude, lon: position.longitude, speed: position.speed, distance: distanceFromLast);
             _outOfBoundaryCount = 0; // 카운터 리셋
+            _isLiveOffInProgress = true; // 🛡️ 새 위치 이벤트 차단 (race condition 방지)
             // 🔥 스트림 콜백 내에서 자기 리스너 제거 시 이후 코드 실행 안될 수 있음
             // Future.microtask로 콜백 외부에서 실행하여 liveOff까지 정상 완료되도록 보장
             Future.microtask(() async {
@@ -2048,8 +2080,21 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
   }
 
   bool _checkPositionWithinBoundary(lat, lon, lat_resort_info, lon_resort_info, radius) {
+    // 🔍 디버그: 리조트 정보가 null이면 경계 내부로 간주 (오류 방지)
+    if (lat_resort_info == null || lon_resort_info == null || radius == null) {
+      print('⚠️ [경계체크] 리조트 정보 누락! lat_resort=$lat_resort_info, lon_resort=$lon_resort_info, radius=$radius');
+      return true; // 데이터 없으면 일단 경계 내부로 처리
+    }
+
     double distanceInMeters = Geolocator.distanceBetween(lat, lon, lat_resort_info, lon_resort_info);
-    return distanceInMeters <= radius;
+    bool isWithin = distanceInMeters <= radius;
+
+    // 🔍 디버그: 경계 밖일 때만 로그 (경계 내부는 정상이므로 로그 안 찍음)
+    if (!isWithin) {
+      print('📍 [경계체크] 경계 밖! distance=${distanceInMeters.toStringAsFixed(0)}m, radius=${radius}m, count=$_outOfBoundaryCount');
+    }
+
+    return isWithin;
   }
 
   List<Map<String, dynamic>> checkPositionInAreas(
@@ -2383,6 +2428,7 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
         _outOfBoundaryCount = 0;
         _lastOutOfBoundaryTime = null;
         _isMockDetectedLiveOffTriggered = false; // 🛡️ GPS 조작 감지 플래그 초기화
+        _isLiveOffInProgress = false; // 🛡️ liveOff 진행 플래그 초기화
 
         // ✅ 라이브 액티비티 알림 종료 (await 필수 - 알림이 사라진 후 다이얼로그 표시)
         await _endLiveActivity('liveOff()');
