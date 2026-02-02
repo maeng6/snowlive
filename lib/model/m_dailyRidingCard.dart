@@ -10,6 +10,7 @@ class DailyRidingCard {
   String? mostRiddenSlope;
   int? mostRiddenCount;
   double? topSpeed;
+  double? avgSlope;
   String? riderTitle;
   String? createdAt;
   String? updatedAt;
@@ -25,6 +26,7 @@ class DailyRidingCard {
     this.mostRiddenSlope,
     this.mostRiddenCount,
     this.topSpeed,
+    this.avgSlope,
     this.riderTitle,
     this.createdAt,
     this.updatedAt,
@@ -47,6 +49,7 @@ class DailyRidingCard {
     mostRiddenSlope = json['most_ridden_slope'];
     mostRiddenCount = json['most_ridden_count'];
     topSpeed = json['top_speed']?.toDouble();
+    avgSlope = json['avg_slope']?.toDouble();
     riderTitle = json['rider_title'];
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
@@ -64,6 +67,7 @@ class DailyRidingCard {
       'most_ridden_slope': mostRiddenSlope,
       'most_ridden_count': mostRiddenCount,
       'top_speed': topSpeed,
+      'avg_slope': avgSlope,
       'rider_title': riderTitle,
       'created_at': createdAt,
       'updated_at': updatedAt,

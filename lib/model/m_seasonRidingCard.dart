@@ -7,6 +7,7 @@ class SeasonRidingCard {
   int? totalSlopeCount;
   double? totalDistance;
   double? topSpeed;
+  double? avgSlope;
   String? createdAt;
   String? updatedAt;
 
@@ -18,6 +19,7 @@ class SeasonRidingCard {
     this.totalSlopeCount,
     this.totalDistance,
     this.topSpeed,
+    this.avgSlope,
     this.createdAt,
     this.updatedAt,
   });
@@ -30,6 +32,7 @@ class SeasonRidingCard {
     totalSlopeCount = json['total_slope_count'];
     totalDistance = json['total_distance']?.toDouble();
     topSpeed = json['top_speed']?.toDouble();
+    avgSlope = json['avg_slope']?.toDouble();
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
   }
@@ -43,6 +46,7 @@ class SeasonRidingCard {
       'total_slope_count': totalSlopeCount,
       'total_distance': totalDistance,
       'top_speed': topSpeed,
+      'avg_slope': avgSlope,
       'created_at': createdAt,
       'updated_at': updatedAt,
     };

@@ -498,6 +498,20 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
     });
   }
 
+  /// 항상 기록해야 하는 중요 로그 타입 (라이브 세션 시작/종료, 보안 관련)
+  static const Set<String> _criticalLogTypes = {
+    'liveOn_success',
+    'liveOn_restart',
+    'liveOn_restored',
+    'liveOn_restore_error',
+    'liveOn_fail_not_in_resort',
+    'liveOff_success',
+    'fg_mock_detected',
+    'bg_mock_detected',
+    'dev_options_mock_detected',
+    'dev_options_mock_detected_at_start',
+  };
+
   /// 서버로 라이브온 로그 전송 (버퍼에 추가 후 1분마다 일괄 전송)
   void _sendLiveLog({
     required int userId,
@@ -510,7 +524,9 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
     double? altitude,
     String? locationType,
   }) {
-    if (!_isLoggingOn) return;
+    // 중요 로그는 _isLoggingOn 상태와 관계없이 항상 기록
+    final isCritical = _criticalLogTypes.contains(requestType);
+    if (!isCritical && !_isLoggingOn) return;
 
     final coordinates = (lat != null && lon != null)
         ? 'POINT($lon $lat)'
@@ -879,11 +895,11 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
           } catch (e) {
             print('❌ [Mock] 로그 전송 실패: $e');
           }
-          // 팝업 표시
+          // 팝업 표시 (설정 버튼 클릭 시 개발자 옵션으로 이동)
           await showSettingsPopup(
             title: 'GPS 조작 앱 감지',
             message: '개발자 옵션에서 가상 위치 앱을\n비활성화해주세요.',
-            action: () {},
+            action: () => openDeveloperOptions(),
           );
           _currentLiveUserId = null;
           return;
@@ -2219,6 +2235,17 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
     } catch (e) {
       print('⚠️ [Mock] 개발자옵션 확인 오류: $e');
       return false;
+    }
+  }
+
+  /// 🛡️ Android 개발자옵션 설정 화면 열기 (MethodChannel)
+  Future<void> openDeveloperOptions() async {
+    if (!Platform.isAndroid) return;
+    try {
+      const channel = MethodChannel('detect_battery_saver');
+      await channel.invokeMethod('openDeveloperOptions');
+    } catch (e) {
+      print('⚠️ [Mock] 개발자옵션 열기 오류: $e');
     }
   }
 
