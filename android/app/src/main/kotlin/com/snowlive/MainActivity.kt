@@ -63,8 +63,37 @@ class MainActivity: FlutterActivity() {
                         }
                     }
                     "isMockLocationEnabled" -> {
-                        val mockLocationApp = Settings.Secure.getString(contentResolver, "mock_location")
-                        result.success(!mockLocationApp.isNullOrEmpty())
+                        // 1. 개발자 옵션이 활성화되어 있는지 확인
+                        val developerOptionsEnabled = Settings.Global.getInt(
+                            contentResolver,
+                            Settings.Global.DEVELOPMENT_SETTINGS_ENABLED,
+                            0
+                        ) != 0
+
+                        if (!developerOptionsEnabled) {
+                            // 개발자 옵션이 꺼져 있으면 mock location 불가능
+                            result.success(false)
+                        } else {
+                            // 2. 개발자 옵션이 켜져 있으면 mock location 앱 설정 확인
+                            val mockLocationApp = Settings.Secure.getString(contentResolver, "mock_location")
+                            result.success(!mockLocationApp.isNullOrEmpty())
+                        }
+                    }
+                    "openDeveloperOptions" -> {
+                        try {
+                            val intent = Intent(Settings.ACTION_APPLICATION_DEVELOPMENT_SETTINGS)
+                            startActivity(intent)
+                            result.success(true)
+                        } catch (e: Exception) {
+                            // 일부 기기에서 개발자 옵션 직접 이동이 안 될 경우 설정 메인으로
+                            try {
+                                val intent = Intent(Settings.ACTION_SETTINGS)
+                                startActivity(intent)
+                                result.success(true)
+                            } catch (e2: Exception) {
+                                result.success(false)
+                            }
+                        }
                     }
                     else -> result.notImplemented()
                 }
