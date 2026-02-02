@@ -4,6 +4,7 @@ import 'package:com.snowlive/view/community/free/v_community_Bulletin_Crew.dart'
 import 'package:com.snowlive/view/community/free/v_community_Bulletin_Free.dart';
 import 'package:com.snowlive/view/community/free/v_community_Bulletin_Total.dart';
 import 'package:com.snowlive/view/community/free/v_community_Bulletin_Room.dart';
+import 'package:com.snowlive/view/community/liveTalk/v_liveTalk_main.dart';
 import 'package:com.snowlive/view/moreTab/w_eventPageEmbedded.dart';
 import 'package:com.snowlive/viewmodel/community/vm_communityBulletinList.dart';
 import 'package:com.snowlive/viewmodel/vm_eventAlarm.dart';
@@ -61,12 +62,59 @@ class CommunityMainView extends StatelessWidget {
                     scrollDirection: Axis.horizontal,
                     child: Row(
                       children: [
+                        // 라이브톡 탭
                         Column(
                           children: [
                             Padding(
                               padding: EdgeInsets.only(bottom: 2),
                               child: Container(
-                                width: (_size.width - 40) / 2 ,
+                                width: (_size.width - 48) / 3,
+                                height: 40,
+                                child: ElevatedButton(
+                                  child: Text(
+                                    '라이브톡',
+                                    style: SDSTextStyle.extraBold.copyWith(
+                                        color: (_communityBulletinListViewModel.tapName=='라이브톡')
+                                            ? SDSColor.gray900
+                                            : SDSColor.gray900.withOpacity(0.2),
+                                        fontWeight: (_communityBulletinListViewModel.tapName=='라이브톡')
+                                            ? FontWeight.w900
+                                            : FontWeight.w300,
+                                        fontSize: 16),
+                                  ),
+                                  onPressed: () {
+                                    HapticFeedback.lightImpact();
+                                    _communityBulletinListViewModel.changeTap('라이브톡');
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    padding: EdgeInsets.only(top: 0),
+                                    minimumSize: Size(40, 10),
+                                    backgroundColor: SDSColor.snowliveWhite,
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(8)),
+                                    elevation: 0,
+                                    shadowColor: Colors.transparent,
+                                    overlayColor: Colors.transparent,
+                                    surfaceTintColor: Colors.transparent,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Container(
+                              width: 78,
+                              height: 3,
+                              color:
+                              (_communityBulletinListViewModel.tapName=='라이브톡') ? Color(0xFF111111) : Colors.transparent,
+                            )
+                          ],
+                        ),
+                        // 게시판 탭
+                        Column(
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.only(bottom: 2),
+                              child: Container(
+                                width: (_size.width - 48) / 3,
                                 height: 40,
                                 child: ElevatedButton(
                                   child: Text(
@@ -105,7 +153,8 @@ class CommunityMainView extends StatelessWidget {
                               (_communityBulletinListViewModel.tapName=='게시판') ? Color(0xFF111111) : Colors.transparent,
                             )
                           ],
-                        ),//자게
+                        ),
+                        // 이벤트·소식 탭
                         Column(
                           children: [
                             Padding(
@@ -113,7 +162,7 @@ class CommunityMainView extends StatelessWidget {
                               child: Row(
                                 children: [
                                   Container(
-                                    width: (_size.width - 40) / 2,
+                                    width: (_size.width - 48) / 3,
                                     height: 40,
                                     child: ElevatedButton(
                                       child: Row(
@@ -189,7 +238,7 @@ class CommunityMainView extends StatelessWidget {
                                   : Colors.transparent,
                             ),
                           ],
-                        ), //클리닉
+                        ),
                       ],
                     ),
                   ),
@@ -354,6 +403,8 @@ class CommunityMainView extends StatelessWidget {
                     Expanded(child: CommunityBulletinCrewListView()),
                   if(_communityBulletinListViewModel.tapName=='이벤트·소식')
                     Expanded(child: EventPageEmbeddedView()),
+                  if(_communityBulletinListViewModel.tapName=='라이브톡')
+                    Expanded(child: LiveTalkMainView()),
                 ],
               ),
             ],
