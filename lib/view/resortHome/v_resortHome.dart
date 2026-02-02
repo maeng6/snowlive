@@ -1873,7 +1873,7 @@ class _ResortHomeViewState extends State<ResortHomeView> with
                               child: Container(
                                 height: 160,
                                 decoration: BoxDecoration(
-                                  color: Color(0xFFF1E9FF),
+                                  color: Color(0xFFC5D0DC),
                                   borderRadius: BorderRadius.circular(16),
                                 ),
                                 child: Stack (
@@ -1884,7 +1884,7 @@ class _ResortHomeViewState extends State<ResortHomeView> with
                                       child: Padding(
                                         padding: EdgeInsets.only(bottom: 10, right: 16),
                                         child: Image.asset(
-                                          'assets/imgs/imgs/img_resorthome_slopecraft_banner.png',
+                                          'assets/imgs/imgs/img_summury_banner.png',
                                           fit: BoxFit.cover,
                                           width: 130,
                                         ),
@@ -1899,7 +1899,7 @@ class _ResortHomeViewState extends State<ResortHomeView> with
                                             mainAxisAlignment: MainAxisAlignment.start,
                                             children: [
                                               Text(
-                                                '라이딩 기록 카드',
+                                                '나의 라이딩 기록 카드',
                                                 style: SDSTextStyle.bold.copyWith(
                                                   fontSize: 16,
                                                   color: SDSColor.gray900,
@@ -1908,7 +1908,7 @@ class _ResortHomeViewState extends State<ResortHomeView> with
                                               Padding(
                                                 padding: const EdgeInsets.only(top: 4),
                                                 child: Text(
-                                                  '라이딩 기록 카드를 확인해 보세요!.',
+                                                  '나의 라이딩 기록 카드를 확인하고,\n다른 친구들과 공유해보세요!',
                                                   style: SDSTextStyle.regular.copyWith(
                                                     fontSize: 13,
                                                     color: SDSColor.gray600,
@@ -1936,7 +1936,7 @@ class _ResortHomeViewState extends State<ResortHomeView> with
                                                         Padding(
                                                           padding: const EdgeInsets.only(right: 6),
                                                           child: Text(
-                                                            '더 알아보기',
+                                                            '라이딩 기록 카드 보기',
                                                             style: SDSTextStyle.extraBold.copyWith(
                                                                 color: SDSColor.snowliveBlack,
                                                                 fontSize: 13
