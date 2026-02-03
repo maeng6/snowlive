@@ -178,16 +178,16 @@ class _LiveOffSummaryDialogState extends State<LiveOffSummaryDialog> {
                   Text(
                     summary.totalSlopeCount == 0 ? '-' : '${summary.totalSlopeCount}',
                     style: SDSTextStyle.extraBold.copyWith(
-                      fontSize: 32,
+                      fontSize: 30,
                       color: Colors.white,
                       height: 1.0,
                     ),
                   ),
-                  const SizedBox(height: 4),
+                  const SizedBox(height: 6),
                   Text(
                     '오늘 총 라이딩',
                     style: SDSTextStyle.regular.copyWith(
-                      fontSize: 11,
+                      fontSize: 12,
                       color: Colors.white.withOpacity(0.7),
                     ),
                   ),
@@ -217,7 +217,7 @@ class _LiveOffSummaryDialogState extends State<LiveOffSummaryDialog> {
                         Text(
                           '${summary.mostRiddenCount}회',
                           style: SDSTextStyle.regular.copyWith(
-                            fontSize: 14,
+                            fontSize: 16,
                             color: Colors.white,
                           ),
                         ),
@@ -228,7 +228,7 @@ class _LiveOffSummaryDialogState extends State<LiveOffSummaryDialog> {
                   Text(
                     '최다 슬로프',
                     style: SDSTextStyle.regular.copyWith(
-                      fontSize: 11,
+                      fontSize: 12,
                       color: Colors.white.withOpacity(0.7),
                     ),
                   ),
@@ -250,7 +250,7 @@ class _LiveOffSummaryDialogState extends State<LiveOffSummaryDialog> {
                       ? Text(
                           '-',
                           style: SDSTextStyle.extraBold.copyWith(
-                            fontSize: 18,
+                            fontSize: 22,
                             color: Colors.white,
                           ),
                         )
@@ -262,7 +262,7 @@ class _LiveOffSummaryDialogState extends State<LiveOffSummaryDialog> {
                             Text(
                               summary.totalDistance.toStringAsFixed(0),
                               style: SDSTextStyle.extraBold.copyWith(
-                                fontSize: 18,
+                                fontSize: 22,
                                 color: Colors.white,
                               ),
                             ),
@@ -270,7 +270,7 @@ class _LiveOffSummaryDialogState extends State<LiveOffSummaryDialog> {
                             Text(
                               'km',
                               style: SDSTextStyle.regular.copyWith(
-                                fontSize: 12,
+                                fontSize: 14,
                                 color: Colors.white,
                               ),
                             ),
@@ -280,7 +280,7 @@ class _LiveOffSummaryDialogState extends State<LiveOffSummaryDialog> {
                   Text(
                     '라이딩 거리',
                     style: SDSTextStyle.regular.copyWith(
-                      fontSize: 10,
+                      fontSize: 12,
                       color: Colors.white.withOpacity(0.7),
                     ),
                   ),
@@ -295,7 +295,7 @@ class _LiveOffSummaryDialogState extends State<LiveOffSummaryDialog> {
                       ? Text(
                           '-',
                           style: SDSTextStyle.extraBold.copyWith(
-                            fontSize: 18,
+                            fontSize: 22,
                             color: Colors.white,
                           ),
                         )
@@ -307,7 +307,7 @@ class _LiveOffSummaryDialogState extends State<LiveOffSummaryDialog> {
                             Text(
                               summary.avgSlope.toStringAsFixed(1),
                               style: SDSTextStyle.extraBold.copyWith(
-                                fontSize: 18,
+                                fontSize: 22,
                                 color: Colors.white,
                               ),
                             ),
@@ -315,7 +315,7 @@ class _LiveOffSummaryDialogState extends State<LiveOffSummaryDialog> {
                             Text(
                               '°',
                               style: SDSTextStyle.regular.copyWith(
-                                fontSize: 12,
+                                fontSize: 20,
                                 color: Colors.white,
                               ),
                             ),
@@ -325,7 +325,7 @@ class _LiveOffSummaryDialogState extends State<LiveOffSummaryDialog> {
                   Text(
                     '평균 경사도',
                     style: SDSTextStyle.regular.copyWith(
-                      fontSize: 10,
+                      fontSize: 12,
                       color: Colors.white.withOpacity(0.7),
                     ),
                   ),
@@ -340,7 +340,7 @@ class _LiveOffSummaryDialogState extends State<LiveOffSummaryDialog> {
                       ? Text(
                           '-',
                           style: SDSTextStyle.extraBold.copyWith(
-                            fontSize: 18,
+                            fontSize: 22,
                             color: Colors.white,
                           ),
                         )
@@ -352,7 +352,7 @@ class _LiveOffSummaryDialogState extends State<LiveOffSummaryDialog> {
                             Text(
                               summary.topSpeed.toStringAsFixed(0),
                               style: SDSTextStyle.extraBold.copyWith(
-                                fontSize: 18,
+                                fontSize: 22,
                                 color: Colors.white,
                               ),
                             ),
@@ -360,7 +360,7 @@ class _LiveOffSummaryDialogState extends State<LiveOffSummaryDialog> {
                             Text(
                               'km/h',
                               style: SDSTextStyle.regular.copyWith(
-                                fontSize: 12,
+                                fontSize: 14,
                                 color: Colors.white,
                               ),
                             ),
@@ -370,7 +370,7 @@ class _LiveOffSummaryDialogState extends State<LiveOffSummaryDialog> {
                   Text(
                     '최고 속도',
                     style: SDSTextStyle.regular.copyWith(
-                      fontSize: 10,
+                      fontSize: 12,
                       color: Colors.white.withOpacity(0.7),
                     ),
                   ),

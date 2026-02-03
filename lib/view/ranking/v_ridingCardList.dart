@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'dart:ui' as ui;
 import 'package:com.snowlive/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/model/m_dailyRidingCard.dart';
+import 'package:com.snowlive/model/m_seasonRidingCard.dart';
 import 'package:com.snowlive/viewmodel/ranking/vm_ridingCard.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
 import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
@@ -288,32 +289,35 @@ class _RidingCardListViewState extends State<RidingCardListView> {
             padding: EdgeInsets.only(right: 16),
             child: Stack(
               children: [
-                ElevatedButton(
-                  onPressed: () => _showSeasonBottomSheet(),
-                  style: ElevatedButton.styleFrom(
-                    shadowColor: Colors.transparent,
-                    overlayColor: Colors.transparent,
-                    padding: EdgeInsets.only(right: 32, left: 12, top: 3, bottom: 2),
-                    side: BorderSide(
-                      width: 1,
-                      color: SDSColor.gray100,
+                SizedBox(
+                  height: 36,
+                  child: ElevatedButton(
+                    onPressed: () => _showSeasonBottomSheet(),
+                    style: ElevatedButton.styleFrom(
+                      shadowColor: Colors.transparent,
+                      overlayColor: Colors.transparent,
+                      padding: EdgeInsets.only(right: 32, left: 12, top: 2, bottom: 1),
+                      side: BorderSide(
+                        width: 1,
+                        color: SDSColor.gray100,
+                      ),
+                      backgroundColor: SDSColor.snowliveWhite,
+                      elevation: 0,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(50),
+                      ),
                     ),
-                    backgroundColor: SDSColor.snowliveWhite,
-                    elevation: 0,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(50),
-                    ),
-                  ),
-                  child: Text(
-                    _ridingCardViewModel.selectedSeason.value.replaceAll('/', ''),
-                    style: SDSTextStyle.bold.copyWith(
-                      fontSize: 13,
-                      color: Color(0xFF111111),
+                    child: Text(
+                      _ridingCardViewModel.selectedSeason.value.replaceAll('/', ''),
+                      style: SDSTextStyle.bold.copyWith(
+                        fontSize: 13,
+                        color: Color(0xFF111111),
+                      ),
                     ),
                   ),
                 ),
                 Positioned(
-                  top: 14,
+                  top: 10,
                   right: 10,
                   child: GestureDetector(
                     onTap: () => _showSeasonBottomSheet(),
@@ -353,6 +357,9 @@ class _RidingCardListViewState extends State<RidingCardListView> {
     }
 
     return RefreshIndicator(
+      strokeWidth: 2,
+      backgroundColor: SDSColor.snowliveBlue,
+      color: SDSColor.snowliveWhite,
       onRefresh: _onRefresh,
       child: SingleChildScrollView(
         physics: AlwaysScrollableScrollPhysics(),
@@ -537,14 +544,31 @@ class _RidingCardListViewState extends State<RidingCardListView> {
     return Column(
       children: [
         // 카드 (RepaintBoundary로 감싸서 이미지 캡처 가능)
-        Center(
-          child: RepaintBoundary(
-            key: _seasonCardKey,
-            child: SizedBox(
-              width: 240,
-              child: ClipRRect(
+        GestureDetector(
+          onTap: () {
+            HapticFeedback.lightImpact();
+            _showSeasonCardDetail();
+          },
+          child: Center(
+            child: Container(
+              decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(20),
-                child: AspectRatio(
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.15),
+                    blurRadius: 20,
+                    spreadRadius: 0,
+                    offset: Offset(0, 10),
+                  ),
+                ],
+              ),
+              child: RepaintBoundary(
+                key: _seasonCardKey,
+                child: SizedBox(
+                  width: 240,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(20),
+                    child: AspectRatio(
                   aspectRatio: 960 / 1524,
                   child: Stack(
                     children: [
@@ -557,15 +581,15 @@ class _RidingCardListViewState extends State<RidingCardListView> {
                       ),
                       // 상단: 프로필 이미지, 닉네임, 시즌
                       Positioned(
-                        top: 24,
+                        top: 28,
                         left: 20,
                         right: 20,
                         child: Column(
                           children: [
                             // 프로필 이미지
                             Container(
-                              width: 60,
-                              height: 60,
+                              width: 68,
+                              height: 68,
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,
                               ),
@@ -613,10 +637,10 @@ class _RidingCardListViewState extends State<RidingCardListView> {
                       ),
                       // 중앙: 라이딩 정보
                       Positioned(
-                        top: 148,
+                        top: 128,
                         bottom: 50,
-                        left: 12,
-                        right: 12,
+                        left: 20,
+                        right: 20,
                         child: Center(
                           child: Column(
                             mainAxisSize: MainAxisSize.min,
@@ -639,7 +663,7 @@ class _RidingCardListViewState extends State<RidingCardListView> {
                                   color: Colors.white.withValues(alpha: 0.7),
                                 ),
                               ),
-                              const SizedBox(height: 10),
+                              const SizedBox(height: 20),
                               // 총 거리 & 평균 경사도 & 최고 속도
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
@@ -652,7 +676,7 @@ class _RidingCardListViewState extends State<RidingCardListView> {
                                             ? Text(
                                                 '-',
                                                 style: SDSTextStyle.extraBold.copyWith(
-                                                  fontSize: 13,
+                                                  fontSize: 17,
                                                   color: Colors.white,
                                                 ),
                                               )
@@ -664,16 +688,19 @@ class _RidingCardListViewState extends State<RidingCardListView> {
                                                   Text(
                                                     (seasonCard.totalDistance ?? 0).toStringAsFixed(0),
                                                     style: SDSTextStyle.extraBold.copyWith(
-                                                      fontSize: 13,
+                                                      fontSize: 17,
                                                       color: Colors.white,
                                                     ),
                                                   ),
                                                   const SizedBox(width: 1),
-                                                  Text(
-                                                    'km',
-                                                    style: SDSTextStyle.regular.copyWith(
-                                                      fontSize: 8,
-                                                      color: Colors.white,
+                                                  Padding(
+                                                    padding: EdgeInsets.only(left: 2),
+                                                    child: Text(
+                                                      'km',
+                                                      style: SDSTextStyle.regular.copyWith(
+                                                        fontSize: 9,
+                                                        color: Colors.white,
+                                                      ),
                                                     ),
                                                   ),
                                                 ],
@@ -681,7 +708,7 @@ class _RidingCardListViewState extends State<RidingCardListView> {
                                         Text(
                                           '총 거리',
                                           style: SDSTextStyle.regular.copyWith(
-                                            fontSize: 7,
+                                            fontSize: 9,
                                             color: Colors.white.withValues(alpha: 0.7),
                                           ),
                                         ),
@@ -696,7 +723,7 @@ class _RidingCardListViewState extends State<RidingCardListView> {
                                             ? Text(
                                                 '-',
                                                 style: SDSTextStyle.extraBold.copyWith(
-                                                  fontSize: 13,
+                                                  fontSize: 18,
                                                   color: Colors.white,
                                                 ),
                                               )
@@ -708,7 +735,7 @@ class _RidingCardListViewState extends State<RidingCardListView> {
                                                   Text(
                                                     (seasonCard.avgSlope ?? 0).toStringAsFixed(1),
                                                     style: SDSTextStyle.extraBold.copyWith(
-                                                      fontSize: 13,
+                                                      fontSize: 17,
                                                       color: Colors.white,
                                                     ),
                                                   ),
@@ -716,7 +743,7 @@ class _RidingCardListViewState extends State<RidingCardListView> {
                                                   Text(
                                                     '°',
                                                     style: SDSTextStyle.regular.copyWith(
-                                                      fontSize: 8,
+                                                      fontSize: 15,
                                                       color: Colors.white,
                                                     ),
                                                   ),
@@ -725,7 +752,7 @@ class _RidingCardListViewState extends State<RidingCardListView> {
                                         Text(
                                           '평균 경사도',
                                           style: SDSTextStyle.regular.copyWith(
-                                            fontSize: 7,
+                                            fontSize: 9,
                                             color: Colors.white.withValues(alpha: 0.7),
                                           ),
                                         ),
@@ -740,7 +767,7 @@ class _RidingCardListViewState extends State<RidingCardListView> {
                                             ? Text(
                                                 '-',
                                                 style: SDSTextStyle.extraBold.copyWith(
-                                                  fontSize: 13,
+                                                  fontSize: 18,
                                                   color: Colors.white,
                                                 ),
                                               )
@@ -752,7 +779,7 @@ class _RidingCardListViewState extends State<RidingCardListView> {
                                                   Text(
                                                     (seasonCard.topSpeed ?? 0).toStringAsFixed(0),
                                                     style: SDSTextStyle.extraBold.copyWith(
-                                                      fontSize: 13,
+                                                      fontSize: 18,
                                                       color: Colors.white,
                                                     ),
                                                   ),
@@ -760,7 +787,7 @@ class _RidingCardListViewState extends State<RidingCardListView> {
                                                   Text(
                                                     'km/h',
                                                     style: SDSTextStyle.regular.copyWith(
-                                                      fontSize: 8,
+                                                      fontSize: 9,
                                                       color: Colors.white,
                                                     ),
                                                   ),
@@ -769,7 +796,7 @@ class _RidingCardListViewState extends State<RidingCardListView> {
                                         Text(
                                           '최고 속도',
                                           style: SDSTextStyle.regular.copyWith(
-                                            fontSize: 7,
+                                            fontSize: 9,
                                             color: Colors.white.withValues(alpha: 0.7),
                                           ),
                                         ),
@@ -790,7 +817,7 @@ class _RidingCardListViewState extends State<RidingCardListView> {
                         child: Center(
                           child: Image.asset(
                             'assets/imgs/logos/snowliveLogo_main_white.png',
-                            height: 10,
+                            height: 8,
                           ),
                         ),
                       ),
@@ -800,9 +827,11 @@ class _RidingCardListViewState extends State<RidingCardListView> {
               ),
             ),
           ),
+            ),
+          ),
         ),
         // 카드 아래 버튼들
-        SizedBox(height: 12),
+        SizedBox(height: 24),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -814,7 +843,7 @@ class _RidingCardListViewState extends State<RidingCardListView> {
                 height: 44,
                 decoration: BoxDecoration(
                   color: Colors.white,
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(30),
                   border: Border.all(
                     color: SDSColor.gray200,
                     width: 1,
@@ -835,8 +864,8 @@ class _RidingCardListViewState extends State<RidingCardListView> {
             GestureDetector(
               onTap: (_isSeasonSaving || _isSeasonSaved) ? null : _saveSeasonCardImage,
               child: Container(
+                width: 110,
                 height: 44,
-                padding: EdgeInsets.symmetric(horizontal: 20),
                 decoration: BoxDecoration(
                   color: _isSeasonSaved ? const Color(0xFF34C759) : SDSColor.gray900,
                   borderRadius: BorderRadius.circular(22),
@@ -937,11 +966,14 @@ class _RidingCardListViewState extends State<RidingCardListView> {
             // 월 타이틀
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 16),
-              child: Text(
-                monthTitle,
-                style: SDSTextStyle.bold.copyWith(
-                  fontSize: 18,
-                  color: SDSColor.gray900,
+              child: Padding(
+                padding: EdgeInsets.only(bottom: _ridingCardViewModel.isGridView.value ? 12 : 0),
+                child: Text(
+                  monthTitle,
+                  style: SDSTextStyle.bold.copyWith(
+                    fontSize: 18,
+                    color: SDSColor.gray900,
+                  ),
                 ),
               ),
             ),
@@ -949,7 +981,8 @@ class _RidingCardListViewState extends State<RidingCardListView> {
             _ridingCardViewModel.isGridView.value
                 ? _buildMonthlyGrid(cards)
                 : _buildMonthlyList(cards),
-            SizedBox(height: 40),
+            SizedBox(
+                height: _ridingCardViewModel.isGridView.value ? 16 : 60),
           ],
         );
       }).toList(),
@@ -963,9 +996,9 @@ class _RidingCardListViewState extends State<RidingCardListView> {
         shrinkWrap: true,
         physics: NeverScrollableScrollPhysics(),
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 4,
+          crossAxisCount: 3,
           mainAxisSpacing: 12,
-          crossAxisSpacing: 8,
+          crossAxisSpacing: 6,
           childAspectRatio: 960 / 1524,
         ),
         itemCount: cards.length,
@@ -1091,7 +1124,7 @@ class _RidingCardListViewState extends State<RidingCardListView> {
           _showDailyCardDetail(card);
         },
         child: ClipRRect(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(10),
           child: AspectRatio(
             aspectRatio: 960 / 1524,
             child: Stack(
@@ -1105,36 +1138,17 @@ class _RidingCardListViewState extends State<RidingCardListView> {
                     fit: BoxFit.cover,
                   ),
                 ),
-                // 좌상단: 날짜 뱃지
-                Positioned(
-                  top: 8,
-                  left: 8,
-                  child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 6, vertical: 3),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(6),
-                    ),
-                    child: Text(
-                      '${_getDayFromDate(card.date)}일',
-                      style: SDSTextStyle.bold.copyWith(
-                        fontSize: 10,
-                        color: SDSColor.gray900,
-                      ),
-                    ),
-                  ),
-                ),
                 // 상단: 프로필 이미지 + 닉네임 + 날짜
                 Positioned(
-                  top: 12,
+                  top: 16,
                   left: 8,
                   right: 8,
                   child: Column(
                     children: [
                       // 프로필 이미지
                       Container(
-                        width: 30,
-                        height: 30,
+                        width: 34,
+                        height: 34,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
                         ),
@@ -1165,7 +1179,7 @@ class _RidingCardListViewState extends State<RidingCardListView> {
                       Text(
                         _userViewModel.user.display_name ?? '',
                         style: SDSTextStyle.bold.copyWith(
-                          fontSize: 6,
+                          fontSize: 10,
                           color: Colors.white,
                         ),
                         maxLines: 1,
@@ -1175,7 +1189,7 @@ class _RidingCardListViewState extends State<RidingCardListView> {
                       Text(
                         '${card.date ?? ''} ${card.weekday ?? ''}',
                         style: SDSTextStyle.regular.copyWith(
-                          fontSize: 4,
+                          fontSize: 5,
                           color: Colors.white,
                         ),
                       ),
@@ -1193,7 +1207,7 @@ class _RidingCardListViewState extends State<RidingCardListView> {
                           child: Text(
                             card.riderTitle!,
                             style: SDSTextStyle.regular.copyWith(
-                              fontSize: 4,
+                              fontSize: 5,
                               color: currentCardType == 0
                                   ? Colors.white
                                   : const Color(0xFF000000),
@@ -1208,7 +1222,7 @@ class _RidingCardListViewState extends State<RidingCardListView> {
                 ),
                 // 중앙: 라이딩 정보 (카드 타입에 따라 다른 내용)
                 Positioned(
-                  top: 72,
+                  top: 76,
                   bottom: 20,
                   left: 4,
                   right: 4,
@@ -1220,13 +1234,32 @@ class _RidingCardListViewState extends State<RidingCardListView> {
                 ),
                 // 하단: 스노우라이브 로고
                 Positioned(
-                  bottom: 6,
+                  bottom: 14,
                   left: 0,
                   right: 0,
                   child: Center(
                     child: Image.asset(
                       'assets/imgs/logos/snowliveLogo_main_white.png',
                       height: 4,
+                    ),
+                  ),
+                ),
+                // 좌상단: 날짜 뱃지
+                Positioned(
+                  top: 8,
+                  left: 8,
+                  child: Container(
+                    padding: EdgeInsets.symmetric(horizontal: 6, vertical: 3),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Text(
+                      '${_getDayFromDate(card.date)}일',
+                      style: SDSTextStyle.bold.copyWith(
+                        fontSize: 12,
+                        color: SDSColor.snowliveBlack,
+                      ),
                     ),
                   ),
                 ),
@@ -1438,161 +1471,206 @@ class _RidingCardListViewState extends State<RidingCardListView> {
       mainAxisSize: MainAxisSize.min,
       children: [
         // 오늘 총 라이딩 & 최다 슬로프 (2열)
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            // 오늘 총 라이딩
-            Expanded(
-              child: Column(
-                children: [
-                  Text(
-                    (card.totalSlopeCount ?? 0) == 0 ? '-' : '${card.totalSlopeCount}',
-                    style: SDSTextStyle.extraBold.copyWith(
-                      fontSize: 12,
-                      color: Colors.white,
-                      height: 1.0,
-                    ),
-                  ),
-                  SizedBox(height: 1),
-                  Text(
-                    '총 라이딩',
-                    style: SDSTextStyle.regular.copyWith(
-                      fontSize: 3,
-                      color: Colors.white.withValues(alpha: 0.7),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            // 최다 슬로프
-            Expanded(
-              child: Column(
-                children: [
-                  Text(
-                    card.mostRiddenSlope?.isNotEmpty == true
-                        ? card.mostRiddenSlope!
-                        : '-',
-                    style: SDSTextStyle.extraBold.copyWith(
-                      fontSize: 8,
-                      color: Colors.white,
-                    ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    textAlign: TextAlign.center,
-                  ),
-                  if ((card.mostRiddenCount ?? 0) > 0)
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 8),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              // 오늘 총 라이딩
+              Expanded(
+                child: Column(
+                  children: [
                     Text(
-                      '${card.mostRiddenCount}회',
-                      style: SDSTextStyle.regular.copyWith(
-                        fontSize: 3,
+                      (card.totalSlopeCount ?? 0) == 0 ? '-' : '${card.totalSlopeCount}',
+                      style: SDSTextStyle.extraBold.copyWith(
+                        fontSize: 14,
                         color: Colors.white,
+                        height: 1.0,
                       ),
                     ),
-                  Text(
-                    '최다 슬로프',
-                    style: SDSTextStyle.regular.copyWith(
-                      fontSize: 3,
-                      color: Colors.white.withValues(alpha: 0.7),
+                    SizedBox(height: 1),
+                    Text(
+                      '총 라이딩',
+                      style: SDSTextStyle.regular.copyWith(
+                        fontSize: 5,
+                        color: Colors.white.withValues(alpha: 0.7),
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-          ],
+              // 최다 슬로프
+              Expanded(
+                child: Padding(
+                  padding: EdgeInsets.only(bottom: 2),
+                  child: Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            card.mostRiddenSlope?.isNotEmpty == true
+                                ? card.mostRiddenSlope!
+                                : '-',
+                            style: SDSTextStyle.extraBold.copyWith(
+                              fontSize: 12,
+                              color: Colors.white,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            textAlign: TextAlign.center,
+                          ),
+                          if ((card.mostRiddenCount ?? 0) > 0)
+                            Padding(
+                              padding: EdgeInsets.only(left: 1, top: 5),
+                              child: Text(
+                                '${card.mostRiddenCount}회',
+                                style: SDSTextStyle.regular.copyWith(
+                                  fontSize: 5,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                        ],
+                      ),
+                      Text(
+                        '최다 슬로프',
+                        style: SDSTextStyle.regular.copyWith(
+                          fontSize: 5,
+                          color: Colors.white.withValues(alpha: 0.7),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
         SizedBox(height: 4),
         // 라이딩 거리 & 평균 경사도 & 최고 속도 (3열)
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            // 라이딩 거리
-            Expanded(
-              child: Column(
-                children: [
-                  Text(
-                    (card.totalDistance ?? 0) == 0 ? '-' : (card.totalDistance ?? 0).toStringAsFixed(0),
-                    style: SDSTextStyle.extraBold.copyWith(
-                      fontSize: 6,
-                      color: Colors.white,
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 6),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              // 라이딩 거리
+              Expanded(
+                child: Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+
+                      children: [
+                        Text(
+                          (card.totalDistance ?? 0) == 0 ? '-' : (card.totalDistance ?? 0).toStringAsFixed(0),
+                          style: SDSTextStyle.extraBold.copyWith(
+                            fontSize: 9,
+                            color: Colors.white,
+                          ),
+                        ),
+                        if ((card.totalDistance ?? 0) != 0)
+                          Padding(
+                            padding: EdgeInsets.only(left: 1, top: 3),
+                            child: Text(
+                              'km',
+                              style: SDSTextStyle.regular.copyWith(
+                                fontSize: 5,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                      ],
                     ),
-                  ),
-                  if ((card.totalDistance ?? 0) != 0)
+
                     Text(
-                      'km',
+                      '거리',
                       style: SDSTextStyle.regular.copyWith(
-                        fontSize: 3,
-                        color: Colors.white,
+                        fontSize: 5,
+                        color: Colors.white.withValues(alpha: 0.7),
                       ),
                     ),
-                  Text(
-                    '거리',
-                    style: SDSTextStyle.regular.copyWith(
-                      fontSize: 3,
-                      color: Colors.white.withValues(alpha: 0.7),
-                    ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-            // 평균 경사도
-            Expanded(
-              child: Column(
-                children: [
-                  Text(
-                    (card.avgSlope ?? 0) == 0 ? '-' : (card.avgSlope ?? 0).toStringAsFixed(1),
-                    style: SDSTextStyle.extraBold.copyWith(
-                      fontSize: 6,
-                      color: Colors.white,
+              // 평균 경사도
+              Expanded(
+                child: Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          (card.avgSlope ?? 0) == 0 ? '-' : (card.avgSlope ?? 0).toStringAsFixed(1),
+                          style: SDSTextStyle.extraBold.copyWith(
+                            fontSize: 9,
+                            color: Colors.white,
+                          ),
+                        ),
+                        if ((card.avgSlope ?? 0) != 0)
+                          Padding(
+                            padding: EdgeInsets.only(left: 1, top: 2),
+                            child: Text(
+                              '°',
+                              style: SDSTextStyle.regular.copyWith(
+                                fontSize: 5,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                      ],
                     ),
-                  ),
-                  if ((card.avgSlope ?? 0) != 0)
                     Text(
-                      '°',
+                      '경사도',
                       style: SDSTextStyle.regular.copyWith(
-                        fontSize: 3,
-                        color: Colors.white,
+                        fontSize: 5,
+                        color: Colors.white.withValues(alpha: 0.7),
                       ),
                     ),
-                  Text(
-                    '경사도',
-                    style: SDSTextStyle.regular.copyWith(
-                      fontSize: 3,
-                      color: Colors.white.withValues(alpha: 0.7),
-                    ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-            // 최고 속도
-            Expanded(
-              child: Column(
-                children: [
-                  Text(
-                    (card.topSpeed ?? 0) == 0 ? '-' : (card.topSpeed ?? 0).toStringAsFixed(0),
-                    style: SDSTextStyle.extraBold.copyWith(
-                      fontSize: 6,
-                      color: Colors.white,
+              // 최고 속도
+              Expanded(
+                child: Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+
+                      children: [
+                        Text(
+                          (card.topSpeed ?? 0) == 0 ? '-' : (card.topSpeed ?? 0).toStringAsFixed(0),
+                          style: SDSTextStyle.extraBold.copyWith(
+                            fontSize: 9,
+                            color: Colors.white,
+                          ),
+                        ),
+                        if ((card.topSpeed ?? 0) != 0)
+                          Padding(
+                            padding: EdgeInsets.only(left: 1, top: 3),
+                            child: Text(
+                              'km/h',
+                              style: SDSTextStyle.regular.copyWith(
+                                fontSize: 5,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                      ],
                     ),
-                  ),
-                  if ((card.topSpeed ?? 0) != 0)
+
                     Text(
-                      'km/h',
+                      '최고속도',
                       style: SDSTextStyle.regular.copyWith(
-                        fontSize: 3,
-                        color: Colors.white,
+                        fontSize: 5,
+                        color: Colors.white.withValues(alpha: 0.7),
                       ),
                     ),
-                  Text(
-                    '최고속도',
-                    style: SDSTextStyle.regular.copyWith(
-                      fontSize: 3,
-                      color: Colors.white.withValues(alpha: 0.7),
-                    ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ],
     );
@@ -1625,7 +1703,7 @@ class _RidingCardListViewState extends State<RidingCardListView> {
         Text(
           '오늘 총 라이딩',
           style: SDSTextStyle.regular.copyWith(
-            fontSize: 4,
+            fontSize: 5,
             color: Colors.white.withValues(alpha: 0.7),
           ),
         ),
@@ -1669,7 +1747,7 @@ class _RidingCardListViewState extends State<RidingCardListView> {
                   child: Text(
                     '+$remainingCount',
                     style: SDSTextStyle.bold.copyWith(
-                      fontSize: 4,
+                      fontSize: 5,
                       color: Colors.black,
                     ),
                   ),
@@ -1682,11 +1760,29 @@ class _RidingCardListViewState extends State<RidingCardListView> {
         Text(
           '라이딩 슬로프',
           style: SDSTextStyle.regular.copyWith(
-            fontSize: 4,
+            fontSize: 5,
             color: Colors.white.withValues(alpha: 0.7),
           ),
         ),
       ],
+    );
+  }
+
+  void _showSeasonCardDetail() {
+    final seasonCard = _ridingCardViewModel.seasonRidingCard.value;
+    if (seasonCard == null) return;
+
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      barrierColor: Colors.black.withValues(alpha: 0.85),
+      builder: (context) {
+        return SeasonCardDetailDialog(
+          seasonCard: seasonCard,
+          userViewModel: _userViewModel,
+          ridingCardViewModel: _ridingCardViewModel,
+        );
+      },
     );
   }
 
@@ -1925,74 +2021,77 @@ class _DailyCardDetailDialogState extends State<DailyCardDetailDialog> {
       mainAxisSize: MainAxisSize.min,
       children: [
         // 오늘 총 라이딩 & 최다 슬로프 (2열)
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            // 오늘 총 라이딩
-            Expanded(
-              child: Column(
-                children: [
-                  Text(
-                    (card.totalSlopeCount ?? 0) == 0 ? '-' : '${card.totalSlopeCount}',
-                    style: SDSTextStyle.extraBold.copyWith(
-                      fontSize: 32,
-                      color: Colors.white,
-                      height: 1.0,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    '오늘 총 라이딩',
-                    style: SDSTextStyle.regular.copyWith(
-                      fontSize: 11,
-                      color: Colors.white.withValues(alpha: 0.7),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            // 최다 슬로프
-            Expanded(
-              child: Column(
-                children: [
-                  Row(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.baseline,
-                    textBaseline: TextBaseline.alphabetic,
-                    children: [
-                      Text(
-                        card.mostRiddenSlope?.isNotEmpty == true
-                            ? card.mostRiddenSlope!
-                            : '-',
-                        style: SDSTextStyle.extraBold.copyWith(
-                          fontSize: 24,
-                          color: Colors.white,
-                        ),
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 20),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              // 오늘 총 라이딩
+              Expanded(
+                child: Column(
+                  children: [
+                    Text(
+                      (card.totalSlopeCount ?? 0) == 0 ? '-' : '${card.totalSlopeCount}',
+                      style: SDSTextStyle.extraBold.copyWith(
+                        fontSize: 30,
+                        color: Colors.white,
+                        height: 1.0,
                       ),
-                      if ((card.mostRiddenCount ?? 0) > 0) ...[
-                        const SizedBox(width: 4),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      '오늘 총 라이딩',
+                      style: SDSTextStyle.regular.copyWith(
+                        fontSize: 12,
+                        color: Colors.white.withValues(alpha: 0.7),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              // 최다 슬로프
+              Expanded(
+                child: Column(
+                  children: [
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.baseline,
+                      textBaseline: TextBaseline.alphabetic,
+                      children: [
                         Text(
-                          '${card.mostRiddenCount}회',
-                          style: SDSTextStyle.regular.copyWith(
-                            fontSize: 14,
+                          card.mostRiddenSlope?.isNotEmpty == true
+                              ? card.mostRiddenSlope!
+                              : '-',
+                          style: SDSTextStyle.extraBold.copyWith(
+                            fontSize: 24,
                             color: Colors.white,
                           ),
                         ),
+                        if ((card.mostRiddenCount ?? 0) > 0) ...[
+                          const SizedBox(width: 4),
+                          Text(
+                            '${card.mostRiddenCount}회',
+                            style: SDSTextStyle.regular.copyWith(
+                              fontSize: 16,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ],
                       ],
-                    ],
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    '최다 슬로프',
-                    style: SDSTextStyle.regular.copyWith(
-                      fontSize: 11,
-                      color: Colors.white.withValues(alpha: 0.7),
                     ),
-                  ),
-                ],
+                    const SizedBox(height: 4),
+                    Text(
+                      '최다 슬로프',
+                      style: SDSTextStyle.regular.copyWith(
+                        fontSize: 12,
+                        color: Colors.white.withValues(alpha: 0.7),
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
         const SizedBox(height: 16),
         // 라이딩 거리 & 평균 경사도 & 최고 속도
@@ -2007,7 +2106,7 @@ class _DailyCardDetailDialogState extends State<DailyCardDetailDialog> {
                       ? Text(
                           '-',
                           style: SDSTextStyle.extraBold.copyWith(
-                            fontSize: 18,
+                            fontSize: 22,
                             color: Colors.white,
                           ),
                         )
@@ -2019,7 +2118,7 @@ class _DailyCardDetailDialogState extends State<DailyCardDetailDialog> {
                             Text(
                               (card.totalDistance ?? 0).toStringAsFixed(0),
                               style: SDSTextStyle.extraBold.copyWith(
-                                fontSize: 18,
+                                fontSize: 22,
                                 color: Colors.white,
                               ),
                             ),
@@ -2027,7 +2126,7 @@ class _DailyCardDetailDialogState extends State<DailyCardDetailDialog> {
                             Text(
                               'km',
                               style: SDSTextStyle.regular.copyWith(
-                                fontSize: 12,
+                                fontSize: 14,
                                 color: Colors.white,
                               ),
                             ),
@@ -2037,7 +2136,7 @@ class _DailyCardDetailDialogState extends State<DailyCardDetailDialog> {
                   Text(
                     '라이딩 거리',
                     style: SDSTextStyle.regular.copyWith(
-                      fontSize: 10,
+                      fontSize: 12,
                       color: Colors.white.withValues(alpha: 0.7),
                     ),
                   ),
@@ -2052,7 +2151,7 @@ class _DailyCardDetailDialogState extends State<DailyCardDetailDialog> {
                       ? Text(
                           '-',
                           style: SDSTextStyle.extraBold.copyWith(
-                            fontSize: 18,
+                            fontSize: 22,
                             color: Colors.white,
                           ),
                         )
@@ -2064,7 +2163,7 @@ class _DailyCardDetailDialogState extends State<DailyCardDetailDialog> {
                             Text(
                               (card.avgSlope ?? 0).toStringAsFixed(1),
                               style: SDSTextStyle.extraBold.copyWith(
-                                fontSize: 18,
+                                fontSize: 22,
                                 color: Colors.white,
                               ),
                             ),
@@ -2072,7 +2171,7 @@ class _DailyCardDetailDialogState extends State<DailyCardDetailDialog> {
                             Text(
                               '°',
                               style: SDSTextStyle.regular.copyWith(
-                                fontSize: 12,
+                                fontSize: 20,
                                 color: Colors.white,
                               ),
                             ),
@@ -2097,7 +2196,7 @@ class _DailyCardDetailDialogState extends State<DailyCardDetailDialog> {
                       ? Text(
                           '-',
                           style: SDSTextStyle.extraBold.copyWith(
-                            fontSize: 18,
+                            fontSize: 22,
                             color: Colors.white,
                           ),
                         )
@@ -2109,7 +2208,7 @@ class _DailyCardDetailDialogState extends State<DailyCardDetailDialog> {
                             Text(
                               (card.topSpeed ?? 0).toStringAsFixed(0),
                               style: SDSTextStyle.extraBold.copyWith(
-                                fontSize: 18,
+                                fontSize: 22,
                                 color: Colors.white,
                               ),
                             ),
@@ -2117,7 +2216,7 @@ class _DailyCardDetailDialogState extends State<DailyCardDetailDialog> {
                             Text(
                               'km/h',
                               style: SDSTextStyle.regular.copyWith(
-                                fontSize: 12,
+                                fontSize: 14,
                                 color: Colors.white,
                               ),
                             ),
@@ -2127,7 +2226,7 @@ class _DailyCardDetailDialogState extends State<DailyCardDetailDialog> {
                   Text(
                     '최고 속도',
                     style: SDSTextStyle.regular.copyWith(
-                      fontSize: 10,
+                      fontSize: 12,
                       color: Colors.white.withValues(alpha: 0.7),
                     ),
                   ),
@@ -2491,6 +2590,589 @@ class _DailyCardDetailDialogState extends State<DailyCardDetailDialog> {
                   ),
                 ),
               ],
+            ),
+          ),
+
+          const Spacer(),
+
+          // 공유 + 이미지 저장 버튼 (하단 고정)
+          Padding(
+            padding: EdgeInsets.only(bottom: 30),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                // 공유 버튼
+                GestureDetector(
+                  onTap: _isSharing ? null : _shareImage,
+                  child: Container(
+                    width: 56,
+                    height: 56,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(28),
+                    ),
+                    child: Center(
+                      child: SvgPicture.asset(
+                        'assets/imgs/icons/icon_summury_share.svg',
+                        width: 26,
+                        height: 26,
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 16),
+                // 이미지 저장 버튼
+                GestureDetector(
+                  onTap: (_isSaving || _isSaved) ? null : _saveImage,
+                  child: Container(
+                    width: 160,
+                    height: 56,
+                    decoration: BoxDecoration(
+                      color: _isSaved ? const Color(0xFF34C759) : SDSColor.snowliveBlue,
+                      borderRadius: BorderRadius.circular(28),
+                    ),
+                    child: Center(
+                      child: _isSaving
+                          ? SizedBox(
+                              width: 20,
+                              height: 20,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                  Colors.white,
+                                ),
+                              ),
+                            )
+                          : _isSaved
+                              ? Icon(
+                                  Icons.check,
+                                  size: 28,
+                                  color: Colors.white,
+                                )
+                              : Text(
+                                  '이미지 저장',
+                                  style: SDSTextStyle.bold.copyWith(
+                                    fontSize: 16,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// 시즌 카드 상세 다이얼로그 (저장/공유 기능 포함, 카드 교체 버튼 없음)
+class SeasonCardDetailDialog extends StatefulWidget {
+  final SeasonRidingCard seasonCard;
+  final UserViewModel userViewModel;
+  final RidingCardViewModel ridingCardViewModel;
+
+  const SeasonCardDetailDialog({
+    Key? key,
+    required this.seasonCard,
+    required this.userViewModel,
+    required this.ridingCardViewModel,
+  }) : super(key: key);
+
+  @override
+  State<SeasonCardDetailDialog> createState() => _SeasonCardDetailDialogState();
+}
+
+class _SeasonCardDetailDialogState extends State<SeasonCardDetailDialog> {
+  final GlobalKey _repaintBoundaryKey = GlobalKey();
+  bool _isSaving = false;
+  bool _isSaved = false;
+  bool _isSharing = false;
+
+  Future<void> _saveImage() async {
+    if (_isSaving) return;
+
+    setState(() {
+      _isSaving = true;
+    });
+
+    try {
+      bool hasAccess = await Gal.hasAccess(toAlbum: true);
+
+      if (!hasAccess) {
+        hasAccess = await Gal.requestAccess(toAlbum: true);
+
+        if (!hasAccess) {
+          _showPermissionSettingsDialog();
+          setState(() {
+            _isSaving = false;
+          });
+          return;
+        }
+      }
+
+      RenderRepaintBoundary boundary = _repaintBoundaryKey.currentContext!
+          .findRenderObject() as RenderRepaintBoundary;
+      ui.Image image = await boundary.toImage(pixelRatio: 2.0);
+      ByteData? byteData = await image.toByteData(format: ui.ImageByteFormat.png);
+
+      if (byteData == null) {
+        Get.snackbar('오류', '이미지 생성에 실패했습니다.');
+        setState(() {
+          _isSaving = false;
+        });
+        return;
+      }
+
+      Uint8List pngBytes = byteData.buffer.asUint8List();
+
+      final tempDir = await getTemporaryDirectory();
+      final fileName = 'snowlive_season_${DateTime.now().millisecondsSinceEpoch}.png';
+      final tempFile = File('${tempDir.path}/$fileName');
+      await tempFile.writeAsBytes(pngBytes);
+
+      await Gal.putImage(tempFile.path, album: 'Snowlive');
+      await tempFile.delete();
+
+      setState(() {
+        _isSaved = true;
+      });
+
+      Future.delayed(const Duration(seconds: 1), () {
+        if (mounted) {
+          setState(() {
+            _isSaved = false;
+          });
+        }
+      });
+    } catch (e) {
+      debugPrint('시즌 카드 이미지 저장 오류: $e');
+    } finally {
+      setState(() {
+        _isSaving = false;
+      });
+    }
+  }
+
+  Future<void> _shareImage() async {
+    if (_isSharing) return;
+
+    setState(() {
+      _isSharing = true;
+    });
+
+    try {
+      RenderRepaintBoundary boundary = _repaintBoundaryKey.currentContext!
+          .findRenderObject() as RenderRepaintBoundary;
+      ui.Image image = await boundary.toImage(pixelRatio: 2.0);
+      ByteData? byteData = await image.toByteData(format: ui.ImageByteFormat.png);
+
+      if (byteData == null) {
+        Get.snackbar('오류', '이미지 생성에 실패했습니다.');
+        if (mounted) {
+          setState(() {
+            _isSharing = false;
+          });
+        }
+        return;
+      }
+
+      Uint8List pngBytes = byteData.buffer.asUint8List();
+
+      final tempDir = await getTemporaryDirectory();
+      final fileName = 'snowlive_season_${DateTime.now().millisecondsSinceEpoch}.png';
+      final tempFile = File('${tempDir.path}/$fileName');
+      await tempFile.writeAsBytes(pngBytes);
+
+      Share.shareXFiles(
+        [XFile(tempFile.path)],
+        text: '스노우라이브에서 ${widget.userViewModel.user.display_name}님의 시즌 기록을 공유합니다!',
+      );
+    } catch (e) {
+      debugPrint('시즌 카드 이미지 공유 오류: $e');
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isSharing = false;
+        });
+      }
+    }
+  }
+
+  void _showPermissionSettingsDialog() {
+    Get.dialog(
+      AlertDialog(
+        backgroundColor: SDSColor.snowliveWhite,
+        contentPadding: const EdgeInsets.only(bottom: 28, left: 28, right: 28, top: 30),
+        elevation: 0,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Text(
+              '사진 접근 권한 필요',
+              style: SDSTextStyle.bold.copyWith(fontSize: 18, height: 1.4, color: SDSColor.gray900),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 8),
+            Text(
+              '이미지를 저장하려면 사진 접근 권한이\n필요합니다. 설정에서 권한을 허용해주세요.',
+              style: SDSTextStyle.regular.copyWith(fontSize: 14, height: 1.4, color: SDSColor.gray600),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 24),
+            Row(
+              children: [
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () => Get.back(),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: SDSColor.gray200,
+                      elevation: 0,
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    child: Text(
+                      '취소',
+                      style: SDSTextStyle.bold.copyWith(fontSize: 14, color: SDSColor.gray600),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Get.back();
+                      openAppSettings();
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: SDSColor.snowliveBlue,
+                      elevation: 0,
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    child: Text(
+                      '설정으로 이동',
+                      style: SDSTextStyle.bold.copyWith(fontSize: 14, color: SDSColor.snowliveWhite),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+      barrierDismissible: false,
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final seasonCard = widget.seasonCard;
+    final user = widget.userViewModel.user;
+
+    return Dialog(
+      backgroundColor: Colors.transparent,
+      insetPadding: const EdgeInsets.symmetric(horizontal: 0, vertical: 0),
+      child: Column(
+        mainAxisSize: MainAxisSize.max,
+        children: [
+          const Spacer(),
+          // 캡처 영역
+          RepaintBoundary(
+            key: _repaintBoundaryKey,
+            child: SizedBox(
+              width: 320,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(24),
+                child: AspectRatio(
+                  aspectRatio: 960 / 1524,
+                  child: Stack(
+                    children: [
+                      // 배경 이미지
+                      Positioned.fill(
+                        child: Image.asset(
+                          'assets/imgs/imgs/img_summury_bg_3.png',
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                      // 상단: 프로필 이미지, 닉네임, 시즌
+                      Positioned(
+                        top: 40,
+                        left: 32,
+                        right: 32,
+                        child: Column(
+                          children: [
+                            // 프로필 이미지
+                            Container(
+                              width: 100,
+                              height: 100,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                              ),
+                              child: ClipOval(
+                                child: (user.profile_image_url_user?.isNotEmpty ?? false)
+                                    ? ExtendedImage.network(
+                                        user.profile_image_url_user!,
+                                        fit: BoxFit.cover,
+                                        cache: true,
+                                        loadStateChanged: (state) {
+                                          if (state.extendedImageLoadState == LoadState.failed) {
+                                            return Image.asset(
+                                              'assets/imgs/profile/img_profile_default_circle.png',
+                                              fit: BoxFit.cover,
+                                            );
+                                          }
+                                          return null;
+                                        },
+                                      )
+                                    : Image.asset(
+                                        'assets/imgs/profile/img_profile_default_circle.png',
+                                        fit: BoxFit.cover,
+                                      ),
+                              ),
+                            ),
+                            const SizedBox(height: 10),
+                            // 닉네임
+                            Text(
+                              user.display_name ?? '',
+                              style: SDSTextStyle.bold.copyWith(
+                                fontSize: 20,
+                                color: Colors.white,
+                              ),
+                            ),
+                            // 시즌
+                            Text(
+                              widget.ridingCardViewModel.selectedSeason.value,
+                              style: SDSTextStyle.regular.copyWith(
+                                fontSize: 13,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      // 중앙: 라이딩 정보
+                      Positioned(
+                        top: 200,
+                        bottom: 80,
+                        left: 24,
+                        right: 24,
+                        child: Center(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              // 총 라이딩 숫자
+                              Text(
+                                (seasonCard.totalSlopeCount ?? 0) == 0 ? '-' : '${seasonCard.totalSlopeCount}',
+                                style: SDSTextStyle.extraBold.copyWith(
+                                  fontSize: 40,
+                                  color: Colors.white,
+                                  height: 1.0,
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                              // 시즌 총 라이딩 라벨
+                              Text(
+                                '시즌 총 라이딩',
+                                style: SDSTextStyle.regular.copyWith(
+                                  fontSize: 12,
+                                  color: Colors.white.withValues(alpha: 0.7),
+                                ),
+                              ),
+                              const SizedBox(height: 24),
+                              // 총 거리 & 평균 경사도 & 최고 속도
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  // 총 거리
+                                  Expanded(
+                                    child: Column(
+                                      children: [
+                                        (seasonCard.totalDistance ?? 0) == 0
+                                            ? Text(
+                                                '-',
+                                                style: SDSTextStyle.extraBold.copyWith(
+                                                  fontSize: 22,
+                                                  color: Colors.white,
+                                                ),
+                                              )
+                                            : Row(
+                                                mainAxisSize: MainAxisSize.min,
+                                                crossAxisAlignment: CrossAxisAlignment.baseline,
+                                                textBaseline: TextBaseline.alphabetic,
+                                                children: [
+                                                  Text(
+                                                    (seasonCard.totalDistance ?? 0).toStringAsFixed(0),
+                                                    style: SDSTextStyle.extraBold.copyWith(
+                                                      fontSize: 22,
+                                                      color: Colors.white,
+                                                    ),
+                                                  ),
+                                                  const SizedBox(width: 2),
+                                                  Text(
+                                                    'km',
+                                                    style: SDSTextStyle.regular.copyWith(
+                                                      fontSize: 14,
+                                                      color: Colors.white,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                        const SizedBox(height: 2),
+                                        Text(
+                                          '총 거리',
+                                          style: SDSTextStyle.regular.copyWith(
+                                            fontSize: 12,
+                                            color: Colors.white.withValues(alpha: 0.7),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  // 평균 경사도
+                                  Expanded(
+                                    child: Column(
+                                      children: [
+                                        (seasonCard.avgSlope ?? 0) == 0
+                                            ? Text(
+                                                '-',
+                                                style: SDSTextStyle.extraBold.copyWith(
+                                                  fontSize: 22,
+                                                  color: Colors.white,
+                                                ),
+                                              )
+                                            : Row(
+                                                mainAxisSize: MainAxisSize.min,
+                                                crossAxisAlignment: CrossAxisAlignment.baseline,
+                                                textBaseline: TextBaseline.alphabetic,
+                                                children: [
+                                                  Text(
+                                                    (seasonCard.avgSlope ?? 0).toStringAsFixed(1),
+                                                    style: SDSTextStyle.extraBold.copyWith(
+                                                      fontSize: 22,
+                                                      color: Colors.white,
+                                                    ),
+                                                  ),
+                                                  const SizedBox(width: 2),
+                                                  Text(
+                                                    '°',
+                                                    style: SDSTextStyle.regular.copyWith(
+                                                      fontSize: 20,
+                                                      color: Colors.white,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                        const SizedBox(height: 2),
+                                        Text(
+                                          '평균 경사도',
+                                          style: SDSTextStyle.regular.copyWith(
+                                            fontSize: 12,
+                                            color: Colors.white.withValues(alpha: 0.7),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  // 최고 속도
+                                  Expanded(
+                                    child: Column(
+                                      children: [
+                                        (seasonCard.topSpeed ?? 0) == 0
+                                            ? Text(
+                                                '-',
+                                                style: SDSTextStyle.extraBold.copyWith(
+                                                  fontSize: 22,
+                                                  color: Colors.white,
+                                                ),
+                                              )
+                                            : Row(
+                                                mainAxisSize: MainAxisSize.min,
+                                                crossAxisAlignment: CrossAxisAlignment.baseline,
+                                                textBaseline: TextBaseline.alphabetic,
+                                                children: [
+                                                  Text(
+                                                    (seasonCard.topSpeed ?? 0).toStringAsFixed(0),
+                                                    style: SDSTextStyle.extraBold.copyWith(
+                                                      fontSize: 22,
+                                                      color: Colors.white,
+                                                    ),
+                                                  ),
+                                                  const SizedBox(width: 2),
+                                                  Text(
+                                                    'km/h',
+                                                    style: SDSTextStyle.regular.copyWith(
+                                                      fontSize: 14,
+                                                      color: Colors.white,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                        const SizedBox(height: 2),
+                                        Text(
+                                          '최고 속도',
+                                          style: SDSTextStyle.regular.copyWith(
+                                            fontSize: 12,
+                                            color: Colors.white.withValues(alpha: 0.7),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      // 하단: 스노우라이브 로고
+                      Positioned(
+                        bottom: 40,
+                        left: 0,
+                        right: 0,
+                        child: Center(
+                          child: Image.asset(
+                            'assets/imgs/logos/snowliveLogo_main_white.png',
+                            height: 12,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+
+          // 닫기 버튼 (카드 변경 버튼 없음)
+          Padding(
+            padding: EdgeInsets.only(top: 16),
+            child: GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: () => Get.back(),
+              child: Container(
+                width: 56,
+                height: 56,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(28),
+                ),
+                child: Center(
+                  child: Icon(
+                    Icons.close,
+                    size: 26,
+                    color: SDSColor.gray900,
+                  ),
+                ),
+              ),
             ),
           ),
 
