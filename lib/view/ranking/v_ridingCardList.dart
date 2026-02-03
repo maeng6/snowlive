@@ -369,7 +369,14 @@ class _RidingCardListViewState extends State<RidingCardListView> {
             SizedBox(height: 20),
             // 시즌 카드
             _buildSeasonCard(),
-            SizedBox(height: 48),
+            SizedBox(
+              height: (_ridingCardViewModel.seasonRidingCard.value != null &&
+                  ((_ridingCardViewModel.seasonRidingCard.value!.totalSlopeCount ?? 0) != 0 ||
+                   (_ridingCardViewModel.seasonRidingCard.value!.totalDistance ?? 0) != 0 ||
+                   (_ridingCardViewModel.seasonRidingCard.value!.topSpeed ?? 0) != 0))
+                  ? 48
+                  : 0,
+            ),
             // 데일리 카드 타이틀 + 보기 전환 버튼
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 16),
@@ -508,36 +515,7 @@ class _RidingCardListViewState extends State<RidingCardListView> {
          (seasonCard.topSpeed ?? 0) == 0);
 
     if (hasNoRecord) {
-      return Padding(
-        padding: EdgeInsets.symmetric(horizontal: 16),
-        child: Container(
-          height: 160,
-          decoration: BoxDecoration(
-            color: SDSColor.gray100,
-            borderRadius: BorderRadius.circular(16),
-          ),
-          child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  Icons.snowboarding_rounded,
-                  size: 40,
-                  color: SDSColor.gray400,
-                ),
-                SizedBox(height: 8),
-                Text(
-                  '시즌 기록이 없습니다',
-                  style: SDSTextStyle.regular.copyWith(
-                    color: SDSColor.gray500,
-                    fontSize: 14,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      );
+      return SizedBox.shrink();
     }
 
     // 기존 라이딩 기록 카드 UI 스타일
@@ -930,15 +908,15 @@ class _RidingCardListViewState extends State<RidingCardListView> {
 
     if (hasNoValidRecord) {
       return SizedBox(
-        height: 200,
+        height: MediaQuery.of(context).size.height * 0.6,
         child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(
-                Icons.calendar_today_rounded,
-                size: 40,
-                color: SDSColor.gray400,
+              Image.asset(
+                'assets/imgs/icons/icon_nodata.png',
+                width: 72,
+                height: 72,
               ),
               SizedBox(height: 8),
               Text(
