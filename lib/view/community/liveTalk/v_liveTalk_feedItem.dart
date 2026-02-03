@@ -27,11 +27,11 @@ class LiveTalkFeedItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 8),
+      margin: const EdgeInsets.only(bottom: 1),
       decoration: BoxDecoration(
         color: SDSColor.snowliveWhite,
         border: Border(
-          bottom: BorderSide(color: SDSColor.gray100, width: 1),
+          bottom: BorderSide(color: Color(0xFFF1F1F3), width: 1),
         ),
       ),
       child: Column(
@@ -106,43 +106,40 @@ class LiveTalkFeedItem extends StatelessWidget {
 
           const SizedBox(width: 12),
 
-          // 닉네임 + 시간
-          Expanded(
-            child: GestureDetector(
-              onTap: _navigateToProfile,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    userInfo?.displayName ?? '익명',
-                    style: SDSTextStyle.bold.copyWith(
-                      fontSize: 14,
-                      color: SDSColor.gray900,
-                    ),
-                  ),
-                  const SizedBox(height: 2),
-                  Text(
-                    uploadTime != null
-                        ? GetDatetime().getAgoString(uploadTime)
-                        : '',
-                    style: SDSTextStyle.regular.copyWith(
-                      fontSize: 12,
-                      color: SDSColor.gray500,
-                    ),
-                  ),
-                ],
+          // 닉네임
+          GestureDetector(
+            onTap: _navigateToProfile,
+            child: Text(
+              userInfo?.displayName ?? '익명',
+              style: SDSTextStyle.bold.copyWith(
+                fontSize: 14,
+                color: SDSColor.gray900,
               ),
+            ),
+          ),
+
+          // 공간 확보
+          const Spacer(),
+
+          // 시간
+          Text(
+            uploadTime != null
+                ? GetDatetime().getAgoString(uploadTime)
+                : '',
+            style: SDSTextStyle.regular.copyWith(
+              fontSize: 12,
+              color: SDSColor.gray500,
             ),
           ),
 
           // 더보기 버튼
           GestureDetector(
             onTap: onMore,
-            child: Container(
-              padding: const EdgeInsets.all(8),
+            child: Padding(
+              padding: const EdgeInsets.only(left: 8),
               child: Icon(
                 Icons.more_horiz,
-                color: SDSColor.gray500,
+                color: SDSColor.gray400,
                 size: 20,
               ),
             ),
@@ -170,40 +167,43 @@ class LiveTalkFeedItem extends StatelessWidget {
       onTap: () {
         // TODO: 이미지 풀스크린 보기
       },
-      child: ExtendedImage.network(
-        liveTalk.imageUrl!,
-        width: double.infinity,
-        fit: BoxFit.fitWidth,
-        cache: true,
-        loadStateChanged: (state) {
-          switch (state.extendedImageLoadState) {
-            case LoadState.loading:
-              return Container(
-                height: 200,
-                color: SDSColor.gray100,
-                child: const Center(
-                  child: CircularProgressIndicator(
-                    color: SDSColor.gray300,
-                    strokeWidth: 2,
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: ExtendedImage.network(
+          liveTalk.imageUrl!,
+          width: double.infinity,
+          fit: BoxFit.fitWidth,
+          cache: true,
+          loadStateChanged: (state) {
+            switch (state.extendedImageLoadState) {
+              case LoadState.loading:
+                return Container(
+                  height: 200,
+                  color: SDSColor.gray100,
+                  child: const Center(
+                    child: CircularProgressIndicator(
+                      color: SDSColor.gray300,
+                      strokeWidth: 2,
+                    ),
                   ),
-                ),
-              );
-            case LoadState.failed:
-              return Container(
-                height: 200,
-                color: SDSColor.gray100,
-                child: Center(
-                  child: Icon(
-                    Icons.broken_image_outlined,
-                    color: SDSColor.gray400,
-                    size: 48,
+                );
+              case LoadState.failed:
+                return Container(
+                  height: 200,
+                  color: SDSColor.gray100,
+                  child: Center(
+                    child: Icon(
+                      Icons.broken_image_outlined,
+                      color: SDSColor.gray400,
+                      size: 48,
+                    ),
                   ),
-                ),
-              );
-            case LoadState.completed:
-              return null;
-          }
-        },
+                );
+              case LoadState.completed:
+                return null;
+            }
+          },
+        ),
       ),
     );
   }

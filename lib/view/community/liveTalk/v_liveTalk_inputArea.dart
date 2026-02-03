@@ -7,63 +7,128 @@ import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+/// ✅ InputArea는 "입력 UI만" 담당 (미리보기 제거)
 class LiveTalkInputArea extends StatelessWidget {
   const LiveTalkInputArea({Key? key}) : super(key: key);
 
   void _showImagePickerOptions(BuildContext context, LiveTalkViewModel viewModel) {
     showModalBottomSheet(
       context: context,
-      backgroundColor: SDSColor.snowliveWhite,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-      ),
-      builder: (context) {
-        return SafeArea(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                margin: const EdgeInsets.only(top: 12),
-                width: 40,
-                height: 4,
-                decoration: BoxDecoration(
-                  color: SDSColor.gray200,
-                  borderRadius: BorderRadius.circular(2),
-                ),
-              ),
-              ListTile(
-                leading: const Icon(Icons.camera_alt_outlined, color: SDSColor.gray600),
-                title: Text(
-                  '사진 촬영',
-                  style: SDSTextStyle.regular.copyWith(
-                    fontSize: 16,
-                    color: SDSColor.gray900,
-                  ),
-                ),
-                onTap: () {
-                  Navigator.pop(context);
-                  viewModel.pickImageFromCamera();
-                },
-              ),
-              ListTile(
-                leading: const Icon(Icons.photo_library_outlined, color: SDSColor.gray600),
-                title: Text(
-                  '앨범에서 선택',
-                  style: SDSTextStyle.regular.copyWith(
-                    fontSize: 16,
-                    color: SDSColor.gray900,
-                  ),
-                ),
-                onTap: () {
-                  Navigator.pop(context);
-                  viewModel.pickImageFromGallery();
-                },
-              ),
-              const SizedBox(height: 8),
-            ],
+      backgroundColor: Colors.transparent, // UI 그대로
+      builder: (context) => Container(
+        decoration: const BoxDecoration(
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(16),
+            topRight: Radius.circular(16),
           ),
-        );
-      },
+          color: SDSColor.snowliveWhite,
+        ),
+        child: SafeArea(
+          child: Container(
+            decoration: const BoxDecoration(
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(16),
+                topRight: Radius.circular(16),
+              ),
+              color: SDSColor.snowliveWhite,
+            ),
+            padding: const EdgeInsets.only(bottom: 20, right: 20, left: 20, top: 12),
+            height: 210,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 20),
+                      child: Container(
+                        height: 4,
+                        width: 36,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: SDSColor.gray200,
+                        ),
+                      ),
+                    ),
+                    Text(
+                      '업로드 방법을 선택해주세요.',
+                      style: SDSTextStyle.bold.copyWith(fontSize: 16, color: SDSColor.gray900),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      '업로드할 이미지를 선택해 주세요.\n이미지는 최대 1장까지 업로드할 수 있습니다.',
+                      style: SDSTextStyle.regular.copyWith(
+                        fontSize: 14,
+                        color: SDSColor.gray500,
+                        height: 1.4,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
+                ),
+                const Expanded(child: SizedBox()),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                          viewModel.pickImageFromCamera();
+                        },
+                        style: TextButton.styleFrom(
+                          shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(6)),
+                          ),
+                          splashFactory: InkRipple.splashFactory,
+                          elevation: 0,
+                          minimumSize: const Size(100, 48),
+                          backgroundColor: SDSColor.sBlue500,
+                        ),
+                        child: Text(
+                          '사진 촬영',
+                          style: SDSTextStyle.bold.copyWith(
+                            color: SDSColor.snowliveWhite,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                          viewModel.pickImageFromGallery();
+                        },
+                        style: TextButton.styleFrom(
+                          shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(6)),
+                          ),
+                          splashFactory: InkRipple.splashFactory,
+                          elevation: 0,
+                          minimumSize: const Size(100, 48),
+                          backgroundColor: SDSColor.snowliveBlue,
+                        ),
+                        child: Text(
+                          '앨범에서 선택',
+                          style: SDSTextStyle.bold.copyWith(
+                            color: SDSColor.snowliveWhite,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
     );
   }
 
@@ -152,26 +217,7 @@ class LiveTalkInputArea extends StatelessWidget {
               return const SizedBox.shrink();
             }),
 
-            // 이미지 미리보기 (선택된 경우)
-            Obx(() {
-              // selectedRidingCardType 변경 감지를 위해 참조
-              final _ = _liveTalkViewModel.selectedRidingCardType.value;
-
-              if (_liveTalkViewModel.selectedImage.value != null) {
-                return _buildImagePreview(_liveTalkViewModel);
-              }
-              // 라이딩 카드 선택된 경우
-              if (_liveTalkViewModel.selectedRidingCard.value != null) {
-                return _buildRidingCardPreview(_liveTalkViewModel);
-              }
-              // 수정 모드에서 기존 이미지가 있는 경우
-              if (_liveTalkViewModel.isEditMode.value &&
-                  _liveTalkViewModel.editingLiveTalk.value?.imageUrl != null &&
-                  _liveTalkViewModel.editingLiveTalk.value!.imageUrl!.isNotEmpty) {
-                return _buildExistingImagePreview(_liveTalkViewModel);
-              }
-              return const SizedBox.shrink();
-            }),
+            // ✅ 미리보기 영역 제거됨
 
             // 입력 영역
             Padding(
@@ -182,101 +228,103 @@ class LiveTalkInputArea extends StatelessWidget {
                   // 이미지 선택 버튼
                   GestureDetector(
                     onTap: () => _showImagePickerOptions(context, _liveTalkViewModel),
-                    child: Container(
+                    child: SizedBox(
                       width: 40,
                       height: 40,
-                      decoration: BoxDecoration(
-                        color: SDSColor.gray100,
-                        borderRadius: BorderRadius.circular(20),
-                      ),
                       child: const Icon(
-                        Icons.image_outlined,
+                        Icons.photo_camera,
                         color: SDSColor.gray600,
-                        size: 22,
+                        size: 30,
                       ),
                     ),
                   ),
-
                   const SizedBox(width: 8),
 
-                  // 텍스트 입력 필드
+                  // 텍스트 입력 필드 (전송 버튼 포함)
                   Expanded(
-                    child: Container(
-                      constraints: const BoxConstraints(
-                        minHeight: 40,
-                        maxHeight: 120,
-                      ),
-                      decoration: BoxDecoration(
-                        color: SDSColor.gray50,
-                        borderRadius: BorderRadius.circular(20),
-                        border: Border.all(color: SDSColor.gray200),
-                      ),
-                      child: TextField(
-                        controller: _liveTalkViewModel.textController,
-                        maxLines: null,
-                        textInputAction: TextInputAction.newline,
-                        style: SDSTextStyle.regular.copyWith(
-                          fontSize: 15,
-                          color: SDSColor.gray900,
+                    child: Obx(() {
+                      final isEnabled = _liveTalkViewModel.isButtonEnabled.value;
+                      final isPosting = _liveTalkViewModel.isPosting.value;
+                      final isEditMode = _liveTalkViewModel.isEditMode.value;
+                      final canTap = isEnabled && !isPosting;
+
+                      return ConstrainedBox(
+                        constraints: const BoxConstraints(
+                          minHeight: 40,
+                          maxHeight: 120,
                         ),
-                        decoration: InputDecoration(
-                          hintText: '무슨 일이 있었나요?',
-                          hintStyle: SDSTextStyle.regular.copyWith(
+                        child: TextFormField(
+                          controller: _liveTalkViewModel.textController,
+                          cursorColor: SDSColor.snowliveBlue,
+                          cursorHeight: 16,
+                          cursorWidth: 2,
+                          maxLines: null,
+                          textInputAction: TextInputAction.newline,
+                          style: SDSTextStyle.regular.copyWith(
                             fontSize: 15,
-                            color: SDSColor.gray400,
+                            color: SDSColor.gray900,
                           ),
-                          contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 16,
-                            vertical: 10,
-                          ),
-                          border: InputBorder.none,
-                          isDense: true,
-                        ),
-                      ),
-                    ),
-                  ),
-
-                  const SizedBox(width: 8),
-
-                  // 전송/수정 버튼
-                  Obx(() {
-                    final isEnabled = _liveTalkViewModel.isButtonEnabled.value;
-                    final isPosting = _liveTalkViewModel.isPosting.value;
-                    final isEditMode = _liveTalkViewModel.isEditMode.value;
-
-                    // 업로드 중이면 비활성화 (로딩 인디케이터 대신 버튼만 비활성화)
-                    final canTap = isEnabled && !isPosting;
-
-                    return GestureDetector(
-                      onTap: canTap
-                          ? () async {
-                              FocusScope.of(context).unfocus();
-                              if (isEditMode) {
-                                await _liveTalkViewModel.updateEditingPost();
-                              } else {
-                                await _liveTalkViewModel.createPost();
+                          decoration: InputDecoration(
+                            hintText: '라이브톡을 남겨주세요.',
+                            hintStyle: SDSTextStyle.regular.copyWith(
+                              fontSize: 14,
+                              color: SDSColor.gray400,
+                            ),
+                            contentPadding: const EdgeInsets.only(
+                              top: 10,
+                              bottom: 10,
+                              left: 12,
+                              right: 50,
+                            ),
+                            fillColor: SDSColor.gray50,
+                            filled: true,
+                            border: OutlineInputBorder(
+                              borderSide: const BorderSide(color: SDSColor.gray50),
+                              borderRadius: BorderRadius.circular(6),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: const BorderSide(
+                                color: SDSColor.snowliveBlue,
+                                strokeAlign: BorderSide.strokeAlignInside,
+                                width: 1.5,
+                              ),
+                              borderRadius: BorderRadius.circular(6),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: const BorderSide(color: Colors.transparent),
+                              borderRadius: BorderRadius.circular(6),
+                            ),
+                            isDense: true,
+                            suffixIcon: IconButton(
+                              icon: isEditMode
+                                  ? Icon(
+                                Icons.check,
+                                color: canTap ? SDSColor.snowliveBlue : SDSColor.gray300,
+                                size: 24,
+                              )
+                                  : Image.asset(
+                                canTap
+                                    ? 'assets/imgs/icons/icon_livetalk_send.png'
+                                    : 'assets/imgs/icons/icon_livetalk_send_g.png',
+                                width: 24,
+                                height: 24,
+                              ),
+                              onPressed: canTap
+                                  ? () async {
+                                FocusScope.of(context).unfocus();
+                                if (isEditMode) {
+                                  await _liveTalkViewModel.updateEditingPost();
+                                } else {
+                                  await _liveTalkViewModel.createPost();
+                                }
                               }
-                            }
-                          : null,
-                      child: Container(
-                        width: 40,
-                        height: 40,
-                        decoration: BoxDecoration(
-                          color: canTap
-                              ? SDSColor.snowliveBlue
-                              : SDSColor.gray200,
-                          borderRadius: BorderRadius.circular(20),
+                                  : null,
+                            ),
+                          ),
                         ),
-                        child: Icon(
-                          isEditMode ? Icons.check : Icons.send_rounded,
-                          color: canTap
-                              ? SDSColor.snowliveWhite
-                              : SDSColor.gray400,
-                          size: 20,
-                        ),
-                      ),
-                    );
-                  }),
+                      );
+                    }),
+                  ),
                 ],
               ),
             ),
@@ -285,41 +333,66 @@ class LiveTalkInputArea extends StatelessWidget {
       ),
     );
   }
+}
+
+/// ✅ (NEW) Preview Layer widget (same file) - 메인뷰 Stack에서 Positioned로 사용
+class LiveTalkPreviewLayer extends StatelessWidget {
+  const LiveTalkPreviewLayer({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final LiveTalkViewModel viewModel = Get.find<LiveTalkViewModel>();
+
+    return Obx(() {
+      // selectedRidingCardType 변경 감지를 위해 참조
+      final _ = viewModel.selectedRidingCardType.value;
+
+      if (viewModel.selectedImage.value != null) {
+        return _buildImagePreview(viewModel);
+      }
+      if (viewModel.selectedRidingCard.value != null) {
+        return _buildRidingCardPreview(viewModel);
+      }
+      if (viewModel.isEditMode.value &&
+          viewModel.editingLiveTalk.value?.imageUrl != null &&
+          viewModel.editingLiveTalk.value!.imageUrl!.isNotEmpty) {
+        return _buildExistingImagePreview(viewModel);
+      }
+
+      return const SizedBox.shrink();
+    });
+  }
 
   Widget _buildExistingImagePreview(LiveTalkViewModel viewModel) {
     return Container(
-      padding: const EdgeInsets.only(left: 60, right: 12, top: 12),
+      margin: const EdgeInsets.only(left: 16, right: 16),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.black.withOpacity(0.7),
+        borderRadius: BorderRadius.circular(16),
+      ),
       child: Stack(
         children: [
-          // 기존 이미지 미리보기
-          ClipRRect(
-            borderRadius: BorderRadius.circular(12),
-            child: Image.network(
-              viewModel.editingLiveTalk.value!.imageUrl!,
-              width: 80,
-              height: 80,
-              fit: BoxFit.cover,
+          Center(
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(8),
+              child: Image.network(
+                viewModel.editingLiveTalk.value!.imageUrl!,
+                width: 120,
+                height: 120,
+                fit: BoxFit.cover,
+              ),
             ),
           ),
-
-          // 삭제 버튼
           Positioned(
-            top: 4,
-            right: 4,
+            top: 0,
+            right: 0,
             child: GestureDetector(
               onTap: () => viewModel.removeExistingImage(),
-              child: Container(
-                width: 24,
-                height: 24,
-                decoration: BoxDecoration(
-                  color: Colors.black.withOpacity(0.6),
-                  shape: BoxShape.circle,
-                ),
-                child: const Icon(
-                  Icons.close,
-                  color: Colors.white,
-                  size: 16,
-                ),
+              child: const Icon(
+                Icons.close,
+                color: Colors.white,
+                size: 24,
               ),
             ),
           ),
@@ -330,42 +403,38 @@ class LiveTalkInputArea extends StatelessWidget {
 
   Widget _buildImagePreview(LiveTalkViewModel viewModel) {
     return Container(
-      padding: const EdgeInsets.only(left: 60, right: 12, top: 12),
+      margin: const EdgeInsets.only(left: 16, right: 16),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.black.withOpacity(0.7),
+        borderRadius: BorderRadius.circular(16),
+      ),
       child: Stack(
         children: [
-          // 이미지 미리보기
-          ClipRRect(
-            borderRadius: BorderRadius.circular(12),
-            child: Image.file(
-              File(viewModel.selectedImage.value!.path),
-              width: 80,
-              height: 80,
-              fit: BoxFit.cover,
+          Center(
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(8),
+              child: Image.file(
+                File(viewModel.selectedImage.value!.path),
+                width: 120,
+                height: 120,
+                fit: BoxFit.cover,
+              ),
             ),
           ),
-
-          // 삭제 버튼 (업로드 중에는 숨김)
           Obx(() {
             if (viewModel.isUploadingImage.value) {
               return const SizedBox.shrink();
             }
             return Positioned(
-              top: 4,
-              right: 4,
+              top: 0,
+              right: 0,
               child: GestureDetector(
                 onTap: () => viewModel.removeImage(),
-                child: Container(
-                  width: 24,
-                  height: 24,
-                  decoration: BoxDecoration(
-                    color: Colors.black.withOpacity(0.6),
-                    shape: BoxShape.circle,
-                  ),
-                  child: const Icon(
-                    Icons.close,
-                    color: Colors.white,
-                    size: 16,
-                  ),
+                child: const Icon(
+                  Icons.close,
+                  color: Colors.white,
+                  size: 24,
                 ),
               ),
             );
@@ -380,168 +449,151 @@ class LiveTalkInputArea extends StatelessWidget {
     final cardType = viewModel.selectedRidingCardType.value;
     final UserViewModel userViewModel = Get.find<UserViewModel>();
 
-    // 카드 크기: 너비 200, 높이는 원본 비율(960:1524)에 맞춤
-    // pixelRatio 4.0과 함께 800px 너비의 고화질 이미지 생성
     const double cardWidth = 200;
     const double cardHeight = cardWidth * (1524 / 960);
 
     return Container(
-      padding: const EdgeInsets.only(left: 12, right: 12, top: 12),
+      margin: const EdgeInsets.only(left: 16, right: 16),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.black.withOpacity(0.7),
+        borderRadius: BorderRadius.circular(16),
+      ),
       child: Stack(
         children: [
-          // 라이딩 카드 미리보기 (RepaintBoundary로 캡처 가능하게)
-          RepaintBoundary(
-            key: viewModel.ridingCardKey,
-            child: SizedBox(
-              width: cardWidth,
-              height: cardHeight,
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(16),
-                child: Stack(
-                  children: [
-                    // 배경 이미지 (카드 타입에 따라 다름)
-                    Positioned.fill(
-                      child: Image.asset(
-                        cardType == 0
-                            ? 'assets/imgs/imgs/img_summury_bg.png'
-                            : 'assets/imgs/imgs/img_summury_bg_2.png',
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                    // 상단: 프로필 이미지 + 닉네임 + 날짜
-                    Positioned(
-                      top: 17,
-                      left: 12,
-                      right: 12,
-                      child: Column(
-                        children: [
-                          // 프로필 이미지
-                          Container(
-                            width: 43,
-                            height: 43,
-                            decoration: const BoxDecoration(
-                              shape: BoxShape.circle,
-                            ),
-                            child: ClipOval(
-                              child: (userViewModel.user.profile_image_url_user?.isNotEmpty ?? false)
-                                  ? ExtendedImage.network(
-                                      userViewModel.user.profile_image_url_user!,
-                                      fit: BoxFit.cover,
-                                      cache: true,
-                                      loadStateChanged: (state) {
-                                        if (state.extendedImageLoadState == LoadState.failed) {
-                                          return Image.asset(
-                                            'assets/imgs/profile/img_profile_default_circle.png',
-                                            fit: BoxFit.cover,
-                                          );
-                                        }
-                                        return null;
-                                      },
-                                    )
-                                  : Image.asset(
-                                      'assets/imgs/profile/img_profile_default_circle.png',
-                                      fit: BoxFit.cover,
-                                    ),
-                            ),
-                          ),
-                          const SizedBox(height: 4),
-                          // 닉네임
-                          Text(
-                            userViewModel.user.display_name ?? '',
-                            style: SDSTextStyle.bold.copyWith(
-                              fontSize: 9,
-                              color: Colors.white,
-                            ),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          // 날짜 + 요일
-                          Text(
-                            '${card.date ?? ''} ${card.weekday ?? ''}',
-                            style: SDSTextStyle.regular.copyWith(
-                              fontSize: 6,
-                              color: Colors.white,
-                            ),
-                          ),
-                          // 라이더 타이틀 (카드 타입에 따라 색상 다름)
-                          if (card.riderTitle != null && card.riderTitle!.isNotEmpty) ...[
-                            const SizedBox(height: 3),
-                            Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                              decoration: BoxDecoration(
-                                color: cardType == 0
-                                    ? const Color(0xFF1B3A5C)
-                                    : const Color(0xFFE2EDF8),
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              child: Text(
-                                card.riderTitle!,
-                                style: SDSTextStyle.regular.copyWith(
-                                  fontSize: 6,
-                                  color: cardType == 0
-                                      ? Colors.white
-                                      : const Color(0xFF000000),
-                                ),
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ),
-                          ],
-                        ],
-                      ),
-                    ),
-                    // 중앙: 라이딩 정보 (카드 타입에 따라 다른 내용)
-                    Positioned(
-                      top: 103,
-                      bottom: 29,
-                      left: 6,
-                      right: 6,
-                      child: Center(
-                        child: cardType == 0
-                            ? _buildPreviewCardType0Content(card)
-                            : _buildPreviewCardType1Content(card),
-                      ),
-                    ),
-                    // 하단: 스노우라이브 로고
-                    Positioned(
-                      bottom: 9,
-                      left: 0,
-                      right: 0,
-                      child: Center(
+          Center(
+            child: RepaintBoundary(
+              key: viewModel.ridingCardKey,
+              child: SizedBox(
+                width: cardWidth,
+                height: cardHeight,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(16),
+                  child: Stack(
+                    children: [
+                      Positioned.fill(
                         child: Image.asset(
-                          'assets/imgs/logos/snowliveLogo_main_white.png',
-                          height: 6,
+                          cardType == 0
+                              ? 'assets/imgs/imgs/img_summury_bg.png'
+                              : 'assets/imgs/imgs/img_summury_bg_2.png',
+                          fit: BoxFit.cover,
                         ),
                       ),
-                    ),
-                  ],
+                      Positioned(
+                        top: 17,
+                        left: 12,
+                        right: 12,
+                        child: Column(
+                          children: [
+                            Container(
+                              width: 43,
+                              height: 43,
+                              decoration: const BoxDecoration(shape: BoxShape.circle),
+                              child: ClipOval(
+                                child: (userViewModel.user.profile_image_url_user?.isNotEmpty ??
+                                    false)
+                                    ? ExtendedImage.network(
+                                  userViewModel.user.profile_image_url_user!,
+                                  fit: BoxFit.cover,
+                                  cache: true,
+                                  loadStateChanged: (state) {
+                                    if (state.extendedImageLoadState == LoadState.failed) {
+                                      return Image.asset(
+                                        'assets/imgs/profile/img_profile_default_circle.png',
+                                        fit: BoxFit.cover,
+                                      );
+                                    }
+                                    return null;
+                                  },
+                                )
+                                    : Image.asset(
+                                  'assets/imgs/profile/img_profile_default_circle.png',
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              userViewModel.user.display_name ?? '',
+                              style: SDSTextStyle.bold.copyWith(
+                                fontSize: 9,
+                                color: Colors.white,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            Text(
+                              '${card.date ?? ''} ${card.weekday ?? ''}',
+                              style: SDSTextStyle.regular.copyWith(
+                                fontSize: 6,
+                                color: Colors.white,
+                              ),
+                            ),
+                            if (card.riderTitle != null && card.riderTitle!.isNotEmpty) ...[
+                              const SizedBox(height: 3),
+                              Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                decoration: BoxDecoration(
+                                  color: cardType == 0
+                                      ? const Color(0xFF1B3A5C)
+                                      : const Color(0xFFE2EDF8),
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                child: Text(
+                                  card.riderTitle!,
+                                  style: SDSTextStyle.regular.copyWith(
+                                    fontSize: 6,
+                                    color: cardType == 0 ? Colors.white : const Color(0xFF000000),
+                                  ),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                            ],
+                          ],
+                        ),
+                      ),
+                      Positioned(
+                        top: 103,
+                        bottom: 29,
+                        left: 6,
+                        right: 6,
+                        child: Center(
+                          child: cardType == 0
+                              ? _buildPreviewCardType0Content(card)
+                              : _buildPreviewCardType1Content(card),
+                        ),
+                      ),
+                      Positioned(
+                        bottom: 9,
+                        left: 0,
+                        right: 0,
+                        child: Center(
+                          child: Image.asset(
+                            'assets/imgs/logos/snowliveLogo_main_white.png',
+                            height: 6,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
           ),
-
-          // 삭제 버튼 (업로드 중에는 숨김)
           Obx(() {
             if (viewModel.isUploadingImage.value) {
               return const SizedBox.shrink();
             }
             return Positioned(
-              top: 4,
-              left: cardWidth - 20,
+              top: 0,
+              right: 0,
               child: GestureDetector(
                 onTap: () => viewModel.removeRidingCard(),
-                child: Container(
-                  width: 24,
-                  height: 24,
-                  decoration: BoxDecoration(
-                    color: Colors.black.withOpacity(0.6),
-                    shape: BoxShape.circle,
-                  ),
-                  child: const Icon(
-                    Icons.close,
-                    color: Colors.white,
-                    size: 16,
-                  ),
+                child: const Icon(
+                  Icons.close,
+                  color: Colors.white,
+                  size: 24,
                 ),
               ),
             );
@@ -551,12 +603,10 @@ class LiveTalkInputArea extends StatelessWidget {
     );
   }
 
-  // 미리보기용 타입 0 컨텐츠 (최다 슬로프 & 최고 속도)
   Widget _buildPreviewCardType0Content(dynamic card) {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        // 오늘 총 라이딩 숫자
         Text(
           '${card.totalSlopeCount ?? 0}',
           style: SDSTextStyle.extraBold.copyWith(
@@ -574,18 +624,14 @@ class LiveTalkInputArea extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 9),
-        // 최다 슬로프 & 최고 속도 (2열)
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // 최다 슬로프
             Expanded(
               child: Column(
                 children: [
                   Text(
-                    card.mostRiddenSlope?.isNotEmpty == true
-                        ? card.mostRiddenSlope!
-                        : '-',
+                    card.mostRiddenSlope?.isNotEmpty == true ? card.mostRiddenSlope! : '-',
                     style: SDSTextStyle.extraBold.copyWith(
                       fontSize: 11,
                       color: Colors.white,
@@ -613,7 +659,6 @@ class LiveTalkInputArea extends StatelessWidget {
                 ],
               ),
             ),
-            // 최고 속도
             Expanded(
               child: Column(
                 children: [
@@ -655,7 +700,6 @@ class LiveTalkInputArea extends StatelessWidget {
     );
   }
 
-  // 미리보기용 타입 1 컨텐츠 (슬로프 리스트)
   Widget _buildPreviewCardType1Content(dynamic card) {
     final slopeEntries = card.slopeCountsByName?.entries.toList() ?? [];
     final firstSlope = slopeEntries.isNotEmpty ? slopeEntries.first : null;
@@ -666,7 +710,6 @@ class LiveTalkInputArea extends StatelessWidget {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        // 오늘 총 라이딩 숫자
         Text(
           '${card.totalSlopeCount ?? 0}',
           style: SDSTextStyle.extraBold.copyWith(
@@ -684,7 +727,6 @@ class LiveTalkInputArea extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 9),
-        // 첫 번째 슬로프 이름
         Text(
           firstSlope?.key ?? '-',
           style: SDSTextStyle.extraBold.copyWith(
@@ -696,7 +738,6 @@ class LiveTalkInputArea extends StatelessWidget {
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
         ),
-        // 나머지 슬로프들
         if (displaySlopes.isNotEmpty) ...[
           const SizedBox(height: 3),
           Wrap(
@@ -731,7 +772,6 @@ class LiveTalkInputArea extends StatelessWidget {
             ],
           ),
         ],
-        // 라이딩 슬로프 라벨
         const SizedBox(height: 3),
         Text(
           '라이딩 슬로프',

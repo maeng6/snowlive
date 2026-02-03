@@ -77,10 +77,18 @@ class _LiveTalkCommentViewState extends State<LiveTalkCommentView> {
           // 댓글 목록
           Expanded(
             child: Obx(() {
-              if (_liveTalkViewModel.isLoadingComments.value) {
-                return const Center(
-                  child: CircularProgressIndicator(
-                    color: SDSColor.snowliveBlue,
+              // 초기 로딩 시에만 로딩 인디케이터 표시 (댓글 목록이 비어있을 때)
+              if (_liveTalkViewModel.isLoadingComments.value &&
+                  _liveTalkViewModel.commentList.isEmpty) {
+                return Center(
+                  child: SizedBox(
+                    width: 24,
+                    height: 24,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 4,
+                      backgroundColor: SDSColor.gray100,
+                      color: SDSColor.gray300.withOpacity(0.6),
+                    ),
                   ),
                 );
               }
@@ -299,65 +307,75 @@ class _LiveTalkCommentViewState extends State<LiveTalkCommentView> {
                       ),
                     ),
                     const SizedBox(height: 8),
-                    // 좋아요 + 답글 달기
-                    Row(
-                      children: [
-                        GestureDetector(
-                          onTap: () => _liveTalkViewModel.toggleCommentLikeByIndex(index),
-                          child: Row(
-                            children: [
-                              Icon(
-                                (comment.isLiked ?? false)
-                                    ? Icons.favorite
-                                    : Icons.favorite_border,
-                                size: 16,
-                                color: (comment.isLiked ?? false)
-                                    ? SDSColor.red
-                                    : SDSColor.gray500,
-                              ),
-                              const SizedBox(width: 4),
-                              Text(
-                                '${comment.likeCount ?? 0}',
-                                style: SDSTextStyle.regular.copyWith(
-                                  fontSize: 12,
-                                  color: SDSColor.gray500,
-                                ),
-                              ),
-                            ],
-                          ),
+                    // 게시 중 상태 또는 좋아요 + 답글 달기
+                    if (comment.isPending)
+                      Text(
+                        '게시중...',
+                        style: SDSTextStyle.regular.copyWith(
+                          fontSize: 12,
+                          color: SDSColor.gray400,
                         ),
-                        const SizedBox(width: 16),
-                        GestureDetector(
-                          onTap: () {
-                            _liveTalkViewModel.setReplyMode(comment);
-                            _commentFocusNode.requestFocus();
-                          },
-                          child: Text(
-                            '답글 달기',
-                            style: SDSTextStyle.regular.copyWith(
-                              fontSize: 12,
-                              color: SDSColor.gray500,
+                      )
+                    else
+                      Row(
+                        children: [
+                          GestureDetector(
+                            onTap: () => _liveTalkViewModel.toggleCommentLikeByIndex(index),
+                            child: Row(
+                              children: [
+                                Icon(
+                                  (comment.isLiked ?? false)
+                                      ? Icons.favorite
+                                      : Icons.favorite_border,
+                                  size: 16,
+                                  color: (comment.isLiked ?? false)
+                                      ? SDSColor.red
+                                      : SDSColor.gray500,
+                                ),
+                                const SizedBox(width: 4),
+                                Text(
+                                  '${comment.likeCount ?? 0}',
+                                  style: SDSTextStyle.regular.copyWith(
+                                    fontSize: 12,
+                                    color: SDSColor.gray500,
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
-                        ),
-                      ],
-                    ),
+                          const SizedBox(width: 16),
+                          GestureDetector(
+                            onTap: () {
+                              _liveTalkViewModel.setReplyMode(comment);
+                              _commentFocusNode.requestFocus();
+                            },
+                            child: Text(
+                              '답글 달기',
+                              style: SDSTextStyle.regular.copyWith(
+                                fontSize: 12,
+                                color: SDSColor.gray500,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                   ],
                 ),
               ),
 
-              // 더보기 버튼
-              GestureDetector(
-                onTap: () => _showCommentOptions(comment, isMyComment, index),
-                child: const Padding(
-                  padding: EdgeInsets.all(4),
-                  child: Icon(
-                    Icons.more_horiz,
-                    size: 18,
-                    color: SDSColor.gray400,
+              // 더보기 버튼 (게시 중에는 숨김)
+              if (!comment.isPending)
+                GestureDetector(
+                  onTap: () => _showCommentOptions(comment, isMyComment, index),
+                  child: const Padding(
+                    padding: EdgeInsets.all(4),
+                    child: Icon(
+                      Icons.more_horiz,
+                      size: 18,
+                      color: SDSColor.gray400,
+                    ),
                   ),
                 ),
-              ),
             ],
           ),
         ),
@@ -446,48 +464,58 @@ class _LiveTalkCommentViewState extends State<LiveTalkCommentView> {
                   ),
                 ),
                 const SizedBox(height: 6),
-                // 좋아요 버튼
-                GestureDetector(
-                  onTap: () => _liveTalkViewModel.toggleReplyLikeByIndex(commentIndex, replyIndex),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        (reply.isLiked ?? false)
-                            ? Icons.favorite
-                            : Icons.favorite_border,
-                        size: 14,
-                        color: (reply.isLiked ?? false)
-                            ? SDSColor.red
-                            : SDSColor.gray500,
-                      ),
-                      const SizedBox(width: 4),
-                      Text(
-                        '${reply.likeCount ?? 0}',
-                        style: SDSTextStyle.regular.copyWith(
-                          fontSize: 11,
-                          color: SDSColor.gray500,
+                // 게시 중 상태 또는 좋아요 버튼
+                if (reply.isPending)
+                  Text(
+                    '게시중...',
+                    style: SDSTextStyle.regular.copyWith(
+                      fontSize: 11,
+                      color: SDSColor.gray400,
+                    ),
+                  )
+                else
+                  GestureDetector(
+                    onTap: () => _liveTalkViewModel.toggleReplyLikeByIndex(commentIndex, replyIndex),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          (reply.isLiked ?? false)
+                              ? Icons.favorite
+                              : Icons.favorite_border,
+                          size: 14,
+                          color: (reply.isLiked ?? false)
+                              ? SDSColor.red
+                              : SDSColor.gray500,
                         ),
-                      ),
-                    ],
+                        const SizedBox(width: 4),
+                        Text(
+                          '${reply.likeCount ?? 0}',
+                          style: SDSTextStyle.regular.copyWith(
+                            fontSize: 11,
+                            color: SDSColor.gray500,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
               ],
             ),
           ),
 
-          // 더보기 버튼
-          GestureDetector(
-            onTap: () => _showReplyOptions(reply, isMyReply, commentIndex, replyIndex),
-            child: const Padding(
-              padding: EdgeInsets.all(4),
-              child: Icon(
-                Icons.more_horiz,
-                size: 16,
-                color: SDSColor.gray400,
+          // 더보기 버튼 (게시 중에는 숨김)
+          if (!reply.isPending)
+            GestureDetector(
+              onTap: () => _showReplyOptions(reply, isMyReply, commentIndex, replyIndex),
+              child: const Padding(
+                padding: EdgeInsets.all(4),
+                child: Icon(
+                  Icons.more_horiz,
+                  size: 16,
+                  color: SDSColor.gray400,
+                ),
               ),
             ),
-          ),
         ],
       ),
     );
@@ -505,109 +533,112 @@ class _LiveTalkCommentViewState extends State<LiveTalkCommentView> {
         top: false,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          child: Row(
-            children: [
-              // 텍스트 입력 필드
-              Expanded(
-                child: Container(
-                  constraints: const BoxConstraints(
-                    minHeight: 40,
-                    maxHeight: 100,
+          child: Obx(() {
+            final isEnabled = _liveTalkViewModel.isCommentButtonEnabled.value;
+            final isEditMode = _liveTalkViewModel.isEditCommentMode.value ||
+                _liveTalkViewModel.isEditReplyMode.value;
+
+            return ConstrainedBox(
+              constraints: const BoxConstraints(
+                minHeight: 40,
+                maxHeight: 100,
+              ),
+              child: TextFormField(
+                controller: _liveTalkViewModel.commentController,
+                focusNode: _commentFocusNode,
+                cursorColor: SDSColor.snowliveBlue,
+                cursorHeight: 16,
+                cursorWidth: 2,
+                maxLines: null,
+                textInputAction: TextInputAction.newline,
+                style: SDSTextStyle.regular.copyWith(
+                  fontSize: 14,
+                  color: SDSColor.gray900,
+                ),
+                decoration: InputDecoration(
+                  hintText: _liveTalkViewModel.isEditCommentMode.value
+                      ? '댓글을 수정하세요...'
+                      : _liveTalkViewModel.isEditReplyMode.value
+                          ? '답글을 수정하세요...'
+                          : _liveTalkViewModel.isReplyMode.value
+                              ? '답글을 입력하세요...'
+                              : '댓글을 입력하세요...',
+                  hintStyle: SDSTextStyle.regular.copyWith(
+                    fontSize: 14,
+                    color: SDSColor.gray400,
                   ),
-                  decoration: BoxDecoration(
-                    color: SDSColor.gray50,
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(color: SDSColor.gray200),
+                  contentPadding: const EdgeInsets.only(
+                    top: 10,
+                    bottom: 10,
+                    left: 12,
+                    right: 50,
                   ),
-                  child: TextField(
-                    controller: _liveTalkViewModel.commentController,
-                    focusNode: _commentFocusNode,
-                    maxLines: null,
-                    textInputAction: TextInputAction.newline,
-                    style: SDSTextStyle.regular.copyWith(
-                      fontSize: 14,
-                      color: SDSColor.gray900,
+                  fillColor: SDSColor.gray50,
+                  filled: true,
+                  border: OutlineInputBorder(
+                    borderSide: const BorderSide(color: SDSColor.gray50),
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: const BorderSide(
+                      color: SDSColor.snowliveBlue,
+                      strokeAlign: BorderSide.strokeAlignInside,
+                      width: 1.5,
                     ),
-                    decoration: InputDecoration(
-                      hintText: _liveTalkViewModel.isEditCommentMode.value
-                          ? '댓글을 수정하세요...'
-                          : _liveTalkViewModel.isEditReplyMode.value
-                              ? '답글을 수정하세요...'
-                              : _liveTalkViewModel.isReplyMode.value
-                                  ? '답글을 입력하세요...'
-                                  : '댓글을 입력하세요...',
-                      hintStyle: SDSTextStyle.regular.copyWith(
-                        fontSize: 14,
-                        color: SDSColor.gray400,
-                      ),
-                      contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 10,
-                      ),
-                      border: InputBorder.none,
-                      isDense: true,
-                    ),
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: const BorderSide(color: Colors.transparent),
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                  isDense: true,
+                  suffixIcon: IconButton(
+                    icon: isEditMode
+                        ? Icon(
+                            Icons.check,
+                            color: isEnabled ? SDSColor.snowliveBlue : SDSColor.gray300,
+                            size: 24,
+                          )
+                        : Image.asset(
+                            isEnabled
+                                ? 'assets/imgs/icons/icon_livetalk_send.png'
+                                : 'assets/imgs/icons/icon_livetalk_send_g.png',
+                            width: 24,
+                            height: 24,
+                          ),
+                    onPressed: isEnabled
+                        ? () async {
+                            FocusScope.of(context).unfocus();
+                            if (_liveTalkViewModel.isEditCommentMode.value) {
+                              // 댓글 수정
+                              final success = await _liveTalkViewModel.updateCommentFromController();
+                              if (success) {
+                                Get.snackbar('수정 완료', '댓글이 수정되었습니다.',
+                                    snackPosition: SnackPosition.TOP,
+                                    backgroundColor: SDSColor.snowliveWhite);
+                              }
+                            } else if (_liveTalkViewModel.isEditReplyMode.value) {
+                              // 답글 수정
+                              final success = await _liveTalkViewModel.updateReplyFromController();
+                              if (success) {
+                                Get.snackbar('수정 완료', '답글이 수정되었습니다.',
+                                    snackPosition: SnackPosition.TOP,
+                                    backgroundColor: SDSColor.snowliveWhite);
+                              }
+                            } else if (_liveTalkViewModel.isReplyMode.value) {
+                              // 답글 작성
+                              await _liveTalkViewModel.createReplyFromController();
+                            } else {
+                              // 댓글 작성
+                              await _liveTalkViewModel.createCommentFromController();
+                            }
+                          }
+                        : null,
                   ),
                 ),
               ),
-
-              const SizedBox(width: 8),
-
-              // 전송/수정 버튼
-              Obx(() {
-                final isEnabled = _liveTalkViewModel.isCommentButtonEnabled.value;
-                final isEditMode = _liveTalkViewModel.isEditCommentMode.value ||
-                    _liveTalkViewModel.isEditReplyMode.value;
-
-                return GestureDetector(
-                  onTap: isEnabled
-                      ? () async {
-                          FocusScope.of(context).unfocus();
-                          if (_liveTalkViewModel.isEditCommentMode.value) {
-                            // 댓글 수정
-                            final success = await _liveTalkViewModel.updateCommentFromController();
-                            if (success) {
-                              Get.snackbar('수정 완료', '댓글이 수정되었습니다.',
-                                  snackPosition: SnackPosition.TOP,
-                                  backgroundColor: SDSColor.snowliveWhite);
-                            }
-                          } else if (_liveTalkViewModel.isEditReplyMode.value) {
-                            // 답글 수정
-                            final success = await _liveTalkViewModel.updateReplyFromController();
-                            if (success) {
-                              Get.snackbar('수정 완료', '답글이 수정되었습니다.',
-                                  snackPosition: SnackPosition.TOP,
-                                  backgroundColor: SDSColor.snowliveWhite);
-                            }
-                          } else if (_liveTalkViewModel.isReplyMode.value) {
-                            // 답글 작성
-                            await _liveTalkViewModel.createReplyFromController();
-                          } else {
-                            // 댓글 작성
-                            await _liveTalkViewModel.createCommentFromController();
-                          }
-                        }
-                      : null,
-                  child: Container(
-                    width: 36,
-                    height: 36,
-                    decoration: BoxDecoration(
-                      color:
-                          isEnabled ? SDSColor.snowliveBlue : SDSColor.gray200,
-                      borderRadius: BorderRadius.circular(18),
-                    ),
-                    child: Icon(
-                      isEditMode ? Icons.check : Icons.send_rounded,
-                      color: isEnabled
-                          ? SDSColor.snowliveWhite
-                          : SDSColor.gray400,
-                      size: 18,
-                    ),
-                  ),
-                );
-              }),
-            ],
-          ),
+            );
+          }),
         ),
       ),
     );

@@ -39,6 +39,7 @@ class LiveTalkReply {
   int? report;
   String? uploadTime;
   String? updateTime;
+  bool isPending;  // 게시 중 상태 (낙관적 UI용)
 
   LiveTalkReply({
     this.replyId,
@@ -51,9 +52,11 @@ class LiveTalkReply {
     this.report,
     this.uploadTime,
     this.updateTime,
+    this.isPending = false,
   });
 
-  LiveTalkReply.fromJson(Map<String, dynamic> json) {
+  LiveTalkReply.fromJson(Map<String, dynamic> json)
+      : isPending = false {
     replyId = json['reply_id'];
     commentId = json['comment_id'];
     userId = json['user_id'];
@@ -98,6 +101,7 @@ class LiveTalkComment {
   int? report;
   String? uploadTime;
   String? updateTime;
+  bool isPending;  // 게시 중 상태 (낙관적 UI용)
 
   LiveTalkComment({
     this.commentId,
@@ -112,9 +116,11 @@ class LiveTalkComment {
     this.report,
     this.uploadTime,
     this.updateTime,
+    this.isPending = false,
   });
 
-  LiveTalkComment.fromJson(Map<String, dynamic> json) {
+  LiveTalkComment.fromJson(Map<String, dynamic> json)
+      : isPending = false {
     commentId = json['comment_id'];
     livetalkId = json['livetalk_id'];
     userId = json['user_id'];

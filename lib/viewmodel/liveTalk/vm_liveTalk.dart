@@ -370,9 +370,16 @@ class LiveTalkViewModel extends GetxController {
     isEditMode.value = true;
     editingLiveTalk.value = liveTalk;
     textController.text = liveTalk.description ?? '';
-    // 기존 이미지는 URL로 표시 (XFile이 아니므로 별도 처리 필요)
+
+    // ✅ 이전 선택 상태 정리 (추천)
+    selectedImage.value = null;
+    selectedRidingCard.value = null;
+    isRidingCardMode.value = false;
+    selectedRidingCardType.value = 0;
+
     _updateButtonState();
   }
+
 
   /// 수정 모드 취소
   void cancelEditMode() {
@@ -387,32 +394,51 @@ class LiveTalkViewModel extends GetxController {
     if (isPosting.value) return false;
 
     final text = textController.text.trim();
+
+    final hasNewRidingCard = selectedRidingCard.value != null; // ✅ 추가
     final hasNewImage = selectedImage.value != null;
     final hasExistingImage = editingLiveTalk.value!.imageUrl != null &&
-                              editingLiveTalk.value!.imageUrl!.isNotEmpty;
+        editingLiveTalk.value!.imageUrl!.isNotEmpty;
 
-    // 텍스트도 없고 이미지도 없으면 실패
-    if (text.isEmpty && !hasNewImage && !hasExistingImage) return false;
+    // 텍스트도 없고 이미지도 없고 카드도 없으면 실패
+    if (text.isEmpty && !hasNewRidingCard && !hasNewImage && !hasExistingImage) return false;
 
     isPosting.value = true;
 
     try {
       String? imageUrl;
 
-      // 새 이미지가 있으면 업로드
-      if (hasNewImage) {
+      // ✅ 1) 라이딩 카드가 있으면 캡처 후 업로드 (수정에서도 필요)
+      if (hasNewRidingCard) {
+        // 프리뷰 렌더 완료 기다리기 (캡처 안정화)
+        await WidgetsBinding.instance.endOfFrame;
+
+        final cardImageFile = await captureRidingCardAsImage();
+        if (cardImageFile == null) {
+          Get.snackbar('오류', '라이딩 카드 캡처에 실패했습니다.');
+          return false;
+        }
+
+        imageUrl = await _uploadImageFile(cardImageFile);
+        if (imageUrl == null) {
+          Get.snackbar('오류', '라이딩 카드 업로드에 실패했습니다.');
+          return false;
+        }
+      }
+      // ✅ 2) 새 이미지가 있으면 업로드
+      else if (hasNewImage) {
         imageUrl = await _uploadImage(selectedImage.value!);
         if (imageUrl == null) {
           Get.snackbar('오류', '이미지 업로드에 실패했습니다.');
           return false;
         }
-      } else if (hasExistingImage) {
-        // 기존 이미지 유지
+      }
+      // ✅ 3) 기존 이미지 유지
+      else if (hasExistingImage) {
         imageUrl = editingLiveTalk.value!.imageUrl;
       }
-      // 그 외의 경우 imageUrl은 null (이미지 삭제)
+      // ✅ 4) 그 외: imageUrl = null → updatePost에서 ''로 변환되어 “삭제” 처리됨
 
-      // 게시물 수정
       final success = await updatePost(
         livetalkId: editingLiveTalk.value!.livetalkId!,
         description: text,
@@ -420,7 +446,8 @@ class LiveTalkViewModel extends GetxController {
       );
 
       if (success) {
-        cancelEditMode();
+        // ✅ 상태 정리 (수정 모드 종료 + 입력/선택 초기화)
+        cancelEditMode(); // 내부에서 resetInput 호출
         await fetchLiveTalkList(refresh: true);
         return true;
       } else {
@@ -435,6 +462,7 @@ class LiveTalkViewModel extends GetxController {
       isPosting.value = false;
     }
   }
+
 
   void removeImage() {
     selectedImage.value = null;
@@ -602,10 +630,12 @@ class LiveTalkViewModel extends GetxController {
   /// 라이딩 카드를 이미지로 캡처 (고화질)
   Future<File?> captureRidingCardAsImage() async {
     try {
+      // ✅ 렌더 프레임 보장 (선택이지만 강추)
+      await WidgetsBinding.instance.endOfFrame;
+
       final boundary = ridingCardKey.currentContext?.findRenderObject() as RenderRepaintBoundary?;
       if (boundary == null) return null;
 
-      // pixelRatio를 높여서 고화질 이미지 생성 (4.0 = 미리보기 대비 4배 해상도)
       final image = await boundary.toImage(pixelRatio: 4.0);
       final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
       if (byteData == null) return null;
@@ -622,6 +652,7 @@ class LiveTalkViewModel extends GetxController {
       return null;
     }
   }
+
 
   /// 좋아요 토글 (인덱스 기반 - 피드 목록용)
   Future<void> toggleLikeByIndex(int index) async {
@@ -843,10 +874,13 @@ class LiveTalkViewModel extends GetxController {
   // ============================================
 
   /// 댓글 목록 조회 (LiveTalk 객체 기반 - 뷰에서 사용)
-  Future<void> fetchCommentsForLiveTalk(LiveTalk liveTalk) async {
-    isLoadingComments.value = true;
+  /// [silent] true이면 로딩 인디케이터 없이 조용히 새로고침 (낙관적 UI 후 사용)
+  Future<void> fetchCommentsForLiveTalk(LiveTalk liveTalk, {bool silent = false}) async {
+    if (!silent) {
+      isLoadingComments.value = true;
+      commentList.clear();
+    }
     currentLiveTalk.value = liveTalk;
-    commentList.clear();
 
     try {
       final response = await _api.fetchCommentList({
@@ -882,7 +916,9 @@ class LiveTalkViewModel extends GetxController {
     } catch (e) {
       print('❌ 댓글 목록 조회 에러: $e');
     } finally {
-      isLoadingComments.value = false;
+      if (!silent) {
+        isLoadingComments.value = false;
+      }
     }
   }
 
@@ -1044,6 +1080,28 @@ class LiveTalkViewModel extends GetxController {
     final text = commentController.text.trim();
     if (text.isEmpty) return false;
 
+    // 낙관적 UI: 임시 댓글을 먼저 추가
+    final pendingComment = LiveTalkComment(
+      commentId: -DateTime.now().millisecondsSinceEpoch,  // 임시 ID
+      livetalkId: currentLiveTalk.value!.livetalkId,
+      userId: _userViewModel.user.user_id,
+      userInfo: LiveTalkUserInfo(
+        userId: _userViewModel.user.user_id,
+        displayName: _userViewModel.user.display_name,
+        profileImageUrl: _userViewModel.user.profile_image_url_user,
+      ),
+      content: text,
+      likeCount: 0,
+      isLiked: false,
+      replyCount: 0,
+      replies: [],
+      isPending: true,  // 게시 중 상태
+    );
+
+    commentList.add(pendingComment);
+    commentController.clear();
+    isCommentButtonEnabled.value = false;
+
     try {
       final response = await _api.createComment({
         'livetalk_id': currentLiveTalk.value!.livetalkId,
@@ -1052,11 +1110,8 @@ class LiveTalkViewModel extends GetxController {
       });
 
       if (response.success) {
-        commentController.clear();
-        isCommentButtonEnabled.value = false;
-
-        // 댓글 목록 새로고침
-        await fetchCommentsForLiveTalk(currentLiveTalk.value!);
+        // 댓글 목록 조용히 새로고침 (임시 댓글이 실제 댓글로 교체됨)
+        await fetchCommentsForLiveTalk(currentLiveTalk.value!, silent: true);
 
         // 피드 목록의 댓글 수 업데이트
         final index = liveTalkList.indexWhere((item) => item.livetalkId == currentLiveTalk.value!.livetalkId);
@@ -1066,9 +1121,14 @@ class LiveTalkViewModel extends GetxController {
         }
 
         return true;
+      } else {
+        // 실패 시 임시 댓글 제거
+        commentList.removeWhere((c) => c.commentId == pendingComment.commentId);
       }
       return false;
     } catch (e) {
+      // 에러 시 임시 댓글 제거
+      commentList.removeWhere((c) => c.commentId == pendingComment.commentId);
       print('❌ 댓글 작성 에러: $e');
       return false;
     }
@@ -1081,27 +1141,64 @@ class LiveTalkViewModel extends GetxController {
     final text = commentController.text.trim();
     if (text.isEmpty) return false;
 
+    final targetCommentId = replyTargetComment.value!.commentId;
+
+    // 낙관적 UI: 임시 답글을 먼저 추가
+    final pendingReply = LiveTalkReply(
+      replyId: -DateTime.now().millisecondsSinceEpoch,  // 임시 ID
+      commentId: targetCommentId,
+      userId: _userViewModel.user.user_id,
+      userInfo: LiveTalkUserInfo(
+        userId: _userViewModel.user.user_id,
+        displayName: _userViewModel.user.display_name,
+        profileImageUrl: _userViewModel.user.profile_image_url_user,
+      ),
+      content: text,
+      likeCount: 0,
+      isLiked: false,
+      isPending: true,  // 게시 중 상태
+    );
+
+    // 해당 댓글에 임시 답글 추가
+    final commentIndex = commentList.indexWhere((c) => c.commentId == targetCommentId);
+    if (commentIndex != -1) {
+      commentList[commentIndex].replies ??= [];
+      commentList[commentIndex].replies!.add(pendingReply);
+      commentList.refresh();
+    }
+
+    commentController.clear();
+    isCommentButtonEnabled.value = false;
+    cancelReplyMode();
+
     try {
       final response = await _api.createReply({
-        'comment_id': replyTargetComment.value!.commentId,
+        'comment_id': targetCommentId,
         'user_id': _userViewModel.user.user_id,
         'content': text,
       });
 
       if (response.success) {
-        commentController.clear();
-        isCommentButtonEnabled.value = false;
-        cancelReplyMode();
-
-        // 댓글 목록 새로고침
+        // 댓글 목록 조용히 새로고침 (임시 답글이 실제 답글로 교체됨)
         if (currentLiveTalk.value != null) {
-          await fetchCommentsForLiveTalk(currentLiveTalk.value!);
+          await fetchCommentsForLiveTalk(currentLiveTalk.value!, silent: true);
         }
 
         return true;
+      } else {
+        // 실패 시 임시 답글 제거
+        if (commentIndex != -1) {
+          commentList[commentIndex].replies?.removeWhere((r) => r.replyId == pendingReply.replyId);
+          commentList.refresh();
+        }
       }
       return false;
     } catch (e) {
+      // 에러 시 임시 답글 제거
+      if (commentIndex != -1) {
+        commentList[commentIndex].replies?.removeWhere((r) => r.replyId == pendingReply.replyId);
+        commentList.refresh();
+      }
       print('❌ 답글 작성 에러: $e');
       return false;
     }

@@ -115,6 +115,15 @@ class _LiveTalkMainViewState extends State<LiveTalkMainView> {
               ),
             );
           }),
+          Positioned(
+            left: 0,
+            right: 0,
+            bottom: 100, // 인풋 에어리어 위로 올릴 만큼만
+            child: Align(
+              alignment: Alignment.bottomCenter,
+              child: LiveTalkPreviewLayer(), // ✅ 여기서 절대 fill 금지
+            ),
+          ),
 
           // 하단 입력 영역
           const Positioned(
