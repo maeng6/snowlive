@@ -203,6 +203,7 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
   Timer? _logFlushTimer;
   static const int _logFlushIntervalSeconds = 60; // 1분마다 일괄 전송
   static const int _maxBufferSize = 500; // 최대 버퍼 크기
+  String? _lastLogRequestType; // 직전 로그의 request_type (속도 기록 조건용)
   String get rankingGuideUrl_ios => _rankingGuideUrl_ios.value;
   String get rankingGuideUrl_aos => _rankingGuideUrl_aos.value;
   String get rankingComingSoonUrl => _rankingComingSoonUrl.value;
@@ -532,13 +533,16 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
         ? 'POINT($lon $lat)'
         : null;
 
+    // 현재 로그가 fg_position_stream이면서, 직전 로그도 fg_position_stream일 때만 속도 기록
+    final shouldRecordSpeed = requestType == 'fg_position_stream' && _lastLogRequestType == 'fg_position_stream';
+
     final logEntry = {
       'user_id': userId,
       if (coordinates != null) 'coordinates': coordinates,
       if (error != null) 'error': error,
       'request_type': requestType,
       'created_at': DateTime.now().toUtc().toIso8601String(),
-      if (speed != null) 'speed': speed,
+      if (speed != null && shouldRecordSpeed) 'speed': speed,
       if (distance != null) 'distance': distance,
       if (altitude != null) 'altitude': altitude,
       'location_type': locationType ?? 'unknown',
@@ -546,6 +550,9 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
 
     _logBuffer.add(logEntry);
     print('📝 로그 버퍼에 추가: $requestType (버퍼 크기: ${_logBuffer.length})');
+
+    // 직전 로그 타입 저장
+    _lastLogRequestType = requestType;
 
     // 버퍼가 최대 크기에 도달하면 즉시 전송
     if (_logBuffer.length >= _maxBufferSize) {
@@ -2297,7 +2304,7 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
   /// 반환값: true = 유효한 위치, false = 무시해야 할 위치
   bool _validatePosition(Position newPosition, int userId) {
     // 1️⃣ 정확도 필터링 (GPS 신호 약하면 무시)
-    if (newPosition.accuracy > 10) {
+    if (newPosition.accuracy > 8) {
       print('⚠️ [GPS] 정확도 낮음 무시: ${newPosition.accuracy.toStringAsFixed(0)}m');
       _sendLiveLog(
         userId: userId,
@@ -2499,6 +2506,12 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
   /// Geofence 전용 모드 재시작 (liveOff 후 호출)
   Future<void> _restartGeofenceMonitoring() async {
     try {
+      // 🔥 이미 라이브온 상태면 스킵 (자동 라이브온과 충돌 방지)
+      if (isPositionStreamActive || _liveActivityId != null) {
+        print('ℹ️ 라이브온 활성 상태, Geofence 재시작 스킵');
+        return;
+      }
+
       // 🔥 기존 지오펜스 상태 초기화를 위해 완전히 새로 등록
       // (INSIDE 상태로 남아있으면 재진입 감지가 안됨)
       await setupResortGeofences();
