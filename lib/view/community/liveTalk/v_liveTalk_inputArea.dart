@@ -5,11 +5,43 @@ import 'package:com.snowlive/viewmodel/liveTalk/vm_liveTalk.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 
 /// ✅ InputArea는 "입력 UI만" 담당 (미리보기 제거)
-class LiveTalkInputArea extends StatelessWidget {
+class LiveTalkInputArea extends StatefulWidget {
   const LiveTalkInputArea({Key? key}) : super(key: key);
+
+  @override
+  State<LiveTalkInputArea> createState() => _LiveTalkInputAreaState();
+}
+
+class _LiveTalkInputAreaState extends State<LiveTalkInputArea> {
+  final LiveTalkViewModel _liveTalkViewModel = Get.find<LiveTalkViewModel>();
+  final GlobalKey _inputAreaKey = GlobalKey();
+
+  @override
+  void initState() {
+    super.initState();
+    // 텍스트 변경 시 높이 업데이트
+    _liveTalkViewModel.textController.addListener(_updateHeight);
+    WidgetsBinding.instance.addPostFrameCallback((_) => _updateHeight());
+  }
+
+  @override
+  void dispose() {
+    _liveTalkViewModel.textController.removeListener(_updateHeight);
+    super.dispose();
+  }
+
+  void _updateHeight() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (_inputAreaKey.currentContext != null) {
+        final RenderBox renderBox = _inputAreaKey.currentContext!.findRenderObject() as RenderBox;
+        _liveTalkViewModel.inputAreaHeight.value = renderBox.size.height;
+      }
+    });
+  }
 
   void _showImagePickerOptions(BuildContext context, LiveTalkViewModel viewModel) {
     showModalBottomSheet(
@@ -134,9 +166,8 @@ class LiveTalkInputArea extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final LiveTalkViewModel _liveTalkViewModel = Get.find<LiveTalkViewModel>();
-
     return Container(
+      key: _inputAreaKey,
       decoration: BoxDecoration(
         color: SDSColor.snowliveWhite,
         boxShadow: [
@@ -221,7 +252,7 @@ class LiveTalkInputArea extends StatelessWidget {
 
             // 입력 영역
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
@@ -231,10 +262,12 @@ class LiveTalkInputArea extends StatelessWidget {
                     child: SizedBox(
                       width: 40,
                       height: 40,
-                      child: const Icon(
-                        Icons.photo_camera,
-                        color: SDSColor.gray600,
-                        size: 30,
+                      child: Center(
+                        child: SvgPicture.asset(
+                          'assets/imgs/icons/icon_input_camera.svg',
+                          width: 24,
+                          height: 24,
+                        ),
                       ),
                     ),
                   ),
@@ -249,8 +282,8 @@ class LiveTalkInputArea extends StatelessWidget {
                       final canTap = isEnabled && !isPosting;
 
                       return ConstrainedBox(
-                        constraints: const BoxConstraints(
-                          minHeight: 40,
+                        constraints: BoxConstraints(
+                          minHeight: 36,
                           maxHeight: 120,
                         ),
                         child: TextFormField(
@@ -261,8 +294,9 @@ class LiveTalkInputArea extends StatelessWidget {
                           maxLines: null,
                           textInputAction: TextInputAction.newline,
                           style: SDSTextStyle.regular.copyWith(
-                            fontSize: 15,
-                            color: SDSColor.gray900,
+                            fontSize: 14,
+                            color: SDSColor.snowliveBlack,
+                            height: 1.3
                           ),
                           decoration: InputDecoration(
                             hintText: '라이브톡을 남겨주세요.',
@@ -270,10 +304,10 @@ class LiveTalkInputArea extends StatelessWidget {
                               fontSize: 14,
                               color: SDSColor.gray400,
                             ),
-                            contentPadding: const EdgeInsets.only(
+                            contentPadding: EdgeInsets.only(
                               top: 10,
                               bottom: 10,
-                              left: 12,
+                              left: 10,
                               right: 50,
                             ),
                             fillColor: SDSColor.gray50,
@@ -286,7 +320,7 @@ class LiveTalkInputArea extends StatelessWidget {
                               borderSide: const BorderSide(
                                 color: SDSColor.snowliveBlue,
                                 strokeAlign: BorderSide.strokeAlignInside,
-                                width: 1.5,
+                                width: 1,
                               ),
                               borderRadius: BorderRadius.circular(6),
                             ),
@@ -295,21 +329,12 @@ class LiveTalkInputArea extends StatelessWidget {
                               borderRadius: BorderRadius.circular(6),
                             ),
                             isDense: true,
-                            suffixIcon: IconButton(
-                              icon: isEditMode
-                                  ? Icon(
-                                Icons.check,
-                                color: canTap ? SDSColor.snowliveBlue : SDSColor.gray300,
-                                size: 24,
-                              )
-                                  : Image.asset(
-                                canTap
-                                    ? 'assets/imgs/icons/icon_livetalk_send.png'
-                                    : 'assets/imgs/icons/icon_livetalk_send_g.png',
-                                width: 24,
-                                height: 24,
-                              ),
-                              onPressed: canTap
+                            suffixIconConstraints: const BoxConstraints(
+                              minWidth: 32,
+                              minHeight: 24,
+                            ),
+                            suffixIcon: GestureDetector(
+                              onTap: canTap
                                   ? () async {
                                 FocusScope.of(context).unfocus();
                                 if (isEditMode) {
@@ -319,6 +344,22 @@ class LiveTalkInputArea extends StatelessWidget {
                                 }
                               }
                                   : null,
+                              child: Padding(
+                                padding: const EdgeInsets.only(right: 8),
+                                child: isEditMode
+                                    ? Icon(
+                                  Icons.check,
+                                  color: canTap ? SDSColor.snowliveBlue : SDSColor.gray300,
+                                  size: 24,
+                                )
+                                    : Image.asset(
+                                  canTap
+                                      ? 'assets/imgs/icons/icon_livetalk_send.png'
+                                      : 'assets/imgs/icons/icon_livetalk_send_g.png',
+                                  width: 24,
+                                  height: 24,
+                                ),
+                              ),
                             ),
                           ),
                         ),

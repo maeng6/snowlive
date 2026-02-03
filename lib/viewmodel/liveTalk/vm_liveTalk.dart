@@ -69,6 +69,9 @@ class LiveTalkViewModel extends GetxController {
   RxBool isRidingCardMode = false.obs;
   GlobalKey ridingCardKey = GlobalKey();
 
+  // 입력 영역 높이 (FAB 위치 계산용)
+  RxDouble inputAreaHeight = 60.0.obs;
+
   // ============================================
   // 댓글 작성 관련
   // ============================================
@@ -606,6 +609,7 @@ class LiveTalkViewModel extends GetxController {
     selectedRidingCardType.value = 0;
     isRidingCardMode.value = false;
     isButtonEnabled.value = false;
+    inputAreaHeight.value = 60.0;
   }
 
   /// 라이딩 카드 선택 (카드 타입도 함께 저장)

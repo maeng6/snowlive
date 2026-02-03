@@ -35,7 +35,7 @@ class RidingCardViewModel extends GetxController {
   // ============================================
   // 데일리 카드 보기 모드 (grid / list)
   // ============================================
-  RxBool isGridView = true.obs;
+  RxBool isGridView = false.obs;
 
   void toggleViewMode() {
     isGridView.value = !isGridView.value;

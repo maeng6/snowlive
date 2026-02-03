@@ -6,6 +6,7 @@ import 'package:com.snowlive/viewmodel/friend/vm_friendDetail.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 
 class LiveTalkFeedItem extends StatelessWidget {
@@ -15,6 +16,7 @@ class LiveTalkFeedItem extends StatelessWidget {
   final VoidCallback onLike;
   final VoidCallback onComment;
   final VoidCallback onMore;
+  final bool isLast;
 
   LiveTalkFeedItem({
     Key? key,
@@ -22,17 +24,20 @@ class LiveTalkFeedItem extends StatelessWidget {
     required this.onLike,
     required this.onComment,
     required this.onMore,
+    this.isLast = false,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 1),
+      padding: EdgeInsets.only(bottom: 12),
       decoration: BoxDecoration(
         color: SDSColor.snowliveWhite,
-        border: Border(
-          bottom: BorderSide(color: Color(0xFFF1F1F3), width: 1),
-        ),
+        border: isLast
+            ? null
+            : Border(
+                bottom: BorderSide(color: SDSColor.gray50, width: 1),
+              ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -40,13 +45,13 @@ class LiveTalkFeedItem extends StatelessWidget {
           // 상단: 프로필 + 닉네임 + 시간 + 더보기
           _buildHeader(),
 
-          // 중간: 이미지 (있는 경우)
-          if (liveTalk.imageUrl != null && liveTalk.imageUrl!.isNotEmpty)
-            _buildImage(),
-
           // 중간: 텍스트 본문 (있는 경우)
           if (liveTalk.description != null && liveTalk.description!.isNotEmpty)
             _buildContent(),
+
+          // 중간: 이미지 (있는 경우)
+          if (liveTalk.imageUrl != null && liveTalk.imageUrl!.isNotEmpty)
+            _buildImage(),
 
           // 하단: 좋아요 + 댓글
           _buildActions(),
@@ -72,15 +77,15 @@ class LiveTalkFeedItem extends StatelessWidget {
     final uploadTime = liveTalk.uploadTime;
 
     return Padding(
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.only(top: 20, left: 16, right: 16, bottom: 6),
       child: Row(
         children: [
           // 프로필 이미지
           GestureDetector(
             onTap: _navigateToProfile,
             child: Container(
-              width: 40,
-              height: 40,
+              width: 30,
+              height: 30,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 color: SDSColor.gray100,
@@ -104,7 +109,7 @@ class LiveTalkFeedItem extends StatelessWidget {
             ),
           ),
 
-          const SizedBox(width: 12),
+          const SizedBox(width: 8),
 
           // 닉네임
           GestureDetector(
@@ -113,7 +118,7 @@ class LiveTalkFeedItem extends StatelessWidget {
               userInfo?.displayName ?? '익명',
               style: SDSTextStyle.bold.copyWith(
                 fontSize: 14,
-                color: SDSColor.gray900,
+                color: SDSColor.snowliveBlack,
               ),
             ),
           ),
@@ -127,8 +132,8 @@ class LiveTalkFeedItem extends StatelessWidget {
                 ? GetDatetime().getAgoString(uploadTime)
                 : '',
             style: SDSTextStyle.regular.copyWith(
-              fontSize: 12,
-              color: SDSColor.gray500,
+              fontSize: 13,
+              color: SDSColor.gray400,
             ),
           ),
 
@@ -136,11 +141,11 @@ class LiveTalkFeedItem extends StatelessWidget {
           GestureDetector(
             onTap: onMore,
             child: Padding(
-              padding: const EdgeInsets.only(left: 8),
+              padding: const EdgeInsets.only(left: 16),
               child: Icon(
                 Icons.more_horiz,
-                color: SDSColor.gray400,
-                size: 20,
+                color: SDSColor.gray300,
+                size: 24,
               ),
             ),
           ),
@@ -155,53 +160,102 @@ class LiveTalkFeedItem extends StatelessWidget {
       child: Center(
         child: Icon(
           Icons.person,
-          color: SDSColor.gray400,
-          size: 24,
+          color: SDSColor.gray300,
+          size: 20,
         ),
       ),
     );
   }
 
   Widget _buildImage() {
+    const double maxHeight = 400;
+
     return GestureDetector(
       onTap: () {
         // TODO: 이미지 풀스크린 보기
       },
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: ExtendedImage.network(
-          liveTalk.imageUrl!,
-          width: double.infinity,
-          fit: BoxFit.fitWidth,
-          cache: true,
-          loadStateChanged: (state) {
-            switch (state.extendedImageLoadState) {
-              case LoadState.loading:
-                return Container(
-                  height: 200,
-                  color: SDSColor.gray100,
-                  child: const Center(
-                    child: CircularProgressIndicator(
-                      color: SDSColor.gray300,
-                      strokeWidth: 2,
-                    ),
-                  ),
-                );
-              case LoadState.failed:
-                return Container(
-                  height: 200,
-                  color: SDSColor.gray100,
-                  child: Center(
-                    child: Icon(
-                      Icons.broken_image_outlined,
-                      color: SDSColor.gray400,
-                      size: 48,
-                    ),
-                  ),
-                );
-              case LoadState.completed:
-                return null;
-            }
+        padding: const EdgeInsets.only(top: 4, left: 16, right: 16, bottom: 10),
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final maxWidth = constraints.maxWidth;
+
+            return ClipRRect(
+              borderRadius: BorderRadius.circular(10),
+              child: ExtendedImage.network(
+                liveTalk.imageUrl!,
+                cache: true,
+                loadStateChanged: (state) {
+                  switch (state.extendedImageLoadState) {
+                    case LoadState.loading:
+                      return Container(
+                        width: maxWidth,
+                        height: 200,
+                        decoration: BoxDecoration(
+                          color: SDSColor.gray100,
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: const Center(
+                          child: CircularProgressIndicator(
+                            color: SDSColor.gray300,
+                            strokeWidth: 2,
+                          ),
+                        ),
+                      );
+                    case LoadState.failed:
+                      return Container(
+                        width: maxWidth,
+                        height: 200,
+                        decoration: BoxDecoration(
+                          color: SDSColor.gray100,
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Center(
+                          child: Icon(
+                            Icons.broken_image_outlined,
+                            color: SDSColor.gray400,
+                            size: 48,
+                          ),
+                        ),
+                      );
+                    case LoadState.completed:
+                      final rawImage = state.extendedImageInfo?.image;
+                      if (rawImage == null) return null;
+
+                      final originalWidth = rawImage.width.toDouble();
+                      final originalHeight = rawImage.height.toDouble();
+                      final aspectRatio = originalWidth / originalHeight;
+
+                      // 너비 기준으로 계산한 높이
+                      final heightByWidth = maxWidth / aspectRatio;
+
+                      double finalWidth;
+                      double finalHeight;
+
+                      if (heightByWidth > maxHeight) {
+                        // 높이가 400을 넘으면 높이 400 기준으로 너비 계산
+                        finalHeight = maxHeight;
+                        finalWidth = maxHeight * aspectRatio;
+                      } else {
+                        // 높이가 400 이하면 너비 꽉 차게
+                        finalWidth = maxWidth;
+                        finalHeight = heightByWidth;
+                      }
+
+                      return Center(
+                        child: SizedBox(
+                          width: finalWidth,
+                          height: finalHeight,
+                          child: ExtendedRawImage(
+                            image: rawImage,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      );
+                  }
+                },
+              ),
+            );
           },
         ),
       ),
@@ -210,13 +264,13 @@ class LiveTalkFeedItem extends StatelessWidget {
 
   Widget _buildContent() {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      padding: const EdgeInsets.only(left: 16, right: 16, bottom: 6),
       child: Text(
         liveTalk.description!,
         style: SDSTextStyle.regular.copyWith(
           fontSize: 15,
-          color: SDSColor.gray900,
-          height: 1.5,
+          color: SDSColor.snowliveBlack,
+          height: 1.4,
         ),
       ),
     );
@@ -228,7 +282,7 @@ class LiveTalkFeedItem extends StatelessWidget {
     final commentCount = liveTalk.commentCount ?? 0;
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      padding: const EdgeInsets.only(left: 16, right: 16, top: 4, bottom: 6),
       child: Row(
         children: [
           // 좋아요 버튼
@@ -236,41 +290,45 @@ class LiveTalkFeedItem extends StatelessWidget {
             onTap: onLike,
             child: Row(
               children: [
-                Icon(
-                  isLiked ? Icons.favorite : Icons.favorite_border,
-                  color: isLiked ? SDSColor.red : SDSColor.gray500,
-                  size: 22,
+                SvgPicture.asset(
+                  isLiked
+                      ? 'assets/imgs/icons/icon_livetalk_like_on.svg'
+                      : 'assets/imgs/icons/icon_livetalk_like_off.svg',
+                  width: 22,
+                  height: 22,
                 ),
-                const SizedBox(width: 6),
+                const SizedBox(width: 2),
                 Text(
                   likeCount > 0 ? '$likeCount' : '좋아요',
                   style: SDSTextStyle.regular.copyWith(
-                    fontSize: 14,
-                    color: isLiked ? SDSColor.red : SDSColor.gray600,
+                    fontSize: 13,
+                    color: isLiked ? SDSColor.snowliveBlack : SDSColor.gray500,
                   ),
                 ),
               ],
             ),
           ),
 
-          const SizedBox(width: 24),
+          const SizedBox(width: 20),
 
           // 댓글 버튼
           GestureDetector(
             onTap: onComment,
             child: Row(
               children: [
-                Icon(
-                  Icons.chat_bubble_outline,
-                  color: SDSColor.gray500,
-                  size: 20,
+                SvgPicture.asset(
+                  commentCount > 0
+                      ? 'assets/imgs/icons/icon_livetalk_reply_on.svg'
+                      : 'assets/imgs/icons/icon_livetalk_reply_off.svg',
+                  width: 20,
+                  height: 20,
                 ),
-                const SizedBox(width: 6),
+                const SizedBox(width: 2),
                 Text(
                   commentCount > 0 ? '$commentCount' : '댓글',
                   style: SDSTextStyle.regular.copyWith(
                     fontSize: 14,
-                    color: SDSColor.gray600,
+                    color: SDSColor.gray500,
                   ),
                 ),
               ],

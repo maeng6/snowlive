@@ -392,23 +392,6 @@ class _RidingCardListViewState extends State<RidingCardListView> {
                   ),
                   Row(
                     children: [
-                      // 카드 버튼
-                      GestureDetector(
-                        onTap: () {
-                          if (!_ridingCardViewModel.isGridView.value) {
-                            HapticFeedback.lightImpact();
-                            _ridingCardViewModel.isGridView.value = true;
-                          }
-                        },
-                        child: Image.asset(
-                          _ridingCardViewModel.isGridView.value
-                              ? 'assets/imgs/icons/icon_view_card_on.png'
-                              : 'assets/imgs/icons/icon_view_card_off.png',
-                          width: 32,
-                          height: 32,
-                        ),
-                      ),
-                      SizedBox(width: 6),
                       // 리스트 버튼
                       GestureDetector(
                         onTap: () {
@@ -421,6 +404,23 @@ class _RidingCardListViewState extends State<RidingCardListView> {
                           !_ridingCardViewModel.isGridView.value
                               ? 'assets/imgs/icons/icon_view_list_on.png'
                               : 'assets/imgs/icons/icon_view_list_off.png',
+                          width: 32,
+                          height: 32,
+                        ),
+                      ),
+                      SizedBox(width: 6),
+                      // 카드 버튼
+                      GestureDetector(
+                        onTap: () {
+                          if (!_ridingCardViewModel.isGridView.value) {
+                            HapticFeedback.lightImpact();
+                            _ridingCardViewModel.isGridView.value = true;
+                          }
+                        },
+                        child: Image.asset(
+                          _ridingCardViewModel.isGridView.value
+                              ? 'assets/imgs/icons/icon_view_card_on.png'
+                              : 'assets/imgs/icons/icon_view_card_off.png',
                           width: 32,
                           height: 32,
                         ),
