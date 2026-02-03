@@ -340,10 +340,14 @@ class _RidingCardListViewState extends State<RidingCardListView> {
     // 초기 로딩 시에만 전체 화면 로딩 표시 (당겨서 새로고침 시에는 표시 안함)
     if (isLoading && !_isRefreshing) {
       return Center(
-        child: CircularProgressIndicator(
-          strokeWidth: 4,
-          backgroundColor: SDSColor.gray100,
-          color: SDSColor.snowliveBlue,
+        child: SizedBox(
+          width: 24,
+          height: 24,
+          child: CircularProgressIndicator(
+            strokeWidth: 4,
+            backgroundColor: SDSColor.gray100,
+            color: SDSColor.gray300.withOpacity(0.6),
+          ),
         ),
       );
     }

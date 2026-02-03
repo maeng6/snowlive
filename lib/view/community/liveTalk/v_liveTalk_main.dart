@@ -30,7 +30,10 @@ class _LiveTalkMainViewState extends State<LiveTalkMainView> {
   @override
   void initState() {
     super.initState();
-    _liveTalkViewModel.fetchLiveTalkList(refresh: true);
+    // 초기 데이터가 아직 로드되지 않은 경우에만 로드
+    if (!_liveTalkViewModel.isInitialLoaded.value) {
+      _liveTalkViewModel.fetchLiveTalkList(refresh: true);
+    }
   }
 
   Future<void> _onRefresh() async {
@@ -50,8 +53,9 @@ class _LiveTalkMainViewState extends State<LiveTalkMainView> {
           // 피드 목록
           Obx(() {
             // 초기 로딩 시에만 전체 화면 로딩 표시
-            // (당겨서 새로고침 또는 게시물 업로드 후 새로고침 시에는 표시 안함)
+            // (이미 데이터가 있거나, 당겨서 새로고침, 게시물 업로드 후에는 표시 안함)
             if (_liveTalkViewModel.isLoading.value &&
+                _liveTalkViewModel.liveTalkList.isEmpty &&
                 !_isRefreshing &&
                 !_liveTalkViewModel.isPosting.value) {
               return const Center(

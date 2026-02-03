@@ -18,7 +18,7 @@ class EventPageView extends StatefulWidget {
 }
 
 class _EventPageViewState extends State<EventPageView> {
-  final EventViewModel _eventViewModel = Get.put(EventViewModel());
+  final EventViewModel _eventViewModel = Get.find<EventViewModel>();
   final EventAlarmViewModel _eventAlarmViewModel = Get.find<EventAlarmViewModel>();
   final UserViewModel _userViewModel = Get.find<UserViewModel>();
 

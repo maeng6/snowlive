@@ -20,7 +20,7 @@ class EventPageEmbeddedView extends StatefulWidget {
 }
 
 class _EventPageEmbeddedViewState extends State<EventPageEmbeddedView> {
-  final EventViewModel _eventViewModel = Get.put(EventViewModel());
+  final EventViewModel _eventViewModel = Get.find<EventViewModel>();
   final EventAlarmViewModel _eventAlarmViewModel = Get.find<EventAlarmViewModel>();
   final UserViewModel _userViewModel = Get.find<UserViewModel>();
   final CommunityBulletinListViewModel _communityBulletinListViewModel = Get.find<CommunityBulletinListViewModel>();
@@ -28,8 +28,11 @@ class _EventPageEmbeddedViewState extends State<EventPageEmbeddedView> {
   @override
   void initState() {
     super.initState();
-    _eventViewModel.fetchEventList();
-    _eventAlarmViewModel.markAsRead();
+    // 뉴뱃지가 있거나 초기 데이터가 로드되지 않은 경우에만 로드
+    if (_eventAlarmViewModel.hasNewEvent.value || !_eventViewModel.isInitialLoaded.value) {
+      _eventViewModel.fetchEventList();
+      _eventAlarmViewModel.markAsRead();
+    }
     // 스크롤 리스너 추가
     _eventViewModel.scrollController.addListener(_onScroll);
   }

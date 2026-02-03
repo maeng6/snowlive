@@ -23,6 +23,7 @@ class LiveTalkViewModel extends GetxController {
   RxBool isLoading = false.obs;
   RxBool isLoadingMore = false.obs;
   RxBool get isLoadingNextPage => isLoadingMore;
+  RxBool isInitialLoaded = false.obs;  // 초기 데이터 로드 완료 여부
   RxBool isLoadingMyList = false.obs;
   RxBool isLoadingMoreMyList = false.obs;
   RxBool isLoadingDetail = false.obs;
@@ -200,6 +201,7 @@ class LiveTalkViewModel extends GetxController {
         nextPageUrl.value = listResponse.next;
         previousPageUrl.value = listResponse.previous;
         totalCount.value = listResponse.count ?? 0;
+        isInitialLoaded.value = true;  // 초기 로딩 완료 표시
       } else {
         print('❌ LiveTalk 목록 조회 실패: ${response.error}');
       }

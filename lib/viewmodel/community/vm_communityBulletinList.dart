@@ -1,6 +1,8 @@
 import 'package:com.snowlive/api/api_community.dart';
 import 'package:com.snowlive/model/m_communityList.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
+import 'package:com.snowlive/viewmodel/liveTalk/vm_liveTalk.dart';
+import 'package:com.snowlive/viewmodel/vm_event.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/rendering.dart';
 import 'package:get/get.dart';
@@ -109,6 +111,9 @@ class CommunityBulletinListViewModel extends GetxController {
   ScrollController scrollController_event = ScrollController();
 
   UserViewModel _userViewModel = Get.find<UserViewModel>();
+  // bindings.dart에서 먼저 등록되므로 직접 find 사용
+  LiveTalkViewModel get _liveTalkViewModel => Get.find<LiveTalkViewModel>();
+  EventViewModel get _eventViewModel => Get.find<EventViewModel>();
 
   @override
   void onInit() async {
@@ -129,6 +134,12 @@ class CommunityBulletinListViewModel extends GetxController {
     _isLoadingList_room.value = true;
     _isLoadingList_crew.value = true;
     _isLoadingList_event.value = true;
+
+    // 라이브톡, 이벤트 데이터 먼저 로딩 (게시판과 병렬로)
+    final liveTalkFuture = _liveTalkViewModel.fetchLiveTalkList(refresh: true);
+    final eventFuture = _eventViewModel.fetchEventList();
+
+    // 게시판 데이터 로딩
     await fetchCommunityList_total(userId: _userViewModel.user.user_id,categoryMain: '게시판');
     _isLoadingList_total.value = false;
     await fetchCommunityList_free(userId: _userViewModel.user.user_id, categoryMain:'게시판', categorySub: Community_Category_sub_bulletin.chat.korean);
@@ -139,6 +150,10 @@ class CommunityBulletinListViewModel extends GetxController {
     _isLoadingList_crew.value = false;
     await fetchCommunityList_event(userId: _userViewModel.user.user_id, categoryMain:'이벤트');
     _isLoadingList_event.value = false;
+
+    // 라이브톡, 이벤트 로딩 완료 대기
+    await liveTalkFuture;
+    await eventFuture;
   }
 
 

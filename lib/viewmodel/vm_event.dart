@@ -13,6 +13,7 @@ class EventViewModel extends GetxController {
   var isLoadingMore = false.obs;    // 무한스크롤 로딩
   var isLoadingDetail = false.obs;  // 상세 로딩
   var isRefreshing = false.obs;     // ✅ 당겨서 새로고침 전용
+  var isInitialLoaded = false.obs;  // 초기 데이터 로드 완료 여부
 
   // 이벤트 목록
   var _eventList = <EventModel>[].obs;
@@ -112,12 +113,13 @@ class EventViewModel extends GetxController {
       if (response.success) {
         final eventListResponse = EventListResponse.fromJson(response.data!);
 
-        // ✅ 여기서 한 번에 갈아끼우면 “리스트 유지 + 최신화” UX
+        // ✅ 여기서 한 번에 갈아끼우면 "리스트 유지 + 최신화" UX
         // (당겨서 새로고침에서도 기존 리스트는 남아있고,
         //  응답 도착하는 순간 자연스럽게 최신으로 바뀜)
         _eventList.assignAll(eventListResponse.events);
 
         _nextPageUrl.value = eventListResponse.next ?? '';
+        isInitialLoaded.value = true;  // 초기 로딩 완료 표시
         print('이벤트 목록 조회 완료: ${_eventList.length}개');
       } else {
         print('이벤트 목록 조회 실패: ${response.error}');

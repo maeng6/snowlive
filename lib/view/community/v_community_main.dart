@@ -9,6 +9,7 @@ import 'package:com.snowlive/view/moreTab/w_eventPageEmbedded.dart';
 import 'package:com.snowlive/viewmodel/community/vm_communityBulletinList.dart';
 import 'package:com.snowlive/viewmodel/vm_eventAlarm.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -204,13 +205,17 @@ class CommunityMainView extends StatelessWidget {
                                             ),
                                         ],
                                       ),
-                                      onPressed: () async{
+                                      onPressed: () {
                                         HapticFeedback.lightImpact();
                                         _communityBulletinListViewModel.changeTap('이벤트·소식');
-                                        if(_eventAlarmViewModel.hasNewEvent.value){
-                                          await _communityBulletinListViewModel.fetchCommunityList_event(userId:  _userViewModel.user.user_id,categoryMain: '이벤트');
-                                          await _eventAlarmViewModel.markAsRead();
-                                        }
+                                        // GA 이벤트 로깅
+                                        FirebaseAnalytics.instance.logEvent(
+                                          name: 'tap_community_event',
+                                          parameters: <String, Object>{
+                                            'user_id': _userViewModel.user.user_id ?? 0,
+                                          },
+                                        );
+                                        // 뉴뱃지 확인 및 데이터 로드는 EventPageEmbeddedView에서 처리
                                       },
                                       style: ElevatedButton.styleFrom(
                                         splashFactory: NoSplash.splashFactory,
