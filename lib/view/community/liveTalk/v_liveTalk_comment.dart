@@ -116,17 +116,16 @@ class _LiveTalkCommentViewState extends State<LiveTalkCommentView> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Icon(
-                            Icons.chat_bubble_outline,
-                            size: 48,
-                            color: SDSColor.gray300,
+                          Image.asset(
+                            'assets/imgs/icons/icon_friendsTalk_nodata.png',
+                            width: 74,
                           ),
-                          const SizedBox(height: 12),
+                          const SizedBox(height: 4),
                           Text(
                             '첫 번째 댓글을 남겨보세요',
                             style: SDSTextStyle.regular.copyWith(
                               fontSize: 14,
-                              color: SDSColor.gray500,
+                              color: const Color(0xFF949494),
                             ),
                           ),
                         ],
@@ -139,7 +138,8 @@ class _LiveTalkCommentViewState extends State<LiveTalkCommentView> {
                     itemCount: _liveTalkViewModel.commentList.length,
                     itemBuilder: (context, index) {
                       final comment = _liveTalkViewModel.commentList[index];
-                      return _buildCommentItem(comment, index);
+                      final isLast = index == _liveTalkViewModel.commentList.length - 1;
+                      return _buildCommentItem(comment, index, isLast: isLast);
                     },
                   );
                 }),
@@ -324,7 +324,7 @@ class _LiveTalkCommentViewState extends State<LiveTalkCommentView> {
     );
   }
 
-  Widget _buildCommentItem(LiveTalkComment comment, int index) {
+  Widget _buildCommentItem(LiveTalkComment comment, int index, {bool isLast = false}) {
     final isMyComment = comment.userId == _userViewModel.user.user_id;
     final isLiked = comment.isLiked ?? false;
     final likeCount = comment.likeCount ?? 0;
@@ -355,6 +355,8 @@ class _LiveTalkCommentViewState extends State<LiveTalkCommentView> {
                             comment.userInfo!.profileImageUrl!,
                             fit: BoxFit.cover,
                             cache: true,
+                            cacheWidth: 90,
+                            cacheHeight: 90,
                             loadStateChanged: (state) {
                               if (state.extendedImageLoadState == LoadState.failed) {
                                 return _buildDefaultAvatar();
@@ -508,7 +510,10 @@ class _LiveTalkCommentViewState extends State<LiveTalkCommentView> {
           ...comment.replies!.asMap().entries.map((entry) =>
             _buildReplyItem(entry.value, index, entry.key)).toList(),
 
-        const Divider(height: 12, thickness: 1, color: SDSColor.gray50),
+        if (!isLast)
+          const Divider(height: 12, thickness: 1, color: SDSColor.gray50),
+        if (isLast)
+          const SizedBox(height: 20),
       ],
     );
   }
@@ -555,6 +560,8 @@ class _LiveTalkCommentViewState extends State<LiveTalkCommentView> {
                         reply.userInfo!.profileImageUrl!,
                         fit: BoxFit.cover,
                         cache: true,
+                        cacheWidth: 78,
+                        cacheHeight: 78,
                         loadStateChanged: (state) {
                           if (state.extendedImageLoadState == LoadState.failed) {
                             return _buildSmallDefaultAvatar();

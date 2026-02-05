@@ -5,63 +5,67 @@ import 'package:flutter/services.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 
-class FleaMarketImageScreen extends StatefulWidget {
-  final List<String> itemImagesUrls;  // 이미지 URL 리스트를 받을 변수
-  final int initialIndex;  // 처음 보여줄 이미지의 인덱스
+class LiveTalkImageScreen extends StatefulWidget {
+  final List<String> imageUrls;
+  final int initialIndex;
 
-  FleaMarketImageScreen({Key? key, required this.itemImagesUrls, required this.initialIndex}) : super(key: key);
+  const LiveTalkImageScreen({
+    Key? key,
+    required this.imageUrls,
+    this.initialIndex = 0,
+  }) : super(key: key);
 
   @override
-  State<FleaMarketImageScreen> createState() => _FleaMarketImageScreenState();
+  State<LiveTalkImageScreen> createState() => _LiveTalkImageScreenState();
 }
 
-class _FleaMarketImageScreenState extends State<FleaMarketImageScreen> {
+class _LiveTalkImageScreenState extends State<LiveTalkImageScreen> {
   late int _currentPage;
-  late List<String> _itemImagesUrls;
+  late PageController _pageController;
 
   @override
   void initState() {
     super.initState();
-    _currentPage = widget.initialIndex;  // 처음 인덱스를 받아서 설정
-    _itemImagesUrls = widget.itemImagesUrls;  // 이미지 리스트를 받아서 설정
+    _currentPage = widget.initialIndex;
+    _pageController = PageController(initialPage: _currentPage);
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    Size _size = MediaQuery.of(context).size;
-
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(58),
+        preferredSize: const Size.fromHeight(58),
         child: AppBar(
           backgroundColor: Colors.black,
-          systemOverlayStyle: SystemUiOverlayStyle.dark,
+          systemOverlayStyle: SystemUiOverlayStyle.light,
           leading: GestureDetector(
-            child: Icon(Icons.close, color: Colors.white),
+            child: const Icon(Icons.close, color: Colors.white),
             onTap: () => Navigator.pop(context),
           ),
           elevation: 0.0,
-          title: Text(
-            '${_currentPage + 1} / ${_itemImagesUrls.length}',
-            style: TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-              fontSize: 16,
-            ),
-          ),
+          title: null,
         ),
       ),
       body: PhotoViewGallery.builder(
-        itemCount: _itemImagesUrls.length,
+        itemCount: widget.imageUrls.length,
+        pageController: _pageController,
         builder: (context, index) {
           return PhotoViewGalleryPageOptions(
             imageProvider: ExtendedNetworkImageProvider(
-                _itemImagesUrls[index],
-                cache: true
+              widget.imageUrls[index],
+              cache: true,
             ),
             minScale: PhotoViewComputedScale.contained,
             maxScale: PhotoViewComputedScale.covered * 7,
+            initialScale: PhotoViewComputedScale.contained,
+            basePosition: Alignment.center,
           );
         },
         loadingBuilder: (context, event) => Center(
@@ -75,11 +79,8 @@ class _FleaMarketImageScreenState extends State<FleaMarketImageScreen> {
             ),
           ),
         ),
-        backgroundDecoration: BoxDecoration(
+        backgroundDecoration: const BoxDecoration(
           color: Colors.black,
-        ),
-        pageController: PageController(
-          initialPage: _currentPage,
         ),
         onPageChanged: (index) {
           setState(() {

@@ -60,7 +60,7 @@ class _LiveOffSummaryDialogState extends State<LiveOffSummaryDialog> {
       // RepaintBoundary에서 이미지 캡처
       RenderRepaintBoundary boundary = _repaintBoundaryKey.currentContext!
           .findRenderObject() as RenderRepaintBoundary;
-      ui.Image image = await boundary.toImage(pixelRatio: 2.0);
+      ui.Image image = await boundary.toImage(pixelRatio: 3.0);
       ByteData? byteData = await image.toByteData(format: ui.ImageByteFormat.png);
 
       if (byteData == null) {
@@ -125,7 +125,7 @@ class _LiveOffSummaryDialogState extends State<LiveOffSummaryDialog> {
       // RepaintBoundary에서 이미지 캡처
       RenderRepaintBoundary boundary = _repaintBoundaryKey.currentContext!
           .findRenderObject() as RenderRepaintBoundary;
-      ui.Image image = await boundary.toImage(pixelRatio: 2.0);
+      ui.Image image = await boundary.toImage(pixelRatio: 3.0);
       ByteData? byteData = await image.toByteData(format: ui.ImageByteFormat.png);
 
       if (byteData == null) {
@@ -586,6 +586,8 @@ class _LiveOffSummaryDialogState extends State<LiveOffSummaryDialog> {
                                       summary.profileImageUrlUser,
                                       fit: BoxFit.cover,
                                       cache: true,
+                                      cacheWidth: 300,
+                                      cacheHeight: 300,
                                       loadStateChanged: (state) {
                                         if (state.extendedImageLoadState == LoadState.failed) {
                                           return Image.asset(

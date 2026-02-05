@@ -486,24 +486,30 @@ class LiveTalkViewModel extends GetxController {
     try {
       isUploadingImage.value = true;
 
+      // PNG 파일인지 확인
+      final isPng = image.path.toLowerCase().endsWith('.png');
+      final extension = isPng ? 'png' : 'jpg';
+      final contentType = isPng ? 'image/png' : 'image/jpeg';
+
       // 이미지 압축
       final tempDir = await getTemporaryDirectory();
-      final targetPath = '${tempDir.path}/compressed_${DateTime.now().millisecondsSinceEpoch}.jpg';
+      final targetPath = '${tempDir.path}/compressed_${DateTime.now().millisecondsSinceEpoch}.$extension';
 
       final compressedFile = await FlutterImageCompress.compressAndGetFile(
         image.path,
         targetPath,
-        quality: 70,
+        quality: isPng ? 100 : 70,  // PNG는 품질 유지
         minWidth: 1280,
         minHeight: 1280,
+        format: isPng ? CompressFormat.png : CompressFormat.jpeg,
       );
 
       if (compressedFile == null) return null;
 
       // Firebase Storage에 업로드
-      final fileName = 'livetalk/${_userViewModel.user.user_id}_${DateTime.now().millisecondsSinceEpoch}.jpg';
+      final fileName = 'livetalk/${_userViewModel.user.user_id}_${DateTime.now().millisecondsSinceEpoch}.$extension';
       final ref = FirebaseStorage.instance.ref().child(fileName);
-      final metadata = SettableMetadata(contentType: 'image/jpeg');
+      final metadata = SettableMetadata(contentType: contentType);
 
       await ref.putFile(File(compressedFile.path), metadata);
       final downloadUrl = await ref.getDownloadURL();
@@ -651,7 +657,7 @@ class LiveTalkViewModel extends GetxController {
       final boundary = ridingCardKey.currentContext?.findRenderObject() as RenderRepaintBoundary?;
       if (boundary == null) return null;
 
-      final image = await boundary.toImage(pixelRatio: 4.0);
+      final image = await boundary.toImage(pixelRatio: 3.0);
       final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
       if (byteData == null) return null;
 

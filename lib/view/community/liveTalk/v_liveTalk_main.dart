@@ -96,12 +96,17 @@ class _LiveTalkMainViewState extends State<LiveTalkMainView> {
                   if (index == _liveTalkViewModel.liveTalkList.length) {
                     return Obx(() {
                       if (_liveTalkViewModel.isLoadingNextPage.value) {
-                        return const Padding(
-                          padding: EdgeInsets.all(16),
+                        return Padding(
+                          padding: const EdgeInsets.all(16),
                           child: Center(
-                            child: CircularProgressIndicator(
-                              color: SDSColor.snowliveBlue,
-                              strokeWidth: 2,
+                            child: SizedBox(
+                              width: 24,
+                              height: 24,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 4,
+                                backgroundColor: SDSColor.gray100,
+                                color: SDSColor.gray300.withOpacity(0.6),
+                              ),
                             ),
                           ),
                         );
@@ -1294,7 +1299,7 @@ class _LiveTalkMainViewState extends State<LiveTalkMainView> {
                     Text(
                       (card.totalSlopeCount ?? 0) == 0 ? '-' : '${card.totalSlopeCount}',
                       style: SDSTextStyle.extraBold.copyWith(
-                        fontSize: 14,
+                        fontSize: 12,
                         color: Colors.white,
                         height: 1.0,
                       ),
@@ -1324,7 +1329,7 @@ class _LiveTalkMainViewState extends State<LiveTalkMainView> {
                                 ? card.mostRiddenSlope!
                                 : '-',
                             style: SDSTextStyle.extraBold.copyWith(
-                              fontSize: 12,
+                              fontSize: 10,
                               color: Colors.white,
                             ),
                             maxLines: 1,
@@ -1496,11 +1501,12 @@ class _LiveTalkMainViewState extends State<LiveTalkMainView> {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
+        const SizedBox(height: 4),
         // 오늘 총 라이딩 숫자
         Text(
           '${card.totalSlopeCount ?? 0}',
           style: SDSTextStyle.extraBold.copyWith(
-            fontSize: 14,
+            fontSize: 12,
             color: Colors.white,
             height: 1.0,
           ),
@@ -1519,7 +1525,7 @@ class _LiveTalkMainViewState extends State<LiveTalkMainView> {
         Text(
           firstSlope?.key ?? '-',
           style: SDSTextStyle.extraBold.copyWith(
-            fontSize: 10,
+            fontSize: 8,
             color: Colors.white,
             height: 1.0,
           ),

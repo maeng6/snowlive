@@ -2,6 +2,7 @@ import 'package:com.snowlive/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/model/m_liveTalk.dart';
 import 'package:com.snowlive/routes/routes.dart';
 import 'package:com.snowlive/util/util_1.dart';
+import 'package:com.snowlive/view/community/liveTalk/v_liveTalk_imageScreen.dart';
 import 'package:com.snowlive/viewmodel/friend/vm_friendDetail.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
 import 'package:extended_image/extended_image.dart';
@@ -52,7 +53,7 @@ class LiveTalkFeedItem extends StatelessWidget {
 
           // 중간: 이미지 (있는 경우)
           if (liveTalk.imageUrl != null && liveTalk.imageUrl!.isNotEmpty)
-            _buildImage(),
+            _buildImage(context),
 
           // 하단: 좋아요 + 댓글
           _buildActions(),
@@ -98,6 +99,8 @@ class LiveTalkFeedItem extends StatelessWidget {
                         userInfo.profileImageUrl!,
                         fit: BoxFit.cover,
                         cache: true,
+                        cacheWidth: 90,
+                        cacheHeight: 90,
                         loadStateChanged: (state) {
                           if (state.extendedImageLoadState == LoadState.failed) {
                             return _buildDefaultAvatar();
@@ -168,12 +171,20 @@ class LiveTalkFeedItem extends StatelessWidget {
     );
   }
 
-  Widget _buildImage() {
+  Widget _buildImage(BuildContext context) {
     const double maxHeight = 400;
 
     return GestureDetector(
       onTap: () {
-        // TODO: 이미지 풀스크린 보기
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => LiveTalkImageScreen(
+              imageUrls: [liveTalk.imageUrl!],
+              initialIndex: 0,
+            ),
+          ),
+        );
       },
       child: Padding(
         padding: const EdgeInsets.only(top: 4, left: 16, right: 16, bottom: 10),
@@ -186,6 +197,8 @@ class LiveTalkFeedItem extends StatelessWidget {
               child: ExtendedImage.network(
                 liveTalk.imageUrl!,
                 cache: true,
+                cacheHeight: 800,
+                clearMemoryCacheWhenDispose: true,
                 loadStateChanged: (state) {
                   switch (state.extendedImageLoadState) {
                     case LoadState.loading:

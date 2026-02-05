@@ -336,11 +336,11 @@ class LiveTalkPreviewLayer extends StatelessWidget {
 
   Widget _buildExistingImagePreview(LiveTalkViewModel viewModel) {
     return Container(
-      margin: const EdgeInsets.only(left: 16, right: 16),
-      padding: const EdgeInsets.all(16),
+      margin: const EdgeInsets.symmetric(horizontal: 40),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       decoration: BoxDecoration(
-        color: Colors.black.withOpacity(0.7),
-        borderRadius: BorderRadius.circular(16),
+        color: const Color(0xFF000000).withOpacity(0.75),
+        borderRadius: BorderRadius.circular(12),
       ),
       child: Stack(
         children: [
@@ -349,9 +349,8 @@ class LiveTalkPreviewLayer extends StatelessWidget {
               borderRadius: BorderRadius.circular(8),
               child: Image.network(
                 viewModel.editingLiveTalk.value!.imageUrl!,
-                width: 120,
                 height: 120,
-                fit: BoxFit.cover,
+                fit: BoxFit.contain,
               ),
             ),
           ),
@@ -374,11 +373,11 @@ class LiveTalkPreviewLayer extends StatelessWidget {
 
   Widget _buildImagePreview(LiveTalkViewModel viewModel) {
     return Container(
-      margin: const EdgeInsets.only(left: 16, right: 16),
-      padding: const EdgeInsets.all(16),
+      margin: const EdgeInsets.symmetric(horizontal: 40),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       decoration: BoxDecoration(
-        color: Colors.black.withOpacity(0.7),
-        borderRadius: BorderRadius.circular(16),
+        color: const Color(0xFF000000).withOpacity(0.75),
+        borderRadius: BorderRadius.circular(12),
       ),
       child: Stack(
         children: [
@@ -387,9 +386,8 @@ class LiveTalkPreviewLayer extends StatelessWidget {
               borderRadius: BorderRadius.circular(8),
               child: Image.file(
                 File(viewModel.selectedImage.value!.path),
-                width: 120,
                 height: 120,
-                fit: BoxFit.cover,
+                fit: BoxFit.contain,
               ),
             ),
           ),
@@ -424,11 +422,11 @@ class LiveTalkPreviewLayer extends StatelessWidget {
     final capturedImage = viewModel.capturedRidingCardImage.value;
 
     return Container(
-      margin: const EdgeInsets.only(left: 16, right: 16),
-      padding: const EdgeInsets.all(16),
+      margin: const EdgeInsets.symmetric(horizontal: 40),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       decoration: BoxDecoration(
-        color: Colors.black.withOpacity(0.7),
-        borderRadius: BorderRadius.circular(16),
+        color: const Color(0xFF000000).withOpacity(0.75),
+        borderRadius: BorderRadius.circular(12),
       ),
       child: Stack(
         children: [

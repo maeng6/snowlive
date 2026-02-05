@@ -90,7 +90,7 @@ class _RidingCardListViewState extends State<RidingCardListView> {
 
       RenderRepaintBoundary boundary = _seasonCardKey.currentContext!
           .findRenderObject() as RenderRepaintBoundary;
-      ui.Image image = await boundary.toImage(pixelRatio: 2.0);
+      ui.Image image = await boundary.toImage(pixelRatio: 3.0);
       ByteData? byteData = await image.toByteData(format: ui.ImageByteFormat.png);
 
       if (byteData == null) {
@@ -141,7 +141,7 @@ class _RidingCardListViewState extends State<RidingCardListView> {
     try {
       RenderRepaintBoundary boundary = _seasonCardKey.currentContext!
           .findRenderObject() as RenderRepaintBoundary;
-      ui.Image image = await boundary.toImage(pixelRatio: 2.0);
+      ui.Image image = await boundary.toImage(pixelRatio: 3.0);
       ByteData? byteData = await image.toByteData(format: ui.ImageByteFormat.png);
 
       if (byteData == null) {
@@ -577,6 +577,8 @@ class _RidingCardListViewState extends State<RidingCardListView> {
                                         _userViewModel.user.profile_image_url_user!,
                                         fit: BoxFit.cover,
                                         cache: true,
+                                        cacheWidth: 204,
+                                        cacheHeight: 204,
                                         loadStateChanged: (state) {
                                           if (state.extendedImageLoadState == LoadState.failed) {
                                             return Image.asset(
@@ -1136,6 +1138,8 @@ class _RidingCardListViewState extends State<RidingCardListView> {
                                   _userViewModel.user.profile_image_url_user!,
                                   fit: BoxFit.cover,
                                   cache: true,
+                                  cacheWidth: 102,
+                                  cacheHeight: 102,
                                   loadStateChanged: (state) {
                                     if (state.extendedImageLoadState == LoadState.failed) {
                                       return Image.asset(
@@ -1461,7 +1465,7 @@ class _RidingCardListViewState extends State<RidingCardListView> {
                     Text(
                       (card.totalSlopeCount ?? 0) == 0 ? '-' : '${card.totalSlopeCount}',
                       style: SDSTextStyle.extraBold.copyWith(
-                        fontSize: 14,
+                        fontSize: 12,
                         color: Colors.white,
                         height: 1.0,
                       ),
@@ -1491,7 +1495,7 @@ class _RidingCardListViewState extends State<RidingCardListView> {
                                 ? card.mostRiddenSlope!
                                 : '-',
                             style: SDSTextStyle.extraBold.copyWith(
-                              fontSize: 12,
+                              fontSize: 10,
                               color: Colors.white,
                             ),
                             maxLines: 1,
@@ -1667,11 +1671,12 @@ class _RidingCardListViewState extends State<RidingCardListView> {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
+        const SizedBox(height: 4),
         // 오늘 총 라이딩 숫자
         Text(
           '${card.totalSlopeCount ?? 0}',
           style: SDSTextStyle.extraBold.copyWith(
-            fontSize: 14,
+            fontSize: 12,
             color: Colors.white,
             height: 1.0,
           ),
@@ -1690,7 +1695,7 @@ class _RidingCardListViewState extends State<RidingCardListView> {
         Text(
           firstSlope?.key ?? '-',
           style: SDSTextStyle.extraBold.copyWith(
-            fontSize: 10,
+            fontSize: 8,
             color: Colors.white,
             height: 1.0,
           ),
@@ -1835,7 +1840,7 @@ class _DailyCardDetailDialogState extends State<DailyCardDetailDialog> {
 
       RenderRepaintBoundary boundary = _repaintBoundaryKey.currentContext!
           .findRenderObject() as RenderRepaintBoundary;
-      ui.Image image = await boundary.toImage(pixelRatio: 2.0);
+      ui.Image image = await boundary.toImage(pixelRatio: 3.0);
       ByteData? byteData = await image.toByteData(format: ui.ImageByteFormat.png);
 
       if (byteData == null) {
@@ -1886,7 +1891,7 @@ class _DailyCardDetailDialogState extends State<DailyCardDetailDialog> {
     try {
       RenderRepaintBoundary boundary = _repaintBoundaryKey.currentContext!
           .findRenderObject() as RenderRepaintBoundary;
-      ui.Image image = await boundary.toImage(pixelRatio: 2.0);
+      ui.Image image = await boundary.toImage(pixelRatio: 3.0);
       ByteData? byteData = await image.toByteData(format: ui.ImageByteFormat.png);
 
       if (byteData == null) {
@@ -2418,6 +2423,8 @@ class _DailyCardDetailDialogState extends State<DailyCardDetailDialog> {
                                         user.profile_image_url_user!,
                                         fit: BoxFit.cover,
                                         cache: true,
+                                        cacheWidth: 300,
+                                        cacheHeight: 300,
                                         loadStateChanged: (state) {
                                           if (state.extendedImageLoadState == LoadState.failed) {
                                             return Image.asset(
@@ -2693,7 +2700,7 @@ class _SeasonCardDetailDialogState extends State<SeasonCardDetailDialog> {
 
       RenderRepaintBoundary boundary = _repaintBoundaryKey.currentContext!
           .findRenderObject() as RenderRepaintBoundary;
-      ui.Image image = await boundary.toImage(pixelRatio: 2.0);
+      ui.Image image = await boundary.toImage(pixelRatio: 3.0);
       ByteData? byteData = await image.toByteData(format: ui.ImageByteFormat.png);
 
       if (byteData == null) {
@@ -2744,7 +2751,7 @@ class _SeasonCardDetailDialogState extends State<SeasonCardDetailDialog> {
     try {
       RenderRepaintBoundary boundary = _repaintBoundaryKey.currentContext!
           .findRenderObject() as RenderRepaintBoundary;
-      ui.Image image = await boundary.toImage(pixelRatio: 2.0);
+      ui.Image image = await boundary.toImage(pixelRatio: 3.0);
       ByteData? byteData = await image.toByteData(format: ui.ImageByteFormat.png);
 
       if (byteData == null) {
@@ -2901,6 +2908,8 @@ class _SeasonCardDetailDialogState extends State<SeasonCardDetailDialog> {
                                         user.profile_image_url_user!,
                                         fit: BoxFit.cover,
                                         cache: true,
+                                        cacheWidth: 300,
+                                        cacheHeight: 300,
                                         loadStateChanged: (state) {
                                           if (state.extendedImageLoadState == LoadState.failed) {
                                             return Image.asset(
