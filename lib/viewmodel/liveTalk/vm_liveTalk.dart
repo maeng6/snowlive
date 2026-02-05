@@ -68,6 +68,7 @@ class LiveTalkViewModel extends GetxController {
   RxInt selectedRidingCardType = 0.obs;  // 선택된 카드의 타입 (0 또는 1)
   RxBool isRidingCardMode = false.obs;
   GlobalKey ridingCardKey = GlobalKey();
+  Rxn<File> capturedRidingCardImage = Rxn<File>();  // 팝업에서 캡처된 고화질 이미지
 
   // 입력 영역 높이 (FAB 위치 계산용)
   RxDouble inputAreaHeight = 60.0.obs;
@@ -530,9 +531,16 @@ class LiveTalkViewModel extends GetxController {
     try {
       String? imageUrl;
 
-      // 라이딩 카드가 있으면 캡처 후 업로드
+      // 라이딩 카드가 있으면 캡처된 이미지 또는 캡처 후 업로드
       if (hasRidingCard) {
-        final cardImageFile = await captureRidingCardAsImage();
+        // 팝업에서 미리 캡처된 고화질 이미지가 있으면 사용
+        File? cardImageFile = capturedRidingCardImage.value;
+
+        // 캡처된 이미지가 없으면 fallback으로 캡처 시도
+        if (cardImageFile == null) {
+          cardImageFile = await captureRidingCardAsImage();
+        }
+
         if (cardImageFile != null) {
           imageUrl = await _uploadImageFile(cardImageFile);
           if (imageUrl == null) {
@@ -610,16 +618,18 @@ class LiveTalkViewModel extends GetxController {
     isRidingCardMode.value = false;
     isButtonEnabled.value = false;
     inputAreaHeight.value = 60.0;
+    capturedRidingCardImage.value = null;
   }
 
-  /// 라이딩 카드 선택 (카드 타입도 함께 저장)
-  void selectRidingCard(DailyRidingCard card, {int cardType = 0}) {
+  /// 라이딩 카드 선택 (카드 타입과 캡처된 이미지도 함께 저장)
+  void selectRidingCard(DailyRidingCard card, {int cardType = 0, File? capturedImage}) {
     // 이미지 선택 해제
     selectedImage.value = null;
     // 라이딩 카드 선택
     selectedRidingCard.value = card;
     selectedRidingCardType.value = cardType;
     isRidingCardMode.value = true;
+    capturedRidingCardImage.value = capturedImage;
     _updateButtonState();
   }
 
@@ -628,6 +638,7 @@ class LiveTalkViewModel extends GetxController {
     selectedRidingCard.value = null;
     selectedRidingCardType.value = 0;
     isRidingCardMode.value = false;
+    capturedRidingCardImage.value = null;
     _updateButtonState();
   }
 

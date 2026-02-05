@@ -7,6 +7,7 @@ import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 /// ✅ InputArea는 "입력 UI만" 담당 (미리보기 제거)
 class LiveTalkInputArea extends StatefulWidget {
@@ -183,72 +184,7 @@ class _LiveTalkInputAreaState extends State<LiveTalkInputArea> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            // 업로드 중 표시
-            Obx(() {
-              if (_liveTalkViewModel.isPosting.value) {
-                return Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                  color: SDSColor.gray100,
-                  child: Row(
-                    children: [
-                      SizedBox(
-                        width: 14,
-                        height: 14,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2,
-                          color: SDSColor.gray600,
-                        ),
-                      ),
-                      const SizedBox(width: 10),
-                      Text(
-                        _liveTalkViewModel.isEditMode.value ? '게시물 수정 중...' : '게시물 업로드 중...',
-                        style: SDSTextStyle.regular.copyWith(
-                          fontSize: 13,
-                          color: SDSColor.gray600,
-                        ),
-                      ),
-                    ],
-                  ),
-                );
-              }
-              return const SizedBox.shrink();
-            }),
-
-            // 수정 모드 표시
-            Obx(() {
-              if (_liveTalkViewModel.isEditMode.value && !_liveTalkViewModel.isPosting.value) {
-                return Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                  color: SDSColor.snowliveBlue.withOpacity(0.1),
-                  child: Row(
-                    children: [
-                      const Icon(Icons.edit, size: 16, color: SDSColor.snowliveBlue),
-                      const SizedBox(width: 8),
-                      Expanded(
-                        child: Text(
-                          '게시물 수정 중',
-                          style: SDSTextStyle.regular.copyWith(
-                            fontSize: 13,
-                            color: SDSColor.snowliveBlue,
-                          ),
-                        ),
-                      ),
-                      GestureDetector(
-                        onTap: () => _liveTalkViewModel.cancelEditMode(),
-                        child: const Icon(
-                          Icons.close,
-                          size: 20,
-                          color: SDSColor.gray500,
-                        ),
-                      ),
-                    ],
-                  ),
-                );
-              }
-              return const SizedBox.shrink();
-            }),
-
-            // ✅ 미리보기 영역 제거됨
+            // ✅ 수정 모드 표시 - main.dart Stack으로 이동됨
 
             // 입력 영역
             Padding(
@@ -346,13 +282,7 @@ class _LiveTalkInputAreaState extends State<LiveTalkInputArea> {
                                   : null,
                               child: Padding(
                                 padding: const EdgeInsets.only(right: 8),
-                                child: isEditMode
-                                    ? Icon(
-                                  Icons.check,
-                                  color: canTap ? SDSColor.snowliveBlue : SDSColor.gray300,
-                                  size: 24,
-                                )
-                                    : Image.asset(
+                                child: Image.asset(
                                   canTap
                                       ? 'assets/imgs/icons/icon_livetalk_send.png'
                                       : 'assets/imgs/icons/icon_livetalk_send_g.png',
@@ -486,12 +416,12 @@ class LiveTalkPreviewLayer extends StatelessWidget {
   }
 
   Widget _buildRidingCardPreview(LiveTalkViewModel viewModel) {
-    final card = viewModel.selectedRidingCard.value!;
-    final cardType = viewModel.selectedRidingCardType.value;
-    final UserViewModel userViewModel = Get.find<UserViewModel>();
+    // 높이 126 고정, 비율에 맞게 너비 계산
+    const double cardHeight = 126;
+    const double cardWidth = cardHeight * (960 / 1524);
 
-    const double cardWidth = 200;
-    const double cardHeight = cardWidth * (1524 / 960);
+    // 캡처된 이미지가 있으면 그 이미지를 표시
+    final capturedImage = viewModel.capturedRidingCardImage.value;
 
     return Container(
       margin: const EdgeInsets.only(left: 16, right: 16),
@@ -503,122 +433,17 @@ class LiveTalkPreviewLayer extends StatelessWidget {
       child: Stack(
         children: [
           Center(
-            child: RepaintBoundary(
-              key: viewModel.ridingCardKey,
-              child: SizedBox(
-                width: cardWidth,
-                height: cardHeight,
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(16),
-                  child: Stack(
-                    children: [
-                      Positioned.fill(
-                        child: Image.asset(
-                          cardType == 0
-                              ? 'assets/imgs/imgs/img_summury_bg.png'
-                              : 'assets/imgs/imgs/img_summury_bg_2.png',
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                      Positioned(
-                        top: 17,
-                        left: 12,
-                        right: 12,
-                        child: Column(
-                          children: [
-                            Container(
-                              width: 43,
-                              height: 43,
-                              decoration: const BoxDecoration(shape: BoxShape.circle),
-                              child: ClipOval(
-                                child: (userViewModel.user.profile_image_url_user?.isNotEmpty ??
-                                    false)
-                                    ? ExtendedImage.network(
-                                  userViewModel.user.profile_image_url_user!,
-                                  fit: BoxFit.cover,
-                                  cache: true,
-                                  loadStateChanged: (state) {
-                                    if (state.extendedImageLoadState == LoadState.failed) {
-                                      return Image.asset(
-                                        'assets/imgs/profile/img_profile_default_circle.png',
-                                        fit: BoxFit.cover,
-                                      );
-                                    }
-                                    return null;
-                                  },
-                                )
-                                    : Image.asset(
-                                  'assets/imgs/profile/img_profile_default_circle.png',
-                                  fit: BoxFit.cover,
-                                ),
-                              ),
-                            ),
-                            const SizedBox(height: 4),
-                            Text(
-                              userViewModel.user.display_name ?? '',
-                              style: SDSTextStyle.bold.copyWith(
-                                fontSize: 9,
-                                color: Colors.white,
-                              ),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                            Text(
-                              '${card.date ?? ''} ${card.weekday ?? ''}',
-                              style: SDSTextStyle.regular.copyWith(
-                                fontSize: 6,
-                                color: Colors.white,
-                              ),
-                            ),
-                            if (card.riderTitle != null && card.riderTitle!.isNotEmpty) ...[
-                              const SizedBox(height: 3),
-                              Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                                decoration: BoxDecoration(
-                                  color: cardType == 0
-                                      ? const Color(0xFF1B3A5C)
-                                      : const Color(0xFFE2EDF8),
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                child: Text(
-                                  card.riderTitle!,
-                                  style: SDSTextStyle.regular.copyWith(
-                                    fontSize: 6,
-                                    color: cardType == 0 ? Colors.white : const Color(0xFF000000),
-                                  ),
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ),
-                            ],
-                          ],
-                        ),
-                      ),
-                      Positioned(
-                        top: 103,
-                        bottom: 29,
-                        left: 6,
-                        right: 6,
-                        child: Center(
-                          child: cardType == 0
-                              ? _buildPreviewCardType0Content(card)
-                              : _buildPreviewCardType1Content(card),
-                        ),
-                      ),
-                      Positioned(
-                        bottom: 9,
-                        left: 0,
-                        right: 0,
-                        child: Center(
-                          child: Image.asset(
-                            'assets/imgs/logos/snowliveLogo_main_white.png',
-                            height: 6,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+            child: SizedBox(
+              width: cardWidth,
+              height: cardHeight,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(6),
+                child: capturedImage != null
+                    ? Image.file(
+                        capturedImage,
+                        fit: BoxFit.cover,
+                      )
+                    : _buildRidingCardWidget(viewModel),
               ),
             ),
           ),
@@ -644,62 +469,158 @@ class LiveTalkPreviewLayer extends StatelessWidget {
     );
   }
 
+  /// 캡처된 이미지가 없을 때 사용하는 fallback 위젯
+  Widget _buildRidingCardWidget(LiveTalkViewModel viewModel) {
+    final card = viewModel.selectedRidingCard.value!;
+    final cardType = viewModel.selectedRidingCardType.value;
+    final UserViewModel userViewModel = Get.find<UserViewModel>();
+
+    return RepaintBoundary(
+      key: viewModel.ridingCardKey,
+      child: Stack(
+        children: [
+          Positioned.fill(
+            child: Image.asset(
+              cardType == 0
+                  ? 'assets/imgs/imgs/img_summury_bg.png'
+                  : 'assets/imgs/imgs/img_summury_bg_2.png',
+              fit: BoxFit.cover,
+            ),
+          ),
+          // 상단: 프로필 + 닉네임 + 날짜
+          Positioned(
+            top: 10,
+            left: 8,
+            right: 8,
+            child: Column(
+              children: [
+                Container(
+                  width: 25,
+                  height: 25,
+                  decoration: const BoxDecoration(shape: BoxShape.circle),
+                  child: ClipOval(
+                    child: (userViewModel.user.profile_image_url_user?.isNotEmpty ?? false)
+                        ? ExtendedImage.network(
+                            userViewModel.user.profile_image_url_user!,
+                            fit: BoxFit.cover,
+                            cache: true,
+                            loadStateChanged: (state) {
+                              if (state.extendedImageLoadState == LoadState.failed) {
+                                return Image.asset(
+                                  'assets/imgs/profile/img_profile_default_circle.png',
+                                  fit: BoxFit.cover,
+                                );
+                              }
+                              return null;
+                            },
+                          )
+                        : Image.asset(
+                            'assets/imgs/profile/img_profile_default_circle.png',
+                            fit: BoxFit.cover,
+                          ),
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  userViewModel.user.display_name ?? '',
+                  style: SDSTextStyle.bold.copyWith(
+                    fontSize: 5,
+                    color: Colors.white,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                Text(
+                  '${card.date ?? ''} ${card.weekday ?? ''}',
+                  style: SDSTextStyle.regular.copyWith(
+                    fontSize: 3,
+                    color: Colors.white,
+                  ),
+                ),
+                if (card.riderTitle != null && card.riderTitle!.isNotEmpty)
+                  Container(
+                    margin: const EdgeInsets.only(top: 2),
+                    padding: const EdgeInsets.symmetric(horizontal: 3, vertical: 1),
+                    decoration: BoxDecoration(
+                      color: cardType == 0
+                          ? const Color(0xFF1B3A5C)
+                          : const Color(0xFFE2EDF8),
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                    child: Text(
+                      card.riderTitle!,
+                      style: SDSTextStyle.regular.copyWith(
+                        fontSize: 3,
+                        color: cardType == 0 ? Colors.white : const Color(0xFF000000),
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+              ],
+            ),
+          ),
+          // 중앙: 라이딩 정보
+          Positioned(
+            top: 58,
+            bottom: 20,
+            left: 6,
+            right: 6,
+            child: Center(
+              child: cardType == 0
+                  ? _buildPreviewCardType0Content(card)
+                  : _buildPreviewCardType1Content(card),
+            ),
+          ),
+          // 하단: 로고
+          Positioned(
+            bottom: 10,
+            left: 0,
+            right: 0,
+            child: Center(
+              child: Image.asset(
+                'assets/imgs/logos/snowliveLogo_main_white.png',
+                height: 3,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildPreviewCardType0Content(dynamic card) {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Text(
-          '${card.totalSlopeCount ?? 0}',
-          style: SDSTextStyle.extraBold.copyWith(
-            fontSize: 20,
-            color: Colors.white,
-            height: 1.0,
-          ),
-        ),
-        const SizedBox(height: 2),
-        Text(
-          '오늘 총 라이딩',
-          style: SDSTextStyle.regular.copyWith(
-            fontSize: 6,
-            color: Colors.white.withOpacity(0.7),
-          ),
-        ),
-        const SizedBox(height: 9),
+        // 오늘 총 라이딩 & 최다 슬로프 (2열)
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            // 오늘 총 라이딩
             Expanded(
               child: Column(
                 children: [
                   Text(
-                    card.mostRiddenSlope?.isNotEmpty == true ? card.mostRiddenSlope! : '-',
+                    (card.totalSlopeCount ?? 0) == 0 ? '-' : '${card.totalSlopeCount}',
                     style: SDSTextStyle.extraBold.copyWith(
-                      fontSize: 11,
+                      fontSize: 7,
                       color: Colors.white,
+                      height: 1.0,
                     ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    textAlign: TextAlign.center,
                   ),
-                  if ((card.mostRiddenCount ?? 0) > 0)
-                    Text(
-                      '${card.mostRiddenCount}회',
-                      style: SDSTextStyle.regular.copyWith(
-                        fontSize: 7,
-                        color: Colors.white,
-                      ),
-                    ),
-                  const SizedBox(height: 2),
                   Text(
-                    '최다 슬로프',
+                    '오늘 총 라이딩',
                     style: SDSTextStyle.regular.copyWith(
-                      fontSize: 6,
+                      fontSize: 3,
                       color: Colors.white.withOpacity(0.7),
                     ),
                   ),
                 ],
               ),
             ),
+            // 최다 슬로프
             Expanded(
               child: Column(
                 children: [
@@ -708,30 +629,108 @@ class LiveTalkPreviewLayer extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.baseline,
                     textBaseline: TextBaseline.alphabetic,
                     children: [
-                      Text(
-                        (card.topSpeed ?? 0).toStringAsFixed(1),
-                        style: SDSTextStyle.extraBold.copyWith(
-                          fontSize: 11,
-                          color: Colors.white,
+                      Flexible(
+                        child: Text(
+                          card.mostRiddenSlope?.isNotEmpty == true ? card.mostRiddenSlope! : '-',
+                          style: SDSTextStyle.extraBold.copyWith(
+                            fontSize: 6,
+                            color: Colors.white,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
-                      Text(
-                        'km/h',
-                        style: SDSTextStyle.regular.copyWith(
-                          fontSize: 7,
-                          color: Colors.white,
+                      if ((card.mostRiddenCount ?? 0) > 0) ...[
+                        Text(
+                          '${card.mostRiddenCount}회',
+                          style: SDSTextStyle.regular.copyWith(
+                            fontSize: 4,
+                            color: Colors.white,
+                          ),
                         ),
-                      ),
+                      ],
                     ],
                   ),
-                  const SizedBox(height: 2),
                   Text(
-                    '최고 속도',
+                    '최다 슬로프',
                     style: SDSTextStyle.regular.copyWith(
-                      fontSize: 6,
+                      fontSize: 3,
                       color: Colors.white.withOpacity(0.7),
                     ),
                   ),
+                ],
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 4),
+        // 라이딩 거리 & 평균 경사도 & 최고 속도 (3열)
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            // 라이딩 거리
+            Expanded(
+              child: Column(
+                children: [
+                  (card.totalDistance ?? 0) == 0
+                      ? Text('-', style: SDSTextStyle.extraBold.copyWith(fontSize: 5, color: Colors.white))
+                      : Row(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.baseline,
+                          textBaseline: TextBaseline.alphabetic,
+                          children: [
+                            Text(
+                              (card.totalDistance ?? 0).toStringAsFixed(0),
+                              style: SDSTextStyle.extraBold.copyWith(fontSize: 5, color: Colors.white),
+                            ),
+                            Text('km', style: SDSTextStyle.regular.copyWith(fontSize: 3, color: Colors.white)),
+                          ],
+                        ),
+                  Text('라이딩 거리', style: SDSTextStyle.regular.copyWith(fontSize: 3, color: Colors.white.withOpacity(0.7))),
+                ],
+              ),
+            ),
+            // 평균 경사도
+            Expanded(
+              child: Column(
+                children: [
+                  (card.avgSlope ?? 0) == 0
+                      ? Text('-', style: SDSTextStyle.extraBold.copyWith(fontSize: 5, color: Colors.white))
+                      : Row(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.baseline,
+                          textBaseline: TextBaseline.alphabetic,
+                          children: [
+                            Text(
+                              (card.avgSlope ?? 0).toStringAsFixed(1),
+                              style: SDSTextStyle.extraBold.copyWith(fontSize: 5, color: Colors.white),
+                            ),
+                            Text('°', style: SDSTextStyle.regular.copyWith(fontSize: 5, color: Colors.white)),
+                          ],
+                        ),
+                  Text('평균 경사도', style: SDSTextStyle.regular.copyWith(fontSize: 3, color: Colors.white.withOpacity(0.7))),
+                ],
+              ),
+            ),
+            // 최고 속도
+            Expanded(
+              child: Column(
+                children: [
+                  (card.topSpeed ?? 0) == 0
+                      ? Text('-', style: SDSTextStyle.extraBold.copyWith(fontSize: 5, color: Colors.white))
+                      : Row(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.baseline,
+                          textBaseline: TextBaseline.alphabetic,
+                          children: [
+                            Text(
+                              (card.topSpeed ?? 0).toStringAsFixed(0),
+                              style: SDSTextStyle.extraBold.copyWith(fontSize: 5, color: Colors.white),
+                            ),
+                            Text('km/h', style: SDSTextStyle.regular.copyWith(fontSize: 3, color: Colors.white)),
+                          ],
+                        ),
+                  Text('최고 속도', style: SDSTextStyle.regular.copyWith(fontSize: 3, color: Colors.white.withOpacity(0.7))),
                 ],
               ),
             ),
@@ -751,61 +750,63 @@ class LiveTalkPreviewLayer extends StatelessWidget {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
+        // 오늘 총 라이딩 숫자
         Text(
           '${card.totalSlopeCount ?? 0}',
           style: SDSTextStyle.extraBold.copyWith(
-            fontSize: 20,
+            fontSize: 10,
             color: Colors.white,
             height: 1.0,
           ),
         ),
-        const SizedBox(height: 2),
+        // 오늘 총 라이딩 라벨
         Text(
           '오늘 총 라이딩',
           style: SDSTextStyle.regular.copyWith(
-            fontSize: 6,
+            fontSize: 3,
             color: Colors.white.withOpacity(0.7),
           ),
         ),
-        const SizedBox(height: 9),
+        const SizedBox(height: 6),
+        // 첫 번째 슬로프 이름 (큰 글씨)
         Text(
           firstSlope?.key ?? '-',
           style: SDSTextStyle.extraBold.copyWith(
-            fontSize: 14,
+            fontSize: 6,
             color: Colors.white,
             height: 1.0,
           ),
           textAlign: TextAlign.center,
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
         ),
+        // 나머지 슬로프들
         if (displaySlopes.isNotEmpty) ...[
-          const SizedBox(height: 3),
+          const SizedBox(height: 2),
           Wrap(
             alignment: WrapAlignment.center,
-            spacing: 6,
-            runSpacing: 2,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            spacing: 2,
+            runSpacing: 1,
             children: [
               ...displaySlopes.map((entry) {
                 return Text(
                   entry.key,
                   style: SDSTextStyle.bold.copyWith(
-                    fontSize: 7,
+                    fontSize: 4,
                     color: Colors.white,
                   ),
                 );
               }),
               if (remainingCount > 0)
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
+                  padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 0),
                   decoration: BoxDecoration(
                     color: Colors.white,
-                    borderRadius: BorderRadius.circular(6),
+                    borderRadius: BorderRadius.circular(3),
                   ),
                   child: Text(
                     '+$remainingCount',
                     style: SDSTextStyle.bold.copyWith(
-                      fontSize: 6,
+                      fontSize: 3,
                       color: Colors.black,
                     ),
                   ),
@@ -813,11 +814,11 @@ class LiveTalkPreviewLayer extends StatelessWidget {
             ],
           ),
         ],
-        const SizedBox(height: 3),
+        // 라이딩 슬로프 라벨
         Text(
           '라이딩 슬로프',
           style: SDSTextStyle.regular.copyWith(
-            fontSize: 6,
+            fontSize: 3,
             color: Colors.white.withOpacity(0.7),
           ),
         ),

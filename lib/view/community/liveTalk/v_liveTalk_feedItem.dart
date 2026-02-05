@@ -8,6 +8,7 @@ import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:shimmer/shimmer.dart';
 
 class LiveTalkFeedItem extends StatelessWidget {
   final FriendDetailViewModel _friendDetailViewModel = Get.find<FriendDetailViewModel>();
@@ -188,17 +189,16 @@ class LiveTalkFeedItem extends StatelessWidget {
                 loadStateChanged: (state) {
                   switch (state.extendedImageLoadState) {
                     case LoadState.loading:
-                      return Container(
-                        width: maxWidth,
-                        height: 200,
-                        decoration: BoxDecoration(
-                          color: SDSColor.gray100,
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: const Center(
-                          child: CircularProgressIndicator(
-                            color: SDSColor.gray300,
-                            strokeWidth: 2,
+                      return Shimmer.fromColors(
+                        baseColor: Colors.grey[300]!,
+                        highlightColor: Colors.grey[100]!,
+                        period: const Duration(milliseconds: 1000),
+                        child: Container(
+                          width: maxWidth,
+                          height: 240,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(10),
                           ),
                         ),
                       );
@@ -294,8 +294,8 @@ class LiveTalkFeedItem extends StatelessWidget {
                   isLiked
                       ? 'assets/imgs/icons/icon_livetalk_like_on.svg'
                       : 'assets/imgs/icons/icon_livetalk_like_off.svg',
-                  width: 22,
-                  height: 22,
+                  width: 20,
+                  height: 20,
                 ),
                 const SizedBox(width: 2),
                 Text(
@@ -327,7 +327,7 @@ class LiveTalkFeedItem extends StatelessWidget {
                 Text(
                   commentCount > 0 ? '$commentCount' : '댓글',
                   style: SDSTextStyle.regular.copyWith(
-                    fontSize: 14,
+                    fontSize: 13,
                     color: SDSColor.gray500,
                   ),
                 ),
