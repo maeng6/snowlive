@@ -460,11 +460,10 @@ class CommunityBulletinUpload extends StatelessWidget {
 
                                 CustomFullScreenDialog.cancelDialog();
                                 Navigator.pop(context);
-                                (_communityBulletinListViewModel.tapName=='게시판')
-                                    ? await _communityBulletinListViewModel.fetchAllCommunity()
-                                    :await _communityBulletinListViewModel.fetchEventCommunity();
-                                if(_communityBulletinListViewModel.tapName=='이벤트·소식')
-                                  await _alarmCenterViewModel.updateEventTabNotice(_userViewModel.user.user_id, true);
+                                await _communityBulletinListViewModel.fetchAllCommunity();
+                                // [이벤트·소식 탭 비활성화] :await _communityBulletinListViewModel.fetchEventCommunity();
+                                // [이벤트·소식 탭 비활성화] if(_communityBulletinListViewModel.tapName=='이벤트·소식')
+                                //   await _alarmCenterViewModel.updateEventTabNotice(_userViewModel.user.user_id, true);
                               }
 
 

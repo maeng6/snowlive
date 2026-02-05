@@ -455,9 +455,8 @@ class CommunityBulletinUpdateView extends StatelessWidget {
                               await _communityDetailViewModel.fetchCommunityDetail(_communityDetailViewModel.communityDetail.communityId!,_userViewModel.user.user_id);
                               CustomFullScreenDialog.cancelDialog();
                               Navigator.pop(context);
-                              (_communityBulletinListViewModel.tapName=='게시판')
-                                  ? await _communityBulletinListViewModel.fetchAllCommunity()
-                                  :await _communityBulletinListViewModel.fetchEventCommunity();
+                              await _communityBulletinListViewModel.fetchAllCommunity();
+                              // [이벤트·소식 탭 비활성화] :await _communityBulletinListViewModel.fetchEventCommunity();
                             }
 
                           },

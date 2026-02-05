@@ -473,11 +473,8 @@ class CommunityBulletinDetailView extends StatelessWidget {
                                                                       _communityDetailViewModel.communityDetail.communityId!,
                                                                       _userViewModel.user.user_id
                                                                   );
-                                                                  if(_communityBulletinListViewModel.tapName =='게시판') {
-                                                                    await _communityBulletinListViewModel.fetchAllCommunity();
-                                                                  }else{
-                                                                    await _communityBulletinListViewModel.fetchEventCommunity();
-                                                                  }
+                                                                  await _communityBulletinListViewModel.fetchAllCommunity();
+                                                                  // [이벤트·소식 탭 비활성화] else { await _communityBulletinListViewModel.fetchEventCommunity(); }
                                                                 },
                                                                 style: TextButton.styleFrom(
                                                                   backgroundColor: Colors.transparent, // 배경색 투명
@@ -1522,11 +1519,8 @@ class CommunityBulletinDetailView extends StatelessWidget {
                                                                                                                   await _communityDetailViewModel.deleteComment(comment.commentId!, _userViewModel.user.user_id);
                                                                                                                   await _communityDetailViewModel.fetchCommunityDetail(_communityDetailViewModel.communityDetail.communityId!, _userViewModel.user.user_id);
                                                                                                                   CustomFullScreenDialog.cancelDialog();
-                                                                                                                  if(_communityBulletinListViewModel.tapName =='게시판') {
-                                                                                                                    await _communityBulletinListViewModel.fetchAllCommunity();
-                                                                                                                  }else{
-                                                                                                                    await _communityBulletinListViewModel.fetchEventCommunity();
-                                                                                                                  }
+                                                                                                                  await _communityBulletinListViewModel.fetchAllCommunity();
+                                                                                                                  // [이벤트·소식 탭 비활성화] else { await _communityBulletinListViewModel.fetchEventCommunity(); }
                                                                                                                 },
                                                                                                                 style: TextButton.styleFrom(
                                                                                                                   backgroundColor: Colors.transparent, // 배경색 투명
@@ -1674,11 +1668,8 @@ class CommunityBulletinDetailView extends StatelessWidget {
                                         FocusScope.of(context).unfocus();
                                         // 백그라운드에서 실행
                                         _communityDetailViewModel.fetchCommunityDetail(_communityDetailViewModel.communityDetail.communityId!, _userViewModel.user.user_id);
-                                        if(_communityBulletinListViewModel.tapName =='게시판') {
-                                          _communityBulletinListViewModel.fetchAllCommunity();
-                                        }else{
-                                          _communityBulletinListViewModel.fetchEventCommunity();
-                                        }
+                                        _communityBulletinListViewModel.fetchAllCommunity();
+                                        // [이벤트·소식 탭 비활성화] else { _communityBulletinListViewModel.fetchEventCommunity(); }
                                         if(_communityDetailViewModel.communityDetail.userId != _userViewModel.user.user_id)
                                           _alarmCenterViewModel.updateNotification(
                                               _communityDetailViewModel.communityDetail.userId!,

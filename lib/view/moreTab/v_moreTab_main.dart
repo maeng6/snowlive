@@ -372,54 +372,54 @@ class MoreTabMainView extends StatelessWidget {
                           ),
                         ),
                         SizedBox(height: 8),
-                        Container(
-                          height: 52,
-                          child: ListTile(
-                            contentPadding: EdgeInsets.symmetric(horizontal: 16),
-                            onTap: () {
-                              otherShare(contents: 'http://pf.kakao.com/_LxnDdG/chat');
-                            },
-                            leading: Image.asset('assets/imgs/icons/icon_moretab_help.png', width: 30),
-                            title: Transform.translate(
-                              offset: Offset(-8, 0),
-                              child: Text(
-                                '1:1 고객 문의',
-                                style: SDSTextStyle.regular.copyWith(
-                                    fontSize: 15,
-                                    color: SDSColor.gray900),
-                              ),
-                            ),
-                            trailing: Image.asset(
-                              'assets/imgs/icons/icon_arrow_g.png',
-                              height: 24,
-                              width: 24,
-                            ),
-                          ),
-                        ),
-                        Container(
-                          height: 52,
-                          child: ListTile(
-                            contentPadding: EdgeInsets.symmetric(horizontal: 16),
-                            onTap: () {
-                              Get.to(() => SnowliveDetailPage());
-                            },
-                            leading: Image.asset('assets/imgs/icons/icon_moretab_snowlive.png', width: 30,),
-                            title: Transform.translate(
-                              offset: Offset(-8, 0),
-                              child: Text(
-                                '스노우라이브',
-                                style: SDSTextStyle.regular.copyWith(
-                                    fontSize: 15,
-                                    color: SDSColor.gray900),
-                              ),
-                            ),
-                            trailing: Image.asset(
-                              'assets/imgs/icons/icon_arrow_g.png',
-                              height: 24,
-                              width: 24,
-                            ),
-                          ),
-                        ),
+                        // Container(
+                        //   height: 52,
+                        //   child: ListTile(
+                        //     contentPadding: EdgeInsets.symmetric(horizontal: 16),
+                        //     onTap: () {
+                        //       otherShare(contents: 'http://pf.kakao.com/_LxnDdG/chat');
+                        //     },
+                        //     leading: Image.asset('assets/imgs/icons/icon_moretab_help.png', width: 30),
+                        //     title: Transform.translate(
+                        //       offset: Offset(-8, 0),
+                        //       child: Text(
+                        //         '1:1 고객 문의',
+                        //         style: SDSTextStyle.regular.copyWith(
+                        //             fontSize: 15,
+                        //             color: SDSColor.gray900),
+                        //       ),
+                        //     ),
+                        //     trailing: Image.asset(
+                        //       'assets/imgs/icons/icon_arrow_g.png',
+                        //       height: 24,
+                        //       width: 24,
+                        //     ),
+                        //   ),
+                        // ),
+                        // Container(
+                        //   height: 52,
+                        //   child: ListTile(
+                        //     contentPadding: EdgeInsets.symmetric(horizontal: 16),
+                        //     onTap: () {
+                        //       Get.to(() => SnowliveDetailPage());
+                        //     },
+                        //     leading: Image.asset('assets/imgs/icons/icon_moretab_snowlive.png', width: 30,),
+                        //     title: Transform.translate(
+                        //       offset: Offset(-8, 0),
+                        //       child: Text(
+                        //         '스노우라이브',
+                        //         style: SDSTextStyle.regular.copyWith(
+                        //             fontSize: 15,
+                        //             color: SDSColor.gray900),
+                        //       ),
+                        //     ),
+                        //     trailing: Image.asset(
+                        //       'assets/imgs/icons/icon_arrow_g.png',
+                        //       height: 24,
+                        //       width: 24,
+                        //     ),
+                        //   ),
+                        // ),
                         Container(
                           height: 52,
                           child: ListTile(

@@ -792,11 +792,8 @@ class CommunityCommentDetailView extends StatelessWidget {
                                                                                                       commentId: _communityCommentDetailViewModel.commentModel_community.commentId!
                                                                                                   );
                                                                                                   CustomFullScreenDialog.cancelDialog();
-                                                                                                  if(_communityBulletinListViewModel.tapName =='게시판') {
-                                                                                                    await _communityBulletinListViewModel.fetchAllCommunity();
-                                                                                                  }else{
-                                                                                                    await _communityBulletinListViewModel.fetchEventCommunity();
-                                                                                                  }
+                                                                                                  await _communityBulletinListViewModel.fetchAllCommunity();
+                                                                                                  // [이벤트·소식 탭 비활성화] else { await _communityBulletinListViewModel.fetchEventCommunity(); }
                                                                                                   print('댓글 삭제 완료');
                                                                                                 },
                                                                                                 style: TextButton.styleFrom(

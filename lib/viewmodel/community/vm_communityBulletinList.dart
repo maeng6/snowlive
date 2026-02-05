@@ -2,7 +2,7 @@ import 'package:com.snowlive/api/api_community.dart';
 import 'package:com.snowlive/model/m_communityList.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
 import 'package:com.snowlive/viewmodel/liveTalk/vm_liveTalk.dart';
-import 'package:com.snowlive/viewmodel/vm_event.dart';
+// [이벤트·소식 탭 비활성화] import 'package:com.snowlive/viewmodel/vm_event.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/rendering.dart';
 import 'package:get/get.dart';
@@ -16,37 +16,37 @@ class CommunityBulletinListViewModel extends GetxController {
   var _communityList_free = <Community>[].obs;
   var _communityList_room = <Community>[].obs;
   var _communityList_crew = <Community>[].obs;
-  var _communityList_event = <Community>[].obs;
+  // [이벤트·소식 탭 비활성화] var _communityList_event = <Community>[].obs;
 
   List<Community> get communityList_total => _communityList_total;
   List<Community> get communityList_free => _communityList_free;
   List<Community> get communityList_room => _communityList_room;
   List<Community> get communityList_crew => _communityList_crew;
-  List<Community> get communityList_event => _communityList_event;
+  // [이벤트·소식 탭 비활성화] List<Community> get communityList_event => _communityList_event;
 
   var _nextPageUrl_total = ''.obs;
   var _nextPageUrl_free = ''.obs;
   var _nextPageUrl_room = ''.obs;
   var _nextPageUrl_crew = ''.obs;
-  var _nextPageUrl_event = ''.obs;
+  // [이벤트·소식 탭 비활성화] var _nextPageUrl_event = ''.obs;
 
   var _previousPageUrl_total = ''.obs;
   var _previousPageUrl_free = ''.obs;
   var _previousPageUrl_room = ''.obs;
   var _previousPageUrl_crew = ''.obs;
-  var _previousPageUrl_event = ''.obs;
+  // [이벤트·소식 탭 비활성화] var _previousPageUrl_event = ''.obs;
 
   RxBool _showAddButton_total = true.obs;
   RxBool _showAddButton_free = true.obs;
   RxBool _showAddButton_room = true.obs;
   RxBool _showAddButton_crew = true.obs;
-  RxBool _showAddButton_event = true.obs;
+  // [이벤트·소식 탭 비활성화] RxBool _showAddButton_event = true.obs;
 
   RxBool _isVisible_total = false.obs;
   RxBool _isVisible_free = false.obs;
   RxBool _isVisible_room = false.obs;
   RxBool _isVisible_crew = false.obs;
-  RxBool _isVisible_event = false.obs;
+  // [이벤트·소식 탭 비활성화] RxBool _isVisible_event = false.obs;
 
   // 카테고리 칩 영역 표시/숨김 상태
   RxBool _showCategoryChips = true.obs;
@@ -55,37 +55,37 @@ class CommunityBulletinListViewModel extends GetxController {
   RxBool _isLoadingList_free = false.obs;
   RxBool _isLoadingList_room = false.obs;
   RxBool _isLoadingList_crew = false.obs;
-  RxBool _isLoadingList_event = false.obs;
+  // [이벤트·소식 탭 비활성화] RxBool _isLoadingList_event = false.obs;
 
   RxBool _isLoadingNextList_total = false.obs;
   RxBool _isLoadingNextList_free = false.obs;
   RxBool _isLoadingNextList_room = false.obs;
   RxBool _isLoadingNextList_crew = false.obs;
-  RxBool _isLoadingNextList_event = false.obs;
+  // [이벤트·소식 탭 비활성화] RxBool _isLoadingNextList_event = false.obs;
 
   String get nextPageUrlTotal => _nextPageUrl_total.value;
   String get nextPageUrlFree => _nextPageUrl_free.value;
   String get nextPageUrlRoom => _nextPageUrl_room.value;
   String get nextPageUrlCrew => _nextPageUrl_crew.value;
-  String get nextPageUrlEvent => _nextPageUrl_event.value;
+  // [이벤트·소식 탭 비활성화] String get nextPageUrlEvent => _nextPageUrl_event.value;
 
   String get previousPageUrlTotal => _previousPageUrl_total.value;
   String get previousPageUrlFree => _previousPageUrl_free.value;
   String get previousPageUrlRoom => _previousPageUrl_room.value;
   String get previousPageUrlCrew => _previousPageUrl_crew.value;
-  String get previousPageUrlEvent => _previousPageUrl_event.value;
+  // [이벤트·소식 탭 비활성화] String get previousPageUrlEvent => _previousPageUrl_event.value;
 
   bool get showAddButton_total => _showAddButton_total.value;
   bool get showAddButton_free => _showAddButton_free.value;
   bool get showAddButton_room => _showAddButton_room.value;
   bool get showAddButton_crew => _showAddButton_crew.value;
-  bool get showAddButton_event => _showAddButton_event.value;
+  // [이벤트·소식 탭 비활성화] bool get showAddButton_event => _showAddButton_event.value;
 
   bool get isVisible_total  => _isVisible_total .value;
   bool get isVisible_free  => _isVisible_free .value;
   bool get isVisible_room  => _isVisible_room .value;
   bool get isVisible_crew  => _isVisible_crew .value;
-  bool get isVisible_event  => _isVisible_event .value;
+  // [이벤트·소식 탭 비활성화] bool get isVisible_event  => _isVisible_event .value;
 
   bool get showCategoryChips => _showCategoryChips.value;
 
@@ -93,13 +93,13 @@ class CommunityBulletinListViewModel extends GetxController {
   bool get isLoadingList_free  => _isLoadingList_free .value;
   bool get isLoadingList_room  => _isLoadingList_room .value;
   bool get isLoadingList_crew  => _isLoadingList_crew .value;
-  bool get isLoadingList_event  => _isLoadingList_event .value;
+  // [이벤트·소식 탭 비활성화] bool get isLoadingList_event  => _isLoadingList_event .value;
 
   bool get isLoadingNextList_total => _isLoadingNextList_total .value;
   bool get isLoadingNextList_free  => _isLoadingNextList_free .value;
   bool get isLoadingNextList_room  => _isLoadingNextList_room .value;
   bool get isLoadingNextList_crew  => _isLoadingNextList_crew .value;
-  bool get isLoadingNextList_event  => _isLoadingNextList_event .value;
+  // [이벤트·소식 탭 비활성화] bool get isLoadingNextList_event  => _isLoadingNextList_event .value;
 
   String get tapName => _tapName.value;
   String get chipName => _chipName.value;
@@ -108,12 +108,12 @@ class CommunityBulletinListViewModel extends GetxController {
   ScrollController scrollController_free = ScrollController();
   ScrollController scrollController_room = ScrollController();
   ScrollController scrollController_crew = ScrollController();
-  ScrollController scrollController_event = ScrollController();
+  // [이벤트·소식 탭 비활성화] ScrollController scrollController_event = ScrollController();
 
   UserViewModel _userViewModel = Get.find<UserViewModel>();
   // bindings.dart에서 먼저 등록되므로 직접 find 사용
   LiveTalkViewModel get _liveTalkViewModel => Get.find<LiveTalkViewModel>();
-  EventViewModel get _eventViewModel => Get.find<EventViewModel>();
+  // [이벤트·소식 탭 비활성화] EventViewModel get _eventViewModel => Get.find<EventViewModel>();
 
   @override
   void onInit() async {
@@ -123,7 +123,7 @@ class CommunityBulletinListViewModel extends GetxController {
     scrollController_free.addListener(_scrollListener_free);
     scrollController_room.addListener(_scrollListener_room);
     scrollController_crew.addListener(_scrollListener_crew);
-    scrollController_event.addListener(_scrollListener_event);
+    // [이벤트·소식 탭 비활성화] scrollController_event.addListener(_scrollListener_event);
 
     await fetchAllCommunity();
   }
@@ -133,11 +133,11 @@ class CommunityBulletinListViewModel extends GetxController {
     _isLoadingList_free.value = true;
     _isLoadingList_room.value = true;
     _isLoadingList_crew.value = true;
-    _isLoadingList_event.value = true;
+    // [이벤트·소식 탭 비활성화] _isLoadingList_event.value = true;
 
-    // 라이브톡, 이벤트 데이터 먼저 로딩 (게시판과 병렬로)
+    // 라이브톡 데이터 먼저 로딩 (게시판과 병렬로)
     final liveTalkFuture = _liveTalkViewModel.fetchLiveTalkList(refresh: true);
-    final eventFuture = _eventViewModel.fetchEventList();
+    // [이벤트·소식 탭 비활성화] final eventFuture = _eventViewModel.fetchEventList();
 
     // 게시판 데이터 로딩
     await fetchCommunityList_total(userId: _userViewModel.user.user_id,categoryMain: '게시판');
@@ -148,20 +148,21 @@ class CommunityBulletinListViewModel extends GetxController {
     _isLoadingList_room.value = false;
     await fetchCommunityList_crew(userId: _userViewModel.user.user_id, categoryMain:'게시판',categorySub: Community_Category_sub_bulletin.crew.korean);
     _isLoadingList_crew.value = false;
-    await fetchCommunityList_event(userId: _userViewModel.user.user_id, categoryMain:'이벤트');
-    _isLoadingList_event.value = false;
+    // [이벤트·소식 탭 비활성화] await fetchCommunityList_event(userId: _userViewModel.user.user_id, categoryMain:'이벤트');
+    // [이벤트·소식 탭 비활성화] _isLoadingList_event.value = false;
 
-    // 라이브톡, 이벤트 로딩 완료 대기
+    // 라이브톡 로딩 완료 대기
     await liveTalkFuture;
-    await eventFuture;
+    // [이벤트·소식 탭 비활성화] await eventFuture;
   }
 
 
-  Future<void> fetchEventCommunity() async{
-    _isLoadingList_event.value = true;
-    await fetchCommunityList_event(userId: _userViewModel.user.user_id, categoryMain:'이벤트');
-    _isLoadingList_event.value = false;
-  }
+  // [이벤트·소식 탭 비활성화]
+  // Future<void> fetchEventCommunity() async{
+  //   _isLoadingList_event.value = true;
+  //   await fetchCommunityList_event(userId: _userViewModel.user.user_id, categoryMain:'이벤트');
+  //   _isLoadingList_event.value = false;
+  // }
 
   Future<void> _scrollListener_total() async {
     // 스크롤이 리스트의 끝에 도달했을 때
@@ -283,27 +284,28 @@ class CommunityBulletinListViewModel extends GetxController {
     }
   }
 
-  Future<void> _scrollListener_event() async {
-    // 스크롤이 리스트의 끝에 도달했을 때
-    if (scrollController_event.position.pixels == scrollController_event.position.maxScrollExtent) {
-      if (!_isLoadingNextList_event.value && _nextPageUrl_event.value.isNotEmpty) {
-        _isLoadingNextList_event.value = true;
-        await fetchNextPage_event();
-        _isLoadingNextList_event.value = true;
-      }
-    }
-
-    // 버튼 표시 여부 결정
-    _showAddButton_event.value = scrollController_event.offset <= 0;
-
-    // 숨김/표시 여부 결정
-    if (scrollController_event.position.userScrollDirection == ScrollDirection.reverse) {
-      _isVisible_event.value = true;
-    } else if (scrollController_event.position.userScrollDirection == ScrollDirection.forward ||
-        scrollController_event.position.pixels <= scrollController_event.position.maxScrollExtent) {
-      _isVisible_event.value = false;
-    }
-  }
+  // [이벤트·소식 탭 비활성화]
+  // Future<void> _scrollListener_event() async {
+  //   // 스크롤이 리스트의 끝에 도달했을 때
+  //   if (scrollController_event.position.pixels == scrollController_event.position.maxScrollExtent) {
+  //     if (!_isLoadingNextList_event.value && _nextPageUrl_event.value.isNotEmpty) {
+  //       _isLoadingNextList_event.value = true;
+  //       await fetchNextPage_event();
+  //       _isLoadingNextList_event.value = true;
+  //     }
+  //   }
+  //
+  //   // 버튼 표시 여부 결정
+  //   _showAddButton_event.value = scrollController_event.offset <= 0;
+  //
+  //   // 숨김/표시 여부 결정
+  //   if (scrollController_event.position.userScrollDirection == ScrollDirection.reverse) {
+  //     _isVisible_event.value = true;
+  //   } else if (scrollController_event.position.userScrollDirection == ScrollDirection.forward ||
+  //       scrollController_event.position.pixels <= scrollController_event.position.maxScrollExtent) {
+  //     _isVisible_event.value = false;
+  //   }
+  // }
 
   // 커뮤니티 목록 불러오기
   Future<void> fetchCommunityList_total({
@@ -476,48 +478,47 @@ class CommunityBulletinListViewModel extends GetxController {
     }
   }
 
-  Future<void> fetchCommunityList_event({
-    String? categoryMain,
-    String? categorySub,
-    String? categorySub2,
-    String? findUserId,
-    String? searchQuery,
-    int? userId,
-    String? url,  // URL을 추가
-  }) async {
-    try {
-      final response = await CommunityAPI().fetchCommunityList(
-        categoryMain: categoryMain,
-        categorySub: categorySub,
-        categorySub2: categorySub2,
-        findUserId: findUserId,
-        searchQuery: searchQuery,
-        userId: userId.toString(),
-        url: url,  // URL을 전달
-      );
-
-      if (response.success) {
-        final communityResponse = CommunityListResponse.fromJson(response.data!);
-        print('이벤트완료');
-
-        if (url == null) {
-          // 초기 호출일 경우
-          _communityList_event.value = communityResponse.results ?? [];
-        } else {
-          // 페이지네이션일 경우
-          _communityList_event.addAll(communityResponse.results ?? []);
-        }
-
-        _nextPageUrl_event.value = communityResponse.next ?? '';
-        _previousPageUrl_event.value = communityResponse.previous ?? '';
-      } else {
-        print('Failed to load community list: ${response.error}');
-      }
-    } catch (e) {
-      print('Error fetching community list: $e');
-    } finally {
-    }
-  }
+  // [이벤트·소식 탭 비활성화]
+  // Future<void> fetchCommunityList_event({
+  //   String? categoryMain,
+  //   String? categorySub,
+  //   String? categorySub2,
+  //   String? findUserId,
+  //   String? searchQuery,
+  //   int? userId,
+  //   String? url,
+  // }) async {
+  //   try {
+  //     final response = await CommunityAPI().fetchCommunityList(
+  //       categoryMain: categoryMain,
+  //       categorySub: categorySub,
+  //       categorySub2: categorySub2,
+  //       findUserId: findUserId,
+  //       searchQuery: searchQuery,
+  //       userId: userId.toString(),
+  //       url: url,
+  //     );
+  //
+  //     if (response.success) {
+  //       final communityResponse = CommunityListResponse.fromJson(response.data!);
+  //       print('이벤트완료');
+  //
+  //       if (url == null) {
+  //         _communityList_event.value = communityResponse.results ?? [];
+  //       } else {
+  //         _communityList_event.addAll(communityResponse.results ?? []);
+  //       }
+  //
+  //       _nextPageUrl_event.value = communityResponse.next ?? '';
+  //       _previousPageUrl_event.value = communityResponse.previous ?? '';
+  //     } else {
+  //       print('Failed to load community list: ${response.error}');
+  //     }
+  //   } catch (e) {
+  //     print('Error fetching community list: $e');
+  //   } finally {
+  //   }
+  // }
 
 
   Future<void> fetchNextPage_total() async{
@@ -556,14 +557,15 @@ class CommunityBulletinListViewModel extends GetxController {
     }
   }
 
-  Future<void> fetchNextPage_event() async{
-    if (_nextPageUrl_event.value.isNotEmpty) {
-      await fetchCommunityList_event(
-          userId: _userViewModel.user.user_id,
-          url: _nextPageUrl_event.value
-      );
-    }
-  }
+  // [이벤트·소식 탭 비활성화]
+  // Future<void> fetchNextPage_event() async{
+  //   if (_nextPageUrl_event.value.isNotEmpty) {
+  //     await fetchCommunityList_event(
+  //         userId: _userViewModel.user.user_id,
+  //         url: _nextPageUrl_event.value
+  //     );
+  //   }
+  // }
 
   void changeTap(value) {
     _tapName.value = value;
@@ -604,11 +606,13 @@ class CommunityBulletinListViewModel extends GetxController {
             }
             break;
         }
-      } else if (_tapName.value == '이벤트·소식') {
-        if (scrollController_event.hasClients) {
-          currentOffset = scrollController_event.offset;
-        }
       }
+      // [이벤트·소식 탭 비활성화]
+      // else if (_tapName.value == '이벤트·소식') {
+      //   if (scrollController_event.hasClients) {
+      //     currentOffset = scrollController_event.offset;
+      //   }
+      // }
 
       // 스크롤이 최상단에 가까우면 칩 표시
       if (currentOffset <= 10) {
@@ -661,15 +665,17 @@ class CommunityBulletinListViewModel extends GetxController {
             }
             break;
         }
-      } else if (_tapName.value == '이벤트·소식') {
-        if (scrollController_event.hasClients) {
-          scrollController_event.animateTo(
-            0,
-            duration: Duration(milliseconds: 300),
-            curve: Curves.easeOut,
-          );
-        }
       }
+      // [이벤트·소식 탭 비활성화]
+      // else if (_tapName.value == '이벤트·소식') {
+      //   if (scrollController_event.hasClients) {
+      //     scrollController_event.animateTo(
+      //       0,
+      //       duration: Duration(milliseconds: 300),
+      //       curve: Curves.easeOut,
+      //     );
+      //   }
+      // }
       _showCategoryChips.value = true; // 스크롤 최상단 이동 시 카테고리 칩 표시
     } catch (e) {
       print('scrollToTop error: $e');
@@ -686,36 +692,37 @@ class CommunityBulletinListViewModel extends GetxController {
     fetchCommunityList_free(userId:  _userViewModel.user.user_id,categoryMain: '게시판',categorySub: Community_Category_sub_bulletin.chat.korean);
     fetchCommunityList_room(userId:  _userViewModel.user.user_id,categoryMain: '게시판',categorySub: Community_Category_sub_bulletin.room.korean);
     fetchCommunityList_crew(userId:  _userViewModel.user.user_id,categoryMain: '게시판',categorySub: Community_Category_sub_bulletin.crew.korean);
-    fetchCommunityList_event(userId:  _userViewModel.user.user_id,categoryMain: '이벤트');
+    // [이벤트·소식 탭 비활성화] fetchCommunityList_event(userId:  _userViewModel.user.user_id,categoryMain: '이벤트');
   }
   Future<void> onRefresh_bulletin_free() async {
     await fetchCommunityList_free(userId:  _userViewModel.user.user_id,categoryMain: '게시판',categorySub: Community_Category_sub_bulletin.chat.korean);
     fetchCommunityList_total(userId:  _userViewModel.user.user_id,categoryMain: '게시판');
     fetchCommunityList_room(userId:  _userViewModel.user.user_id,categoryMain: '게시판',categorySub: Community_Category_sub_bulletin.room.korean);
     fetchCommunityList_crew(userId:  _userViewModel.user.user_id,categoryMain: '게시판',categorySub: Community_Category_sub_bulletin.crew.korean);
-    fetchCommunityList_event(userId:  _userViewModel.user.user_id,categoryMain: '이벤트');
+    // [이벤트·소식 탭 비활성화] fetchCommunityList_event(userId:  _userViewModel.user.user_id,categoryMain: '이벤트');
   }
   Future<void> onRefresh_bulletin_room() async {
     await fetchCommunityList_room(userId:  _userViewModel.user.user_id,categoryMain: '게시판',categorySub: Community_Category_sub_bulletin.room.korean);
     fetchCommunityList_total(userId:  _userViewModel.user.user_id,categoryMain: '게시판');
     fetchCommunityList_free(userId:  _userViewModel.user.user_id,categoryMain: '게시판',categorySub: Community_Category_sub_bulletin.chat.korean);
     fetchCommunityList_crew(userId:  _userViewModel.user.user_id,categoryMain: '게시판',categorySub: Community_Category_sub_bulletin.crew.korean);
-    fetchCommunityList_event(userId:  _userViewModel.user.user_id,categoryMain: '이벤트');
+    // [이벤트·소식 탭 비활성화] fetchCommunityList_event(userId:  _userViewModel.user.user_id,categoryMain: '이벤트');
   }
   Future<void> onRefresh_bulletin_crew() async {
     await fetchCommunityList_crew(userId:  _userViewModel.user.user_id,categoryMain: '게시판',categorySub: Community_Category_sub_bulletin.crew.korean);
     fetchCommunityList_total(userId:  _userViewModel.user.user_id,categoryMain: '게시판');
     fetchCommunityList_free(userId:  _userViewModel.user.user_id,categoryMain: '게시판',categorySub: Community_Category_sub_bulletin.chat.korean);
     fetchCommunityList_room(userId:  _userViewModel.user.user_id,categoryMain: '게시판',categorySub: Community_Category_sub_bulletin.room.korean);
-    fetchCommunityList_event(userId:  _userViewModel.user.user_id,categoryMain: '이벤트');
+    // [이벤트·소식 탭 비활성화] fetchCommunityList_event(userId:  _userViewModel.user.user_id,categoryMain: '이벤트');
   }
-  Future<void> onRefresh_bulletin_event() async {
-    await fetchCommunityList_event(userId:  _userViewModel.user.user_id,categoryMain: '이벤트');
-    fetchCommunityList_total(userId:  _userViewModel.user.user_id,categoryMain: '게시판');
-    fetchCommunityList_free(userId:  _userViewModel.user.user_id,categoryMain: '게시판',categorySub: Community_Category_sub_bulletin.chat.korean);
-    fetchCommunityList_room(userId:  _userViewModel.user.user_id,categoryMain: '게시판',categorySub: Community_Category_sub_bulletin.room.korean);
-    fetchCommunityList_crew(userId:  _userViewModel.user.user_id,categoryMain: '게시판',categorySub: Community_Category_sub_bulletin.crew.korean);
-  }
+  // [이벤트·소식 탭 비활성화]
+  // Future<void> onRefresh_bulletin_event() async {
+  //   await fetchCommunityList_event(userId:  _userViewModel.user.user_id,categoryMain: '이벤트');
+  //   fetchCommunityList_total(userId:  _userViewModel.user.user_id,categoryMain: '게시판');
+  //   fetchCommunityList_free(userId:  _userViewModel.user.user_id,categoryMain: '게시판',categorySub: Community_Category_sub_bulletin.chat.korean);
+  //   fetchCommunityList_room(userId:  _userViewModel.user.user_id,categoryMain: '게시판',categorySub: Community_Category_sub_bulletin.room.korean);
+  //   fetchCommunityList_crew(userId:  _userViewModel.user.user_id,categoryMain: '게시판',categorySub: Community_Category_sub_bulletin.crew.korean);
+  // }
 
   @override
   void onClose() {
@@ -724,7 +731,7 @@ class CommunityBulletinListViewModel extends GetxController {
     scrollController_free.dispose();
     scrollController_room.dispose();
     scrollController_crew.dispose();
-    scrollController_event.dispose();
+    // [이벤트·소식 탭 비활성화] scrollController_event.dispose();
     super.onClose();
   }
 }
@@ -740,18 +747,19 @@ enum Community_Category_sub_bulletin {
   const Community_Category_sub_bulletin(this.korean, this.english);
 }
 
-enum Community_Category_sub_event {
-  total("전체", "free"),
-  clinic_free("클리닉(무료)", "clinic_free"),
-  clinic_pay("클리닉(유료)", "clinic_pay"),
-  test("시승회", "test"),
-  match("대회", "match"),
-  etc("기타", "etc");
-
-  final String korean;
-  final String english;
-  const Community_Category_sub_event(this.korean, this.english);
-}
+// [이벤트·소식 탭 비활성화]
+// enum Community_Category_sub_event {
+//   total("전체", "free"),
+//   clinic_free("클리닉(무료)", "clinic_free"),
+//   clinic_pay("클리닉(유료)", "clinic_pay"),
+//   test("시승회", "test"),
+//   match("대회", "match"),
+//   etc("기타", "etc");
+//
+//   final String korean;
+//   final String english;
+//   const Community_Category_sub_event(this.korean, this.english);
+// }
 
 enum Community_Category_sub2_bulletin {
   search("방 구해요", "free"),

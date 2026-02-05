@@ -5,11 +5,11 @@ import 'package:com.snowlive/view/community/free/v_community_Bulletin_Free.dart'
 import 'package:com.snowlive/view/community/free/v_community_Bulletin_Total.dart';
 import 'package:com.snowlive/view/community/free/v_community_Bulletin_Room.dart';
 import 'package:com.snowlive/view/community/liveTalk/v_liveTalk_main.dart';
-import 'package:com.snowlive/view/moreTab/w_eventPageEmbedded.dart';
+// [이벤트·소식 탭 비활성화] import 'package:com.snowlive/view/moreTab/w_eventPageEmbedded.dart';
 import 'package:com.snowlive/viewmodel/community/vm_communityBulletinList.dart';
-import 'package:com.snowlive/viewmodel/vm_eventAlarm.dart';
+// [이벤트·소식 탭 비활성화] import 'package:com.snowlive/viewmodel/vm_eventAlarm.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
-import 'package:firebase_analytics/firebase_analytics.dart';
+// [이벤트·소식 탭 비활성화] import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -17,7 +17,7 @@ import 'package:get/get.dart';
 class CommunityMainView extends StatelessWidget {
 
   final CommunityBulletinListViewModel _communityBulletinListViewModel = Get.find<CommunityBulletinListViewModel>();
-  final EventAlarmViewModel _eventAlarmViewModel = Get.find<EventAlarmViewModel>();
+  // [이벤트·소식 탭 비활성화] final EventAlarmViewModel _eventAlarmViewModel = Get.find<EventAlarmViewModel>();
   UserViewModel _userViewModel = Get.find<UserViewModel>();
 
   @override
@@ -69,7 +69,7 @@ class CommunityMainView extends StatelessWidget {
                             Padding(
                               padding: EdgeInsets.only(bottom: 2),
                               child: Container(
-                                width: (_size.width - 48) / 3,
+                                width: (_size.width - 48) / 2,
                                 height: 40,
                                 child: ElevatedButton(
                                   child: Text(
@@ -115,7 +115,7 @@ class CommunityMainView extends StatelessWidget {
                             Padding(
                               padding: EdgeInsets.only(bottom: 2),
                               child: Container(
-                                width: (_size.width - 48) / 3,
+                                width: (_size.width - 48) / 2,
                                 height: 40,
                                 child: ElevatedButton(
                                   child: Text(
@@ -155,95 +155,95 @@ class CommunityMainView extends StatelessWidget {
                             )
                           ],
                         ),
-                        // 이벤트·소식 탭
-                        Column(
-                          children: [
-                            Padding(
-                              padding: EdgeInsets.only(bottom: 2),
-                              child: Row(
-                                children: [
-                                  Container(
-                                    width: (_size.width - 48) / 3,
-                                    height: 40,
-                                    child: ElevatedButton(
-                                      child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        children: [
-                                          Text(
-                                            '이벤트·소식',
-                                            style: SDSTextStyle.extraBold.copyWith(
-                                              color: (_communityBulletinListViewModel.tapName == '이벤트·소식')
-                                                  ? SDSColor.gray900
-                                                  : SDSColor.gray900.withOpacity(0.2),
-                                              fontWeight: (_communityBulletinListViewModel.tapName == '이벤트·소식')
-                                                  ? FontWeight.w900
-                                                  : FontWeight.w300,
-                                              fontSize: 16,
-                                            ),
-                                          ),
-                                          if (_eventAlarmViewModel.hasNewEvent.value)
-                                            Padding(
-                                              padding: EdgeInsets.only(left: 4),
-                                              child: Container(
-                                                width: 20,
-                                                height: 20,
-                                                decoration: BoxDecoration(
-                                                  color: Color(0xFFD6382B),
-                                                  borderRadius: BorderRadius.circular(20),
-                                                ),
-                                                child: Center(
-                                                  child: Text(
-                                                    'N',
-                                                    style: SDSTextStyle.extraBold.copyWith(
-                                                      fontSize: 11,
-                                                      fontWeight: FontWeight.bold,
-                                                      color: Color(0xFFFFFFFF),
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                        ],
-                                      ),
-                                      onPressed: () {
-                                        HapticFeedback.lightImpact();
-                                        _communityBulletinListViewModel.changeTap('이벤트·소식');
-                                        // GA 이벤트 로깅
-                                        FirebaseAnalytics.instance.logEvent(
-                                          name: 'tap_community_event',
-                                          parameters: <String, Object>{
-                                            'user_id': _userViewModel.user.user_id ?? 0,
-                                          },
-                                        );
-                                        // 뉴뱃지 확인 및 데이터 로드는 EventPageEmbeddedView에서 처리
-                                      },
-                                      style: ElevatedButton.styleFrom(
-                                        splashFactory: NoSplash.splashFactory,
-                                        padding: EdgeInsets.only(top: 0),
-                                        minimumSize: Size(40, 10),
-                                        backgroundColor: SDSColor.snowliveWhite,
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(8),
-                                        ),
-                                        elevation: 0,
-                                        shadowColor: Colors.transparent,
-                                        overlayColor: Colors.transparent,
-                                        surfaceTintColor: Colors.transparent,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Container(
-                              width: 104,
-                              height: 3,
-                              color: (_communityBulletinListViewModel.tapName == '이벤트·소식')
-                                  ? Color(0xFF111111)
-                                  : Colors.transparent,
-                            ),
-                          ],
-                        ),
+                        // [이벤트·소식 탭 비활성화] 아래 탭 버튼 전체 주석처리
+                        // Column(
+                        //   children: [
+                        //     Padding(
+                        //       padding: EdgeInsets.only(bottom: 2),
+                        //       child: Row(
+                        //         children: [
+                        //           Container(
+                        //             width: (_size.width - 48) / 3,
+                        //             height: 40,
+                        //             child: ElevatedButton(
+                        //               child: Row(
+                        //                 mainAxisAlignment: MainAxisAlignment.center,
+                        //                 children: [
+                        //                   Text(
+                        //                     '이벤트·소식',
+                        //                     style: SDSTextStyle.extraBold.copyWith(
+                        //                       color: (_communityBulletinListViewModel.tapName == '이벤트·소식')
+                        //                           ? SDSColor.gray900
+                        //                           : SDSColor.gray900.withOpacity(0.2),
+                        //                       fontWeight: (_communityBulletinListViewModel.tapName == '이벤트·소식')
+                        //                           ? FontWeight.w900
+                        //                           : FontWeight.w300,
+                        //                       fontSize: 16,
+                        //                     ),
+                        //                   ),
+                        //                   if (_eventAlarmViewModel.hasNewEvent.value)
+                        //                     Padding(
+                        //                       padding: EdgeInsets.only(left: 4),
+                        //                       child: Container(
+                        //                         width: 20,
+                        //                         height: 20,
+                        //                         decoration: BoxDecoration(
+                        //                           color: Color(0xFFD6382B),
+                        //                           borderRadius: BorderRadius.circular(20),
+                        //                         ),
+                        //                         child: Center(
+                        //                           child: Text(
+                        //                             'N',
+                        //                             style: SDSTextStyle.extraBold.copyWith(
+                        //                               fontSize: 11,
+                        //                               fontWeight: FontWeight.bold,
+                        //                               color: Color(0xFFFFFFFF),
+                        //                             ),
+                        //                           ),
+                        //                         ),
+                        //                       ),
+                        //                     ),
+                        //                 ],
+                        //               ),
+                        //               onPressed: () {
+                        //                 HapticFeedback.lightImpact();
+                        //                 _communityBulletinListViewModel.changeTap('이벤트·소식');
+                        //                 // GA 이벤트 로깅
+                        //                 FirebaseAnalytics.instance.logEvent(
+                        //                   name: 'tap_community_event',
+                        //                   parameters: <String, Object>{
+                        //                     'user_id': _userViewModel.user.user_id ?? 0,
+                        //                   },
+                        //                 );
+                        //                 // 뉴뱃지 확인 및 데이터 로드는 EventPageEmbeddedView에서 처리
+                        //               },
+                        //               style: ElevatedButton.styleFrom(
+                        //                 splashFactory: NoSplash.splashFactory,
+                        //                 padding: EdgeInsets.only(top: 0),
+                        //                 minimumSize: Size(40, 10),
+                        //                 backgroundColor: SDSColor.snowliveWhite,
+                        //                 shape: RoundedRectangleBorder(
+                        //                   borderRadius: BorderRadius.circular(8),
+                        //                 ),
+                        //                 elevation: 0,
+                        //                 shadowColor: Colors.transparent,
+                        //                 overlayColor: Colors.transparent,
+                        //                 surfaceTintColor: Colors.transparent,
+                        //               ),
+                        //             ),
+                        //           ),
+                        //         ],
+                        //       ),
+                        //     ),
+                        //     Container(
+                        //       width: 104,
+                        //       height: 3,
+                        //       color: (_communityBulletinListViewModel.tapName == '이벤트·소식')
+                        //           ? Color(0xFF111111)
+                        //           : Colors.transparent,
+                        //     ),
+                        //   ],
+                        // ),
                       ],
                     ),
                   ),
@@ -406,8 +406,9 @@ class CommunityMainView extends StatelessWidget {
                   if(_communityBulletinListViewModel.tapName=='게시판'
                       && _communityBulletinListViewModel.chipName == Community_Category_sub_bulletin.crew.korean)
                     Expanded(child: CommunityBulletinCrewListView()),
-                  if(_communityBulletinListViewModel.tapName=='이벤트·소식')
-                    Expanded(child: EventPageEmbeddedView()),
+                  // [이벤트·소식 탭 비활성화]
+                  // if(_communityBulletinListViewModel.tapName=='이벤트·소식')
+                  //   Expanded(child: EventPageEmbeddedView()),
                   if(_communityBulletinListViewModel.tapName=='라이브톡')
                     Expanded(child: LiveTalkMainView()),
                 ],
