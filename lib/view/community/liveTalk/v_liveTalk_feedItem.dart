@@ -4,6 +4,7 @@ import 'package:com.snowlive/routes/routes.dart';
 import 'package:com.snowlive/util/util_1.dart';
 import 'package:com.snowlive/view/community/liveTalk/v_liveTalk_imageScreen.dart';
 import 'package:com.snowlive/viewmodel/friend/vm_friendDetail.dart';
+import 'package:com.snowlive/viewmodel/liveTalk/vm_liveTalk.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
@@ -14,6 +15,7 @@ import 'package:shimmer/shimmer.dart';
 class LiveTalkFeedItem extends StatelessWidget {
   final FriendDetailViewModel _friendDetailViewModel = Get.find<FriendDetailViewModel>();
   final UserViewModel _userViewModel = Get.find<UserViewModel>();
+  final LiveTalkViewModel _liveTalkViewModel = Get.find<LiveTalkViewModel>();
   final LiveTalk liveTalk;
   final VoidCallback onLike;
   final VoidCallback onComment;
@@ -173,6 +175,10 @@ class LiveTalkFeedItem extends StatelessWidget {
 
   Widget _buildImage(BuildContext context) {
     const double maxHeight = 400;
+    final imageUrl = liveTalk.imageUrl!;
+
+    // 캐시된 크기가 있는지 확인
+    final cachedSize = _liveTalkViewModel.getCachedImageSize(imageUrl);
 
     return GestureDetector(
       onTap: () {
@@ -180,7 +186,7 @@ class LiveTalkFeedItem extends StatelessWidget {
           context,
           MaterialPageRoute(
             builder: (context) => LiveTalkImageScreen(
-              imageUrls: [liveTalk.imageUrl!],
+              imageUrls: [imageUrl],
               initialIndex: 0,
             ),
           ),
@@ -192,13 +198,18 @@ class LiveTalkFeedItem extends StatelessWidget {
           builder: (context, constraints) {
             final maxWidth = constraints.maxWidth;
 
+            // 캐시된 크기로 placeholder 높이 결정
+            double placeholderHeight = 240;
+            if (cachedSize != null) {
+              placeholderHeight = cachedSize.height;
+            }
+
             return ClipRRect(
               borderRadius: BorderRadius.circular(10),
               child: ExtendedImage.network(
-                liveTalk.imageUrl!,
+                imageUrl,
                 cache: true,
                 cacheHeight: 800,
-                clearMemoryCacheWhenDispose: true,
                 loadStateChanged: (state) {
                   switch (state.extendedImageLoadState) {
                     case LoadState.loading:
@@ -208,7 +219,7 @@ class LiveTalkFeedItem extends StatelessWidget {
                         period: const Duration(milliseconds: 1000),
                         child: Container(
                           width: maxWidth,
-                          height: 240,
+                          height: placeholderHeight,
                           decoration: BoxDecoration(
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(10),
@@ -218,7 +229,7 @@ class LiveTalkFeedItem extends StatelessWidget {
                     case LoadState.failed:
                       return Container(
                         width: maxWidth,
-                        height: 200,
+                        height: placeholderHeight,
                         decoration: BoxDecoration(
                           color: SDSColor.gray100,
                           borderRadius: BorderRadius.circular(10),
@@ -254,6 +265,9 @@ class LiveTalkFeedItem extends StatelessWidget {
                         finalWidth = maxWidth;
                         finalHeight = heightByWidth;
                       }
+
+                      // 크기를 캐시에 저장 (다음 스크롤 시 사용)
+                      _liveTalkViewModel.cacheImageSize(imageUrl, finalWidth, finalHeight);
 
                       return Center(
                         child: SizedBox(

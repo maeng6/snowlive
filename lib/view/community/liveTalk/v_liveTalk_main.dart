@@ -42,6 +42,13 @@ class _LiveTalkMainViewState extends State<LiveTalkMainView> {
     }
   }
 
+  @override
+  void dispose() {
+    // 화면을 나갈 때 이미지 크기 캐시 삭제
+    _liveTalkViewModel.clearImageSizeCache();
+    super.dispose();
+  }
+
   Future<void> _onRefresh() async {
     _isRefreshing = true;
     await _liveTalkViewModel.onRefresh();
@@ -80,12 +87,13 @@ class _LiveTalkMainViewState extends State<LiveTalkMainView> {
             return RefreshIndicator(
               onRefresh: _onRefresh,
               strokeWidth: 2,
-              edgeOffset: -100,
-              displacement: 100,
+              displacement: 40,
               backgroundColor: SDSColor.snowliveBlue,
               color: SDSColor.snowliveWhite,
               child: ListView.builder(
                 controller: _liveTalkViewModel.scrollController,
+                physics: const AlwaysScrollableScrollPhysics(),
+                cacheExtent: 1000,
                 padding: EdgeInsets.only(
                   top: 0,
                   bottom: 100, // 하단 입력 영역 높이만큼 여유
@@ -118,6 +126,7 @@ class _LiveTalkMainViewState extends State<LiveTalkMainView> {
                   final liveTalk = _liveTalkViewModel.liveTalkList[index];
                   final isLast = index == _liveTalkViewModel.liveTalkList.length - 1;
                   return LiveTalkFeedItem(
+                    key: ValueKey(liveTalk.livetalkId),
                     liveTalk: liveTalk,
                     onLike: () => _liveTalkViewModel.toggleLikeByIndex(index),
                     onComment: () => _goToCommentScreen(liveTalk),

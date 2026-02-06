@@ -54,6 +54,25 @@ class LiveTalkViewModel extends GetxController {
   RxBool showMyFab = true.obs;
   RxBool showScrollToTopButton = false.obs;
 
+  // 이미지 크기 캐시 (스크롤 점프 방지용)
+  // key: imageUrl, value: {width, height}
+  final Map<String, Size> _imageSizeCache = {};
+
+  /// 이미지 크기 저장
+  void cacheImageSize(String imageUrl, double width, double height) {
+    _imageSizeCache[imageUrl] = Size(width, height);
+  }
+
+  /// 캐시된 이미지 크기 가져오기
+  Size? getCachedImageSize(String imageUrl) {
+    return _imageSizeCache[imageUrl];
+  }
+
+  /// 이미지 크기 캐시 초기화 (화면 나갈 때 호출)
+  void clearImageSizeCache() {
+    _imageSizeCache.clear();
+  }
+
   // ============================================
   // 게시글 작성 관련
   // ============================================
@@ -134,8 +153,11 @@ class LiveTalkViewModel extends GetxController {
       if (!showFab.value) showFab.value = true;
     }
 
-    // 맨 위로 버튼 표시
-    showScrollToTopButton.value = scrollController.offset > 500;
+    // 맨 위로 버튼 표시 (값이 변경될 때만 업데이트)
+    final shouldShow = scrollController.offset > 500;
+    if (showScrollToTopButton.value != shouldShow) {
+      showScrollToTopButton.value = shouldShow;
+    }
 
     // 무한 스크롤
     if (scrollController.position.pixels >= scrollController.position.maxScrollExtent - 200) {
