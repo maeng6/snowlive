@@ -139,12 +139,21 @@ class _LiveTalkMainViewState extends State<LiveTalkMainView> {
 
           // 업로드/수정 중 표시 (inputArea 위에 떠있는 형태)
           Obx(() {
+            // 미리보기가 있는지 확인하여 bottom 위치 계산
+            final hasPreview = _liveTalkViewModel.selectedImage.value != null ||
+                _liveTalkViewModel.selectedRidingCard.value != null ||
+                (_liveTalkViewModel.isEditMode.value &&
+                    _liveTalkViewModel.editingLiveTalk.value?.imageUrl != null &&
+                    _liveTalkViewModel.editingLiveTalk.value!.imageUrl!.isNotEmpty);
+            // 미리보기 높이: 이미지 120 + 패딩 16 + 여유 = 약 152
+            final previewHeight = hasPreview ? 152.0 : 0.0;
+
             // 업로드 중 표시
             if (_liveTalkViewModel.isPosting.value) {
               return Positioned(
                 left: 0,
                 right: 0,
-                bottom: _liveTalkViewModel.inputAreaHeight.value + 16,
+                bottom: _liveTalkViewModel.inputAreaHeight.value + 16 + previewHeight,
                 child: Center(
                   child: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
@@ -186,7 +195,7 @@ class _LiveTalkMainViewState extends State<LiveTalkMainView> {
               return Positioned(
                 left: 0,
                 right: 0,
-                bottom: _liveTalkViewModel.inputAreaHeight.value + 16,
+                bottom: _liveTalkViewModel.inputAreaHeight.value + 16 + previewHeight,
                 child: Center(
                   child: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
