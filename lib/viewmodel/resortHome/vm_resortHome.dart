@@ -1456,13 +1456,12 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
                   print('경계 외부 확정 - 위치 서비스 종료');
                   _sendLiveLog(userId: user_id, requestType: 'fg_out_of_boundary', lat: position.latitude, lon: position.longitude, speed: position.speed, distance: distanceFromLast);
                   _outOfBoundaryCount = 0; // 카운터 리셋
-                  _isLiveOffInProgress = true; // 🛡️ 새 위치 이벤트 차단 (race condition 방지)
                   // 🔥 스트림 콜백 내에서 자기 subscription cancel 시 이후 코드 실행 안될 수 있음
                   // Future.microtask로 콜백 외부에서 실행하여 liveOff까지 정상 완료되도록 보장
                   Future.microtask(() async {
-                    await stopForegroundLocationService();
-                    await stopBackgroundLocationService();
                     await liveOff({"user_id": user_id}, user_id);
+                    await _userViewModel.updateUserModel_api(user_id);
+                    print('✅ [FG] 경계 외부 확정 - 라이브 종료 완료');
                   });
                 }
               }
@@ -1994,13 +1993,12 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
             print('경계 외부 확정 - 위치 서비스 종료');
             _sendLiveLog(userId: user_id, requestType: 'bg_out_of_boundary', lat: position.latitude, lon: position.longitude, speed: position.speed, distance: distanceFromLast);
             _outOfBoundaryCount = 0; // 카운터 리셋
-            _isLiveOffInProgress = true; // 🛡️ 새 위치 이벤트 차단 (race condition 방지)
             // 🔥 스트림 콜백 내에서 자기 리스너 제거 시 이후 코드 실행 안될 수 있음
             // Future.microtask로 콜백 외부에서 실행하여 liveOff까지 정상 완료되도록 보장
             Future.microtask(() async {
-              await stopForegroundLocationService();
-              await stopBackgroundLocationService();
               await liveOff({"user_id": user_id}, user_id);
+              await _userViewModel.updateUserModel_api(user_id);
+              print('✅ [BG] 경계 외부 확정 - 라이브 종료 완료');
             });
           }
         }
