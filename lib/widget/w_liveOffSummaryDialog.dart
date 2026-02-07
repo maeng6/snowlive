@@ -167,33 +167,32 @@ class _LiveOffSummaryDialogState extends State<LiveOffSummaryDialog> {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        // 오늘 총 라이딩 & 최다 슬로프 (2열)
+        // 첫 번째 행: 오늘 총 라이딩만
+        Column(
+          children: [
+            Text(
+              summary.totalSlopeCount == 0 ? '-' : '${summary.totalSlopeCount}',
+              style: SDSTextStyle.extraBold.copyWith(
+                fontSize: 40,
+                color: Colors.white,
+                height: 1.0,
+              ),
+            ),
+            const SizedBox(height: 6),
+            Text(
+              '오늘 총 라이딩',
+              style: SDSTextStyle.regular.copyWith(
+                fontSize: 12,
+                color: Colors.white.withOpacity(0.7),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 24),
+        // 두 번째 행: 최다 슬로프 & 최고 속도 (2열)
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // 오늘 총 라이딩
-            Expanded(
-              child: Column(
-                children: [
-                  Text(
-                    summary.totalSlopeCount == 0 ? '-' : '${summary.totalSlopeCount}',
-                    style: SDSTextStyle.extraBold.copyWith(
-                      fontSize: 30,
-                      color: Colors.white,
-                      height: 1.0,
-                    ),
-                  ),
-                  const SizedBox(height: 6),
-                  Text(
-                    '오늘 총 라이딩',
-                    style: SDSTextStyle.regular.copyWith(
-                      fontSize: 12,
-                      color: Colors.white.withOpacity(0.7),
-                    ),
-                  ),
-                ],
-              ),
-            ),
             // 최다 슬로프
             Expanded(
               child: Column(
@@ -235,48 +234,49 @@ class _LiveOffSummaryDialogState extends State<LiveOffSummaryDialog> {
                 ],
               ),
             ),
-          ],
-        ),
-        const SizedBox(height: 16),
-        // 최고 속도
-        Column(
-          children: [
-            summary.topSpeed == 0
-                ? Text(
-                    '-',
-                    style: SDSTextStyle.extraBold.copyWith(
-                      fontSize: 22,
-                      color: Colors.white,
+            // 최고 속도
+            Expanded(
+              child: Column(
+                children: [
+                  summary.topSpeed == 0
+                      ? Text(
+                          '-',
+                          style: SDSTextStyle.extraBold.copyWith(
+                            fontSize: 24,
+                            color: Colors.white,
+                          ),
+                        )
+                      : Row(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.baseline,
+                          textBaseline: TextBaseline.alphabetic,
+                          children: [
+                            Text(
+                              summary.topSpeed.toStringAsFixed(0),
+                              style: SDSTextStyle.extraBold.copyWith(
+                                fontSize: 24,
+                                color: Colors.white,
+                              ),
+                            ),
+                            const SizedBox(width: 2),
+                            Text(
+                              'km/h',
+                              style: SDSTextStyle.regular.copyWith(
+                                fontSize: 14,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ],
+                        ),
+                  const SizedBox(height: 4),
+                  Text(
+                    '최고 속도',
+                    style: SDSTextStyle.regular.copyWith(
+                      fontSize: 12,
+                      color: Colors.white.withOpacity(0.7),
                     ),
-                  )
-                : Row(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.baseline,
-                    textBaseline: TextBaseline.alphabetic,
-                    children: [
-                      Text(
-                        summary.topSpeed.toStringAsFixed(0),
-                        style: SDSTextStyle.extraBold.copyWith(
-                          fontSize: 22,
-                          color: Colors.white,
-                        ),
-                      ),
-                      const SizedBox(width: 2),
-                      Text(
-                        'km/h',
-                        style: SDSTextStyle.regular.copyWith(
-                          fontSize: 14,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ],
                   ),
-            const SizedBox(height: 2),
-            Text(
-              '최고 속도',
-              style: SDSTextStyle.regular.copyWith(
-                fontSize: 12,
-                color: Colors.white.withOpacity(0.7),
+                ],
               ),
             ),
           ],

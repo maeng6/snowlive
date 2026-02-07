@@ -389,18 +389,6 @@ class _LiveTalkMainViewState extends State<LiveTalkMainView> {
               children: [
                 const Spacer(),
 
-                // 타이틀
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 16),
-                  child: Text(
-                    '오늘의 라이딩 기록 카드',
-                    style: SDSTextStyle.bold.copyWith(
-                      fontSize: 18,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-
                 // 카드 미리보기 (크게) - RepaintBoundary로 감싸서 캡처 가능하게
                 RepaintBoundary(
                   key: repaintBoundaryKey,
@@ -973,33 +961,32 @@ class _LiveTalkMainViewState extends State<LiveTalkMainView> {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        // 오늘 총 라이딩 & 최다 슬로프 (2열)
+        // 첫 번째 행: 오늘 총 라이딩만
+        Column(
+          children: [
+            Text(
+              (card.totalSlopeCount ?? 0) == 0 ? '-' : '${card.totalSlopeCount}',
+              style: SDSTextStyle.extraBold.copyWith(
+                fontSize: 40,
+                color: Colors.white,
+                height: 1.0,
+              ),
+            ),
+            const SizedBox(height: 6),
+            Text(
+              '오늘 총 라이딩',
+              style: SDSTextStyle.regular.copyWith(
+                fontSize: 12,
+                color: Colors.white.withOpacity(0.7),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 24),
+        // 두 번째 행: 최다 슬로프 & 최고 속도 (2열)
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // 오늘 총 라이딩
-            Expanded(
-              child: Column(
-                children: [
-                  Text(
-                    (card.totalSlopeCount ?? 0) == 0 ? '-' : '${card.totalSlopeCount}',
-                    style: SDSTextStyle.extraBold.copyWith(
-                      fontSize: 30,
-                      color: Colors.white,
-                      height: 1.0,
-                    ),
-                  ),
-                  const SizedBox(height: 6),
-                  Text(
-                    '오늘 총 라이딩',
-                    style: SDSTextStyle.regular.copyWith(
-                      fontSize: 12,
-                      color: Colors.white.withOpacity(0.7),
-                    ),
-                  ),
-                ],
-              ),
-            ),
             // 최다 슬로프
             Expanded(
               child: Column(
@@ -1041,103 +1028,6 @@ class _LiveTalkMainViewState extends State<LiveTalkMainView> {
                 ],
               ),
             ),
-          ],
-        ),
-        const SizedBox(height: 16),
-        // 라이딩 거리 & 평균 경사도 & 최고 속도 (3열)
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            // 라이딩 거리
-            Expanded(
-              child: Column(
-                children: [
-                  (card.totalDistance ?? 0) == 0
-                      ? Text(
-                          '-',
-                          style: SDSTextStyle.extraBold.copyWith(
-                            fontSize: 22,
-                            color: Colors.white,
-                          ),
-                        )
-                      : Row(
-                          mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.baseline,
-                          textBaseline: TextBaseline.alphabetic,
-                          children: [
-                            Text(
-                              (card.totalDistance ?? 0).toStringAsFixed(0),
-                              style: SDSTextStyle.extraBold.copyWith(
-                                fontSize: 22,
-                                color: Colors.white,
-                              ),
-                            ),
-                            const SizedBox(width: 2),
-                            Text(
-                              'km',
-                              style: SDSTextStyle.regular.copyWith(
-                                fontSize: 14,
-                                color: Colors.white,
-                              ),
-                            ),
-                          ],
-                        ),
-                  const SizedBox(height: 2),
-                  Text(
-                    '라이딩 거리',
-                    style: SDSTextStyle.regular.copyWith(
-                      fontSize: 12,
-                      color: Colors.white.withOpacity(0.7),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            // 평균 경사도
-            Expanded(
-              child: Column(
-                children: [
-                  (card.avgSlope ?? 0) == 0
-                      ? Text(
-                          '-',
-                          style: SDSTextStyle.extraBold.copyWith(
-                            fontSize: 22,
-                            color: Colors.white,
-                          ),
-                        )
-                      : Row(
-                          mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.baseline,
-                          textBaseline: TextBaseline.alphabetic,
-                          children: [
-                            Text(
-                              (card.avgSlope ?? 0).toStringAsFixed(1),
-                              style: SDSTextStyle.extraBold.copyWith(
-                                fontSize: 22,
-                                color: Colors.white,
-                              ),
-                            ),
-                            const SizedBox(width: 2),
-                            Text(
-                              '°',
-                              style: SDSTextStyle.regular.copyWith(
-                                fontSize: 20,
-                                color: Colors.white,
-                              ),
-                            ),
-                          ],
-                        ),
-                  const SizedBox(height: 2),
-                  Text(
-                    '평균 경사도',
-                    style: SDSTextStyle.regular.copyWith(
-                      fontSize: 12,
-                      color: Colors.white.withOpacity(0.7),
-                    ),
-                  ),
-                ],
-              ),
-            ),
             // 최고 속도
             Expanded(
               child: Column(
@@ -1146,7 +1036,7 @@ class _LiveTalkMainViewState extends State<LiveTalkMainView> {
                       ? Text(
                           '-',
                           style: SDSTextStyle.extraBold.copyWith(
-                            fontSize: 22,
+                            fontSize: 24,
                             color: Colors.white,
                           ),
                         )
@@ -1158,7 +1048,7 @@ class _LiveTalkMainViewState extends State<LiveTalkMainView> {
                             Text(
                               (card.topSpeed ?? 0).toStringAsFixed(0),
                               style: SDSTextStyle.extraBold.copyWith(
-                                fontSize: 22,
+                                fontSize: 24,
                                 color: Colors.white,
                               ),
                             ),
@@ -1172,7 +1062,7 @@ class _LiveTalkMainViewState extends State<LiveTalkMainView> {
                             ),
                           ],
                         ),
-                  const SizedBox(height: 2),
+                  const SizedBox(height: 4),
                   Text(
                     '최고 속도',
                     style: SDSTextStyle.regular.copyWith(
@@ -1185,6 +1075,103 @@ class _LiveTalkMainViewState extends State<LiveTalkMainView> {
             ),
           ],
         ),
+        // [주석 처리] 라이딩 거리 & 평균 경사도
+        // const SizedBox(height: 16),
+        // Row(
+        //   mainAxisAlignment: MainAxisAlignment.center,
+        //   children: [
+        //     // 라이딩 거리
+        //     Expanded(
+        //       child: Column(
+        //         children: [
+        //           (card.totalDistance ?? 0) == 0
+        //               ? Text(
+        //                   '-',
+        //                   style: SDSTextStyle.extraBold.copyWith(
+        //                     fontSize: 22,
+        //                     color: Colors.white,
+        //                   ),
+        //                 )
+        //               : Row(
+        //                   mainAxisSize: MainAxisSize.min,
+        //                   crossAxisAlignment: CrossAxisAlignment.baseline,
+        //                   textBaseline: TextBaseline.alphabetic,
+        //                   children: [
+        //                     Text(
+        //                       (card.totalDistance ?? 0).toStringAsFixed(0),
+        //                       style: SDSTextStyle.extraBold.copyWith(
+        //                         fontSize: 22,
+        //                         color: Colors.white,
+        //                       ),
+        //                     ),
+        //                     const SizedBox(width: 2),
+        //                     Text(
+        //                       'km',
+        //                       style: SDSTextStyle.regular.copyWith(
+        //                         fontSize: 14,
+        //                         color: Colors.white,
+        //                       ),
+        //                     ),
+        //                   ],
+        //                 ),
+        //           const SizedBox(height: 2),
+        //           Text(
+        //             '라이딩 거리',
+        //             style: SDSTextStyle.regular.copyWith(
+        //               fontSize: 12,
+        //               color: Colors.white.withOpacity(0.7),
+        //             ),
+        //           ),
+        //         ],
+        //       ),
+        //     ),
+        //     // 평균 경사도
+        //     Expanded(
+        //       child: Column(
+        //         children: [
+        //           (card.avgSlope ?? 0) == 0
+        //               ? Text(
+        //                   '-',
+        //                   style: SDSTextStyle.extraBold.copyWith(
+        //                     fontSize: 22,
+        //                     color: Colors.white,
+        //                   ),
+        //                 )
+        //               : Row(
+        //                   mainAxisSize: MainAxisSize.min,
+        //                   crossAxisAlignment: CrossAxisAlignment.baseline,
+        //                   textBaseline: TextBaseline.alphabetic,
+        //                   children: [
+        //                     Text(
+        //                       (card.avgSlope ?? 0).toStringAsFixed(1),
+        //                       style: SDSTextStyle.extraBold.copyWith(
+        //                         fontSize: 22,
+        //                         color: Colors.white,
+        //                       ),
+        //                     ),
+        //                     const SizedBox(width: 2),
+        //                     Text(
+        //                       '°',
+        //                       style: SDSTextStyle.regular.copyWith(
+        //                         fontSize: 20,
+        //                         color: Colors.white,
+        //                       ),
+        //                     ),
+        //                   ],
+        //                 ),
+        //           const SizedBox(height: 2),
+        //           Text(
+        //             '평균 경사도',
+        //             style: SDSTextStyle.regular.copyWith(
+        //               fontSize: 12,
+        //               color: Colors.white.withOpacity(0.7),
+        //             ),
+        //           ),
+        //         ],
+        //       ),
+        //     ),
+        //   ],
+        // ),
       ],
     );
   }
