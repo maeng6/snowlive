@@ -30,6 +30,8 @@ import 'package:com.snowlive/widget/w_liveOn_animatedGradient.dart';
 import 'package:com.snowlive/widget/w_selectResort.dart';
 import 'package:com.snowlive/widget/w_liveOffSummaryDialog.dart';
 import 'package:com.snowlive/model/m_liveOffSummary.dart';
+import 'package:com.snowlive/viewmodel/ranking/vm_ridingCard.dart';
+import 'package:com.snowlive/model/m_dailyRidingCard.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
@@ -79,6 +81,7 @@ class _ResortHomeViewState extends State<ResortHomeView> with
   OpenChatAlarmViewModel _openChatAlarmViewModel = Get.find<OpenChatAlarmViewModel>();
   LiveOnAlarmViewModel _liveOnAlarmViewModel = Get.find<LiveOnAlarmViewModel>();
   EventAlarmViewModel _eventAlarmViewModel = Get.find<EventAlarmViewModel>();
+  RidingCardViewModel _ridingCardViewModel = Get.find<RidingCardViewModel>();
 
   //TODO: Dependency Injection**************************************************
 
@@ -591,11 +594,6 @@ class _ResortHomeViewState extends State<ResortHomeView> with
                               print('🔍 [라이브 버튼] updateUserModel_api 후 within_boundary: ${_userViewModel.user.within_boundary}');
                             } finally {
                               CustomFullScreenDialog.cancelDialog();
-                            }
-
-                            // 라이브온 성공 시 자동 라이브온 다이얼로그 표시
-                            if(_userViewModel.user.within_boundary == true){
-                              _resortHomeViewModel.showAutoLiveOnDialog();
                             }
 
                             if(_userViewModel.user.within_boundary == false){
@@ -2132,6 +2130,28 @@ class _ResortHomeViewState extends State<ResortHomeView> with
                                                   ],
                                                 ),
                                               ),
+                                            // 라이브온 중이 아니고 오늘 기록이 있을 때 기록 카드 버튼 표시
+                                            if(_userViewModel.user.within_boundary != true && _resortHomeViewModel.resortHomeModel.dailyTotalCount > 0)
+                                              Padding(
+                                                padding: EdgeInsets.only(top: 24, bottom: 12),
+                                                child: GestureDetector(
+                                                  onTap: () => _showTodayRidingCard(),
+                                                  child: Container(
+                                                    padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                                                    decoration: BoxDecoration(
+                                                      color: SDSColor.gray900,
+                                                      borderRadius: BorderRadius.circular(20),
+                                                    ),
+                                                    child: Text(
+                                                      '오늘의 라이딩 기록 카드 보기',
+                                                      style: SDSTextStyle.bold.copyWith(
+                                                        fontSize: 13,
+                                                        color: Colors.white,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
                                           ],
                                         ),
                                       ),
@@ -2798,5 +2818,60 @@ class _ResortHomeViewState extends State<ResortHomeView> with
           ),
         ))
     );
+  }
+
+  /// 오늘의 라이딩 기록 카드 다이얼로그 표시
+  Future<void> _showTodayRidingCard() async {
+    try {
+      CustomFullScreenDialog.showDialog();
+
+      // 오늘 날짜 구하기 (yyyy-MM-dd 형식)
+      final now = DateTime.now();
+      final today = '${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}';
+
+      // 데일리 카드 리스트 가져오기
+      final dailyCards = await _ridingCardViewModel.fetchDailyRidingCardListByUserId(_userViewModel.user.user_id);
+
+      CustomFullScreenDialog.cancelDialog();
+
+      // 오늘 날짜의 카드 찾기
+      final todayCard = dailyCards.firstWhereOrNull((card) => card.date == today);
+
+      if (todayCard != null) {
+        // DailyRidingCard를 LiveOffSummaryModel로 변환
+        final summary = LiveOffSummaryModel(
+          userId: todayCard.userId ?? _userViewModel.user.user_id,
+          withinBoundary: false,
+          revealWb: true,
+          date: todayCard.date ?? today,
+          weekday: todayCard.weekday ?? '',
+          displayName: _userViewModel.user.display_name ?? '',
+          profileImageUrlUser: _userViewModel.user.profile_image_url_user ?? '',
+          totalSlopeCount: todayCard.totalSlopeCount ?? 0,
+          slopeCountsByName: todayCard.slopeCountsByName ?? {},
+          mostRiddenSlope: todayCard.mostRiddenSlope ?? '',
+          mostRiddenCount: todayCard.mostRiddenCount ?? 0,
+          topSpeed: todayCard.topSpeed ?? 0,
+          totalDistance: todayCard.totalDistance ?? 0,
+          avgSlope: todayCard.avgSlope ?? 0,
+          riderTitle: todayCard.riderTitle ?? '',
+        );
+
+        // 라이브오프 요약 다이얼로그 표시
+        await showLiveOffSummaryDialog(summary);
+      } else {
+        Get.snackbar(
+          '알림',
+          '오늘의 기록 카드가 없습니다.',
+          snackPosition: SnackPosition.TOP,
+          backgroundColor: SDSColor.gray900.withOpacity(0.9),
+          colorText: Colors.white,
+          duration: Duration(seconds: 2),
+        );
+      }
+    } catch (e) {
+      CustomFullScreenDialog.cancelDialog();
+      print('❌ 오늘의 기록 카드 조회 오류: $e');
+    }
   }
 }

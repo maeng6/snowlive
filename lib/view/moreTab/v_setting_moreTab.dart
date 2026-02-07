@@ -128,45 +128,6 @@ class Setting_moreTabView extends StatelessWidget {
                   ),
                 ),
                 Divider(height: 50, color: SDSColor.gray100),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              '자동 라이브온',
-                              style: SDSTextStyle.bold.copyWith(
-                                  fontSize: 15,
-                                  color: SDSColor.gray900),
-                            ),
-                            SizedBox(height: 4),
-                            Text(
-                              '스키장에 도착하면 자동으로 라이브를 시작해요',
-                              style: SDSTextStyle.regular.copyWith(
-                                  fontSize: 13,
-                                  color: SDSColor.gray500),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Obx(() => Switch.adaptive(
-                        value: _resortHomeViewModel.isAutoLiveOnEnabled,
-                        onChanged: (value) {
-                          _resortHomeViewModel.setAutoLiveOnEnabled(value);
-                        },
-                        activeColor: SDSColor.snowliveBlue,
-                        inactiveThumbColor: SDSColor.snowliveWhite,
-                        inactiveTrackColor: SDSColor.gray200,
-                        trackOutlineColor: WidgetStateProperty.all(Colors.transparent),
-                      )),
-                    ],
-                  ),
-                ),
-                Divider(height: 50, color: SDSColor.gray100),
                 ListTile(
                   contentPadding: EdgeInsets.symmetric(horizontal: 16),
                   minVerticalPadding: 20,

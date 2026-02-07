@@ -19,9 +19,6 @@ import 'package:flutter_quill/flutter_quill.dart';
 import 'package:get/get.dart';
 import 'package:com.snowlive/view/v_splashScreen.dart';
 import 'package:intl/date_symbol_data_local.dart';
-import 'package:flutter_background_geolocation/flutter_background_geolocation.dart' as bg;
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 final navigatorKey = GlobalKey<NavigatorState>();
 
@@ -31,97 +28,6 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   if (message.notification != null) {
     print("Notification Received!");
   }
-}
-
-/// 앱이 종료된 상태에서 지오펜스 이벤트 발생 시 호출되는 headless 콜백
-@pragma('vm:entry-point')
-void backgroundGeolocationHeadlessTask(bg.HeadlessEvent headlessEvent) async {
-  print('[BackgroundGeolocation HeadlessTask]: $headlessEvent');
-
-  switch (headlessEvent.name) {
-    case bg.Event.GEOFENCE:
-      bg.GeofenceEvent geofenceEvent = headlessEvent.event;
-      print('📍 [Headless] Geofence 이벤트: ${geofenceEvent.action} - ${geofenceEvent.identifier}');
-
-      if (geofenceEvent.action == 'ENTER') {
-        final resortName = geofenceEvent.extras?['fullname'] ?? '스키장';
-        final resortId = geofenceEvent.extras?['resort_id'];
-
-        // 자동 라이브온 설정 확인
-        final prefs = await SharedPreferences.getInstance();
-        final isAutoLiveOnEnabled = prefs.getBool('auto_liveon_enabled') ?? false;
-
-        if (!isAutoLiveOnEnabled) {
-          print('ℹ️ [Headless] 자동 라이브온 설정이 꺼져있음, 알림만 표시');
-        }
-
-        // 로컬 알림 표시 (앱 열기 유도)
-        await _showHeadlessGeofenceNotification(
-          resortName: resortName,
-          resortId: resortId,
-          isAutoLiveOnEnabled: isAutoLiveOnEnabled,
-        );
-
-        // 앱 실행 시 처리할 수 있도록 진입 정보 저장
-        await prefs.setString('pending_geofence_resort_id', resortId?.toString() ?? '');
-        await prefs.setString('pending_geofence_resort_name', resortName);
-        await prefs.setString('pending_geofence_timestamp', DateTime.now().toIso8601String());
-      }
-      break;
-  }
-}
-
-/// Headless 모드에서 로컬 알림 표시
-Future<void> _showHeadlessGeofenceNotification({
-  required String resortName,
-  dynamic resortId,
-  required bool isAutoLiveOnEnabled,
-}) async {
-  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-      FlutterLocalNotificationsPlugin();
-
-  const AndroidInitializationSettings initializationSettingsAndroid =
-      AndroidInitializationSettings('@mipmap/ic_launcher');
-
-  const DarwinInitializationSettings initializationSettingsIOS =
-      DarwinInitializationSettings();
-
-  const InitializationSettings initializationSettings = InitializationSettings(
-    android: initializationSettingsAndroid,
-    iOS: initializationSettingsIOS,
-  );
-
-  await flutterLocalNotificationsPlugin.initialize(initializationSettings);
-
-  const AndroidNotificationDetails androidPlatformChannelSpecifics =
-      AndroidNotificationDetails(
-    'geofence_channel',
-    '스키장 도착 알림',
-    channelDescription: '스키장 도착 시 알림을 받습니다',
-    importance: Importance.high,
-    priority: Priority.high,
-  );
-
-  const DarwinNotificationDetails iOSPlatformChannelSpecifics =
-      DarwinNotificationDetails();
-
-  const NotificationDetails platformChannelSpecifics = NotificationDetails(
-    android: androidPlatformChannelSpecifics,
-    iOS: iOSPlatformChannelSpecifics,
-  );
-
-  final String title = '$resortName 도착';
-  final String body = isAutoLiveOnEnabled
-      ? '앱을 열어서 라이브를 시작하세요!'
-      : '스노우라이브에서 라이딩을 기록해보세요!';
-
-  await flutterLocalNotificationsPlugin.show(
-    resortId ?? 0,
-    title,
-    body,
-    platformChannelSpecifics,
-    payload: 'geofence_enter:$resortId:$resortName',
-  );
 }
 
 // 푸시 알림 메시지와 상호작용을 정의합니다.

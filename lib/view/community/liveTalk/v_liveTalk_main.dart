@@ -9,6 +9,7 @@ import 'package:com.snowlive/view/community/liveTalk/v_liveTalk_inputArea.dart';
 import 'package:com.snowlive/viewmodel/liveTalk/vm_liveTalk.dart';
 import 'package:com.snowlive/viewmodel/ranking/vm_ridingCard.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
+import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -332,141 +333,182 @@ class _LiveTalkMainViewState extends State<LiveTalkMainView> {
     );
   }
 
-  void _showRidingCardSelection() {
+  void _showRidingCardSelection() async {
     HapticFeedback.lightImpact();
 
+    // 오늘 날짜 (yyyy-MM-dd 형식)
+    final now = DateTime.now();
+    final today = '${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}';
+
+    // 로딩 표시
+    CustomFullScreenDialog.showDialog();
+
     // 라이딩 카드 목록 로드
-    _ridingCardViewModel.fetchDailyRidingCardList(
-      userId: _userViewModel.user.user_id,
+    final dailyCards = await _ridingCardViewModel.fetchDailyRidingCardListByUserId(
+      _userViewModel.user.user_id,
     );
 
-    showModalBottomSheet(
+    CustomFullScreenDialog.cancelDialog();
+
+    // 오늘 날짜의 카드 찾기
+    final todayCard = dailyCards.firstWhereOrNull((card) => card.date == today);
+
+    if (todayCard == null) {
+      // 오늘의 기록 카드가 없는 경우
+      Get.snackbar(
+        '알림',
+        '오늘의 라이딩 기록 카드가 없습니다.\n라이브온 후 기록 카드가 생성됩니다.',
+        snackPosition: SnackPosition.TOP,
+        backgroundColor: SDSColor.gray900.withOpacity(0.9),
+        colorText: Colors.white,
+        duration: const Duration(seconds: 2),
+      );
+      return;
+    }
+
+    // 오늘의 카드가 있으면 바로 선택 다이얼로그 표시
+    _showTodayCardSelectionDialog(todayCard);
+  }
+
+  /// 오늘의 카드 선택 다이얼로그 (바텀시트 없이 바로 표시)
+  void _showTodayCardSelectionDialog(DailyRidingCard card) {
+    final repaintBoundaryKey = GlobalKey();
+
+    showDialog(
       context: context,
-      backgroundColor: SDSColor.snowliveWhite,
-      isScrollControlled: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-      ),
-      builder: (context) {
-        return DraggableScrollableSheet(
-          initialChildSize: 0.7,
-          minChildSize: 0.5,
-          maxChildSize: 0.9,
-          expand: false,
-          builder: (context, scrollController) {
+      barrierColor: Colors.black.withOpacity(0.85),
+      builder: (dialogContext) {
+        return Dialog(
+          backgroundColor: Colors.transparent,
+          insetPadding: const EdgeInsets.symmetric(horizontal: 0, vertical: 0),
+          child: Obx(() {
+            final currentCardType = _ridingCardViewModel.getCardType(card.cardId ?? 0);
+
             return Column(
+              mainAxisSize: MainAxisSize.max,
               children: [
-                // 핸들
+                const Spacer(),
+
+                // 타이틀
                 Padding(
-                  padding: const EdgeInsets.only(top: 12, bottom: 20),
-                  child: Container(
-                    width: 36,
-                    height: 4,
-                    decoration: BoxDecoration(
-                      color: SDSColor.gray200,
-                      borderRadius: BorderRadius.circular(10),
+                  padding: const EdgeInsets.only(bottom: 16),
+                  child: Text(
+                    '오늘의 라이딩 기록 카드',
+                    style: SDSTextStyle.bold.copyWith(
+                      fontSize: 18,
+                      color: Colors.white,
                     ),
                   ),
                 ),
-                // 타이틀
+
+                // 카드 미리보기 (크게) - RepaintBoundary로 감싸서 캡처 가능하게
+                RepaintBoundary(
+                  key: repaintBoundaryKey,
+                  child: SizedBox(
+                    width: 320,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(24),
+                      child: AspectRatio(
+                        aspectRatio: 960 / 1524,
+                        child: _buildLargeCardPreview(card, currentCardType),
+                      ),
+                    ),
+                  ),
+                ),
+
+                // 닫기 버튼 + 카드 변경 버튼
                 Padding(
-                  padding: const EdgeInsets.only(left: 16, right: 16, bottom: 16),
+                  padding: const EdgeInsets.only(top: 16),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text(
-                        '라이딩 기록 카드 선택',
-                        style: SDSTextStyle.bold.copyWith(
-                          fontSize: 16,
-                          color: SDSColor.gray900,
+                      // X 버튼 (닫기)
+                      GestureDetector(
+                        behavior: HitTestBehavior.opaque,
+                        onTap: () => Navigator.pop(dialogContext),
+                        child: Container(
+                          width: 56,
+                          height: 56,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(28),
+                          ),
+                          child: const Center(
+                            child: Icon(
+                              Icons.close,
+                              size: 26,
+                              color: SDSColor.gray900,
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 16),
+                      // 카드 변경 버튼
+                      GestureDetector(
+                        onTap: () async {
+                          HapticFeedback.lightImpact();
+                          final newType = currentCardType == 0 ? 1 : 0;
+                          await _ridingCardViewModel.setCardType(card.cardId ?? 0, newType);
+                        },
+                        child: Container(
+                          width: 56,
+                          height: 56,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(28),
+                          ),
+                          child: Center(
+                            child: SvgPicture.asset(
+                              'assets/imgs/icons/icon_summury_change.svg',
+                              width: 24,
+                              height: 24,
+                            ),
+                          ),
                         ),
                       ),
                     ],
                   ),
                 ),
-                // 카드 목록 (월별 그룹화)
-                Expanded(
-                  child: Obx(() {
-                    if (_ridingCardViewModel.isLoadingDailyList.value) {
-                      return const Center(
-                        child: CircularProgressIndicator(
-                          color: SDSColor.snowliveBlue,
-                        ),
+
+                const Spacer(),
+
+                // 선택 버튼 (하단 고정)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 30),
+                  child: GestureDetector(
+                    onTap: () async {
+                      // 카드 이미지 캡처
+                      final capturedFile = await _captureCardAsImage(repaintBoundaryKey);
+
+                      Navigator.pop(dialogContext); // 다이얼로그 닫기
+                      _liveTalkViewModel.selectRidingCard(
+                        card,
+                        cardType: currentCardType,
+                        capturedImage: capturedFile,
                       );
-                    }
-
-                    final groupedCards = _ridingCardViewModel.groupedDailyCardsByMonth;
-
-                    if (groupedCards.isEmpty) {
-                      return Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Image.asset(
-                              'assets/imgs/icons/icon_nodata.png',
-                              width: 72,
-                              height: 72,
-                            ),
-                            const SizedBox(height: 12),
-                            Text(
-                              '아직 라이딩 기록 카드가 없습니다',
-                              style: SDSTextStyle.regular.copyWith(
-                                fontSize: 14,
-                                color: SDSColor.gray500,
-                              ),
-                            ),
-                          ],
+                    },
+                    child: Container(
+                      width: 200,
+                      height: 56,
+                      decoration: BoxDecoration(
+                        color: SDSColor.snowliveBlue,
+                        borderRadius: BorderRadius.circular(28),
+                      ),
+                      child: Center(
+                        child: Text(
+                          '라이브톡에 공유하기',
+                          style: SDSTextStyle.bold.copyWith(
+                            fontSize: 16,
+                            color: SDSColor.snowliveWhite,
+                          ),
                         ),
-                      );
-                    }
-
-                    return ListView.builder(
-                      controller: scrollController,
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      itemCount: groupedCards.keys.length,
-                      itemBuilder: (context, sectionIndex) {
-                        final monthKey = groupedCards.keys.elementAt(sectionIndex);
-                        final monthCards = groupedCards[monthKey]!;
-
-                        return Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            // 월 헤더
-                            Padding(
-                              padding: EdgeInsets.only(bottom: 12, top: sectionIndex == 0 ? 0 : 16),
-                              child: Text(
-                                monthKey,
-                                style: SDSTextStyle.bold.copyWith(
-                                  fontSize: 16,
-                                  color: SDSColor.gray900,
-                                ),
-                              ),
-                            ),
-                            // 그리드
-                            GridView.builder(
-                              shrinkWrap: true,
-                              physics: const NeverScrollableScrollPhysics(),
-                              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 3,
-                                crossAxisSpacing: 8,
-                                mainAxisSpacing: 8,
-                                childAspectRatio: 960 / 1524,
-                              ),
-                              itemCount: monthCards.length,
-                              itemBuilder: (context, index) {
-                                final card = monthCards[index];
-                                return _buildRidingCardItem(card);
-                              },
-                            ),
-                          ],
-                        );
-                      },
-                    );
-                  }),
+                      ),
+                    ),
+                  ),
                 ),
               ],
             );
-          },
+          }),
         );
       },
     );
