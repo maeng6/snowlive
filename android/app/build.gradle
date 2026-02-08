@@ -19,12 +19,12 @@ if (flutterRoot == null) {
 
 def flutterVersionCode = localProperties.getProperty('flutter.versionCode')
 if (flutterVersionCode == null) {
-    flutterVersionCode = '110'
+    flutterVersionCode = '111'
 }
 
 def flutterVersionName = localProperties.getProperty('flutter.versionName')
 if (flutterVersionName == null) {
-    flutterVersionName = '3.7.6'
+    flutterVersionName = '3.7.7'
 }
 
 Project background_geolocation = project(':flutter_background_geolocation')
