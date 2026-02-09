@@ -4,7 +4,7 @@ import 'ApiResponse.dart';
 
 class  AlarmCenterAPI {
 
-  static const String baseUrl = 'https://snowlive-api-0eab29705c9f.herokuapp.com/api/alarm-center';
+  static const String baseUrl = 'https://snowlive-api-c617725e2b78.herokuapp.com/api/alarm-center';
 
 // AlarmCenterAPI에서 URL을 사용한 요청 처리
   Future<ApiResponse> fetchAlarmCenterList({

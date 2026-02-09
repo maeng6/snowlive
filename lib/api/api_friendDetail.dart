@@ -5,7 +5,7 @@ import 'package:http/http.dart' as http;
 import 'ApiResponse.dart';
 
 class FriendDetailAPI {
-  static const String baseUrl = 'https://snowlive-api-0eab29705c9f.herokuapp.com/api/friend-detail-page';
+  static const String baseUrl = 'https://snowlive-api-c617725e2b78.herokuapp.com/api/friend-detail-page';
 
   Future<ApiResponse> fetchFriendDetail(int userId, int friendUserId, String season) async {
     final Uri uri = Uri.parse(baseUrl).replace(
@@ -84,7 +84,7 @@ class FriendDetailAPI {
   Future<ApiResponse> blockUser(body) async {
 
     final response = await http.post(
-      Uri.parse('https://snowlive-api-0eab29705c9f.herokuapp.com/api/community/block/'),
+      Uri.parse('https://snowlive-api-c617725e2b78.herokuapp.com/api/community/block/'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode(body),
     );
@@ -101,7 +101,7 @@ class FriendDetailAPI {
   Future<ApiResponse> unblockUser(body) async {
 
     final response = await http.delete(
-      Uri.parse('https://snowlive-api-0eab29705c9f.herokuapp.com/api/community/block/'),
+      Uri.parse('https://snowlive-api-c617725e2b78.herokuapp.com/api/community/block/'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode(body),
     );

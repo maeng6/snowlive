@@ -4,7 +4,7 @@ import 'ApiResponse.dart';
 
 class ThemeStoreAPI {
   static const String baseUrl =
-      'https://snowlive-api-0eab29705c9f.herokuapp.com/api/themeStore';
+      'https://snowlive-api-c617725e2b78.herokuapp.com/api/themeStore';
 
   /// 공통: utf8 디코딩 + json 파싱 (Map/List 모두 대응)
   dynamic _decodeBody(http.Response response) {

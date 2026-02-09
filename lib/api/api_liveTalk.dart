@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'ApiResponse.dart';
 
 class LiveTalkAPI {
-  static const String baseUrl = 'https://snowlive-api-0eab29705c9f.herokuapp.com/api/livetalk';
+  static const String baseUrl = 'https://snowlive-api-c617725e2b78.herokuapp.com/api/livetalk';
 
   // ============================================
   // 1. 게시글 (LiveTalk)

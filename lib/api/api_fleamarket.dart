@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import 'ApiResponse.dart';
 
 class FleamarketAPI {
-  static const String baseUrl = 'https://snowlive-api-0eab29705c9f.herokuapp.com/api/fleamarket';
+  static const String baseUrl = 'https://snowlive-api-c617725e2b78.herokuapp.com/api/fleamarket';
 
   Future<ApiResponse> uploadFleamarket(Map<String, dynamic> body) async {
     final response = await http.post(
