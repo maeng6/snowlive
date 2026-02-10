@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:shimmer/shimmer.dart';
 
 /// ✅ InputArea는 "입력 UI만" 담당 (미리보기 제거)
 class LiveTalkInputArea extends StatefulWidget {
@@ -503,13 +504,25 @@ class LiveTalkPreviewLayer extends StatelessWidget {
                             fit: BoxFit.cover,
                             cache: true,
                             loadStateChanged: (state) {
-                              if (state.extendedImageLoadState == LoadState.failed) {
-                                return Image.asset(
-                                  'assets/imgs/profile/img_profile_default_circle.png',
-                                  fit: BoxFit.cover,
-                                );
+                              switch (state.extendedImageLoadState) {
+                                case LoadState.loading:
+                                  return Shimmer.fromColors(
+                                    baseColor: Colors.grey[300]!,
+                                    highlightColor: Colors.grey[100]!,
+                                    child: Container(
+                                      width: 25,
+                                      height: 25,
+                                      color: Colors.white,
+                                    ),
+                                  );
+                                case LoadState.failed:
+                                  return Image.asset(
+                                    'assets/imgs/profile/img_profile_default_circle.png',
+                                    fit: BoxFit.cover,
+                                  );
+                                case LoadState.completed:
+                                  return null;
                               }
-                              return null;
                             },
                           )
                         : Image.asset(

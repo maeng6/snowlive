@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:shimmer/shimmer.dart';
 
 class LiveTalkCommentView extends StatefulWidget {
   const LiveTalkCommentView({Key? key}) : super(key: key);
@@ -358,10 +359,22 @@ class _LiveTalkCommentViewState extends State<LiveTalkCommentView> {
                             cacheWidth: 90,
                             cacheHeight: 90,
                             loadStateChanged: (state) {
-                              if (state.extendedImageLoadState == LoadState.failed) {
-                                return _buildDefaultAvatar();
+                              switch (state.extendedImageLoadState) {
+                                case LoadState.loading:
+                                  return Shimmer.fromColors(
+                                    baseColor: Colors.grey[300]!,
+                                    highlightColor: Colors.grey[100]!,
+                                    child: Container(
+                                      width: 30,
+                                      height: 30,
+                                      color: Colors.white,
+                                    ),
+                                  );
+                                case LoadState.failed:
+                                  return _buildDefaultAvatar();
+                                case LoadState.completed:
+                                  return null;
                               }
-                              return null;
                             },
                           )
                         : _buildDefaultAvatar(),
@@ -563,10 +576,22 @@ class _LiveTalkCommentViewState extends State<LiveTalkCommentView> {
                         cacheWidth: 78,
                         cacheHeight: 78,
                         loadStateChanged: (state) {
-                          if (state.extendedImageLoadState == LoadState.failed) {
-                            return _buildSmallDefaultAvatar();
+                          switch (state.extendedImageLoadState) {
+                            case LoadState.loading:
+                              return Shimmer.fromColors(
+                                baseColor: Colors.grey[300]!,
+                                highlightColor: Colors.grey[100]!,
+                                child: Container(
+                                  width: 26,
+                                  height: 26,
+                                  color: Colors.white,
+                                ),
+                              );
+                            case LoadState.failed:
+                              return _buildSmallDefaultAvatar();
+                            case LoadState.completed:
+                              return null;
                           }
-                          return null;
                         },
                       )
                     : _buildSmallDefaultAvatar(),

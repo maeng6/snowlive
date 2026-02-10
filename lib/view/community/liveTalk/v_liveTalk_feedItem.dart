@@ -104,10 +104,22 @@ class LiveTalkFeedItem extends StatelessWidget {
                         cacheWidth: 90,
                         cacheHeight: 90,
                         loadStateChanged: (state) {
-                          if (state.extendedImageLoadState == LoadState.failed) {
-                            return _buildDefaultAvatar();
+                          switch (state.extendedImageLoadState) {
+                            case LoadState.loading:
+                              return Shimmer.fromColors(
+                                baseColor: Colors.grey[300]!,
+                                highlightColor: Colors.grey[100]!,
+                                child: Container(
+                                  width: 30,
+                                  height: 30,
+                                  color: Colors.white,
+                                ),
+                              );
+                            case LoadState.failed:
+                              return _buildDefaultAvatar();
+                            case LoadState.completed:
+                              return null;
                           }
-                          return null;
                         },
                       )
                     : _buildDefaultAvatar(),
