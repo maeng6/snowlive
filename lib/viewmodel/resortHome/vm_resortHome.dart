@@ -2276,7 +2276,7 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
   /// 반환값: true = 유효한 위치, false = 무시해야 할 위치
   bool _validatePosition(Position newPosition, int userId) {
     // 1️⃣ 정확도 필터링 (GPS 신호 약하면 무시)
-    if (newPosition.accuracy > 20) {
+    if (newPosition.accuracy > 50) {
       print('⚠️ [GPS] 정확도 낮음 무시: ${newPosition.accuracy.toStringAsFixed(0)}m');
       _sendLiveLog(
         userId: userId,
