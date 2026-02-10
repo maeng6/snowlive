@@ -492,6 +492,7 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
     double? speed,
     double? distance,
     double? altitude,
+    double? accuracy,
     String? locationType,
   }) {
     // 중요 로그는 _isLoggingOn 상태와 관계없이 항상 기록
@@ -503,7 +504,10 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
         : null;
 
     // 현재 로그가 fg_position_stream이면서, 직전 로그도 fg_position_stream일 때만 속도 기록
-    final shouldRecordSpeed = requestType == 'fg_position_stream' && _lastLogRequestType == 'fg_position_stream';
+    // 추가: 정확도가 10m 이상이면 속도 기록 안 함 (GPS 신호 불안정 시 속도 데이터 신뢰도 낮음)
+    final shouldRecordSpeed = requestType == 'fg_position_stream'
+        && _lastLogRequestType == 'fg_position_stream'
+        && (accuracy == null || accuracy < 10);
 
     final logEntry = {
       'user_id': userId,
@@ -1125,6 +1129,7 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
               speed: position.speed,
               distance: distanceFromLast,
               altitude: position.altitude,
+              accuracy: position.accuracy,
               locationType: locationType,
             );
 
@@ -2271,7 +2276,7 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
   /// 반환값: true = 유효한 위치, false = 무시해야 할 위치
   bool _validatePosition(Position newPosition, int userId) {
     // 1️⃣ 정확도 필터링 (GPS 신호 약하면 무시)
-    if (newPosition.accuracy > 8) {
+    if (newPosition.accuracy > 20) {
       print('⚠️ [GPS] 정확도 낮음 무시: ${newPosition.accuracy.toStringAsFixed(0)}m');
       _sendLiveLog(
         userId: userId,
