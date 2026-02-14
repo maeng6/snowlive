@@ -209,7 +209,7 @@ class LiveTalkFeedItem extends StatelessWidget {
               child: ExtendedImage.network(
                 imageUrl,
                 cache: true,
-                cacheHeight: 800,
+                cacheHeight: 1600,
                 loadStateChanged: (state) {
                   switch (state.extendedImageLoadState) {
                     case LoadState.loading:

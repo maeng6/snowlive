@@ -336,6 +336,11 @@ class _LiveTalkMainViewState extends State<LiveTalkMainView> {
   void _showRidingCardSelection() async {
     HapticFeedback.lightImpact();
 
+    // 열린 스낵바가 있으면 먼저 닫기 (Get.back()이 다이얼로그 대신 스낵바를 닫는 문제 방지)
+    if (Get.isSnackbarOpen) {
+      Get.closeAllSnackbars();
+    }
+
     // 오늘 날짜 (yyyy-MM-dd 형식)
     final now = DateTime.now();
     final today = '${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}';

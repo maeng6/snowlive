@@ -8,6 +8,7 @@ import 'package:com.snowlive/viewmodel/vm_splashController.dart';
 import 'package:com.snowlive/routes/routes.dart';
 import 'package:com.snowlive/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
+import 'package:com.snowlive/service/deep_link_service.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -77,6 +78,7 @@ void main() async {
   await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
 
   Get.put(UserViewModel(), permanent: true);
+  Get.put(DeepLinkService(), permanent: true);
   Get.put(AuthCheckViewModel(), permanent: true);
 
   HttpOverrides.global = MyHttpOverrides();

@@ -25,7 +25,7 @@ class ResortHomeAPI {
   Future<ApiResponse> fetchResortHomeData_refresh(int user_id) async {
     final Uri uri = Uri.parse('$baseUrl').replace(
         queryParameters: {
-          'user_id': user_id.toString(),
+        'user_id': user_id.toString(),
         });
 
     final response = await http.get(uri);
