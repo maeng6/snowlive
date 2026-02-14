@@ -1,4 +1,5 @@
 import 'package:com.snowlive/routes/routes.dart';
+import 'package:com.snowlive/service/deep_link_service.dart';
 import 'package:com.snowlive/viewmodel/onboarding_login/vm_authcheck.dart';
 import 'package:com.snowlive/viewmodel/vm_splashController.dart';
 import 'package:extended_image/extended_image.dart';
@@ -30,6 +31,9 @@ class _SplashScreenWrapperState extends State<SplashScreenWrapper> {
       // 약간의 여유 딜레이 후 화면 전환
       await Future.delayed(const Duration(milliseconds: 300));
       Get.offAllNamed(nextRoute);
+
+      // UI 준비 완료 후 보류된 딥링크 처리
+      Get.find<DeepLinkService>().processPendingDeepLink();
     });
   }
 

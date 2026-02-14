@@ -234,6 +234,16 @@ import WidgetKit
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
   }
 
+  // MARK: - Deep Link (URL Scheme) 처리
+  override func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
+    print("📱 AppDelegate openURL: \(url)")
+    if let controller = window?.rootViewController as? FlutterViewController {
+      let channel = FlutterMethodChannel(name: "deep_link_native", binaryMessenger: controller.binaryMessenger)
+      channel.invokeMethod("onDeepLink", arguments: url.absoluteString)
+    }
+    return super.application(app, open: url, options: options)
+  }
+
   // MARK: - Debug / Helper methods (⚠️ 반드시 클래스 내부에 위치)
 
   /// 알림/잠금화면 허용 상태 로깅

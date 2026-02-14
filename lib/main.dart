@@ -164,6 +164,10 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       getPages: AppRoutes.pages,
+      unknownRoute: GetPage(
+        name: '/notfound',
+        page: () => const SplashScreenWrapper(),
+      ),
       navigatorObservers: [
         FirebaseAnalyticsObserver(analytics: FirebaseAnalytics.instance)
       ],
