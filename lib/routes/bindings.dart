@@ -1,3 +1,4 @@
+import 'package:com.snowlive/viewmodel/community/vm_communityAlarm.dart';
 import 'package:com.snowlive/viewmodel/community/vm_communityBulletinList.dart';
 import 'package:com.snowlive/viewmodel/community/vm_communityCommentDetail.dart';
 import 'package:com.snowlive/viewmodel/community/vm_communityDetail.dart';
@@ -80,6 +81,7 @@ class MainHomeBinding extends Bindings {
     Get.lazyPut(() => OpenChatAlarmViewModel(), fenix: true);
     Get.lazyPut(() => LiveOnAlarmViewModel(), fenix: true);
     Get.lazyPut(() => EventAlarmViewModel(), fenix: true);
+    Get.lazyPut(() => CommunityAlarmViewModel(), fenix: true);
     Get.lazyPut(() => FriendDetailUpdateViewModel(), fenix: true);
     Get.lazyPut(() => FleamarketDetailViewModel(), fenix: true);
     Get.lazyPut(() => FleamarketUpdateViewModel(), fenix: true);

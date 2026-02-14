@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:com.snowlive/data/snowliveDesignStyle.dart';
+import 'package:com.snowlive/viewmodel/community/vm_communityAlarm.dart';
 import 'package:com.snowlive/viewmodel/community/vm_communityBulletinList.dart';
 import 'package:com.snowlive/viewmodel/community/vm_communityUpload.dart';
 import 'package:com.snowlive/viewmodel/resortHome/vm_alarmCenter.dart';
@@ -23,6 +24,7 @@ class CommunityBulletinUpload extends StatelessWidget {
   final CommunityUploadViewModel _communityUploadViewModel = Get.find<CommunityUploadViewModel>();
   final CommunityBulletinListViewModel _communityBulletinListViewModel = Get.find<CommunityBulletinListViewModel>();
   final AlarmCenterViewModel _alarmCenterViewModel = Get.find<AlarmCenterViewModel>();
+  final CommunityAlarmViewModel _communityAlarmViewModel = Get.find<CommunityAlarmViewModel>();
 
   final FocusNode urlFocusNode = FocusNode();
 
@@ -458,6 +460,7 @@ class CommunityBulletinUpload extends StatelessWidget {
                                       "description" : jsonString
                                     });
 
+                                await _communityAlarmViewModel.clearAllReadStatus();
                                 CustomFullScreenDialog.cancelDialog();
                                 Navigator.pop(context);
                                 await _communityBulletinListViewModel.fetchAllCommunity();

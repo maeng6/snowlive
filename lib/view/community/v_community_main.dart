@@ -6,6 +6,7 @@ import 'package:com.snowlive/view/community/free/v_community_Bulletin_Total.dart
 import 'package:com.snowlive/view/community/free/v_community_Bulletin_Room.dart';
 import 'package:com.snowlive/view/community/liveTalk/v_liveTalk_main.dart';
 // [이벤트·소식 탭 비활성화] import 'package:com.snowlive/view/moreTab/w_eventPageEmbedded.dart';
+import 'package:com.snowlive/viewmodel/community/vm_communityAlarm.dart';
 import 'package:com.snowlive/viewmodel/community/vm_communityBulletinList.dart';
 // [이벤트·소식 탭 비활성화] import 'package:com.snowlive/viewmodel/vm_eventAlarm.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
@@ -17,6 +18,7 @@ import 'package:get/get.dart';
 class CommunityMainView extends StatelessWidget {
 
   final CommunityBulletinListViewModel _communityBulletinListViewModel = Get.find<CommunityBulletinListViewModel>();
+  final CommunityAlarmViewModel _communityAlarmViewModel = Get.find<CommunityAlarmViewModel>();
   // [이벤트·소식 탭 비활성화] final EventAlarmViewModel _eventAlarmViewModel = Get.find<EventAlarmViewModel>();
   UserViewModel _userViewModel = Get.find<UserViewModel>();
 
@@ -118,20 +120,48 @@ class CommunityMainView extends StatelessWidget {
                                 width: (_size.width - 48) / 2,
                                 height: 40,
                                 child: ElevatedButton(
-                                  child: Text(
-                                    '게시판',
-                                    style: SDSTextStyle.extraBold.copyWith(
-                                        color: (_communityBulletinListViewModel.tapName=='게시판')
-                                            ? SDSColor.gray900
-                                            : SDSColor.gray900.withOpacity(0.2),
-                                        fontWeight: (_communityBulletinListViewModel.tapName=='게시판')
-                                            ? FontWeight.w900
-                                            : FontWeight.w300,
-                                        fontSize: 16),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        '게시판',
+                                        style: SDSTextStyle.extraBold.copyWith(
+                                            color: (_communityBulletinListViewModel.tapName=='게시판')
+                                                ? SDSColor.gray900
+                                                : SDSColor.gray900.withOpacity(0.2),
+                                            fontWeight: (_communityBulletinListViewModel.tapName=='게시판')
+                                                ? FontWeight.w900
+                                                : FontWeight.w300,
+                                            fontSize: 16),
+                                      ),
+                                      if (_communityAlarmViewModel.hasNewCommunity.value)
+                                        Padding(
+                                          padding: EdgeInsets.only(left: 4),
+                                          child: Container(
+                                            width: 20,
+                                            height: 20,
+                                            decoration: BoxDecoration(
+                                              color: Color(0xFFD6382B),
+                                              borderRadius: BorderRadius.circular(20),
+                                            ),
+                                            child: Center(
+                                              child: Text(
+                                                'N',
+                                                style: SDSTextStyle.extraBold.copyWith(
+                                                  fontSize: 11,
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Color(0xFFFFFFFF),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                    ],
                                   ),
                                   onPressed: () {
                                     HapticFeedback.lightImpact();
                                     _communityBulletinListViewModel.changeTap('게시판');
+                                    _communityAlarmViewModel.markAsRead();
                                   },
                                   style: ElevatedButton.styleFrom(
                                     padding: EdgeInsets.only(top: 0),

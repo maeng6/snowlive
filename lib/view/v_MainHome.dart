@@ -8,6 +8,7 @@ import 'package:com.snowlive/view/resortHome/v_resortHome.dart';
 import 'package:com.snowlive/view/v_slmkScreen.dart';
 import 'package:com.snowlive/viewmodel/vm_mainHome.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
+import 'package:com.snowlive/viewmodel/community/vm_communityAlarm.dart';
 import 'package:com.snowlive/viewmodel/vm_eventAlarm.dart';
 import 'package:com.snowlive/viewmodel/resortHome/vm_resortHome.dart';
 import 'package:com.snowlive/viewmodel/community/vm_communityBulletinList.dart';
@@ -25,6 +26,7 @@ class _MainHomeViewState extends State<MainHomeView> {
   final MainHomeViewModel _MainHomeViewModel = Get.find<MainHomeViewModel>();
   final UserViewModel _userViewModel = Get.find<UserViewModel>();
   final EventAlarmViewModel _eventAlarmViewModel = Get.find<EventAlarmViewModel>();
+  final CommunityAlarmViewModel _communityAlarmViewModel = Get.find<CommunityAlarmViewModel>();
   final ResortHomeViewModel _resortHomeViewModel = Get.find<ResortHomeViewModel>();
   final CommunityBulletinListViewModel _communityBulletinListViewModel = Get.find<CommunityBulletinListViewModel>();
 
@@ -125,7 +127,7 @@ class _MainHomeViewState extends State<MainHomeView> {
                     clipBehavior: Clip.none,
                     children: [
                       SvgPicture.asset('assets/imgs/icons/icon_bottom_community_off.svg', width: 32, height: 32),
-                      if (_eventAlarmViewModel.hasNewEvent.value)
+                      if (_communityAlarmViewModel.hasNewCommunity.value)
                         Positioned(
                           right: 0,
                           top: 0,
@@ -144,7 +146,7 @@ class _MainHomeViewState extends State<MainHomeView> {
                     clipBehavior: Clip.none,
                     children: [
                       SvgPicture.asset('assets/imgs/icons/icon_bottom_community_on.svg', width: 32, height: 32),
-                      if (_eventAlarmViewModel.hasNewEvent.value)
+                      if (_communityAlarmViewModel.hasNewCommunity.value)
                         Positioned(
                           right: 0,
                           top: 0,
