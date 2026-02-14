@@ -92,7 +92,7 @@ class _ResortHomeViewState extends State<ResortHomeView> with
 
     print('내 유저아이디 : ${_userViewModel.user.user_id}');
 
-    // 유저 ID가 있을 때만 알람 스트림 구독 시작
+    // 유저 ID가 있을 때만 알람 스트림 구독 시작하기
     final userId = _userViewModel.user.user_id;
     if (userId != null) {
       // 오픈채팅 알람 스트림 구독 시작
