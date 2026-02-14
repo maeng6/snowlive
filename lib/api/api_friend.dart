@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import 'ApiResponse.dart';
 
 class FriendAPI {
-  static const String baseUrl = 'https://snowlive-api-0eab29705c9f.herokuapp.com/api/friend';
+  static const String baseUrl = 'https://snowlive-api-c617725e2b78.herokuapp.com/api/friend';
 
   Future<ApiResponse> addFriend(body) async {
     final response = await http.post(
@@ -92,7 +92,7 @@ print(response.body);
   Future<ApiResponse> searchUser(body) async {
 
     final response = await http.post(
-      Uri.parse('https://snowlive-api-0eab29705c9f.herokuapp.com/api/accounts/find-user-by-display-name/'),
+      Uri.parse('https://snowlive-api-c617725e2b78.herokuapp.com/api/accounts/find-user-by-display-name/'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode(body),
     );
@@ -126,7 +126,7 @@ print(response.body);
   }
 
   Future<ApiResponse> fetchBlcokListRequests({required user_id}) async {
-    final Uri uri = Uri.parse('https://snowlive-api-0eab29705c9f.herokuapp.com/api/community/block-list/').replace(
+    final Uri uri = Uri.parse('https://snowlive-api-c617725e2b78.herokuapp.com/api/community/block-list/').replace(
       queryParameters: {
         if (user_id != null) 'user_id': user_id.toString(),
       },

@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:com.snowlive/api/ApiResponse.dart';
 
 class EventAPI {
-  static const String baseUrl = 'https://snowlive-api-0eab29705c9f.herokuapp.com/api/event';
+  static const String baseUrl = 'https://snowlive-api-c617725e2b78.herokuapp.com/api/event';
 
   /// 이벤트 목록 조회 (GET /api/event/)
   /// [category] - 카테고리 필터 (optional)

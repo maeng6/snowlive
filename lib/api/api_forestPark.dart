@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import 'ApiResponse.dart';
 
 class ForestParkAPI {
-  static const String baseUrl = 'https://snowlive-api-0eab29705c9f.herokuapp.com/api/forest-park';
+  static const String baseUrl = 'https://snowlive-api-c617725e2b78.herokuapp.com/api/forest-park';
 
   // 참가 여부 확인
   Future<ApiResponse> checkParticipant(String userId, int eventDate) async {

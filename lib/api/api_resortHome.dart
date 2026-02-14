@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import 'ApiResponse.dart';
 
 class ResortHomeAPI {
-  static const String baseUrl = 'https://snowlive-api-0eab29705c9f.herokuapp.com/api/resort-home/';
+  static const String baseUrl = 'https://snowlive-api-c617725e2b78.herokuapp.com/api/resort-home/';
 
   Future<ApiResponse> fetchResortHomeData(int user_id) async {
     Uri uri = Uri.parse('$baseUrl').replace(

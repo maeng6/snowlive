@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import 'ApiResponse.dart';
 
 class UserAPI {
-  static const String baseUrl = 'https://snowlive-api-0eab29705c9f.herokuapp.com/api/accounts';
+  static const String baseUrl = 'https://snowlive-api-c617725e2b78.herokuapp.com/api/accounts';
 
   Future<ApiResponse> getUserInfo(int user_id, {String? fcm_token}) async {
     final Map<String, String> queryParams = {
@@ -32,7 +32,7 @@ class UserAPI {
 
   Future<ApiResponse> updateUserInfo(Map<String, dynamic> body) async {
     final response = await http.put(
-      Uri.parse('https://snowlive-api-0eab29705c9f.herokuapp.com/api/friend-detail-page/update-user/'),
+      Uri.parse('https://snowlive-api-c617725e2b78.herokuapp.com/api/friend-detail-page/update-user/'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode(body),
     );
@@ -49,7 +49,7 @@ class UserAPI {
 
   Future<ApiResponse> blockUser(Map<String, dynamic> body) async {
     final response = await http.post(
-      Uri.parse('https://snowlive-api-0eab29705c9f.herokuapp.com/api/community/block/'),
+      Uri.parse('https://snowlive-api-c617725e2b78.herokuapp.com/api/community/block/'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode(body),
     );
@@ -67,7 +67,7 @@ class UserAPI {
   Future<ApiResponse<Map<String, dynamic>>> unblockUser(String userId,
       String blockUserId) async {
     final response = await http.delete(
-      Uri.parse('https://snowlive-api-0eab29705c9f.herokuapp.com/api/community/block-user/'),
+      Uri.parse('https://snowlive-api-c617725e2b78.herokuapp.com/api/community/block-user/'),
       body: json.encode({'user_id': userId, 'block_user_id': blockUserId}),
       headers: {'Content-Type': 'application/json'},
     );

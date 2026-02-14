@@ -4,7 +4,7 @@ import 'ApiResponse.dart';
 
 class CommunityAPI {
   // Base URL
-  static const String baseUrl = 'https://snowlive-api-0eab29705c9f.herokuapp.com/api/community';
+  static const String baseUrl = 'https://snowlive-api-c617725e2b78.herokuapp.com/api/community';
 
   // 커뮤니티 게시글 생성
   Future<ApiResponse> createCommunityPost(Map<String, dynamic> body) async {

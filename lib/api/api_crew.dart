@@ -4,7 +4,7 @@ import 'ApiResponse.dart';
 
 class CrewAPI {
   // baseUrl 설정
-  static const baseUrl = 'https://snowlive-api-0eab29705c9f.herokuapp.com/api/crew';
+  static const baseUrl = 'https://snowlive-api-c617725e2b78.herokuapp.com/api/crew';
 
   // 크루 이름 확인
   Future<ApiResponse<Map<String, dynamic>>> checkCrewName(String crewName) async {

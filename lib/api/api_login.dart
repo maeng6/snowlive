@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 import 'ApiResponse.dart';
 
 class LoginAPI {
-  static const String baseUrl = 'https://snowlive-api-0eab29705c9f.herokuapp.com/api/accounts';
+  static const String baseUrl = 'https://snowlive-api-c617725e2b78.herokuapp.com/api/accounts';
 
   Future<ApiResponse> registerUser(Map<String, dynamic> body) async {
     final response = await http.post(

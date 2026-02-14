@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:com.snowlive/api/ApiResponse.dart';
 
 class PushNotificationAPI {
-  static const String baseUrl = 'https://snowlive-api-0eab29705c9f.herokuapp.com/api';
+  static const String baseUrl = 'https://snowlive-api-c617725e2b78.herokuapp.com/api';
 
   Map<String, String> get _headers => {'Content-Type': 'application/json'};
 

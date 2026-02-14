@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import 'ApiResponse.dart';
 
 class RankingAPI {
-  static const String baseUrl = 'https://snowlive-api-0eab29705c9f.herokuapp.com/api/ranking';
+  static const String baseUrl = 'https://snowlive-api-c617725e2b78.herokuapp.com/api/ranking';
 
   Future<ApiResponse> check_wb(Map<String, dynamic> body) async {
     final response = await http.post(

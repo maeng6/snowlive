@@ -111,7 +111,7 @@ class NotificationController extends GetxController {
 
   Future<String?> postMessage({required String fcmToken, required String title, required String body}) async {
     try {
-      String url = 'https://snowlive-api-0eab29705c9f.herokuapp.com/api/fcm/send-push/';
+      String url = 'https://snowlive-api-c617725e2b78.herokuapp.com/api/fcm/send-push/';
       // timeout 추가: 백그라운드에서 무한 대기 방지
       http.Response response = await http.post(
         Uri.parse(url),
