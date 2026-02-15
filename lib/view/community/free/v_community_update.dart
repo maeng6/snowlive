@@ -201,9 +201,6 @@ class CommunityBulletinUpdateView extends StatelessWidget {
                                             GestureDetector(
                                               onTap: () async {
                                                 selectedCategory_main = await showModalBottomSheet<String>(
-                                                  constraints: BoxConstraints(
-                                                    maxHeight: 360,
-                                                  ),
                                                   backgroundColor: Colors.transparent,
                                                   context: context,
                                                   isScrollControlled: true,
@@ -254,9 +251,6 @@ class CommunityBulletinUpdateView extends StatelessWidget {
                                           onTap: () async {
                                             if( _communityUpdateViewModel.selectedCategorySub == '시즌방')
                                               selectedCategory_sub = await showModalBottomSheet<String>(
-                                                constraints: BoxConstraints(
-                                                  maxHeight: 360,
-                                                ),
                                                 backgroundColor: Colors.transparent,
                                                 context: context,
                                                 isScrollControlled: true,
@@ -304,9 +298,6 @@ class CommunityBulletinUpdateView extends StatelessWidget {
                                             GestureDetector(
                                               onTap: () async {
                                                 selectedCategory_main = await showModalBottomSheet<String>(
-                                                  constraints: BoxConstraints(
-                                                    maxHeight: 360,
-                                                  ),
                                                   backgroundColor: Colors.transparent,
                                                   context: context,
                                                   isScrollControlled: true,
@@ -382,16 +373,35 @@ class CommunityBulletinUpdateView extends StatelessWidget {
                                       ),
                                     Container(
                                       width: double.infinity,
-                                      child: quill.QuillEditor(
-                                        controller: _communityUpdateViewModel.quillController,
-                                        scrollController: _communityUpdateViewModel.scrollController,
-                                        focusNode: _communityUpdateViewModel.focusNode,
-                                        config: quill.QuillEditorConfig(
-                                          scrollable: true,
-                                          showCursor: true,
-                                          padding: const EdgeInsets.only(top: 20, bottom: 40, left: 10, right: 10),
-                                          placeholder: '게시글 상세 내용을 적어주세요.',
-                                          embedBuilders: FlutterQuillEmbeds.defaultEditorBuilders(),
+                                      child: Theme(
+                                        data: Theme.of(context).copyWith(
+                                          textSelectionTheme: TextSelectionThemeData(
+                                            cursorColor: SDSColor.snowliveBlue,
+                                          ),
+                                        ),
+                                        child: quill.QuillEditor(
+                                          controller: _communityUpdateViewModel.quillController,
+                                          scrollController: _communityUpdateViewModel.scrollController,
+                                          focusNode: _communityUpdateViewModel.focusNode,
+                                          config: quill.QuillEditorConfig(
+                                            scrollable: true,
+                                            showCursor: true,
+                                            padding: const EdgeInsets.only(top: 20, bottom: 40, left: 10, right: 10),
+                                            placeholder: '게시글 상세 내용을 적어주세요.',
+                                            embedBuilders: FlutterQuillEmbeds.defaultEditorBuilders(),
+                                            customStyles: quill.DefaultStyles(
+                                              placeHolder: quill.DefaultTextBlockStyle(
+                                                SDSTextStyle.regular.copyWith(
+                                                  fontSize: 16,
+                                                  color: SDSColor.gray400,
+                                                ),
+                                                quill.HorizontalSpacing(0, 0),
+                                                quill.VerticalSpacing(0, 0),
+                                                quill.VerticalSpacing(0, 0),
+                                                null,
+                                              ),
+                                            ),
+                                          ),
                                         ),
                                       ),
                                     ),
@@ -473,7 +483,7 @@ class CommunityBulletinUpdateView extends StatelessWidget {
                                 && (_communityUpdateViewModel.selectedCategorySub != '시즌방' || (_communityUpdateViewModel.selectedCategorySub == '시즌방'&&_communityUpdateViewModel.selectedCategorySub2 != '하위 카테고리'))
                             )
                                 ?SDSColor.snowliveBlue
-                                :SDSColor.gray200,
+                                :SDSColor.gray100,
                           ),
                           child: Text('수정 완료',
                             style: SDSTextStyle.bold.copyWith(
