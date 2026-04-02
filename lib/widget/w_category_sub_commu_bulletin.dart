@@ -22,10 +22,14 @@ class _CategorySubCommuBulletinWidgetState extends State<CategorySubCommuBulleti
         borderRadius: BorderRadius.only(topLeft: Radius.circular(16), topRight: Radius.circular(16)),
         color: SDSColor.snowliveWhite,
       ),
-      padding: EdgeInsets.only(bottom: 20, right: 20, left: 20, top: 12),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
+      child: SafeArea(
+        top: false,
+        child: Padding(
+          padding: EdgeInsets.only(bottom: 20, right: 20, left: 20, top: 12),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
           Padding(
             padding: const EdgeInsets.only(bottom: 20),
             child: Container(
@@ -42,46 +46,38 @@ class _CategorySubCommuBulletinWidgetState extends State<CategorySubCommuBulleti
             style: SDSTextStyle.bold.copyWith(fontSize: 16, color: SDSColor.gray900),
           ),
           SizedBox(height: 24),
-          Expanded(
-            child: ListView.builder(
-              shrinkWrap: true,
-              itemCount: 3,
-              itemBuilder: (context, index) {
-                return Column(
-                  children: [
-                    ListTile(
-                      contentPadding: EdgeInsets.symmetric(horizontal: 0),
-                      trailing: _isSelected[index]!
-                          ? Image.asset(
-                        'assets/imgs/icons/icon_check_filled.png',
-                        width: 24,
-                        height: 24,
-                      )
-                          : Image.asset(
-                        'assets/imgs/icons/icon_check_unfilled.png',
-                        width: 24,
-                        height: 24,
-                      ),
-                      title: Text(
-                        '${category_main_list[index]}',
-                        style: SDSTextStyle.regular.copyWith(fontSize: 15, color: SDSColor.gray900),
-                      ),
-                      selected: _isSelected[index]!,
-                      onTap: () {
-                        setState(() {
-                          _isSelected = List<bool?>.filled(3, false);
-                          _isSelected[index] = true;
-                          category_main = category_main_list[index];
-                        });
-                      },
-                    ),
-                    if (index != 2) Divider(height: 4, thickness: 0.5, color: SDSColor.snowliveWhite),
-                    if (index == 2) Container(height: 12),
-                  ],
-                );
-              },
-            ),
-          ),
+          ...List.generate(3, (index) => Column(
+            children: [
+              ListTile(
+                contentPadding: EdgeInsets.symmetric(horizontal: 0),
+                trailing: _isSelected[index]!
+                    ? Image.asset(
+                  'assets/imgs/icons/icon_check_filled.png',
+                  width: 24,
+                  height: 24,
+                )
+                    : Image.asset(
+                  'assets/imgs/icons/icon_check_unfilled.png',
+                  width: 24,
+                  height: 24,
+                ),
+                title: Text(
+                  '${category_main_list[index]}',
+                  style: SDSTextStyle.regular.copyWith(fontSize: 15, color: SDSColor.gray900),
+                ),
+                selected: _isSelected[index]!,
+                onTap: () {
+                  setState(() {
+                    _isSelected = List<bool?>.filled(3, false);
+                    _isSelected[index] = true;
+                    category_main = category_main_list[index];
+                  });
+                },
+              ),
+              if (index != 2) Divider(height: 4, thickness: 0.5, color: SDSColor.snowliveWhite),
+              if (index == 2) Container(height: 12),
+            ],
+          )),
           Container(
             width: _size.width,
             padding: EdgeInsets.only(top: 16),
@@ -104,6 +100,8 @@ class _CategorySubCommuBulletinWidgetState extends State<CategorySubCommuBulleti
             ),
           ),
         ],
+          ),
+        ),
       ),
     );
   }
