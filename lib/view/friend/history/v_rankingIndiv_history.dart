@@ -7,6 +7,7 @@ import 'package:com.snowlive/viewmodel/friend/vm_friendDetail_recordRoom.dart';
 import 'package:com.snowlive/viewmodel/friend/vm_rankingIndivHistory.dart';
 import 'package:com.snowlive/viewmodel/ranking/vm_rankingList_recordRoom.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
+import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -633,7 +634,9 @@ class RankingIndivHistoryView extends StatelessWidget {
                             padding: EdgeInsets.symmetric(horizontal: 16),
                             child: Column(
                               children: [
-                                ProfilePageCalendar_recordRoom(),
+                                ProfilePageCalendar_recordRoom(
+                                  key: ValueKey(_rankingIndivHistoryViewModel.selectedCategory_season),
+                                ),
                                 Column(
                                   children: [
                                     Padding(
@@ -911,13 +914,54 @@ class RankingIndivHistoryView extends StatelessWidget {
                   ListTile(
                     title: Center(
                       child: Text(
+                        '${RankingFilter_season.season2526.korean}',
+                        style: SDSTextStyle.bold.copyWith(fontSize: 15, color: SDSColor.gray900),
+                      ),
+                    ),
+                    onTap: () async {
+                      Navigator.pop(context);
+                      CustomFullScreenDialog.showDialog();
+                      try {
+                        _friendDetailViewModel_recordRoom.updateSelectedDailyIndex(-1);
+                        await _friendDetailViewModel_recordRoom.getCurrentSeason(season: RankingFilter_season.season2526.korean);
+                        await _friendDetailViewModel_recordRoom.fetchFriendDetailInfo_recordRoom(
+                          userId: _userViewModel.user.user_id,
+                          friendUserId: _userViewModel.user.user_id,
+                          selected_season: RankingFilter_season.season2526.dbSeason,
+                          isFromRefresh: true,
+                        );
+                        _rankingIndivHistoryViewModel.changeCategory_season(RankingFilter_season.season2526.korean);
+                      } finally {
+                        CustomFullScreenDialog.cancelDialog();
+                      }
+                    },
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                  ),
+                  ListTile(
+                    title: Center(
+                      child: Text(
                         '${RankingFilter_season.season2425.korean}',
                         style: SDSTextStyle.bold.copyWith(fontSize: 15, color: SDSColor.gray900),
                       ),
                     ),
-                    onTap: () {
+                    onTap: () async {
                       Navigator.pop(context);
-                      _rankingIndivHistoryViewModel.changeCategory_season(RankingFilter_season.season2425.korean);
+                      CustomFullScreenDialog.showDialog();
+                      try {
+                        _friendDetailViewModel_recordRoom.updateSelectedDailyIndex(-1);
+                        await _friendDetailViewModel_recordRoom.getCurrentSeason(season: RankingFilter_season.season2425.korean);
+                        await _friendDetailViewModel_recordRoom.fetchFriendDetailInfo_recordRoom(
+                          userId: _userViewModel.user.user_id,
+                          friendUserId: _userViewModel.user.user_id,
+                          selected_season: RankingFilter_season.season2425.dbSeason,
+                          isFromRefresh: true,
+                        );
+                        _rankingIndivHistoryViewModel.changeCategory_season(RankingFilter_season.season2425.korean);
+                      } finally {
+                        CustomFullScreenDialog.cancelDialog();
+                      }
                     },
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(16),
@@ -930,9 +974,22 @@ class RankingIndivHistoryView extends StatelessWidget {
                         style: SDSTextStyle.bold.copyWith(fontSize: 15, color: SDSColor.gray900),
                       ),
                     ),
-                    onTap: () {
+                    onTap: () async {
                       Navigator.pop(context);
-                      _rankingIndivHistoryViewModel.changeCategory_season(RankingFilter_season.season2324.korean);
+                      CustomFullScreenDialog.showDialog();
+                      try {
+                        _friendDetailViewModel_recordRoom.updateSelectedDailyIndex(-1);
+                        await _friendDetailViewModel_recordRoom.getCurrentSeason(season: RankingFilter_season.season2324.korean);
+                        await _friendDetailViewModel_recordRoom.fetchFriendDetailInfo_recordRoom(
+                          userId: _userViewModel.user.user_id,
+                          friendUserId: _userViewModel.user.user_id,
+                          selected_season: RankingFilter_season.season2324.dbSeason,
+                          isFromRefresh: true,
+                        );
+                        _rankingIndivHistoryViewModel.changeCategory_season(RankingFilter_season.season2324.korean);
+                      } finally {
+                        CustomFullScreenDialog.cancelDialog();
+                      }
                     },
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(16),

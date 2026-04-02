@@ -415,7 +415,7 @@ class _SlopeRushHistoryHomeViewState extends State<SlopeRushHistoryHomeView> {
 
 
   // 시즌 라벨 (UI 표기)
-  final RxString _selectedSeasonLabel = '2425'.obs;
+  final RxString _selectedSeasonLabel = '2526'.obs;
 
   // (선택) 서버 파라미터 등은 나중에 연결 — 지금은 훅만 남겨둠
   void _onSeasonSelected({required String uiLabel /*, String? apiCode*/}) async {
@@ -456,6 +456,27 @@ class _SlopeRushHistoryHomeViewState extends State<SlopeRushHistoryHomeView> {
                       child: SingleChildScrollView(
                         child: Wrap(
                           children: [
+                            // 25/26
+                            ListTile(
+                              contentPadding: EdgeInsets.zero,
+                              title: Center(
+                                child: Text(
+                                  '25/26',
+                                  style: SDSTextStyle.bold.copyWith(
+                                    fontSize: 15,
+                                    color: SDSColor.gray900,
+                                  ),
+                                ),
+                              ),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(16),
+                              ),
+                              onTap: () async {
+                                Navigator.pop(context);
+                                _selectedSeasonLabel.value = '2526';
+                                await _slopeRushRecordRoomViewModel.fetchSlopeRushRecordRoom(resortIdArg: _slopeRushRecordRoomViewModel.resortId.value, selectedSeason: _selectedSeasonLabel.value);
+                              },
+                            ),
                             // 24/25
                             ListTile(
                               contentPadding: EdgeInsets.zero,
@@ -474,7 +495,6 @@ class _SlopeRushHistoryHomeViewState extends State<SlopeRushHistoryHomeView> {
                               onTap: () async {
                                 Navigator.pop(context);
                                 _selectedSeasonLabel.value = '2425';
-                                // TODO: 서버 연동 시 여기에서 fetch 호출
                                 await _slopeRushRecordRoomViewModel.fetchSlopeRushRecordRoom(resortIdArg: _slopeRushRecordRoomViewModel.resortId.value, selectedSeason: _selectedSeasonLabel.value);
                               },
                             ),

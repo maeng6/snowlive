@@ -91,6 +91,32 @@ class RankingHistoryHomeView extends StatelessWidget {
                                       contentPadding: EdgeInsets.zero,
                                       title: Center(
                                         child: Text(
+                                          '${RankingFilter_season.season2526.korean}',
+                                          style: SDSTextStyle.bold.copyWith(
+                                            fontSize: 15,
+                                            color: SDSColor.gray900,
+                                          ),
+                                        ),
+                                      ),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(16),
+                                      ),
+                                      onTap: () async {
+                                        Navigator.pop(context);
+                                        _rankingListViewModel_recordRoom.changeCategory_season('${RankingFilter_season.season2526.korean}');
+                                        _rankingListViewModel_recordRoom.changeDayOrTotal('누적');
+                                        _rankingListViewModel_recordRoom.changeResortOrTotal('전체스키장');
+                                        _rankingListViewModel_recordRoom.changeCategory_resort('${RankingFilter_resort.initial.korean}');
+                                        _rankingListViewModel_recordRoom.changeCategory_fed('리그별 랭킹');
+                                        _rankingListViewModel_recordRoom.changeResortNum(99);
+                                        _rankingListViewModel_recordRoom.changeMyBoxText();
+                                        await _rankingListViewModel_recordRoom.fetchAllRanking();
+                                      },
+                                    ),
+                                    ListTile(
+                                      contentPadding: EdgeInsets.zero,
+                                      title: Center(
+                                        child: Text(
                                           '${RankingFilter_season.season2425.korean}',
                                           style: SDSTextStyle.bold.copyWith(
                                             fontSize: 15,
@@ -103,17 +129,14 @@ class RankingHistoryHomeView extends StatelessWidget {
                                       ),
                                       onTap: () async {
                                         Navigator.pop(context);
-                                        _rankingListViewModel_recordRoom.changeMyBoxText();
-                                        _rankingListViewModel_recordRoom.changeTap('크루랭킹');
+                                        _rankingListViewModel_recordRoom.changeCategory_season('${RankingFilter_season.season2425.korean}');
                                         _rankingListViewModel_recordRoom.changeDayOrTotal('누적');
                                         _rankingListViewModel_recordRoom.changeResortOrTotal('전체스키장');
-                                        _rankingListViewModel_recordRoom.changeCategory_resort('스키장별 랭킹');
+                                        _rankingListViewModel_recordRoom.changeCategory_resort('${RankingFilter_resort.initial.korean}');
                                         _rankingListViewModel_recordRoom.changeCategory_fed('리그별 랭킹');
                                         _rankingListViewModel_recordRoom.changeResortNum(99);
-                                        _rankingListViewModel_recordRoom.changeCategory_resort('${RankingFilter_resort.initial.korean}');
-                                        _rankingListViewModel_recordRoom.changeCategory_season('${RankingFilter_season.season2425.korean}');
                                         _rankingListViewModel_recordRoom.changeMyBoxText();
-                                        await _rankingListViewModel_recordRoom.toggleDataDayOrTotal_tapFilter();
+                                        await _rankingListViewModel_recordRoom.fetchAllRanking();
                                       },
                                     ),
                                     ListTile(
@@ -132,17 +155,14 @@ class RankingHistoryHomeView extends StatelessWidget {
                                       ),
                                       onTap: () async {
                                         Navigator.pop(context);
-                                        _rankingListViewModel_recordRoom.changeMyBoxText();
-                                        _rankingListViewModel_recordRoom.changeTap('크루랭킹');
+                                        _rankingListViewModel_recordRoom.changeCategory_season('${RankingFilter_season.season2324.korean}');
                                         _rankingListViewModel_recordRoom.changeDayOrTotal('누적');
                                         _rankingListViewModel_recordRoom.changeResortOrTotal('전체스키장');
-                                        _rankingListViewModel_recordRoom.changeCategory_resort('스키장별 랭킹');
+                                        _rankingListViewModel_recordRoom.changeCategory_resort('${RankingFilter_resort.initial.korean}');
                                         _rankingListViewModel_recordRoom.changeCategory_fed('리그별 랭킹');
                                         _rankingListViewModel_recordRoom.changeResortNum(99);
-                                        _rankingListViewModel_recordRoom.changeCategory_resort('${RankingFilter_resort.initial.korean}');
-                                        _rankingListViewModel_recordRoom.changeCategory_season('${RankingFilter_season.season2324.korean}');
                                         _rankingListViewModel_recordRoom.changeMyBoxText();
-                                        await _rankingListViewModel_recordRoom.toggleDataDayOrTotal_tapFilter();
+                                        await _rankingListViewModel_recordRoom.fetchAllRanking();
                                       },
                                     ),
                                   ],

@@ -197,19 +197,32 @@ class RankingListViewModel extends GetxController {
     _isLoadingRankingListIndiv_fed.value = true;
     _isLoadingRankingListIndiv_fed_daily.value = true;
 
+    final bool isInSeason = _friendDetailViewModel.isDateWithinSeason(DateTime.now());
+
     await fetchRankingDataCrew_total_daily(userId: _userViewModel.user.user_id,daily: true,season: _friendDetailViewModel.seasonDate);
-    _rankingListCrewList_view.value =_rankingListCrewList_total_daily;
-    _rankingListCrewMy_view.value = _rankingListCrewMy_total_daily.value;
-    _isLoadingRankingListCrewList_total_daily.value = false;
     await fetchRankingDataCrew_total(userId: _userViewModel.user.user_id,season: _friendDetailViewModel.seasonDate);
+    if (isInSeason) {
+      _rankingListCrewList_view.value = _rankingListCrewList_total_daily;
+      _rankingListCrewMy_view.value = _rankingListCrewMy_total_daily.value;
+      _dayOrTotal.value = '일간';
+    } else {
+      _rankingListCrewList_view.value = _rankingListCrewList_total;
+      _rankingListCrewMy_view.value = _rankingListCrewMy_total.value;
+      _dayOrTotal.value = '누적';
+    }
+    _isLoadingRankingListCrewList_total_daily.value = false;
     _isLoadingRankingListCrewList_total.value = false;
 
     await fetchRankingDataIndiv_total_daily(userId: _userViewModel.user.user_id,daily: true,season: _friendDetailViewModel.seasonDate);
-    _rankingListIndivList_view.value =_rankingListIndivList_total_daily;
-    _rankingListIndivMy_view.value = _rankingListIndivMy_total_daily.value;
-    _isLoadingRankingListIndiv_total_daily.value = false;
-
     await fetchRankingDataIndiv_total(userId: _userViewModel.user.user_id,season: _friendDetailViewModel.seasonDate);
+    if (isInSeason) {
+      _rankingListIndivList_view.value = _rankingListIndivList_total_daily;
+      _rankingListIndivMy_view.value = _rankingListIndivMy_total_daily.value;
+    } else {
+      _rankingListIndivList_view.value = _rankingListIndivList_total;
+      _rankingListIndivMy_view.value = _rankingListIndivMy_total.value;
+    }
+    _isLoadingRankingListIndiv_total_daily.value = false;
     _isLoadingRankingListIndiv_total.value = false;
 
   }

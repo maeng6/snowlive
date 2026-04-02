@@ -18,7 +18,7 @@ publish_to: 'none' # Remove this line if you wish to publish to ㅈpub.dev
 version: 3.8.1+115
 
 environment:
-  sdk: ">=2.17.6 <3.0.0"
+  sdk: ">=3.10.0 <4.0.0"
 #2
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -54,7 +54,7 @@ dependencies:
   sign_in_with_apple: ^7.0.1
   url_launcher: ^6.3.1
   # Deep Linking
-  app_links: ^6.3.2
+  app_links: ^7.0.0
   carousel_slider: ^5.0.0
   lottie: ^2.2.0
   package_info_plus: ^8.0.2

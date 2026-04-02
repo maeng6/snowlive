@@ -263,10 +263,16 @@ class CrewRecordRoomView extends StatelessWidget {
               child: GestureDetector(
                 onTap: () async {
                   _crewRecordRoomViewModel.setSeason(season);
-                  await _crewRecordRoomViewModel.fetchCrewRidingRecords(
-                    _crewDetailViewModel.crewDetailInfo.crewId!,
-                    season.dbSeason,
-                  );
+                  await Future.wait([
+                    _crewRecordRoomViewModel.fetchCrewRidingRecords(
+                      _crewDetailViewModel.crewDetailInfo.crewId!,
+                      season.dbSeason,
+                    ),
+                    _crewDetailViewModel_recordRoom.fetchCrewDetail_recordRoom(
+                      _crewDetailViewModel.crewDetailInfo.crewId!,
+                      season.dbSeason,
+                    ),
+                  ]);
                 },
                 child: Obx(() => Container(
                   decoration: BoxDecoration(

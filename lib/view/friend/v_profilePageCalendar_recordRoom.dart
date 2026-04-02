@@ -7,6 +7,8 @@ import 'package:table_calendar/table_calendar.dart';
 import 'package:intl/intl.dart';
 
 class ProfilePageCalendar_recordRoom extends StatefulWidget {
+  const ProfilePageCalendar_recordRoom({Key? key}) : super(key: key);
+
   @override
   _ProfilePageCalendar_recordRoomState createState() => _ProfilePageCalendar_recordRoomState();
 }
@@ -41,7 +43,14 @@ class _ProfilePageCalendar_recordRoomState extends State<ProfilePageCalendar_rec
     }
 
     // ridingHistory가 비어 있지 않은 경우, 가장 최근 날짜로 초기 포커스를 설정
-    focusedDay = ridingHistory.isNotEmpty ? ridingHistory.keys.first : DateTime.now().toLocal();
+    DateTime initialFocus = ridingHistory.isNotEmpty ? ridingHistory.keys.first : DateTime.now().toLocal();
+    // focusedDay가 시즌 범위를 벗어나지 않도록 클램핑
+    if (initialFocus.isAfter(lastDay)) {
+      initialFocus = lastDay;
+    } else if (initialFocus.isBefore(firstDay)) {
+      initialFocus = firstDay;
+    }
+    focusedDay = initialFocus;
     selectedDay = focusedDay;
   }
 

@@ -34,7 +34,7 @@ class FriendDetailViewModel_recordRoom extends GetxController {
     await fetchFriendDetailInfo_recordRoom(
       userId: _userViewModel.user.user_id,
       friendUserId: _userViewModel.user.user_id,
-      selected_season: '2425',
+      selected_season: '2526',
     );
 
     await getCurrentSeason();
@@ -72,14 +72,24 @@ class FriendDetailViewModel_recordRoom extends GetxController {
 
   Future<void> fetchFriendDetailInfo_recordRoom({required int userId, required int friendUserId, required String selected_season, bool isFromRefresh = false,}) async {
     isLoading(true);
-    ApiResponse response = await FriendDetailAPI().fetchFriendDetail_recordRoom(userId,friendUserId,selected_season);
-    if(response.success) {
-      isLoading(false);
-      _friendDetailModel_recordRoom.value = response.data as FriendDetailModel_recordRoom;
-    }
-    else {
-      Get.back();
+    try {
+      ApiResponse response = await FriendDetailAPI().fetchFriendDetail_recordRoom(userId, friendUserId, selected_season);
+      if (response.success) {
+        _friendDetailModel_recordRoom.value = response.data as FriendDetailModel_recordRoom;
+      } else {
+        if (!isFromRefresh) {
+          Get.back();
+        }
+        Get.snackbar('Error', '데이터 로딩 실패');
+      }
+    } catch (e) {
+      print('❌ fetchFriendDetailInfo_recordRoom 에러: $e');
+      if (!isFromRefresh) {
+        Get.back();
+      }
       Get.snackbar('Error', '데이터 로딩 실패');
+    } finally {
+      isLoading(false);
     }
   }
 
@@ -91,11 +101,15 @@ class FriendDetailViewModel_recordRoom extends GetxController {
     _selectedDailyIndex.value = index;
   }
 
-  Future<void> getCurrentSeason() async {
-    if (_rankingIndivHistoryViewModel.selectedCategory_season=='24/25시즌') {
+  Future<void> getCurrentSeason({String? season}) async {
+    final target = season ?? _rankingIndivHistoryViewModel.selectedCategory_season;
+    if (target == '25/26시즌') {
+      _seasonStartDate.value = '2025-11-01';
+      _seasonEndDate.value = '2026-03-31';
+    } else if (target == '24/25시즌') {
       _seasonStartDate.value = '2024-11-01';
       _seasonEndDate.value = '2025-03-31';
-    } else if(_rankingIndivHistoryViewModel.selectedCategory_season=='23/24시즌'){
+    } else if (target == '23/24시즌') {
       _seasonStartDate.value = '2023-11-01';
       _seasonEndDate.value = '2024-03-31';
     }

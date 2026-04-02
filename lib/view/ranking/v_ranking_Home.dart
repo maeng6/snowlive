@@ -5,6 +5,7 @@ import 'package:com.snowlive/view/ranking/v_entrance_snowballmarket_ranking.dart
 import 'package:com.snowlive/view/ranking/v_rankingList_Indi.dart';
 import 'package:com.snowlive/view/ranking/history/v_rankingList_beta.dart';
 import 'package:com.snowlive/view/ranking/v_rankingList_crew.dart';
+import 'package:com.snowlive/viewmodel/friend/vm_friendDetail.dart';
 import 'package:com.snowlive/viewmodel/ranking/vm_rankingList.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
 import 'package:com.snowlive/widget/w_floatingButton_ranking.dart';
@@ -19,6 +20,7 @@ class RankingHomeView extends StatelessWidget {
   final UserViewModel _userViewModel = Get.find<UserViewModel>();
 
   final RankingListViewModel _rankingListViewModel = Get.find<RankingListViewModel>();
+  final FriendDetailViewModel _friendDetailViewModel = Get.find<FriendDetailViewModel>();
 
   @override
   Widget build(BuildContext context) {
@@ -53,7 +55,8 @@ class RankingHomeView extends StatelessWidget {
                             onPressed: () async {
                               HapticFeedback.lightImpact();
                               _rankingListViewModel.changeTap('크루랭킹');
-                              _rankingListViewModel.changeDayOrTotal('일간');
+                              _rankingListViewModel.changeDayOrTotal(
+                                  _friendDetailViewModel.isDateWithinSeason(DateTime.now()) ? '일간' : '누적');
                               _rankingListViewModel.changeResortOrTotal('전체스키장');
                               _rankingListViewModel.changeCategory_resort('스키장별 랭킹');
                               _rankingListViewModel.changeCategory_fed('리그별 랭킹');
@@ -96,7 +99,8 @@ class RankingHomeView extends StatelessWidget {
                             onPressed: () async {
                               HapticFeedback.lightImpact();
                               _rankingListViewModel.changeTap('개인랭킹');
-                              _rankingListViewModel.changeDayOrTotal('일간');
+                              _rankingListViewModel.changeDayOrTotal(
+                                  _friendDetailViewModel.isDateWithinSeason(DateTime.now()) ? '일간' : '누적');
                               _rankingListViewModel.changeResortOrTotal('전체스키장');
                               _rankingListViewModel.changeCategory_resort('스키장별 랭킹');
                               _rankingListViewModel.changeCategory_fed('리그별 랭킹');
@@ -244,7 +248,8 @@ class RankingHomeView extends StatelessWidget {
         )),
         floatingActionButton:
         (_rankingListViewModel.rankingListCrewList_total!.length != 0
-            && _rankingListViewModel.rankingListIndivList_total!.length != 0)
+            && _rankingListViewModel.rankingListIndivList_total!.length != 0
+            && _friendDetailViewModel.isDateWithinSeason(DateTime.now()))
             ? FloatingButtonWithOptions(
           selectedOption: _rankingListViewModel.dayOrTotal,
           onOptionSelected: (String value) {

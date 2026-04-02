@@ -20,7 +20,7 @@ class RankingIndivHistoryViewModel extends GetxController {
 
   ScrollController scrollControllerIndivBeta = ScrollController();
 
-  RxString _selectedCategory_season = '24/25시즌'.obs;
+  RxString _selectedCategory_season = '25/26시즌'.obs;
 
   String get selectedCategory_season => _selectedCategory_season.value;
   String get nextPageUrlIndivBeta => _nextPageUrlIndivBeta.value;
