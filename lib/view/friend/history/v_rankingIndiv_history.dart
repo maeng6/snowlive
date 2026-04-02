@@ -976,20 +976,9 @@ class RankingIndivHistoryView extends StatelessWidget {
                     ),
                     onTap: () async {
                       Navigator.pop(context);
-                      CustomFullScreenDialog.showDialog();
-                      try {
-                        _friendDetailViewModel_recordRoom.updateSelectedDailyIndex(-1);
-                        await _friendDetailViewModel_recordRoom.getCurrentSeason(season: RankingFilter_season.season2324.korean);
-                        await _friendDetailViewModel_recordRoom.fetchFriendDetailInfo_recordRoom(
-                          userId: _userViewModel.user.user_id,
-                          friendUserId: _userViewModel.user.user_id,
-                          selected_season: RankingFilter_season.season2324.dbSeason,
-                          isFromRefresh: true,
-                        );
-                        _rankingIndivHistoryViewModel.changeCategory_season(RankingFilter_season.season2324.korean);
-                      } finally {
-                        CustomFullScreenDialog.cancelDialog();
-                      }
+                      _friendDetailViewModel_recordRoom.updateSelectedDailyIndex(-1);
+                      await _friendDetailViewModel_recordRoom.getCurrentSeason(season: RankingFilter_season.season2324.korean);
+                      _rankingIndivHistoryViewModel.changeCategory_season(RankingFilter_season.season2324.korean);
                     },
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(16),
