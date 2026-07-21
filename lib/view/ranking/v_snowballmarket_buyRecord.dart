@@ -1,4 +1,4 @@
-import 'package:com.snowlive/data/snowliveDesignStyle.dart';
+import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/viewmodel/forestPark/vm_forestPark.dart';
 import 'package:com.snowlive/viewmodel/ranking/vm_snowball.dart';
 import 'package:extended_image/extended_image.dart';

@@ -1,5 +1,5 @@
 import 'dart:io';
-import 'package:com.snowlive/data/snowliveDesignStyle.dart';
+import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/routes/routes.dart';
 import 'package:com.snowlive/viewmodel/onboarding_login/vm_tos.dart';
 import 'package:flutter/material.dart';

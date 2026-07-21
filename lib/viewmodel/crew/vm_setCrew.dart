@@ -1,17 +1,17 @@
 import 'dart:io';
 
 import 'package:com.snowlive/api/api_crew.dart';
-import 'package:com.snowlive/data/snowliveDesignStyle.dart';
+import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/routes/routes.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewDetail.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewMemberList.dart';
 import 'package:com.snowlive/viewmodel/friend/vm_friendDetail.dart';
-import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
+import 'package:com.snowlive/core/widget/w_fullScreenDialog.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:com.snowlive/viewmodel/vm_user.dart';
+import 'package:com.snowlive/core/viewmodel/vm_user.dart';
 import 'package:com.snowlive/viewmodel/util/vm_imageController.dart';
 import 'package:com.snowlive/model/m_resortModel.dart';
 import 'package:http/http.dart' as http;

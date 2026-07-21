@@ -1,4 +1,4 @@
-import 'package:com.snowlive/data/snowliveDesignStyle.dart';
+import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/viewmodel/resortHome/vm_setGenderAndCategory.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';

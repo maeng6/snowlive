@@ -541,4 +541,20 @@ class FleamarketAPI {
     }
   }
 
+  Future<ApiResponse> fetchMyActivity({required int userId}) async {
+    final response = await http.post(
+      Uri.parse('$baseUrl/my-activity/'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({'user_id': userId}),
+    );
+
+    if (response.statusCode == 200) {
+      final data = json.decode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
+      return ApiResponse.success(data);
+    } else {
+      final data = json.decode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
+      return ApiResponse.error(data);
+    }
+  }
+
 }

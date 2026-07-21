@@ -1,13 +1,13 @@
 import 'package:com.snowlive/data/imgaUrls/Data_url_image.dart';
-import 'package:com.snowlive/data/snowliveDesignStyle.dart';
+import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/routes/routes.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewDetail.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewMemberList.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewRecordRoom.dart';
 import 'package:com.snowlive/viewmodel/friend/vm_friendDetail.dart';
 import 'package:com.snowlive/viewmodel/ranking/vm_rankingList_recordRoom.dart';
-import 'package:com.snowlive/viewmodel/vm_user.dart';
-import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
+import 'package:com.snowlive/core/viewmodel/vm_user.dart';
+import 'package:com.snowlive/core/widget/w_fullScreenDialog.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewApply.dart';

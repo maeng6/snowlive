@@ -1,6 +1,6 @@
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'ApiResponse.dart';
+import 'package:com.snowlive/core/api/ApiResponse.dart';
 
 class CommunityAPI {
   // Base URL

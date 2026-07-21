@@ -4,7 +4,7 @@ import 'dart:ui' as ui;
 import 'package:com.snowlive/api/api_liveTalk.dart';
 import 'package:com.snowlive/model/m_dailyRidingCard.dart';
 import 'package:com.snowlive/model/m_liveTalk.dart';
-import 'package:com.snowlive/viewmodel/vm_user.dart';
+import 'package:com.snowlive/core/viewmodel/vm_user.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';

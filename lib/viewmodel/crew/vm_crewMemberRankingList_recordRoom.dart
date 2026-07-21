@@ -1,7 +1,7 @@
 import 'package:com.snowlive/model/m_crewMemberRankingList_recordRoom.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewDetail.dart';
 import 'package:com.snowlive/viewmodel/ranking/vm_rankingList_recordRoom.dart';
-import 'package:com.snowlive/viewmodel/vm_user.dart';
+import 'package:com.snowlive/core/viewmodel/vm_user.dart';
 import 'package:get/get.dart';
 import 'package:com.snowlive/api/api_crew.dart';
 

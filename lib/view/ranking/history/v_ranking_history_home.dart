@@ -1,4 +1,4 @@
-import 'package:com.snowlive/data/snowliveDesignStyle.dart';
+import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/routes/routes.dart';
 import 'package:com.snowlive/view/ranking/history/v_rankingList_Indi_recordRoom.dart';
 import 'package:com.snowlive/view/ranking/history/v_rankingList_beta.dart';

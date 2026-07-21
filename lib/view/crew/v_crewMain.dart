@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:com.snowlive/data/snowliveDesignStyle.dart';
+import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/routes/routes.dart';
 import 'package:com.snowlive/view/crew/v_crewHome.dart';
 import 'package:com.snowlive/view/crew/v_crewMember.dart';
@@ -9,7 +9,7 @@ import 'package:com.snowlive/viewmodel/crew/vm_crewDetail.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewMemberList.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_searchCrew.dart';
 import 'package:com.snowlive/viewmodel/resortHome/vm_alarmCenter.dart';
-import 'package:com.snowlive/viewmodel/vm_user.dart';
+import 'package:com.snowlive/core/viewmodel/vm_user.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';

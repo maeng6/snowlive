@@ -1,13 +1,13 @@
 
-import 'package:com.snowlive/data/snowliveDesignStyle.dart';
+import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/routes/routes.dart';
 import 'package:com.snowlive/view/moreTab/v_licenseListPage.dart';
 import 'package:com.snowlive/view/v_webPage.dart';
 import 'package:com.snowlive/viewmodel/onboarding_login/vm_authcheck.dart';
 import 'package:com.snowlive/viewmodel/onboarding_login/vm_login.dart';
 import 'package:com.snowlive/viewmodel/resortHome/vm_resortHome.dart';
-import 'package:com.snowlive/viewmodel/vm_user.dart';
-import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
+import 'package:com.snowlive/core/viewmodel/vm_user.dart';
+import 'package:com.snowlive/core/widget/w_fullScreenDialog.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';

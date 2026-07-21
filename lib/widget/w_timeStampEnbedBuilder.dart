@@ -1,5 +1,5 @@
 // import 'dart:convert' show jsonDecode, jsonEncode;
-// import 'package:com.snowlive/util/util_1.dart';
+// import 'package:com.snowlive/core/util/util_1.dart';
 // import 'package:flutter/material.dart' show Icons;
 // import 'package:flutter/widgets.dart';
 // import 'package:flutter_quill/flutter_quill.dart';

@@ -1,6 +1,6 @@
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'ApiResponse.dart';
+import 'package:com.snowlive/core/api/ApiResponse.dart';
 
 class LiveTalkAPI {
   static const String baseUrl = 'https://snowlive-api-c617725e2b78.herokuapp.com/api/livetalk';

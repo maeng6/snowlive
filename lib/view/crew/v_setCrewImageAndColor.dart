@@ -4,13 +4,13 @@ import 'package:com.snowlive/model/m_crewList.dart';
 import 'package:com.snowlive/routes/routes.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewApply.dart';
 import 'package:com.snowlive/viewmodel/vm_mainHome.dart';
-import 'package:com.snowlive/viewmodel/vm_user.dart';
-import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
+import 'package:com.snowlive/core/viewmodel/vm_user.dart';
+import 'package:com.snowlive/core/widget/w_fullScreenDialog.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_setCrew.dart';
-import 'package:com.snowlive/data/snowliveDesignStyle.dart';
+import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 

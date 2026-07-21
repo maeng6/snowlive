@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'ApiResponse.dart';
+import 'package:com.snowlive/core/api/ApiResponse.dart';
 
 class ThemeStoreAPI {
   static const String baseUrl =

@@ -1,12 +1,13 @@
 import 'dart:io';
-import 'package:com.snowlive/data/snowliveDesignStyle.dart';
-import 'package:com.snowlive/viewmodel/fleamarket/vm_fleamarketList.dart';
-import 'package:com.snowlive/viewmodel/fleamarket/vm_fleamarketUpload.dart';
-import 'package:com.snowlive/viewmodel/vm_user.dart';
+import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
+import 'package:com.snowlive/core/viewmodel/fleamarket/vm_fleamarketList.dart';
+import 'package:com.snowlive/mobile/viewmodel/fleamarket/vm_fleamarketUpload.dart';
+import 'package:com.snowlive/core/viewmodel/vm_user.dart';
 import 'package:com.snowlive/widget/w_category_main_fleamarket.dart';
 import 'package:com.snowlive/widget/w_category_sub_board_fleamarket.dart';
 import 'package:com.snowlive/widget/w_category_sub_ski_fleamarket.dart';
-import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
+import 'package:com.snowlive/core/widget/w_fullScreenDialog.dart';
+import 'package:com.snowlive/mobile/widget/w_fullScreenDialog_mobile.dart';
 import 'package:com.snowlive/widget/w_tradeMethod_fleamarket.dart';
 import 'package:com.snowlive/widget/w_tradeSpot_fleamarket.dart';
 import 'package:extended_image/extended_image.dart';
@@ -14,7 +15,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
-import '../../viewmodel/fleamarket/vm_fleamarketUpdate.dart';
+import 'package:com.snowlive/mobile/viewmodel/fleamarket/vm_fleamarketUpdate.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class FleamarketUploadView extends StatelessWidget {
@@ -1278,7 +1279,7 @@ class FleamarketUploadView extends StatelessWidget {
                               && _fleamarketUploadViewModel.selectedTradeMethod != '거래방법 선택'
                               && _fleamarketUploadViewModel.selectedTradeSpot != '거래장소 선택'
                               && _fleamarketUploadViewModel.isDescriptionWritten == true){
-                            CustomFullScreenDialog.showDialog_uploadFlea();
+                            CustomFullScreenDialogMobile.showDialog_uploadFlea();
                             await _fleamarketUploadViewModel.uploadFleamarket(
                                 {
                                   "user_id": _userViewModel.user.user_id,

@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:com.snowlive/api/api_ranking.dart';
 import 'package:com.snowlive/model/m_seasonRidingCard.dart';
 import 'package:com.snowlive/model/m_dailyRidingCard.dart';
-import 'package:com.snowlive/viewmodel/vm_user.dart';
+import 'package:com.snowlive/core/viewmodel/vm_user.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

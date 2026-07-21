@@ -1,5 +1,5 @@
-import 'package:com.snowlive/data/snowliveDesignStyle.dart';
-import 'package:com.snowlive/util/util_1.dart';
+import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
+import 'package:com.snowlive/core/util/util_1.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:com.snowlive/model/m_resortModel.dart';

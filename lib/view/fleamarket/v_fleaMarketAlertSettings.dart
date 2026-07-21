@@ -1,6 +1,6 @@
-import 'package:com.snowlive/data/snowliveDesignStyle.dart';
-import 'package:com.snowlive/model/m_fleamarket_alert.dart';
-import 'package:com.snowlive/viewmodel/fleamarket/vm_fleamarketAlert.dart';
+import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
+import 'package:com.snowlive/core/model/m_fleamarket_alert.dart';
+import 'package:com.snowlive/core/viewmodel/fleamarket/vm_fleamarketAlert.dart';
 import 'package:com.snowlive/widget/w_category_main_fleamarket.dart';
 import 'package:com.snowlive/widget/w_category_sub_ski_fleamarket.dart';
 import 'package:com.snowlive/widget/w_category_sub_board_fleamarket.dart';

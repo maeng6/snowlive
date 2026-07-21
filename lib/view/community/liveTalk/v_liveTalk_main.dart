@@ -1,6 +1,6 @@
 import 'dart:io';
 import 'dart:ui' as ui;
-import 'package:com.snowlive/data/snowliveDesignStyle.dart';
+import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/model/m_dailyRidingCard.dart';
 import 'package:com.snowlive/model/m_liveTalk.dart';
 import 'package:com.snowlive/routes/routes.dart';
@@ -8,8 +8,8 @@ import 'package:com.snowlive/view/community/liveTalk/v_liveTalk_feedItem.dart';
 import 'package:com.snowlive/view/community/liveTalk/v_liveTalk_inputArea.dart';
 import 'package:com.snowlive/viewmodel/liveTalk/vm_liveTalk.dart';
 import 'package:com.snowlive/viewmodel/ranking/vm_ridingCard.dart';
-import 'package:com.snowlive/viewmodel/vm_user.dart';
-import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
+import 'package:com.snowlive/core/viewmodel/vm_user.dart';
+import 'package:com.snowlive/core/widget/w_fullScreenDialog.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';

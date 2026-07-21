@@ -2,8 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:com.snowlive/api/api_alarmcenter..dart';
 import 'package:com.snowlive/model/m_alarmCenterList.dart'; // AlarmCenterModel이 정의된 파일
 import 'package:com.snowlive/viewmodel/friend/vm_friendDetail.dart';
-import 'package:com.snowlive/viewmodel/vm_user.dart';
-import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
+import 'package:com.snowlive/core/viewmodel/vm_user.dart';
+import 'package:com.snowlive/core/widget/w_fullScreenDialog.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

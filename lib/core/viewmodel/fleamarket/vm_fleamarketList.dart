@@ -1,6 +1,6 @@
-import 'package:com.snowlive/api/api_fleamarket.dart';
-import 'package:com.snowlive/model/m_fleamarket.dart';
-import 'package:com.snowlive/viewmodel/vm_user.dart';
+import 'package:com.snowlive/core/api/api_fleamarket.dart';
+import 'package:com.snowlive/core/model/m_fleamarket.dart';
+import 'package:com.snowlive/core/viewmodel/vm_user.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/rendering.dart';
 import 'package:get/get.dart';

@@ -1,7 +1,7 @@
-import 'package:com.snowlive/api/ApiResponse.dart';
-import 'package:com.snowlive/api/api_user.dart';
-import 'package:com.snowlive/model/m_user.dart';
-import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
+import 'package:com.snowlive/core/api/ApiResponse.dart';
+import 'package:com.snowlive/core/api/api_user.dart';
+import 'package:com.snowlive/core/model/m_user.dart';
+import 'package:com.snowlive/core/widget/w_fullScreenDialog.dart';
 import 'package:get/get.dart';
 import 'package:get/get_rx/get_rx.dart';
 

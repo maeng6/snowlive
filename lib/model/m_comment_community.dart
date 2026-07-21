@@ -1,5 +1,5 @@
 
-import 'package:com.snowlive/model/m_communityList.dart';
+import 'package:com.snowlive/core/model/m_communityList.dart';
 
 class CommentResponseCommunity {
   int? count;

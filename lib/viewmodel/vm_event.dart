@@ -1,7 +1,7 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:com.snowlive/api/api_event.dart';
-import 'package:com.snowlive/api/ApiResponse.dart';
+import 'package:com.snowlive/core/api/ApiResponse.dart';
 import 'package:com.snowlive/model/m_event.dart';
 
 class EventViewModel extends GetxController {

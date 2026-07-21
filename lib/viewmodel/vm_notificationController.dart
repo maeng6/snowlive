@@ -6,14 +6,14 @@ import 'package:get/get.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:http/http.dart' as http;
-import 'package:com.snowlive/viewmodel/vm_user.dart';
+import 'package:com.snowlive/core/viewmodel/vm_user.dart';
 import 'package:com.snowlive/viewmodel/resortHome/vm_resortHome.dart';
-import 'package:com.snowlive/viewmodel/fleamarket/vm_fleamarketDetail.dart';
-import 'package:com.snowlive/viewmodel/fleamarket/vm_fleamarketCommentDetail.dart';
+import 'package:com.snowlive/core/viewmodel/fleamarket/vm_fleamarketDetail.dart';
+import 'package:com.snowlive/core/viewmodel/fleamarket/vm_fleamarketCommentDetail.dart';
 import 'package:com.snowlive/viewmodel/community/vm_communityDetail.dart';
 import 'package:com.snowlive/viewmodel/community/vm_communityCommentDetail.dart';
 import 'package:com.snowlive/routes/routes.dart';
-import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
+import 'package:com.snowlive/core/widget/w_fullScreenDialog.dart';
 
 class NotificationController extends GetxController {
   FirebaseMessaging messaging = FirebaseMessaging.instance;

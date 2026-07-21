@@ -1,4 +1,4 @@
-import 'package:com.snowlive/data/snowliveDesignStyle.dart';
+import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:com.snowlive/view/community/v_community_main.dart';
 import 'package:com.snowlive/view/fleamarket/v_fleaMarketMain.dart';
@@ -7,7 +7,7 @@ import 'package:com.snowlive/view/ranking/v_ranking_Home.dart';
 import 'package:com.snowlive/view/resortHome/v_resortHome.dart';
 import 'package:com.snowlive/view/v_slmkScreen.dart';
 import 'package:com.snowlive/viewmodel/vm_mainHome.dart';
-import 'package:com.snowlive/viewmodel/vm_user.dart';
+import 'package:com.snowlive/core/viewmodel/vm_user.dart';
 import 'package:com.snowlive/viewmodel/community/vm_communityAlarm.dart';
 import 'package:com.snowlive/viewmodel/vm_eventAlarm.dart';
 import 'package:com.snowlive/viewmodel/resortHome/vm_resortHome.dart';

@@ -1,7 +1,7 @@
-import 'package:com.snowlive/api/ApiResponse.dart';
+import 'package:com.snowlive/core/api/ApiResponse.dart';
 import 'package:com.snowlive/api/api_themeStore.dart';
 import 'package:com.snowlive/model/m_themeStore.dart';
-import 'package:com.snowlive/viewmodel/vm_user.dart';
+import 'package:com.snowlive/core/viewmodel/vm_user.dart';
 import 'package:get/get.dart';
 
 class ThemeStoreViewModel extends GetxController {

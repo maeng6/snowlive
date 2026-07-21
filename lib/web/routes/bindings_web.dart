@@ -1,0 +1,46 @@
+import 'package:com.snowlive/core/viewmodel/fleamarket/vm_fleamarketList.dart';
+import 'package:com.snowlive/core/viewmodel/fleamarket/vm_fleamarketSearch.dart';
+import 'package:com.snowlive/core/viewmodel/fleamarket/vm_fleamarketDetail.dart';
+import 'package:com.snowlive/core/viewmodel/fleamarket/vm_fleamarketCommentDetail.dart';
+import 'package:com.snowlive/core/viewmodel/fleamarket/vm_fleamarketAlert.dart';
+import 'package:com.snowlive/web/viewmodel/fleamarket/vm_fleamarketUpload_web.dart';
+import 'package:com.snowlive/web/viewmodel/fleamarket/vm_fleamarketUpdate_web.dart';
+import 'package:get/get.dart';
+
+class WebFleamarketListBinding extends Bindings {
+  @override
+  void dependencies() {
+    Get.lazyPut(() => FleamarketListViewModel(), fenix: true);
+  }
+}
+
+class WebFleamarketSearchBinding extends Bindings {
+  @override
+  void dependencies() {
+    Get.lazyPut(() => FleamarketSearchViewModel(), fenix: true);
+  }
+}
+
+class WebFleamarketDetailBinding extends Bindings {
+  @override
+  void dependencies() {
+    Get.lazyPut(() => FleamarketDetailViewModel(), fenix: true);
+    Get.lazyPut(() => FleamarketCommentDetailViewModel(), fenix: true);
+    Get.lazyPut(() => FleamarketAlertViewModel(), fenix: true);
+    Get.lazyPut(() => FleamarketUpdateViewModelWeb(), fenix: true);
+  }
+}
+
+class WebFleamarketUploadBinding extends Bindings {
+  @override
+  void dependencies() {
+    Get.lazyPut(() => FleamarketUploadViewModelWeb(), fenix: true);
+  }
+}
+
+class WebFleamarketUpdateBinding extends Bindings {
+  @override
+  void dependencies() {
+    Get.lazyPut(() => FleamarketUpdateViewModelWeb(), fenix: true);
+  }
+}

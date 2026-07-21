@@ -1,24 +1,24 @@
-import 'package:com.snowlive/data/snowliveDesignStyle.dart';
+import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/model/m_alarmCenterList.dart';
 import 'package:com.snowlive/routes/routes.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewApply.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewDetail.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_searchCrew.dart';
-import 'package:com.snowlive/viewmodel/fleamarket/vm_fleamarketCommentDetail.dart';
-import 'package:com.snowlive/viewmodel/fleamarket/vm_fleamarketDetail.dart';
-import 'package:com.snowlive/viewmodel/fleamarket/vm_fleamarketList.dart';
+import 'package:com.snowlive/core/viewmodel/fleamarket/vm_fleamarketCommentDetail.dart';
+import 'package:com.snowlive/core/viewmodel/fleamarket/vm_fleamarketDetail.dart';
+import 'package:com.snowlive/core/viewmodel/fleamarket/vm_fleamarketList.dart';
 import 'package:com.snowlive/viewmodel/community/vm_communityDetail.dart';
 import 'package:com.snowlive/viewmodel/community/vm_communityCommentDetail.dart';
 import 'package:com.snowlive/viewmodel/friend/vm_friendDetail.dart';
 import 'package:com.snowlive/viewmodel/friend/vm_friendList.dart';
 import 'package:com.snowlive/viewmodel/resortHome/vm_alarmCenter.dart';
-import 'package:com.snowlive/viewmodel/vm_user.dart';
-import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
+import 'package:com.snowlive/core/viewmodel/vm_user.dart';
+import 'package:com.snowlive/core/widget/w_fullScreenDialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
-import '../../util/util_1.dart';
+import 'package:com.snowlive/core/util/util_1.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class AlarmCenterView extends StatelessWidget {

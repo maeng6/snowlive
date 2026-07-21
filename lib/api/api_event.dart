@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:com.snowlive/api/ApiResponse.dart';
+import 'package:com.snowlive/core/api/ApiResponse.dart';
 
 class EventAPI {
   static const String baseUrl = 'https://snowlive-api-c617725e2b78.herokuapp.com/api/event';

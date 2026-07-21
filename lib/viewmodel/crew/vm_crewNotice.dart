@@ -1,7 +1,7 @@
 import 'package:com.snowlive/api/api_crew.dart';
 import 'package:com.snowlive/model/m_crewNotice.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewMemberList.dart';
-import 'package:com.snowlive/viewmodel/vm_user.dart';
+import 'package:com.snowlive/core/viewmodel/vm_user.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';

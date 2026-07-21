@@ -1,10 +1,10 @@
-import 'package:com.snowlive/api/ApiResponse.dart';
+import 'package:com.snowlive/core/api/ApiResponse.dart';
 import 'package:com.snowlive/api/api_community.dart';
 import 'package:com.snowlive/model/m_comment_community.dart';
-import 'package:com.snowlive/model/m_communityList.dart';
-import 'package:com.snowlive/util/util_1.dart';
-import 'package:com.snowlive/viewmodel/vm_user.dart';
-import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
+import 'package:com.snowlive/core/model/m_communityList.dart';
+import 'package:com.snowlive/core/util/util_1.dart';
+import 'package:com.snowlive/core/viewmodel/vm_user.dart';
+import 'package:com.snowlive/core/widget/w_fullScreenDialog.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

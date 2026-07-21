@@ -1,5 +1,5 @@
-import 'package:com.snowlive/model/m_comment_flea.dart';
-import 'package:com.snowlive/model/m_fleamarket.dart';
+import 'package:com.snowlive/core/model/m_comment_flea.dart';
+import 'package:com.snowlive/core/model/m_fleamarket.dart';
 
 import 'm_communityList.dart';
 

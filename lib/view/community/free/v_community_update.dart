@@ -1,14 +1,14 @@
 import 'dart:convert';
-import 'package:com.snowlive/data/snowliveDesignStyle.dart';
+import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/viewmodel/community/vm_communityBulletinList.dart';
 import 'package:com.snowlive/viewmodel/community/vm_communityDetail.dart';
 import 'package:com.snowlive/viewmodel/community/vm_communityUpdate.dart';
-import 'package:com.snowlive/viewmodel/vm_user.dart';
+import 'package:com.snowlive/core/viewmodel/vm_user.dart';
 import 'package:com.snowlive/widget/w_bulletin_quill_toolbar.dart';
 import 'package:com.snowlive/widget/w_category_sub_commu_bulletin.dart';
 import 'package:com.snowlive/widget/w_category_main_commu_event.dart';
 import 'package:com.snowlive/widget/w_category_sub2_commu_bulletin_room.dart';
-import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
+import 'package:com.snowlive/core/widget/w_fullScreenDialog.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';

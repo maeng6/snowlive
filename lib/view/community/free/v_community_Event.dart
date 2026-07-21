@@ -1,10 +1,10 @@
-// import 'package:com.snowlive/data/snowliveDesignStyle.dart';
-// import 'package:com.snowlive/model/m_communityList.dart';
+// import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
+// import 'package:com.snowlive/core/model/m_communityList.dart';
 // import 'package:com.snowlive/routes/routes.dart';
-// import 'package:com.snowlive/util/util_1.dart';
+// import 'package:com.snowlive/core/util/util_1.dart';
 // import 'package:com.snowlive/viewmodel/community/vm_communityBulletinList.dart';
 // import 'package:com.snowlive/viewmodel/community/vm_communityDetail.dart';
-// import 'package:com.snowlive/viewmodel/vm_user.dart';
+// import 'package:com.snowlive/core/viewmodel/vm_user.dart';
 // import 'package:extended_image/extended_image.dart';
 // import 'package:flutter/cupertino.dart';
 // import 'package:flutter/material.dart';

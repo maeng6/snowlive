@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:com.snowlive/model/m_friendDetail.dart';
 import 'package:com.snowlive/model/m_friendDetail_recordRoom.dart';
 import 'package:http/http.dart' as http;
-import 'ApiResponse.dart';
+import 'package:com.snowlive/core/api/ApiResponse.dart';
 
 class FriendDetailAPI {
   static const String baseUrl = 'https://snowlive-api-c617725e2b78.herokuapp.com/api/friend-detail-page';

@@ -1,8 +1,8 @@
-import 'package:com.snowlive/api/ApiResponse.dart';
+import 'package:com.snowlive/core/api/ApiResponse.dart';
 import 'package:com.snowlive/api/api_friendDetail.dart';
 import 'package:com.snowlive/model/m_friendDetail_recordRoom.dart';
 import 'package:com.snowlive/viewmodel/friend/vm_rankingIndivHistory.dart';
-import 'package:com.snowlive/viewmodel/vm_user.dart';
+import 'package:com.snowlive/core/viewmodel/vm_user.dart';
 import 'package:get/get.dart';
 import 'package:get/get_rx/get_rx.dart';
 import 'package:get/get_rx/src/rx_types/rx_types.dart';

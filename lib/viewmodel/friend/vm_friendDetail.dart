@@ -1,12 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:com.snowlive/api/ApiResponse.dart';
+import 'package:com.snowlive/core/api/ApiResponse.dart';
 import 'package:com.snowlive/api/api_friend.dart';
 import 'package:com.snowlive/api/api_friendDetail.dart';
 import 'package:com.snowlive/model/m_friendDetail.dart';
 import 'package:com.snowlive/model/m_friendsTalk.dart';
 import 'package:com.snowlive/viewmodel/util/vm_imageController.dart';
-import 'package:com.snowlive/viewmodel/vm_user.dart';
-import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
+import 'package:com.snowlive/core/viewmodel/vm_user.dart';
+import 'package:com.snowlive/core/widget/w_fullScreenDialog.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_rx/get_rx.dart';

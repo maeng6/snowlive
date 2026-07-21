@@ -1,4 +1,4 @@
-import 'package:com.snowlive/data/snowliveDesignStyle.dart';
+import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/view/banner/v_banner_community.dart';
 import 'package:com.snowlive/view/community/free/v_community_Bulletin_Crew.dart';
 import 'package:com.snowlive/view/community/free/v_community_Bulletin_Free.dart';
@@ -9,7 +9,7 @@ import 'package:com.snowlive/view/community/liveTalk/v_liveTalk_main.dart';
 import 'package:com.snowlive/viewmodel/community/vm_communityAlarm.dart';
 import 'package:com.snowlive/viewmodel/community/vm_communityBulletinList.dart';
 // [이벤트·소식 탭 비활성화] import 'package:com.snowlive/viewmodel/vm_eventAlarm.dart';
-import 'package:com.snowlive/viewmodel/vm_user.dart';
+import 'package:com.snowlive/core/viewmodel/vm_user.dart';
 // [이벤트·소식 탭 비활성화] import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';

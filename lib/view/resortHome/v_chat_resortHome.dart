@@ -1,5 +1,5 @@
-import 'package:com.snowlive/data/snowliveDesignStyle.dart';
-import 'package:com.snowlive/util/util_1.dart';
+import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
+import 'package:com.snowlive/core/util/util_1.dart';
 import 'package:com.snowlive/viewmodel/resortHome/vm_openChat.dart';
 import 'package:com.snowlive/viewmodel/resortHome/vm_openChatAlarm.dart';
 import 'package:flutter/material.dart';

@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'ApiResponse.dart';
+import 'package:com.snowlive/core/api/ApiResponse.dart';
 
 class LoginAPI {
   static const String baseUrl = 'https://snowlive-api-c617725e2b78.herokuapp.com/api/accounts';

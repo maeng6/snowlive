@@ -1,16 +1,14 @@
-import 'package:com.snowlive/api/ApiResponse.dart';
-import 'package:com.snowlive/api/api_fleamarket.dart';
+import 'package:com.snowlive/core/api/ApiResponse.dart';
+import 'package:com.snowlive/core/api/api_fleamarket.dart';
+import 'package:com.snowlive/core/model/m_fleamarket.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_rx/get_rx.dart';
-import 'package:get/get_rx/src/rx_types/rx_types.dart';
-import 'package:get/state_manager.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:com.snowlive/viewmodel/util/vm_imageController.dart';
+import 'package:com.snowlive/web/viewmodel/util/vm_imageController_web.dart';
 
-class FleamarketUploadViewModel extends GetxController {
+class FleamarketUpdateViewModelWeb extends GetxController {
 
-  final ImageController imageController = Get.put(ImageController());
+  final ImageControllerWeb imageController = Get.put(ImageControllerWeb());
   int? _currentUserId;
   final TextEditingController textEditingController_title = TextEditingController();
   final TextEditingController textEditingController_productName = TextEditingController();
@@ -28,61 +26,108 @@ class FleamarketUploadViewModel extends GetxController {
     super.onClose();
   }
 
-  RxList<XFile> _imageFiles = <XFile>[].obs;
+  RxList<XFile> _newImageFiles = <XFile>[].obs;
+  RxList<String> _existingImageUrls = <String>[].obs;
   RxList<String> _imageUrlList = <String>[].obs;
   RxBool _fleaImageSelected = false.obs;
   RxBool _isGettingImageFromGallery = false.obs;
-  RxBool _isTitleWritten = false.obs;
-  RxBool _isProductNameWritten = false.obs;
-  RxBool _isPriceWritten = false.obs;
-  RxBool _isDescriptionWritten = false.obs;
+  RxBool _isTitleWritten = true.obs;
+  RxBool _isProductNameWritten = true.obs;
+  RxBool _isPriceWritten = true.obs;
+  RxBool _isDescriptionWritten = true.obs;
   RxBool _negotiable = false.obs;
-  RxInt _imageLength = 0.obs;
+  RxInt _totalImageCount = 0.obs;
   RxList<Map<String, dynamic>> _photos = <Map<String, dynamic>>[].obs;
   RxString _selectedCategoryMain = '상위 카테고리'.obs;
   RxString _selectedCategorySub = '하위 카테고리'.obs;
   RxString _selectedTradeMethod = '거래방법 선택'.obs;
   RxString _selectedTradeSpot = '거래장소 선택'.obs;
   RxBool _isCategorySelected = true.obs;
-  RxInt _pk = 0.obs;
+  RxBool updateCacheHeight = false.obs;
 
-
-  List<XFile?> get imageFiles => _imageFiles;
+  List<XFile?> get newImageFiles => _newImageFiles;
+  List<String> get existingImageUrls => _existingImageUrls;
   List<String?> get imageUrlList => _imageUrlList;
   List<Map<String, dynamic>?> get photos => _photos;
   bool get fleaImageSelected => _fleaImageSelected.value;
   bool get isGettingImageFromGallery => _isGettingImageFromGallery.value;
-  bool get negotiable => _negotiable.value;
   bool get isTitleWritten => _isTitleWritten.value;
   bool get isProductNameWritten => _isProductNameWritten.value;
   bool get isPriceWritten => _isPriceWritten.value;
   bool get isDescriptionWritten => _isDescriptionWritten.value;
-  int get imageLength => _imageLength.value;
+  bool get negotiable => _negotiable.value;
+  int get totalImageCount => _totalImageCount.value;
   String get selectedCategoryMain => _selectedCategoryMain.value;
   String get selectedCategorySub => _selectedCategorySub.value;
   String get selectedTradeMethod => _selectedTradeMethod.value;
   String get selectedTradeSpot => _selectedTradeSpot.value;
   bool get isCategorySelected => _isCategorySelected.value;
-  int get pk => _pk.value;
 
+  Future<void> fetchFleamarketUpdateData({
+    required String title,
+    required String categorySub,
+    required String categoryMain,
+    required String productName,
+    required dynamic price,
+    required String tradeMethod,
+    required String tradeSpot,
+    required String desc,
+    required List<Photo>? photos,
+  }) async {
+    textEditingController_title.text = title;
+    _selectedCategorySub.value = categorySub;
+    _selectedCategoryMain.value = categoryMain;
+    textEditingController_productName.text = productName;
+    itemPriceTextEditingController.text = price.toString();
+    _selectedTradeMethod.value = tradeMethod;
+    _selectedTradeSpot.value = tradeSpot;
+    textEditingController_desc.text = desc;
+
+    _existingImageUrls.clear();
+    _newImageFiles.clear();
+
+    if (photos != null) {
+      final sortedPhotos = List<Photo>.from(photos)
+        ..sort((a, b) => (a.displayOrder ?? 0).compareTo(b.displayOrder ?? 0));
+
+      for (var photo in sortedPhotos) {
+        if (photo.urlFleaPhoto != null) {
+          _existingImageUrls.add(photo.urlFleaPhoto!);
+        }
+      }
+    }
+
+    _updateTotalImageCount();
+  }
+
+  void _updateTotalImageCount() {
+    _totalImageCount.value = _existingImageUrls.length + _newImageFiles.length;
+  }
 
   Future<void> getImageFromGallery() async {
     changeIsGettingImageFromGallery(true);
-    var imageList =  await imageController.getMultiImage(ImageSource.gallery);
-    if(imageList.length !=0) {
-      _imageFiles.value = imageList;
+    var imageList = await imageController.getMultiImage(ImageSource.gallery);
+    if (imageList.isNotEmpty) {
+      _newImageFiles.value = imageList;
     }
-    if(_imageFiles.length <= 5){
+    _updateTotalImageCount();
+    if (_totalImageCount.value <= 5) {
       changeFleaImageSelected(true);
-      setImageLength();
-    }else {
-      deleteImageFromGallery();
+    } else {
+      _newImageFiles.clear();
+      _updateTotalImageCount();
     }
     changeIsGettingImageFromGallery(false);
   }
 
-  void deleteImageFromGallery()  {
-    _imageFiles.value =[];
+  void removeExistingImage(int index) {
+    _existingImageUrls.removeAt(index);
+    _updateTotalImageCount();
+  }
+
+  void removeNewImage(int index) {
+    _newImageFiles.removeAt(index);
+    _updateTotalImageCount();
   }
 
   void changeFleaImageSelected(bool boolean) {
@@ -109,16 +154,12 @@ class FleamarketUploadViewModel extends GetxController {
     _isDescriptionWritten.value = boolean;
   }
 
-  void setImageLength() {
-    _imageLength.value = _imageFiles.length;
-  }
-
-  void removeSelectedImage(index) {
-    _imageFiles.removeAt(index);
-  }
-
   void toggleNegotiable() {
     _negotiable.value = !_negotiable.value;
+  }
+
+  void toggleUpdateCacheHeight() {
+    updateCacheHeight.value = !updateCacheHeight.value;
   }
 
   Future<void> getImageUrlList({required newImages, required pk, required int userId}) async {
@@ -131,6 +172,7 @@ class FleamarketUploadViewModel extends GetxController {
       },
     );
 
+    _photos.value = [];
     for (int i = 0; i < _imageUrlList.length; i++) {
       _photos.add({
         "display_order": i + 1,
@@ -139,7 +181,6 @@ class FleamarketUploadViewModel extends GetxController {
     }
   }
 
-  /// 중고거래 이미지 업로드 에러 로그 전송
   Future<void> _sendFleaErrorLog({
     required String requestType,
     required String error,
@@ -152,20 +193,9 @@ class FleamarketUploadViewModel extends GetxController {
         "request_type": requestType,
         "error": error,
       });
-      print('[FleaErrorLog] $requestType: $error');
     } catch (e) {
       print('[FleaErrorLog] 로그 전송 실패: $e');
     }
-  }
-
-  /// 외부에서 에러 로그 전송 (서버 등록 실패 등)
-  Future<void> sendFleaErrorLog({
-    required int userId,
-    required String requestType,
-    required String error,
-  }) async {
-    _currentUserId = userId;
-    await _sendFleaErrorLog(requestType: requestType, error: error);
   }
 
   void setIsSelectedCategoryFalse() {
@@ -183,27 +213,30 @@ class FleamarketUploadViewModel extends GetxController {
   void selectCategoryMain(String selectedcategoryMain) {
     _selectedCategoryMain.value = selectedcategoryMain;
   }
+
   void selectCategorySub(String selectedcategorySub) {
     _selectedCategorySub.value = selectedcategorySub;
   }
+
   void selectTradeMethod(String selectTradeMethod) {
     _selectedTradeMethod.value = selectTradeMethod;
   }
+
   void selectTradeSpot(String selectTradeSpot) {
     _selectedTradeSpot.value = selectTradeSpot;
   }
 
-
-  Future<void> uploadFleamarket(body) async {
-
-      ApiResponse response = await FleamarketAPI().uploadFleamarket(body);
-      if (response.success) {
-        _pk.value = response.data['flea_id'];
-        print('스노우마켓 업로드 완료');
-      }
-      else {
-      }
+  Future<void> updateFleamarket(fleamarketId, body, photos) async {
+    ApiResponse response = await FleamarketAPI().updateFleamarket(fleamarketId, body, photos);
+    if (response.success) {
+      print('스노우마켓 수정 완료');
     }
+  }
 
-
+  Future<void> deletePhotoUrls(body) async {
+    ApiResponse response = await FleamarketAPI().deletePhotoUrls(body);
+    if (response.success) {
+      print('이미지 Url 삭제 완료');
+    }
+  }
 }

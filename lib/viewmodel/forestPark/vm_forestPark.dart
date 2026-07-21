@@ -2,9 +2,9 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:com.snowlive/api/api_forestPark.dart';
 import 'package:com.snowlive/model/m_forestPark.dart';
-import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
+import 'package:com.snowlive/core/widget/w_fullScreenDialog.dart';
 import 'package:get/get.dart';
-import 'package:com.snowlive/viewmodel/vm_user.dart';
+import 'package:com.snowlive/core/viewmodel/vm_user.dart';
 
 class ForestParkViewModel extends GetxController {
   final UserViewModel _userViewModel = Get.find<UserViewModel>();

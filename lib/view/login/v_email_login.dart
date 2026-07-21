@@ -5,7 +5,7 @@ import 'package:com.snowlive/viewmodel/onboarding_login/vm_tos.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
+import 'package:com.snowlive/core/widget/w_fullScreenDialog.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class EmailLoginPage extends StatefulWidget {

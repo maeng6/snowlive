@@ -1,5 +1,5 @@
 import 'dart:io';
-import 'package:com.snowlive/util/util_1.dart';
+import 'package:com.snowlive/core/util/util_1.dart';
 import 'package:com.snowlive/view/banner/v_banner_resortHome.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';

@@ -2,7 +2,7 @@ import 'package:com.snowlive/model/m_crewApplyList.dart';
 import 'package:com.snowlive/routes/routes.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewMemberList.dart';
 import 'package:com.snowlive/viewmodel/resortHome/vm_alarmCenter.dart';
-import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
+import 'package:com.snowlive/core/widget/w_fullScreenDialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:com.snowlive/api/api_crew.dart';

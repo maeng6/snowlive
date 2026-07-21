@@ -1,7 +1,7 @@
 import 'package:get/get.dart';
-import 'package:com.snowlive/api/api_fleamarket.dart';
-import 'package:com.snowlive/model/m_fleamarket_alert.dart';
-import 'package:com.snowlive/viewmodel/vm_user.dart';
+import 'package:com.snowlive/core/api/api_fleamarket.dart';
+import 'package:com.snowlive/core/model/m_fleamarket_alert.dart';
+import 'package:com.snowlive/core/viewmodel/vm_user.dart';
 
 class FleamarketAlertViewModel extends GetxController {
   final FleamarketAPI _fleamarketAPI = FleamarketAPI();

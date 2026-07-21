@@ -1,8 +1,8 @@
-import 'package:com.snowlive/api/ApiResponse.dart';
-import 'package:com.snowlive/api/api_user.dart';
-import 'package:com.snowlive/data/snowliveDesignStyle.dart';
+import 'package:com.snowlive/core/api/ApiResponse.dart';
+import 'package:com.snowlive/core/api/api_user.dart';
+import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/view/resortHome/v_setGenderAndCategory.dart';
-import 'package:com.snowlive/viewmodel/vm_user.dart';
+import 'package:com.snowlive/core/viewmodel/vm_user.dart';
 import 'package:get/get.dart';
 
 class GenderCategoryViewModel extends GetxController {

@@ -1,6 +1,6 @@
 import 'package:com.snowlive/api/api_ranking.dart';
 import 'package:com.snowlive/model/m_rankingListCrew_beta.dart';
-import 'package:com.snowlive/viewmodel/vm_user.dart';
+import 'package:com.snowlive/core/viewmodel/vm_user.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
