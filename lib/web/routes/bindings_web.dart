@@ -3,6 +3,7 @@ import 'package:com.snowlive/core/viewmodel/fleamarket/vm_fleamarketSearch.dart'
 import 'package:com.snowlive/core/viewmodel/fleamarket/vm_fleamarketDetail.dart';
 import 'package:com.snowlive/core/viewmodel/fleamarket/vm_fleamarketCommentDetail.dart';
 import 'package:com.snowlive/core/viewmodel/fleamarket/vm_fleamarketAlert.dart';
+import 'package:com.snowlive/web/viewmodel/fleamarket/vm_fleamarketMyActivity_web.dart';
 import 'package:com.snowlive/web/viewmodel/fleamarket/vm_fleamarketUpload_web.dart';
 import 'package:com.snowlive/web/viewmodel/fleamarket/vm_fleamarketUpdate_web.dart';
 import 'package:get/get.dart';
@@ -11,6 +12,15 @@ class WebFleamarketListBinding extends Bindings {
   @override
   void dependencies() {
     Get.lazyPut(() => FleamarketListViewModel(), fenix: true);
+    Get.lazyPut(() => FleamarketSearchViewModel(), fenix: true);
+    Get.lazyPut(() => FleamarketMyActivityViewModel(), fenix: true);
+  }
+}
+
+class WebFleamarketAlertBinding extends Bindings {
+  @override
+  void dependencies() {
+    Get.lazyPut(() => FleamarketAlertViewModel(), fenix: true);
   }
 }
 

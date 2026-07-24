@@ -1,4 +1,5 @@
 import 'package:com.snowlive/web/routes/bindings_web.dart';
+import 'package:com.snowlive/web/view/fleamarket/v_fleamarketHome_web.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -8,11 +9,12 @@ class WebRoutes {
   static const fleamarketDetail = '/fleamarket/detail';
   static const fleamarketUpload = '/fleamarket/upload';
   static const fleamarketUpdate = '/fleamarket/update';
+  static const fleamarketAlert = '/fleamarket/alert';
 
   static final pages = [
     GetPage(
       name: fleamarketList,
-      page: () => const _PlaceholderPage(title: '중고거래 목록'),
+      page: () => const FleamarketHomeView(),
       binding: WebFleamarketListBinding(),
     ),
     GetPage(
@@ -34,6 +36,11 @@ class WebRoutes {
       name: fleamarketUpdate,
       page: () => const _PlaceholderPage(title: '중고거래 수정'),
       binding: WebFleamarketUpdateBinding(),
+    ),
+    GetPage(
+      name: fleamarketAlert,
+      page: () => const _PlaceholderPage(title: '키워드 알림 설정'),
+      binding: WebFleamarketAlertBinding(),
     ),
   ];
 }

@@ -1,5 +1,6 @@
 import 'package:com.snowlive/core/api/ApiResponse.dart';
 import 'package:com.snowlive/core/api/api_fleamarket.dart';
+import 'package:com.snowlive/core/viewmodel/vm_user.dart';
 import 'package:get/get.dart';
 
 class FleamarketMyActivityItem {
@@ -30,6 +31,17 @@ class FleamarketMyActivityViewModel extends GetxController {
   RxList<FleamarketMyActivityItem> recentViewed = <FleamarketMyActivityItem>[].obs;
   RxList<FleamarketMyActivityItem> favoriteList = <FleamarketMyActivityItem>[].obs;
   RxBool isLoading = false.obs;
+
+  @override
+  void onInit() {
+    super.onInit();
+    // 로그인 없이는 개인 활동 이력이 없고, 백엔드도 user_id 없이는 400을 반환하므로
+    // 비로그인 상태에서는 아예 조회하지 않는다(최근 본 상품/찜 목록 섹션은 빈 목록으로 자연히 숨겨짐).
+    final int? userId = Get.find<UserViewModel>().user.user_id;
+    if (userId != null) {
+      fetchMyActivity(userId: userId);
+    }
+  }
 
   Future<void> fetchMyActivity({required int userId}) async {
     isLoading.value = true;

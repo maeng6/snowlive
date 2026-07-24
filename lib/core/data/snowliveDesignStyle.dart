@@ -65,3 +65,13 @@ class SDSColor {
   static const Color red = Color(0xFFFF334B);
 
 }
+
+/// 웹 레이아웃용 스페이싱 스케일 (기존에 공용 스페이싱 상수가 없어 신규 추가).
+class SDSSpacing {
+  static const double xs = 4;
+  static const double sm = 8;
+  static const double md = 16;
+  static const double lg = 24;
+  static const double xl = 32;
+  static const double xxl = 48;
+}

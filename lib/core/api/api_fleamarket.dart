@@ -84,11 +84,14 @@ class FleamarketAPI {
 
   Future<ApiResponse> detailFleamarket({
     required int fleamarketId,
-    required int userId,
+    int? userId,
   }) async {
-    // 쿼리 파라미터로 user_id를 추가
-    final uri = Uri.parse('$baseUrl/$fleamarketId/')
-        .replace(queryParameters: {'user_id': userId.toString()});
+    // 로그인 없이도 상세 조회가 가능하도록 user_id는 있을 때만 쿼리에 추가
+    final uri = Uri.parse('$baseUrl/$fleamarketId/').replace(
+      queryParameters: {
+        if (userId != null) 'user_id': userId.toString(),
+      },
+    );
 
     final response = await http.get(uri);
 
@@ -122,7 +125,7 @@ class FleamarketAPI {
   }
 
   Future<ApiResponse> fetchFleamarketList({
-    required int userId,
+    int? userId,
     String? categoryMain,
     String? categorySub,
     String? spot,
@@ -131,9 +134,10 @@ class FleamarketAPI {
     bool? myflea,
     String? url,
   }) async {
+    // 로그인 없이도 목록 조회가 가능하도록 user_id는 있을 때만 쿼리에 추가
     final uri = url != null ? Uri.parse(url) : Uri.parse(baseUrl).replace(
       queryParameters: {
-        'user_id': userId.toString(),
+        if (userId != null) 'user_id': userId.toString(),
         if (categoryMain != null) 'category_main': categoryMain,
         if (categorySub != null) 'category_sub': categorySub,
         if (spot != null) 'spot': spot,

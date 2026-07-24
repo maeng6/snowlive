@@ -112,7 +112,6 @@ class FleamarketListViewModel extends GetxController {
 
   UserViewModel _userViewModel = Get.find<UserViewModel>();
 
-
   @override
   void onInit() async {
     super.onInit();
@@ -316,7 +315,7 @@ class FleamarketListViewModel extends GetxController {
   }
 
   Future<void> fetchFleamarketData_total({
-    required int userId,
+    int? userId,
     String? categoryMain,
     String? categorySub,
     String? spot,
@@ -365,7 +364,7 @@ class FleamarketListViewModel extends GetxController {
   }
 
   Future<void> fetchFleamarketData_ski({
-    required int userId,
+    int? userId,
     String? categoryMain = '스키',
     String? categorySub,
     String? spot,
@@ -412,7 +411,7 @@ class FleamarketListViewModel extends GetxController {
   }
 
   Future<void> fetchFleamarketData_board({
-    required int userId,
+    int? userId,
     String? categoryMain = '스노보드',
     String? categorySub,
     String? spot,
@@ -459,7 +458,7 @@ class FleamarketListViewModel extends GetxController {
   }
 
   Future<void> fetchFleamarketData_favorite({
-    required int userId,
+    int? userId,
     String? categoryMain,
     String? categorySub,
     String? spot,
@@ -506,7 +505,7 @@ class FleamarketListViewModel extends GetxController {
   }
 
   Future<void> fetchFleamarketData_my({
-    required int userId,
+    int? userId,
     String? categoryMain,
     String? categorySub,
     String? spot,
