@@ -1,7 +1,7 @@
 
-import 'package:com.snowlive/view/login/v_email_signup.dart';
-import 'package:com.snowlive/view/onboarding/v_tos.dart';
-import 'package:com.snowlive/viewmodel/onboarding_login/vm_tos.dart';
+import 'package:com.snowlive/mobile/view/login/v_email_signup.dart';
+import 'package:com.snowlive/mobile/view/onboarding/v_tos.dart';
+import 'package:com.snowlive/mobile/viewmodel/auth/vm_tos.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';

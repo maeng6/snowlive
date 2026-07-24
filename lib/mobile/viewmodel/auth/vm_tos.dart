@@ -1,7 +1,7 @@
 import 'package:com.snowlive/routes/routes.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:com.snowlive/util/secure_storage_helper.dart';
+import 'package:com.snowlive/mobile/util/secure_storage_helper.dart';
 import 'package:get/get.dart';
 import 'package:get/get_rx/get_rx.dart';
 

@@ -126,11 +126,24 @@ auth.signOut();
 - `status` 관찰해 라우팅/에러표시
 
 ### (2) 온보딩(신규가입) — **VM+View 둘 다 팀원**
-- 신규 유저(`needOnboarding`)가 닉네임·관심리조트 등 입력 → 서버 가입
-- 참고: 모바일 `lib/viewmodel/onboarding_login/vm_setProfile.dart` (닉네임 중복확인 `LoginAPI().checkDisplayName`, 가입 `LoginAPI().registerUser`)
-- 가입 body에 필요한 필드: `uid`(=pendingUid), `email`, `display_name`, `favorite_resort`, `profile_image_url_user` 등
-  - `device_id`/`device_token`은 웹이므로 `'web'` 같은 placeholder로 보내거나 서버와 합의
-  - 프로필 이미지 업로드는 웹 방식 필요(예: `image` 패키지 + Firebase Storage `putData`) — 플리마켓 `ImageControllerWeb` 참고
+- 신규 유저(`needOnboarding`)가 닉네임·관심리조트 입력 → 서버 가입(register)
+- 참고: 모바일 `lib/mobile/viewmodel/auth/vm_setProfile.dart` (닉네임 중복확인 `LoginAPI().checkDisplayName`, 가입 `LoginAPI().registerUser`)
+- **회원가입 API는 웹·앱 동일** (`registerUser` → `POST /register/`, 순수 http). 아래 2가지만 웹 규칙:
+  - **device_id / device_token → `'web'` placeholder 필수** (서버 required 필드. 신규 유저라 무해하고, 나중에 폰으로 로그인하면 실제 값으로 갱신됨)
+  - **프로필 사진은 생략** — `profile_image_url_user`를 아예 안 보냄 (선택 필드라 없어도 가입됨). 웹 이미지 업로드는 구현하지 않음.
+- 가입 body 예시:
+```json
+{
+  "uid": "<pendingUid>",
+  "email": "<pendingEmail>",
+  "display_name": "<유저 입력>",
+  "favorite_resort": 13,
+  "device_id": "web",
+  "device_token": "web"
+}
+```
+- 닉네임 검증: `checkDisplayName` — 공백 불가·중복 불가 (실패 시 400 `{error:'중복'|'공백포함'|'빈값'}`)
+- 가입 성공(201) → 응답 user의 `user_id`로 `UserViewModel.updateUserModel_api(user_id)` → 홈
 
 ### (3) 스플래시/가드
 - `AuthCheckViewModelWeb.status`로 홈/로그인/온보딩 분기

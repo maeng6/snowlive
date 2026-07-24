@@ -19,7 +19,7 @@ import 'package:com.snowlive/native/live_activity_service.dart';
 import 'package:com.snowlive/core/util/util_1.dart';
 import 'package:com.snowlive/viewmodel/ranking/vm_snowball.dart';
 import 'package:com.snowlive/viewmodel/resortHome/vm_liveOnAlarm.dart';
-import 'package:com.snowlive/viewmodel/vm_splashController.dart';
+import 'package:com.snowlive/mobile/viewmodel/vm_splashController.dart';
 import 'package:com.snowlive/core/viewmodel/vm_user.dart';
 import 'package:com.snowlive/core/widget/w_fullScreenDialog.dart';
 import 'package:com.snowlive/widget/w_popUp_bottomSheet.dart';

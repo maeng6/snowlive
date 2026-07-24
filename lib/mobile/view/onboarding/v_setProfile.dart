@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/routes/routes.dart';
-import 'package:com.snowlive/viewmodel/onboarding_login/vm_setProfile.dart';
+import 'package:com.snowlive/mobile/viewmodel/auth/vm_setProfile.dart';
 import 'package:com.snowlive/viewmodel/vm_notificationController.dart';
 import 'package:com.snowlive/core/viewmodel/vm_user.dart';
 import 'package:com.snowlive/widget/w_favoriteResort.dart';
@@ -13,7 +13,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:com.snowlive/util/secure_storage_helper.dart';
+import 'package:com.snowlive/mobile/util/secure_storage_helper.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter_svg/flutter_svg.dart';
