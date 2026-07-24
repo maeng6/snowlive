@@ -98,6 +98,23 @@ class LoginAPI {
     }
 
   }
+
+  /// 웹 전용 로그인: uid로만 유저 조회 (device_id/token 안 보냄).
+  /// 성공(200/201): {message:'login'|'이관성공', user:{...}} / 404: {message:'온보딩이동'}
+  Future<ApiResponse> webLogin(Map<String, dynamic> body) async {
+    final response = await http.post(
+      Uri.parse('$baseUrl/web-login/'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode(body),
+    );
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      final data = json.decode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
+      return ApiResponse.success(data, statusCode: response.statusCode);
+    } else {
+      final data = json.decode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
+      return ApiResponse.error(data, statusCode: response.statusCode);
+    }
+  }
 }
 
 

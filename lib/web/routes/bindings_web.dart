@@ -6,7 +6,18 @@ import 'package:com.snowlive/core/viewmodel/fleamarket/vm_fleamarketAlert.dart';
 import 'package:com.snowlive/web/viewmodel/fleamarket/vm_fleamarketMyActivity_web.dart';
 import 'package:com.snowlive/web/viewmodel/fleamarket/vm_fleamarketUpload_web.dart';
 import 'package:com.snowlive/web/viewmodel/fleamarket/vm_fleamarketUpdate_web.dart';
+import 'package:com.snowlive/web/viewmodel/auth/vm_login_web.dart';
+import 'package:com.snowlive/web/viewmodel/auth/vm_authcheck_web.dart';
 import 'package:get/get.dart';
+
+/// 로그인 라우트용 바인딩 (팀원이 로그인/스플래시 라우트에 연결).
+class WebLoginBinding extends Bindings {
+  @override
+  void dependencies() {
+    Get.lazyPut(() => LoginViewModelWeb(), fenix: true);
+    Get.lazyPut(() => AuthCheckViewModelWeb(), fenix: true);
+  }
+}
 
 class WebFleamarketListBinding extends Bindings {
   @override
