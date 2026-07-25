@@ -8,6 +8,7 @@ import 'package:com.snowlive/web/viewmodel/fleamarket/vm_fleamarketPagination_we
 import 'package:com.snowlive/web/viewmodel/fleamarket/vm_fleamarketUpload_web.dart';
 import 'package:com.snowlive/web/viewmodel/fleamarket/vm_fleamarketUpdate_web.dart';
 import 'package:com.snowlive/web/viewmodel/ranking/vm_rankingList_web.dart';
+import 'package:com.snowlive/web/viewmodel/ranking/vm_rankingListCrew_web.dart';
 import 'package:com.snowlive/web/viewmodel/auth/vm_login_web.dart';
 import 'package:com.snowlive/web/viewmodel/auth/vm_authcheck_web.dart';
 import 'package:com.snowlive/web/viewmodel/auth/vm_onboarding_web.dart';
@@ -34,6 +35,7 @@ class WebRankingListBinding extends Bindings {
   @override
   void dependencies() {
     Get.lazyPut(() => RankingListViewModelWeb(), fenix: true);
+    Get.lazyPut(() => RankingListCrewViewModelWeb(), fenix: true);
   }
 }
 

@@ -164,7 +164,7 @@ class RankingAPI {
 
 
   Future<ApiResponse> fetchRankingData_indiv({
-    required int userId,
+    int? userId,
     int? resortId,
     bool? daily,
     String? season,
@@ -173,11 +173,13 @@ class RankingAPI {
     int? page,        // 웹 번호식 페이지네이션용
     int? pageSize,
   }) async {
+    // 웹은 게스트(비로그인) 상태에서도 랭킹을 조회할 수 있어야 하므로 userId를 옵셔널로 둔다
+    // (모바일은 항상 로그인된 실제 user_id를 넘기므로 기존 동작에는 영향 없음).
     final uri = url != null
         ? Uri.parse(url)
         : Uri.parse('$baseUrl/list-indiv/').replace(
       queryParameters: {
-        'user_id': userId.toString(),
+        if (userId != null) 'user_id': userId.toString(),
         if (resortId != null) 'resort_id': resortId.toString(),
         if (daily != null) 'daily': daily.toString(),
         if (season != null) 'season': season,
@@ -254,18 +256,20 @@ class RankingAPI {
 
 
   Future<ApiResponse> fetchRankingData_crew({
-    required int userId,
+    int? userId,
     int? resortId,
     bool? daily,
     String? season,
     String? url,
     String? federation
   }) async {
+    // 웹은 게스트(비로그인) 상태에서도 크루랭킹을 조회할 수 있어야 하므로 userId를
+    // 옵셔널로 둔다(모바일은 항상 로그인된 실제 user_id를 넘기므로 기존 동작에 영향 없음).
     final uri = url != null
         ? Uri.parse(url)
         : Uri.parse('$baseUrl/list-crew/').replace(
       queryParameters: {
-        'user_id': userId.toString(),
+        if (userId != null) 'user_id': userId.toString(),
         if (resortId != null) 'resort_id': resortId.toString(),
         if (daily != null) 'daily': daily.toString(),
         if (season != null) 'season': season,

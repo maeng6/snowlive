@@ -1,6 +1,7 @@
 import 'package:com.snowlive/core/api/api_fleamarket.dart';
 import 'package:com.snowlive/core/model/m_fleamarket.dart';
 import 'package:com.snowlive/core/viewmodel/vm_user.dart';
+import 'package:com.snowlive/web/widget/w_top_loading_bar_web.dart';
 import 'package:get/get.dart';
 
 /// 웹 전용 페이지네이션. **번호식 페이지 이동(gotoPage)** + prev/next 지원.
@@ -70,6 +71,19 @@ class FleamarketPaginationViewModelWeb extends GetxController {
     if (_totalPages.value >= 1 && page > _totalPages.value) return;
     _isLoading.value = true;
     try {
+      isGlobalPageLoading.value = true;
+      await _fetchWithRetry(page);
+    } finally {
+      _isLoading.value = false;
+      isGlobalPageLoading.value = false;
+    }
+  }
+
+  /// Heroku 무료/이코 dyno가 잠들어 있으면 첫 요청이 라우터 타임아웃(30초)에 걸려
+  /// 실패로 돌아오는 경우가 있다(서버는 그 사이 백그라운드에서 깨어남). 실패 시
+  /// 짧게 대기 후 한 번 더 시도해서, 사용자가 탭을 다시 누르지 않아도 되게 한다.
+  Future<void> _fetchWithRetry(int page, {int attempt = 0}) async {
+    try {
       final response = await _api.fetchFleamarketList(
         userId: _userId,
         categoryMain: _categoryMain,
@@ -88,9 +102,19 @@ class FleamarketPaginationViewModelWeb extends GetxController {
         _totalPages.value =
             (data['total_pages'] ?? ((_totalCount.value + 29) ~/ 30)) as int;
         _currentPage.value = (data['current_page'] ?? page) as int;
+      } else if (attempt < 1) {
+        await Future.delayed(const Duration(seconds: 2));
+        await _fetchWithRetry(page, attempt: attempt + 1);
+      } else {
+        print('[Fleamarket] 목록 조회 실패: ${response.error}');
       }
-    } finally {
-      _isLoading.value = false;
+    } catch (e) {
+      if (attempt < 1) {
+        await Future.delayed(const Duration(seconds: 2));
+        await _fetchWithRetry(page, attempt: attempt + 1);
+      } else {
+        print('[Fleamarket] 목록 조회 예외: $e');
+      }
     }
   }
 
