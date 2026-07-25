@@ -13,7 +13,14 @@ import 'package:get/get.dart';
 /// childAspectRatio 방식에서 생기던 오버플로우가 재발하지 않는다.
 const double kFleamarketCardTextBlockHeight = 128;
 
-/// 반응형 상품 그리드 + `‹ ›` 페이지네이션(숫자는 표시 전용).
+Future<void> _gotoPage(BuildContext context, FleamarketPaginationViewModelWeb vm, int page) async {
+  await vm.gotoPage(page);
+  if (!context.mounted) return;
+  final scrollable = Scrollable.maybeOf(context);
+  scrollable?.position.animateTo(0, duration: const Duration(milliseconds: 250), curve: Curves.easeOut);
+}
+
+/// 반응형 상품 그리드 + 번호식 페이지네이션(‹ 1 … n n+1 n+2 … N ›).
 class FleamarketGridWeb extends StatelessWidget {
   const FleamarketGridWeb({super.key});
 
@@ -86,26 +93,47 @@ class FleamarketGridWeb extends StatelessWidget {
           ),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 24),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+            child: Wrap(
+              alignment: WrapAlignment.center,
+              crossAxisAlignment: WrapCrossAlignment.center,
+              spacing: 4,
               children: [
                 IconButton(
-                  onPressed: paginationVm.hasPrevious ? () => paginationVm.loadPrevious() : null,
+                  onPressed: paginationVm.hasPrevious ? () => _gotoPage(context, paginationVm, paginationVm.currentPage - 1) : null,
                   icon: const Icon(Icons.chevron_left),
                 ),
-                for (var page = 1; page <= 5; page++)
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 4),
-                    child: Text(
-                      '$page',
-                      style: (page == paginationVm.currentPage ? SDSTextStyle.bold : SDSTextStyle.regular).copyWith(
-                        fontSize: 14,
-                        color: page == paginationVm.currentPage ? SDSColor.gray900 : SDSColor.gray300,
-                      ),
-                    ),
+                if (paginationVm.pageWindow().first > 1) ...[
+                  _PageNumberButton(
+                    label: '1',
+                    isActive: false,
+                    onTap: () => _gotoPage(context, paginationVm, 1),
                   ),
+                  if (paginationVm.pageWindow().first > 2)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 4),
+                      child: Text('…', style: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray400)),
+                    ),
+                ],
+                for (final page in paginationVm.pageWindow())
+                  _PageNumberButton(
+                    label: '$page',
+                    isActive: page == paginationVm.currentPage,
+                    onTap: () => _gotoPage(context, paginationVm, page),
+                  ),
+                if (paginationVm.pageWindow().last < paginationVm.totalPages) ...[
+                  if (paginationVm.pageWindow().last < paginationVm.totalPages - 1)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 4),
+                      child: Text('…', style: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray400)),
+                    ),
+                  _PageNumberButton(
+                    label: '${paginationVm.totalPages}',
+                    isActive: false,
+                    onTap: () => _gotoPage(context, paginationVm, paginationVm.totalPages),
+                  ),
+                ],
                 IconButton(
-                  onPressed: paginationVm.hasNext ? () => paginationVm.loadNext() : null,
+                  onPressed: paginationVm.hasNext ? () => _gotoPage(context, paginationVm, paginationVm.currentPage + 1) : null,
                   icon: const Icon(Icons.chevron_right),
                 ),
               ],
@@ -114,5 +142,37 @@ class FleamarketGridWeb extends StatelessWidget {
         ],
       );
     });
+  }
+}
+
+class _PageNumberButton extends StatelessWidget {
+  final String label;
+  final bool isActive;
+  final VoidCallback onTap;
+
+  const _PageNumberButton({required this.label, required this.isActive, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: isActive ? null : onTap,
+      borderRadius: BorderRadius.circular(6),
+      child: Container(
+        width: 32,
+        height: 32,
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          color: isActive ? SDSColor.gray900 : Colors.transparent,
+          borderRadius: BorderRadius.circular(6),
+        ),
+        child: Text(
+          label,
+          style: (isActive ? SDSTextStyle.bold : SDSTextStyle.regular).copyWith(
+            fontSize: 14,
+            color: isActive ? SDSColor.snowliveWhite : SDSColor.gray700,
+          ),
+        ),
+      ),
+    );
   }
 }
