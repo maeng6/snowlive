@@ -1,115 +1,99 @@
-# 웹 개인 랭킹 번호식 페이지네이션 — UI 개발 안내 (팀원용)
+# 웹 랭킹 번호식 페이지네이션 — 현황 & 개발 안내 (팀원용)
 
 브랜치: `maeng`
-범위: **백엔드 + API + 뷰모델(번호식) 완료.** 랭킹 목록 + 하단 페이지번호 UI 연결만 팀원 작업.
-> 중고거래(`fleamarket_pagination_web.md`)와 **완전히 동일한 패턴**입니다.
+> **개인·크루 랭킹 = 번호식 페이지네이션 완성.** 기록실·beta는 API 준비 완료(웹 화면 대기).
+> 중고거래(`fleamarket_pagination_web.md`)와 동일한 번호식 패턴.
 
 ---
 
 ## 0. 먼저
-`git pull origin maeng` 로 최신 받기. 랭킹 파일이 core/mobile/web으로 재배치됐으니 참고:
-- 공용: `lib/core/api/api_ranking.dart`, `lib/core/model/m_rankingList*.dart`, `lib/core/viewmodel/ranking/`
-- 모바일 전용(게임플레이/기록): `lib/mobile/viewmodel/ranking/`, 모바일 화면: `lib/mobile/view/ranking/`
-- 웹: `lib/web/viewmodel/ranking/`  ← 여기에 페이지네이션 VM 있음
+`git pull origin maeng` 로 최신 받기.
 
-## 1. 무엇이 바뀌었나
-- **백엔드**: 랭킹 리스트 응답 `results` 안에 `total_pages`·`current_page`·`page_size` 추가 (기존 필드 유지, non-breaking)
-- **API**: `RankingAPI().fetchRankingData_indiv(... , page: N, pageSize: 30)` — `?page=N&page_size=` 지원
-- **뷰모델**: `RankingListViewModelWeb` 신규 (번호식). 모바일 core `RankingListViewModel`(누적/무한스크롤)은 **건드리지 말 것.**
+## 1. 현황 요약
+| 랭킹 | API(page 지원) | 웹 VM | 웹 화면 | 상태 |
+|---|---|---|---|---|
+| 개인(indiv) | ✅ | `RankingListViewModelWeb` | ✅ | **번호식 완성** |
+| 크루(crew) | ✅ | `RankingListCrewViewModelWeb` | ✅ | **번호식 완성** |
+| 기록실 개인(recordroom-indiv) | ✅ | ❌ | 준비중 | API만 준비 |
+| 기록실 크루(recordroom-crew) | ✅ | ❌ | 준비중 | API만 준비 |
+| beta 개인(indiv-beta) | ✅ | ❌ | 미노출 | API만 준비 |
+| beta 크루(crew-beta) | ✅ | ❌ | 미노출 | API만 준비 |
 
-## 2. 뷰모델 API — `RankingListViewModelWeb`
+## 2. 무엇이 바뀌었나
+- **백엔드**: 랭킹 리스트 6종 전부 `total_pages`/`current_page`/`page_size` 반환 (배포 완료)
+- **API** (`lib/core/api/api_ranking.dart`): 리스트 메서드 6종 모두 `page`/`pageSize` 파라미터 지원
+  - `fetchRankingData_indiv / _crew / _indiv_recordRoom / _crew_recordRoom / _indiv_beta / _crew_beta`
+- **뷰모델**: 개인·크루 웹 VM을 **번호식**으로 완성 (`gotoPage`/`pageWindow`)
+- **위젯**: `NumberedPaginationBar`(`lib/web/widget/w_numbered_pagination_web.dart`) — 재사용 번호 바
+
+## 3. ⚠️ 응답 구조 — total_pages 위치가 종류별로 다름
+```
+개인·크루·기록실:  data['results']['total_pages']     ← results 안에 중첩
+beta(개인·크루):   data['total_pages']                ← 최상위 (표준 DRF 모양)
+```
+- 개인/크루/기록실은 응답이 `{ my_ranking_info, results:{count,total_pages,current_page,results:[...]} }` 라서 **`results` 안**.
+- beta는 `my_ranking_info` 래퍼가 없어서 **최상위**.
+- (VM 안에서 이미 처리하므로 UI에선 `vm.totalPages`만 쓰면 됨)
+
+## 4. 뷰모델 API (개인·크루 공통 인터페이스)
 ```dart
-final vm = Get.find<RankingListViewModelWeb>();
+final vm = Get.find<RankingListViewModelWeb>();       // 개인
+final crew = Get.find<RankingListCrewViewModelWeb>(); // 크루
 
 // 관찰 (Obx)
-vm.items          // List<RankingUser> — 현재 페이지 랭킹 목록
-vm.myRankingInfo  // MyRankingInfo? — 내 랭킹 요약(상단 배너용, nullable)
-vm.currentPage    // int
-vm.totalPages     // int
-vm.totalCount     // int (전체 인원)
-vm.isLoading      // bool
-
-// 페이지 이동
-vm.gotoPage(n);   // 번호 클릭 → n페이지 로드
-vm.loadNext();    // 다음
-vm.loadPrevious();// 이전
+vm.items          // 개인: List<RankingUser> / 크루: List<CrewRanking>
+vm.myRankingInfo  // 개인: MyRankingInfo? (크루는 vm.myCrewRankingInfo)
+vm.currentPage / vm.totalPages / vm.totalCount / vm.isLoading
 vm.hasNext / vm.hasPrevious
 
-// 하단 번호 목록 (현재 주변 윈도우)
-vm.pageWindow();          // 예: [3,4,5,6,7,8,9]
+// 페이지 이동
+vm.gotoPage(n);   // 번호 클릭
+vm.loadNext();  vm.loadPrevious();
+vm.pageWindow();          // 하단 번호 윈도우 [3,4,5,6,7,8,9]
 vm.pageWindow(span: 5);
 
 // 필터 바꾸고 1페이지부터
-vm.loadFirstPage(resortId: 13, season: '2025-11-01,2026-03-31', federation: null, daily: false);
+vm.loadFirstPage(resortId: 13, federation: null, daily: false);   // 개인
+crew.loadFirstPage(userId: uid, resortId: 13, federation: null, daily: false); // 크루(게스트면 userId null)
 ```
-- 바인딩: `WebRankingListBinding`(이미 `bindings_web.dart`에 등록됨). 라우트에 연결만 하면 됨.
-- `pageSize`는 VM 생성 시 지정 가능(기본 30): `Get.lazyPut(() => RankingListViewModelWeb(pageSize: 50))`.
+- 크루 VM은 시즌 자동 조회 + Heroku dyno 재시도 + 글로벌 로딩바(`isGlobalPageLoading`)를 내장.
+- pageSize 기본 30, 생성 시 지정 가능: `RankingListViewModelWeb(pageSize: 50)`
 
-## 3. 만들 것 — 목록 + 하단 페이지 번호 UI
+## 5. UI — 하단 번호 바 (팀원 위젯 재사용)
 ```dart
-Obx(() {
-  final vm = Get.find<RankingListViewModelWeb>();
-  return Column(children: [
-    // (선택) 내 랭킹 요약 배너
-    if (vm.myRankingInfo != null) _myRankBanner(vm.myRankingInfo!),
-
-    // 랭킹 목록
-    ...vm.items.map((u) => _rankRow(
-      rank: u.overallRank,
-      name: u.displayName ?? '',
-      score: u.overallTotalScore ?? 0,
-      tier: u.tierNameKor,
-    )),
-
-    // 하단 페이지 번호
-    Wrap(spacing: 4, children: [
-      _pgBtn('‹', enabled: vm.hasPrevious, onTap: vm.loadPrevious),
-      if (vm.pageWindow().first > 1) ...[
-        _pgBtn('1', onTap: () => vm.gotoPage(1)),
-        if (vm.pageWindow().first > 2) const Text('…'),
-      ],
-      ...vm.pageWindow().map((p) => _pgBtn('$p',
-          active: p == vm.currentPage,
-          onTap: () => vm.gotoPage(p))),
-      if (vm.pageWindow().last < vm.totalPages) ...[
-        if (vm.pageWindow().last < vm.totalPages - 1) const Text('…'),
-        _pgBtn('${vm.totalPages}', onTap: () => vm.gotoPage(vm.totalPages)),
-      ],
-      _pgBtn('›', enabled: vm.hasNext, onTap: vm.loadNext),
-    ]),
-  ]);
-});
+Obx(() => NumberedPaginationBar(
+  currentPage: vm.currentPage,
+  totalPages:  vm.totalPages,
+  hasPrevious: vm.hasPrevious,
+  hasNext:     vm.hasNext,
+  pageWindow:  vm.pageWindow(),
+  onGotoPage:  (page) => vm.gotoPage(page),
+));
 ```
-- `active`면 강조, `enabled=false`면 비활성
-- 로딩 중엔 `vm.isLoading`으로 스피너/디밍
-- 페이지 이동 시 스크롤 맨 위로 올려주면 UX 좋음
+목록은 `vm.items`(Obx), 로딩 중엔 `vm.isLoading`.
+→ 개인/크루 둘 다 `v_rankingHome_web.dart`에 이미 이렇게 연결돼 있음.
 
-## 4. 백엔드 응답 (참고 — 페이지 메타는 `results` 안에 중첩)
-```
-GET /api/ranking/list-indiv/?user_id=2715&resort_id=13&page=2&page_size=30
-→ {
-    "my_ranking_info": { ... },
-    "results": {
-      "count": 940,
-      "total_pages": 32,
-      "current_page": 2,
-      "page_size": 30,
-      "next": ..., "previous": ...,
-      "results": [ { rankingUser }, ... ]
-    }
-  }
-```
-> ⚠️ 중고거래와 달리 페이지 메타(`count/total_pages/current_page`)가 최상위가 아니라 **`results` 안**에 있음. VM이 이미 처리하므로 UI에선 `vm.totalPages` 등만 쓰면 됨.
+## 6. 기록실 / beta 나중에 붙이는 법
+API는 이미 `page`/`pageSize` 지원. 웹 화면 만들 때:
+1. `vm_rankingList_web.dart`(개인) 또는 크루 VM을 복사해 VM 생성
+2. 호출 메서드만 교체: `fetchRankingData_indiv_recordRoom(..., selected_season:, page:, pageSize:)` 등
+   - 기록실은 **`selected_season` 필수** (예: 운영 시즌 코드)
+3. total_pages 읽는 위치만 주의:
+   - 기록실 → `data['results']['total_pages']`
+   - **beta → `data['total_pages']` (최상위)**
+4. UI는 동일하게 `NumberedPaginationBar` 사용
 
-## 5. 파일 위치
+## 7. 파일 위치
 ```
-lib/web/viewmodel/ranking/vm_rankingList_web.dart   # ✅ 번호식 VM (완료)
-lib/core/api/api_ranking.dart                        # ✅ page/pageSize 파라미터 (완료)
-lib/web/routes/bindings_web.dart                     # ✅ WebRankingListBinding (완료)
-lib/web/view/ranking/…                               # ← 팀원: 목록 + 하단 번호 UI
+lib/core/api/api_ranking.dart                          # ✅ 6종 page/pageSize
+lib/web/viewmodel/ranking/vm_rankingList_web.dart      # ✅ 개인 번호식
+lib/web/viewmodel/ranking/vm_rankingListCrew_web.dart  # ✅ 크루 번호식
+lib/web/widget/w_numbered_pagination_web.dart          # 재사용 번호 바
+lib/web/view/ranking/v_rankingHome_web.dart            # 개인+크루 연결됨
+lib/web/view/ranking/…                                 # ← 기록실/beta 화면(예정)
 ```
 
 ## 하지 말 것
-- ❌ core `RankingListViewModel`(모바일 누적/무한스크롤) 수정
-- ❌ 게임플레이/기록 VM(`lib/mobile/viewmodel/ranking/`) 웹에서 사용
-- ✅ `RankingListViewModelWeb`의 `gotoPage`/`pageWindow`/`items`/`myRankingInfo`만 쓰면 됨
+- ❌ core `RankingListViewModel`(모바일) 수정
+- ❌ 게임플레이 VM(`lib/mobile/viewmodel/ranking/`) 웹에서 사용
+- ✅ 개인/크루는 `RankingListViewModelWeb`/`RankingListCrewViewModelWeb`의 `gotoPage`/`pageWindow`/`items`만 쓰면 됨

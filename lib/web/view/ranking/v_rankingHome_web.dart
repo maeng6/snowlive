@@ -371,18 +371,13 @@ class _RankingHomeViewWebState extends State<RankingHomeViewWeb> {
             ],
           ),
           const SizedBox(height: SDSSpacing.lg),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              IconButton(
-                onPressed: _crewVm.hasPrevious ? () => _crewVm.loadPrevious(_userVm.user.user_id) : null,
-                icon: const Icon(Icons.chevron_left),
-              ),
-              IconButton(
-                onPressed: _crewVm.hasNext ? () => _crewVm.loadNext(_userVm.user.user_id) : null,
-                icon: const Icon(Icons.chevron_right),
-              ),
-            ],
+          NumberedPaginationBar(
+            currentPage: _crewVm.currentPage,
+            totalPages: _crewVm.totalPages,
+            hasPrevious: _crewVm.hasPrevious,
+            hasNext: _crewVm.hasNext,
+            pageWindow: _crewVm.pageWindow(),
+            onGotoPage: (page) => _crewVm.gotoPage(page),
           ),
         ],
       );

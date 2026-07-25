@@ -206,7 +206,9 @@ class RankingAPI {
     bool? daily,
     String? selected_season,
     String? url,
-    String? federation
+    String? federation,
+    int? page,        // 웹 번호식 페이지네이션용
+    int? pageSize,
   }) async {
     final uri = url != null
         ? Uri.parse(url)
@@ -217,6 +219,8 @@ class RankingAPI {
         if (daily != null) 'daily': daily.toString(),
         if (selected_season != null) 'selected_season': selected_season,
         if (federation != null) 'federation': federation,
+        if (page != null) 'page': page.toString(),
+        if (pageSize != null) 'page_size': pageSize.toString(),
       },
     );
 
@@ -234,14 +238,19 @@ class RankingAPI {
   Future<ApiResponse> fetchRankingData_indiv_beta({
     int? userId,  // 선택적으로 userId를 받을 수 있도록 변경
     String? url,
+    int? page,        // 웹 번호식 페이지네이션용 (beta 응답은 total_pages가 최상위)
+    int? pageSize,
   }) async {
+    final params = <String, String>{
+      if (userId != null) 'user_id': userId.toString(),
+      if (page != null) 'page': page.toString(),
+      if (pageSize != null) 'page_size': pageSize.toString(),
+    };
     final uri = url != null
         ? Uri.parse(url)
         : Uri.parse('$baseUrl/list-indiv-beta/').replace(
-      queryParameters: userId != null
-          ? {'user_id': userId.toString()}  // userId가 있을 때만 쿼리 파라미터에 포함
-          : null,  // userId가 없으면 쿼리 파라미터 추가하지 않음
-    );
+            queryParameters: params.isEmpty ? null : params,
+          );
 
     final response = await http.get(uri);
 
@@ -261,7 +270,9 @@ class RankingAPI {
     bool? daily,
     String? season,
     String? url,
-    String? federation
+    String? federation,
+    int? page,        // 웹 번호식 페이지네이션용
+    int? pageSize,
   }) async {
     // 웹은 게스트(비로그인) 상태에서도 크루랭킹을 조회할 수 있어야 하므로 userId를
     // 옵셔널로 둔다(모바일은 항상 로그인된 실제 user_id를 넘기므로 기존 동작에 영향 없음).
@@ -274,6 +285,8 @@ class RankingAPI {
         if (daily != null) 'daily': daily.toString(),
         if (season != null) 'season': season,
         if (federation != null) 'federation': federation,
+        if (page != null) 'page': page.toString(),
+        if (pageSize != null) 'page_size': pageSize.toString(),
       },
     );
 
@@ -294,7 +307,9 @@ class RankingAPI {
     bool? daily,
     String? selected_season,
     String? url,
-    String? federation
+    String? federation,
+    int? page,        // 웹 번호식 페이지네이션용
+    int? pageSize,
   }) async {
     final uri = url != null
         ? Uri.parse(url)
@@ -305,6 +320,8 @@ class RankingAPI {
         if (daily != null) 'daily': daily.toString(),
         if (selected_season != null) 'selected_season': selected_season,
         if (federation != null) 'federation': federation,
+        if (page != null) 'page': page.toString(),
+        if (pageSize != null) 'page_size': pageSize.toString(),
       },
     );
 
@@ -322,14 +339,19 @@ class RankingAPI {
   Future<ApiResponse> fetchRankingData_crew_beta({
     int? crewId,  // 선택적으로 crewId를 받을 수 있도록 변경
     String? url,
+    int? page,        // 웹 번호식 페이지네이션용 (beta 응답은 total_pages가 최상위)
+    int? pageSize,
   }) async {
+    final params = <String, String>{
+      if (crewId != null) 'crew_id': crewId.toString(),
+      if (page != null) 'page': page.toString(),
+      if (pageSize != null) 'page_size': pageSize.toString(),
+    };
     final uri = url != null
         ? Uri.parse(url)
         : Uri.parse('$baseUrl/list-crew-beta/').replace(
-      queryParameters: crewId != null
-          ? {'crew_id': crewId.toString()}  // crewId가 있을 때만 쿼리 파라미터에 포함
-          : null,  // crewId가 없으면 쿼리 파라미터 추가하지 않음
-    );
+            queryParameters: params.isEmpty ? null : params,
+          );
 
     final response = await http.get(uri);
 
