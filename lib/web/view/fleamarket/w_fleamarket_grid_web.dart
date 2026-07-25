@@ -5,6 +5,7 @@ import 'package:com.snowlive/web/routes/routes_web.dart';
 import 'package:com.snowlive/web/util/responsive_web.dart';
 import 'package:com.snowlive/web/view/fleamarket/w_fleamarket_card_web.dart';
 import 'package:com.snowlive/web/viewmodel/fleamarket/vm_fleamarketPagination_web.dart';
+import 'package:com.snowlive/web/widget/w_numbered_pagination_web.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -93,86 +94,17 @@ class FleamarketGridWeb extends StatelessWidget {
           ),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 24),
-            child: Wrap(
-              alignment: WrapAlignment.center,
-              crossAxisAlignment: WrapCrossAlignment.center,
-              spacing: 4,
-              children: [
-                IconButton(
-                  onPressed: paginationVm.hasPrevious ? () => _gotoPage(context, paginationVm, paginationVm.currentPage - 1) : null,
-                  icon: const Icon(Icons.chevron_left),
-                ),
-                if (paginationVm.pageWindow().first > 1) ...[
-                  _PageNumberButton(
-                    label: '1',
-                    isActive: false,
-                    onTap: () => _gotoPage(context, paginationVm, 1),
-                  ),
-                  if (paginationVm.pageWindow().first > 2)
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 4),
-                      child: Text('…', style: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray400)),
-                    ),
-                ],
-                for (final page in paginationVm.pageWindow())
-                  _PageNumberButton(
-                    label: '$page',
-                    isActive: page == paginationVm.currentPage,
-                    onTap: () => _gotoPage(context, paginationVm, page),
-                  ),
-                if (paginationVm.pageWindow().last < paginationVm.totalPages) ...[
-                  if (paginationVm.pageWindow().last < paginationVm.totalPages - 1)
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 4),
-                      child: Text('…', style: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray400)),
-                    ),
-                  _PageNumberButton(
-                    label: '${paginationVm.totalPages}',
-                    isActive: false,
-                    onTap: () => _gotoPage(context, paginationVm, paginationVm.totalPages),
-                  ),
-                ],
-                IconButton(
-                  onPressed: paginationVm.hasNext ? () => _gotoPage(context, paginationVm, paginationVm.currentPage + 1) : null,
-                  icon: const Icon(Icons.chevron_right),
-                ),
-              ],
+            child: NumberedPaginationBar(
+              currentPage: paginationVm.currentPage,
+              totalPages: paginationVm.totalPages,
+              hasPrevious: paginationVm.hasPrevious,
+              hasNext: paginationVm.hasNext,
+              pageWindow: paginationVm.pageWindow(),
+              onGotoPage: (page) => _gotoPage(context, paginationVm, page),
             ),
           ),
         ],
       );
     });
-  }
-}
-
-class _PageNumberButton extends StatelessWidget {
-  final String label;
-  final bool isActive;
-  final VoidCallback onTap;
-
-  const _PageNumberButton({required this.label, required this.isActive, required this.onTap});
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: isActive ? null : onTap,
-      borderRadius: BorderRadius.circular(6),
-      child: Container(
-        width: 32,
-        height: 32,
-        alignment: Alignment.center,
-        decoration: BoxDecoration(
-          color: isActive ? SDSColor.gray900 : Colors.transparent,
-          borderRadius: BorderRadius.circular(6),
-        ),
-        child: Text(
-          label,
-          style: (isActive ? SDSTextStyle.bold : SDSTextStyle.regular).copyWith(
-            fontSize: 14,
-            color: isActive ? SDSColor.snowliveWhite : SDSColor.gray700,
-          ),
-        ),
-      ),
-    );
   }
 }

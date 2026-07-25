@@ -1,6 +1,8 @@
 import 'package:com.snowlive/core/api/api_ranking.dart';
 import 'package:com.snowlive/core/model/m_rankingListIndiv.dart';
 import 'package:com.snowlive/core/viewmodel/vm_user.dart';
+import 'package:com.snowlive/web/util/ranking_season_web.dart';
+import 'package:com.snowlive/web/widget/w_top_loading_bar_web.dart';
 import 'package:get/get.dart';
 
 /// 웹 전용 개인 랭킹 페이지네이션. **번호식 페이지 이동(gotoPage)** + prev/next 지원.
@@ -32,6 +34,11 @@ class RankingListViewModelWeb extends GetxController {
   String? _federation;
   bool? _daily;
 
+  // 파이어스토어에서 1회 조회해 캐싱하는 현재 시즌 값. 모바일의 모든 랭킹 호출부가
+  // 항상 season을 넘기는 것과 동일하게 맞추기 위해 필요(누락 시 백엔드가 빈 결과를
+  // 돌려주는 것으로 보임 — 실사용 중 리스트가 안 뜨던 원인).
+  String? _fetchedSeason;
+
   RankingListViewModelWeb({this.pageSize = 30});
 
   List<RankingUser> get items => _items;
@@ -46,10 +53,16 @@ class RankingListViewModelWeb extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    loadFirstPage();
+    _init();
   }
 
-  /// 필터를 세팅하고 1페이지부터 로드
+  Future<void> _init() async {
+    _fetchedSeason = await fetchCurrentRankingSeason();
+    await loadFirstPage();
+  }
+
+  /// 필터를 세팅하고 1페이지부터 로드. season을 명시적으로 안 넘기면
+  /// 파이어스토어에서 1회 조회해둔 현재 시즌 값을 그대로 쓴다.
   Future<void> loadFirstPage({
     int? resortId,
     String? season,
@@ -57,7 +70,7 @@ class RankingListViewModelWeb extends GetxController {
     bool? daily,
   }) async {
     _resortId = resortId;
-    _season = season;
+    _season = season ?? _fetchedSeason;
     _federation = federation;
     _daily = daily;
     _totalPages.value = 1; // gotoPage 범위체크 초기화
@@ -69,6 +82,19 @@ class RankingListViewModelWeb extends GetxController {
     if (page < 1) return;
     if (_totalPages.value >= 1 && page > _totalPages.value) return;
     _isLoading.value = true;
+    try {
+      isGlobalPageLoading.value = true;
+      await _fetchWithRetry(page);
+    } finally {
+      _isLoading.value = false;
+      isGlobalPageLoading.value = false;
+    }
+  }
+
+  /// Heroku 무료/이코 dyno가 잠들어 있으면 첫 요청이 라우터 타임아웃(30초)에 걸려
+  /// 실패로 돌아오는 경우가 있다(서버는 그 사이 백그라운드에서 깨어남). 실패 시
+  /// 짧게 대기 후 한 번 더 시도해서, 사용자가 탭을 다시 누르지 않아도 되게 한다.
+  Future<void> _fetchWithRetry(int page, {int attempt = 0}) async {
     try {
       final res = await _api.fetchRankingData_indiv(
         userId: Get.find<UserViewModel>().user.user_id,
@@ -91,9 +117,19 @@ class RankingListViewModelWeb extends GetxController {
         _totalPages.value =
             (resultsMap['total_pages'] ?? ((_totalCount.value + pageSize - 1) ~/ pageSize)) as int;
         _currentPage.value = (resultsMap['current_page'] ?? page) as int;
+      } else if (attempt < 1) {
+        await Future.delayed(const Duration(seconds: 2));
+        await _fetchWithRetry(page, attempt: attempt + 1);
+      } else {
+        print('[Ranking] 개인랭킹 조회 실패: ${res.error}');
       }
-    } finally {
-      _isLoading.value = false;
+    } catch (e) {
+      if (attempt < 1) {
+        await Future.delayed(const Duration(seconds: 2));
+        await _fetchWithRetry(page, attempt: attempt + 1);
+      } else {
+        print('[Ranking] 개인랭킹 파싱 에러: $e');
+      }
     }
   }
 

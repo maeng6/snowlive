@@ -5,8 +5,9 @@ class RankingListIndivResponse {
   RankingListIndivResponse({this.myRankingInfo, this.results});
 
   RankingListIndivResponse.fromJson(Map<String, dynamic> json) {
-    myRankingInfo = MyRankingInfo.fromJson(json['my_ranking_info']);
-    results = Results.fromJson(json['results']); // results를 Results 클래스로 변환
+    // 비로그인(게스트) 요청에서는 my_ranking_info가 없을 수 있어 null 가드를 둔다.
+    myRankingInfo = json['my_ranking_info'] != null ? MyRankingInfo.fromJson(json['my_ranking_info']) : null;
+    results = json['results'] != null ? Results.fromJson(json['results']) : Results();
   }
 }
 

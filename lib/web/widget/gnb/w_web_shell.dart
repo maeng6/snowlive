@@ -4,6 +4,7 @@ import 'package:com.snowlive/web/widget/gnb/w_gnb_drawer.dart';
 import 'package:com.snowlive/web/widget/gnb/w_gnb_sidebar.dart';
 import 'package:com.snowlive/web/widget/gnb/w_gnb_topbar.dart';
 import 'package:com.snowlive/web/widget/w_app_download_banner_web.dart';
+import 'package:com.snowlive/web/widget/w_top_loading_bar_web.dart';
 import 'package:flutter/material.dart';
 
 /// 모든 웹 페이지를 감싸는 최상위 셸. 데스크탑에서는 좌측 사이드바,
@@ -28,6 +29,7 @@ class WebAppShell extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
+                    const TopLoadingBar(),
                     const WebGnbDesktopTopBar(),
                     Expanded(
                       child: Row(
@@ -57,7 +59,12 @@ class WebAppShell extends StatelessWidget {
     return Scaffold(
       endDrawer: const WebGnbDrawer(),
       appBar: const WebGnbTopbar(),
-      body: child,
+      body: Column(
+        children: [
+          const TopLoadingBar(),
+          Expanded(child: child),
+        ],
+      ),
     );
   }
 }

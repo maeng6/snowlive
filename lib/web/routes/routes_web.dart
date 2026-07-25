@@ -5,6 +5,7 @@ import 'package:com.snowlive/web/view/fleamarket/v_fleamarketUpdate_web.dart';
 import 'package:com.snowlive/web/view/fleamarket/v_fleamarketUpload_web.dart';
 import 'package:com.snowlive/web/view/login/v_login_web.dart';
 import 'package:com.snowlive/web/view/onboarding/v_onboarding_web.dart';
+import 'package:com.snowlive/web/view/ranking/v_rankingHome_web.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -17,6 +18,7 @@ class WebRoutes {
   static const fleamarketAlert = '/fleamarket/alert';
   static const login = '/login';
   static const onboarding = '/onboarding';
+  static const ranking = '/ranking';
 
   static final pages = [
     GetPage(
@@ -58,6 +60,11 @@ class WebRoutes {
       name: fleamarketAlert,
       page: () => const _PlaceholderPage(title: '키워드 알림 설정'),
       binding: WebFleamarketAlertBinding(),
+    ),
+    GetPage(
+      name: ranking,
+      page: () => const RankingHomeViewWeb(),
+      binding: WebRankingListBinding(),
     ),
   ];
 }

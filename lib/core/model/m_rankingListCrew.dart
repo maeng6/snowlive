@@ -5,10 +5,10 @@ class RankingListCrewModel {
   RankingListCrewModel({this.myCrewRankingInfo, this.rankingResults});
 
   RankingListCrewModel.fromJson(Map<String, dynamic> json) {
-    myCrewRankingInfo = MyCrewRankingInfo.fromJson(json['my_crew_ranking_info']);
+    myCrewRankingInfo = json['my_crew_ranking_info'] != null ? MyCrewRankingInfo.fromJson(json['my_crew_ranking_info']) : null;
 
     // JSON에서 rankingResults를 가져와서 객체로 변환
-    rankingResults = RankingResults.fromJson(json['results']);
+    rankingResults = json['results'] != null ? RankingResults.fromJson(json['results']) : RankingResults();
 
   }
 

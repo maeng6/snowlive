@@ -33,6 +33,12 @@ class _FleamarketHeaderWebState extends State<FleamarketHeaderWeb> {
     _searchFocus.addListener(() {
       setState(() => _showSuggestions = _searchFocus.hasFocus);
     });
+    // FleamarketPaginationViewModelWeb.onInit()이 최초 진입 시점에 조회한 결과가
+    // 화면에 반영되지 않는 경우가 있어(원인 미확정), 헤더가 마운트되는 시점에
+    // 현재 활성 탭 기준으로 한 번 더 명시적으로 조회해서 항상 목록이 뜨도록 한다.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) _loadPaginationForTab(_vm.tapName);
+    });
   }
 
   @override
