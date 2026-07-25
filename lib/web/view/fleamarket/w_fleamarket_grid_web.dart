@@ -1,111 +1,41 @@
 import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
-import 'package:com.snowlive/core/model/m_fleamarket.dart';
-import 'package:com.snowlive/core/viewmodel/fleamarket/vm_fleamarketList.dart';
+import 'package:com.snowlive/core/viewmodel/fleamarket/vm_fleamarketDetail.dart';
+import 'package:com.snowlive/core/viewmodel/vm_user.dart';
+import 'package:com.snowlive/web/routes/routes_web.dart';
 import 'package:com.snowlive/web/util/responsive_web.dart';
 import 'package:com.snowlive/web/view/fleamarket/w_fleamarket_card_web.dart';
+import 'package:com.snowlive/web/viewmodel/fleamarket/vm_fleamarketPagination_web.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class _TabBundle {
-  final List<Fleamarket> list;
-  final bool isLoading;
-  final String nextPageUrl;
-  final String previousPageUrl;
-  final Future<void> Function() fetchNext;
-  final Future<void> Function() fetchPrevious;
-
-  _TabBundle({
-    required this.list,
-    required this.isLoading,
-    required this.nextPageUrl,
-    required this.previousPageUrl,
-    required this.fetchNext,
-    required this.fetchPrevious,
-  });
-}
-
-_TabBundle _bundleFor(FleamarketListViewModel vm, String tapName) {
-  switch (tapName) {
-    case '스키':
-      return _TabBundle(
-        list: vm.fleamarketListSki,
-        isLoading: vm.isLoadingList_ski,
-        nextPageUrl: vm.nextPageUrlSki,
-        previousPageUrl: vm.previousPageUrlSki,
-        fetchNext: vm.fetchNextPage_ski,
-        fetchPrevious: vm.fetchPreviousPage_ski,
-      );
-    case '스노보드':
-      return _TabBundle(
-        list: vm.fleamarketListBoard,
-        isLoading: vm.isLoadingList_board,
-        nextPageUrl: vm.nextPageUrlBoard,
-        previousPageUrl: vm.previousPageUrlBoard,
-        fetchNext: vm.fetchNextPage_board,
-        fetchPrevious: vm.fetchPreviousPage_board,
-      );
-    case '찜 목록':
-      return _TabBundle(
-        list: vm.fleamarketListFavorite,
-        isLoading: vm.isLoadingList_favorite,
-        nextPageUrl: vm.nextPageUrlFavorite,
-        previousPageUrl: vm.previousPageUrlFavorite,
-        fetchNext: vm.fetchNextPage_favorite,
-        fetchPrevious: vm.fetchPreviousPage_favorite,
-      );
-    case '내 게시글':
-      return _TabBundle(
-        list: vm.fleamarketListMy,
-        isLoading: vm.isLoadingList_my,
-        nextPageUrl: vm.nextPageUrlMy,
-        previousPageUrl: vm.previousPageUrlMy,
-        fetchNext: vm.fetchNextPage_my,
-        fetchPrevious: vm.fetchPreviousPage_my,
-      );
-    case '전체':
-    default:
-      return _TabBundle(
-        list: vm.fleamarketListTotal,
-        isLoading: vm.isLoadingList_total,
-        nextPageUrl: vm.nextPageUrlTotal,
-        previousPageUrl: vm.previousPageUrlTotal,
-        fetchNext: vm.fetchNextPage_total,
-        fetchPrevious: vm.fetchPreviousPage_total,
-      );
-  }
-}
+/// 카드 이미지(정사각형) 아래 텍스트 블록(제목 2줄+부제+가격+통계행)이 필요로 하는
+/// 대략적인 고정 높이. 열 개수(5열/2열)에 따라 셀 폭이 달라져도 이 값은 그대로 유지해야
+/// childAspectRatio 방식에서 생기던 오버플로우가 재발하지 않는다.
+const double kFleamarketCardTextBlockHeight = 128;
 
 /// 반응형 상품 그리드 + `‹ ›` 페이지네이션(숫자는 표시 전용).
-class FleamarketGridWeb extends StatefulWidget {
+class FleamarketGridWeb extends StatelessWidget {
   const FleamarketGridWeb({super.key});
 
   @override
-  State<FleamarketGridWeb> createState() => _FleamarketGridWebState();
-}
-
-class _FleamarketGridWebState extends State<FleamarketGridWeb> {
-  final FleamarketListViewModel _vm = Get.find<FleamarketListViewModel>();
-  final Map<String, int> _pageByTab = {};
-
-  int _pageOf(String tapName) => _pageByTab[tapName] ??= 1;
-
-  @override
   Widget build(BuildContext context) {
+    final paginationVm = Get.find<FleamarketPaginationViewModelWeb>();
+    final detailVm = Get.find<FleamarketDetailViewModel>();
+    final userVm = Get.find<UserViewModel>();
     final crossAxisCount = context.isDesktop ? 5 : 2;
 
     return Obx(() {
-      final tapName = _vm.tapName;
-      final bundle = _bundleFor(_vm, tapName);
-      final currentPage = _pageOf(tapName);
+      final items = paginationVm.items;
+      final isLoading = paginationVm.isLoading;
 
-      if (bundle.isLoading && bundle.list.isEmpty) {
+      if (isLoading && items.isEmpty) {
         return const Padding(
           padding: EdgeInsets.only(top: 80),
           child: Center(child: CircularProgressIndicator()),
         );
       }
 
-      if (bundle.list.isEmpty) {
+      if (items.isEmpty) {
         return Padding(
           padding: const EdgeInsets.only(top: 80),
           child: Center(
@@ -122,26 +52,34 @@ class _FleamarketGridWebState extends State<FleamarketGridWeb> {
 
       return Column(
         children: [
-          GridView.builder(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            padding: const EdgeInsets.only(top: 16),
-            itemCount: bundle.list.length,
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: crossAxisCount,
-              crossAxisSpacing: SDSSpacing.md,
-              mainAxisSpacing: SDSSpacing.lg,
-              childAspectRatio: 0.66,
-            ),
-            itemBuilder: (context, index) {
-              final data = bundle.list[index];
-              return FleamarketCardWeb(
-                data: data,
-                onTap: () {
-                  // 상세 화면은 이번 작업 범위 밖 — 추후 연결 예정.
-                  // 주의: detailFleamarket API는 user_id=0(비회원)을 실제 계정으로 취급하지 않고
-                  // 404("No User matches the given query")를 반환함(직접 확인) — 목록 조회와 달리
-                  // 비로그인 상세보기는 백엔드에서 별도로 허용해줘야 함. 로그인 사용자는 그대로 동작.
+          LayoutBuilder(
+            builder: (context, constraints) {
+              final spacing = SDSSpacing.md;
+              final cellWidth = (constraints.maxWidth - spacing * (crossAxisCount - 1)) / crossAxisCount;
+              return GridView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                padding: const EdgeInsets.only(top: 16),
+                itemCount: items.length,
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: crossAxisCount,
+                  crossAxisSpacing: spacing,
+                  mainAxisSpacing: SDSSpacing.lg,
+                  mainAxisExtent: cellWidth + kFleamarketCardTextBlockHeight,
+                ),
+                itemBuilder: (context, index) {
+                  final data = items[index];
+                  return FleamarketCardWeb(
+                    data: data,
+                    onTap: () {
+                      detailVm.fetchFleamarketDetailFromList(fleamarketResponse: data);
+                      Get.toNamed(WebRoutes.fleamarketDetail);
+                      final userId = userVm.user.user_id;
+                      if (userId != null && data.fleaId != null) {
+                        detailVm.addViewerFleamarket(fleamarketId: data.fleaId!, userId: userId);
+                      }
+                    },
+                  );
                 },
               );
             },
@@ -152,12 +90,7 @@ class _FleamarketGridWebState extends State<FleamarketGridWeb> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 IconButton(
-                  onPressed: currentPage > 1
-                      ? () async {
-                          await bundle.fetchPrevious();
-                          setState(() => _pageByTab[tapName] = currentPage - 1);
-                        }
-                      : null,
+                  onPressed: paginationVm.hasPrevious ? () => paginationVm.loadPrevious() : null,
                   icon: const Icon(Icons.chevron_left),
                 ),
                 for (var page = 1; page <= 5; page++)
@@ -165,19 +98,14 @@ class _FleamarketGridWebState extends State<FleamarketGridWeb> {
                     padding: const EdgeInsets.symmetric(horizontal: 4),
                     child: Text(
                       '$page',
-                      style: (page == currentPage ? SDSTextStyle.bold : SDSTextStyle.regular).copyWith(
+                      style: (page == paginationVm.currentPage ? SDSTextStyle.bold : SDSTextStyle.regular).copyWith(
                         fontSize: 14,
-                        color: page == currentPage ? SDSColor.gray900 : SDSColor.gray300,
+                        color: page == paginationVm.currentPage ? SDSColor.gray900 : SDSColor.gray300,
                       ),
                     ),
                   ),
                 IconButton(
-                  onPressed: bundle.nextPageUrl.isNotEmpty
-                      ? () async {
-                          await bundle.fetchNext();
-                          setState(() => _pageByTab[tapName] = currentPage + 1);
-                        }
-                      : null,
+                  onPressed: paginationVm.hasNext ? () => paginationVm.loadNext() : null,
                   icon: const Icon(Icons.chevron_right),
                 ),
               ],

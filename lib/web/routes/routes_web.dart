@@ -1,5 +1,10 @@
 import 'package:com.snowlive/web/routes/bindings_web.dart';
+import 'package:com.snowlive/web/view/fleamarket/v_fleamarketDetail_web.dart';
 import 'package:com.snowlive/web/view/fleamarket/v_fleamarketHome_web.dart';
+import 'package:com.snowlive/web/view/fleamarket/v_fleamarketUpdate_web.dart';
+import 'package:com.snowlive/web/view/fleamarket/v_fleamarketUpload_web.dart';
+import 'package:com.snowlive/web/view/login/v_login_web.dart';
+import 'package:com.snowlive/web/view/onboarding/v_onboarding_web.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -10,6 +15,8 @@ class WebRoutes {
   static const fleamarketUpload = '/fleamarket/upload';
   static const fleamarketUpdate = '/fleamarket/update';
   static const fleamarketAlert = '/fleamarket/alert';
+  static const login = '/login';
+  static const onboarding = '/onboarding';
 
   static final pages = [
     GetPage(
@@ -18,23 +25,33 @@ class WebRoutes {
       binding: WebFleamarketListBinding(),
     ),
     GetPage(
+      name: login,
+      page: () => const LoginViewWeb(),
+      binding: WebLoginBinding(),
+    ),
+    GetPage(
+      name: onboarding,
+      page: () => const OnboardingViewWeb(),
+      binding: WebOnboardingBinding(),
+    ),
+    GetPage(
       name: fleamarketSearch,
       page: () => const _PlaceholderPage(title: '중고거래 검색'),
       binding: WebFleamarketSearchBinding(),
     ),
     GetPage(
       name: fleamarketDetail,
-      page: () => const _PlaceholderPage(title: '중고거래 상세'),
+      page: () => const FleamarketDetailView(),
       binding: WebFleamarketDetailBinding(),
     ),
     GetPage(
       name: fleamarketUpload,
-      page: () => const _PlaceholderPage(title: '중고거래 등록'),
+      page: () => const FleamarketUploadViewWeb(),
       binding: WebFleamarketUploadBinding(),
     ),
     GetPage(
       name: fleamarketUpdate,
-      page: () => const _PlaceholderPage(title: '중고거래 수정'),
+      page: () => const FleamarketUpdateViewWeb(),
       binding: WebFleamarketUpdateBinding(),
     ),
     GetPage(

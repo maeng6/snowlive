@@ -3,6 +3,7 @@ import 'package:com.snowlive/core/viewmodel/fleamarket/vm_fleamarketList.dart';
 import 'package:com.snowlive/core/viewmodel/fleamarket/vm_fleamarketSearch.dart';
 import 'package:com.snowlive/core/viewmodel/vm_user.dart';
 import 'package:com.snowlive/web/view/fleamarket/w_fleamarket_filter_sheet_web.dart';
+import 'package:com.snowlive/web/viewmodel/fleamarket/vm_fleamarketPagination_web.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -20,6 +21,7 @@ class _FleamarketHeaderWebState extends State<FleamarketHeaderWeb> {
   final FleamarketListViewModel _vm = Get.find<FleamarketListViewModel>();
   final FleamarketSearchViewModel _searchVm = Get.find<FleamarketSearchViewModel>();
   final UserViewModel _userVm = Get.find<UserViewModel>();
+  final FleamarketPaginationViewModelWeb _paginationVm = Get.find<FleamarketPaginationViewModelWeb>();
 
   final _searchController = TextEditingController();
   final _searchFocus = FocusNode();
@@ -40,27 +42,54 @@ class _FleamarketHeaderWebState extends State<FleamarketHeaderWeb> {
     super.dispose();
   }
 
-  void _runSearch(String query) {
-    if (query.trim().isEmpty) return;
-    _searchVm.saveRecentSearch(query.trim());
+  /// 탭 이름을 페이지네이션 조회 파라미터로 매핑해서 1페이지부터 다시 불러온다.
+  void _loadPaginationForTab(
+    String tapName, {
+    String? categorySub,
+    String? spot,
+    String? searchQuery,
+  }) {
     final userId = _userVm.user.user_id;
-    switch (_vm.tapName) {
+    switch (tapName) {
       case '스키':
-        _vm.fetchFleamarketData_ski(userId: userId, categoryMain: '스키', search_query: query.trim());
+        _paginationVm.loadFirstPage(
+          userId: userId,
+          categoryMain: '스키',
+          categorySub: categorySub,
+          spot: spot,
+          searchQuery: searchQuery,
+        );
         break;
       case '스노보드':
-        _vm.fetchFleamarketData_board(userId: userId, categoryMain: '스노보드', search_query: query.trim());
+        _paginationVm.loadFirstPage(
+          userId: userId,
+          categoryMain: '스노보드',
+          categorySub: categorySub,
+          spot: spot,
+          searchQuery: searchQuery,
+        );
         break;
       case '찜 목록':
-        _vm.fetchFleamarketData_favorite(userId: userId, favorite_list: true, search_query: query.trim());
+        _paginationVm.loadFirstPage(userId: userId, favoriteList: true, searchQuery: searchQuery);
         break;
       case '내 게시글':
-        _vm.fetchFleamarketData_my(userId: userId, myflea: true, search_query: query.trim());
+        _paginationVm.loadFirstPage(userId: userId, myflea: true, searchQuery: searchQuery);
         break;
       case '전체':
       default:
-        _vm.fetchFleamarketData_total(userId: userId, search_query: query.trim());
+        _paginationVm.loadFirstPage(
+          userId: userId,
+          categorySub: categorySub,
+          spot: spot,
+          searchQuery: searchQuery,
+        );
     }
+  }
+
+  void _runSearch(String query) {
+    if (query.trim().isEmpty) return;
+    _searchVm.saveRecentSearch(query.trim());
+    _loadPaginationForTab(_vm.tapName, searchQuery: query.trim());
     _searchFocus.unfocus();
     setState(() => _showSuggestions = false);
   }
@@ -192,7 +221,10 @@ class _FleamarketHeaderWebState extends State<FleamarketHeaderWeb> {
     return Padding(
       padding: const EdgeInsets.only(right: 20),
       child: GestureDetector(
-        onTap: () => _vm.changeTap(label),
+        onTap: () {
+          _vm.changeTap(label);
+          _loadPaginationForTab(label);
+        },
         child: Column(
           children: [
             Padding(
@@ -214,20 +246,9 @@ class _FleamarketHeaderWebState extends State<FleamarketHeaderWeb> {
 
   /// 선택된 카테고리/거래장소로 현재 활성 탭을 재조회한다.
   void _refetchCurrentTab(String tapName, {required String categorySub, required String categorySpot}) {
-    final userId = _userVm.user.user_id;
     final sub = categorySub == FleamarketCategory_sub.total.korean ? null : categorySub;
     final spot = categorySpot == FleamarketCategory_spot.total.korean ? null : categorySpot;
-    switch (tapName) {
-      case '스키':
-        _vm.fetchFleamarketData_ski(userId: userId, categoryMain: '스키', categorySub: sub, spot: spot);
-        break;
-      case '스노보드':
-        _vm.fetchFleamarketData_board(userId: userId, categoryMain: '스노보드', categorySub: sub, spot: spot);
-        break;
-      case '전체':
-      default:
-        _vm.fetchFleamarketData_total(userId: userId, categorySub: sub, spot: spot);
-    }
+    _loadPaginationForTab(tapName, categorySub: sub, spot: spot);
   }
 
   Widget _buildFilterRow(String tapName) {

@@ -1,6 +1,7 @@
 import 'package:com.snowlive/core/api/ApiResponse.dart';
 import 'package:com.snowlive/core/api/api_fleamarket.dart';
 import 'package:com.snowlive/core/viewmodel/vm_user.dart';
+import 'package:com.snowlive/web/viewmodel/auth/vm_authcheck_web.dart';
 import 'package:get/get.dart';
 
 class FleamarketMyActivityItem {
@@ -41,6 +42,16 @@ class FleamarketMyActivityViewModel extends GetxController {
     if (userId != null) {
       fetchMyActivity(userId: userId);
     }
+
+    // 새로고침 직후에는 AuthCheckViewModelWeb의 조용한 재로그인 확인이 아직 끝나지
+    // 않아 위 시점엔 userId가 null일 수 있다. 인증 확인이 완료되는 순간을 기다렸다가
+    // 다시 조회해서, 로그인 상태인데도 최근 본 상품/찜 목록이 빈 채로 남는 걸 막는다.
+    ever(Get.find<AuthCheckViewModelWeb>().statusRx, (status) {
+      if (status == WebAuthStatus.authenticated) {
+        final int? authedUserId = Get.find<UserViewModel>().user.user_id;
+        if (authedUserId != null) fetchMyActivity(userId: authedUserId);
+      }
+    });
   }
 
   Future<void> fetchMyActivity({required int userId}) async {

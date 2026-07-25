@@ -30,6 +30,10 @@ class UserViewModel extends GetxController {
     _user.value = UserModel.fromJson(data);
   }
 
+  void resetUser() {
+    _user.value = UserModel();
+  }
+
   Future<void> block_user(body)  async{
 
     ApiResponse response = await UserAPI().blockUser(body);

@@ -1,4 +1,7 @@
 import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
+import 'package:com.snowlive/core/viewmodel/vm_user.dart';
+import 'package:com.snowlive/web/routes/routes_web.dart';
+import 'package:com.snowlive/web/viewmodel/auth/vm_authcheck_web.dart';
 import 'package:com.snowlive/web/widget/gnb/w_gnb_nav_items.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -7,47 +10,76 @@ import 'package:get/get.dart';
 class WebGnbDrawer extends StatelessWidget {
   const WebGnbDrawer({super.key});
 
+  Future<void> _signOut(BuildContext context) async {
+    Navigator.of(context).pop();
+    await Get.find<AuthCheckViewModelWeb>().signOut();
+    Get.find<UserViewModel>().resetUser();
+    Get.offAllNamed(WebRoutes.fleamarketList);
+  }
+
   @override
   Widget build(BuildContext context) {
+    final UserViewModel userVM = Get.find<UserViewModel>();
+
     return Drawer(
       backgroundColor: SDSColor.snowliveWhite,
       child: SafeArea(
         child: ListView(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
           children: [
-            Row(
-              children: [
-                Expanded(
-                  child: OutlinedButton(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                      Get.snackbar('준비 중입니다', '로그인 기능은 준비 중이에요.');
-                    },
-                    style: OutlinedButton.styleFrom(
-                      side: BorderSide(color: SDSColor.gray200),
-                      padding: const EdgeInsets.symmetric(vertical: 10),
+            Obx(() {
+              final user = userVM.user;
+              final bool isLoggedIn = user != null && user.user_id != null;
+              if (isLoggedIn) {
+                return Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        '${user.display_name ?? ''}님',
+                        style: SDSTextStyle.bold.copyWith(fontSize: 14, color: SDSColor.gray900),
+                      ),
                     ),
-                    child: Text('로그인', style: SDSTextStyle.bold.copyWith(fontSize: 13, color: SDSColor.gray900)),
-                  ),
-                ),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: ElevatedButton(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                      Get.snackbar('준비 중입니다', '회원가입 기능은 준비 중이에요.');
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: SDSColor.gray900,
-                      elevation: 0,
-                      padding: const EdgeInsets.symmetric(vertical: 10),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
+                    TextButton(
+                      onPressed: () => _signOut(context),
+                      child: Text('로그아웃', style: SDSTextStyle.bold.copyWith(fontSize: 13, color: SDSColor.gray700)),
                     ),
-                    child: Text('회원가입', style: SDSTextStyle.bold.copyWith(fontSize: 13, color: SDSColor.snowliveWhite)),
+                  ],
+                );
+              }
+              return Row(
+                children: [
+                  Expanded(
+                    child: OutlinedButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                        Get.toNamed(WebRoutes.login);
+                      },
+                      style: OutlinedButton.styleFrom(
+                        side: BorderSide(color: SDSColor.gray200),
+                        padding: const EdgeInsets.symmetric(vertical: 10),
+                      ),
+                      child: Text('로그인', style: SDSTextStyle.bold.copyWith(fontSize: 13, color: SDSColor.gray900)),
+                    ),
                   ),
-                ),
-              ],
-            ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                        Get.toNamed(WebRoutes.login);
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: SDSColor.gray900,
+                        elevation: 0,
+                        padding: const EdgeInsets.symmetric(vertical: 10),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
+                      ),
+                      child: Text('회원가입', style: SDSTextStyle.bold.copyWith(fontSize: 13, color: SDSColor.snowliveWhite)),
+                    ),
+                  ),
+                ],
+              );
+            }),
             const SizedBox(height: 20),
             for (final item in kGnbPrimaryItems)
               Padding(
