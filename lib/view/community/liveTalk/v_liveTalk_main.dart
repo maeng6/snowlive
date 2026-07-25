@@ -7,7 +7,7 @@ import 'package:com.snowlive/routes/routes.dart';
 import 'package:com.snowlive/view/community/liveTalk/v_liveTalk_feedItem.dart';
 import 'package:com.snowlive/view/community/liveTalk/v_liveTalk_inputArea.dart';
 import 'package:com.snowlive/viewmodel/liveTalk/vm_liveTalk.dart';
-import 'package:com.snowlive/viewmodel/ranking/vm_ridingCard.dart';
+import 'package:com.snowlive/mobile/viewmodel/ranking/vm_ridingCard.dart';
 import 'package:com.snowlive/core/viewmodel/vm_user.dart';
 import 'package:com.snowlive/core/widget/w_fullScreenDialog.dart';
 import 'package:extended_image/extended_image.dart';

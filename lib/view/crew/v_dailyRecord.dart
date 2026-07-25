@@ -5,7 +5,7 @@ import 'package:com.snowlive/routes/routes.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewDetail.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewRecordRoom.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_dailyRecord.dart';
-import 'package:com.snowlive/viewmodel/crew/vm_rankingCrewHistory.dart';
+import 'package:com.snowlive/core/viewmodel/ranking/vm_rankingCrewHistory.dart';
 import 'package:com.snowlive/viewmodel/friend/vm_friendDetail.dart';
 import 'package:com.snowlive/core/viewmodel/vm_user.dart';
 import 'package:com.snowlive/widget/w_verticalDivider.dart';

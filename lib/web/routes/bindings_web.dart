@@ -7,6 +7,7 @@ import 'package:com.snowlive/web/viewmodel/fleamarket/vm_fleamarketMyActivity_we
 import 'package:com.snowlive/web/viewmodel/fleamarket/vm_fleamarketPagination_web.dart';
 import 'package:com.snowlive/web/viewmodel/fleamarket/vm_fleamarketUpload_web.dart';
 import 'package:com.snowlive/web/viewmodel/fleamarket/vm_fleamarketUpdate_web.dart';
+import 'package:com.snowlive/web/viewmodel/ranking/vm_rankingList_web.dart';
 import 'package:com.snowlive/web/viewmodel/auth/vm_login_web.dart';
 import 'package:com.snowlive/web/viewmodel/auth/vm_authcheck_web.dart';
 import 'package:com.snowlive/web/viewmodel/auth/vm_onboarding_web.dart';
@@ -25,6 +26,14 @@ class WebOnboardingBinding extends Bindings {
   @override
   void dependencies() {
     Get.lazyPut(() => OnboardingViewModelWeb(), fenix: true);
+  }
+}
+
+/// 웹 랭킹 라우트용 바인딩 (팀원이 랭킹 화면 라우트에 연결).
+class WebRankingListBinding extends Bindings {
+  @override
+  void dependencies() {
+    Get.lazyPut(() => RankingListViewModelWeb(), fenix: true);
   }
 }
 

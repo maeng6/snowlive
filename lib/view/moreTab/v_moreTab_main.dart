@@ -11,7 +11,7 @@ import 'package:com.snowlive/viewmodel/crew/vm_crewMemberList.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewRecordRoom.dart';
 import 'package:com.snowlive/viewmodel/friend/vm_friendDetail.dart';
 import 'package:com.snowlive/viewmodel/friend/vm_friendList.dart';
-import 'package:com.snowlive/viewmodel/ranking/vm_rankingList_recordRoom.dart';
+import 'package:com.snowlive/core/viewmodel/ranking/vm_rankingList_recordRoom.dart';
 import 'package:com.snowlive/viewmodel/resortHome/vm_resortHome.dart';
 import 'package:com.snowlive/core/viewmodel/vm_user.dart';
 import 'package:com.snowlive/viewmodel/vm_eventAlarm.dart';
