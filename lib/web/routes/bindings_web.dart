@@ -4,10 +4,12 @@ import 'package:com.snowlive/core/viewmodel/fleamarket/vm_fleamarketDetail.dart'
 import 'package:com.snowlive/core/viewmodel/fleamarket/vm_fleamarketCommentDetail.dart';
 import 'package:com.snowlive/core/viewmodel/fleamarket/vm_fleamarketAlert.dart';
 import 'package:com.snowlive/web/viewmodel/fleamarket/vm_fleamarketMyActivity_web.dart';
+import 'package:com.snowlive/web/viewmodel/fleamarket/vm_fleamarketPagination_web.dart';
 import 'package:com.snowlive/web/viewmodel/fleamarket/vm_fleamarketUpload_web.dart';
 import 'package:com.snowlive/web/viewmodel/fleamarket/vm_fleamarketUpdate_web.dart';
 import 'package:com.snowlive/web/viewmodel/auth/vm_login_web.dart';
 import 'package:com.snowlive/web/viewmodel/auth/vm_authcheck_web.dart';
+import 'package:com.snowlive/web/viewmodel/auth/vm_onboarding_web.dart';
 import 'package:get/get.dart';
 
 /// 로그인 라우트용 바인딩 (팀원이 로그인/스플래시 라우트에 연결).
@@ -19,12 +21,24 @@ class WebLoginBinding extends Bindings {
   }
 }
 
+class WebOnboardingBinding extends Bindings {
+  @override
+  void dependencies() {
+    Get.lazyPut(() => OnboardingViewModelWeb(), fenix: true);
+  }
+}
+
 class WebFleamarketListBinding extends Bindings {
   @override
   void dependencies() {
     Get.lazyPut(() => FleamarketListViewModel(), fenix: true);
     Get.lazyPut(() => FleamarketSearchViewModel(), fenix: true);
     Get.lazyPut(() => FleamarketMyActivityViewModel(), fenix: true);
+    Get.lazyPut(() => FleamarketPaginationViewModelWeb(), fenix: true);
+    // 목록 카드 탭에서 상세로 이동하기 전에 fetchFleamarketDetailFromList로 미리
+    // 채워야 하므로 상세 라우트 진입 전인 목록 화면에도 등록해둔다.
+    Get.lazyPut(() => FleamarketDetailViewModel(), fenix: true);
+    Get.lazyPut(() => FleamarketCommentDetailViewModel(), fenix: true);
   }
 }
 
@@ -56,6 +70,8 @@ class WebFleamarketUploadBinding extends Bindings {
   @override
   void dependencies() {
     Get.lazyPut(() => FleamarketUploadViewModelWeb(), fenix: true);
+    // 등록 성공 직후 사진을 붙이는 마무리 단계(update API 재사용)에 필요.
+    Get.lazyPut(() => FleamarketUpdateViewModelWeb(), fenix: true);
   }
 }
 

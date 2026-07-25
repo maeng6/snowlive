@@ -111,7 +111,7 @@ class FleamarketUpdateViewModelWeb extends GetxController {
       _newImageFiles.value = imageList;
     }
     _updateTotalImageCount();
-    if (_totalImageCount.value <= 5) {
+    if (_totalImageCount.value <= 10) {
       changeFleaImageSelected(true);
     } else {
       _newImageFiles.clear();
@@ -156,6 +156,10 @@ class FleamarketUpdateViewModelWeb extends GetxController {
 
   void toggleNegotiable() {
     _negotiable.value = !_negotiable.value;
+  }
+
+  void setNegotiable(bool value) {
+    _negotiable.value = value;
   }
 
   void toggleUpdateCacheHeight() {

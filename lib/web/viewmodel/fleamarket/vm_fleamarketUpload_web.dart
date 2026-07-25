@@ -67,7 +67,7 @@ class FleamarketUploadViewModelWeb extends GetxController {
     if (imageList.isNotEmpty) {
       _imageFiles.value = imageList;
     }
-    if (_imageFiles.length <= 5) {
+    if (_imageFiles.length <= 10) {
       changeFleaImageSelected(true);
       setImageLength();
     } else {

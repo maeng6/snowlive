@@ -25,6 +25,8 @@ class WebGnbTopbar extends StatelessWidget implements PreferredSizeWidget {
             'assets/imgs/logos/snowliveLogo_main_new.png',
             height: 22,
             fit: BoxFit.contain,
+            color: Colors.black,
+            colorBlendMode: BlendMode.srcIn,
           ),
           const Spacer(),
           IconButton(
