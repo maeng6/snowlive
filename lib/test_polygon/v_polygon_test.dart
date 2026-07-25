@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
@@ -73,7 +74,29 @@ class _PolygonTestScreenState extends State<PolygonTestScreen> {
       setState(() => status = '위치 권한 거부됨');
       return;
     }
-    const settings = LocationSettings(accuracy: LocationAccuracy.high, distanceFilter: 3);
+    // 실제 스노우라이브 앱(vm_resortHome.dart)의 위치 스트림 설정과 동일하게 맞춤
+    late LocationSettings settings;
+    if (Platform.isIOS) {
+      settings = AppleSettings(
+        accuracy: LocationAccuracy.high,
+        distanceFilter: 5,
+        activityType: ActivityType.fitness,
+        pauseLocationUpdatesAutomatically: false,
+        showBackgroundLocationIndicator: true,
+      );
+    } else if (Platform.isAndroid) {
+      settings = AndroidSettings(
+        accuracy: LocationAccuracy.high,
+        distanceFilter: 5,
+        forceLocationManager: false,
+        intervalDuration: const Duration(seconds: 1),
+      );
+    } else {
+      settings = const LocationSettings(
+        accuracy: LocationAccuracy.high,
+        distanceFilter: 5,
+      );
+    }
     sub = Geolocator.getPositionStream(locationSettings: settings).listen((pos) {
       final p = GeoPt(pos.latitude, pos.longitude);
       cur = p;
@@ -268,8 +291,8 @@ class _MapPainter extends CustomPainter {
     // 현재 위치
     if (cur != null) {
       final c = toXY(cur!);
-      canvas.drawCircle(c, 8, Paint()..color = const Color(0xFFFFC107));
-      canvas.drawCircle(c, 8, Paint()..color = Colors.black87..style = PaintingStyle.stroke..strokeWidth = 2);
+      canvas.drawCircle(c, 2.7, Paint()..color = const Color(0xFFFFC107));
+      canvas.drawCircle(c, 2.7, Paint()..color = Colors.black87..style = PaintingStyle.stroke..strokeWidth = 0.8);
     }
   }
 
