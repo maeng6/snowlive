@@ -133,6 +133,7 @@ class FleamarketAPI {
     String? search_query,
     bool? myflea,
     String? url,
+    int? page, // 웹 번호식 페이지네이션용
   }) async {
     // 로그인 없이도 목록 조회가 가능하도록 user_id는 있을 때만 쿼리에 추가
     final uri = url != null ? Uri.parse(url) : Uri.parse(baseUrl).replace(
@@ -144,6 +145,7 @@ class FleamarketAPI {
         if (favorite_list != null) 'favorite_list': favorite_list.toString(),
         if (search_query != null) 'search_query': search_query,
         if (myflea != null) 'myflea': myflea.toString(),
+        if (page != null) 'page': page.toString(),
       },
     );
     final response = await http.get(uri);
