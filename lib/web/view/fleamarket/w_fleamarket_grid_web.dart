@@ -6,6 +6,7 @@ import 'package:com.snowlive/web/util/responsive_web.dart';
 import 'package:com.snowlive/web/view/fleamarket/w_fleamarket_card_web.dart';
 import 'package:com.snowlive/web/viewmodel/fleamarket/vm_fleamarketPagination_web.dart';
 import 'package:com.snowlive/web/widget/w_numbered_pagination_web.dart';
+import 'package:com.snowlive/web/widget/w_skeleton_web.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -36,11 +37,11 @@ class FleamarketGridWeb extends StatelessWidget {
       final items = paginationVm.items;
       final isLoading = paginationVm.isLoading;
 
+      // 첫 로딩(보여줄 게 아무것도 없을 때)만 스켈레톤. 페이지 번호 이동은
+      // items가 남아 있어 기존 그리드가 유지되고 상단 진행바만 도는데,
+      // 그게 웹에서 기대되는 동작이라 일부러 그대로 둔다.
       if (isLoading && items.isEmpty) {
-        return const Padding(
-          padding: EdgeInsets.only(top: 80),
-          child: Center(child: CircularProgressIndicator()),
-        );
+        return const FleamarketGridSkeleton();
       }
 
       if (items.isEmpty) {

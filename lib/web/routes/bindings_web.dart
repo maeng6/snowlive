@@ -7,6 +7,8 @@ import 'package:com.snowlive/web/viewmodel/fleamarket/vm_fleamarketMyActivity_we
 import 'package:com.snowlive/web/viewmodel/fleamarket/vm_fleamarketPagination_web.dart';
 import 'package:com.snowlive/web/viewmodel/fleamarket/vm_fleamarketUpload_web.dart';
 import 'package:com.snowlive/web/viewmodel/fleamarket/vm_fleamarketUpdate_web.dart';
+import 'package:com.snowlive/web/viewmodel/ranking/vm_rankingArchiveCrew_web.dart';
+import 'package:com.snowlive/web/viewmodel/ranking/vm_rankingArchiveIndiv_web.dart';
 import 'package:com.snowlive/web/viewmodel/ranking/vm_rankingList_web.dart';
 import 'package:com.snowlive/web/viewmodel/ranking/vm_rankingListCrew_web.dart';
 import 'package:com.snowlive/web/viewmodel/auth/vm_login_web.dart';
@@ -36,6 +38,15 @@ class WebRankingListBinding extends Bindings {
   void dependencies() {
     Get.lazyPut(() => RankingListViewModelWeb(), fenix: true);
     Get.lazyPut(() => RankingListCrewViewModelWeb(), fenix: true);
+  }
+}
+
+/// 웹 "랭킹 기록실"(시즌별 지난 기록) 라우트용 바인딩.
+class WebRankingArchiveBinding extends Bindings {
+  @override
+  void dependencies() {
+    Get.lazyPut(() => RankingArchiveIndivViewModelWeb(), fenix: true);
+    Get.lazyPut(() => RankingArchiveCrewViewModelWeb(), fenix: true);
   }
 }
 

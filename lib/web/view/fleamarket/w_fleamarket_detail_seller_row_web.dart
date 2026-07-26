@@ -3,6 +3,7 @@ import 'package:com.snowlive/core/model/m_fleamarketDetail.dart';
 import 'package:com.snowlive/core/viewmodel/fleamarket/vm_fleamarketDetail.dart';
 import 'package:com.snowlive/core/viewmodel/vm_user.dart';
 import 'package:com.snowlive/web/viewmodel/fleamarket/vm_fleamarketMyActivity_web.dart';
+import 'package:com.snowlive/web/widget/w_network_image_web.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -24,12 +25,11 @@ class FleamarketDetailSellerRowWeb extends StatelessWidget {
       children: [
         ClipOval(
           child: (userInfo?.profileImageUrlUser?.isNotEmpty ?? false)
-              ? Image.network(
-                  userInfo!.profileImageUrlUser!,
+              ? WebNetworkImage(
+                  url: userInfo!.profileImageUrlUser,
                   width: 32,
                   height: 32,
-                  fit: BoxFit.cover,
-                  errorBuilder: (_, __, ___) => _defaultAvatar(),
+                  fallback: _defaultAvatar(),
                 )
               : _defaultAvatar(),
         ),

@@ -43,6 +43,10 @@ class FleamarketUpdateViewModelWeb extends GetxController {
   RxString _selectedTradeMethod = '거래방법 선택'.obs;
   RxString _selectedTradeSpot = '거래장소 선택'.obs;
   RxBool _isCategorySelected = true.obs;
+
+  /// 수정 제출이 진행 중인지. 제출 플로우가 뷰에 있어서 뷰에서 토글한다.
+  /// 버튼 비활성화에 쓰이며, 없으면 연타로 수정 요청이 중복 전송된다.
+  final RxBool isSubmitting = false.obs;
   RxBool updateCacheHeight = false.obs;
 
   List<XFile?> get newImageFiles => _newImageFiles;

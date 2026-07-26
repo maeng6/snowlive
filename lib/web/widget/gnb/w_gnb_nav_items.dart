@@ -1,4 +1,5 @@
 import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
+import 'package:com.snowlive/web/widget/gnb/w_gnb_current_route_web.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -75,55 +76,57 @@ class GnbNavRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bool active = gnbItemIsActive(item, Get.currentRoute);
-    final Color fg = item.isPlaceholder
-        ? SDSColor.gray300
-        : (active ? SDSColor.gray900 : SDSColor.gray700);
+    return Obx(() {
+      final bool active = gnbItemIsActive(item, currentRouteWeb.value);
+      final Color fg = item.isPlaceholder
+          ? SDSColor.gray300
+          : (active ? SDSColor.gray900 : SDSColor.gray700);
 
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: item.isPlaceholder
-            ? null
-            : () {
-                if (item.routePrefix != null) {
-                  if (!Get.currentRoute.startsWith(item.routePrefix!)) {
-                    Get.toNamed(item.routePrefix!);
+      return Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: item.isPlaceholder
+              ? null
+              : () {
+                  if (item.routePrefix != null) {
+                    if (!Get.currentRoute.startsWith(item.routePrefix!)) {
+                      Get.toNamed(item.routePrefix!);
+                    }
+                  } else {
+                    Get.snackbar('준비 중입니다', '${item.label} 화면은 아직 준비 중이에요.');
                   }
-                } else {
-                  Get.snackbar('준비 중입니다', '${item.label} 화면은 아직 준비 중이에요.');
-                }
-                onNavigate?.call();
-              },
-        borderRadius: BorderRadius.circular(8),
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-          child: Row(
-            children: [
-              SizedBox(
-                width: 22,
-                height: 22,
-                child: item.assetIconOn != null
-                    ? Image.asset(
-                        active ? item.assetIconOn! : item.assetIconOff!,
-                        width: 22,
-                        height: 22,
-                        fit: BoxFit.contain,
-                      )
-                    : Icon(item.materialIcon, size: 20, color: fg),
-              ),
-              const SizedBox(width: 12),
-              Text(
-                item.label,
-                style: (active ? SDSTextStyle.bold : SDSTextStyle.regular).copyWith(
-                  fontSize: 15,
-                  color: fg,
+                  onNavigate?.call();
+                },
+          borderRadius: BorderRadius.circular(8),
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+            child: Row(
+              children: [
+                SizedBox(
+                  width: 22,
+                  height: 22,
+                  child: item.assetIconOn != null
+                      ? Image.asset(
+                          active ? item.assetIconOn! : item.assetIconOff!,
+                          width: 22,
+                          height: 22,
+                          fit: BoxFit.contain,
+                        )
+                      : Icon(item.materialIcon, size: 20, color: fg),
                 ),
-              ),
-            ],
+                const SizedBox(width: 12),
+                Text(
+                  item.label,
+                  style: (active ? SDSTextStyle.bold : SDSTextStyle.regular).copyWith(
+                    fontSize: 15,
+                    color: fg,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
-      ),
-    );
+      );
+    });
   }
 }

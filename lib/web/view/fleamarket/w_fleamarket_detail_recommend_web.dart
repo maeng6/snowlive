@@ -7,6 +7,7 @@ import 'package:com.snowlive/web/routes/routes_web.dart';
 import 'package:com.snowlive/web/util/responsive_web.dart';
 import 'package:com.snowlive/web/view/fleamarket/w_fleamarket_card_web.dart';
 import 'package:com.snowlive/web/view/fleamarket/w_fleamarket_grid_web.dart' show kFleamarketCardTextBlockHeight;
+import 'package:com.snowlive/web/widget/w_skeleton_web.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -43,9 +44,21 @@ class _FleamarketDetailRecommendWebState extends State<FleamarketDetailRecommend
       future: _future,
       builder: (context, snapshot) {
         final items = snapshot.data ?? [];
-        if (snapshot.connectionState != ConnectionState.done || items.isEmpty) {
-          return const SizedBox.shrink();
+
+        // 로딩과 "결과 없음"을 한 조건으로 묶어 둘 다 숨기면, 데이터가 도착하는 순간
+        // 섹션이 통째로 나타나면서 스크롤 위치가 튄다. 로딩 중에는 제목+그리드 높이를
+        // 미리 확보해두고, 결과가 비었다고 확정됐을 때만 접는다.
+        if (snapshot.connectionState != ConnectionState.done) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('추천 중고거래 물품', style: SDSTextStyle.bold.copyWith(fontSize: 16, color: SDSColor.gray900)),
+              const SizedBox(height: SDSSpacing.md),
+              const FleamarketGridSkeleton(itemCount: 5),
+            ],
+          );
         }
+        if (items.isEmpty) return const SizedBox.shrink();
 
         final detailVm = Get.find<FleamarketDetailViewModel>();
         final userVm = Get.find<UserViewModel>();
