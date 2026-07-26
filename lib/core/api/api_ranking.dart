@@ -172,6 +172,7 @@ class RankingAPI {
     String? federation,
     int? page,        // 웹 번호식 페이지네이션용
     int? pageSize,
+    String? searchQuery,   // 통합 검색어(닉네임/상태메세지/스키장/크루명/소개글)
   }) async {
     // 웹은 게스트(비로그인) 상태에서도 랭킹을 조회할 수 있어야 하므로 userId를 옵셔널로 둔다
     // (모바일은 항상 로그인된 실제 user_id를 넘기므로 기존 동작에는 영향 없음).
@@ -186,6 +187,7 @@ class RankingAPI {
         if (federation != null) 'federation': federation,
         if (page != null) 'page': page.toString(),
         if (pageSize != null) 'page_size': pageSize.toString(),
+        if (searchQuery != null && searchQuery.isNotEmpty) 'search_query': searchQuery,
       },
     );
 
@@ -212,6 +214,7 @@ class RankingAPI {
     String? federation,
     int? page,        // 웹 번호식 페이지네이션용
     int? pageSize,
+    String? searchQuery,   // 통합 검색어(닉네임/상태메세지/스키장/크루명/소개글)
   }) async {
     final uri = url != null
         ? Uri.parse(url)
@@ -224,6 +227,7 @@ class RankingAPI {
         if (federation != null) 'federation': federation,
         if (page != null) 'page': page.toString(),
         if (pageSize != null) 'page_size': pageSize.toString(),
+        if (searchQuery != null && searchQuery.isNotEmpty) 'search_query': searchQuery,
       },
     );
 
@@ -243,11 +247,13 @@ class RankingAPI {
     String? url,
     int? page,        // 웹 번호식 페이지네이션용 (beta 응답은 total_pages가 최상위)
     int? pageSize,
+    String? searchQuery,   // 통합 검색어(닉네임/상태메세지/스키장/크루명/소개글)
   }) async {
     final params = <String, String>{
       if (userId != null) 'user_id': userId.toString(),
       if (page != null) 'page': page.toString(),
       if (pageSize != null) 'page_size': pageSize.toString(),
+      if (searchQuery != null && searchQuery.isNotEmpty) 'search_query': searchQuery,
     };
     final uri = url != null
         ? Uri.parse(url)
@@ -276,6 +282,7 @@ class RankingAPI {
     String? federation,
     int? page,        // 웹 번호식 페이지네이션용
     int? pageSize,
+    String? searchQuery,   // 통합 검색어(닉네임/상태메세지/스키장/크루명/소개글)
   }) async {
     // 웹은 게스트(비로그인) 상태에서도 크루랭킹을 조회할 수 있어야 하므로 userId를
     // 옵셔널로 둔다(모바일은 항상 로그인된 실제 user_id를 넘기므로 기존 동작에 영향 없음).
@@ -290,6 +297,7 @@ class RankingAPI {
         if (federation != null) 'federation': federation,
         if (page != null) 'page': page.toString(),
         if (pageSize != null) 'page_size': pageSize.toString(),
+        if (searchQuery != null && searchQuery.isNotEmpty) 'search_query': searchQuery,
       },
     );
 
@@ -314,6 +322,7 @@ class RankingAPI {
     String? federation,
     int? page,        // 웹 번호식 페이지네이션용
     int? pageSize,
+    String? searchQuery,   // 통합 검색어(닉네임/상태메세지/스키장/크루명/소개글)
   }) async {
     final uri = url != null
         ? Uri.parse(url)
@@ -326,6 +335,7 @@ class RankingAPI {
         if (federation != null) 'federation': federation,
         if (page != null) 'page': page.toString(),
         if (pageSize != null) 'page_size': pageSize.toString(),
+        if (searchQuery != null && searchQuery.isNotEmpty) 'search_query': searchQuery,
       },
     );
 
@@ -345,11 +355,13 @@ class RankingAPI {
     String? url,
     int? page,        // 웹 번호식 페이지네이션용 (beta 응답은 total_pages가 최상위)
     int? pageSize,
+    String? searchQuery,   // 통합 검색어(닉네임/상태메세지/스키장/크루명/소개글)
   }) async {
     final params = <String, String>{
       if (crewId != null) 'crew_id': crewId.toString(),
       if (page != null) 'page': page.toString(),
       if (pageSize != null) 'page_size': pageSize.toString(),
+      if (searchQuery != null && searchQuery.isNotEmpty) 'search_query': searchQuery,
     };
     final uri = url != null
         ? Uri.parse(url)

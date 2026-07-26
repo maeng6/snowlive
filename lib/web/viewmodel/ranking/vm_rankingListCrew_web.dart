@@ -29,6 +29,7 @@ class RankingListCrewViewModelWeb extends GetxController {
   String? _federation;
   bool? _daily;
   String? _fetchedSeason;
+  String? _searchQuery;   // 통합 검색어
 
   List<CrewRanking> get items => _items;
   MyCrewRankingInfo? get myCrewRankingInfo => _myCrewRankingInfo.value;
@@ -56,11 +57,13 @@ class RankingListCrewViewModelWeb extends GetxController {
     int? resortId,
     String? federation,
     bool? daily,
+    String? searchQuery,
   }) async {
     _userId = userId;
     _resortId = resortId;
     _federation = federation;
     _daily = daily;
+    _searchQuery = searchQuery;
     _fetchedSeason ??= await fetchCurrentRankingSeason();
     _totalPages.value = 1; // gotoPage 범위체크 초기화
     await gotoPage(1);
@@ -109,6 +112,7 @@ class RankingListCrewViewModelWeb extends GetxController {
         season: _fetchedSeason,
         page: page,
         pageSize: pageSize,
+        searchQuery: _searchQuery,
       );
       if (res.success) {
         final data = res.data as Map<String, dynamic>;

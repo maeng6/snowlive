@@ -74,10 +74,12 @@ class _RankingArchiveViewWebState extends State<RankingArchiveViewWeb> {
 
   void _reload() {
     final season = _selectedSeason.dbSeason;
+    final q = _searchQuery.value.trim();
+    final sq = q.isEmpty ? null : q;
     if (_tab == _ArchiveTab.individual) {
-      _vm.loadFirstPage(season: season, resortId: _resortId, federation: _federation);
+      _vm.loadFirstPage(season: season, resortId: _resortId, federation: _federation, searchQuery: sq);
     } else {
-      _crewVm.loadFirstPage(season: season, resortId: _resortId, federation: _federation);
+      _crewVm.loadFirstPage(season: season, resortId: _resortId, federation: _federation, searchQuery: sq);
     }
   }
 
@@ -152,19 +154,31 @@ class _RankingArchiveViewWebState extends State<RankingArchiveViewWeb> {
           Icon(Icons.search, size: 18, color: SDSColor.gray400),
           const SizedBox(width: 8),
           Expanded(
-            // TODO: 백엔드가 랭킹 검색을 지원하면 활성화한다(랭킹 화면과 동일한 사유).
+            // 서버 통합검색: 닉네임/상태메세지/자주가는스키장 + 소속 크루의 크루명/소개글/베이스스키장.
             child: TextField(
               controller: _searchController,
-              enabled: false,
+              onChanged: (v) => _searchQuery.value = v,
+              onSubmitted: (_) => _reload(),
+              textInputAction: TextInputAction.search,
               decoration: InputDecoration(
                 border: InputBorder.none,
                 isDense: true,
-                hintText: '유저 검색 준비 중',
+                hintText: '닉네임·크루·스키장 검색',
                 hintStyle: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray400),
               ),
               style: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray900),
             ),
           ),
+          Obx(() => _searchQuery.value.isEmpty
+              ? const SizedBox.shrink()
+              : InkWell(
+                  onTap: () {
+                    _searchController.clear();
+                    _searchQuery.value = '';
+                    _reload();
+                  },
+                  child: Icon(Icons.close, size: 18, color: SDSColor.gray400),
+                )),
         ],
       ),
     );

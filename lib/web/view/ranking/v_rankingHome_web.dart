@@ -116,10 +116,12 @@ class _RankingHomeViewWebState extends State<RankingHomeViewWeb> {
   String? get _federation => _selectedFed == RankingFilter_fed.initial ? null : _selectedFed.english;
 
   void _reload() {
+    final q = _searchQuery.value.trim();
+    final sq = q.isEmpty ? null : q;
     if (_tab == _RankingTab.individual) {
-      _vm.loadFirstPage(resortId: _resortId, federation: _federation, daily: _daily);
+      _vm.loadFirstPage(resortId: _resortId, federation: _federation, daily: _daily, searchQuery: sq);
     } else {
-      _crewVm.loadFirstPage(userId: _userVm.user.user_id, resortId: _resortId, federation: _federation, daily: _daily);
+      _crewVm.loadFirstPage(userId: _userVm.user.user_id, resortId: _resortId, federation: _federation, daily: _daily, searchQuery: sq);
     }
   }
 
@@ -211,24 +213,32 @@ class _RankingHomeViewWebState extends State<RankingHomeViewWeb> {
           Icon(Icons.search, size: 18, color: SDSColor.gray400),
           const SizedBox(width: 8),
           Expanded(
-            // TODO: 백엔드가 랭킹 검색을 지원하면 활성화한다.
-            // 현재 list-indiv/list-crew는 search/q/display_name 등 어떤 검색 파라미터도
-            // 무시해서(검색어와 무관하게 동일한 전체 목록 반환) 서버 검색이 불가능하다.
-            // 한 페이지(30명) 안에서만 거르면 전체 4천여 명 중 대부분이 안 잡혀
-            // 사실상 동작하지 않는 것처럼 보이므로, 그때까지 입력을 막아둔다.
-            // 파라미터가 생기면 enabled/onChanged만 되살리면 아래 하이라이트 로직이 그대로 동작한다.
+            // 서버 통합검색: 닉네임/상태메세지/자주가는스키장 + 소속 크루의 크루명/소개글/베이스스키장.
+            // onChanged로 검색어를 담아 결과 하이라이트에 쓰고, 제출(엔터) 시 서버 재조회한다.
             child: TextField(
               controller: _searchController,
-              enabled: false,
+              onChanged: (v) => _searchQuery.value = v,
+              onSubmitted: (_) => _reload(),
+              textInputAction: TextInputAction.search,
               decoration: InputDecoration(
                 border: InputBorder.none,
                 isDense: true,
-                hintText: '닉네임 검색 준비 중',
+                hintText: '닉네임·크루·스키장 검색',
                 hintStyle: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray400),
               ),
               style: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray900),
             ),
           ),
+          Obx(() => _searchQuery.value.isEmpty
+              ? const SizedBox.shrink()
+              : InkWell(
+                  onTap: () {
+                    _searchController.clear();
+                    _searchQuery.value = '';
+                    _reload();
+                  },
+                  child: Icon(Icons.close, size: 18, color: SDSColor.gray400),
+                )),
         ],
       ),
     );

@@ -33,6 +33,7 @@ class RankingListViewModelWeb extends GetxController {
   String? _season;
   String? _federation;
   bool? _daily;
+  String? _searchQuery;   // 통합 검색어
 
   // 파이어스토어에서 1회 조회해 캐싱하는 현재 시즌 값. 모바일의 모든 랭킹 호출부가
   // 항상 season을 넘기는 것과 동일하게 맞추기 위해 필요(누락 시 백엔드가 빈 결과를
@@ -71,11 +72,13 @@ class RankingListViewModelWeb extends GetxController {
     String? season,
     String? federation,
     bool? daily,
+    String? searchQuery,
   }) async {
     _resortId = resortId;
     _season = season ?? _fetchedSeason;
     _federation = federation;
     _daily = daily;
+    _searchQuery = searchQuery;
     _totalPages.value = 1; // gotoPage 범위체크 초기화
     await gotoPage(1);
   }
@@ -107,6 +110,7 @@ class RankingListViewModelWeb extends GetxController {
         daily: _daily,
         page: page,
         pageSize: pageSize,
+        searchQuery: _searchQuery,
       );
       if (res.success) {
         final data = res.data as Map<String, dynamic>;

@@ -24,6 +24,7 @@ class RankingArchiveCrewViewModelWeb extends GetxController {
   int? _resortId;
   String? _federation;
   bool? _daily;
+  String? _searchQuery;   // 통합 검색어
 
   RankingArchiveCrewViewModelWeb({this.pageSize = 30});
 
@@ -42,11 +43,13 @@ class RankingArchiveCrewViewModelWeb extends GetxController {
     int? resortId,
     String? federation,
     bool? daily,
+    String? searchQuery,
   }) async {
     _season = season;
     _resortId = resortId;
     _federation = federation;
     _daily = daily;
+    _searchQuery = searchQuery;
     _totalPages.value = 1; // gotoPage 범위체크 초기화
     await gotoPage(1);
   }
@@ -77,6 +80,7 @@ class RankingArchiveCrewViewModelWeb extends GetxController {
         federation: _federation,
         page: page,
         pageSize: pageSize,
+        searchQuery: _searchQuery,
       );
       if (res.success) {
         final data = res.data as Map<String, dynamic>;
