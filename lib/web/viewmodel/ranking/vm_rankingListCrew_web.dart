@@ -45,9 +45,10 @@ class RankingListCrewViewModelWeb extends GetxController {
     _init();
   }
 
-  Future<void> _init() async {
-    _fetchedSeason = await fetchCurrentRankingSeason();
-  }
+  /// 시즌 조회 구간에도 진행바가 보이도록 감싼다(개인랭킹과 동일).
+  Future<void> _init() => withPageLoading(() async {
+        _fetchedSeason = await fetchCurrentRankingSeason();
+      });
 
   /// 필터를 세팅하고 1페이지부터 로드. [userId]는 게스트면 null이어도 된다.
   Future<void> loadFirstPage({
@@ -70,12 +71,12 @@ class RankingListCrewViewModelWeb extends GetxController {
     if (page < 1) return;
     if (_totalPages.value >= 1 && page > _totalPages.value) return;
     _isLoading.value = true;
-    isGlobalPageLoading.value = true;
+    beginPageLoading();
     try {
       await _fetchWithRetry(page);
     } finally {
       _isLoading.value = false;
-      isGlobalPageLoading.value = false;
+      endPageLoading();
     }
   }
 
@@ -112,7 +113,11 @@ class RankingListCrewViewModelWeb extends GetxController {
       if (res.success) {
         final data = res.data as Map<String, dynamic>;
         final parsed = RankingListCrewModel.fromJson(data);
-        _myCrewRankingInfo.value = parsed.myCrewRankingInfo;
+        // 크루 미소속이면 my_crew_ranking_info가 null이 아니라 "필드가 전부 null인
+        // 빈 객체"로 오는 경우가 있어서, 그대로 두면 값 없는 내 크루 카드가 그려진다.
+        // crewId가 없으면 소속 크루가 없는 것으로 보고 null로 정규화한다.
+        final myCrew = parsed.myCrewRankingInfo;
+        _myCrewRankingInfo.value = myCrew?.crewId == null ? null : myCrew;
         _items.value = parsed.rankingResults?.results ?? [];
 
         // 페이지 메타는 results 내부에 있음

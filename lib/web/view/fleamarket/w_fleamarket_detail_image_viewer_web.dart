@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:com.snowlive/core/model/m_fleamarket.dart';
 import 'package:com.snowlive/core/viewmodel/fleamarket/vm_fleamarketDetail.dart';
 import 'package:com.snowlive/web/view/fleamarket/w_fleamarket_card_web.dart' show kFleamarketDefaultImage;
+import 'package:com.snowlive/web/widget/w_network_image_web.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -92,10 +93,11 @@ class _FleamarketImageViewerWebState extends State<FleamarketImageViewerWeb> {
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(12),
                       child: (photo.urlFleaPhoto?.isNotEmpty ?? false)
-                          ? Image.network(
-                              photo.urlFleaPhoto!,
+                          ? WebNetworkImage(
+                              url: photo.urlFleaPhoto,
                               fit: BoxFit.contain,
-                              errorBuilder: (_, __, ___) => Image.asset(kFleamarketDefaultImage, fit: BoxFit.contain),
+                              gaplessPlayback: true,
+                              fallback: Image.asset(kFleamarketDefaultImage, fit: BoxFit.contain),
                             )
                           : Image.asset(kFleamarketDefaultImage, fit: BoxFit.contain),
                     ),

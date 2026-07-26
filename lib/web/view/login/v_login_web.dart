@@ -17,6 +17,11 @@ class _LoginViewWebState extends State<LoginViewWeb> {
   final LoginViewModelWeb vm = Get.find<LoginViewModelWeb>();
   Worker? _worker;
 
+  /// 어느 버튼을 눌렀는지. 뷰모델은 "로딩 중"만 알려주고 어떤 제공자인지는 모르므로,
+  /// 스피너를 누른 버튼 안에만 띄우기 위해 화면 로컬로 기억한다
+  /// (뷰모델은 팀원 소유라 건드리지 않는다).
+  String? _pendingProvider;
+
   @override
   void initState() {
     super.initState();
@@ -77,7 +82,11 @@ class _LoginViewWebState extends State<LoginViewWeb> {
                       textColor: SDSColor.gray900,
                       borderColor: SDSColor.gray200,
                       enabled: !vm.isLoading,
-                      onPressed: () => vm.signInWithGoogle(),
+                      isLoading: vm.isLoading && _pendingProvider == 'google',
+                      onPressed: () {
+                        setState(() => _pendingProvider = 'google');
+                        vm.signInWithGoogle();
+                      },
                     )),
                 const SizedBox(height: SDSSpacing.sm),
                 Obx(() => _SocialLoginButton(
@@ -87,7 +96,11 @@ class _LoginViewWebState extends State<LoginViewWeb> {
                       textColor: SDSColor.snowliveWhite,
                       borderColor: SDSColor.gray900,
                       enabled: !vm.isLoading,
-                      onPressed: () => vm.signInWithApple(),
+                      isLoading: vm.isLoading && _pendingProvider == 'apple',
+                      onPressed: () {
+                        setState(() => _pendingProvider = 'apple');
+                        vm.signInWithApple();
+                      },
                     )),
                 Obx(() => vm.status == WebLoginStatus.error
                     ? Padding(
@@ -99,12 +112,9 @@ class _LoginViewWebState extends State<LoginViewWeb> {
                         ),
                       )
                     : const SizedBox.shrink()),
-                Obx(() => vm.isLoading
-                    ? const Padding(
-                        padding: EdgeInsets.only(top: SDSSpacing.md),
-                        child: Center(child: CircularProgressIndicator(strokeWidth: 2)),
-                      )
-                    : const SizedBox.shrink()),
+                // 로딩 스피너는 버튼 아래 별도로 두지 않고 누른 버튼 안에 인라인으로
+                // 표시한다(온보딩 화면과 동일한 방식). 어떤 동작이 진행 중인지가
+                // 버튼과 직접 연결돼 보이고, 레이아웃도 늘어나지 않는다.
               ],
             ),
           ),
@@ -121,6 +131,7 @@ class _SocialLoginButton extends StatelessWidget {
   final Color textColor;
   final Color borderColor;
   final bool enabled;
+  final bool isLoading;
   final VoidCallback onPressed;
 
   const _SocialLoginButton({
@@ -130,6 +141,7 @@ class _SocialLoginButton extends StatelessWidget {
     required this.textColor,
     required this.borderColor,
     required this.enabled,
+    this.isLoading = false,
     required this.onPressed,
   });
 
@@ -144,10 +156,21 @@ class _SocialLoginButton extends StatelessWidget {
         side: BorderSide(color: borderColor),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       ),
+      // 로고 자리를 스피너로 바꿔서 버튼 폭/높이가 변하지 않게 한다.
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Image.asset(logoAsset, width: 20, height: 20),
+          if (isLoading)
+            SizedBox(
+              width: 20,
+              height: 20,
+              child: CircularProgressIndicator(
+                strokeWidth: 2,
+                valueColor: AlwaysStoppedAnimation<Color>(textColor),
+              ),
+            )
+          else
+            Image.asset(logoAsset, width: 20, height: 20),
           const SizedBox(width: SDSSpacing.sm),
           Text(label, style: SDSTextStyle.bold.copyWith(fontSize: 15, color: textColor)),
         ],

@@ -2,9 +2,9 @@ import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/core/model/m_fleamarket.dart';
 import 'package:com.snowlive/core/util/util_1.dart';
 import 'package:com.snowlive/core/viewmodel/fleamarket/vm_fleamarketList.dart';
+import 'package:com.snowlive/web/widget/w_network_image_web.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:shimmer/shimmer.dart';
 
 const String kFleamarketDefaultImage = 'assets/imgs/imgs/img_flea_default.png';
 final _priceFormat = NumberFormat('###,###,###,###');
@@ -39,19 +39,10 @@ class FleamarketCardWeb extends StatelessWidget {
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: photos.isNotEmpty
-                        ? Image.network(
-                            photos.first.urlFleaPhoto!,
+                        ? WebNetworkImage(
+                            url: photos.first.urlFleaPhoto,
                             fit: BoxFit.cover,
-                            loadingBuilder: (context, child, progress) {
-                              if (progress == null) return child;
-                              return Shimmer.fromColors(
-                                baseColor: SDSColor.gray200,
-                                highlightColor: SDSColor.gray50,
-                                child: Container(color: Colors.white),
-                              );
-                            },
-                            errorBuilder: (context, error, stackTrace) =>
-                                Image.asset(kFleamarketDefaultImage, fit: BoxFit.cover),
+                            fallback: Image.asset(kFleamarketDefaultImage, fit: BoxFit.cover),
                           )
                         : Image.asset(kFleamarketDefaultImage, fit: BoxFit.cover),
                   ),

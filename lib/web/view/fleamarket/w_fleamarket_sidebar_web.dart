@@ -1,5 +1,6 @@
 import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/web/routes/routes_web.dart';
+import 'package:com.snowlive/web/widget/w_skeleton_web.dart';
 import 'package:com.snowlive/web/view/fleamarket/w_fleamarket_card_web.dart';
 import 'package:com.snowlive/web/viewmodel/fleamarket/vm_fleamarketMyActivity_web.dart';
 import 'package:flutter/material.dart';
@@ -49,6 +50,9 @@ class FleamarketSidebarWeb extends StatelessWidget {
             return _ActivitySection(
               title: '최근 본 상품',
               items: recent,
+              // 로딩 중에 "없어요"를 먼저 보여줬다가 데이터로 바뀌면 빈 상태가 깜빡인다.
+              // 조회가 끝난 뒤에만 빈 상태로 판단한다.
+              isLoading: myActivityVm.isLoading.value,
               isEmpty: recent.isEmpty,
               emptyText: '최근 본 상품이 없어요',
             );
@@ -59,6 +63,7 @@ class FleamarketSidebarWeb extends StatelessWidget {
             return _ActivitySection(
               title: favorites.isEmpty ? '찜 목록' : '찜 목록 ${favorites.length}',
               items: favorites,
+              isLoading: myActivityVm.isLoading.value,
               isEmpty: favorites.isEmpty,
               emptyText: '찜 목록이 없어요',
             );
@@ -72,12 +77,14 @@ class FleamarketSidebarWeb extends StatelessWidget {
 class _ActivitySection extends StatelessWidget {
   final String title;
   final List<FleamarketMyActivityItem> items;
+  final bool isLoading;
   final bool isEmpty;
   final String emptyText;
 
   const _ActivitySection({
     required this.title,
     required this.items,
+    required this.isLoading,
     required this.isEmpty,
     required this.emptyText,
   });
@@ -89,7 +96,9 @@ class _ActivitySection extends StatelessWidget {
       children: [
         Text(title, style: SDSTextStyle.bold.copyWith(fontSize: 15, color: SDSColor.gray900)),
         const SizedBox(height: SDSSpacing.sm),
-        if (isEmpty)
+        if (isLoading && items.isEmpty)
+          const ActivityListSkeleton()
+        else if (isEmpty)
           Text(emptyText, style: SDSTextStyle.regular.copyWith(fontSize: 13, color: SDSColor.gray400)),
         for (final item in items)
           Padding(

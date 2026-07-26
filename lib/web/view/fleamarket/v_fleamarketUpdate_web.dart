@@ -39,7 +39,23 @@ class FleamarketUpdateViewWeb extends StatelessWidget {
       Get.snackbar('알림', '필수 항목을 모두 입력해주세요.');
       return;
     }
+    // 버튼 비활성화와 별개로, 연타/중복 호출이 실제로 들어와도 한 번만 전송되게 한다.
+    if (vm.isSubmitting.value) return;
+    vm.isSubmitting.value = true;
+    try {
+      await _submitInner(context, vm, userId, fleaId);
+    } finally {
+      // fenix 바인딩이라 화면을 떠나도 뷰모델이 살아남으므로 반드시 되돌린다.
+      vm.isSubmitting.value = false;
+    }
+  }
 
+  Future<void> _submitInner(
+    BuildContext context,
+    FleamarketUpdateViewModelWeb vm,
+    int userId,
+    int fleaId,
+  ) async {
     final body = {
       'user_id': userId,
       'product_name': vm.textEditingController_productName.text,
@@ -67,7 +83,8 @@ class FleamarketUpdateViewWeb extends StatelessWidget {
     }
 
     await vm.updateFleamarket(fleaId, body, merged);
-    await detailVm.fetchFleamarketDetailFromAPI(fleamarketId: fleaId, userId: userId);
+    await Get.find<FleamarketDetailViewModel>()
+        .fetchFleamarketDetailFromAPI(fleamarketId: fleaId, userId: userId);
     if (Get.isRegistered<FleamarketPaginationViewModelWeb>()) {
       Get.find<FleamarketPaginationViewModelWeb>().loadFirstPage(userId: userId);
     }
@@ -119,17 +136,37 @@ class FleamarketUpdateViewWeb extends StatelessWidget {
   }
 
   Widget _submitButton(BuildContext context, FleamarketUpdateViewModelWeb vm) {
-    return Obx(() => ElevatedButton(
-          onPressed: _canSubmit(vm) ? () => _submit(context, vm) : null,
-          style: ElevatedButton.styleFrom(
-            backgroundColor: SDSColor.snowliveBlue,
-            disabledBackgroundColor: SDSColor.gray200,
-            elevation: 0,
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-          ),
-          child: Text('수정하기', style: SDSTextStyle.bold.copyWith(fontSize: 14, color: SDSColor.snowliveWhite)),
-        ));
+    return Obx(() {
+      final isSubmitting = vm.isSubmitting.value;
+      return ElevatedButton(
+        onPressed: (_canSubmit(vm) && !isSubmitting) ? () => _submit(context, vm) : null,
+        style: ElevatedButton.styleFrom(
+          backgroundColor: SDSColor.snowliveBlue,
+          disabledBackgroundColor: SDSColor.gray200,
+          elevation: 0,
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+        ),
+        // 라벨을 스피너로 교체하면 버튼 폭이 튀므로 라벨은 두고 앞에 끼워 넣는다.
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (isSubmitting) ...[
+              const SizedBox(
+                width: 14,
+                height: 14,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  valueColor: AlwaysStoppedAnimation<Color>(SDSColor.snowliveWhite),
+                ),
+              ),
+              const SizedBox(width: SDSSpacing.sm),
+            ],
+            Text('수정하기', style: SDSTextStyle.bold.copyWith(fontSize: 14, color: SDSColor.snowliveWhite)),
+          ],
+        ),
+      );
+    });
   }
 
   Widget _buildForm(BuildContext context, FleamarketUpdateViewModelWeb vm) {

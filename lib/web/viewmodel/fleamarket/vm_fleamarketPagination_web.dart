@@ -70,12 +70,12 @@ class FleamarketPaginationViewModelWeb extends GetxController {
     if (page < 1) return;
     if (_totalPages.value >= 1 && page > _totalPages.value) return;
     _isLoading.value = true;
+    beginPageLoading();
     try {
-      isGlobalPageLoading.value = true;
       await _fetchWithRetry(page);
     } finally {
       _isLoading.value = false;
-      isGlobalPageLoading.value = false;
+      endPageLoading();
     }
   }
 

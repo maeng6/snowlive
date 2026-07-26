@@ -56,10 +56,13 @@ class RankingListViewModelWeb extends GetxController {
     _init();
   }
 
-  Future<void> _init() async {
-    _fetchedSeason = await fetchCurrentRankingSeason();
-    await loadFirstPage();
-  }
+  /// 파이어스토어에서 시즌을 먼저 받아온 뒤에야 목록 조회가 시작되는데, 그 구간에도
+  /// 진행바가 보이도록 전체를 감싼다. 안쪽 gotoPage가 한 번 더 begin/end 하지만
+  /// 참조 카운트라 중첩돼도 안전하다.
+  Future<void> _init() => withPageLoading(() async {
+        _fetchedSeason = await fetchCurrentRankingSeason();
+        await loadFirstPage();
+      });
 
   /// 필터를 세팅하고 1페이지부터 로드. season을 명시적으로 안 넘기면
   /// 파이어스토어에서 1회 조회해둔 현재 시즌 값을 그대로 쓴다.
@@ -82,12 +85,12 @@ class RankingListViewModelWeb extends GetxController {
     if (page < 1) return;
     if (_totalPages.value >= 1 && page > _totalPages.value) return;
     _isLoading.value = true;
+    beginPageLoading();
     try {
-      isGlobalPageLoading.value = true;
       await _fetchWithRetry(page);
     } finally {
       _isLoading.value = false;
-      isGlobalPageLoading.value = false;
+      endPageLoading();
     }
   }
 

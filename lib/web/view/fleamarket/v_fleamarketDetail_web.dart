@@ -1,5 +1,7 @@
 import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/core/viewmodel/fleamarket/vm_fleamarketDetail.dart';
+import 'package:com.snowlive/web/routes/routes_web.dart';
+import 'package:com.snowlive/web/widget/w_empty_state_web.dart';
 import 'package:com.snowlive/web/util/responsive_web.dart';
 import 'package:com.snowlive/web/view/fleamarket/v_fleamarketHome_web.dart' show kFleamarketContentMaxWidth;
 import 'package:com.snowlive/web/view/fleamarket/w_fleamarket_detail_body_web.dart';
@@ -24,7 +26,14 @@ class FleamarketDetailView extends StatelessWidget {
     return Obx(() {
       final detail = detailVm.fleamarketDetail;
       if (detail.fleaId == null) {
-        return const Center(child: CircularProgressIndicator());
+        // 상세 데이터는 목록 카드를 탭할 때 동기로 주입된다. 따라서 여기가 비어 있다는 건
+        // 직접 URL 진입/새로고침처럼 조회 자체가 일어나지 않은 경우로, 스피너를 계속
+        // 돌리면 영원히 돈다(실제로 그런 버그가 있었다). 빠져나갈 길을 준다.
+        return WebEmptyState(
+          message: '상품 정보를 불러올 수 없어요.\n목록에서 다시 선택해주세요.',
+          actionLabel: '중고거래 목록으로',
+          onAction: () => Get.offAllNamed(WebRoutes.fleamarketList),
+        );
       }
 
       final gallery = FleamarketDetailGalleryWeb(photos: detail.photos ?? []);

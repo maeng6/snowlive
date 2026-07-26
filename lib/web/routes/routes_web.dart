@@ -5,6 +5,7 @@ import 'package:com.snowlive/web/view/fleamarket/v_fleamarketUpdate_web.dart';
 import 'package:com.snowlive/web/view/fleamarket/v_fleamarketUpload_web.dart';
 import 'package:com.snowlive/web/view/login/v_login_web.dart';
 import 'package:com.snowlive/web/view/onboarding/v_onboarding_web.dart';
+import 'package:com.snowlive/web/view/ranking/v_rankingArchive_web.dart';
 import 'package:com.snowlive/web/view/ranking/v_rankingHome_web.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -19,6 +20,9 @@ class WebRoutes {
   static const login = '/login';
   static const onboarding = '/onboarding';
   static const ranking = '/ranking';
+  // '/ranking/archive'처럼 기존 라우트의 하위 경로로 두면 GetX가 부모('/ranking')로
+  // 매칭해버려서 기록실 대신 랭킹 화면이 떴다. 별도 최상위 경로로 분리한다.
+  static const rankingArchive = '/ranking-archive';
 
   static final pages = [
     GetPage(
@@ -66,6 +70,11 @@ class WebRoutes {
       page: () => const RankingHomeViewWeb(),
       binding: WebRankingListBinding(),
     ),
+    GetPage(
+      name: rankingArchive,
+      page: () => const RankingArchiveViewWeb(),
+      binding: WebRankingArchiveBinding(),
+    ),
   ];
 }
 
@@ -75,14 +84,13 @@ class _PlaceholderPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text(title)),
-      body: Center(
-        child: Text(
-          '$title\n(웹 뷰 구현 예정)',
-          textAlign: TextAlign.center,
-          style: const TextStyle(fontSize: 18),
-        ),
+    // 이 화면은 WebAppShell(GNB 상단바/사이드바) 안에 렌더링되므로 자체 Scaffold+AppBar를
+    // 두면 헤더가 2단으로 쌓인다. 셸이 이미 배경/구조를 잡아주니 콘텐츠만 그린다.
+    return Center(
+      child: Text(
+        '$title\n(웹 뷰 구현 예정)',
+        textAlign: TextAlign.center,
+        style: const TextStyle(fontSize: 18),
       ),
     );
   }

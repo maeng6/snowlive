@@ -200,8 +200,11 @@ class RankingAPI {
     }
   }
 
+  /// [userId]는 게스트(비로그인)면 null이어도 된다. null이면 user_id 파라미터 자체를
+  /// 빼고 호출하는데, 이때 서버는 my_ranking_info만 비우고 목록은 정상으로 돌려준다.
+  /// (user_id=0 같은 더미값을 보내면 "No User matches the given query" 에러가 난다.)
   Future<ApiResponse> fetchRankingData_indiv_recordRoom({
-    required int userId,
+    int? userId,
     int? resortId,
     bool? daily,
     String? selected_season,
@@ -214,7 +217,7 @@ class RankingAPI {
         ? Uri.parse(url)
         : Uri.parse('$baseUrl/list-recordroom-indiv/').replace(
       queryParameters: {
-        'user_id': userId.toString(),
+        if (userId != null) 'user_id': userId.toString(),
         if (resortId != null) 'resort_id': resortId.toString(),
         if (daily != null) 'daily': daily.toString(),
         if (selected_season != null) 'selected_season': selected_season,
@@ -301,8 +304,9 @@ class RankingAPI {
     }
   }
 
+  /// [userId]는 게스트(비로그인)면 null이어도 된다(개인 기록실과 동일).
   Future<ApiResponse> fetchRankingData_crew_recordRoom({
-    required int userId,
+    int? userId,
     int? resortId,
     bool? daily,
     String? selected_season,
@@ -315,7 +319,7 @@ class RankingAPI {
         ? Uri.parse(url)
         : Uri.parse('$baseUrl/list-recordroom-crew/').replace(
       queryParameters: {
-        'user_id': userId.toString(),
+        if (userId != null) 'user_id': userId.toString(),
         if (resortId != null) 'resort_id': resortId.toString(),
         if (daily != null) 'daily': daily.toString(),
         if (selected_season != null) 'selected_season': selected_season,

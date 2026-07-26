@@ -5,6 +5,7 @@ import 'package:com.snowlive/core/util/util_1.dart';
 import 'package:com.snowlive/core/viewmodel/fleamarket/vm_fleamarketCommentDetail.dart';
 import 'package:com.snowlive/core/viewmodel/fleamarket/vm_fleamarketDetail.dart';
 import 'package:com.snowlive/core/viewmodel/vm_user.dart';
+import 'package:com.snowlive/web/widget/w_network_image_web.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -139,12 +140,11 @@ class _FleamarketDetailCommentsWebState extends State<FleamarketDetailCommentsWe
         children: [
           ClipOval(
             child: (comment.userInfo?.profileImageUrlUser?.isNotEmpty ?? false)
-                ? Image.network(
-                    comment.userInfo!.profileImageUrlUser!,
+                ? WebNetworkImage(
+                    url: comment.userInfo!.profileImageUrlUser,
                     width: 28,
                     height: 28,
-                    fit: BoxFit.cover,
-                    errorBuilder: (_, __, ___) => _defaultAvatar(),
+                    fallback: _defaultAvatar(),
                   )
                 : _defaultAvatar(),
           ),
@@ -278,12 +278,11 @@ class _FleamarketDetailCommentsWebState extends State<FleamarketDetailCommentsWe
         children: [
           ClipOval(
             child: (reply.userInfo?.profileImageUrlUser?.isNotEmpty ?? false)
-                ? Image.network(
-                    reply.userInfo!.profileImageUrlUser!,
+                ? WebNetworkImage(
+                    url: reply.userInfo!.profileImageUrlUser,
                     width: 22,
                     height: 22,
-                    fit: BoxFit.cover,
-                    errorBuilder: (_, __, ___) => _defaultAvatar(size: 22),
+                    fallback: _defaultAvatar(size: 22),
                   )
                 : _defaultAvatar(size: 22),
           ),

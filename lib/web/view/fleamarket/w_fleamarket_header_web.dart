@@ -25,13 +25,21 @@ class _FleamarketHeaderWebState extends State<FleamarketHeaderWeb> {
 
   final _searchController = TextEditingController();
   final _searchFocus = FocusNode();
-  bool _showSuggestions = false;
+  final _searchBarKey = GlobalKey();
+  OverlayEntry? _overlayEntry;
+
+  /// 1280px 이상에서는 검색창이 타이틀 오른쪽 같은 줄에 놓인다.
+  static const double _wideLayoutBreakpoint = 1280;
 
   @override
   void initState() {
     super.initState();
     _searchFocus.addListener(() {
-      setState(() => _showSuggestions = _searchFocus.hasFocus);
+      if (_searchFocus.hasFocus) {
+        _showOverlay();
+      } else {
+        _hideOverlay();
+      }
     });
     // FleamarketPaginationViewModelWeb.onInit()이 최초 진입 시점에 조회한 결과가
     // 화면에 반영되지 않는 경우가 있어(원인 미확정), 헤더가 마운트되는 시점에
@@ -43,9 +51,95 @@ class _FleamarketHeaderWebState extends State<FleamarketHeaderWeb> {
 
   @override
   void dispose() {
+    _hideOverlay();
     _searchController.dispose();
     _searchFocus.dispose();
     super.dispose();
+  }
+
+  /// 최근검색어 드롭다운을 앱 최상위(root) Overlay에 직접 그린다. 이 화면의 위젯
+  /// 트리 안에 Positioned로 두면 아무리 z-index를 조정해도 "이 컴포넌트 내부"를
+  /// 벗어날 수 없어서, 페이지 내용(중고거래 리스트 등)에 가려지는 경우가 있었다.
+  /// Overlay는 라우트/GNB보다도 위에 있는 별도 레이어라 항상 화면 제일 위에 뜬다.
+  void _showOverlay() {
+    _hideOverlay();
+    final renderBox = _searchBarKey.currentContext?.findRenderObject() as RenderBox?;
+    if (renderBox == null || !renderBox.hasSize) return;
+    final offset = renderBox.localToGlobal(Offset.zero);
+    final size = renderBox.size;
+
+    _overlayEntry = OverlayEntry(
+      builder: (context) {
+        return Stack(
+          children: [
+            // 드롭다운 바깥을 클릭하면 닫히도록, 화면 전체를 덮는 투명 배리어를 먼저 깔아둔다.
+            Positioned.fill(
+              child: GestureDetector(
+                behavior: HitTestBehavior.translucent,
+                onTap: _searchFocus.unfocus,
+              ),
+            ),
+            Positioned(
+              top: offset.dy + size.height + 4,
+              left: offset.dx,
+              width: size.width,
+              child: Obx(() {
+                final recent = _searchVm.recentSearches;
+                if (recent.isEmpty) return const SizedBox.shrink();
+                return Material(
+                  color: SDSColor.snowliveWhite,
+                  elevation: 4,
+                  shadowColor: SDSColor.gray900.withValues(alpha: 0.2),
+                  borderRadius: BorderRadius.circular(8),
+                  clipBehavior: Clip.antiAlias,
+                  child: Container(
+                    constraints: const BoxConstraints(maxHeight: 260),
+                    decoration: BoxDecoration(
+                      color: SDSColor.snowliveWhite,
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: SDSColor.gray100),
+                    ),
+                    child: SingleChildScrollView(
+                      padding: const EdgeInsets.symmetric(vertical: 8),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                            child: Text('최근 검색어 v13', style: SDSTextStyle.bold.copyWith(fontSize: 12, color: SDSColor.gray500)),
+                          ),
+                          for (final term in recent)
+                            ListTile(
+                              dense: true,
+                              leading: Icon(Icons.history, size: 18, color: SDSColor.gray400),
+                              title: Text(term, style: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray900)),
+                              trailing: IconButton(
+                                icon: Icon(Icons.close, size: 16, color: SDSColor.gray300),
+                                onPressed: () => _searchVm.deleteRecentSearch(term),
+                              ),
+                              onTap: () {
+                                _searchController.text = term;
+                                _runSearch(term);
+                              },
+                            ),
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              }),
+            ),
+          ],
+        );
+      },
+    );
+    Overlay.of(context, rootOverlay: true).insert(_overlayEntry!);
+  }
+
+  void _hideOverlay() {
+    _overlayEntry?.remove();
+    _overlayEntry = null;
   }
 
   /// 탭 이름을 페이지네이션 조회 파라미터로 매핑해서 1페이지부터 다시 불러온다.
@@ -97,17 +191,30 @@ class _FleamarketHeaderWebState extends State<FleamarketHeaderWeb> {
     _searchVm.saveRecentSearch(query.trim());
     _loadPaginationForTab(_vm.tapName, searchQuery: query.trim());
     _searchFocus.unfocus();
-    setState(() => _showSuggestions = false);
   }
 
   @override
   Widget build(BuildContext context) {
+    final isWide = MediaQuery.sizeOf(context).width >= _wideLayoutBreakpoint;
+    final titleText = Text('중고거래', style: SDSTextStyle.extraBold.copyWith(fontSize: 28, color: SDSColor.gray900));
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('중고거래', style: SDSTextStyle.extraBold.copyWith(fontSize: 28, color: SDSColor.gray900)),
-        const SizedBox(height: SDSSpacing.md),
-        _buildSearchBar(),
+        if (isWide)
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              titleText,
+              const SizedBox(width: SDSSpacing.lg),
+              Expanded(child: _buildSearchBar()),
+            ],
+          )
+        else ...[
+          titleText,
+          const SizedBox(height: SDSSpacing.md),
+          _buildSearchBar(),
+        ],
         const SizedBox(height: SDSSpacing.md),
         _buildTabsAndFilters(),
       ],
@@ -115,81 +222,31 @@ class _FleamarketHeaderWebState extends State<FleamarketHeaderWeb> {
   }
 
   Widget _buildSearchBar() {
-    return Stack(
-      clipBehavior: Clip.none,
-      children: [
-        Container(
-          height: 44,
-          decoration: BoxDecoration(color: SDSColor.gray50, borderRadius: BorderRadius.circular(8)),
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: Row(
-            children: [
-              Image.asset('assets/imgs/icons/icon_search.png', width: 16, height: 16),
-              const SizedBox(width: 8),
-              Expanded(
-                child: TextField(
-                  controller: _searchController,
-                  focusNode: _searchFocus,
-                  decoration: InputDecoration(
-                    border: InputBorder.none,
-                    isDense: true,
-                    hintText: '중고거래 물품 검색',
-                    hintStyle: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray400),
-                  ),
-                  style: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray900),
-                  onSubmitted: _runSearch,
-                ),
+    return Container(
+      key: _searchBarKey,
+      height: 44,
+      decoration: BoxDecoration(color: SDSColor.gray50, borderRadius: BorderRadius.circular(8)),
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Row(
+        children: [
+          Image.asset('assets/imgs/icons/icon_search.png', width: 16, height: 16),
+          const SizedBox(width: 8),
+          Expanded(
+            child: TextField(
+              controller: _searchController,
+              focusNode: _searchFocus,
+              decoration: InputDecoration(
+                border: InputBorder.none,
+                isDense: true,
+                hintText: '중고거래 물품 검색',
+                hintStyle: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray400),
               ),
-            ],
+              style: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray900),
+              onSubmitted: _runSearch,
+            ),
           ),
-        ),
-        if (_showSuggestions)
-          Positioned(
-            top: 48,
-            left: 0,
-            right: 0,
-            child: Obx(() {
-              final recent = _searchVm.recentSearches;
-              if (recent.isEmpty) return const SizedBox.shrink();
-              return Material(
-                elevation: 4,
-                borderRadius: BorderRadius.circular(8),
-                child: Container(
-                  constraints: const BoxConstraints(maxHeight: 260),
-                  decoration: BoxDecoration(
-                    color: SDSColor.snowliveWhite,
-                    borderRadius: BorderRadius.circular(8),
-                    border: Border.all(color: SDSColor.gray100),
-                  ),
-                  child: ListView(
-                    padding: const EdgeInsets.symmetric(vertical: 8),
-                    shrinkWrap: true,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-                        child: Text('최근 검색어', style: SDSTextStyle.bold.copyWith(fontSize: 12, color: SDSColor.gray500)),
-                      ),
-                      for (final term in recent)
-                        ListTile(
-                          dense: true,
-                          leading: Icon(Icons.history, size: 18, color: SDSColor.gray400),
-                          title: Text(term, style: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray900)),
-                          trailing: IconButton(
-                            icon: Icon(Icons.close, size: 16, color: SDSColor.gray300),
-                            onPressed: () => _searchVm.deleteRecentSearch(term),
-                          ),
-                          onTap: () {
-                            _searchController.text = term;
-                            _runSearch(term);
-                          },
-                        ),
-                    ],
-                  ),
-                ),
-              );
-            }),
-          ),
-      ],
+        ],
+      ),
     );
   }
 
