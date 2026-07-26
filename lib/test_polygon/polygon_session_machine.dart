@@ -152,18 +152,36 @@ class PolygonSessionMachine {
     _entryStreak[c.s.slopeId] = 0;
   }
 
-  /// 종료된 후보 그룹을 최종 진행률(비율)로 비교 → 지배 판정 후 커밋
+  // o 세션이 c를 시간상 완전히 감쌈(먼저 시작·늦게 끝남, 동일구간 제외)
+  bool _contains(_Cand o, _Cand c) =>
+      !o.startedAt.isAfter(c.startedAt) &&
+      !o.endedAt!.isBefore(c.endedAt!) &&
+      !(o.startedAt.isAtSameMomentAs(c.startedAt) && o.endedAt!.isAtSameMomentAs(c.endedAt!));
+
+  // 두 세션 겹침이 짧은 쪽 길이의 50% 이상(경계 스침 제외)
+  bool _substantial(_Cand o, _Cand c) {
+    final ovStart = o.startedAt.isAfter(c.startedAt) ? o.startedAt : c.startedAt;
+    final ovEnd = o.endedAt!.isBefore(c.endedAt!) ? o.endedAt! : c.endedAt!;
+    final ov = ovEnd.difference(ovStart).inMilliseconds;
+    final durO = o.endedAt!.difference(o.startedAt).inMilliseconds;
+    final durC = c.endedAt!.difference(c.startedAt).inMilliseconds;
+    final short = math.max(1, math.min(durO, durC));
+    return ov >= 0.5 * short;
+  }
+
+  /// 종료된 후보 그룹을 시간포함(nesting) 기반으로 dedup → 커밋
   void _finalizeGroup() {
     final cands = _cluster.where((c) => c.coverageM >= noiseFloorM).toList();
     final Map<int, _Cand> best = {};
     for (final c in cands) {
       final covr = c.covRatio;
-      // 시간상 겹친 다른 후보의 최종 진행률이 더 크면 폐기
+      // 폐기: (1) 다른 후보 o가 c를 시간상 감쌈(nesting) → c는 승객
+      //       (2) o와 실질적으로 겹치고 o 진행률이 더 큼 — 단 c가 o를 감싸면 예외
       final dominated = cands.any((o) =>
           !identical(o, c) &&
-          o.startedAt.isBefore(c.endedAt!) &&
-          o.endedAt!.isAfter(c.startedAt) &&
-          o.covRatio > covr + 1e-6);
+          o.coverageM >= noiseFloorM &&
+          (_contains(o, c) ||
+              (_substantial(o, c) && o.covRatio > covr + 1e-6 && !_contains(c, o))));
       if (dominated) {
         _log('✕ 폐기 ${c.s.name} (${c.reason}, 진행률 ${(covr * 100).toStringAsFixed(0)}% 지배당함)');
         continue;
