@@ -1,15 +1,35 @@
 import 'dart:math' as math;
 import 'slope_geometry.dart';
 
-/// 커밋(라이딩 인정) 이벤트
+/// 커밋(라이딩 인정) 이벤트 — commit-ride API 입력을 모두 담는다.
 class CommitEvent {
   final int slopeId;
   final String name;
   final double coverageM;
-  final double distanceM;
-  final int points;
-  final DateTime at;
-  CommitEvent(this.slopeId, this.name, this.coverageM, this.distanceM, this.points, this.at);
+  final double distanceM;     // 실제 GPS 활강거리(m)
+  final int points;           // 궤적 점 수
+  final DateTime at;          // 세션 종료 시각
+  final double entryProgress; // 탄 구간 시작 진행률 0~1
+  final double exitProgress;  // 탄 구간 끝 진행률 0~1 (=max_progress)
+  final DateTime startedAt;   // 세션 시작(소급) 시각
+  final double avgSpeedKmh;   // 평균 속도(km/h)
+  final double coverageRatio; // 진행률(bin 비율) 0~1
+  final List<GeoPt> track;    // 세션 궤적(유료 저장·서버 전송용)
+  CommitEvent(
+    this.slopeId,
+    this.name,
+    this.coverageM,
+    this.distanceM,
+    this.points,
+    this.at, {
+    this.entryProgress = 0,
+    this.exitProgress = 1,
+    DateTime? startedAt,
+    this.avgSpeedKmh = 0,
+    this.coverageRatio = 0,
+    List<GeoPt>? track,
+  })  : startedAt = startedAt ?? at,
+        track = track ?? const [];
 }
 
 class _Cand {
@@ -194,7 +214,17 @@ class PolygonSessionMachine {
       for (int i = 1; i < c.track.length; i++) {
         dist += metersBetween(c.track[i - 1], c.track[i]);
       }
-      final ev = CommitEvent(c.s.slopeId, c.s.name, c.coverageM, dist, c.track.length, c.endedAt!);
+      final secs = c.endedAt!.difference(c.startedAt).inMilliseconds / 1000.0;
+      final avgSpeed = secs > 0 ? (dist / secs) * 3.6 : 0.0; // m/s→km/h
+      final ev = CommitEvent(
+        c.s.slopeId, c.s.name, c.coverageM, dist, c.track.length, c.endedAt!,
+        entryProgress: c.entryProgress,
+        exitProgress: c.maxProgress,
+        startedAt: c.startedAt,
+        avgSpeedKmh: avgSpeed,
+        coverageRatio: c.covRatio,
+        track: List<GeoPt>.from(c.track),
+      );
       commits.add(ev);
       onCommit?.call(ev);
       _log('✅ 커밋 ${c.s.name} (${c.reason}) 진행률 ${(c.covRatio * 100).toStringAsFixed(0)}% cov ${c.coverageM.toStringAsFixed(0)}m 거리 ${dist.toStringAsFixed(0)}m');

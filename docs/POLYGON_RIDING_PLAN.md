@@ -1,6 +1,6 @@
 # 스노우라이브 — 폴리곤 기반 라이딩 판별 & 스코어링 전환 계획서
 
-작성일: 2026-07-23 · **개정: 2026-07-26** (판별 로직을 오프라인 시뮬 검증 결과에 맞춰 갱신 — bin기반 커버리지 + 시간포함 dedup + 연속/중간합류/공유하단, §3-4·§3-5)
+작성일: 2026-07-23 · 개정: 2026-07-26 (판별 로직 오프라인 시뮬 검증 반영 — bin기반 커버리지 + 시간포함 dedup + 연속/중간합류/공유하단) · **개정: 2026-07-27** (스코어링 **덧셈형(거리6:경사3:속도1) 확정**, **접합점 기반 연결감지**(포크/중간합류/꼬리물기), **세션 노브·원격설정·병행전환(dual-write) 확정** — §3-2·§3-5·§4)
 대상 시즌: **26/27 (2627)** — 기존 시스템과 병행 구축 후 검증하여 전환
 관련 프로젝트: 프론트 `project/snowlive` (Flutter) · 백엔드 `project/python/snowlive_api/snowlive` (Django/PostGIS)
 
@@ -60,20 +60,20 @@
 - **시작**: 폴리곤 안 + 진행률이 하단 방향으로 **증가**(연속 2점)
 - **종료**: **현재 진행률이 max_progress(가장 깊이 내려간 지점)보다 밴드Δ만큼 후퇴** 또는 폴리곤 이탈
   - "진행률 감소 몇 점"이 아니라 **"최하단에서 Δ만큼 물러났나"** 로 판정 → S자 턴의 순간 역행에 안 끊김
-  - 밴드Δ = 턴의 역행보다 크고 진짜 턴어라운드(리프트·걸어오름)보다 작게 (예: 축 20~30m, Phase 4 튜닝)
+  - **밴드Δ = 25 m 확정** (턴 역행보다 크고 리프트·걸어오름보다 작게). 어드민 원격설정
 - **정체(평지·횡단)는 종료 아님**: 진행률이 안 늘어도 max에서 후퇴가 아니면 세션 유지
 - **S자 턴 역행/작은 지터**: max_progress − Δ 밴드 안이면 무시 → 세션 안에 포함(궤적·점수 반영). 뚱뚱한 S자 모양도 궤적에 정직하게 그려짐
-- **이탈 히스테리시스**: 폴리곤 밖 좌표 1개로 즉시 종료 ❌ → **연속 2~3점 밖**일 때만 이탈 확정. 경계 오차·GPS 튐 1점은 무시(세션 유지)
-- **재진입 유예**: 이탈 확정 전 **짧은 시간·거리 내 같은 폴리곤 재진입** 시 새 세션 말고 **기존 세션 이어감** → 경계에서 잠깐 삐져나감으로 라이딩이 쪼개지거나 중복 카운트되는 것 방지
+- **이탈 히스테리시스**: 폴리곤 밖 좌표 1개로 즉시 종료 ❌ → **연속 3점 밖**일 때만 이탈 확정(기본 3, 원격설정). 경계 오차·GPS 튐 1~2점은 무시(세션 유지)
+- **재진입 유예**: 이탈 확정 전 **유예 3점 이내 같은 폴리곤 재진입**(기본 3, 원격설정) 시 새 세션 말고 **기존 세션 이어감** → 경계에서 잠깐 삐져나감으로 라이딩이 쪼개지거나 중복 카운트되는 것 방지
 - **GPS 스파이크 제거**: 순간이동 수준 좌표는 상태머신 진입 전 `_validatePosition`/Mock 감지에서 걸러 이탈 오판 방지
 - **폴리곤은 넉넉하게**: 어드민에서 슬로프보다 약간 크게 그려 경계 지터를 흡수
-- 시작 2점 · 종료 밴드Δ · 이탈 2~3점 · 재진입 유예는 **노이즈/턴/경계 흡수 노브** (Phase 4 튜닝)
+- 시작 2점 · 종료 밴드Δ(25m) · 이탈 3점 · 재진입 유예 3점은 **노이즈/턴/경계 흡수 노브** — **전부 어드민 원격설정**(§4-6), 실측 미세튜닝은 Phase 4
 
 ### 3-3. 커밋 (라이딩 인정)
 - **전부 카운트**: 진짜 하강이면 무조건 `Ranking_record_2627` 생성 + 점수 부여. 짧은 라이딩은 거리·하강고도가 작아 점수가 낮게 매겨짐(스코어링이 크기 흡수). **커버리지 30% 게이트 폐기.**
 - 리프트/걸어오름 배제는 3-2의 **진입=하강 조건**이 담당 (진입 자체가 하강일 때만 세션 열림)
 - **노이즈 하한**: GPS 튐 2초짜리 헛것만 거르는 아주 작은 하강 하한만 유지
-- **부분 라이딩(합류)**: 정책 (A) **1회 카운트**
+- **부분 라이딩(포크/중간합류)**: 정책 (A) **1회 카운트**. 점수는 **실제 탄 GPS 거리만큼** 자동 부분 반영(거리점수가 실측 궤적 기반이라 별도 fraction 로직 불필요) — §4-2
 - 커밋 시 `commit-ride` API 호출 + 즉시 flush
 
 ### 3-4. 특수 케이스
@@ -105,38 +105,78 @@
 - **왜 정확한가**: 실제 탄 슬로프는 자기 축을 완주해 세션이 그룹 전체를 감싼다 → 억제 안 됨. 겹친 이웃은 공유 구간만 잡혀 그 안에 포함 → 억제. **겹침이 균일할 필요 없고, 각 슬로프가 "고유 상단(진입부)"만 가지면 됨.** 한 폴리곤이 다른 걸 통째로 삼키는 **near-duplicate(겹침≈100%)만 피하면** 된다.
 - **폐기 = 서버 레코드를 애초에 안 만듦**(commit-ride 호출 안 함, 정리 불필요).
 
-#### 연속/중간합류 검출 (연결 판정)
-- A 하단점 → **B 축의 최단거리**(끝점 아님) ≤ 50m 면 이어짐 후보. 붙는 지점의 **B 진행률(mpr)** 로 종류 구분: `mpr<0.1`=상단연결 / `0.1≤mpr<0.9`=중간합류.
-- **`mpr≥0.9` 이거나 B의 합류 후 구간이 A 폴리곤에 80%+ 잠기면 = 공유하단으로 보고 연속에서 제외**(위 공유하단 규칙으로 검증).
+#### 연결 판정 (접합점 junction 모델) — **3가지 유형**
+> ⚠️ 초기 검출은 "B 상단점이 A 축에 붙는 포크"만 잡아 **중간합류(A하단→B중간)를 놓쳤음** → **두 축의 최단접근점(junction)** 을 접합점으로 잡는 일반 모델로 교체.
+
+- **연결 게이트 = 폴리곤 맞닿음/겹침**(폴리곤 최소거리 <20m 또는 intersects). ⚠️ **축 끝점 거리로 판정 금지** — 병렬 겹침 슬로프(축은 100m+ 떨어져도 폴리곤은 겹침)를 비연결로 오판함.
+- **접합점** = A 축과 B 축이 가장 가까워지는 지점. 그 지점의 **A 진행률 `fa` · B 진행률 `fb`** 로 유형·부분구간 결정:
+  - **포크** (`fa<0.85, fb≈0`): B 상단이 A 중간에서 갈라짐 → **A는 0→fa 부분 + B 풀**. 예) 챔피온→디지 (A23%→B0%)
+  - **중간합류** (`fb≥0.15`): A 하단이 B 중간으로 합침 → **A 풀 + B는 fb→하단 부분**. 예) 챔피온→스패로우 (A100%→B16%, 스패로우 84%만)
+  - **꼬리물기** (`fa≈1, fb≈0`): A 끝→B 시작 → **둘 다 풀**. 예) 밸리→펭귄
+- **비연결**: 폴리곤이 20m+ 떨어지면 한 번에 못 탐(리프트/이동) → 각각 별개 세션.
+- **공유하단 예외**: `fb≥0.9` 이거나 B의 합류 후 구간이 A 폴리곤에 80%+ 잠기면 = 공유하단으로 보고 연결에서 제외(위 nesting 규칙으로 억제).
+- **실서비스에선 이 판정이 자동**: 실 GPS가 폴리곤 진입/이탈 + 진행률로 어느 구간을 탔는지 그대로 알려줌. 접합점 모델은 **오프라인 시뮬 합성 궤적**용(축당 축 1개로 충분, 포크 축을 미리 그릴 필요 없음).
 
 ---
 
-## 4. 스코어링 시스템
+## 4. 스코어링 시스템 (**덧셈형 확정 · 2026-07-27**)
 
 ### 4-1. 신호 (세션 좌표에서 산출)
 | 신호 | 계산 |
 |---|---|
-| 라이딩 거리 L | 세션 궤적 점 사이 거리 합 (스무딩 후) |
-| 하강 고도 Δh | **실측 고도** 진입−최저 (판별엔 미사용, **점수 입력으로만** 사용 — 결정 A) |
-| 경사도 G | Δh / L |
-| 속도 V | 평균 또는 퍼센타일 (**추후 결정**) · **50km/h 초과분 cap** |
+| 라이딩 거리 L | **실제 GPS 활강 경로 길이** (세션 궤적 점 사이 거리 합, 스무딩 후) — 축 길이 아님 |
+| 경사도 G | 슬로프 **평균경사 `slope_avg`(도)** 고정값 사용 |
+| 속도 V | 세션 **평균속도** (km/h) |
+| 하강 고도 Δh | 실측 고도 진입−최저 (기록용, **점수엔 미사용** — 경사는 slope_avg로 대체) |
 
-### 4-2. 공식 (곱셈형: 물리량 × 난이도 × 스타일)
+### 4-2. 공식 (**덧셈형** = 거리점수 + 경사점수 + 속도점수)
 ```
-점수 = Base(Δh × √L) × 난이도계수(경사 G) × 스타일계수(속도 V)
+슬로프 점수 = 거리점수 + 경사점수 + 속도점수
+  거리점수 = w1 × min( 실제 GPS 활강거리,  탄 구간 축길이 × 1.3 )
+  경사점수 = w2 × slope_avg(도)
+  속도점수 = w3 × min( 평균속도, 50 × 1.3 = 65 km/h )
 ```
-- **가중치는 일단 동일 적용** (Base·난이도·스타일 지수 추후 튜닝)
-- √·log 완충으로 한 축 폭주·GPS 튐값 지배 방지
-- **속도 캡: V = min(실측속도, 50 km/h)**
+- **가중 비율  거리 : 경사 : 속도 = 6 : 3 : 1** (기여 밸런스)
+- 전체 최고 슬로프가 **≈ 20점**이 되도록 글로벌 스케일 k 보정 (예: 용평 레인보우파라다이스 20)
+- **거리 상한 축×1.3**: S자 뻥튀기 어뷰징 방지 — 자연 카빙(1.1~1.3배)은 그대로 인정, 극단 지그재그는 여기서 컷
+- **부분 주행**(포크/중간합류): 세션 거리 = 폴리곤 안에서 **실제 탄 GPS 거리** → 거리점수가 **자동으로 부분 반영**. 경사·속도는 그 구간 값. 실 GPS가 곧 실제 탄 구간이라 **별도 fraction 로직 불필요**
+- 세 신호가 **독립 합산**이라 **중복계산 없음** (거리와 경사를 곱하지 않음)
 
-### 4-3. 계산 위치 = 서버
-- 클라는 **원시 측정값(거리·하강고도·경사·속도·궤적)만 전송** → **서버가 score 산출**
+### 4-3. 왜 덧셈형인가 (곱셈형 폐기 사유)
+- 초기 곱셈형(`Base(Δh√L)×난이도×스타일`)은 경사가 3곳에 곱으로 작용해 **완경사↔급경사가 ~9배**로 벌어짐 → 분포 **SD 4.2·CV 0.95, 최저 슬로프 0점대**로 바닥에 깔림
+- 덧셈형은 **SD 2.85·CV 0.29, 최저 슬로프도 4점대**로 촘촘 + 길이 잘 반영(긴 완경사 슬로프도 대접)
+- 검증: 6개 리조트 전 슬로프 + 휘닉스 조합(포크/중간합류/꼬리물기) 시뮬로 확인 (`docs/polygon_test_runbook.md`)
+
+### 4-4. 계산 위치 = 서버
+- 클라는 **원시 측정값(거리·평균속도·궤적)만 전송** → **서버가 slope_avg 조회 + 노브 적용 + score 산출**
 - 이유: 앱 업데이트 없이 튜닝, 치팅 방지, 일관성
 
-### 4-4. 확정된 정책
-- 부분 라이딩: **(A) 1회 카운트**
+### 4-5. 확정된 정책
+- 부분 라이딩: **(A) 1회 카운트**, 점수는 실제 탄 거리만큼
 - **슬로프별 상대점수/티어 리그 도입 안 함**
-- **slope_avg / length 참고값 유지**
+- **slope_avg / length 참고값 유지** → **slope_avg는 이제 경사점수 입력으로도 사용**
+
+### 4-6. 원격 설정 노브 (어드민 · 실시간 반영)
+앱 업데이트 없이 조정. **앱 시작/liveOn 시 config fetch**, 실패 시 안전 기본값 fallback. 값(스칼라 몇 개)만 바뀌고 **코드 분기·로직은 고정** → 메모리 영향 미미.
+| 노브 | 기본값 | 의미 |
+|---|---|---|
+| 점수 가중 w1:w2:w3 | **6:3:1** | 거리·경사·속도 밸런스 |
+| 글로벌 스케일 k | (max≈20 보정) | 전체 점수 스케일 |
+| 거리 상한 배수 | **1.3** | GPS/축 비율 상한(어뷰징 방지) |
+| 속도 상한 | **65 km/h** | 속도점수 cap (50×1.3) |
+| 이탈 허용 | **3점** | 연속 몇 GPS점 밖이면 이탈 확정 |
+| 재진입 유예 | **3점** | 이탈 확정 전 재진입 시 세션 이어감 |
+| 밴드 Δ | **25 m** | max_progress 후퇴 허용(턴 흡수) |
+
+> ⚠️ 노브는 **값만** 원격 조정 — 새 신호·새 연결유형 같은 **로직 변경은 앱 배포 필요**.
+
+### 4-7. 병행 전환 (Dual-write) & 플래그
+겨울에만 오픈 → 필드 테스트 불가 → 사실상 **도박성 프로덕션 배포**. 위험 완화를 위해 **구/신 병렬 기록**:
+- **쓰기**: 세션마다 **구 방식(원+반경 → `Ranking_record`) + 신 방식(폴리곤 → `Ranking_record_2627`) 둘 다 기록**. 엔진별 **write 플래그**로 개별 on/off.
+- **읽기**: 랭킹·홈·크루가 어느 세트를 집계·표시할지 **단일 read 플래그**로 결정. write와 **decouple**.
+- **어드민 토글**: 신버전/구버전 체크 + 신버전 on/off. 문제 시 **read만 즉시 구버전 롤백**(양쪽 데이터 다 있음).
+- **확장/축소(expand→contract)**: ① 신 쓰기 추가(dark launch) → ② 검증 → ③ read 전환 → ④ 구 쓰기 제거.
+- 병렬 기록이라 백엔드 엔드포인트 **구/신 2세트** 필요(commit-ride, check-wb, live position, ranking-read).
 
 ---
 
@@ -166,13 +206,15 @@ class Ranking_record_2627(models.Model):
     slope_id = models.ForeignKey(Slope_info_2627, on_delete=models.CASCADE, db_column='slope_id')
     started_at = models.DateTimeField(null=True, blank=True)   # 세션 시작(소급된 첫 하강점)
     pass_time = models.DateTimeField(db_index=True)            # 세션 종료(커밋) 시각, 기존 쿼리 호환
-    distance = models.FloatField(null=True, blank=True)        # m
-    vertical_drop = models.FloatField(null=True, blank=True)   # m (실측 고도)
-    gradient = models.FloatField(null=True, blank=True)        # %
-    avg_speed = models.FloatField(null=True, blank=True)       # km/h
-    max_speed = models.FloatField(null=True, blank=True)       # km/h (원본, 점수엔 50 cap)
+    distance = models.FloatField(null=True, blank=True)        # m — 실제 GPS 활강거리(원본) ✅거리점수 입력
+    entry_progress = models.FloatField(null=True, blank=True)  # 탄 구간 시작 진행률 0~1 (포크/중간합류 부분계산)
+    exit_progress = models.FloatField(null=True, blank=True)   # 탄 구간 끝 진행률 0~1
+    avg_speed = models.FloatField(null=True, blank=True)       # km/h ✅속도점수 입력(65 cap)
+    max_speed = models.FloatField(null=True, blank=True)       # km/h (원본, 기록용)
+    vertical_drop = models.FloatField(null=True, blank=True)   # m 실측 고도 (기록용, 점수 미사용)
+    gradient = models.FloatField(null=True, blank=True)        # % Δh/L (기록용) — 점수는 slope.slope_avg(도) 사용
     coverage = models.FloatField(null=True, blank=True)        # 진행률 span 0~1 (기록용, 카운트 게이트 아님)
-    score = models.FloatField(default=0)                       # 서버 계산
+    score = models.FloatField(default=0)                       # 서버 계산 (덧셈형 §4-2)
     active = models.BooleanField(default=True)
 ```
 
@@ -192,7 +234,7 @@ class Riding_track(models.Model):
 ### 5-4. `User_live_position` (ranking_app/models.py, 신규 · 친구 실시간 위치)
 ```python
 class User_live_position(models.Model):
-    """유저당 1행 upsert. Slope_pass_temp의 친구 위치 역할 대체. 무료·유료 전원."""
+    """유저당 1행 upsert. 친구 위치 신 소스 (구 Slope_pass_temp와 병행 → 친구위치는 듀얼 READ). 무료·유료 전원."""
     user_id = models.OneToOneField(User, primary_key=True, on_delete=models.CASCADE, db_column='user_id')
     coordinates = gis_models.PointField(geography=True, srid=4326)
     slope_id = models.ForeignKey(Slope_info_2627, null=True, on_delete=models.SET_NULL, db_column='slope_id')
@@ -205,6 +247,30 @@ class User_live_position(models.Model):
     slope_id = models.ForeignKey(Slope_info_2627, null=True, blank=True,
                                  on_delete=models.SET_NULL, db_column='slope_id')  # 검증·디버그 보조
 ```
+
+### 5-6. `Riding_config` (resort_app/models.py, 신규 · 원격 노브 + 병행전환 플래그)
+싱글턴(1행). 어드민에서 수정 → 앱이 **시작/liveOn 시 fetch**(check-wb 응답에 실어보내거나 별도 `riding-config/` 엔드포인트). 값(스칼라)만 바뀌고 **코드 분기·로직 고정** → 메모리 영향 미미.
+```python
+class Riding_config(models.Model):
+    # ── 점수 노브 (§4-2) ──
+    w_distance     = models.FloatField(default=6.0)    # 거리 가중
+    w_gradient     = models.FloatField(default=3.0)    # 경사 가중
+    w_speed        = models.FloatField(default=1.0)    # 속도 가중
+    global_k       = models.FloatField(default=1.0)    # 전체 스케일 (max≈20 보정)
+    dist_cap_ratio = models.FloatField(default=1.3)    # GPS/축 상한 배수 (S자 어뷰징)
+    speed_cap      = models.FloatField(default=65.0)   # 속도점수 cap km/h (50×1.3)
+    # ── 세션 노브 (§3-2) ──
+    exit_tolerance = models.IntegerField(default=3)    # 이탈 확정 연속 점수
+    reentry_grace  = models.IntegerField(default=3)    # 재진입 유예 점수
+    band_meters    = models.FloatField(default=25.0)   # max_progress 후퇴 밴드 Δ (m)
+    # ── 병행전환 플래그 (§4-7) ──
+    write_legacy   = models.BooleanField(default=True) # 구 방식(원+반경) 기록 on/off
+    write_polygon  = models.BooleanField(default=True) # 신 방식(폴리곤) 기록 on/off
+    read_source    = models.CharField(max_length=10, default='legacy')  # 집계·표시 소스 'legacy'|'polygon'
+    updated_at     = models.DateTimeField(auto_now=True)
+```
+- **점수 노브(w·k·cap)** 는 서버에서만 쓰면 됨(서버 스코어링) → 클라 fetch 불필요. **세션 노브(이탈·재진입·밴드)** 만 클라가 fetch.
+- Firebase Remote Config 대안 가능하나, 이미 서버가 점수를 계산하므로 **Django 단일 config 테이블**이 단순·일관적. `read_source`는 백엔드 집계에서만 참조.
 
 ### 데이터 역할
 - **Error_log** = 궤적 원천(연속 좌표, 3일 삭제) · **Riding_track** = 영구 궤적(유료)
@@ -221,6 +287,16 @@ class User_live_position(models.Model):
 | 궤적 영구저장 (`Riding_track`) | ❌ **저장 불가** | ✅ **커밋 시 자동저장** |
 
 - 무료 셀프저장·저장 버튼·Live Activity 저장 버튼 **모두 없음**
+
+### 유료 판별 (`_is_paid_user`)
+- **서버에서 판별** (클라 플래그 아님, 치팅 방지). commit-ride가 이 헬퍼로 `Riding_track` 저장 여부 결정
+- **현재(결제 도입 전)**: 전원 유료로 취급 → `return True` (디버깅/궤적 데이터 수집)
+- **향후(인앱 결제 도입 시)**: `payment_app` 구독정보로 판별. 예)
+  ```python
+  UserSubscription.objects.filter(user_id=user, is_active=True,
+      expires_at__gt=timezone.now()).exists()
+  ```
+  (구독 모델은 결제 시스템 설계 시 확정 → 헬퍼 한 곳만 교체하면 전체 반영)
 
 ---
 
@@ -242,11 +318,49 @@ class User_live_position(models.Model):
 
 | API | 변경 |
 |---|---|
-| `check-wb/` | 응답 `slope_info`를 **폴리곤 좌표열 + 축**으로 (2627 슬로프) |
+| `check-wb/` | 응답 `slope_info`를 **폴리곤 좌표열 + 축**으로 (2627 슬로프). **세션 노브(이탈·재진입·밴드) 동봉** → 클라가 fetch |
 | `commit-ride/` (신규) | 세션 커밋: 원시지표+궤적 수신 → 서버 점수 계산 → `Ranking_record_2627`(+유료 `Riding_track`) 생성. **응답 계약 `inserted_count`, `latest_slope_fullname` 유지** (세션 카운트·Live Activity·홈 dailyTotalCount 구동) |
+| `riding-config/` (신규, 선택) | 세션 노브만 반환(check-wb에 못 실을 때). 어드민 `Riding_config` 소스 |
 | `error-log-bulk/` | `slope_id` 수용 + **배치 마지막 좌표로 `User_live_position` upsert** |
 | `add-check-point/` · `respawn/` · `reset/` | **폐기** |
-| 친구 위치 (friend_app) | 소스 `Slope_pass_temp` → **`User_live_position`** |
+| 친구 위치 (friend_app) | **듀얼 READ**: `User_live_position`(신) 우선 + `Slope_pass_temp`(구) fallback. ⚠️ **교체 아님** — 병행전환 중 구/신 유저가 공존하므로 둘 다 읽어야 함. 구버전 쓰기 경로(add-check-point)는 **안 건드림**(도박 배포 중 legacy 위험 회피). 완전 전환 후 fallback 제거 |
+
+### 8-1. `commit-ride/` 계약 (상세)
+**요청** (세션 1건, 연속 A→B면 세션 배열):
+```jsonc
+{ "sessions": [ {
+    "slope_id": 123,
+    "started_at": "...", "ended_at": "...",
+    "distance": 1080.5,            // 실제 GPS 활강거리 m (원본)
+    "entry_progress": 0.0, "exit_progress": 0.24,  // 탄 구간(포크/중간합류 부분계산)
+    "avg_speed": 41.2, "max_speed": 55.0,
+    "vertical_drop": 210.0,        // 기록용
+    "coverage": 0.24,              // 기록용
+    "save_track": true,            // 유료 여부는 클라가 판단(구독모델 미정) → 플래그로 전달
+    "track": [[lng,lat],...]       // save_track=true일 때만 저장, 아니면 서버가 버림
+} ] }
+```
+> ⚠️ 클라는 **score를 보내지 않음.** 서버가 slope_avg·가중치·상한을 쥐고 계산(치팅 방지).
+
+**서버 처리**:
+1. `Slope_info_2627`에서 `slope_avg`(도)·축길이 조회, `Riding_config` 노브 로드
+2. 탄 구간 축길이 = `(exit−entry) × 전체 축길이`
+3. 거리 상한: `min(distance, 탄구간축길이 × dist_cap_ratio)`
+4. `frac = exit_progress − entry_progress` (미지정 1.0). `score = global_k × ( w_distance×상한거리 + frac × (w_gradient×slope_avg + w_speed×min(avg_speed, speed_cap)) )`
+   - ⚠️ **경사·속도도 `frac`로 스케일** — 거리는 실 GPS라 이미 부분값이지만 경사·속도는 per-ride 평균이라 풀로 들어가면 급경사 조금씩 파밍 가능 → 탄 비율만큼 반영 (combo 시뮬과 일치)
+5. `write_polygon` on → `Ranking_record_2627` 생성 (+`save_track` 플래그시 유료 `Riding_track`), `User_live_position` upsert(`is_riding=false`)
+6. **구 방식 dual-write는 클라 주도**: 두 엔진(원+반경 / 폴리곤)은 입력이 달라 서버가 합칠 수 없음 → 클라가 `write_legacy` on이면 기존 `add-check-point/respawn`을 병행 호출. commit-ride는 폴리곤 기록만 담당
+
+**응답**: `{ "inserted_count": N, "latest_slope_fullname": "챔피온" }` (기존 계약 유지)
+
+### 8-2. 병행 전환용 2세트 엔드포인트
+| 목적 | 구(legacy) | 신(polygon) |
+|---|---|---|
+| 세션 커밋 | `add-check-point/`(유지) | `commit-ride/` |
+| 슬로프 정보 | 기존 `check-wb`(원+반경) | `check-wb` 폴리곤 응답 |
+| 실시간 위치 | `Slope_pass_temp` | `User_live_position` |
+| 랭킹 읽기(집계) | `Ranking_record` 집계 | `Ranking_record_2627` 집계 |
+- **읽기 분기는 `Riding_config.read_source` 하나로** 스위칭 (write는 플래그별 독립).
 
 ---
 
@@ -255,7 +369,8 @@ class User_live_position(models.Model):
 - `_isWithinRadius` → **ray-casting 점-in-폴리곤**
 - `checkPositionInAreas` → `checkRidingInSlopes()`(폴리곤) + `checkSnowballHits()`(점+반경 유지) **분리**
 - 원 판별·6개 호출부(addCheckPoint/respawn/reset @1203/1289/1367/1751/1837/1920) → **세션 상태머신 + commit-ride**
-- 세션 궤적 누적(메모리), 진입/커밋 시 즉시 flush
+- **`poly=true` 분기**: 기존 진입 흐름 그대로 두고, 폴리곤 로드·판별·commit-ride만 새 경로로. **별도 진입점 X** (`main_polytest.dart`는 시뮬 검증 실행용). 프로덕션 배포 시 `poly=true`로 폴리곤 모드 전체 작동
+- 세션 궤적 누적(메모리), 진입/커밋 시 즉시 flush. **세션 노브(이탈·재진입·밴드)는 check-wb에서 fetch**
 - `check_wb` 응답 파싱을 폴리곤+축으로
 - **새 UI 없음** (라이딩 시작 인디케이터 등 신규 화면 만들지 않음)
 
@@ -264,9 +379,9 @@ class User_live_position(models.Model):
 ## 10. 영향 범위 매트릭스 (전환 시)
 
 ### 🔴 반드시 함께 고침
-- 랭킹 점수 집계 **19곳**: `Sum('slope_id__score')` (ranking_app 9 + crew_app 10) → **per-ride `score` 합산**
+- 랭킹 점수 집계 **19곳**: `Sum('slope_id__score')` (ranking_app 9 + crew_app 10) → **per-ride `score` 합산**. **`read_source` 플래그로 구/신 소스 스위칭**(병행전환) — 전환은 플래그 한 번, 롤백도 플래그 한 번
 - `add-check-point/respawn/reset` 폐기·재설계 + `Slope_pass_temp` 정리
-- **친구 실시간 위치**: `Slope_pass_temp` → `User_live_position`
+- **친구 실시간 위치**: **듀얼 READ** (`User_live_position` 우선 + `Slope_pass_temp` fallback) — 교체 아님, 병행전환 중 구/신 공존. 구버전 쓰기 경로 미변경
 - 라이딩카드 재계산 + `Ranking_record` 소비처(resorthome/themeStore/friendDetailPage) → 2627 모델 교체
 - **커밋 API 응답 계약**(`inserted_count`/`latest_slope_fullname`) 유지
 
@@ -286,19 +401,27 @@ class User_live_position(models.Model):
 
 ## 11. 단계별 로드맵
 
-- **Phase 0 — 스키마**: `Slope_info_2627`/`Ranking_record_2627`/`Riding_track`/`User_live_position` 신규 + `Error_log.slope_id`. makemigrations (migrate 적용은 별도 확인). 순수 추가라 안전
-- **Phase 1 — 어드민 폴리곤 도구**(병목 선행): 폴리곤+방향축 그리기, `Slope_info_2627` CRUD, 파일럿 리조트 1곳 폴리곤화 (`ST_Buffer` 중심선 반자동 검토)
-- **Phase 2 — 백엔드 API**: `commit-ride/`(서버 스코어링, 응답 계약 준수), `check-wb/` 폴리곤 응답, `error-log-bulk/` live position upsert, 친구 위치 소스 교체
-- **Phase 3 — 프론트 상태머신**: ray-casting, 함수 분리, 진행률 상태머신, commit 호출, 궤적 누적, 즉시 flush
-- **Phase 4 — 검증(Dual-run)**: 파일럿 리조트에서 원 방식 vs 폴리곤 방식 동시 실행 비교. 노이즈 임계값(진입 2점/종료 2~3점/하강 하한) 튜닝. 눈송이·친구위치·세션카운트·Live Activity 회귀 테스트
-- **Phase 5 — 전환**: 26/27 시즌부터 신규 시스템 적용, 랭킹 집계 19곳 교체, 구 엔드포인트/`Slope_pass_temp` 폐기
+- **Phase 0 — 스키마**: `Slope_info_2627`/`Ranking_record_2627`/`Riding_track`/`User_live_position`/**`Riding_config`** 신규 + `Error_log.slope_id`. makemigrations (migrate 적용은 별도 확인). 순수 추가라 안전
+- **Phase 1 — 어드민 폴리곤 도구**(병목 선행): 폴리곤+방향축 그리기, `Slope_info_2627` CRUD, 파일럿 리조트 폴리곤화. **어드민에 `Riding_config` 노브·병행전환 토글 UI**. (slope-admin 에디터 이미 구축)
+- **Phase 2 — 백엔드 API**: `commit-ride/`(**덧셈형 서버 스코어링 §4-2**, 응답 계약 준수), `check-wb/` 폴리곤+세션노브 응답, `error-log-bulk/` live position upsert, 친구 위치 소스 교체. **`write_legacy`/`write_polygon`/`read_source` 플래그 분기**
+- **Phase 3 — 프론트 상태머신**: ray-casting, 함수 분리, 진행률 상태머신(이탈3/재진입3/밴드25m 노브), commit 호출, 궤적 누적, 즉시 flush. **기존 `vm_resortHome`에 `poly=true` 분기 추가**(별도 진입점 대신), 시뮬 검증은 `main_polytest.dart`
+- **Phase 4 — 검증(Dual-write)**: 파일럿에서 **구·신 병렬 기록** 후 read_source 비교. 노브 실측 미세튜닝. 눈송이·친구위치·세션카운트·Live Activity 회귀 테스트. **겨울 실데이터로 global_k 재보정**
+- **Phase 5 — 전환**: `read_source=polygon` 스위칭 → 랭킹 집계 19곳 신 소스, 안정화 후 `write_legacy=false` + 구 엔드포인트/`Slope_pass_temp` 폐기 (expand→contract)
 
 ---
 
-## 12. 추후 결정 (미확정)
-- 스코어링 세부 가중치(Base·난이도·스타일 지수) — 일단 동일
-- 속도 신호: 평균 vs 퍼센타일
-- 노이즈/턴/경계 흡수 임계값(진입 2점 / 종료 밴드Δ / 이탈 2~3점 / 재진입 유예 시간·거리 / 하강 하한) — Phase 4 실측 튜닝
+## 12. 확정 / 추후 결정
+
+**확정 (2026-07-27)**
+- 스코어링: **덧셈형, 거리:경사:속도 = 6:3:1, 거리상한 축×1.3, 속도상한 65km/h, max≈20 스케일** (§4)
+- 속도 신호: **평균속도** 사용
+- 세션 노브: **이탈 3점 / 재진입 3점 / 밴드 25m** (전부 원격설정, §4-6)
+- 연결 감지: **접합점 기반 포크/중간합류/꼬리물기** (§3-5)
+- 전환: **병행 기록(dual-write) + write/read 플래그 + 어드민 신·구 토글** (§4-7)
+
+**추후 결정 (미확정)**
+- 노브 기본값의 **실측 미세튜닝**(진입 2점 / 밴드 25m / 이탈·재진입 3점 / 하강 하한) — Phase 4 겨울 실측
+- 글로벌 스케일 k 최종 보정값 (시즌 초 실데이터로 재보정)
 
 ---
 

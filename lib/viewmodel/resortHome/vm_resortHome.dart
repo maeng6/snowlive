@@ -11,6 +11,7 @@ import 'package:com.snowlive/core/api/api_user.dart';
 import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/model/m_bestFriendListModel.dart';
 import 'package:com.snowlive/model/m_liveOffSummary.dart';
+import 'package:com.snowlive/test_polygon/polygon_riding_controller.dart';
 import 'package:com.snowlive/model/m_treasure_record.dart';
 import 'package:com.snowlive/model/m_ridingRecordCard.dart';
 import 'package:com.snowlive/model/m_weatherModel.dart';
@@ -109,6 +110,10 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
 
   // 에러 로그 전송을 위한 변수
   final RankingAPI _rankingAPI = RankingAPI();
+
+  // 🟦 폴리곤 라이딩(신 방식) 컨트롤러 — check-wb의 write_polygon 플래그로 자기 게이팅.
+  // null-safe로 호출하므로 미설정/구버전이면 아무 동작 안 함(기존 로직 무영향).
+  PolygonRidingController? _polygonRiding;
   bool _isLoggingOn = false; // 로깅 활성화 여부
   StreamSubscription<DocumentSnapshot>? _errorLogSubscription;
   Timer? _heartbeatTimer; // Heartbeat 타이머
@@ -1153,6 +1158,9 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
                 // 🛡️ 영역 데이터 보호: 비어있으면 재로드 (메모리 압박 대응)
                 await _reloadAreaDataIfNeeded(user_id, position.latitude, position.longitude);
 
+                // 🟦 폴리곤 라이딩(신 방식) 판별 — 자기 게이팅(write_polygon)
+                _polygonRiding?.onPosition(position.latitude, position.longitude, at: position.timestamp);
+
                 // 현재 위치에서 영역 체크 (보간 제거)
                 List<Map<String, dynamic>> passPointInfos = checkPositionInAreas(
                   position,
@@ -1711,6 +1719,9 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
           // 🛡️ 영역 데이터 보호: 비어있으면 재로드 (메모리 압박 대응)
           await _reloadAreaDataIfNeeded(user_id, position.latitude, position.longitude);
 
+          // 🟦 폴리곤 라이딩(신 방식) 판별 — 자기 게이팅(write_polygon)
+          _polygonRiding?.onPosition(position.latitude, position.longitude, at: position.timestamp);
+
           // 현재 위치에서 영역 체크 (보간 제거)
           List<Map<String, dynamic>> passPointInfos = checkPositionInAreas(
             position,
@@ -2173,6 +2184,9 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
         _reset_point.value = List<Map<String, dynamic>>.from(response.data['reset_point']);
         _respawn_point.value = List<Map<String, dynamic>>.from(response.data['respawn_point']);
 
+        // 🟦 폴리곤 라이딩 재초기화 (영역 데이터 재로드 시)
+        _configurePolygonRiding(userId, response.data);
+
         print('✅ [AreaData] 재로드 성공: slope=${_slope_info.length}, respawn=${_respawn_point.length}');
         _sendLiveLog(
           userId: userId,
@@ -2359,6 +2373,21 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
     return true;
   }
 
+  /// 🟦 폴리곤 라이딩 컨트롤러 생성/초기화 (check-wb 응답의 slope_info_2627 + riding_config).
+  /// write_polygon 플래그로 자기 게이팅. 실패해도 기존 로직 무영향(예외 삼킴).
+  void _configurePolygonRiding(dynamic userId, Map<String, dynamic> data) {
+    try {
+      final uid = userId is int ? userId : int.tryParse('$userId');
+      if (uid == null) return;
+      _polygonRiding ??= PolygonRidingController(uid)
+        ..onLog = ((m) => print('[POLY] $m'))
+        ..onCommitted = ((ev, resp) => print('[POLY] 커밋 ${ev.name} → ${resp?['inserted_count']}'));
+      _polygonRiding!.configureFromCheckWb(data);
+    } catch (e) {
+      print('[POLY] configure 실패: $e');
+    }
+  }
+
   Future<void> liveOff(Map<String, dynamic> body, user_id, {bool showSummary = true}) async {
     // 🔥 중복 실행 방지
     if (_isLiveOffInProgress) {
@@ -2366,6 +2395,11 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
       return;
     }
     _isLiveOffInProgress = true;
+
+    // 🟦 폴리곤 라이딩: 라이브오프 시 남은 세션 정산 → commit-ride 전송
+    try {
+      _polygonRiding?.flush();
+    } catch (_) {}
 
     try {
       isLoading(true);
@@ -2481,6 +2515,9 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
         _snowball_info.value = List<Map<String, dynamic>>.from(response.data['snowball_info']);
         _reset_point.value   = List<Map<String, dynamic>>.from(response.data['reset_point']);
         _respawn_point.value = List<Map<String, dynamic>>.from(response.data['respawn_point']);
+
+        // 🟦 폴리곤 라이딩(신 방식) 초기화 — slope_info_2627 + riding_config 수신
+        _configurePolygonRiding(body['user_id'], response.data);
 
         // 🔍 디버그: respawn_point 데이터 확인
         //print('🔍 [liveOn] respawn_point count: ${_respawn_point.length}');

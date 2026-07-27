@@ -107,6 +107,24 @@ class RankingAPI {
     }
   }
 
+  /// 폴리곤 라이딩 세션 커밋 (신 방식). body = {user_id, sessions:[{slope_id, distance,
+  /// entry_progress, exit_progress, avg_speed, max_speed, vertical_drop, coverage,
+  /// started_at, ended_at, track:[[lng,lat],...]}]}. 서버가 점수 계산.
+  Future<ApiResponse> commitRide(Map<String, dynamic> body) async {
+    final response = await http.post(
+      Uri.parse('$baseUrl/commit-ride/'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode(body),
+    );
+    if (response.statusCode == 200) {
+      final data = json.decode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
+      return ApiResponse.success(data);
+    } else {
+      final data = json.decode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
+      return ApiResponse.error(data);
+    }
+  }
+
   Future<ApiResponse> createTreasureRecord(Map<String, dynamic> body) async {
     final response = await http.post(
       Uri.parse('$baseUrl/treasure-record/'),  // baseUrl을 환경에 맞게 설정
