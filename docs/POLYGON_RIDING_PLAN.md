@@ -369,7 +369,7 @@ class Riding_config(models.Model):
 - `_isWithinRadius` → **ray-casting 점-in-폴리곤**
 - `checkPositionInAreas` → `checkRidingInSlopes()`(폴리곤) + `checkSnowballHits()`(점+반경 유지) **분리**
 - 원 판별·6개 호출부(addCheckPoint/respawn/reset @1203/1289/1367/1751/1837/1920) → **세션 상태머신 + commit-ride**
-- **`poly=true` 분기**: 기존 진입 흐름 그대로 두고, 폴리곤 로드·판별·commit-ride만 새 경로로. **별도 진입점 X** (`main_polytest.dart`는 시뮬 검증 실행용). 프로덕션 배포 시 `poly=true`로 폴리곤 모드 전체 작동
+- **`poly=true` 분기**: 기존 진입 흐름 그대로 두고, 폴리곤 로드·판별·commit-ride만 새 경로로. **별도 진입점 X** (`main_test.dart`는 시뮬 검증 실행용). 프로덕션 배포 시 `poly=true`로 폴리곤 모드 전체 작동
 - 세션 궤적 누적(메모리), 진입/커밋 시 즉시 flush. **세션 노브(이탈·재진입·밴드)는 check-wb에서 fetch**
 - `check_wb` 응답 파싱을 폴리곤+축으로
 - **새 UI 없음** (라이딩 시작 인디케이터 등 신규 화면 만들지 않음)
@@ -404,7 +404,7 @@ class Riding_config(models.Model):
 - **Phase 0 — 스키마**: `Slope_info_2627`/`Ranking_record_2627`/`Riding_track`/`User_live_position`/**`Riding_config`** 신규 + `Error_log.slope_id`. makemigrations (migrate 적용은 별도 확인). 순수 추가라 안전
 - **Phase 1 — 어드민 폴리곤 도구**(병목 선행): 폴리곤+방향축 그리기, `Slope_info_2627` CRUD, 파일럿 리조트 폴리곤화. **어드민에 `Riding_config` 노브·병행전환 토글 UI**. (slope-admin 에디터 이미 구축)
 - **Phase 2 — 백엔드 API**: `commit-ride/`(**덧셈형 서버 스코어링 §4-2**, 응답 계약 준수), `check-wb/` 폴리곤+세션노브 응답, `error-log-bulk/` live position upsert, 친구 위치 소스 교체. **`write_legacy`/`write_polygon`/`read_source` 플래그 분기**
-- **Phase 3 — 프론트 상태머신**: ray-casting, 함수 분리, 진행률 상태머신(이탈3/재진입3/밴드25m 노브), commit 호출, 궤적 누적, 즉시 flush. **기존 `vm_resortHome`에 `poly=true` 분기 추가**(별도 진입점 대신), 시뮬 검증은 `main_polytest.dart`
+- **Phase 3 — 프론트 상태머신**: ray-casting, 함수 분리, 진행률 상태머신(이탈3/재진입3/밴드25m 노브), commit 호출, 궤적 누적, 즉시 flush. **기존 `vm_resortHome`에 `poly=true` 분기 추가**(별도 진입점 대신), 시뮬 검증은 `main_test.dart`
 - **Phase 4 — 검증(Dual-write)**: 파일럿에서 **구·신 병렬 기록** 후 read_source 비교. 노브 실측 미세튜닝. 눈송이·친구위치·세션카운트·Live Activity 회귀 테스트. **겨울 실데이터로 global_k 재보정**
 - **Phase 5 — 전환**: `read_source=polygon` 스위칭 → 랭킹 집계 19곳 신 소스, 안정화 후 `write_legacy=false` + 구 엔드포인트/`Slope_pass_temp` 폐기 (expand→contract)
 
