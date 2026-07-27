@@ -406,7 +406,9 @@ class Riding_config(models.Model):
 - **Phase 2 — 백엔드 API**: `commit-ride/`(**덧셈형 서버 스코어링 §4-2**, 응답 계약 준수), `check-wb/` 폴리곤+세션노브 응답, `error-log-bulk/` live position upsert, 친구 위치 소스 교체. **`write_legacy`/`write_polygon`/`read_source` 플래그 분기**
 - **Phase 3 — 프론트 상태머신**: ray-casting, 함수 분리, 진행률 상태머신(이탈3/재진입3/밴드25m 노브), commit 호출, 궤적 누적, 즉시 flush. **기존 `vm_resortHome`에 `poly=true` 분기 추가**(별도 진입점 대신), 시뮬 검증은 `main_test.dart`
 - **Phase 4 — 검증(Dual-write)**: 파일럿에서 **구·신 병렬 기록** 후 read_source 비교. 노브 실측 미세튜닝. 눈송이·친구위치·세션카운트·Live Activity 회귀 테스트. **겨울 실데이터로 global_k 재보정**
-- **Phase 5 — 전환**: `read_source=polygon` 스위칭 → 랭킹 집계 19곳 신 소스, 안정화 후 `write_legacy=false` + 구 엔드포인트/`Slope_pass_temp` 폐기 (expand→contract)
+- **Phase 5 — 전환**: `read_source=polygon` 스위칭 → 랭킹 집계 신 소스, 안정화 후 `write_legacy=false` + 구 엔드포인트/`Slope_pass_temp` 폐기 (expand→contract)
+  - ✅ **read_source 스위칭 구현 완료(사전구축, 2026-07-27)**: 랭킹 집계 20곳(ranking 10 + crew 10)에 `ranking_src()` 헬퍼 적용. **시즌 중 어드민 플래그 한 번으로 무중단 전환/롤백** 가능 (배포·앱재시작 불필요). legacy면 기존과 100% 동일(3955명 검증). recordRoom은 시즌별 점수필드(2627=score, 이전=slope_id__score)로 별도 정합.
+  - ✅ **레거시 제거 절차 문서화(2026-07-27)**: 슬로프·랭킹 **모두 시즌별 테이블**(`Slope_info_2627`/`Ranking_record_2627`, 이후 시즌은 `_2728`…). 레거시 폐기 시 `Ranking_record`(구)도 함께 폐기 → `docs/LEGACY_REMOVAL_RUNBOOK.md`
 
 ---
 
@@ -418,6 +420,8 @@ class Riding_config(models.Model):
 - 세션 노브: **이탈 3점 / 재진입 3점 / 밴드 25m** (전부 원격설정, §4-6)
 - 연결 감지: **접합점 기반 포크/중간합류/꼬리물기** (§3-5)
 - 전환: **병행 기록(dual-write) + write/read 플래그 + 어드민 신·구 토글** (§4-7)
+- **read_source 스위칭 구현 완료(사전구축)** — 랭킹 집계 20곳, 플래그 한 번으로 무중단 전환 (§11 Phase 5)
+- **슬로프·랭킹 모두 시즌별 테이블** (`Slope_info_2627`/`Ranking_record_2627` …) → 레거시 제거는 `docs/LEGACY_REMOVAL_RUNBOOK.md`
 
 **추후 결정 (미확정)**
 - 노브 기본값의 **실측 미세튜닝**(진입 2점 / 밴드 25m / 이탈·재진입 3점 / 하강 하한) — Phase 4 겨울 실측
