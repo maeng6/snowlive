@@ -6,6 +6,7 @@ import 'package:com.snowlive/core/viewmodel/vm_user.dart';
 import 'package:com.snowlive/web/routes/routes_web.dart';
 import 'package:com.snowlive/web/view/fleamarket/w_fleamarket_form_fields_web.dart';
 import 'package:com.snowlive/web/viewmodel/fleamarket/vm_fleamarketUpdate_web.dart';
+import 'package:com.snowlive/web/widget/w_web_overlay_modal_web.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -83,15 +84,19 @@ class FleamarketDetailOwnerActionsWeb extends StatelessWidget {
 
   void _showStatusSheet(BuildContext context, FleamarketDetailViewModel detailVm) {
     final userVm = Get.find<UserViewModel>();
-    showModalBottomSheet(
+    showWebOverlayModal<FleamarketStatus>(
       context: context,
-      backgroundColor: Colors.transparent,
-      builder: (sheetContext) {
-        return SafeArea(
-          child: Container(
-            margin: const EdgeInsets.all(16),
+      alignment: Alignment.bottomCenter,
+      padding: const EdgeInsets.all(16),
+      builder: (_, close) => ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 360),
+        // ListTile은 Material 조상을 요구한다(Overlay에 직접 꽂아서 Dialog가 없다).
+        child: Material(
+          color: SDSColor.snowliveWhite,
+          borderRadius: BorderRadius.circular(16),
+          clipBehavior: Clip.antiAlias,
+          child: Padding(
             padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(color: SDSColor.snowliveWhite, borderRadius: BorderRadius.circular(16)),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -100,19 +105,20 @@ class FleamarketDetailOwnerActionsWeb extends StatelessWidget {
                     title: Center(
                       child: Text(status.korean, style: SDSTextStyle.bold.copyWith(fontSize: 15, color: SDSColor.gray900)),
                     ),
-                    onTap: () {
-                      Navigator.pop(sheetContext);
-                      detailVm.updateStatus(
-                        fleamarketId: detail.fleaId!,
-                        body: {'user_id': userVm.user.user_id, 'status': status.korean},
-                      );
-                    },
+                    onTap: () => close(status),
                   ),
               ],
             ),
           ),
-        );
-      },
-    );
+        ),
+      ),
+    ).then((status) {
+      // 배경 탭으로 닫으면 null.
+      if (status == null) return;
+      detailVm.updateStatus(
+        fleamarketId: detail.fleaId!,
+        body: {'user_id': userVm.user.user_id, 'status': status.korean},
+      );
+    });
   }
 }

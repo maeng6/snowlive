@@ -343,32 +343,28 @@ class _FleamarketHeaderWebState extends State<FleamarketHeaderWeb> {
 
     return Row(
       children: [
-        FleamarketFilterPill(
+        FleamarketFilterPill<FleamarketCategory_sub>(
           label: selectedSub,
           isActive: selectedSub != FleamarketCategory_sub.total.korean,
-          onTap: () => showFleamarketFilterSheet<FleamarketCategory_sub>(
-            context,
-            values: FleamarketCategory_sub.values,
-            labelOf: (v) => v.korean,
-            onSelected: (v) {
-              changeSub(v.korean);
-              _refetchCurrentTab(tapName, categorySub: v.korean, categorySpot: selectedSpot);
-            },
-          ),
+          title: '카테고리',
+          values: FleamarketCategory_sub.values,
+          labelOf: (v) => v.korean,
+          onSelected: (v) {
+            changeSub(v.korean);
+            _refetchCurrentTab(tapName, categorySub: v.korean, categorySpot: selectedSpot);
+          },
         ),
         const SizedBox(width: SDSSpacing.sm),
-        FleamarketFilterPill(
+        FleamarketFilterPill<FleamarketCategory_spot>(
           label: selectedSpot,
           isActive: selectedSpot != FleamarketCategory_spot.total.korean,
-          onTap: () => showFleamarketFilterSheet<FleamarketCategory_spot>(
-            context,
-            values: FleamarketCategory_spot.values,
-            labelOf: (v) => v.korean,
-            onSelected: (v) {
-              changeSpot(v.korean);
-              _refetchCurrentTab(tapName, categorySub: selectedSub, categorySpot: v.korean);
-            },
-          ),
+          title: '거래장소',
+          values: FleamarketCategory_spot.values,
+          labelOf: (v) => v.korean,
+          onSelected: (v) {
+            changeSpot(v.korean);
+            _refetchCurrentTab(tapName, categorySub: selectedSub, categorySpot: v.korean);
+          },
         ),
       ],
     );

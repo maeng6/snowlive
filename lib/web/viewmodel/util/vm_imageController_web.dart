@@ -1,4 +1,5 @@
 import 'dart:typed_data';
+import 'package:com.snowlive/web/widget/w_web_overlay_modal_web.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -112,30 +113,32 @@ class ImageControllerWeb extends GetxController {
     List<XFile> selectedImages = await picker.pickMultiImage(imageQuality: 70);
 
     if (selectedImages.length > 5) {
-      Get.dialog(
-        AlertDialog(
-          shape: RoundedRectangleBorder(
+      // Get.dialog는 셸 안쪽 Navigator에 붙어서 딤이 GNB를 못 덮는다.
+      // 뷰모델이라 BuildContext가 없으므로 GetX가 들고 있는 오버레이 컨텍스트를 쓴다.
+      final overlayContext = Get.overlayContext;
+      if (overlayContext != null) {
+        showWebOverlayModal<void>(
+          context: overlayContext,
+          builder: (_, close) => Material(
+            color: Colors.white,
             borderRadius: BorderRadius.circular(16),
-          ),
-          contentPadding: EdgeInsets.all(20),
-          title: Center(
-            child: Column(
-              children: [
-                SizedBox(height: 5),
-                Text(
-                  '최대 5장까지 업로드 가능합니다',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black87,
-                  ),
-                  textAlign: TextAlign.center,
+            clipBehavior: Clip.antiAlias,
+            child: Container(
+              constraints: const BoxConstraints(maxWidth: 320),
+              padding: const EdgeInsets.all(20),
+              child: Text(
+                '최대 5장까지 업로드 가능합니다',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black87,
                 ),
-              ],
+                textAlign: TextAlign.center,
+              ),
             ),
           ),
-        ),
-      );
+        );
+      }
       return [];
     }
 

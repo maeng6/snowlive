@@ -305,34 +305,30 @@ class _RankingHomeViewWebState extends State<RankingHomeViewWeb> {
           ),
         ],
         const Spacer(),
-        FleamarketFilterPill(
+        FleamarketFilterPill<RankingFilter_resort>(
           label: _selectedResort.korean,
           isActive: _selectedResort != RankingFilter_resort.total,
-          onTap: () => showFleamarketFilterSheet<RankingFilter_resort>(
-            context,
-            values: [RankingFilter_resort.total, ...kRankingSelectableResorts],
-            labelOf: (v) => v == RankingFilter_resort.total ? '전체 스키장' : v.korean,
-            onSelected: (v) => setState(() {
-              _selectedResort = v;
-              _selectedFed = RankingFilter_fed.initial;
-              _reload();
-            }),
-          ),
+          title: '스키장',
+          values: [RankingFilter_resort.total, ...kRankingSelectableResorts],
+          labelOf: (v) => v == RankingFilter_resort.total ? '전체 스키장' : v.korean,
+          onSelected: (v) => setState(() {
+            _selectedResort = v;
+            _selectedFed = RankingFilter_fed.initial;
+            _reload();
+          }),
         ),
         const SizedBox(width: SDSSpacing.sm),
-        FleamarketFilterPill(
+        FleamarketFilterPill<RankingFilter_fed>(
           label: _selectedFed == RankingFilter_fed.initial ? '대학 리그' : _selectedFed.korean,
           isActive: _selectedFed != RankingFilter_fed.initial,
-          onTap: () => showFleamarketFilterSheet<RankingFilter_fed>(
-            context,
-            values: kRankingSelectableFeds,
-            labelOf: (v) => v.korean,
-            onSelected: (v) => setState(() {
-              _selectedFed = v;
-              _selectedResort = RankingFilter_resort.total;
-              _reload();
-            }),
-          ),
+          title: '대학 리그',
+          values: kRankingSelectableFeds,
+          labelOf: (v) => v.korean,
+          onSelected: (v) => setState(() {
+            _selectedFed = v;
+            _selectedResort = RankingFilter_resort.total;
+            _reload();
+          }),
         ),
       ],
     );
