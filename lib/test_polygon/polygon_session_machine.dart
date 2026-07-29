@@ -46,9 +46,12 @@ class _Cand {
   String reason = '';
   int outside = 0;
   bool active = true;
+  double lastPr;              // 직전 진행률 (연속 역행 판정용)
+  double retreatM = 0;        // 연속 역행 누적(m) — 전진 시 0으로 리셋
 
   _Cand(this.s, this.entryProgress, this.startedAt, this.lastInsideAt, this.lastInsidePt)
       : maxProgress = entryProgress,
+        lastPr = entryProgress,
         nbins = math.max(1, (s.axisLen / 5).round()) {
     addBin(entryProgress);
   }
@@ -138,9 +141,17 @@ class PolygonSessionMachine {
           c.outside = 0;
           c.addBin(pr);
           if (pr > c.maxProgress) c.maxProgress = pr;
-          final bandPr = s.axisLen > 0 ? bandM / s.axisLen : 0.05;
-          if (pr < c.maxProgress - bandPr) {
-            _end(c, t, '후퇴(밴드)');
+          // 연속 역행 누적: 뒤로 가면 쌓고, 앞으로(또는 정체) 가면 0으로 리셋.
+          // → S자 카빙의 순간 역행은 곧 전진으로 리셋돼 안 쌓임. 리프트/걸어오름처럼
+          //   연속으로 bandM(25m) 역행할 때만 세션 종료.
+          if (pr < c.lastPr - 1e-9) {
+            c.retreatM += (c.lastPr - pr) * s.axisLen;
+          } else {
+            c.retreatM = 0;
+          }
+          c.lastPr = pr;
+          if (c.retreatM >= bandM) {
+            _end(c, t, '연속후퇴');
           }
         } else {
           c.outside++;

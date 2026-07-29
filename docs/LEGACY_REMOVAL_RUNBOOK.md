@@ -77,19 +77,19 @@ def ranking_src():
 ### 3-4. 백엔드 — recordRoom 시즌 로직 정리 (선택)
 `ranking_app/api/views.py` recordRoom들의 `slope_model_name` 분기에서 레거시 시즌(2425/2526) 제거 가능. 단, **과거 시즌 기록 조회를 유지하려면 그대로 둠** (Slope_info_2425/2526 테이블 남겨둘 경우).
 
-### 3-5. 테이블/모델 drop (마이그레이션)
-**드롭 대상** (레거시 전용):
-- `Ranking_record` (구 라이딩 기록) — user 요청: 레거시 폐기 시 함께 폐기
-- `Slope_pass_temp` (구 실시간 위치)
-- `Slope_info` (구 원+반경 슬로프) — ⚠️ `Snowball_info.slope_id`, `Ranking_record`가 FK. Snowball도 폴리곤 슬로프로 옮기거나 FK 정리 후 drop
-- (선택) `Slope_info_2425`, `Slope_info_2526`, `Ranking_record_2425/2526` — 과거 시즌 조회 불필요 시
+### 3-5. 테이블/모델 drop (마이그레이션) — **확정 지침 (2026-07-27)**
+> 폐기 요청 시점 = **실전검증 완료**로 간주(재확인 불필요). **DB 백업 필수** 후 진행.
 
-**유지**:
-- `Slope_info_2627` 및 향후 시즌별 `Slope_info_XXXX` (폴리곤)
-- `Ranking_record_2627` 및 향후 시즌별 `Ranking_record_XXXX`
-- `Riding_track`, `User_live_position`, `Riding_config`
+**드롭 대상 — 딱 하나**:
+- `Slope_pass_temp` (구 실시간 위치 임시테이블)
 
-**주의 — FK 의존성 순서**: `Ranking_record`·`Snowball_info` 등이 `Slope_info`를 참조하므로, 참조하는 쪽 먼저 정리(또는 함께 drop). `Snowball_info`는 눈송이 기능이 계속 쓰므로 **폴리곤 슬로프(`Slope_info_2627`)로 FK 이전**하거나 눈송이 좌표를 유지하는 방식 검토 필요.
+**절대 유지 (drop 금지)**:
+- ✅ `Slope_info` (구 원+반경) — **살려둠** (Snowball 등 참조, FK 이슈 회피)
+- ✅ `Ranking_record` (구 랭킹 누적기록) — **살려둠** (구 기록 보존)
+- ✅ `Slope_info_2425/2526`, `Ranking_record_2425/2526` (과거 시즌 아카이브) — **절대 안 건드림**
+- ✅ `Slope_info_2627`/`Ranking_record_2627` 등 신 시즌 테이블 · `Riding_track`/`User_live_position`/`Riding_config` — 유지
+
+→ `Slope_info`·`Ranking_record`를 살려두므로 **FK 의존성 이슈·Snowball FK 이전 불필요.** drop은 `Slope_pass_temp` 하나뿐이라 안전.
 
 ### 3-6. 3일 삭제 스크립트
 `reset_within_boundary.py`: `Slope_pass_temp` 정리 로직 제거 (테이블 drop 시 무의미)
@@ -103,12 +103,12 @@ def ranking_src():
 
 ## 4. 제거 전 확인 체크리스트
 
-- [ ] read_source=polygon 상태로 **한 시즌(또는 충분 기간) 안정 운영**
+- [ ] read_source=polygon 상태로 **한 시즌(또는 충분 기간) 안정 운영** (폐기 요청 = 이 검증 완료로 간주)
 - [ ] 랭킹/크루/티어/데일리리포트 신 소스로 정상 표시 확인
 - [ ] 친구위치 신 소스만으로 정상
-- [ ] DB 전체 백업
-- [ ] `Snowball_info.slope_id` FK 처리 방안 결정 (Slope_info drop 전제)
-- [ ] 과거 시즌 기록 조회(recordRoom) 폐기 여부 결정
+- [ ] **DB 전체 백업** (필수)
+
+> 확정: `Slope_info`·`Ranking_record`·과거시즌 아카이브는 **유지**, drop은 `Slope_pass_temp` 하나 → Snowball FK/과거기록 관련 결정사항 없음.
 
 ---
 
