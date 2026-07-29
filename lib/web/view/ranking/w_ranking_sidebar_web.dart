@@ -49,8 +49,13 @@ class _RankingLinkCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: SDSColor.gray50,
-      borderRadius: BorderRadius.circular(10),
+      color: SDSColor.snowliveWhite,
+      // 회색 채움이 아니라 얇은 아웃라인 카드(목업). 테두리 색은 필터 pill의
+      // 비활성 테두리와 같은 값으로 맞춘다.
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10),
+        side: BorderSide(color: SDSColor.gray100),
+      ),
       clipBehavior: Clip.antiAlias,
       child: InkWell(
         onTap: onTap,
@@ -61,7 +66,7 @@ class _RankingLinkCard extends StatelessWidget {
               Expanded(
                 child: Text(label, style: SDSTextStyle.bold.copyWith(fontSize: 15, color: SDSColor.gray900)),
               ),
-              Icon(Icons.chevron_right, size: 20, color: SDSColor.gray400),
+              Icon(Icons.chevron_right, size: 18, color: SDSColor.gray300),
             ],
           ),
         ),

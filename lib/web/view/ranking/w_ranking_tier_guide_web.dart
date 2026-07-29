@@ -1,4 +1,5 @@
 import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
+import 'package:com.snowlive/web/widget/w_web_overlay_modal_web.dart';
 import 'package:flutter/material.dart';
 
 class _TierInfo {
@@ -24,48 +25,50 @@ const List<_TierInfo> _kTiers = [
 /// 코드베이스에 등급 텍스트/퍼센트를 구조화한 소스가 없어 첨부 레퍼런스의 텍스트를
 /// 그대로 옮겨 적었다(실제 배지 아이콘은 유저별 서버 응답이라 여기선 색상 원으로 대체).
 Future<void> showRankingTierGuide(BuildContext context) {
-  return showDialog(
+  return showWebOverlayModal<void>(
     context: context,
-    barrierColor: Colors.black.withOpacity(0.5),
-    builder: (_) => Dialog(
-      backgroundColor: Colors.transparent,
-      child: Center(
-        child: Container(
-          width: 360,
-          padding: const EdgeInsets.all(SDSSpacing.lg),
-          decoration: BoxDecoration(color: SDSColor.snowliveWhite, borderRadius: BorderRadius.circular(20)),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Stack(
-                alignment: Alignment.center,
-                children: [
-                  Text('스노우라이브 랭킹 등급표', style: SDSTextStyle.bold.copyWith(fontSize: 16, color: SDSColor.gray900)),
-                  Positioned(
-                    right: 0,
-                    child: InkWell(onTap: () => Navigator.pop(context), child: Icon(Icons.close, size: 20, color: SDSColor.gray400)),
-                  ),
-                ],
-              ),
-              const SizedBox(height: SDSSpacing.lg),
-              for (final tier in _kTiers)
-                Padding(
-                  padding: const EdgeInsets.only(bottom: SDSSpacing.sm),
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                    decoration: BoxDecoration(color: tier.bg, borderRadius: BorderRadius.circular(12)),
-                    child: Row(
-                      children: [
-                        Icon(Icons.ac_unit, color: tier.fg, size: 22),
-                        const SizedBox(width: 12),
-                        Text(tier.name, style: SDSTextStyle.bold.copyWith(fontSize: 14, color: SDSColor.gray900)),
-                        const Spacer(),
-                        Text(tier.percentile, style: SDSTextStyle.regular.copyWith(fontSize: 13, color: SDSColor.gray500)),
-                      ],
+    builder: (_, close) => Material(
+      color: SDSColor.snowliveWhite,
+      borderRadius: BorderRadius.circular(20),
+      clipBehavior: Clip.antiAlias,
+      child: SizedBox(
+        width: 360,
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(SDSSpacing.lg),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    Text('스노우라이브 랭킹 등급표', style: SDSTextStyle.bold.copyWith(fontSize: 16, color: SDSColor.gray900)),
+                    Positioned(
+                      right: 0,
+                      child: InkWell(onTap: close, child: Icon(Icons.close, size: 20, color: SDSColor.gray400)),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: SDSSpacing.lg),
+                for (final tier in _kTiers)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: SDSSpacing.sm),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                      decoration: BoxDecoration(color: tier.bg, borderRadius: BorderRadius.circular(12)),
+                      child: Row(
+                        children: [
+                          Icon(Icons.ac_unit, color: tier.fg, size: 22),
+                          const SizedBox(width: 12),
+                          Text(tier.name, style: SDSTextStyle.bold.copyWith(fontSize: 14, color: SDSColor.gray900)),
+                          const Spacer(),
+                          Text(tier.percentile, style: SDSTextStyle.regular.copyWith(fontSize: 13, color: SDSColor.gray500)),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

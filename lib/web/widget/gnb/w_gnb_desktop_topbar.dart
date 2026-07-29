@@ -3,6 +3,7 @@ import 'package:com.snowlive/core/viewmodel/vm_user.dart';
 import 'package:com.snowlive/web/routes/routes_web.dart';
 import 'package:com.snowlive/web/viewmodel/auth/vm_authcheck_web.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 
 const double kGnbDesktopTopBarHeight = 72;
@@ -31,13 +32,13 @@ class WebGnbDesktopTopBar extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Image.asset(
-            'assets/imgs/logos/snowliveLogo_main_new.png',
-            height: 28,
+          // 웹 전용 로고는 벡터(SVG)라 배율에 상관없이 선명하다. 에셋 자체가 이미
+          // 검정이라 PNG 때처럼 srcIn으로 덧칠할 필요가 없다.
+          SvgPicture.asset(
+            'assets/imgs/logos/snowlive_logo_black_web.svg',
+            height: 22,
             fit: BoxFit.contain,
             alignment: Alignment.centerLeft,
-            color: Colors.black,
-            colorBlendMode: BlendMode.srcIn,
           ),
           const Spacer(),
           Obx(() {
@@ -61,12 +62,18 @@ class WebGnbDesktopTopBar extends StatelessWidget {
             return Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                TextButton(
+                ElevatedButton(
                   onPressed: () => Get.toNamed(WebRoutes.login),
-                  style: TextButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.transparent,
+                    elevation: 0,
+                    // 호버/클릭 시 깔리는 오버레이와 그림자를 끈다(필터 pill과 동일 처리).
+                    shadowColor: Colors.transparent,
+                    overlayColor: Colors.transparent,
+                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
                   ),
-                  child: Text('로그인', style: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray700)),
+                  child: Text('로그인', style: SDSTextStyle.bold.copyWith(fontSize: 13, color: SDSColor.snowliveBlack)),
                 ),
                 const SizedBox(width: 4),
                 ElevatedButton(
@@ -74,10 +81,12 @@ class WebGnbDesktopTopBar extends StatelessWidget {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: SDSColor.gray900,
                     elevation: 0,
+                    shadowColor: Colors.transparent,
+                    overlayColor: Colors.transparent,
                     padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
                   ),
-                  child: Text('회원가입', style: SDSTextStyle.bold.copyWith(fontSize: 14, color: SDSColor.snowliveWhite)),
+                  child: Text('회원가입', style: SDSTextStyle.bold.copyWith(fontSize: 13, color: SDSColor.snowliveWhite)),
                 ),
               ],
             );

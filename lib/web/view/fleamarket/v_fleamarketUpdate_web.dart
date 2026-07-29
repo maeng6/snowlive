@@ -3,7 +3,6 @@ import 'package:com.snowlive/core/viewmodel/fleamarket/vm_fleamarketDetail.dart'
 import 'package:com.snowlive/core/viewmodel/vm_user.dart';
 import 'package:com.snowlive/web/util/responsive_web.dart';
 import 'package:com.snowlive/web/view/fleamarket/v_fleamarketHome_web.dart' show kFleamarketContentMaxWidth;
-import 'package:com.snowlive/web/view/fleamarket/w_fleamarket_filter_sheet_web.dart';
 import 'package:com.snowlive/web/view/fleamarket/w_fleamarket_form_fields_web.dart';
 import 'package:com.snowlive/web/viewmodel/fleamarket/vm_fleamarketPagination_web.dart';
 import 'package:com.snowlive/web/viewmodel/fleamarket/vm_fleamarketUpdate_web.dart';
@@ -190,36 +189,31 @@ class FleamarketUpdateViewWeb extends StatelessWidget {
         ),
         const SizedBox(height: SDSSpacing.lg),
         Obx(() => FleamarketFormTwoColumnRow(
-              left: FleamarketFormDropdownField(
+              left: FleamarketFormDropdownField<String>(
                 label: '전체 카테고리',
                 value: vm.selectedCategoryMain,
                 placeholder: kFleamarketCategoryMainPlaceholder,
-                onTap: () => showFleamarketFilterSheet<String>(
-                  context,
-                  values: kFleamarketCategoryMainList,
-                  labelOf: (v) => v,
-                  onSelected: (v) {
-                    vm.selectCategoryMain(v);
-                    vm.resetCategorySub();
-                  },
-                ),
+                values: kFleamarketCategoryMainList,
+                labelOf: (v) => v,
+                onSelected: (v) {
+                  vm.selectCategoryMain(v);
+                  vm.resetCategorySub();
+                },
               ),
-              right: FleamarketFormDropdownField(
+              right: FleamarketFormDropdownField<String>(
                 label: '상세 카테고리',
                 value: vm.selectedCategorySub,
                 placeholder: kFleamarketCategorySubPlaceholder,
-                onTap: () {
+                // Obx 안이라 전체 카테고리가 바뀌면 이 목록도 다시 계산된다.
+                values: vm.selectedCategoryMain == '스키' ? kFleamarketCategorySubSkiList : kFleamarketCategorySubBoardList,
+                labelOf: (v) => v,
+                onSelected: (v) => vm.selectCategorySub(v),
+                canOpen: () {
                   if (vm.selectedCategoryMain == kFleamarketCategoryMainPlaceholder) {
                     Get.snackbar('알림', '전체 카테고리를 먼저 선택해주세요.');
-                    return;
+                    return false;
                   }
-                  final list = vm.selectedCategoryMain == '스키' ? kFleamarketCategorySubSkiList : kFleamarketCategorySubBoardList;
-                  showFleamarketFilterSheet<String>(
-                    context,
-                    values: list,
-                    labelOf: (v) => v,
-                    onSelected: (v) => vm.selectCategorySub(v),
-                  );
+                  return true;
                 },
               ),
             )),
@@ -239,27 +233,21 @@ class FleamarketUpdateViewWeb extends StatelessWidget {
         _PhotoUploadSection(vm: vm),
         const SizedBox(height: SDSSpacing.lg),
         Obx(() => FleamarketFormTwoColumnRow(
-              left: FleamarketFormDropdownField(
+              left: FleamarketFormDropdownField<String>(
                 label: '희망 거래 방법',
                 value: vm.selectedTradeMethod,
                 placeholder: kFleamarketTradeMethodPlaceholder,
-                onTap: () => showFleamarketFilterSheet<String>(
-                  context,
-                  values: kFleamarketTradeMethodList,
-                  labelOf: (v) => v,
-                  onSelected: (v) => vm.selectTradeMethod(v),
-                ),
+                values: kFleamarketTradeMethodList,
+                labelOf: (v) => v,
+                onSelected: (v) => vm.selectTradeMethod(v),
               ),
-              right: FleamarketFormDropdownField(
+              right: FleamarketFormDropdownField<String>(
                 label: '거래 희망 장소',
                 value: vm.selectedTradeSpot,
                 placeholder: kFleamarketTradeSpotPlaceholder,
-                onTap: () => showFleamarketFilterSheet<String>(
-                  context,
-                  values: kFleamarketTradeSpotList,
-                  labelOf: (v) => v,
-                  onSelected: (v) => vm.selectTradeSpot(v),
-                ),
+                values: kFleamarketTradeSpotList,
+                labelOf: (v) => v,
+                onSelected: (v) => vm.selectTradeSpot(v),
               ),
             )),
         const SizedBox(height: SDSSpacing.lg),

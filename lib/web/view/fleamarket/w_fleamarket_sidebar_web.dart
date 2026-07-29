@@ -29,20 +29,20 @@ class FleamarketSidebarWeb extends StatelessWidget {
             style: ElevatedButton.styleFrom(
               backgroundColor: SDSColor.snowliveBlue,
               elevation: 0,
-              padding: const EdgeInsets.symmetric(vertical: 12),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+              padding: const EdgeInsets.symmetric(vertical: 18),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
             ),
-            child: Text('중고거래 물품 올리기', style: SDSTextStyle.bold.copyWith(fontSize: 14, color: SDSColor.snowliveWhite)),
+            child: Text('중고거래 물품 올리기', style: SDSTextStyle.bold.copyWith(fontSize: 16, color: SDSColor.snowliveWhite)),
           ),
           const SizedBox(height: SDSSpacing.sm),
           OutlinedButton(
             onPressed: () => Get.toNamed(WebRoutes.fleamarketAlert),
             style: OutlinedButton.styleFrom(
               side: BorderSide(color: SDSColor.gray200),
-              padding: const EdgeInsets.symmetric(vertical: 12),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+              padding: const EdgeInsets.symmetric(vertical: 18),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
             ),
-            child: Text('키워드 알림 설정', style: SDSTextStyle.bold.copyWith(fontSize: 14, color: SDSColor.gray900)),
+            child: Text('키워드 알림 설정', style: SDSTextStyle.bold.copyWith(fontSize: 16, color: SDSColor.gray900)),
           ),
           const SizedBox(height: SDSSpacing.xl),
           Obx(() {
