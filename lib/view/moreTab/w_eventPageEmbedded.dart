@@ -1,7 +1,7 @@
 import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/viewmodel/vm_event.dart';
 import 'package:com.snowlive/viewmodel/vm_eventAlarm.dart';
-import 'package:com.snowlive/viewmodel/community/vm_communityBulletinList.dart';
+import 'package:com.snowlive/core/viewmodel/community/vm_communityBulletinList.dart';
 import 'package:com.snowlive/model/m_event.dart';
 import 'package:com.snowlive/core/viewmodel/vm_user.dart';
 import 'package:flutter/material.dart';

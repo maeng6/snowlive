@@ -2,8 +2,8 @@ import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/core/model/m_communityList.dart';
 import 'package:com.snowlive/routes/routes.dart';
 import 'package:com.snowlive/core/util/util_1.dart';
-import 'package:com.snowlive/viewmodel/community/vm_communityBulletinList.dart';
-import 'package:com.snowlive/viewmodel/community/vm_communityDetail.dart';
+import 'package:com.snowlive/core/viewmodel/community/vm_communityBulletinList.dart';
+import 'package:com.snowlive/core/viewmodel/community/vm_communityDetail.dart';
 import 'package:com.snowlive/core/viewmodel/vm_user.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
@@ -14,7 +14,7 @@ import 'package:get/get.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-class CommunityBulletinFreeListView extends StatelessWidget {
+class CommunityBulletinTotalListView extends StatelessWidget {
 
   final CommunityBulletinListViewModel _communityBulletinListViewModel = Get.find<CommunityBulletinListViewModel>();
   final CommunityDetailViewModel _communityDetailViewModel = Get.find<CommunityDetailViewModel>();
@@ -31,15 +31,15 @@ class CommunityBulletinFreeListView extends StatelessWidget {
       child: Obx(()=>Container(
         color: Colors.white,
         child: Scaffold(
-          floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+          floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
           floatingActionButton: Obx(()=>Stack(
             children: [
               Align(
                 alignment: Alignment.bottomRight,
                 child: Obx(()=> Visibility(
-                  visible: _communityBulletinListViewModel.isVisible_free,
+                  visible: _communityBulletinListViewModel.isVisible_total,
                   child: Padding(
-                    padding: const EdgeInsets.only(bottom: 64, right: 16),
+                    padding: const EdgeInsets.only(bottom: 64),
                     child: Container(
                       width: 52,
                       height: 52,
@@ -56,7 +56,7 @@ class CommunityBulletinFreeListView extends StatelessWidget {
                         ],
                       ),
                       child: FloatingActionButton(
-                        heroTag: 'bulletin_free_recent',
+                        heroTag: 'bulletin_total_recent',
                         mini: true,
                         elevation: 0,
                         shape: RoundedRectangleBorder(
@@ -66,7 +66,7 @@ class CommunityBulletinFreeListView extends StatelessWidget {
                         backgroundColor: SDSColor.snowliveWhite,
                         foregroundColor: SDSColor.snowliveWhite,
                         onPressed: () {
-                          _communityBulletinListViewModel.scrollController_free.jumpTo(0);
+                          _communityBulletinListViewModel.scrollController_total.jumpTo(0);
                         },
                         child: SvgPicture.asset( 'assets/imgs/icons/icon_top_page.svg',
                           fit: BoxFit.cover,
@@ -80,39 +80,36 @@ class CommunityBulletinFreeListView extends StatelessWidget {
               Positioned(
                 child: Align(
                   alignment: Alignment.bottomRight,
-                  child: Padding(
-                    padding: EdgeInsets.only(right: 16),
-                    child: AnimatedContainer(
-                      width: _communityBulletinListViewModel.showAddButton_free ? 104 : 52,
-                      height: 52,
-                      duration: Duration(milliseconds: 200),
-                      child: FloatingActionButton.extended(
-                        elevation: 4,
-                        heroTag: 'bulletin_free',
-                        onPressed: () {
-                          Get.toNamed(AppRoutes.bulletinUpload);
-                        },
-                        icon: Transform.translate(
-                            offset: Offset(6,0),
-                            child: Center(child: Icon(Icons.add,
+                  child: AnimatedContainer(
+                    width: _communityBulletinListViewModel.showAddButton_total ? 104 : 52,
+                    height: 52,
+                    duration: Duration(milliseconds: 200),
+                    child: FloatingActionButton.extended(
+                      elevation: 4,
+                      heroTag: 'bulletin_total',
+                      onPressed: () {
+                        Get.toNamed(AppRoutes.bulletinUpload);
+                      },
+                      icon: Transform.translate(
+                          offset: Offset(6,0),
+                          child: Center(child: Icon(Icons.add,
+                            color: SDSColor.snowliveWhite,
+                          ))),
+                      label: _communityBulletinListViewModel.showAddButton_total
+                          ? Padding(
+                        padding: const EdgeInsets.only(right: 6),
+                        child: Text('글쓰기',
+                          style: SDSTextStyle.bold.copyWith(
+                              letterSpacing: 0.5,
+                              fontSize: 15,
                               color: SDSColor.snowliveWhite,
-                            ))),
-                        label: _communityBulletinListViewModel.showAddButton_free
-                            ? Padding(
-                          padding: const EdgeInsets.only(right: 6),
-                          child: Text('글쓰기',
-                            style: SDSTextStyle.bold.copyWith(
-                                letterSpacing: 0.5,
-                                fontSize: 15,
-                                color: SDSColor.snowliveWhite,
-                                overflow: TextOverflow.ellipsis),
-                          ),
-                        )
-                            : SizedBox.shrink(), // Hide the text when _showAddButton is false
-                        backgroundColor: SDSColor.snowliveBlue,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(50)
+                              overflow: TextOverflow.ellipsis),
                         ),
+                      )
+                          : SizedBox.shrink(), // Hide the text when _showAddButton is false
+                      backgroundColor: SDSColor.snowliveBlue,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(50)
                       ),
                     ),
                   ),
@@ -122,12 +119,12 @@ class CommunityBulletinFreeListView extends StatelessWidget {
           )),
           backgroundColor: Colors.white,
           body:
-          (_communityBulletinListViewModel.isLoadingList_free==true)
+          (_communityBulletinListViewModel.isLoadingList_total==true)
               ? Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16),
-            child: Column(
-              children: [
-                Column(
+                padding: EdgeInsets.symmetric(horizontal: 16),
+                child: Column(
+                  children: [
+                    Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Container(
@@ -172,256 +169,256 @@ class CommunityBulletinFreeListView extends StatelessWidget {
                     ),
                   ],
                 ),
-                Stack(
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                    Stack(
                       children: [
-                        Container(
-                          height: 50,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              SizedBox(height: 6),
-                              Shimmer.fromColors(
-                                baseColor: SDSColor.gray200!,
-                                highlightColor: SDSColor.gray50!,
-                                child: Container(
-                                  width: 200,
-                                  height: 14,
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(3),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Container(
+                              height: 50,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  SizedBox(height: 6),
+                                  Shimmer.fromColors(
+                                    baseColor: SDSColor.gray200!,
+                                    highlightColor: SDSColor.gray50!,
+                                    child: Container(
+                                      width: 200,
+                                      height: 14,
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.circular(3),
+                                      ),
+                                    ),
                                   ),
-                                ),
-                              ),
-                              SizedBox(height: 10),
-                              Shimmer.fromColors(
-                                baseColor: SDSColor.gray200!,
-                                highlightColor: SDSColor.gray50!,
-                                child: Container(
-                                  width: 240,
-                                  height: 12,
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(3),
+                                  SizedBox(height: 10),
+                                  Shimmer.fromColors(
+                                    baseColor: SDSColor.gray200!,
+                                    highlightColor: SDSColor.gray50!,
+                                    child: Container(
+                                      width: 240,
+                                      height: 12,
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.circular(3),
+                                      ),
+                                    ),
                                   ),
-                                ),
+                                ],
                               ),
-                            ],
+                            ),
+                            Divider(
+                              color: SDSColor.gray100,
+                              height: 32,
+                              thickness: 1,
+                            ),
+                          ],
+                        ),
+                        Positioned(
+                          top: 0,
+                          bottom: 0,
+                          right: 0,
+                          left: 0,
+                          child: Container(
+                            color: SDSColor.snowliveWhite.withOpacity(0.2),
                           ),
-                        ),
-                        Divider(
-                          color: SDSColor.gray100,
-                          height: 32,
-                          thickness: 1,
-                        ),
-                      ],
-                    ),
-                    Positioned(
-                      top: 0,
-                      bottom: 0,
-                      right: 0,
-                      left: 0,
-                      child: Container(
-                        color: SDSColor.snowliveWhite.withOpacity(0.2),
-                      ),
-                    )
+                        )
                   ],
                 ),
-                Stack(
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                    Stack(
                       children: [
-                        Container(
-                          height: 50,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              SizedBox(height: 6),
-                              Shimmer.fromColors(
-                                baseColor: SDSColor.gray200!,
-                                highlightColor: SDSColor.gray50!,
-                                child: Container(
-                                  width: 200,
-                                  height: 14,
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(3),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Container(
+                              height: 50,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  SizedBox(height: 6),
+                                  Shimmer.fromColors(
+                                    baseColor: SDSColor.gray200!,
+                                    highlightColor: SDSColor.gray50!,
+                                    child: Container(
+                                      width: 200,
+                                      height: 14,
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.circular(3),
+                                      ),
+                                    ),
                                   ),
-                                ),
-                              ),
-                              SizedBox(height: 10),
-                              Shimmer.fromColors(
-                                baseColor: SDSColor.gray200!,
-                                highlightColor: SDSColor.gray50!,
-                                child: Container(
-                                  width: 240,
-                                  height: 12,
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(3),
+                                  SizedBox(height: 10),
+                                  Shimmer.fromColors(
+                                    baseColor: SDSColor.gray200!,
+                                    highlightColor: SDSColor.gray50!,
+                                    child: Container(
+                                      width: 240,
+                                      height: 12,
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.circular(3),
+                                      ),
+                                    ),
                                   ),
-                                ),
+                                ],
                               ),
-                            ],
+                            ),
+                            Divider(
+                              color: SDSColor.gray100,
+                              height: 32,
+                              thickness: 1,
+                            ),
+                          ],
+                        ),
+                        Positioned(
+                          top: 0,
+                          bottom: 0,
+                          right: 0,
+                          left: 0,
+                          child: Container(
+                            color: SDSColor.snowliveWhite.withOpacity(0.4),
                           ),
-                        ),
-                        Divider(
-                          color: SDSColor.gray100,
-                          height: 32,
-                          thickness: 1,
-                        ),
+                        )
                       ],
                     ),
-                    Positioned(
-                      top: 0,
-                      bottom: 0,
-                      right: 0,
-                      left: 0,
-                      child: Container(
-                        color: SDSColor.snowliveWhite.withOpacity(0.4),
-                      ),
-                    )
-                  ],
-                ),
-                Stack(
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                    Stack(
                       children: [
-                        Container(
-                          height: 50,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              SizedBox(height: 6),
-                              Shimmer.fromColors(
-                                baseColor: SDSColor.gray200!,
-                                highlightColor: SDSColor.gray50!,
-                                child: Container(
-                                  width: 200,
-                                  height: 14,
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(3),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Container(
+                              height: 50,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  SizedBox(height: 6),
+                                  Shimmer.fromColors(
+                                    baseColor: SDSColor.gray200!,
+                                    highlightColor: SDSColor.gray50!,
+                                    child: Container(
+                                      width: 200,
+                                      height: 14,
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.circular(3),
+                                      ),
+                                    ),
                                   ),
-                                ),
-                              ),
-                              SizedBox(height: 10),
-                              Shimmer.fromColors(
-                                baseColor: SDSColor.gray200!,
-                                highlightColor: SDSColor.gray50!,
-                                child: Container(
-                                  width: 240,
-                                  height: 12,
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(3),
+                                  SizedBox(height: 10),
+                                  Shimmer.fromColors(
+                                    baseColor: SDSColor.gray200!,
+                                    highlightColor: SDSColor.gray50!,
+                                    child: Container(
+                                      width: 240,
+                                      height: 12,
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.circular(3),
+                                      ),
+                                    ),
                                   ),
-                                ),
+                                ],
                               ),
-                            ],
+                            ),
+                            Divider(
+                              color: SDSColor.gray100,
+                              height: 32,
+                              thickness: 1,
+                            ),
+                          ],
+                        ),
+                        Positioned(
+                          top: 0,
+                          bottom: 0,
+                          right: 0,
+                          left: 0,
+                          child: Container(
+                            color: SDSColor.snowliveWhite.withOpacity(0.6),
                           ),
-                        ),
-                        Divider(
-                          color: SDSColor.gray100,
-                          height: 32,
-                          thickness: 1,
-                        ),
+                        )
                       ],
                     ),
-                    Positioned(
-                      top: 0,
-                      bottom: 0,
-                      right: 0,
-                      left: 0,
-                      child: Container(
-                        color: SDSColor.snowliveWhite.withOpacity(0.6),
-                      ),
-                    )
-                  ],
-                ),
-                Stack(
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                    Stack(
                       children: [
-                        Container(
-                          height: 50,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              SizedBox(height: 6),
-                              Shimmer.fromColors(
-                                baseColor: SDSColor.gray200!,
-                                highlightColor: SDSColor.gray50!,
-                                child: Container(
-                                  width: 200,
-                                  height: 14,
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(3),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Container(
+                              height: 50,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  SizedBox(height: 6),
+                                  Shimmer.fromColors(
+                                    baseColor: SDSColor.gray200!,
+                                    highlightColor: SDSColor.gray50!,
+                                    child: Container(
+                                      width: 200,
+                                      height: 14,
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.circular(3),
+                                      ),
+                                    ),
                                   ),
-                                ),
-                              ),
-                              SizedBox(height: 10),
-                              Shimmer.fromColors(
-                                baseColor: SDSColor.gray200!,
-                                highlightColor: SDSColor.gray50!,
-                                child: Container(
-                                  width: 240,
-                                  height: 12,
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(3),
+                                  SizedBox(height: 10),
+                                  Shimmer.fromColors(
+                                    baseColor: SDSColor.gray200!,
+                                    highlightColor: SDSColor.gray50!,
+                                    child: Container(
+                                      width: 240,
+                                      height: 12,
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.circular(3),
+                                      ),
+                                    ),
                                   ),
-                                ),
+                                ],
                               ),
-                            ],
+                            ),
+                            Divider(
+                              color: SDSColor.gray100,
+                              height: 32,
+                              thickness: 1,
+                            ),
+                          ],
+                        ),
+                        Positioned(
+                          top: 0,
+                          bottom: 0,
+                          right: 0,
+                          left: 0,
+                          child: Container(
+                            color: SDSColor.snowliveWhite.withOpacity(0.8),
                           ),
-                        ),
-                        Divider(
-                          color: SDSColor.gray100,
-                          height: 32,
-                          thickness: 1,
-                        ),
+                        )
                       ],
                     ),
-                    Positioned(
-                      top: 0,
-                      bottom: 0,
-                      right: 0,
-                      left: 0,
-                      child: Container(
-                        color: SDSColor.snowliveWhite.withOpacity(0.8),
-                      ),
-                    )
-                  ],
-                ),
-              ],
-            ),
-          )
+                            ],
+                          ),
+              )
               : RefreshIndicator(
             strokeWidth: 2,
             edgeOffset: -100,
             displacement: 100,
             backgroundColor: SDSColor.snowliveBlue,
             color: SDSColor.snowliveWhite,
-            onRefresh: _communityBulletinListViewModel.onRefresh_bulletin_free,
+            onRefresh: _communityBulletinListViewModel.onRefresh_bulletin_total,
             child: SingleChildScrollView(
               physics: AlwaysScrollableScrollPhysics(),
-              controller: _communityBulletinListViewModel.scrollController_free,
+              controller: _communityBulletinListViewModel.scrollController_total,
               child: Column(
                 children: [
                   Column(
                     children: [
-                      (_communityBulletinListViewModel.communityList_free.length == 0)
+                      (_communityBulletinListViewModel.communityList_total.length == 0)
                           ? Container(
                         height: _size.height-380,
                         child: Center(
@@ -452,11 +449,12 @@ class CommunityBulletinFreeListView extends StatelessWidget {
                         child: ListView.builder(
                           physics: NeverScrollableScrollPhysics(),
                           shrinkWrap: true,
-                          itemCount: _communityBulletinListViewModel.communityList_free.length + 1,
+                          itemCount: _communityBulletinListViewModel.communityList_total.length + 1,
                           itemBuilder: (context, index) {
 
-                            if(index == _communityBulletinListViewModel.communityList_free.length){
-                              return Obx(() => _communityBulletinListViewModel.isLoadingNextList_free == true // 여기서 Obx 사용
+
+                            if(index == _communityBulletinListViewModel.communityList_total.length){
+                              return Obx(() => _communityBulletinListViewModel.isLoadingNextList_total == true // 여기서 Obx 사용
                                   ? Center(
                                 child: Padding(
                                   padding: EdgeInsets.only(top: 24),
@@ -485,14 +483,14 @@ class CommunityBulletinFreeListView extends StatelessWidget {
                               )
                                   : SizedBox.shrink());
                             }else{
-                              Community communityData = _communityBulletinListViewModel.communityList_free[index];
+                              Community communityData = _communityBulletinListViewModel.communityList_total[index];
                               // 필드가 없을 경우 기본값 설정
                               String _time = GetDatetime().yyyymmddFormatFromString(communityData.uploadTime!);
                               String? profileUrl = communityData.userInfo!.profileImageUrlUser;
                               String? displayName = communityData.userInfo!.displayName;
                               return GestureDetector(
                                 onTap: () async {
-                                  _communityDetailViewModel.fetchCommunityDetailFromList(community: _communityBulletinListViewModel.communityList_free[index]);
+                                  _communityDetailViewModel.fetchCommunityDetailFromList(community: _communityBulletinListViewModel.communityList_total[index]);
                                   Get.toNamed(AppRoutes.bulletinDetail);
                                   await _communityDetailViewModel.addViewerCommunity(
                                       _communityDetailViewModel.communityDetail.communityId!,
@@ -532,6 +530,39 @@ class CommunityBulletinFreeListView extends StatelessWidget {
                                                                         child: Row(
                                                                           crossAxisAlignment: CrossAxisAlignment.center,
                                                                           children: [
+                                                                            //자유게시판 카테고리 뱃지 디자인
+                                                                            Padding(
+                                                                              padding: const EdgeInsets.only(right: 6),
+                                                                              child: Container(
+                                                                                padding: EdgeInsets.symmetric(horizontal: 5, vertical: 3),
+                                                                                decoration: BoxDecoration(
+                                                                                  color: SDSColor.blue50,
+                                                                                  borderRadius: BorderRadius.circular(4),
+                                                                                ),
+                                                                                child: Text(
+                                                                                  '${communityData.categorySub}',
+                                                                                  style: SDSTextStyle.regular.copyWith(
+                                                                                      fontSize: 11,
+                                                                                      color: SDSColor.snowliveBlue),
+                                                                                ),
+                                                                              ),
+                                                                            ),
+                                                                            if (communityData.categorySub == Community_Category_sub_bulletin.room.korean)
+                                                                              Padding(
+                                                                                padding: const EdgeInsets.only(right: 6),
+                                                                                child: Container(
+                                                                                  padding: EdgeInsets.symmetric(horizontal: 5, vertical: 3),
+                                                                                  decoration: BoxDecoration(
+                                                                                    color: SDSColor.gray50,
+                                                                                    borderRadius: BorderRadius.circular(4),
+                                                                                  ),
+                                                                                  child: Text('${communityData.categorySub2}',
+                                                                                    style: SDSTextStyle.regular.copyWith(
+                                                                                        fontSize: 11,
+                                                                                        color: SDSColor.gray700),
+                                                                                  ),
+                                                                                ),
+                                                                              ),
                                                                             // 게시글 타이틀
                                                                             Expanded(
                                                                               child: Container(
@@ -655,6 +686,40 @@ class CommunityBulletinFreeListView extends StatelessWidget {
                                                               cacheHeight: 100,
                                                               cache: true,
                                                               fit: BoxFit.cover,
+                                                              loadStateChanged: (ExtendedImageState state) {
+                                                                switch (state.extendedImageLoadState) {
+                                                                  case LoadState.loading:
+                                                                  // 로딩 중일 때 로딩 인디케이터를 표시
+                                                                    return Shimmer.fromColors(
+                                                                      baseColor: SDSColor.gray200!,
+                                                                      highlightColor: SDSColor.gray50!,
+                                                                      child: Container(
+                                                                        width: 32,
+                                                                        height: 32,
+                                                                        decoration: BoxDecoration(
+                                                                          color: Colors.white,
+                                                                          borderRadius: BorderRadius.circular(8),
+                                                                        ),
+                                                                      ),
+                                                                    );
+                                                                  case LoadState.completed:
+                                                                  // 로딩이 완료되었을 때 이미지 반환
+                                                                    return state.completedWidget;
+                                                                  case LoadState.failed:
+                                                                  // 로딩이 실패했을 때 대체 이미지 또는 다른 처리
+                                                                    return ExtendedImage.network(
+                                                                      'https://i.esdrop.com/d/f/yytYSNBROy/kVsZwVhd1f.png',
+                                                                      shape: BoxShape.rectangle,
+                                                                      borderRadius: BorderRadius.circular(8),
+                                                                      border: Border.all(width: 0.5, color: Color(0xFFdedede)),
+                                                                      width: 32,
+                                                                      height: 32,
+                                                                      cacheHeight: 100,
+                                                                      cache: true,
+                                                                      fit: BoxFit.cover,
+                                                                    );
+                                                                }
+                                                              },
                                                             );
                                                         }
                                                       },
@@ -668,7 +733,7 @@ class CommunityBulletinFreeListView extends StatelessWidget {
                                         ),
                                       ),
                                     ),
-                                    if(_communityBulletinListViewModel.communityList_free.length != index + 1)
+                                    if(_communityBulletinListViewModel.communityList_total.length != index + 1)
                                       Divider(
                                         color: SDSColor.gray50,
                                         height: 16,

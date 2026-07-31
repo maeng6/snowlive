@@ -1,68 +1,73 @@
-import 'dart:convert';
 import 'dart:io' as io;
-import 'package:com.snowlive/api/api_community.dart';
+import 'package:com.snowlive/core/api/api_community.dart';
+import 'package:com.snowlive/viewmodel/util/vm_imageController.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_quill/flutter_quill.dart' as quill;
-import 'package:dart_quill_delta/dart_quill_delta.dart' as quill;
+import 'package:flutter/cupertino.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:get/get.dart';
 import 'package:get/get_rx/get_rx.dart';
-import 'package:get/get_rx/src/rx_types/rx_types.dart';
-import 'package:get/state_manager.dart';
-import 'package:com.snowlive/viewmodel/util/vm_imageController.dart';
+import 'package:flutter_quill/flutter_quill.dart' as quill;
+import 'package:dart_quill_delta/dart_quill_delta.dart' as quill;
 import 'package:path/path.dart' as path;
 
-class CommunityUpdateViewModel extends GetxController {
-
-  final ImageController imageController = Get.put(ImageController());
+class CommunityUploadViewModel extends GetxController {
+  var isLoading = true.obs;
   final TextEditingController textEditingController_title = TextEditingController();
   final TextEditingController textEditingController_snsUrl = TextEditingController();
-  var isLoading = true.obs;
 
-  quill.Document? description;
-  Rx<quill.QuillController> _quillController = quill.QuillController.basic().obs;
-  RxBool _isReadOnly = false.obs;
-  Rx<FocusNode> _focusNode = FocusNode().obs;
   RxString _selectedCategorySub = '상위 카테고리'.obs;
   RxString _selectedCategorySub2 = '하위 카테고리'.obs;
-  RxString _snsUrl = '하위 카테고리'.obs;
+  RxInt _pk = 0.obs;
   RxBool _isCategorySelected = true.obs;
-  Rx<GlobalKey<FormState>> _formKey = GlobalKey<FormState>().obs;
+  RxBool _isReadOnly = false.obs;
+  Rx<quill.QuillController> _quillController = quill.QuillController.basic().obs;
+  Rx<FocusNode> _focusNode = FocusNode().obs;
   Rx<ScrollController> _scrollController = ScrollController().obs;
-  RxBool _isTitleWritten = true.obs;
+  Rx<GlobalKey<FormState>> _formKey = GlobalKey<FormState>().obs;
+  ImageController imageController = Get.put(ImageController());
+
+  RxBool _isTitleWritten = false.obs;
 
   String get selectedCategorySub => _selectedCategorySub.value;
   String get selectedCategorySub2 => _selectedCategorySub2.value;
-  String get susUrl => _snsUrl.value;
+  int get pk => _pk.value;
   bool get isCategorySelected => _isCategorySelected.value;
-  quill.QuillController get quillController => _quillController.value;
-  GlobalKey<FormState> get formKey => _formKey.value;
   bool get isReadOnly => _isReadOnly.value;
+  quill.QuillController get quillController => _quillController.value;
   FocusNode get focusNode => _focusNode.value;
   ScrollController get scrollController => _scrollController.value;
+  GlobalKey<FormState> get formKey => _formKey.value;
+
   bool get isTitleWritten => _isTitleWritten.value;
 
-  Future<void> fetchCommunityUpdateData({
-    required String textEditingController_title,
-    required String selectedCategorySub2,
-    required String selectedCategorySub,
-    required String description, // JSON 문자열로 변경
-    required String textEditingController_snsUrl,
-  }) async {
-    this.textEditingController_title.text = textEditingController_title;
-    this._selectedCategorySub2.value = selectedCategorySub2;
-    this._selectedCategorySub.value = selectedCategorySub;
-    this.textEditingController_snsUrl.text = textEditingController_snsUrl;
-
-    // JSON 문자열을 Delta로 변환 후 Document 생성
-    final delta = quill.Delta.fromJson(json.decode(description));
-    final document = quill.Document.fromDelta(delta);
-
-    _quillController.value = quill.QuillController(
-      document: document,
-      selection: TextSelection.collapsed(offset: 0),
-    );
+  @override
+  void onInit() {
+    super.onInit();
+    _quillController.value = quill.QuillController.basic();
   }
+
+
+
+  // 커뮤니티 생성하기
+  Future<void> createCommunityPost(Map<String, dynamic> body) async {
+    isLoading.value = true;
+    try {
+      final response = await CommunityAPI().createCommunityPost(body);
+
+      if (response.success) {
+        _pk.value = response.data['community_id'];
+        print('커뮤니티 pk : $pk');
+        print('Community post created successfully');
+      } else {
+        print('Failed to create community post: ${response.error}');
+      }
+    } catch (e) {
+      print('Error creating community post: $e');
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
 
 
   void setIsSelectedCategoryFalse() {
@@ -73,15 +78,15 @@ class CommunityUpdateViewModel extends GetxController {
     _isCategorySelected.value = true;
   }
 
-  void resetCategorySub() {
+  void resetCategorySub2() {
     _selectedCategorySub2.value = '하위 카테고리';
   }
 
-  void selectCategoryMain(String selectedcategoryMain) {
-    _selectedCategorySub.value = selectedcategoryMain;
-  }
   void selectCategorySub(String selectedcategorySub) {
-    _selectedCategorySub2.value = selectedcategorySub;
+    _selectedCategorySub.value = selectedcategorySub;
+  }
+  void selectCategorySub2(String selectedcategorySub2) {
+    _selectedCategorySub2.value = selectedcategorySub2;
   }
 
   // 커뮤니티 수정하기
@@ -89,7 +94,6 @@ class CommunityUpdateViewModel extends GetxController {
     isLoading.value = true;
     try {
       final response = await CommunityAPI().updateCommunity(pk, body);
-      print(pk);
 
       if (response.success) {
         print('Community post updated successfully');
@@ -110,11 +114,13 @@ class CommunityUpdateViewModel extends GetxController {
 
         // Step 1: 이미지가 로컬에 저장되어 있는지 확인
         if (await io.File(localPath).exists()) {
+          // Step 2: 로컬 이미지를 압축
+          String compressedPath = await _compressImage(localPath);
 
-          // Step 2: 로컬에 저장된 이미지를 Firebase에 업로드
-          String downloadUrl = await _uploadImage(localPath, pk);
+          // Step 3: 압축된 이미지를 Firebase에 업로드
+          String downloadUrl = await _uploadImage(compressedPath, pk);
 
-          // Step 3: Delta 문서에서 로컬 이미지 경로를 Firebase URL로 대치
+          // Step 4: Delta 문서에서 로컬 이미지 경로를 Firebase URL로 대치
           op.value['image'] = downloadUrl;
         }
       }
@@ -137,6 +143,20 @@ class CommunityUpdateViewModel extends GetxController {
     return downloadUrl;
   }
 
+  Future<String> _compressImage(String filePath) async {
+    final compressedImage = await FlutterImageCompress.compressWithFile(
+      filePath,
+      format: CompressFormat.jpeg,  // JPEG 포맷으로 압축
+      quality: 85,  // 압축 품질 설정 (0에서 100)
+    );
+
+    // 압축된 이미지 파일을 새로운 경로에 저장
+    final compressedFile = io.File('${path.dirname(filePath)}/compressed_${path.basename(filePath)}');
+    await compressedFile.writeAsBytes(compressedImage!);
+
+    return compressedFile.path;  // 압축된 파일의 경로 반환
+  }
+
   String? findFirstInsertedImage(ops) {
     for (var op in ops) {
       // 'insert'에 'image'가 있는 경우 찾기
@@ -152,6 +172,7 @@ class CommunityUpdateViewModel extends GetxController {
   void changeTitleWritten(bool boolean) {
     _isTitleWritten.value = boolean;
   }
+
 
 
 

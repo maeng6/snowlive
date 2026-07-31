@@ -21,7 +21,7 @@ import 'package:com.snowlive/core/viewmodel/ranking/vm_rankingList_recordRoom.da
 import 'package:com.snowlive/viewmodel/resortHome/vm_alarmCenter.dart';
 import 'package:com.snowlive/viewmodel/resortHome/vm_openChatAlarm.dart';
 import 'package:com.snowlive/viewmodel/resortHome/vm_liveOnAlarm.dart';
-import 'package:com.snowlive/viewmodel/community/vm_communityAlarm.dart';
+import 'package:com.snowlive/core/viewmodel/community/vm_communityAlarm.dart';
 import 'package:com.snowlive/viewmodel/vm_eventAlarm.dart';
 import 'package:com.snowlive/viewmodel/resortHome/vm_resortHome.dart';
 import 'package:com.snowlive/viewmodel/resortHome/vm_setGenderAndCategory.dart';

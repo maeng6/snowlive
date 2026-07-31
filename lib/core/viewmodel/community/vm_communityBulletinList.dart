@@ -1,4 +1,4 @@
-import 'package:com.snowlive/api/api_community.dart';
+import 'package:com.snowlive/core/api/api_community.dart';
 import 'package:com.snowlive/core/model/m_communityList.dart';
 import 'package:com.snowlive/core/viewmodel/vm_user.dart';
 import 'package:com.snowlive/viewmodel/liveTalk/vm_liveTalk.dart';
@@ -314,6 +314,8 @@ class CommunityBulletinListViewModel extends GetxController {
     String? categorySub2,
     String? findUserId,
     String? searchQuery,
+    String? searchQueryComment,
+    String? searchQueryUser,
     int? userId,
     String? url,  // URL을 추가
   }) async {
@@ -324,6 +326,8 @@ class CommunityBulletinListViewModel extends GetxController {
         categorySub2: categorySub2,
         findUserId: findUserId,
         searchQuery: searchQuery,
+        searchQueryComment: searchQueryComment,
+        searchQueryUser: searchQueryUser,
         userId: userId.toString(),
         url: url,  // URL을 전달
       );
@@ -358,6 +362,8 @@ class CommunityBulletinListViewModel extends GetxController {
     String? categorySub2,
     String? findUserId,
     String? searchQuery,
+    String? searchQueryComment,
+    String? searchQueryUser,
     int? userId,
     String? url,  // URL을 추가
   }) async {
@@ -368,6 +374,8 @@ class CommunityBulletinListViewModel extends GetxController {
         categorySub2: categorySub2,
         findUserId: findUserId,
         searchQuery: searchQuery,
+        searchQueryComment: searchQueryComment,
+        searchQueryUser: searchQueryUser,
         userId: userId.toString(),
         url: url,  // URL을 전달
       );
@@ -400,6 +408,8 @@ class CommunityBulletinListViewModel extends GetxController {
     String? categorySub2,
     String? findUserId,
     String? searchQuery,
+    String? searchQueryComment,
+    String? searchQueryUser,
     int? userId,
     String? url,  // URL을 추가
   }) async {
@@ -410,6 +420,8 @@ class CommunityBulletinListViewModel extends GetxController {
         categorySub2: categorySub2,
         findUserId: findUserId,
         searchQuery: searchQuery,
+        searchQueryComment: searchQueryComment,
+        searchQueryUser: searchQueryUser,
         userId: userId.toString(),
         url: url,  // URL을 전달
       );
@@ -442,6 +454,8 @@ class CommunityBulletinListViewModel extends GetxController {
     String? categorySub2,
     String? findUserId,
     String? searchQuery,
+    String? searchQueryComment,
+    String? searchQueryUser,
     int? userId,
     String? url,  // URL을 추가
   }) async {
@@ -452,6 +466,8 @@ class CommunityBulletinListViewModel extends GetxController {
         categorySub2: categorySub2,
         findUserId: findUserId,
         searchQuery: searchQuery,
+        searchQueryComment: searchQueryComment,
+        searchQueryUser: searchQueryUser,
         userId: userId.toString(),
         url: url,  // URL을 전달
       );

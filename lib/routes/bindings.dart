@@ -1,9 +1,9 @@
-import 'package:com.snowlive/viewmodel/community/vm_communityAlarm.dart';
-import 'package:com.snowlive/viewmodel/community/vm_communityBulletinList.dart';
-import 'package:com.snowlive/viewmodel/community/vm_communityCommentDetail.dart';
-import 'package:com.snowlive/viewmodel/community/vm_communityDetail.dart';
-import 'package:com.snowlive/viewmodel/community/vm_communityUpdate.dart';
-import 'package:com.snowlive/viewmodel/community/vm_communityUpload.dart';
+import 'package:com.snowlive/core/viewmodel/community/vm_communityAlarm.dart';
+import 'package:com.snowlive/core/viewmodel/community/vm_communityBulletinList.dart';
+import 'package:com.snowlive/core/viewmodel/community/vm_communityCommentDetail.dart';
+import 'package:com.snowlive/core/viewmodel/community/vm_communityDetail.dart';
+import 'package:com.snowlive/core/viewmodel/community/vm_communityUpdate.dart';
+import 'package:com.snowlive/core/viewmodel/community/vm_communityUpload.dart';
 import 'package:com.snowlive/viewmodel/liveTalk/vm_liveTalk.dart';
 import 'package:com.snowlive/viewmodel/vm_event.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewApply.dart';

@@ -79,11 +79,14 @@ class PolygonSessionMachine {
   final List<SlopePoly> slopes;
   final int entryConfirm;   // 진입 확정 연속 점수 (하강)
   final int exitConfirm;    // 이탈 확정 연속 점수 (밖)
-  final double bandM;       // max_progress 후퇴 밴드(m) → 리프트/걸어오름 종료
-  final double noiseFloorM; // 최소 하강 하한(m)
+  final double bandM;       // 연속 후퇴 밴드(m) → 초과 시 세션 분리(폴리곤 내부 리프트 왕복 대응)
+  final double noiseFloorM; // 최소 커버리지 하한(m)
+  final double minDescentM;     // 순 하강량 절대 하한(m)
+  final double minDescentRatio; // 순 하강량 상대 하한(축길이 비율) — 리프트횡단/역행 배제
 
   PolygonSessionMachine(this.slopes,
-      {this.entryConfirm = 2, this.exitConfirm = 2, this.bandM = 25, this.noiseFloorM = 5});
+      {this.entryConfirm = 2, this.exitConfirm = 2, this.bandM = 25, this.noiseFloorM = 5,
+      this.minDescentM = 15, this.minDescentRatio = 0.05});
 
   final Map<int, _Cand> _active = {};
   final Map<int, int> _entryStreak = {};
@@ -142,8 +145,8 @@ class PolygonSessionMachine {
           c.addBin(pr);
           if (pr > c.maxProgress) c.maxProgress = pr;
           // 연속 역행 누적: 뒤로 가면 쌓고, 앞으로(또는 정체) 가면 0으로 리셋.
-          // → S자 카빙의 순간 역행은 곧 전진으로 리셋돼 안 쌓임. 리프트/걸어오름처럼
-          //   연속으로 bandM(25m) 역행할 때만 세션 종료.
+          // 폴리곤 내부에서 리프트 타고 올라갔다 내려오면 밴드(bandM=25m) 초과 후퇴로 세션이
+          // 분리돼 재하강이 새 커밋이 된다. (S자 카빙의 순간 역행은 곧 전진으로 리셋돼 안 쌓임)
           if (pr < c.lastPr - 1e-9) {
             c.retreatM += (c.lastPr - pr) * s.axisLen;
           } else {
@@ -200,9 +203,18 @@ class PolygonSessionMachine {
     return ov >= 0.5 * short;
   }
 
+  // 세션의 순 하강량(m) = (최고 진행률 − 진입 진행률) × 축길이
+  double _netDescent(_Cand c) => (c.maxProgress - c.entryProgress) * c.s.axisLen;
+
   /// 종료된 후보 그룹을 시간포함(nesting) 기반으로 dedup → 커밋
   void _finalizeGroup() {
-    final cands = _cluster.where((c) => c.coverageM >= noiseFloorM).toList();
+    // 커버리지 하한 + 순 하강량 하한(리프트/역행/횡단처럼 하강 없는 세션 배제).
+    // 상대(축길이×비율)와 절대 중 큰 값 — 긴 슬로프에선 축곡률로 횡단이 수십m 진행률을 만들어서.
+    final cands = _cluster
+        .where((c) =>
+            c.coverageM >= noiseFloorM &&
+            _netDescent(c) >= math.max(minDescentM, minDescentRatio * c.s.axisLen))
+        .toList();
     final Map<int, _Cand> best = {};
     for (final c in cands) {
       final covr = c.covRatio;

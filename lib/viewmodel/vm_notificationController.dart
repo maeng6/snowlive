@@ -10,8 +10,8 @@ import 'package:com.snowlive/core/viewmodel/vm_user.dart';
 import 'package:com.snowlive/viewmodel/resortHome/vm_resortHome.dart';
 import 'package:com.snowlive/core/viewmodel/fleamarket/vm_fleamarketDetail.dart';
 import 'package:com.snowlive/core/viewmodel/fleamarket/vm_fleamarketCommentDetail.dart';
-import 'package:com.snowlive/viewmodel/community/vm_communityDetail.dart';
-import 'package:com.snowlive/viewmodel/community/vm_communityCommentDetail.dart';
+import 'package:com.snowlive/core/viewmodel/community/vm_communityDetail.dart';
+import 'package:com.snowlive/core/viewmodel/community/vm_communityCommentDetail.dart';
 import 'package:com.snowlive/routes/routes.dart';
 import 'package:com.snowlive/core/widget/w_fullScreenDialog.dart';
 

@@ -29,6 +29,8 @@ class CommunityAPI {
     String? categorySub2,
     String? findUserId,
     String? searchQuery,
+    String? searchQueryComment,  // 댓글 내용 검색
+    String? searchQueryUser,     // 작성자 display_name 검색
     String? userId,
     String? url,  // URL을 추가
   }) async {
@@ -41,6 +43,8 @@ class CommunityAPI {
         if (categorySub2 != null) 'category_sub2': categorySub2,
         if (findUserId != null) 'find_user_id': findUserId,
         if (searchQuery != null) 'search_query': searchQuery,
+        if (searchQueryComment != null) 'search_query_comment': searchQueryComment,
+        if (searchQueryUser != null) 'search_query_user': searchQueryUser,
         if (userId != null) 'user_id': userId.toString(),
       },
     );

@@ -1,7 +1,7 @@
 import 'package:com.snowlive/core/api/ApiResponse.dart';
-import 'package:com.snowlive/api/api_community.dart';
-import 'package:com.snowlive/model/m_comment_community.dart';
-import 'package:com.snowlive/model/m_communityDetail.dart';
+import 'package:com.snowlive/core/api/api_community.dart';
+import 'package:com.snowlive/core/model/m_comment_community.dart';
+import 'package:com.snowlive/core/model/m_communityDetail.dart';
 import 'package:com.snowlive/core/util/util_1.dart';
 import 'package:com.snowlive/core/widget/w_fullScreenDialog.dart';
 import 'package:flutter/cupertino.dart';
