@@ -23,6 +23,13 @@ class CommunityAPI {
   }
 
   // 커뮤니티 목록 조회
+  ///
+  /// [page]는 웹 번호식 페이지네이션용(DRF PageNumberPagination, 30건/페이지).
+  /// [url]이 주어지면 서버가 준 next/previous URL을 그대로 재호출하는 커서 방식이라
+  /// 그 URL에 이미 page가 박혀 있다 → **이 경우 [page]는 무시된다.**
+  /// url 분기에서 .replace(queryParameters:)를 하면 next URL이 들고 있던
+  /// page/category_main/user_id가 전부 날아가 모바일 무한스크롤이 같은 페이지를
+  /// 계속 append하게 되므로, url 분기는 절대 손대지 말 것.
   Future<ApiResponse> fetchCommunityList({
     String? categoryMain,
     String? categorySub,
@@ -31,8 +38,10 @@ class CommunityAPI {
     String? searchQuery,
     String? searchQueryComment,  // 댓글 내용 검색
     String? searchQueryUser,     // 작성자 display_name 검색
+    String? sort,                // 정렬: latest(최신) | views(조회) | comments(댓글많은순)
     String? userId,
     String? url,  // URL을 추가
+    int? page,
   }) async {
     final uri = url != null
         ? Uri.parse(url)
@@ -45,7 +54,11 @@ class CommunityAPI {
         if (searchQuery != null) 'search_query': searchQuery,
         if (searchQueryComment != null) 'search_query_comment': searchQueryComment,
         if (searchQueryUser != null) 'search_query_user': searchQueryUser,
+        if (sort != null) 'sort': sort,
         if (userId != null) 'user_id': userId.toString(),
+        // Uri.replace는 String이 아닌 값을 Iterable로 캐스팅하려 해서 int를 넣으면
+        // 런타임 TypeError가 난다. 반드시 문자열로 넘긴다(중고거래 API와 동일).
+        if (page != null) 'page': page.toString(),
       },
     );
 
@@ -56,7 +69,10 @@ class CommunityAPI {
       final data = json.decode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
       return ApiResponse.success(data);
     } else {
-      final data = json.decode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
+      // 에러 본문이 항상 Map은 아니다. user_id 누락 시 실제 응답은
+      // ["user_id 파라미터는 필수입니다."] = List여서, Map으로 캐스팅하면
+      // ApiResponse.error가 아니라 TypeError가 던져진다(호출자가 헛되게 재시도함).
+      final data = json.decode(utf8.decode(response.bodyBytes));
       return ApiResponse.error(data);
     }
   }

@@ -69,6 +69,22 @@ await vm.fetchCommunityList_free(
 );
 ```
 
+## 3-1. 목록 정렬 (최신/조회/댓글순)
+`sort` 파라미터 (기본 `latest`):
+| sort | 정렬 |
+|---|---|
+| `latest` | 최신순 (`-upload_time`, 기본) |
+| `views` | 조회순 (CommunityViewLog 수 desc) |
+| `comments` | 댓글많은순 (댓글+답글 합계 desc) |
+```dart
+await vm.fetchCommunityList_free(
+  userId: uid, categoryMain: '게시판',
+  categorySub: Community_Category_sub_bulletin.chat.korean,
+  sort: 'views',   // 'latest' | 'views' | 'comments'
+);
+```
+- 검색·카테고리 필터와 조합 가능. 페이지네이션 URL에도 유지됨.
+
 ## 4. 남은 일 (검색 UI)
 - 현재 커뮤니티엔 **검색 입력 화면이 없음** — `searchQuery`(제목·본문)도 아직 UI 미연결.
 - **API·뷰모델 플러밍은 완료**되어 있으니, 검색 화면을 만들 때 입력값을 위 파라미터로 넘기면 바로 동작.

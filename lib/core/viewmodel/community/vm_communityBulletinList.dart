@@ -316,6 +316,7 @@ class CommunityBulletinListViewModel extends GetxController {
     String? searchQuery,
     String? searchQueryComment,
     String? searchQueryUser,
+    String? sort,
     int? userId,
     String? url,  // URL을 추가
   }) async {
@@ -328,6 +329,7 @@ class CommunityBulletinListViewModel extends GetxController {
         searchQuery: searchQuery,
         searchQueryComment: searchQueryComment,
         searchQueryUser: searchQueryUser,
+        sort: sort,
         userId: userId?.toString(),  // 게스트(null)면 user_id 미전송
         url: url,  // URL을 전달
       );
@@ -364,6 +366,7 @@ class CommunityBulletinListViewModel extends GetxController {
     String? searchQuery,
     String? searchQueryComment,
     String? searchQueryUser,
+    String? sort,
     int? userId,
     String? url,  // URL을 추가
   }) async {
@@ -376,6 +379,7 @@ class CommunityBulletinListViewModel extends GetxController {
         searchQuery: searchQuery,
         searchQueryComment: searchQueryComment,
         searchQueryUser: searchQueryUser,
+        sort: sort,
         userId: userId?.toString(),  // 게스트(null)면 user_id 미전송
         url: url,  // URL을 전달
       );
@@ -410,6 +414,7 @@ class CommunityBulletinListViewModel extends GetxController {
     String? searchQuery,
     String? searchQueryComment,
     String? searchQueryUser,
+    String? sort,
     int? userId,
     String? url,  // URL을 추가
   }) async {
@@ -422,6 +427,7 @@ class CommunityBulletinListViewModel extends GetxController {
         searchQuery: searchQuery,
         searchQueryComment: searchQueryComment,
         searchQueryUser: searchQueryUser,
+        sort: sort,
         userId: userId?.toString(),  // 게스트(null)면 user_id 미전송
         url: url,  // URL을 전달
       );
@@ -456,6 +462,7 @@ class CommunityBulletinListViewModel extends GetxController {
     String? searchQuery,
     String? searchQueryComment,
     String? searchQueryUser,
+    String? sort,
     int? userId,
     String? url,  // URL을 추가
   }) async {
@@ -468,6 +475,7 @@ class CommunityBulletinListViewModel extends GetxController {
         searchQuery: searchQuery,
         searchQueryComment: searchQueryComment,
         searchQueryUser: searchQueryUser,
+        sort: sort,
         userId: userId?.toString(),  // 게스트(null)면 user_id 미전송
         url: url,  // URL을 전달
       );
