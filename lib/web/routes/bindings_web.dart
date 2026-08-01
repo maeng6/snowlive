@@ -7,6 +7,7 @@ import 'package:com.snowlive/web/viewmodel/fleamarket/vm_fleamarketMyActivity_we
 import 'package:com.snowlive/web/viewmodel/fleamarket/vm_fleamarketPagination_web.dart';
 import 'package:com.snowlive/web/viewmodel/fleamarket/vm_fleamarketUpload_web.dart';
 import 'package:com.snowlive/web/viewmodel/fleamarket/vm_fleamarketUpdate_web.dart';
+import 'package:com.snowlive/web/viewmodel/community/vm_communityListPagination_web.dart';
 import 'package:com.snowlive/web/viewmodel/ranking/vm_rankingArchiveCrew_web.dart';
 import 'package:com.snowlive/web/viewmodel/ranking/vm_rankingArchiveIndiv_web.dart';
 import 'package:com.snowlive/web/viewmodel/ranking/vm_rankingList_web.dart';
@@ -29,6 +30,14 @@ class WebOnboardingBinding extends Bindings {
   @override
   void dependencies() {
     Get.lazyPut(() => OnboardingViewModelWeb(), fenix: true);
+  }
+}
+
+/// 웹 커뮤니티 목록 라우트용 바인딩.
+class WebCommunityListBinding extends Bindings {
+  @override
+  void dependencies() {
+    Get.lazyPut(() => CommunityListPaginationViewModelWeb(), fenix: true);
   }
 }
 

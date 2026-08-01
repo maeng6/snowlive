@@ -40,7 +40,7 @@ const List<GnbNavItemData> kGnbPrimaryItems = [
     assetIconOn: 'assets/imgs/icons/icon_market_on.png',
     assetIconOff: 'assets/imgs/icons/icon_market_off.png',
   ),
-  GnbNavItemData(label: '커뮤니티', materialIcon: Icons.forum_outlined),
+  GnbNavItemData(label: '커뮤니티', routePrefix: '/community', materialIcon: Icons.forum_outlined),
   GnbNavItemData(label: '라이브톡', materialIcon: Icons.podcasts_outlined),
   GnbNavItemData(label: '랭킹', routePrefix: '/ranking', materialIcon: Icons.emoji_events_outlined),
   GnbNavItemData(label: '라이브크루', materialIcon: Icons.groups_outlined),

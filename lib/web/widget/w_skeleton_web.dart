@@ -1,5 +1,6 @@
 import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/web/util/responsive_web.dart';
+import 'package:com.snowlive/web/view/community/w_community_row_web.dart' show communityTableRowShell;
 import 'package:com.snowlive/web/view/fleamarket/w_fleamarket_grid_web.dart' show kFleamarketCardTextBlockHeight;
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
@@ -114,6 +115,82 @@ class FleamarketGridSkeleton extends StatelessWidget {
             ),
           );
         },
+      ),
+    );
+  }
+}
+
+/// 커뮤니티 목록 자리표시. 실제 화면과 같은 규칙으로 모바일은 카드형, 그 외는
+/// 표형 골격을 그린다(열 폭이 어긋나면 데이터 도착 시 레이아웃이 튄다).
+class CommunityListSkeleton extends StatelessWidget {
+  final int rowCount;
+
+  const CommunityListSkeleton({super.key, this.rowCount = 8});
+
+  @override
+  Widget build(BuildContext context) {
+    final isMobile = context.screenType == WebScreenType.mobile;
+    // 셔머 컨트롤러는 섹션당 1개만 — 행마다 감싸면 컨트롤러가 rowCount개가 된다.
+    return SkeletonShimmer(
+      child: Column(
+        children: List.generate(
+          rowCount,
+          (_) => isMobile ? const _CommunityCardRowSkeleton() : const _CommunityTableRowSkeleton(),
+        ),
+      ),
+    );
+  }
+}
+
+class _CommunityTableRowSkeleton extends StatelessWidget {
+  const _CommunityTableRowSkeleton();
+
+  @override
+  Widget build(BuildContext context) {
+    return communityTableRowShell(
+      border: Border(bottom: BorderSide(color: SDSColor.gray100)),
+      titleCell: Row(
+        children: const [
+          SkeletonBox(width: 42, height: 17),
+          SizedBox(width: 6),
+          Expanded(child: SkeletonLine(height: 14)),
+        ],
+      ),
+      authorCell: const SkeletonLine(width: 56, height: 13),
+      dateCell: const SkeletonLine(width: 72, height: 13),
+      countsCell: const SkeletonLine(width: 72, height: 13),
+    );
+  }
+}
+
+class _CommunityCardRowSkeleton extends StatelessWidget {
+  const _CommunityCardRowSkeleton();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(border: Border(bottom: BorderSide(color: SDSColor.gray100))),
+      padding: const EdgeInsets.symmetric(vertical: 12),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: const [
+                Row(
+                  children: [
+                    SkeletonBox(width: 42, height: 17),
+                    SizedBox(width: 6),
+                    Expanded(child: SkeletonLine(height: 14)),
+                  ],
+                ),
+                SizedBox(height: 8),
+                SkeletonLine(width: 180, height: 12),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }

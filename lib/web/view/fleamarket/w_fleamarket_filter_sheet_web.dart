@@ -1,53 +1,20 @@
 import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
-import 'package:com.snowlive/web/util/responsive_web.dart';
-import 'package:com.snowlive/web/widget/w_web_overlay_modal_web.dart';
+import 'package:com.snowlive/web/widget/w_web_filter_menu_web.dart';
 import 'package:flutter/material.dart';
 
-/// 카테고리/거래장소 선택 시트. 모바일 fleamarket 목록 화면의 바텀시트 스타일을
-/// 웹에 이식하되, 딤이 GNB까지 덮도록 showWebOverlayModal 위에 올린다.
+/// 카테고리/거래장소 선택 시트. 앵커 없이 딤 패널만 띄우는 자리(전체폭 폼 선택
+/// 필드 등)에서 쓴다. 실제 패널은 공용 [showWebFilterSheet]가 그린다.
 Future<void> showFleamarketFilterSheet<T>(
   BuildContext context, {
   required List<T> values,
   required String Function(T value) labelOf,
   required void Function(T value) onSelected,
 }) async {
-  final selected = await showWebOverlayModal<T>(
+  final selected = await showWebFilterSheet<T>(
     context: context,
-    alignment: Alignment.bottomCenter,
-    padding: const EdgeInsets.all(16),
-    builder: (_, close) => ConstrainedBox(
-      constraints: const BoxConstraints(maxWidth: 360),
-      // ListTile은 Material 조상을 요구한다. 시트 표면을 Material로 만들어
-      // 배경색과 잉크를 같은 레이어에서 처리한다.
-      child: Material(
-        color: SDSColor.snowliveWhite,
-        borderRadius: BorderRadius.circular(16),
-        clipBehavior: Clip.antiAlias,
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: SingleChildScrollView(
-            child: Wrap(
-              children: [
-                for (final value in values)
-                  ListTile(
-                    contentPadding: EdgeInsets.zero,
-                    title: Center(
-                      child: Text(
-                        labelOf(value),
-                        style: SDSTextStyle.bold.copyWith(fontSize: 15, color: SDSColor.gray900),
-                      ),
-                    ),
-                    onTap: () => close(value),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                  ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    ),
+    values: values,
+    labelOf: labelOf,
   );
-
   // 배경 탭으로 닫으면 null — 선택했을 때만 콜백을 태운다.
   if (selected != null) onSelected(selected);
 }
@@ -63,6 +30,11 @@ class FleamarketFilterPill<T> extends StatefulWidget {
   final String Function(T value) labelOf;
   final void Function(T value) onSelected;
 
+  /// 태블릿·모바일 딤 시트에도 헤더를 그릴지. 커뮤니티 정렬 pill만 true다
+  /// (목업에 '필터' 헤더가 세 폭 모두 있음). 기존 호출자는 false를 유지해야
+  /// 바텀시트 외형이 지금과 같다.
+  final bool showTitleInSheet;
+
   const FleamarketFilterPill({
     super.key,
     required this.label,
@@ -71,6 +43,7 @@ class FleamarketFilterPill<T> extends StatefulWidget {
     required this.values,
     required this.labelOf,
     required this.onSelected,
+    this.showTitleInSheet = false,
   });
 
   @override
@@ -82,27 +55,15 @@ class _FleamarketFilterPillState<T> extends State<FleamarketFilterPill<T>> {
   final LayerLink _link = LayerLink();
 
   Future<void> _open() async {
-    // 데스크탑은 pill 아래에 붙는 드롭다운(목업), 태블릿/모바일은 딤 처리된 바텀시트.
-    if (!context.isDesktop) {
-      await showFleamarketFilterSheet<T>(
-        context,
-        values: widget.values,
-        labelOf: widget.labelOf,
-        onSelected: widget.onSelected,
-      );
-      return;
-    }
-
-    final selected = await showWebAnchoredDropdown<T>(
+    // 데스크탑은 pill 아래에 붙는 드롭다운, 태블릿/모바일은 딤 처리된 바텀시트.
+    // 분기·패널 구현은 공용 showWebFilterMenu가 갖고 있고 여기는 pill 외형만 담당한다.
+    final selected = await showWebFilterMenu<T>(
       context: context,
       link: _link,
-      builder: (_, close, anchorWidth) => _FilterDropdownPanel<T>(
-        title: widget.title,
-        values: widget.values,
-        labelOf: widget.labelOf,
-        onPick: close,
-        minWidth: anchorWidth,
-      ),
+      values: widget.values,
+      labelOf: widget.labelOf,
+      title: widget.title,
+      showTitleInSheet: widget.showTitleInSheet,
     );
     if (selected != null) widget.onSelected(selected);
   }
@@ -161,68 +122,3 @@ const String kFilterPillArrowOnLight = 'assets/imgs/icons/icon_check_round_black
 
 /// 선택되어 검정 배경이 된 pill 위에 올리는 흰 원형 화살표(검정 화살표).
 const String kFilterPillArrowOnDark = 'assets/imgs/icons/icon_check_round.png';
-
-/// 데스크탑 필터 드롭다운 패널. 헤더 한 줄 + 항목 목록(목업).
-class _FilterDropdownPanel<T> extends StatelessWidget {
-  final String title;
-  final List<T> values;
-  final String Function(T value) labelOf;
-  final void Function(T value) onPick;
-
-  /// 목업처럼 최소한 pill 폭만큼은 확보하고, 항목이 길면 그만큼 넓어진다.
-  final double minWidth;
-
-  const _FilterDropdownPanel({
-    required this.title,
-    required this.values,
-    required this.labelOf,
-    required this.onPick,
-    required this.minWidth,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      color: SDSColor.snowliveWhite,
-      borderRadius: BorderRadius.circular(12),
-      clipBehavior: Clip.antiAlias,
-      elevation: 8,
-      shadowColor: Colors.black26,
-      child: ConstrainedBox(
-        constraints: BoxConstraints(
-          minWidth: minWidth,
-          maxWidth: 280,
-          // 항목이 많은 거래장소도 대부분 한 번에 들어가되, 짧은 뷰포트에선 스크롤된다.
-          maxHeight: MediaQuery.sizeOf(context).height * 0.6,
-        ),
-        // 항목 중 가장 긴 라벨에 폭을 맞춘다(고정폭이면 '무주덕유산리조트' 같은 게 잘린다).
-        child: IntrinsicWidth(
-          child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 14, 16, 6),
-                  child: Text(title, style: SDSTextStyle.regular.copyWith(fontSize: 12, color: SDSColor.gray400)),
-                ),
-                for (final value in values)
-                  InkWell(
-                    onTap: () => onPick(value),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 9),
-                      child: Text(
-                        labelOf(value),
-                        style: SDSTextStyle.bold.copyWith(fontSize: 14, color: SDSColor.gray900),
-                      ),
-                    ),
-                  ),
-                const SizedBox(height: 8),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
