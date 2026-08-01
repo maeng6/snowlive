@@ -328,7 +328,7 @@ class CommunityBulletinListViewModel extends GetxController {
         searchQuery: searchQuery,
         searchQueryComment: searchQueryComment,
         searchQueryUser: searchQueryUser,
-        userId: userId.toString(),
+        userId: userId?.toString(),  // 게스트(null)면 user_id 미전송
         url: url,  // URL을 전달
       );
 
@@ -376,7 +376,7 @@ class CommunityBulletinListViewModel extends GetxController {
         searchQuery: searchQuery,
         searchQueryComment: searchQueryComment,
         searchQueryUser: searchQueryUser,
-        userId: userId.toString(),
+        userId: userId?.toString(),  // 게스트(null)면 user_id 미전송
         url: url,  // URL을 전달
       );
 
@@ -422,7 +422,7 @@ class CommunityBulletinListViewModel extends GetxController {
         searchQuery: searchQuery,
         searchQueryComment: searchQueryComment,
         searchQueryUser: searchQueryUser,
-        userId: userId.toString(),
+        userId: userId?.toString(),  // 게스트(null)면 user_id 미전송
         url: url,  // URL을 전달
       );
 
@@ -468,7 +468,7 @@ class CommunityBulletinListViewModel extends GetxController {
         searchQuery: searchQuery,
         searchQueryComment: searchQueryComment,
         searchQueryUser: searchQueryUser,
-        userId: userId.toString(),
+        userId: userId?.toString(),  // 게스트(null)면 user_id 미전송
         url: url,  // URL을 전달
       );
 
