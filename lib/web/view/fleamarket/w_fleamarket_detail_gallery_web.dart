@@ -45,7 +45,12 @@ class FleamarketDetailGalleryWeb extends StatelessWidget {
               itemBuilder: (context, index, _) {
                 final p = photos[index];
                 return GestureDetector(
-                  onTap: () => showFleamarketImageViewerWeb(context: context, photos: photos, initialIndex: index),
+                  onTap: () => showFleamarketImageViewerWeb(
+                    context: context,
+                    photos: photos,
+                    initialIndex: index,
+                    title: detailVm.fleamarketDetail.title ?? '',
+                  ),
                   // gaplessPlayback: 사진을 넘길 때 다음 장이 준비될 때까지 이전 장을
                   // 유지해서 흰 화면이 한 번 깜빡이는 걸 막는다.
                   child: WebNetworkImage(

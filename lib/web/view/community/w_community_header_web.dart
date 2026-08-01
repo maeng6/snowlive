@@ -112,8 +112,8 @@ class CommunityFilterRowWeb extends StatelessWidget {
         const Spacer(),
         FleamarketFilterPill<CommunitySortOption>(
           label: sort.label,
-          // 기본값(최신순)만 실제로 동작하므로 pill은 항상 흰 상태로 둔다.
-          isActive: false,
+          // 기본값(최신순)이 아니면 다른 필터 pill과 같이 색이 반전된다.
+          isActive: sort != CommunitySortOption.latest,
           title: '필터',
           // 목업은 태블릿·모바일 딤 패널에도 '필터' 헤더가 있다.
           showTitleInSheet: true,

@@ -172,7 +172,7 @@ class FleamarketUpdateViewWeb extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        FleamarketFormTextField(
+        WebFormTextField(
           label: '제목',
           controller: vm.textEditingController_title,
           hint: '글 제목을 입력해 주세요. (최대 50자 이내)',
@@ -180,7 +180,7 @@ class FleamarketUpdateViewWeb extends StatelessWidget {
           onChanged: (v) => vm.changeTitleWritten(v.trim().isNotEmpty),
         ),
         const SizedBox(height: SDSSpacing.lg),
-        FleamarketFormTextField(
+        WebFormTextField(
           label: '제품명',
           controller: vm.textEditingController_productName,
           hint: '제품명을 입력해 주세요. (최대 20자 이내)',
@@ -188,8 +188,8 @@ class FleamarketUpdateViewWeb extends StatelessWidget {
           onChanged: (v) => vm.changeProductNameWritten(v.trim().isNotEmpty),
         ),
         const SizedBox(height: SDSSpacing.lg),
-        Obx(() => FleamarketFormTwoColumnRow(
-              left: FleamarketFormDropdownField<String>(
+        Obx(() => WebFormTwoColumnRow(
+              left: WebFormDropdownField<String>(
                 label: '전체 카테고리',
                 value: vm.selectedCategoryMain,
                 placeholder: kFleamarketCategoryMainPlaceholder,
@@ -200,7 +200,7 @@ class FleamarketUpdateViewWeb extends StatelessWidget {
                   vm.resetCategorySub();
                 },
               ),
-              right: FleamarketFormDropdownField<String>(
+              right: WebFormDropdownField<String>(
                 label: '상세 카테고리',
                 value: vm.selectedCategorySub,
                 placeholder: kFleamarketCategorySubPlaceholder,
@@ -218,7 +218,7 @@ class FleamarketUpdateViewWeb extends StatelessWidget {
               ),
             )),
         const SizedBox(height: SDSSpacing.lg),
-        FleamarketFormTextField(
+        WebFormTextField(
           label: '가격',
           controller: vm.itemPriceTextEditingController,
           hint: '금액을 입력해 주세요.',
@@ -232,8 +232,8 @@ class FleamarketUpdateViewWeb extends StatelessWidget {
         const SizedBox(height: SDSSpacing.lg),
         _PhotoUploadSection(vm: vm),
         const SizedBox(height: SDSSpacing.lg),
-        Obx(() => FleamarketFormTwoColumnRow(
-              left: FleamarketFormDropdownField<String>(
+        Obx(() => WebFormTwoColumnRow(
+              left: WebFormDropdownField<String>(
                 label: '희망 거래 방법',
                 value: vm.selectedTradeMethod,
                 placeholder: kFleamarketTradeMethodPlaceholder,
@@ -241,7 +241,7 @@ class FleamarketUpdateViewWeb extends StatelessWidget {
                 labelOf: (v) => v,
                 onSelected: (v) => vm.selectTradeMethod(v),
               ),
-              right: FleamarketFormDropdownField<String>(
+              right: WebFormDropdownField<String>(
                 label: '거래 희망 장소',
                 value: vm.selectedTradeSpot,
                 placeholder: kFleamarketTradeSpotPlaceholder,
@@ -251,14 +251,14 @@ class FleamarketUpdateViewWeb extends StatelessWidget {
               ),
             )),
         const SizedBox(height: SDSSpacing.lg),
-        FleamarketFormTextField(
+        WebFormTextField(
           label: '카카오 오픈채팅 URL',
           controller: vm.textEditingController_sns,
           hint: 'URL',
           helperText: '카카오톡에서 오픈채팅 URL을 복사할 경우, 다른 텍스트가 함께 복사되기 때문에 URL 부분만 입력되도록 확인 후 입력 부탁드립니다.',
         ),
         const SizedBox(height: SDSSpacing.lg),
-        FleamarketFormTextField(
+        WebFormTextField(
           label: '상세 설명',
           controller: vm.textEditingController_desc,
           hint: '상품에 대한 상세 설명을 작성해 주세요. (최대 1,000자 이내)\n\n부적절한 단어나 문장이 포함되는 경우 사전 고지없이 게시글 삭제가 될 수 있습니다.',
@@ -310,7 +310,7 @@ class _PhotoUploadSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const FleamarketFormLabel('사진 업로드'),
+        const WebFormLabel('사진 업로드'),
         Obx(() {
           final existing = vm.existingImageUrls;
           final newFiles = vm.newImageFiles;

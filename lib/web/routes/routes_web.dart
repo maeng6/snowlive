@@ -1,5 +1,7 @@
 import 'package:com.snowlive/web/routes/bindings_web.dart';
+import 'package:com.snowlive/web/view/community/v_communityDetail_web.dart';
 import 'package:com.snowlive/web/view/community/v_communityHome_web.dart';
+import 'package:com.snowlive/web/view/community/v_communityUpload_web.dart';
 import 'package:com.snowlive/web/view/fleamarket/v_fleamarketDetail_web.dart';
 import 'package:com.snowlive/web/view/fleamarket/v_fleamarketHome_web.dart';
 import 'package:com.snowlive/web/view/fleamarket/v_fleamarketUpdate_web.dart';
@@ -20,9 +22,13 @@ class WebRoutes {
   static const fleamarketAlert = '/fleamarket/alert';
   static const login = '/login';
   static const onboarding = '/onboarding';
-  // 커뮤니티 상세/작성 화면을 나중에 붙일 때 '/community/detail'로 두면 아래
-  // rankingArchive와 같은 사고가 난다 → '/community-detail'처럼 최상위로 분리할 것.
   static const community = '/community';
+  // '/community/detail'로 두면 아래 rankingArchive와 같은 사고가 난다
+  // (GetX가 부모 '/community'로 매칭) → 최상위 경로로 분리한다.
+  // 게시글 id는 쿼리로 싣는다: '/community-detail?id=621'
+  static const communityDetail = '/community-detail';
+  // 상세와 같은 이유로 '/community/upload'가 아니라 최상위 경로다.
+  static const communityUpload = '/community-upload';
   static const ranking = '/ranking';
   // '/ranking/archive'처럼 기존 라우트의 하위 경로로 두면 GetX가 부모('/ranking')로
   // 매칭해버려서 기록실 대신 랭킹 화면이 떴다. 별도 최상위 경로로 분리한다.
@@ -73,6 +79,16 @@ class WebRoutes {
       name: community,
       page: () => const CommunityHomeViewWeb(),
       binding: WebCommunityListBinding(),
+    ),
+    GetPage(
+      name: communityUpload,
+      page: () => const CommunityUploadViewWeb(),
+      binding: WebCommunityUploadBinding(),
+    ),
+    GetPage(
+      name: communityDetail,
+      page: () => const CommunityDetailViewWeb(),
+      binding: WebCommunityDetailBinding(),
     ),
     GetPage(
       name: ranking,

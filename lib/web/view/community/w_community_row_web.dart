@@ -1,8 +1,10 @@
 import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/core/model/m_communityList.dart';
+import 'package:com.snowlive/web/routes/routes_web.dart';
 import 'package:com.snowlive/web/widget/w_highlighted_text_web.dart';
 import 'package:com.snowlive/web/widget/w_network_image_web.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
 // 표 형태 목록의 열 규격. 헤더와 데이터 행이 **같은 상수**를 쓰는 것만으로는
@@ -41,6 +43,14 @@ String communityPreviewText(Community community) {
   } catch (_) {
     return '';
   }
+}
+
+/// 게시글 상세로 이동. 목록에서 VM을 미리 채우는 방식(중고거래)이 아니라 **id를 URL에
+/// 실어** 보내서, 새로고침·링크 공유로 직접 들어와도 상세가 열리게 한다.
+void openCommunityDetail(Community community) {
+  final id = community.communityId;
+  if (id == null) return;
+  Get.toNamed('${WebRoutes.communityDetail}?id=$id');
 }
 
 /// 표 한 줄의 골격. **헤더 행과 데이터 행이 이 함수를 공유**하므로 열이 어긋나지 않는다.
@@ -115,11 +125,13 @@ class CommunityTableRow extends StatelessWidget {
     final thumb = community.thumbImg;
     final hasThumb = thumb != null && thumb.isNotEmpty;
 
-    return communityTableRowShell(
+    return InkWell(
+      onTap: () => openCommunityDetail(community),
+      child: communityTableRowShell(
       border: Border(bottom: BorderSide(color: SDSColor.gray100)),
       titleCell: Row(
         children: [
-          ..._categoryChips(community),
+          ...communityCategoryChips(community),
           Expanded(
             child: HighlightedText(
               text: community.title ?? '',
@@ -137,8 +149,8 @@ class CommunityTableRow extends StatelessWidget {
         style: metaStyle,
       ),
       dateCell: Text(communityDateLabel(community.uploadTime), maxLines: 1, style: metaStyle),
-      countsCell: _CommunityCounts(community: community, alignEnd: false),
-      thumbCell: hasThumb ? _CommunityThumb(url: thumb) : null,
+      countsCell: CommunityCounts(community: community, alignEnd: false),
+      thumbCell: hasThumb ? CommunityThumb(url: thumb) : null,
       previewLine: preview.isEmpty
           ? null
           : HighlightedText(
@@ -147,6 +159,7 @@ class CommunityTableRow extends StatelessWidget {
               maxLines: 2,
               style: SDSTextStyle.regular.copyWith(fontSize: 13, color: SDSColor.gray500),
             ),
+      ),
     );
   }
 }
@@ -165,7 +178,9 @@ class CommunityCardRow extends StatelessWidget {
     final hasThumb = thumb != null && thumb.isNotEmpty;
     final metaStyle = SDSTextStyle.regular.copyWith(fontSize: 12, color: SDSColor.gray700);
 
-    return Container(
+    return InkWell(
+      onTap: () => openCommunityDetail(community),
+      child: Container(
       decoration: BoxDecoration(border: Border(bottom: BorderSide(color: SDSColor.gray100))),
       padding: const EdgeInsets.symmetric(vertical: 12),
       child: Row(
@@ -177,7 +192,7 @@ class CommunityCardRow extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    ..._categoryChips(community),
+                    ...communityCategoryChips(community),
                     Expanded(
                       child: HighlightedText(
                         text: community.title ?? '',
@@ -211,7 +226,7 @@ class CommunityCardRow extends StatelessWidget {
                     _metaDivider(),
                     Text(communityDateLabel(community.uploadTime), style: metaStyle),
                     _metaDivider(),
-                    _CommunityCounts(community: community, alignEnd: false),
+                    CommunityCounts(community: community, alignEnd: false),
                   ],
                 ),
               ],
@@ -219,9 +234,10 @@ class CommunityCardRow extends StatelessWidget {
           ),
           if (hasThumb) ...[
             const SizedBox(width: SDSSpacing.md),
-            _CommunityThumb(url: thumb),
+            CommunityThumb(url: thumb),
           ],
         ],
+      ),
       ),
     );
   }
@@ -233,26 +249,26 @@ Widget _metaDivider() => Text(
     );
 
 /// 카테고리 칩. 모바일 앱 목록과 같은 규칙 — 시즌방일 때만 하위 카테고리 칩이 붙는다.
-List<Widget> _categoryChips(Community community) {
+List<Widget> communityCategoryChips(Community community) {
   final sub = community.categorySub;
   if (sub == null || sub.isEmpty) return const [];
   final sub2 = community.categorySub2;
   return [
-    _CategoryChip(label: sub, background: SDSColor.blue50, textColor: SDSColor.snowliveBlue),
+    CommunityCategoryChip(label: sub, background: SDSColor.blue50, textColor: SDSColor.snowliveBlue),
     const SizedBox(width: 6),
     if (sub == '시즌방' && sub2 != null && sub2.isNotEmpty) ...[
-      _CategoryChip(label: sub2, background: SDSColor.gray50, textColor: SDSColor.gray700),
+      CommunityCategoryChip(label: sub2, background: SDSColor.gray50, textColor: SDSColor.gray700),
       const SizedBox(width: 6),
     ],
   ];
 }
 
-class _CategoryChip extends StatelessWidget {
+class CommunityCategoryChip extends StatelessWidget {
   final String label;
   final Color background;
   final Color textColor;
 
-  const _CategoryChip({required this.label, required this.background, required this.textColor});
+  const CommunityCategoryChip({super.key, required this.label, required this.background, required this.textColor});
 
   @override
   Widget build(BuildContext context) {
@@ -265,11 +281,11 @@ class _CategoryChip extends StatelessWidget {
 }
 
 /// 조회수·댓글수. 아이콘은 모바일 앱 목록과 같은 에셋을 쓴다.
-class _CommunityCounts extends StatelessWidget {
+class CommunityCounts extends StatelessWidget {
   final Community community;
   final bool alignEnd;
 
-  const _CommunityCounts({required this.community, required this.alignEnd});
+  const CommunityCounts({super.key, required this.community, required this.alignEnd});
 
   @override
   Widget build(BuildContext context) {
@@ -290,10 +306,10 @@ class _CommunityCounts extends StatelessWidget {
   }
 }
 
-class _CommunityThumb extends StatelessWidget {
+class CommunityThumb extends StatelessWidget {
   final String url;
 
-  const _CommunityThumb({required this.url});
+  const CommunityThumb({super.key, required this.url});
 
   @override
   Widget build(BuildContext context) {

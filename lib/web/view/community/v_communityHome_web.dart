@@ -1,5 +1,6 @@
 import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/core/viewmodel/vm_user.dart';
+import 'package:com.snowlive/web/routes/routes_web.dart';
 import 'package:com.snowlive/web/util/responsive_web.dart';
 import 'package:com.snowlive/web/view/community/w_community_header_web.dart';
 import 'package:com.snowlive/web/view/community/w_community_list_web.dart';
@@ -63,6 +64,7 @@ class _CommunityHomeViewWebState extends State<CommunityHomeViewWeb> {
       userId: _userVm.user.user_id,
       tab: _tab,
       scope: _scope,
+      sort: _sort,
       query: _searchController.text,
     );
   }
@@ -81,18 +83,12 @@ class _CommunityHomeViewWebState extends State<CommunityHomeViewWeb> {
   }
 
   void _onSortSelected(CommunitySortOption sort) {
-    // 백엔드에 정렬 파라미터가 없다. 상태를 대입하지 않는 것이 곧 "선택 되돌리기"다
-    // (setState 후 원복하면 한 프레임 동안 라벨이 바뀌어 깜빡인다).
-    if (sort != CommunitySortOption.latest) {
-      Get.snackbar('알림', '${sort.label} 정렬은 준비 중이에요.');
-      return;
-    }
     if (sort == _sort) return;
     setState(() => _sort = sort);
     _reload();
   }
 
-  void _onWritePost() => Get.snackbar('알림', '게시글 작성 화면은 준비 중이에요.');
+  void _onWritePost() => Get.toNamed(WebRoutes.communityUpload);
 
   @override
   Widget build(BuildContext context) {

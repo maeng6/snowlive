@@ -1,3 +1,4 @@
+import 'package:com.snowlive/core/api/api_fleamarket.dart';
 import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/core/model/m_comment_flea.dart';
 import 'package:com.snowlive/core/model/m_fleamarketDetail.dart';
@@ -6,6 +7,8 @@ import 'package:com.snowlive/core/viewmodel/fleamarket/vm_fleamarketCommentDetai
 import 'package:com.snowlive/core/viewmodel/fleamarket/vm_fleamarketDetail.dart';
 import 'package:com.snowlive/core/viewmodel/vm_user.dart';
 import 'package:com.snowlive/web/widget/w_network_image_web.dart';
+import 'package:com.snowlive/web/widget/w_web_comment_input_web.dart';
+import 'package:com.snowlive/web/widget/w_web_more_menu_web.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -103,25 +106,12 @@ class _FleamarketDetailCommentsWebState extends State<FleamarketDetailCommentsWe
   }
 
   Widget _buildCommentInput() {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Expanded(
-          child: TextField(
-            controller: _newCommentController,
-            decoration: InputDecoration(
-              hintText: '댓글을 남겨주세요',
-              hintStyle: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray400),
-              filled: true,
-              fillColor: SDSColor.gray50,
-              border: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide.none),
-              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-            ),
-          ),
-        ),
-        const SizedBox(width: SDSSpacing.sm),
-        IconButton(onPressed: _postComment, icon: Icon(Icons.send, color: SDSColor.snowliveBlue)),
-      ],
+    // 커뮤니티와 같은 공용 입력 위젯(전송 버튼은 입력이 있을 때만 활성화).
+    return WebCommentInput(
+      controller: _newCommentController,
+      hintText: '댓글을 남겨주세요',
+      onSubmit: _userVm.user.user_id == null ? null : (_) => _postComment(),
+      onGuestTap: () => Get.snackbar('알림', '로그인이 필요합니다.'),
     );
   }
 
@@ -183,17 +173,24 @@ class _FleamarketDetailCommentsWebState extends State<FleamarketDetailCommentsWe
               ],
             ),
           ),
-          if (isMine || isMyPost)
-            PopupMenuButton<String>(
-              icon: Icon(Icons.more_horiz, size: 18, color: SDSColor.gray400),
-              onSelected: (value) async {
-                final userId = _userVm.user.user_id;
-                if (userId == null) {
-                  Get.snackbar('알림', '로그인이 필요합니다.');
-                  return;
-                }
-                if (value == 'delete') {
-                  await _commentDetailVm.deleteComment(commentId: comment.commentId!, userId: userId);
+          // 커뮤니티와 같은 공용 메뉴(브레이크포인트별 프레젠테이션 + 확인 다이얼로그).
+          WebMoreButton(
+            iconSize: 18,
+            actions: (isMine || isMyPost)
+                ? const [WebMoreAction.delete]
+                : const [WebMoreAction.report],
+            onSelected: (action) {
+              final userId = _userVm.user.user_id;
+              if (userId == null) {
+                Get.snackbar('알림', '로그인이 필요합니다.');
+                return;
+              }
+              handleWebMoreAction(
+                context,
+                action: action,
+                onDelete: () async {
+                  await _commentDetailVm.deleteComment(
+                      commentId: comment.commentId!, userId: userId);
                   // deleteComment는 fleamarketDetail.commentList를 안 건드리므로
                   // 서버에서 목록을 다시 받아와야 삭제가 화면에 반영된다.
                   await _detailVm.fetchFleamarketComments(
@@ -202,29 +199,17 @@ class _FleamarketDetailCommentsWebState extends State<FleamarketDetailCommentsWe
                     isLoading_indi: false,
                   );
                   if (mounted) setState(() {});
-                }
-              },
-              itemBuilder: (context) => const [
-                PopupMenuItem(value: 'delete', child: Text('삭제하기')),
-              ],
-            )
-          else
-            PopupMenuButton<String>(
-              icon: Icon(Icons.more_horiz, size: 18, color: SDSColor.gray400),
-              onSelected: (value) {
-                final userId = _userVm.user.user_id;
-                if (userId == null) {
-                  Get.snackbar('알림', '로그인이 필요합니다.');
-                  return;
-                }
-                if (value == 'report') {
-                  _commentDetailVm.reportComment({'user_id': userId, 'comment_id': comment.commentId});
-                }
-              },
-              itemBuilder: (context) => const [
-                PopupMenuItem(value: 'report', child: Text('신고하기')),
-              ],
-            ),
+                  return true;
+                },
+                onReport: () => mapWebActionResponse(
+                  () => FleamarketAPI().reportComment({
+                    'user_id': userId,
+                    'comment_id': comment.commentId,
+                  }),
+                ),
+              );
+            },
+          ),
         ],
       ),
     );
@@ -240,28 +225,11 @@ class _FleamarketDetailCommentsWebState extends State<FleamarketDetailCommentsWe
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             for (final reply in replies) _buildReplyTile(reply),
-            Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    controller: _commentDetailVm.textEditingController,
-                    decoration: InputDecoration(
-                      hintText: '답글을 남겨주세요',
-                      hintStyle: SDSTextStyle.regular.copyWith(fontSize: 13, color: SDSColor.gray400),
-                      isDense: true,
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                      filled: true,
-                      fillColor: SDSColor.gray50,
-                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide.none),
-                    ),
-                  ),
-                ),
-                const SizedBox(width: SDSSpacing.xs),
-                IconButton(
-                  onPressed: () => _postReply(comment),
-                  icon: Icon(Icons.send, size: 18, color: SDSColor.snowliveBlue),
-                ),
-              ],
+            WebCommentInput(
+              controller: _commentDetailVm.textEditingController,
+              hintText: '답글을 남겨주세요',
+              onSubmit: _userVm.user.user_id == null ? null : (_) async => _postReply(comment),
+              onGuestTap: () => Get.snackbar('알림', '로그인이 필요합니다.'),
             ),
           ],
         ),

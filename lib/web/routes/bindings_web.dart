@@ -7,7 +7,9 @@ import 'package:com.snowlive/web/viewmodel/fleamarket/vm_fleamarketMyActivity_we
 import 'package:com.snowlive/web/viewmodel/fleamarket/vm_fleamarketPagination_web.dart';
 import 'package:com.snowlive/web/viewmodel/fleamarket/vm_fleamarketUpload_web.dart';
 import 'package:com.snowlive/web/viewmodel/fleamarket/vm_fleamarketUpdate_web.dart';
+import 'package:com.snowlive/web/viewmodel/community/vm_communityDetail_web.dart';
 import 'package:com.snowlive/web/viewmodel/community/vm_communityListPagination_web.dart';
+import 'package:com.snowlive/web/viewmodel/community/vm_communityUpload_web.dart';
 import 'package:com.snowlive/web/viewmodel/ranking/vm_rankingArchiveCrew_web.dart';
 import 'package:com.snowlive/web/viewmodel/ranking/vm_rankingArchiveIndiv_web.dart';
 import 'package:com.snowlive/web/viewmodel/ranking/vm_rankingList_web.dart';
@@ -38,6 +40,25 @@ class WebCommunityListBinding extends Bindings {
   @override
   void dependencies() {
     Get.lazyPut(() => CommunityListPaginationViewModelWeb(), fenix: true);
+  }
+}
+
+/// 웹 커뮤니티 게시글 작성 라우트용 바인딩.
+class WebCommunityUploadBinding extends Bindings {
+  @override
+  void dependencies() {
+    Get.lazyPut(() => CommunityUploadViewModelWeb(), fenix: true);
+    // 등록 후 목록을 1페이지로 되돌리기 위해 필요하다. URL 직접 진입/새로고침으로
+    // 목록을 거치지 않고 들어오는 경우까지 커버한다.
+    Get.lazyPut(() => CommunityListPaginationViewModelWeb(), fenix: true);
+  }
+}
+
+/// 웹 커뮤니티 상세 라우트용 바인딩.
+class WebCommunityDetailBinding extends Bindings {
+  @override
+  void dependencies() {
+    Get.lazyPut(() => CommunityDetailViewModelWeb(), fenix: true);
   }
 }
 

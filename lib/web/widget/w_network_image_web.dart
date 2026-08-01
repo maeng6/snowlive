@@ -46,6 +46,13 @@ class WebNetworkImage extends StatelessWidget {
             height: height,
             fit: fit,
             gaplessPlayback: gaplessPlayback,
+            // Firebase Storage가 Access-Control-Allow-Origin을 주지 않아서, 캔버스에
+            // 그리려고 바이트를 받아오는 기본 경로가 CORS로 막힌다 → 이 옵션이 없으면
+            // 웹에서 원격 이미지가 전부 빈 칸이 된다.
+            // (실측: 일반 <img> 로드는 성공, crossOrigin과 fetch는 실패)
+            // fallback을 켜면 디코드 실패 시 <img> 엘리먼트 경로로 넘어가 정상 표시된다.
+            // 버킷에 CORS 설정이 들어가면 기본 경로로 돌아가므로 그대로 둬도 무해하다.
+            webHtmlElementStrategy: WebHtmlElementStrategy.fallback,
             loadingBuilder: (context, child, progress) {
               if (progress == null) return child;
               return SkeletonShimmer(

@@ -2,6 +2,9 @@ import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/core/viewmodel/fleamarket/vm_fleamarketList.dart';
 import 'package:com.snowlive/core/viewmodel/fleamarket/vm_fleamarketSearch.dart';
 import 'package:com.snowlive/core/viewmodel/vm_user.dart';
+import 'package:com.snowlive/web/util/responsive_web.dart';
+import 'package:com.snowlive/web/view/community/w_community_header_web.dart'
+    show kCommunityDesktopSearchBarWidth;
 import 'package:com.snowlive/web/view/fleamarket/w_fleamarket_filter_sheet_web.dart';
 import 'package:com.snowlive/web/viewmodel/fleamarket/vm_fleamarketPagination_web.dart';
 import 'package:flutter/material.dart';
@@ -27,9 +30,6 @@ class _FleamarketHeaderWebState extends State<FleamarketHeaderWeb> {
   final _searchFocus = FocusNode();
   final _searchBarKey = GlobalKey();
   OverlayEntry? _overlayEntry;
-
-  /// 1280px 이상에서는 검색창이 타이틀 오른쪽 같은 줄에 놓인다.
-  static const double _wideLayoutBreakpoint = 1280;
 
   @override
   void initState() {
@@ -195,7 +195,8 @@ class _FleamarketHeaderWebState extends State<FleamarketHeaderWeb> {
 
   @override
   Widget build(BuildContext context) {
-    final isWide = MediaQuery.sizeOf(context).width >= _wideLayoutBreakpoint;
+    // 커뮤니티와 같은 기준(데스크탑)에서 검색창이 타이틀 오른쪽 같은 줄에 놓인다.
+    final isWide = context.isDesktop;
     final titleText = Text('중고거래', style: SDSTextStyle.extraBold.copyWith(fontSize: 28, color: SDSColor.gray900));
 
     return Column(
@@ -207,7 +208,8 @@ class _FleamarketHeaderWebState extends State<FleamarketHeaderWeb> {
             children: [
               titleText,
               const SizedBox(width: SDSSpacing.lg),
-              Expanded(child: _buildSearchBar()),
+              // 남은 폭을 다 먹지 않고 커뮤니티와 같은 고정폭으로 맞춘다.
+              SizedBox(width: kCommunityDesktopSearchBarWidth, child: _buildSearchBar()),
             ],
           )
         else ...[

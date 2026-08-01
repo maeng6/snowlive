@@ -17,16 +17,46 @@ class ImageControllerWeb extends GetxController {
     required List<XFile> newImages,
     required pk,
     Function(String requestType, String error)? onError,
+  }) {
+    return _uploadAll(
+      files: newImages,
+      pathOf: (i) => 'fleamarket/$pk/$i.jpg',
+      errorPrefix: 'flea',
+      onError: onError,
+    );
+  }
+
+  /// 커뮤니티 본문에 삽입된 이미지 업로드. 압축·재시도는 중고거래와 완전히 같고
+  /// Storage 경로만 다르다(모바일 앱도 `community/$pk/`에 올린다).
+  Future<List<String>> uploadCommunityImages({
+    required List<XFile> files,
+    required int pk,
+    Function(String requestType, String error)? onError,
+  }) {
+    return _uploadAll(
+      files: files,
+      pathOf: (i) => 'community/$pk/$i.jpg',
+      errorPrefix: 'community',
+      onError: onError,
+    );
+  }
+
+  /// 실패한 자리에는 빈 문자열이 들어간다(순서는 입력과 1:1로 유지).
+  Future<List<String>> _uploadAll({
+    required List<XFile> files,
+    required String Function(int index) pathOf,
+    required String errorPrefix,
+    Function(String requestType, String error)? onError,
   }) async {
     var metaData = SettableMetadata(contentType: 'image/jpeg');
     List<String> downloadUrlList = [];
 
     uploadProgress.value = 0;
-    uploadTotal.value = newImages.length;
+    uploadTotal.value = files.length;
     isUploading.value = true;
 
     List<Uint8List> compressedDataList = await Future.wait(
-      newImages.asMap().entries.map((entry) async {
+      files.asMap().entries.map((entry) async {
         int i = entry.key;
         XFile xfile = entry.value;
 
@@ -34,7 +64,7 @@ class ImageControllerWeb extends GetxController {
           Uint8List compressed = await _compressImageWeb(xfile);
           return compressed;
         } catch (e) {
-          onError?.call('flea_image_compress_failed', '[$i] $e');
+          onError?.call('${errorPrefix}_image_compress_failed', '[$i] $e');
           return await xfile.readAsBytes();
         }
       }),
@@ -42,7 +72,7 @@ class ImageControllerWeb extends GetxController {
 
     for (int i = 0; i < compressedDataList.length; i++) {
       Uint8List data = compressedDataList[i];
-      Reference ref = FirebaseStorage.instance.ref('fleamarket/$pk/$i.jpg');
+      Reference ref = FirebaseStorage.instance.ref(pathOf(i));
 
       int retry = 0;
       const int maxRetry = 3;
@@ -58,7 +88,7 @@ class ImageControllerWeb extends GetxController {
             imageUrl = await ref.getDownloadURL();
             uploaded = true;
           } catch (urlError) {
-            onError?.call('flea_image_url_failed', '[$i] $urlError');
+            onError?.call('${errorPrefix}_image_url_failed', '[$i] $urlError');
             retry++;
             lastError = urlError.toString();
             await Future.delayed(const Duration(milliseconds: 600));
@@ -71,7 +101,7 @@ class ImageControllerWeb extends GetxController {
       }
 
       if (!uploaded || imageUrl == null) {
-        onError?.call('flea_image_upload_failed', '[$i] $lastError');
+        onError?.call('${errorPrefix}_image_upload_failed', '[$i] $lastError');
         downloadUrlList.add("");
       } else {
         downloadUrlList.add(imageUrl);

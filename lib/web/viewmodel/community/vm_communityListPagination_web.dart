@@ -35,16 +35,17 @@ enum CommunitySearchScope {
   final String label;
 }
 
-/// 정렬. 백엔드에 ordering 파라미터가 없어서 **최신순만 실제로 동작**한다.
-/// 나머지는 UI에만 존재하며 선택 시 "준비 중" 안내를 띄운다.
+/// 정렬. 서버의 `sort` 파라미터 값(`latest` / `views` / `comments`)과 1:1로 맞춘다.
+/// (최신순은 서버 기본값이기도 하지만, 계약대로 명시해서 보낸다)
 enum CommunitySortOption {
-  latest('최신순'),
-  views('조회수순'),
-  comments('댓글순');
+  latest('최신순', 'latest'),
+  views('조회수순', 'views'),
+  comments('댓글순', 'comments');
 
-  const CommunitySortOption(this.label);
+  const CommunitySortOption(this.label, this.sortParam);
 
   final String label;
+  final String sortParam;
 }
 
 /// 웹 전용 커뮤니티 목록 뷰모델. **번호식 페이지 이동**(gotoPage) 방식으로,
@@ -77,6 +78,7 @@ class CommunityListPaginationViewModelWeb extends GetxController {
   String? _searchQuery;
   String? _searchQueryUser;
   String? _searchQueryComment;
+  String _sort = CommunitySortOption.latest.sortParam;
 
   List<Community> get items => _items;
   bool get isLoading => _isLoading.value;
@@ -110,10 +112,12 @@ class CommunityListPaginationViewModelWeb extends GetxController {
     int? userId,
     CommunityCategoryTab tab = CommunityCategoryTab.total,
     CommunitySearchScope scope = CommunitySearchScope.titleContent,
+    CommunitySortOption sort = CommunitySortOption.latest,
     String? query,
   }) async {
     _userId = userId;
     _categorySub = tab.categorySub;
+    _sort = sort.sortParam;
 
     final trimmed = query?.trim();
     final keyword = (trimmed == null || trimmed.isEmpty) ? null : trimmed;
@@ -160,6 +164,7 @@ class CommunityListPaginationViewModelWeb extends GetxController {
         searchQueryUser: _searchQueryUser,
         searchQueryComment: _searchQueryComment,
         page: page,
+        sort: _sort,
       );
 
       if (response.success) {

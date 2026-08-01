@@ -8,6 +8,7 @@ import 'package:com.snowlive/web/widget/w_top_loading_bar_web.dart';
 import 'package:com.snowlive/web/widget/gnb/w_web_shell.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_quill/flutter_quill.dart' show FlutterQuillLocalizations;
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:get/get.dart';
 import 'package:intl/date_symbol_data_local.dart';
@@ -74,6 +75,8 @@ class SnowliveWebApp extends StatelessWidget {
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
+        // 게시글 작성 화면의 Quill 툴바가 없으면 UnimplementedError로 죽는다.
+        FlutterQuillLocalizations.delegate,
       ],
       supportedLocales: const [
         Locale('ko', 'KR'),
