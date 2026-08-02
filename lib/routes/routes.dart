@@ -3,7 +3,7 @@ import 'package:com.snowlive/mobile/view/community/free/v_community_Upload.dart'
 import 'package:com.snowlive/mobile/view/community/free/v_community_update.dart';
 import 'package:com.snowlive/mobile/view/community/free/v_community_comment_detail.dart';
 import 'package:com.snowlive/mobile/view/community/v_community_main.dart';
-import 'package:com.snowlive/mobile/view/community/liveTalk/v_liveTalk_comment.dart';
+import 'package:com.snowlive/mobile/view/liveTalk/v_liveTalk_comment.dart';
 import 'package:com.snowlive/view/crew/v_crewApplication_crew.dart';
 import 'package:com.snowlive/view/crew/v_crewApplication_user.dart';
 import 'package:com.snowlive/view/crew/v_crewDescription.dart';

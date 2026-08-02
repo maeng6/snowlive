@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
-import 'package:com.snowlive/viewmodel/liveTalk/vm_liveTalk.dart';
+import 'package:com.snowlive/core/viewmodel/liveTalk/vm_liveTalk.dart';
 import 'package:com.snowlive/core/viewmodel/vm_user.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';

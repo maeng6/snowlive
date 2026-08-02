@@ -4,7 +4,7 @@ import 'package:com.snowlive/mobile/view/community/free/v_community_Bulletin_Cre
 import 'package:com.snowlive/mobile/view/community/free/v_community_Bulletin_Free.dart';
 import 'package:com.snowlive/mobile/view/community/free/v_community_Bulletin_Total.dart';
 import 'package:com.snowlive/mobile/view/community/free/v_community_Bulletin_Room.dart';
-import 'package:com.snowlive/mobile/view/community/liveTalk/v_liveTalk_main.dart';
+import 'package:com.snowlive/mobile/view/liveTalk/v_liveTalk_main.dart';
 // [이벤트·소식 탭 비활성화] import 'package:com.snowlive/view/moreTab/w_eventPageEmbedded.dart';
 import 'package:com.snowlive/core/viewmodel/community/vm_communityAlarm.dart';
 import 'package:com.snowlive/core/viewmodel/community/vm_communityBulletinList.dart';
