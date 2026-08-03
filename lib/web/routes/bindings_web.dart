@@ -9,6 +9,9 @@ import 'package:com.snowlive/web/viewmodel/fleamarket/vm_fleamarketUpload_web.da
 import 'package:com.snowlive/web/viewmodel/fleamarket/vm_fleamarketUpdate_web.dart';
 import 'package:com.snowlive/web/viewmodel/community/vm_communityDetail_web.dart';
 import 'package:com.snowlive/web/viewmodel/community/vm_communityListPagination_web.dart';
+import 'package:com.snowlive/web/viewmodel/liveTalk/vm_liveTalkDetail_web.dart';
+import 'package:com.snowlive/web/viewmodel/liveTalk/vm_liveTalkUpload_web.dart';
+import 'package:com.snowlive/web/viewmodel/liveTalk/vm_liveTalk_web.dart';
 import 'package:com.snowlive/web/viewmodel/community/vm_communityUpload_web.dart';
 import 'package:com.snowlive/web/viewmodel/ranking/vm_rankingArchiveCrew_web.dart';
 import 'package:com.snowlive/web/viewmodel/ranking/vm_rankingArchiveIndiv_web.dart';
@@ -32,6 +35,16 @@ class WebOnboardingBinding extends Bindings {
   @override
   void dependencies() {
     Get.lazyPut(() => OnboardingViewModelWeb(), fenix: true);
+  }
+}
+
+/// 웹 라이브톡 라우트용 바인딩.
+class WebLiveTalkBinding extends Bindings {
+  @override
+  void dependencies() {
+    Get.lazyPut(() => LiveTalkListPaginationViewModelWeb(), fenix: true);
+    Get.lazyPut(() => LiveTalkDetailViewModelWeb(), fenix: true);
+    Get.lazyPut(() => LiveTalkUploadViewModelWeb(), fenix: true);
   }
 }
 

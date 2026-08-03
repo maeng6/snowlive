@@ -6,6 +6,8 @@ import 'package:com.snowlive/web/view/fleamarket/v_fleamarketDetail_web.dart';
 import 'package:com.snowlive/web/view/fleamarket/v_fleamarketHome_web.dart';
 import 'package:com.snowlive/web/view/fleamarket/v_fleamarketUpdate_web.dart';
 import 'package:com.snowlive/web/view/fleamarket/v_fleamarketUpload_web.dart';
+import 'package:com.snowlive/web/view/liveTalk/v_liveTalkComments_web.dart';
+import 'package:com.snowlive/web/view/liveTalk/v_liveTalkHome_web.dart';
 import 'package:com.snowlive/web/view/login/v_login_web.dart';
 import 'package:com.snowlive/web/view/onboarding/v_onboarding_web.dart';
 import 'package:com.snowlive/web/view/ranking/v_rankingArchive_web.dart';
@@ -29,6 +31,9 @@ class WebRoutes {
   static const communityDetail = '/community-detail';
   // 상세와 같은 이유로 '/community/upload'가 아니라 최상위 경로다.
   static const communityUpload = '/community-upload';
+  static const liveTalk = '/livetalk';
+  // 상세/작성과 같은 이유로 하위 경로가 아니라 최상위다(GetX 부모 매칭 사고 방지).
+  static const liveTalkComments = '/livetalk-comments';
   static const ranking = '/ranking';
   // '/ranking/archive'처럼 기존 라우트의 하위 경로로 두면 GetX가 부모('/ranking')로
   // 매칭해버려서 기록실 대신 랭킹 화면이 떴다. 별도 최상위 경로로 분리한다.
@@ -79,6 +84,16 @@ class WebRoutes {
       name: community,
       page: () => const CommunityHomeViewWeb(),
       binding: WebCommunityListBinding(),
+    ),
+    GetPage(
+      name: liveTalk,
+      page: () => const LiveTalkHomeViewWeb(),
+      binding: WebLiveTalkBinding(),
+    ),
+    GetPage(
+      name: liveTalkComments,
+      page: () => const LiveTalkCommentsViewWeb(),
+      binding: WebLiveTalkBinding(),
     ),
     GetPage(
       name: communityUpload,

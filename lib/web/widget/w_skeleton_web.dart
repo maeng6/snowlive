@@ -158,7 +158,7 @@ class _CommunityTableRowSkeleton extends StatelessWidget {
       ),
       authorCell: const SkeletonLine(width: 56, height: 13),
       dateCell: const SkeletonLine(width: 72, height: 13),
-      countsCell: const SkeletonLine(width: 72, height: 13),
+      viewsCell: const SkeletonLine(width: 40, height: 13),
     );
   }
 }

@@ -2,7 +2,6 @@ import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/core/model/m_communityList.dart';
 import 'package:com.snowlive/web/routes/routes_web.dart';
 import 'package:com.snowlive/web/widget/w_highlighted_text_web.dart';
-import 'package:com.snowlive/web/widget/w_network_image_web.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -13,11 +12,9 @@ import 'package:intl/intl.dart';
 const double kCommunityColGap = SDSSpacing.md;
 const double kCommunityColAuthor = 96;
 const double kCommunityColDate = 88;
-const double kCommunityColCounts = 100;
 
-/// 썸네일 열은 이미지가 없는 행에서도 폭을 예약한다. 그러지 않으면 행마다 제목
-/// 칸의 실제 폭이 달라져 말줄임 위치가 들쭉날쭉해진다(실데이터 82건 중 14건만 썸네일).
-const double kCommunityColThumb = 50;
+/// 조회수 열. 댓글수는 제목 뒤 파란 `(N)`으로 옮겼고 썸네일 열은 없앴다(목업).
+const double kCommunityColViews = 64;
 
 final DateFormat _communityDateFormat = DateFormat('yyyy. MM. dd');
 
@@ -58,8 +55,7 @@ Widget communityTableRowShell({
   required Widget titleCell,
   required Widget authorCell,
   required Widget dateCell,
-  required Widget countsCell,
-  Widget? thumbCell,
+  required Widget viewsCell,
   Widget? previewLine,
   required Border border,
   EdgeInsets padding = const EdgeInsets.symmetric(vertical: 14),
@@ -79,9 +75,7 @@ Widget communityTableRowShell({
             const SizedBox(width: kCommunityColGap),
             SizedBox(width: kCommunityColDate, child: dateCell),
             const SizedBox(width: kCommunityColGap),
-            SizedBox(width: kCommunityColCounts, child: countsCell),
-            const SizedBox(width: kCommunityColGap),
-            SizedBox(width: kCommunityColThumb, child: thumbCell ?? const SizedBox.shrink()),
+            SizedBox(width: kCommunityColViews, child: viewsCell),
           ],
         ),
         if (previewLine != null)
@@ -104,7 +98,7 @@ class CommunityTableHeaderRow extends StatelessWidget {
       titleCell: Text('제목', style: style),
       authorCell: Text('작성자', style: style),
       dateCell: Text('작성일', style: style),
-      countsCell: Text('조회수·댓글', style: style),
+      viewsCell: Text('조회수', style: style),
     );
   }
 }
@@ -122,26 +116,12 @@ class CommunityTableRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final metaStyle = SDSTextStyle.regular.copyWith(fontSize: 13, color: SDSColor.gray700);
     final preview = query.isEmpty ? '' : communityPreviewText(community);
-    final thumb = community.thumbImg;
-    final hasThumb = thumb != null && thumb.isNotEmpty;
 
     return InkWell(
       onTap: () => openCommunityDetail(community),
       child: communityTableRowShell(
       border: Border(bottom: BorderSide(color: SDSColor.gray100)),
-      titleCell: Row(
-        children: [
-          ...communityCategoryChips(community),
-          Expanded(
-            child: HighlightedText(
-              text: community.title ?? '',
-              query: query,
-              maxLines: 1,
-              style: SDSTextStyle.bold.copyWith(fontSize: 14, color: SDSColor.gray900),
-            ),
-          ),
-        ],
-      ),
+      titleCell: CommunityTitleLine(community: community, query: query),
       authorCell: Text(
         community.userInfo?.displayName ?? '',
         maxLines: 1,
@@ -149,8 +129,7 @@ class CommunityTableRow extends StatelessWidget {
         style: metaStyle,
       ),
       dateCell: Text(communityDateLabel(community.uploadTime), maxLines: 1, style: metaStyle),
-      countsCell: CommunityCounts(community: community, alignEnd: false),
-      thumbCell: hasThumb ? CommunityThumb(url: thumb) : null,
+      viewsCell: Text('${community.viewsCount ?? 0}', maxLines: 1, style: metaStyle),
       previewLine: preview.isEmpty
           ? null
           : HighlightedText(
@@ -174,70 +153,49 @@ class CommunityCardRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final preview = query.isEmpty ? '' : communityPreviewText(community);
-    final thumb = community.thumbImg;
-    final hasThumb = thumb != null && thumb.isNotEmpty;
     final metaStyle = SDSTextStyle.regular.copyWith(fontSize: 12, color: SDSColor.gray700);
 
     return InkWell(
       onTap: () => openCommunityDetail(community),
       child: Container(
-      decoration: BoxDecoration(border: Border(bottom: BorderSide(color: SDSColor.gray100))),
-      padding: const EdgeInsets.symmetric(vertical: 12),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+        decoration: BoxDecoration(border: Border(bottom: BorderSide(color: SDSColor.gray100))),
+        padding: const EdgeInsets.symmetric(vertical: 12),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // 표와 같은 제목 줄 규칙 — 칩 + 제목 + 이미지 아이콘 + 파란 (N).
+            CommunityTitleLine(community: community, query: query),
+            if (preview.isNotEmpty) ...[
+              const SizedBox(height: 4),
+              HighlightedText(
+                text: preview,
+                query: query,
+                maxLines: 2,
+                style: SDSTextStyle.regular.copyWith(fontSize: 13, color: SDSColor.gray500),
+              ),
+            ],
+            const SizedBox(height: 6),
+            // 목업: 작성자 | 날짜 | 👁 조회수. 조회수만 아이콘이 붙는다.
+            Row(
               children: [
-                Row(
-                  children: [
-                    ...communityCategoryChips(community),
-                    Expanded(
-                      child: HighlightedText(
-                        text: community.title ?? '',
-                        query: query,
-                        maxLines: 1,
-                        style: SDSTextStyle.bold.copyWith(fontSize: 14, color: SDSColor.gray900),
-                      ),
-                    ),
-                  ],
-                ),
-                if (preview.isNotEmpty) ...[
-                  const SizedBox(height: 4),
-                  HighlightedText(
-                    text: preview,
-                    query: query,
-                    maxLines: 2,
-                    style: SDSTextStyle.regular.copyWith(fontSize: 13, color: SDSColor.gray500),
+                Flexible(
+                  child: Text(
+                    community.userInfo?.displayName ?? '',
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: metaStyle,
                   ),
-                ],
-                const SizedBox(height: 6),
-                Row(
-                  children: [
-                    Flexible(
-                      child: Text(
-                        community.userInfo?.displayName ?? '',
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: metaStyle,
-                      ),
-                    ),
-                    _metaDivider(),
-                    Text(communityDateLabel(community.uploadTime), style: metaStyle),
-                    _metaDivider(),
-                    CommunityCounts(community: community, alignEnd: false),
-                  ],
                 ),
+                _metaDivider(),
+                Text(communityDateLabel(community.uploadTime), style: metaStyle),
+                _metaDivider(),
+                Image.asset('assets/imgs/icons/icon_eye_rounded.png', width: 14, height: 14),
+                const SizedBox(width: 3),
+                Text('${community.viewsCount ?? 0}', style: metaStyle),
               ],
             ),
-          ),
-          if (hasThumb) ...[
-            const SizedBox(width: SDSSpacing.md),
-            CommunityThumb(url: thumb),
           ],
-        ],
-      ),
+        ),
       ),
     );
   }
@@ -280,46 +238,46 @@ class CommunityCategoryChip extends StatelessWidget {
   }
 }
 
-/// 조회수·댓글수. 아이콘은 모바일 앱 목록과 같은 에셋을 쓴다.
-class CommunityCounts extends StatelessWidget {
+/// 제목 줄 — `[칩] 제목 [🖼] [(N)]` (목업).
+///
+/// 사진이 있으면 제목 뒤에 이미지 아이콘, 댓글이 있으면 파란 `(N)`이 붙는다.
+/// 둘 다 **있을 때만** 그린다 — 0건에 `(0)`을 붙이면 줄이 지저분해진다.
+class CommunityTitleLine extends StatelessWidget {
   final Community community;
-  final bool alignEnd;
+  final String query;
 
-  const CommunityCounts({super.key, required this.community, required this.alignEnd});
+  const CommunityTitleLine({super.key, required this.community, required this.query});
 
   @override
   Widget build(BuildContext context) {
-    final style = SDSTextStyle.regular.copyWith(fontSize: 12, color: SDSColor.gray700);
+    final commentCount = community.commentCount ?? 0;
+    final thumb = community.thumbImg;
+    final hasImage = thumb != null && thumb.isNotEmpty;
+
     return Row(
-      mainAxisSize: MainAxisSize.min,
-      mainAxisAlignment: alignEnd ? MainAxisAlignment.end : MainAxisAlignment.start,
       children: [
-        Image.asset('assets/imgs/icons/icon_eye_rounded.png', width: 14, height: 14),
-        const SizedBox(width: 2),
-        Text('${community.viewsCount ?? 0}', style: style),
-        const SizedBox(width: 6),
-        Image.asset('assets/imgs/icons/icon_reply_rounded.png', width: 14, height: 14),
-        const SizedBox(width: 2),
-        Text('${community.commentCount ?? 0}', style: style),
+        ...communityCategoryChips(community),
+        Flexible(
+          child: HighlightedText(
+            text: community.title ?? '',
+            query: query,
+            maxLines: 1,
+            style: SDSTextStyle.bold.copyWith(fontSize: 14, color: SDSColor.gray900),
+          ),
+        ),
+        if (hasImage) ...[
+          const SizedBox(width: 6),
+          // 전용 에셋이 없어 Material 아이콘을 쓴다. 목업의 사진 글리프와 같은 역할.
+          Icon(Icons.image_outlined, size: 15, color: SDSColor.gray400),
+        ],
+        if (commentCount > 0) ...[
+          const SizedBox(width: 6),
+          Text(
+            '($commentCount)',
+            style: SDSTextStyle.bold.copyWith(fontSize: 13, color: SDSColor.snowliveBlue),
+          ),
+        ],
       ],
-    );
-  }
-}
-
-class CommunityThumb extends StatelessWidget {
-  final String url;
-
-  const CommunityThumb({super.key, required this.url});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(width: 0.5, color: SDSColor.gray200),
-      ),
-      clipBehavior: Clip.antiAlias,
-      child: WebNetworkImage(url: url, width: 50, height: 50),
     );
   }
 }

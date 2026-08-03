@@ -41,6 +41,37 @@ class ImageControllerWeb extends GetxController {
     );
   }
 
+  /// 라이브톡 사진. 모바일 앱과 같은 경로 규칙(`livetalk/{userId}_{ts}.jpg`)을 쓴다.
+  Future<List<String>> uploadLiveTalkImages({
+    required List<XFile> files,
+    required int userId,
+    Function(String requestType, String error)? onError,
+  }) {
+    final stamp = DateTime.now().millisecondsSinceEpoch;
+    return _uploadAll(
+      files: files,
+      pathOf: (i) => 'livetalk/${userId}_${stamp + i}.jpg',
+      errorPrefix: 'livetalk',
+      onError: onError,
+    );
+  }
+
+  /// 이미 바이트로 만들어진 이미지(라이딩 카드 캡처 PNG) 1장 업로드.
+  /// 압축을 거치지 않는다 — 캡처 결과를 다시 인코딩하면 글자가 뭉개진다.
+  Future<String?> uploadLiveTalkPng({
+    required Uint8List bytes,
+    required int userId,
+  }) async {
+    final stamp = DateTime.now().millisecondsSinceEpoch;
+    final ref = FirebaseStorage.instance.ref('livetalk/${userId}_$stamp.png');
+    try {
+      await ref.putData(bytes, SettableMetadata(contentType: 'image/png'));
+      return await ref.getDownloadURL();
+    } catch (e) {
+      return null;
+    }
+  }
+
   /// 실패한 자리에는 빈 문자열이 들어간다(순서는 입력과 1:1로 유지).
   Future<List<String>> _uploadAll({
     required List<XFile> files,
