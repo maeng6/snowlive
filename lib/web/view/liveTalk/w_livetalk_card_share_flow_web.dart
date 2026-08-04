@@ -1,4 +1,5 @@
 import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
+import 'package:com.snowlive/core/viewmodel/vm_user.dart';
 import 'package:com.snowlive/web/util/responsive_web.dart';
 import 'package:com.snowlive/web/view/liveTalk/w_livetalk_riding_card_web.dart';
 import 'package:com.snowlive/web/view/liveTalk/w_livetalk_step_modal_web.dart';
@@ -186,11 +187,15 @@ class _CardShareFlowState extends State<_CardShareFlow> {
   Widget _buildCard({required double width}) {
     final card = _vm.ridingCard;
     if (card == null) return const SizedBox.shrink();
+    final user = Get.find<UserViewModel>().user;
     return RepaintBoundary(
       key: _boundaryKey,
       child: LiveTalkRidingCardWeb(
         card: card,
         cardType: _vm.selectedCardType,
+        // 데일리 카드에는 닉네임·프로필이 없다(앱도 로그인 사용자에서 가져온다).
+        displayName: user.display_name,
+        profileImageUrl: user.profile_image_url_user,
         width: width,
       ),
     );
