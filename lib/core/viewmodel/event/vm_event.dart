@@ -1,8 +1,8 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
-import 'package:com.snowlive/api/api_event.dart';
+import 'package:com.snowlive/core/api/api_event.dart';
 import 'package:com.snowlive/core/api/ApiResponse.dart';
-import 'package:com.snowlive/model/m_event.dart';
+import 'package:com.snowlive/core/model/m_event.dart';
 
 class EventViewModel extends GetxController {
   // API 인스턴스
@@ -11,17 +11,12 @@ class EventViewModel extends GetxController {
   // 로딩 상태
   var isLoading = false.obs;        // 초기/일반 로딩
   var isLoadingMore = false.obs;    // 무한스크롤 로딩
-  var isLoadingDetail = false.obs;  // 상세 로딩
   var isRefreshing = false.obs;     // ✅ 당겨서 새로고침 전용
   var isInitialLoaded = false.obs;  // 초기 데이터 로드 완료 여부
 
   // 이벤트 목록
   var _eventList = <EventModel>[].obs;
   List<EventModel> get eventList => _eventList;
-
-  // 이벤트 상세
-  var _eventDetail = Rxn<EventModel>();
-  EventModel? get eventDetail => _eventDetail.value;
 
   // 페이지네이션
   var _nextPageUrl = ''.obs;
@@ -135,12 +130,6 @@ class EventViewModel extends GetxController {
     }
   }
 
-  Future<void> addViewCount({user_id, event_id}) async{
-    _eventAPI.incrementViewCount(userId: user_id, eventId: event_id);
-  }
-
-
-
   /// 이벤트 추가 로드 (무한 스크롤)
   Future<void> fetchMoreEvents() async {
     if (!hasNextPage || isLoadingMore.value) return;
@@ -170,168 +159,11 @@ class EventViewModel extends GetxController {
     }
   }
 
-  /// 이벤트 상세 조회
-  Future<void> fetchEventDetail({
-    required int eventId,
-    int? userId,
-  }) async {
-    try {
-      isLoadingDetail(true);
-
-      final response = await _eventAPI.fetchEventDetail(
-        eventId: eventId,
-        userId: userId,
-      );
-
-      if (response.success) {
-        _eventDetail.value = EventModel.fromJson(response.data!);
-        print('이벤트 상세 조회 완료: ${_eventDetail.value?.title}');
-      } else {
-        print('이벤트 상세 조회 실패: ${response.error}');
-      }
-    } catch (e) {
-      print('이벤트 상세 조회 에러: $e');
-    } finally {
-      isLoadingDetail(false);
-    }
-  }
-
-  /// 이벤트 생성
-  Future<bool> createEvent({
-    required int userId,
-    required String category,
-    required String title,
-    String? description,
-    String? thumbImgUrl,
-  }) async {
-    try {
-      isLoading(true);
-
-      final body = {
-        'user_id': userId,
-        'category': category,
-        'title': title,
-        if (description != null) 'description': description,
-        if (thumbImgUrl != null) 'thumb_img_url': thumbImgUrl,
-      };
-
-      final response = await _eventAPI.createEvent(body);
-
-      if (response.success) {
-        print('이벤트 생성 완료');
-        await fetchEventList(clearBeforeFetch: true);
-        return true;
-      } else {
-        print('이벤트 생성 실패: ${response.error}');
-        return false;
-      }
-    } catch (e) {
-      print('이벤트 생성 에러: $e');
-      return false;
-    } finally {
-      isLoading(false);
-    }
-  }
-
-  /// 이벤트 수정
-  Future<bool> updateEvent({
-    required int eventId,
-    int? userId,
-    String? category,
-    String? title,
-    String? description,
-    String? thumbImgUrl,
-  }) async {
-    try {
-      isLoading(true);
-
-      final body = <String, dynamic>{};
-      if (userId != null) body['user_id'] = userId;
-      if (category != null) body['category'] = category;
-      if (title != null) body['title'] = title;
-      if (description != null) body['description'] = description;
-      if (thumbImgUrl != null) body['thumb_img_url'] = thumbImgUrl;
-
-      final response = await _eventAPI.updateEvent(
-        eventId: eventId,
-        body: body,
-      );
-
-      if (response.success) {
-        print('이벤트 수정 완료');
-        _eventDetail.value = EventModel.fromJson(response.data!);
-        await fetchEventList(clearBeforeFetch: true);
-        return true;
-      } else {
-        print('이벤트 수정 실패: ${response.error}');
-        return false;
-      }
-    } catch (e) {
-      print('이벤트 수정 에러: $e');
-      return false;
-    } finally {
-      isLoading(false);
-    }
-  }
-
-  /// 이벤트 삭제
-  Future<bool> deleteEvent({
-    required int eventId,
-    required int userId,
-  }) async {
-    try {
-      isLoading(true);
-
-      final response = await _eventAPI.deleteEvent(
-        eventId: eventId,
-        userId: userId,
-      );
-
-      if (response.success) {
-        print('이벤트 삭제 완료');
-        _eventList.removeWhere((event) => event.eventId == eventId);
-        return true;
-      } else {
-        print('이벤트 삭제 실패: ${response.error}');
-        Get.snackbar('삭제 실패', '이벤트를 삭제할 권한이 없습니다.');
-        return false;
-      }
-    } catch (e) {
-      print('이벤트 삭제 에러: $e');
-      return false;
-    } finally {
-      isLoading(false);
-    }
-  }
-
-  /// 조회수 증가
-  Future<void> incrementViewCount({
-    required int eventId,
-    required int userId,
-  }) async {
-    try {
-      final response = await _eventAPI.incrementViewCount(
-        eventId: eventId,
-        userId: userId,
-      );
-
-      if (response.success) {
-        print('조회수 증가 완료');
-      } else {
-        print('조회수 증가 실패: ${response.error}');
-      }
-    } catch (e) {
-      print('조회수 증가 에러: $e');
-    }
-  }
+  // 목록 전용(각종소식)으로 정리 — 상세/생성/수정/삭제 및 조회수(addViewCount/incrementViewCount) 제거.
+  // (어드민 CRUD는 웹 각종소식 어드민에서, 아이템 탭 시 landingUrl로 바로 이동)
 
   /// ✅ 새로고침 (당겨서 새로고침에서 이걸 호출하면 리스트 유지됨)
   Future<void> refresh() async {
     await fetchEventList(clearBeforeFetch: false);
-  }
-
-  /// 상세 정보 초기화
-  void clearDetail() {
-    _eventDetail.value = null;
   }
 }

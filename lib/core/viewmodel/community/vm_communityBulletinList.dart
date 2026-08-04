@@ -2,7 +2,7 @@ import 'package:com.snowlive/core/api/api_community.dart';
 import 'package:com.snowlive/core/model/m_communityList.dart';
 import 'package:com.snowlive/core/viewmodel/vm_user.dart';
 import 'package:com.snowlive/core/viewmodel/liveTalk/vm_liveTalk.dart';
-// [이벤트·소식 탭 비활성화] import 'package:com.snowlive/viewmodel/vm_event.dart';
+// [이벤트·소식 탭 비활성화] import 'package:com.snowlive/core/viewmodel/event/vm_event.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/rendering.dart';
 import 'package:get/get.dart';

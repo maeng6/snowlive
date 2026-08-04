@@ -26,7 +26,6 @@ import 'package:com.snowlive/mobile/view/fleamarket/v_fleamarketUpload.dart';
 import 'package:com.snowlive/view/friend/history/v_rankingIndiv_history_home.dart';
 import 'package:com.snowlive/view/friend/v_friendBlockList.dart';
 import 'package:com.snowlive/view/friend/v_invitation_friend.dart';
-import 'package:com.snowlive/view/moreTab/v_eventPage.dart';
 import 'package:com.snowlive/view/moreTab/v_setting_moreTab.dart';
 import 'package:com.snowlive/mobile/view/ranking/history/v_ranking_history_home.dart';
 import 'package:com.snowlive/mobile/view/ranking/v_rankingGuide.dart';
@@ -153,7 +152,6 @@ class AppRoutes {
   static const String snowballMarketBrandOnlyPublicShop = '/snowballMarketBrandOnlyPublicShop';
   static const String slopeRushHome = '/slopeRushHome';
   static const String slopeRushHistoryHome = '/slopeRushHistoryHome';
-  static const String eventPage = '/eventPage';
   static const String themestoreHome = '/themestoreHome';
   static const String themestoreInputInfo = '/themestoreInputInfo';
   static const String themestoreBuyRecord = '/themestoreBuyRecord';
@@ -478,10 +476,6 @@ class AppRoutes {
     GetPage(
       name: slopeRushHistoryHome,
       page: () => SlopeRushHistoryHomeView(),
-    ),
-    GetPage(
-      name: eventPage,
-      page: () => EventPageView(),
     ),
     GetPage(
       name: themestoreHome,

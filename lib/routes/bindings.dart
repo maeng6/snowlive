@@ -5,7 +5,7 @@ import 'package:com.snowlive/core/viewmodel/community/vm_communityDetail.dart';
 import 'package:com.snowlive/core/viewmodel/community/vm_communityUpdate.dart';
 import 'package:com.snowlive/core/viewmodel/community/vm_communityUpload.dart';
 import 'package:com.snowlive/core/viewmodel/liveTalk/vm_liveTalk.dart';
-import 'package:com.snowlive/viewmodel/vm_event.dart';
+import 'package:com.snowlive/core/viewmodel/event/vm_event.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewApply.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewDetail.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewDetail_recordRoom.dart';
