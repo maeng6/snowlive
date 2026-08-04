@@ -122,6 +122,53 @@ class LiveTalkListPaginationViewModelWeb extends GetxController {
     return parsed;
   }
 
+  /// 피드에서 하트를 눌렀을 때. 상세를 열지 않고 그 자리에서 토글한다.
+  /// 게스트면 false를 리턴해 호출자가 로그인 안내를 띄우게 한다.
+  Future<bool> toggleLike(LiveTalk item) async {
+    final userId = _userId;
+    if (userId == null || item.livetalkId == null) return false;
+    try {
+      final response = await _api.toggleLike({
+        'livetalk_id': item.livetalkId,
+        'user_id': userId,
+      });
+      if (!response.success) {
+        print('[LiveTalk] 좋아요 실패: ${response.error}');
+        return false;
+      }
+      final parsed =
+          LiveTalkLikeResponse.fromJson(response.data as Map<String, dynamic>);
+      item
+        ..isLiked = parsed.liked ?? !(item.isLiked ?? false)
+        ..likeCount = parsed.likeCount ?? item.likeCount;
+      // 리스트 원소 내부만 바뀌었으므로 RxList가 스스로 알지 못한다 → 강제 통지.
+      _items.refresh();
+      return true;
+    } catch (e) {
+      print('[LiveTalk] 좋아요 예외: $e');
+      return false;
+    }
+  }
+
+  /// 상세 오버레이에서 좋아요·댓글이 바뀐 뒤 해당 글만 다시 받아 끼워넣는다.
+  /// 페이지를 통째로 다시 불러오면 스크롤 위치가 날아간다.
+  Future<void> reloadItem(int livetalkId) async {
+    try {
+      final response = await _api.fetchDetail({
+        'livetalk_id': livetalkId,
+        if (_userId != null) 'user_id': _userId,
+      });
+      if (!response.success) return;
+      final fresh = LiveTalk.fromJson(response.data as Map<String, dynamic>);
+      final index = _items.indexWhere((e) => e.livetalkId == livetalkId);
+      if (index < 0) return;
+      // 목록은 댓글을 들고 있지 않아도 되지만, 있어도 무해하다.
+      _items[index] = fresh;
+    } catch (e) {
+      print('[LiveTalk] 글 갱신 예외: $e');
+    }
+  }
+
   Future<void> loadNext() =>
       hasNext ? gotoPage(_currentPage.value + 1) : Future.value();
   Future<void> loadPrevious() =>

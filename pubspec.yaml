@@ -50,6 +50,8 @@ dependencies:
   google_fonts: ^6.0.0
   flutter_secure_storage: ^9.0.0
   image_picker: ^1.0.4
+  # 웹 라이브톡 올리기의 파일 드래그앤드롭에 필요(dragover 기본동작 차단).
+  web: ^1.1.1
   permission_handler: ^12.0.1
   sign_in_with_apple: ^7.0.1
   url_launcher: ^6.3.1
