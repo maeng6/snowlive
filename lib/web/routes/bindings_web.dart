@@ -13,6 +13,7 @@ import 'package:com.snowlive/web/viewmodel/liveTalk/vm_liveTalkDetail_web.dart';
 import 'package:com.snowlive/web/viewmodel/liveTalk/vm_liveTalkUpload_web.dart';
 import 'package:com.snowlive/web/viewmodel/liveTalk/vm_liveTalk_web.dart';
 import 'package:com.snowlive/web/viewmodel/community/vm_communityUpload_web.dart';
+import 'package:com.snowlive/web/viewmodel/event/vm_eventListPagination_web.dart';
 import 'package:com.snowlive/web/viewmodel/ranking/vm_rankingArchiveCrew_web.dart';
 import 'package:com.snowlive/web/viewmodel/ranking/vm_rankingArchiveIndiv_web.dart';
 import 'package:com.snowlive/web/viewmodel/ranking/vm_rankingList_web.dart';
@@ -53,6 +54,8 @@ class WebCommunityListBinding extends Bindings {
   @override
   void dependencies() {
     Get.lazyPut(() => CommunityListPaginationViewModelWeb(), fenix: true);
+    // `이벤트` 탭은 소스가 달라 별도 뷰모델을 쓴다.
+    Get.lazyPut(() => EventListPaginationViewModelWeb(), fenix: true);
   }
 }
 

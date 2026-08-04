@@ -9,10 +9,12 @@ class EventAPI {
   /// [category] - 카테고리 필터 (optional)
   /// [searchQuery] - 검색어 (title, description 검색) (optional)
   /// [url] - 페이지네이션 URL (optional, 다음 페이지 로드 시 사용)
+  /// [page] - 번호식 페이지네이션용(웹). [url]이 주어지면 무시된다.
   Future<ApiResponse> fetchEventList({
     String? category,
     String? searchQuery,
     String? url,
+    int? page,
   }) async {
     final Uri uri = url != null
         ? Uri.parse(url)
@@ -20,6 +22,7 @@ class EventAPI {
             queryParameters: {
               if (category != null && category.isNotEmpty) 'category': category,
               if (searchQuery != null && searchQuery.isNotEmpty) 'search_query': searchQuery,
+              if (page != null) 'page': '$page',
             },
           );
 

@@ -1,6 +1,6 @@
 import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/web/util/responsive_web.dart';
-import 'package:com.snowlive/web/util/web_file_drop_web.dart';
+import 'package:com.snowlive/web/util/web_file_drop.dart';
 import 'package:com.snowlive/web/view/liveTalk/w_livetalk_step_modal_web.dart';
 import 'package:com.snowlive/web/viewmodel/liveTalk/vm_liveTalkUpload_web.dart';
 import 'package:com.snowlive/web/widget/w_web_overlay_modal_web.dart';

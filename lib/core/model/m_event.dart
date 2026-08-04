@@ -21,10 +21,40 @@ class EventListResponse {
             .toList() ?? [];
 }
 
+/// 이벤트 작성자 정보. 응답(`user_info`)에 있는데 파싱이 빠져 있었다.
+class EventUserInfo {
+  int? userId;
+  String? displayName;
+  String? profileImageUrlUser;
+  String? resortNickname;
+
+  EventUserInfo({
+    this.userId,
+    this.displayName,
+    this.profileImageUrlUser,
+    this.resortNickname,
+  });
+
+  EventUserInfo.fromJson(Map<String, dynamic> json) {
+    userId = json['user_id'];
+    displayName = json['display_name'];
+    profileImageUrlUser = json['profile_image_url_user'];
+    resortNickname = json['resort_nickname'];
+  }
+
+  Map<String, dynamic> toJson() => {
+        'user_id': userId,
+        'display_name': displayName,
+        'profile_image_url_user': profileImageUrlUser,
+        'resort_nickname': resortNickname,
+      };
+}
+
 /// 이벤트 모델
 class EventModel {
   int? eventId;
   int? userId;
+  EventUserInfo? userInfo;
   String? category;
   String? title;
   String? description;
@@ -38,6 +68,7 @@ class EventModel {
   EventModel({
     this.eventId,
     this.userId,
+    this.userInfo,
     this.category,
     this.title,
     this.description,
@@ -52,6 +83,9 @@ class EventModel {
   EventModel.fromJson(Map<String, dynamic> json) {
     eventId = json['event_id'];
     userId = json['user_id'];
+    userInfo = json['user_info'] == null
+        ? null
+        : EventUserInfo.fromJson(json['user_info'] as Map<String, dynamic>);
     category = json['category'];
     title = json['title'];
     description = json['description'];
@@ -59,7 +93,11 @@ class EventModel {
     landingUrl = json['landing_url'];
 
     // views 필드 처리 (리스트 또는 카운트)
-    if (json['views'] is List) {
+    // 서버는 `views_count`로 준다 — 이걸 먼저 본다. 아래 분기들은 과거 응답 호환용.
+    if (json['views_count'] is int) {
+      viewCount = json['views_count'];
+      views = [];
+    } else if (json['views'] is List) {
       views = (json['views'] as List<dynamic>?)?.map((e) => e as int).toList();
       viewCount = views?.length ?? 0;
     } else if (json['views'] is int) {
@@ -86,12 +124,14 @@ class EventModel {
     return {
       'event_id': eventId,
       'user_id': userId,
+      'user_info': userInfo?.toJson(),
       'category': category,
       'title': title,
       'description': description,
       'thumb_img_url': thumbImgUrl,
-      'landingUrl': landingUrl,
+      'landing_url': landingUrl,
       'views': views,
+      'views_count': viewCount,
       'update_time': updateTime?.toIso8601String(),
       'upload_time': uploadTime?.toIso8601String(),
     };

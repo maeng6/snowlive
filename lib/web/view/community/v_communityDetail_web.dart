@@ -177,27 +177,39 @@ class _CommunityDetailViewWebState extends State<CommunityDetailViewWeb> {
     // 모바일만 입력창이 화면 하단에 고정된다. 셸이 페이지를 Expanded에 넣으므로
     // Stack의 bottom이 곧 뷰포트 하단이다. 콘텐츠가 가려지지 않도록 바깥 Padding으로
     // 스크롤 영역 자체를 줄인다(스크롤뷰 내부 padding이면 트랙이 바 뒤로 지나간다).
-    return Obx(() {
-      final hasReplyTarget = _replyTargetCommentId != null;
-      final barHeight = hasReplyTarget ? 116.0 : 76.0;
-      return Stack(
-        children: [
-          Padding(padding: EdgeInsets.only(bottom: barHeight), child: scrollArea),
-          Positioned(left: 0, right: 0, bottom: 0, child: _buildMobileInputBar()),
-        ],
-      );
-    });
+    // 바 높이는 _replyTargetCommentId(State 필드)만 따라가므로 setState로 충분하다.
+    // 여기를 Obx로 감싸면 안 된다 — 답글 대상이 없을 때 빌더가 관찰 대상을 하나도
+    // 읽지 않아 GetX가 "improper use of a GetX" 예외를 던지고 화면이 통째로 죽는다.
+    final barHeight = _replyTargetCommentId != null ? 116.0 : 76.0;
+    return Stack(
+      children: [
+        Padding(padding: EdgeInsets.only(bottom: barHeight), child: scrollArea),
+        Positioned(left: 0, right: 0, bottom: 0, child: _buildMobileInputBar()),
+      ],
+    );
   }
 
   Widget _buildMobileInputBar() {
-    final target = _replyTargetCommentId;
-    final targetName = target == null
-        ? null
-        : _vm.comments
-            .firstWhereOrNull((c) => c.commentId == target)
-            ?.userInfo
-            ?.displayName;
+    return Obx(() {
+      final target = _replyTargetCommentId;
+      // 답글 대상 이름은 목록이 나중에 도착해도 갱신돼야 한다 → Obx를 유지한다.
+      // 단 **조건 없이 한 번은 관찰 대상을 읽어야** 한다. 삼항 뒤에서만 읽으면
+      // target이 null일 때 아무것도 관찰하지 않아 GetX가 예외를 던진다.
+      // `_vm.comments`는 RxList 객체 자체를 돌려줘서 그냥 참조만 하면 등록되지
+      // 않는다 — length처럼 값을 읽는 멤버를 건드려야 구독이 걸린다.
+      final commentCount = _vm.comments.length;
+      final targetName = target == null || commentCount == 0
+          ? null
+          : _vm.comments
+              .firstWhereOrNull((c) => c.commentId == target)
+              ?.userInfo
+              ?.displayName;
 
+      return _mobileInputBarShell(target: target, targetName: targetName);
+    });
+  }
+
+  Widget _mobileInputBarShell({required int? target, required String? targetName}) {
     return Container(
       decoration: BoxDecoration(
         color: SDSColor.snowliveWhite,

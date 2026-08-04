@@ -13,14 +13,22 @@ enum CommunityCategoryTab {
   total('전체', null),
   chat('잡담', '잡담'),
   room('시즌방', '시즌방'),
-  crew('단톡방·동호회', '단톡방·동호회');
+  crew('단톡방·동호회', '단톡방·동호회'),
+
+  /// 크롤링해오는 각종소식. **소스가 `/api/event/`로 완전히 다르다** —
+  /// 이 탭만 [EventListPaginationViewModelWeb]으로 조회하고, 행을 누르면
+  /// 상세 라우트가 아니라 `landing_url`로 외부 이동한다.
+  event('이벤트', null);
 
   const CommunityCategoryTab(this.label, this.categorySub);
 
   final String label;
 
   /// null이면 category_sub를 아예 보내지 않는다(= 전체).
+  /// 이벤트도 null이지만 커뮤니티 API를 아예 쓰지 않으므로 의미가 없다 → [isEvent]로 분기할 것.
   final String? categorySub;
+
+  bool get isEvent => this == CommunityCategoryTab.event;
 }
 
 /// 검색 범위. 백엔드가 지원하는 3종만 둔다.

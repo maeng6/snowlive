@@ -20,6 +20,10 @@ class CommunitySearchBarWeb extends StatelessWidget {
   final ValueChanged<CommunitySearchScope> onScopeChanged;
   final ValueChanged<String> onSubmitted;
 
+  /// 범위 드롭다운을 잠글지. 이벤트 API는 `search_query`(제목+내용)만 지원하므로
+  /// 그 탭에서는 라벨만 보여주고 열지 않는다.
+  final bool scopeLocked;
+
   const CommunitySearchBarWeb({
     super.key,
     required this.controller,
@@ -27,6 +31,7 @@ class CommunitySearchBarWeb extends StatelessWidget {
     required this.scope,
     required this.onScopeChanged,
     required this.onSubmitted,
+    this.scopeLocked = false,
   });
 
   @override
@@ -39,20 +44,30 @@ class CommunitySearchBarWeb extends StatelessWidget {
         children: [
           Icon(Icons.search, size: 18, color: SDSColor.gray400),
           const SizedBox(width: 8),
-          WebDropdownTextButton<CommunitySearchScope>(
-            label: scope.label,
-            labelWidth: _kScopeLabelWidth,
+          if (scopeLocked)
+            // 드롭다운과 자리를 정확히 맞춰야 잠금 전환 시 입력창이 흔들리지 않는다.
+            SizedBox(
+              width: _kScopeLabelWidth,
+              child: Text(
+                CommunitySearchScope.titleContent.label,
+                style: SDSTextStyle.bold.copyWith(fontSize: 14, color: SDSColor.gray900),
+              ),
+            )
+          else
+            WebDropdownTextButton<CommunitySearchScope>(
+              label: scope.label,
+              labelWidth: _kScopeLabelWidth,
             values: CommunitySearchScope.values,
             labelOf: (v) => v.label,
-            // 목업의 검색범위 드롭다운에는 헤더가 없다.
-            onSelected: (v) {
-              onScopeChanged(v);
-              // 범위만 바꾸고 바로 엔터를 칠 수 있게 포커스를 입력창으로 되돌린다.
-              focusNode.requestFocus();
-            },
-            labelStyle: SDSTextStyle.bold.copyWith(fontSize: 14, color: SDSColor.gray900),
-            centerSheetOnTablet: true,
-          ),
+              // 목업의 검색범위 드롭다운에는 헤더가 없다.
+              onSelected: (v) {
+                onScopeChanged(v);
+                // 범위만 바꾸고 바로 엔터를 칠 수 있게 포커스를 입력창으로 되돌린다.
+                focusNode.requestFocus();
+              },
+              labelStyle: SDSTextStyle.bold.copyWith(fontSize: 14, color: SDSColor.gray900),
+              centerSheetOnTablet: true,
+            ),
           const SizedBox(width: 8),
           Container(width: 1, height: 16, color: SDSColor.gray200),
           const SizedBox(width: 12),
@@ -85,12 +100,17 @@ class CommunityFilterRowWeb extends StatelessWidget {
   final ValueChanged<CommunityCategoryTab> onTabChanged;
   final ValueChanged<CommunitySortOption> onSortSelected;
 
+  /// 정렬 pill을 그릴지. 이벤트 API에는 정렬 파라미터가 없어서 그 탭에서는 숨긴다
+  /// (눌러도 아무 일이 없는 UI를 두면 고장으로 읽힌다).
+  final bool showSort;
+
   const CommunityFilterRowWeb({
     super.key,
     required this.tab,
     required this.sort,
     required this.onTabChanged,
     required this.onSortSelected,
+    this.showSort = true,
   });
 
   @override
@@ -110,17 +130,18 @@ class CommunityFilterRowWeb extends StatelessWidget {
         else
           ..._buildTextTabs(),
         const Spacer(),
-        FleamarketFilterPill<CommunitySortOption>(
-          label: sort.label,
-          // 기본값(최신순)이 아니면 다른 필터 pill과 같이 색이 반전된다.
-          isActive: sort != CommunitySortOption.latest,
-          title: '필터',
-          // 목업은 태블릿·모바일 딤 패널에도 '필터' 헤더가 있다.
-          showTitleInSheet: true,
-          values: CommunitySortOption.values,
-          labelOf: (v) => v.label,
-          onSelected: onSortSelected,
-        ),
+        if (showSort)
+          FleamarketFilterPill<CommunitySortOption>(
+            label: sort.label,
+            // 기본값(최신순)이 아니면 다른 필터 pill과 같이 색이 반전된다.
+            isActive: sort != CommunitySortOption.latest,
+            title: '필터',
+            // 목업은 태블릿·모바일 딤 패널에도 '필터' 헤더가 있다.
+            showTitleInSheet: true,
+            values: CommunitySortOption.values,
+            labelOf: (v) => v.label,
+            onSelected: onSortSelected,
+          ),
       ],
     );
   }

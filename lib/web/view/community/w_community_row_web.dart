@@ -28,6 +28,11 @@ String communityDateLabel(String? uploadTime) {
   return _communityDateFormat.format(parsed);
 }
 
+/// 이미 파싱된 DateTime용(이벤트 모델은 DateTime으로 들고 있다).
+/// 표기 형식을 한 곳에만 두기 위해 같은 포매터를 쓴다.
+String communityDateLabelOf(DateTime? uploadTime) =>
+    uploadTime == null ? '' : _communityDateFormat.format(uploadTime);
+
 /// Quill Delta에서 뽑은 한 줄 미리보기. 본문이 이미지뿐이면 빈 문자열이 된다.
 String communityPreviewText(Community community) {
   try {
