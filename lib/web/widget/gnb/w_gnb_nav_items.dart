@@ -27,7 +27,7 @@ class GnbNavItemData {
   });
 }
 
-/// 1차 그룹: 홈 / 중고거래 / 커뮤니티 / 라이브톡 / 랭킹 / 라이브크루
+/// 1차 그룹: 홈 / 중고거래 / 각종소식 / 커뮤니티 / 라이브톡 / 랭킹 / 라이브크루
 const List<GnbNavItemData> kGnbPrimaryItems = [
   GnbNavItemData(
     label: '홈',
@@ -40,6 +40,7 @@ const List<GnbNavItemData> kGnbPrimaryItems = [
     assetIconOn: 'assets/imgs/icons/icon_market_on.png',
     assetIconOff: 'assets/imgs/icons/icon_market_off.png',
   ),
+  GnbNavItemData(label: '각종소식', routePrefix: '/event', materialIcon: Icons.campaign_outlined),
   GnbNavItemData(label: '커뮤니티', routePrefix: '/community', materialIcon: Icons.forum_outlined),
   GnbNavItemData(label: '라이브톡', routePrefix: '/livetalk', materialIcon: Icons.podcasts_outlined),
   GnbNavItemData(label: '랭킹', routePrefix: '/ranking', materialIcon: Icons.emoji_events_outlined),

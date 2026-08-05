@@ -81,11 +81,13 @@ class FleamarketGridWeb extends StatelessWidget {
                   return FleamarketCardWeb(
                     data: data,
                     onTap: () {
+                      // 즉시 표시용으로 목록 데이터를 먼저 주입하고, URL에 id를 실어
+                      // 이동한다(상세 화면이 그 id로 API 재조회 → 새로고침/직접진입도 됨).
                       detailVm.fetchFleamarketDetailFromList(fleamarketResponse: data);
-                      Get.toNamed(WebRoutes.fleamarketDetail);
-                      final userId = userVm.user.user_id;
-                      if (userId != null && data.fleaId != null) {
-                        detailVm.addViewerFleamarket(fleamarketId: data.fleaId!, userId: userId);
+                      Get.toNamed(WebRoutes.fleamarketDetail, parameters: {'id': '${data.fleaId}'});
+                      // 비로그인(게스트)도 조회수는 올라간다 → userId 없이도 호출.
+                      if (data.fleaId != null) {
+                        detailVm.addViewerFleamarket(fleamarketId: data.fleaId!, userId: userVm.user.user_id);
                       }
                     },
                   );

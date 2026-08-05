@@ -2,6 +2,7 @@ import 'package:com.snowlive/web/routes/bindings_web.dart';
 import 'package:com.snowlive/web/view/community/v_communityDetail_web.dart';
 import 'package:com.snowlive/web/view/community/v_communityHome_web.dart';
 import 'package:com.snowlive/web/view/community/v_communityUpload_web.dart';
+import 'package:com.snowlive/web/view/event/v_eventHome_web.dart';
 import 'package:com.snowlive/web/view/fleamarket/v_fleamarketDetail_web.dart';
 import 'package:com.snowlive/web/view/fleamarket/v_fleamarketHome_web.dart';
 import 'package:com.snowlive/web/view/fleamarket/v_fleamarketUpdate_web.dart';
@@ -18,12 +19,17 @@ import 'package:get/get.dart';
 class WebRoutes {
   static const fleamarketList = '/fleamarket';
   static const fleamarketSearch = '/fleamarket/search';
-  static const fleamarketDetail = '/fleamarket/detail';
+  // 커뮤니티 상세와 같은 이유로 최상위 경로다(중첩 '/fleamarket/detail'로 두면 GetX가
+  // 부모 '/fleamarket'로 매칭해 새로고침 시 목록이 뜬다). 상품 id는 쿼리로 싣는다:
+  // '/fleamarket-detail?id=1365' → 새로고침·링크 공유로 직접 들어와도 그 id로 조회한다.
+  static const fleamarketDetail = '/fleamarket-detail';
   static const fleamarketUpload = '/fleamarket/upload';
   static const fleamarketUpdate = '/fleamarket/update';
   static const fleamarketAlert = '/fleamarket/alert';
   static const login = '/login';
   static const onboarding = '/onboarding';
+  // 각종소식(크롤링 이벤트). 커뮤니티에서 분리된 독립 목록 화면.
+  static const event = '/event';
   static const community = '/community';
   // '/community/detail'로 두면 아래 rankingArchive와 같은 사고가 난다
   // (GetX가 부모 '/community'로 매칭) → 최상위 경로로 분리한다.
@@ -79,6 +85,11 @@ class WebRoutes {
       name: fleamarketAlert,
       page: () => const _PlaceholderPage(title: '키워드 알림 설정'),
       binding: WebFleamarketAlertBinding(),
+    ),
+    GetPage(
+      name: event,
+      page: () => const EventHomeViewWeb(),
+      binding: WebEventBinding(),
     ),
     GetPage(
       name: community,

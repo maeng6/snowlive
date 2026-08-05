@@ -159,19 +159,52 @@ class CommunityFilterRowWeb extends StatelessWidget {
         ]);
       }
       widgets.add(
-        GestureDetector(
+        _HoverTabText(
+          label: value.label,
+          isActive: isActive,
           onTap: () => onTabChanged(value),
-          child: Text(
-            value.label,
-            style: (isActive ? SDSTextStyle.bold : SDSTextStyle.regular).copyWith(
-              fontSize: 15,
-              color: isActive ? SDSColor.gray900 : SDSColor.gray300,
-            ),
-          ),
         ),
       );
     }
     return widgets;
+  }
+}
+
+/// 카테고리 탭 하나. 마우스를 올리면 비활성 탭 글자색이 살짝 진해지고 클릭 커서가 뜬다.
+class _HoverTabText extends StatefulWidget {
+  final String label;
+  final bool isActive;
+  final VoidCallback onTap;
+
+  const _HoverTabText({required this.label, required this.isActive, required this.onTap});
+
+  @override
+  State<_HoverTabText> createState() => _HoverTabTextState();
+}
+
+class _HoverTabTextState extends State<_HoverTabText> {
+  bool _hovered = false;
+
+  @override
+  Widget build(BuildContext context) {
+    // 활성 탭은 진한색 고정. 비활성 탭만 hover 시 gray300 → gray600으로 살짝 진해진다.
+    final color = widget.isActive
+        ? SDSColor.gray900
+        : (_hovered ? SDSColor.gray600 : SDSColor.gray300);
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      onEnter: (_) => setState(() => _hovered = true),
+      onExit: (_) => setState(() => _hovered = false),
+      child: GestureDetector(
+        onTap: widget.onTap,
+        child: AnimatedDefaultTextStyle(
+          duration: const Duration(milliseconds: 120),
+          style: (widget.isActive ? SDSTextStyle.bold : SDSTextStyle.regular)
+              .copyWith(fontSize: 15, color: color),
+          child: Text(widget.label),
+        ),
+      ),
+    );
   }
 }
 

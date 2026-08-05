@@ -122,11 +122,13 @@ class CommunityDetailViewModelWeb extends GetxController {
   }
 
   Future<void> _increaseViewOnce() async {
-    // 조회수 API는 user_id가 필수라 로그인 사용자만 올릴 수 있다.
-    if (_viewCounted || _communityId == null || _userId == null) return;
+    // 비로그인(게스트)도 조회수는 올라간다 → user_id 없으면 빼고 보낸다(서버가 익명 처리).
+    if (_viewCounted || _communityId == null) return;
     _viewCounted = true;
     try {
-      await _api.addView(_communityId!, {'user_id': _userId.toString()});
+      final body = <String, dynamic>{};
+      if (_userId != null) body['user_id'] = _userId.toString();
+      await _api.addView(_communityId!, body);
     } catch (e) {
       print('[CommunityDetail] 조회수 증가 실패: $e');
     }

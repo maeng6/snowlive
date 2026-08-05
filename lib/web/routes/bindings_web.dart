@@ -54,7 +54,13 @@ class WebCommunityListBinding extends Bindings {
   @override
   void dependencies() {
     Get.lazyPut(() => CommunityListPaginationViewModelWeb(), fenix: true);
-    // `이벤트` 탭은 소스가 달라 별도 뷰모델을 쓴다.
+  }
+}
+
+/// 웹 각종소식(이벤트) 독립 목록 라우트용 바인딩.
+class WebEventBinding extends Bindings {
+  @override
+  void dependencies() {
     Get.lazyPut(() => EventListPaginationViewModelWeb(), fenix: true);
   }
 }
@@ -127,6 +133,10 @@ class WebFleamarketSearchBinding extends Bindings {
 class WebFleamarketDetailBinding extends Bindings {
   @override
   void dependencies() {
+    // FleamarketDetailViewModel이 생성 시 FleamarketListViewModel을 Get.find 하므로
+    // (목록 갱신용) 반드시 함께 등록해야 한다. 목록을 거치지 않고 상세 URL로 직접
+    // 진입/새로고침할 때 이게 없으면 "FleamarketListViewModel not found"로 크래시난다.
+    Get.lazyPut(() => FleamarketListViewModel(), fenix: true);
     Get.lazyPut(() => FleamarketDetailViewModel(), fenix: true);
     Get.lazyPut(() => FleamarketCommentDetailViewModel(), fenix: true);
     Get.lazyPut(() => FleamarketAlertViewModel(), fenix: true);

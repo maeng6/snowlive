@@ -1,8 +1,12 @@
+import 'dart:async';
+
 import 'package:com.snowlive/core/api/api_event.dart';
 import 'package:com.snowlive/core/model/m_event.dart';
+import 'package:com.snowlive/core/viewmodel/vm_user.dart';
 import 'package:com.snowlive/web/widget/w_top_loading_bar_web.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 /// 웹 커뮤니티의 `이벤트` 탭 목록 뷰모델. **번호식 페이지 이동** 방식으로,
 /// 매 조회마다 리스트를 통째로 교체해 한 번에 한 페이지만 보여준다.
@@ -140,5 +144,53 @@ class EventListPaginationViewModelWeb extends GetxController {
       start = (end - span + 1) < 1 ? 1 : (end - span + 1);
     }
     return [for (int i = start; i <= end; i++) i];
+  }
+
+  /// 제목/행 클릭 시: 조회수를 올리고 `landing_url`로 외부 이동한다.
+  /// 조회수 증가는 이동을 막지 않도록 기다리지 않는다(실패해도 이동은 한다).
+  /// 로그인 유저만 서버가 카운트하므로(user_id 필수) 게스트는 이동만 한다.
+  Future<void> openEvent(EventModel event) async {
+    // 비로그인(게스트)도 조회수는 올라간다 → userId가 null이어도 호출한다.
+    if (event.eventId != null) {
+      unawaited(_incrementViewCount(event.eventId!, _currentUserId()));
+    }
+    await _launchLanding(event.landingUrl);
+  }
+
+  /// 현재 로그인 유저 id. 게스트(미로그인)면 null.
+  int? _currentUserId() {
+    try {
+      final id = Get.find<UserViewModel>().user.user_id;
+      if (id == null || id <= 0) return null;
+      return id as int;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  /// 조회수 증가 호출. 성공하면 서버가 준 총합으로 목록의 해당 항목 숫자를 갱신한다.
+  /// [userId]가 null이면 게스트(익명) 조회로 기록된다.
+  Future<void> _incrementViewCount(int eventId, int? userId) async {
+    try {
+      final resp = await _api.incrementViewCount(eventId: eventId, userId: userId);
+      if (!resp.success) return;
+      final data = resp.data as Map<String, dynamic>;
+      final newCount = data['views_count'];
+      if (newCount is! int) return;
+      final idx = _items.indexWhere((e) => e.eventId == eventId);
+      if (idx < 0) return;
+      _items[idx].viewCount = newCount;
+      _items.refresh(); // 항목 내부 필드만 바꿔서 Obx가 감지하도록 강제 갱신.
+    } catch (e) {
+      debugPrint('[Event] 조회수 증가 실패: $e');
+    }
+  }
+
+  /// `landing_url`을 외부 브라우저로 연다. **http/https만** 연다(`javascript:` 등 차단).
+  Future<void> _launchLanding(String? raw) async {
+    if (raw == null || raw.isEmpty) return;
+    final uri = Uri.tryParse(raw);
+    if (uri == null || (uri.scheme != 'http' && uri.scheme != 'https')) return;
+    await launchUrl(uri, mode: LaunchMode.externalApplication);
   }
 }

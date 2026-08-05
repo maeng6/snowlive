@@ -88,15 +88,24 @@ class SnowliveWebApp extends StatelessWidget {
         fontFamily: 'Pretendard',
       ),
       builder: (context, child) {
-        return MediaQuery(
-          data: MediaQuery.of(context).copyWith(textScaler: TextScaler.linear(1.0)),
-          // WebAppShell(GNB)이 라우트 Navigator를 감싸는 구조라, GNB까지 덮는
-          // 진짜 풀스크린 오버레이(이미지 뷰어 등)는 라우트 Navigator보다 상위에
-          // 있는 이 Overlay를 통해서만 열 수 있다 (Overlay.of(rootOverlay: true)로 접근).
-          child: Overlay(
-            initialEntries: [
-              OverlayEntry(builder: (_) => WebAppShell(child: child!)),
-            ],
+        // [Flutter 웹 프레임워크 버그 우회] 브라우저 창이 포커스를 받을 때
+        // 기본 ReadingOrderTraversalPolicy가 포커스 가능한 위젯들을 rect(크기)로
+        // 정렬하다가, 아직 레이아웃 안 된 위젯의 size를 읽어 "RenderBox was not laid out"
+        // assert가 터진다(didChangeViewFocus→findFirstFocus 경로, 디버그 전용).
+        // 앱 전체를 geometry 정렬을 하지 않는 WidgetOrderTraversalPolicy 그룹으로
+        // 감싸 이 크래시를 없앤다(세로 레이아웃이라 탭 순서 차이는 사실상 없다).
+        return FocusTraversalGroup(
+          policy: WidgetOrderTraversalPolicy(),
+          child: MediaQuery(
+            data: MediaQuery.of(context).copyWith(textScaler: TextScaler.linear(1.0)),
+            // WebAppShell(GNB)이 라우트 Navigator를 감싸는 구조라, GNB까지 덮는
+            // 진짜 풀스크린 오버레이(이미지 뷰어 등)는 라우트 Navigator보다 상위에
+            // 있는 이 Overlay를 통해서만 열 수 있다 (Overlay.of(rootOverlay: true)로 접근).
+            child: Overlay(
+              initialEntries: [
+                OverlayEntry(builder: (_) => WebAppShell(child: child!)),
+              ],
+            ),
           ),
         );
       },

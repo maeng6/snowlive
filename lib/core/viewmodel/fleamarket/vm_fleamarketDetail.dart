@@ -113,7 +113,7 @@ class FleamarketDetailViewModel extends GetxController {
 
   Future<void> fetchFleamarketDetailFromAPI({
     required int fleamarketId,
-    required int userId,
+    int? userId, // 게스트(비로그인)면 null — detailFleamarket이 user_id를 빼고 조회한다.
   }) async {
     // isLoading(true);
     try {
@@ -133,13 +133,14 @@ class FleamarketDetailViewModel extends GetxController {
 
   Future<void> addViewerFleamarket({
     required int fleamarketId,
-    required int userId,
+    int? userId,
   }) async {
     // isLoading(true);
     try {
-      final response = await FleamarketAPI().addView(fleamarketId: fleamarketId, body: {
-        "user_id":userId
-      });
+      // 비로그인(게스트)도 조회수는 올라간다 → userId가 null이면 빼고 보낸다(서버가 익명 처리).
+      final body = <String, dynamic>{};
+      if (userId != null) body["user_id"] = userId;
+      final response = await FleamarketAPI().addView(fleamarketId: fleamarketId, body: body);
       if (response.success) {
         print('조회수 업데이트완료');
       } else {

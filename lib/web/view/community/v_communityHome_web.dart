@@ -6,9 +6,7 @@ import 'package:com.snowlive/web/view/community/w_community_header_web.dart';
 import 'package:com.snowlive/web/view/community/w_community_list_web.dart';
 import 'package:com.snowlive/web/view/community/w_community_sidebar_web.dart';
 import 'package:com.snowlive/web/viewmodel/auth/vm_authcheck_web.dart';
-import 'package:com.snowlive/web/view/community/w_event_list_web.dart';
 import 'package:com.snowlive/web/viewmodel/community/vm_communityListPagination_web.dart';
-import 'package:com.snowlive/web/viewmodel/event/vm_eventListPagination_web.dart';
 import 'package:com.snowlive/web/widget/gnb/w_gnb_sidebar.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -31,8 +29,6 @@ class _CommunityHomeViewWebState extends State<CommunityHomeViewWeb> {
       Get.find<CommunityListPaginationViewModelWeb>();
   final UserViewModel _userVm = Get.find<UserViewModel>();
   final AuthCheckViewModelWeb _authVm = Get.find<AuthCheckViewModelWeb>();
-  final EventListPaginationViewModelWeb _eventVm =
-      Get.find<EventListPaginationViewModelWeb>();
 
   final TextEditingController _searchController = TextEditingController();
   final FocusNode _searchFocus = FocusNode();
@@ -64,11 +60,6 @@ class _CommunityHomeViewWebState extends State<CommunityHomeViewWeb> {
   }
 
   void _reload() {
-    // 이벤트는 소스가 `/api/event/`로 완전히 달라 다른 뷰모델로 조회한다.
-    if (_tab.isEvent) {
-      _eventVm.loadFirstPage(query: _searchController.text);
-      return;
-    }
     _vm.loadFirstPage(
       userId: _userVm.user.user_id,
       tab: _tab,
@@ -80,15 +71,7 @@ class _CommunityHomeViewWebState extends State<CommunityHomeViewWeb> {
 
   void _onTabChanged(CommunityCategoryTab tab) {
     if (tab == _tab) return;
-    setState(() {
-      _tab = tab;
-      // 이벤트 탭은 정렬 pill이 숨겨진다. 이전 정렬이 남아 있으면 다른 탭으로
-      // 돌아갔을 때 "안 건드렸는데 정렬이 바뀐" 상태로 보이므로 기본값으로 되돌린다.
-      if (tab.isEvent) {
-        _sort = CommunitySortOption.latest;
-        _scope = CommunitySearchScope.titleContent;
-      }
-    });
+    setState(() => _tab = tab);
     _reload();
   }
 
@@ -120,8 +103,6 @@ class _CommunityHomeViewWebState extends State<CommunityHomeViewWeb> {
       scope: _scope,
       onScopeChanged: _onScopeChanged,
       onSubmitted: (_) => _reload(),
-      // 이벤트 API는 search_query(제목+내용)만 지원한다.
-      scopeLocked: _tab.isEvent,
     );
 
     final content = Column(
@@ -148,20 +129,18 @@ class _CommunityHomeViewWebState extends State<CommunityHomeViewWeb> {
           sort: _sort,
           onTabChanged: _onTabChanged,
           onSortSelected: _onSortSelected,
-          // 이벤트 API에는 정렬 파라미터가 없다.
-          showSort: !_tab.isEvent,
         ),
         const SizedBox(height: SDSSpacing.md),
         // 검색 중이면 안내 박스를 목록 위에 둔다. 서버에 실제로 보낸 검색어를 쓴다.
         Obx(() {
-          final query = _tab.isEvent ? _eventVm.appliedQuery : _vm.appliedQuery;
+          final query = _vm.appliedQuery;
           if (query.isEmpty) return const SizedBox.shrink();
           return Padding(
             padding: const EdgeInsets.only(bottom: SDSSpacing.md),
             child: CommunitySearchNoticeWeb(query: query),
           );
         }),
-        if (_tab.isEvent) const EventListWeb() else const CommunityListWeb(),
+        const CommunityListWeb(),
         if (!isDesktop) ...[
           const SizedBox(height: SDSSpacing.lg),
           // content Column이 crossAxisAlignment.start라서 감싸지 않으면 버튼이

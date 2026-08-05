@@ -1,6 +1,8 @@
 import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/core/viewmodel/fleamarket/vm_fleamarketDetail.dart';
+import 'package:com.snowlive/core/viewmodel/vm_user.dart';
 import 'package:com.snowlive/web/routes/routes_web.dart';
+import 'package:com.snowlive/web/viewmodel/auth/vm_authcheck_web.dart';
 import 'package:com.snowlive/web/widget/w_empty_state_web.dart';
 import 'package:com.snowlive/web/util/responsive_web.dart';
 import 'package:com.snowlive/web/view/fleamarket/v_fleamarketHome_web.dart' show kFleamarketContentMaxWidth;
@@ -13,22 +15,83 @@ import 'package:com.snowlive/web/view/fleamarket/w_fleamarket_detail_seller_row_
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-/// 중고거래 웹 상세화면. 목록 카드 탭에서 fetchFleamarketDetailFromList로 이미
-/// 채워진 FleamarketDetailViewModel의 상태를 그대로 읽어서 렌더링한다.
-class FleamarketDetailView extends StatelessWidget {
+/// 중고거래 웹 상세화면.
+///
+/// 커뮤니티 상세처럼 **URL의 id로 조회**한다(`/fleamarket-detail?id=1365`).
+/// 목록 카드 탭 시에는 즉시 표시를 위해 목록 데이터를 먼저 주입하고, 진입 후 그 id로
+/// API 재조회한다. 그래서 새로고침·링크 공유로 직접 들어와도(=주입 데이터가 없어도) 열린다.
+class FleamarketDetailView extends StatefulWidget {
   const FleamarketDetailView({super.key});
 
   @override
+  State<FleamarketDetailView> createState() => _FleamarketDetailViewState();
+}
+
+class _FleamarketDetailViewState extends State<FleamarketDetailView> {
+  final FleamarketDetailViewModel _detailVm = Get.find<FleamarketDetailViewModel>();
+  final UserViewModel _userVm = Get.find<UserViewModel>();
+  final AuthCheckViewModelWeb _authVm = Get.find<AuthCheckViewModelWeb>();
+
+  int? _fleaId;
+  bool _loadingById = false;
+  Worker? _authWorker;
+
+  @override
+  void initState() {
+    super.initState();
+    // Get.parameters는 전역 가변 맵이라 build에서 읽으면 다른 라우트 값에 덮인다.
+    _fleaId = int.tryParse(Get.parameters['id'] ?? '');
+    if (_fleaId != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) => _load());
+      // 자동로그인이 늦게 확정되면 user_id 없이 조회된 상태다 → 확정 후 다시 받는다(찜 상태 등).
+      _authWorker = ever<WebAuthStatus>(_authVm.statusRx, (status) {
+        if (status == WebAuthStatus.authenticated) _load();
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    _authWorker?.dispose();
+    super.dispose();
+  }
+
+  Future<void> _load() async {
+    if (_fleaId == null) return;
+    if (mounted) setState(() => _loadingById = true);
+    // 게스트면 user_id는 null로 나가고, 서버는 로그인 없이도 상세를 준다.
+    await _detailVm.fetchFleamarketDetailFromAPI(
+      fleamarketId: _fleaId!,
+      userId: _userVm.user.user_id,
+    );
+    if (mounted) setState(() => _loadingById = false);
+  }
+
+  void _goBack() {
+    // 딥링크로 바로 들어왔으면 pop할 히스토리가 없다.
+    if (Navigator.of(context).canPop()) {
+      Get.back();
+    } else {
+      Get.offAllNamed(WebRoutes.fleamarketList);
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final detailVm = Get.find<FleamarketDetailViewModel>();
     final isDesktop = context.isDesktop;
 
     return Obx(() {
-      final detail = detailVm.fleamarketDetail;
+      final detail = _detailVm.fleamarketDetail;
       if (detail.fleaId == null) {
-        // 상세 데이터는 목록 카드를 탭할 때 동기로 주입된다. 따라서 여기가 비어 있다는 건
-        // 직접 URL 진입/새로고침처럼 조회 자체가 일어나지 않은 경우로, 스피너를 계속
-        // 돌리면 영원히 돈다(실제로 그런 버그가 있었다). 빠져나갈 길을 준다.
+        // id로 조회 중이면 스피너를, 조회할 id조차 없으면(비정상 진입) 안내를 준다.
+        if (_loadingById) {
+          return const Center(
+            child: Padding(
+              padding: EdgeInsets.symmetric(vertical: 80),
+              child: CircularProgressIndicator(),
+            ),
+          );
+        }
         return WebEmptyState(
           message: '상품 정보를 불러올 수 없어요.\n목록에서 다시 선택해주세요.',
           actionLabel: '중고거래 목록으로',
@@ -63,7 +126,7 @@ class FleamarketDetailView extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   IconButton(
-                    onPressed: () => Get.back(),
+                    onPressed: _goBack,
                     icon: Icon(Icons.arrow_back, color: SDSColor.gray900),
                   ),
                   const SizedBox(height: SDSSpacing.sm),

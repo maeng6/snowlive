@@ -9,8 +9,8 @@ import 'package:com.snowlive/web/widget/w_skeleton_web.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-/// 커뮤니티 `이벤트` 탭 본문. 모바일은 카드형, 태블릿·데스크탑은 표형으로 그린다.
-/// 표 헤더는 커뮤니티와 같은 위젯을 써서 열 정렬이 어긋나지 않게 한다.
+/// 각종소식(이벤트) 목록 본문. 모바일은 카드형, 태블릿·데스크탑은 표형으로 그린다.
+/// 커뮤니티에서 분리된 독립 화면([EventHomeViewWeb])에서 쓴다.
 class EventListWeb extends StatelessWidget {
   const EventListWeb({super.key});
 
@@ -38,7 +38,7 @@ class EventListWeb extends StatelessWidget {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          if (!isMobile) const CommunityTableHeaderRow(),
+          if (!isMobile) const EventTableHeaderRow(),
           for (final event in items)
             isMobile
                 ? EventCardRow(event: event, query: query)

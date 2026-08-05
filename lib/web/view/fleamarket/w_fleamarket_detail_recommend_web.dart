@@ -89,10 +89,10 @@ class _FleamarketDetailRecommendWebState extends State<FleamarketDetailRecommend
                       data: data,
                       onTap: () {
                         detailVm.fetchFleamarketDetailFromList(fleamarketResponse: data);
-                        Get.offNamed(WebRoutes.fleamarketDetail);
-                        final userId = userVm.user.user_id;
-                        if (userId != null && data.fleaId != null) {
-                          detailVm.addViewerFleamarket(fleamarketId: data.fleaId!, userId: userId);
+                        Get.offNamed(WebRoutes.fleamarketDetail, parameters: {'id': '${data.fleaId}'});
+                        // 비로그인(게스트)도 조회수는 올라간다 → userId 없이도 호출.
+                        if (data.fleaId != null) {
+                          detailVm.addViewerFleamarket(fleamarketId: data.fleaId!, userId: userVm.user.user_id);
                         }
                       },
                     );

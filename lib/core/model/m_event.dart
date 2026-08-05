@@ -21,40 +21,13 @@ class EventListResponse {
             .toList() ?? [];
 }
 
-/// 이벤트 작성자 정보. 응답(`user_info`)에 있는데 파싱이 빠져 있었다.
-class EventUserInfo {
-  int? userId;
-  String? displayName;
-  String? profileImageUrlUser;
-  String? resortNickname;
-
-  EventUserInfo({
-    this.userId,
-    this.displayName,
-    this.profileImageUrlUser,
-    this.resortNickname,
-  });
-
-  EventUserInfo.fromJson(Map<String, dynamic> json) {
-    userId = json['user_id'];
-    displayName = json['display_name'];
-    profileImageUrlUser = json['profile_image_url_user'];
-    resortNickname = json['resort_nickname'];
-  }
-
-  Map<String, dynamic> toJson() => {
-        'user_id': userId,
-        'display_name': displayName,
-        'profile_image_url_user': profileImageUrlUser,
-        'resort_nickname': resortNickname,
-      };
-}
-
-/// 이벤트 모델
+/// 이벤트 모델. 크롤 피드라 작성자(user) 개념이 없다 —
+/// 출처는 크롤 계정([crawlAccountId]/[crawlAccountUsername])으로 표시한다.
 class EventModel {
   int? eventId;
-  int? userId;
-  EventUserInfo? userInfo;
+  int? crawlAccountId;          // 출처 크롤 계정 FK
+  String? crawlAccountUsername; // 출처 계정 인스타 아이디
+  String? crawlAccountName;     // 출처 계정 표시용 이름(예: 용평) — 목록 '이름' 컬럼. 없으면 서버가 username으로 폴백
   String? category;
   String? title;
   String? description;
@@ -67,8 +40,9 @@ class EventModel {
 
   EventModel({
     this.eventId,
-    this.userId,
-    this.userInfo,
+    this.crawlAccountId,
+    this.crawlAccountUsername,
+    this.crawlAccountName,
     this.category,
     this.title,
     this.description,
@@ -82,10 +56,9 @@ class EventModel {
 
   EventModel.fromJson(Map<String, dynamic> json) {
     eventId = json['event_id'];
-    userId = json['user_id'];
-    userInfo = json['user_info'] == null
-        ? null
-        : EventUserInfo.fromJson(json['user_info'] as Map<String, dynamic>);
+    crawlAccountId = json['crawl_account_id'];
+    crawlAccountUsername = json['crawl_account_username'];
+    crawlAccountName = json['crawl_account_name'];
     category = json['category'];
     title = json['title'];
     description = json['description'];
@@ -123,8 +96,9 @@ class EventModel {
   Map<String, dynamic> toJson() {
     return {
       'event_id': eventId,
-      'user_id': userId,
-      'user_info': userInfo?.toJson(),
+      'crawl_account_id': crawlAccountId,
+      'crawl_account_username': crawlAccountUsername,
+      'crawl_account_name': crawlAccountName,
       'category': category,
       'title': title,
       'description': description,

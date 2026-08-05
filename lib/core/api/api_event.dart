@@ -36,6 +36,32 @@ class EventAPI {
       return ApiResponse.error(data);
     }
   }
-  // 목록 전용(각종소식) — 상세/생성/수정/삭제/조회수 API는 제거됨(미사용).
+  /// 조회수 증가 (PUT /api/event/view/{event_id}/)
+  /// 제목 클릭 → landing_url 이동 시 호출한다.
+  /// 로그인 유저는 유저당 5분 1회 스로틀, 게스트([userId] null)는 매 클릭 익명 기록.
+  /// 응답: `{ "detail": "ok", "counted": bool, "views_count": int }`
+  Future<ApiResponse> incrementViewCount({
+    required int eventId,
+    int? userId,
+  }) async {
+    final Uri uri = Uri.parse('$baseUrl/view/$eventId/');
+    // 게스트면 user_id를 아예 빼서 보낸다(서버가 없으면 익명으로 처리).
+    final body = <String, dynamic>{};
+    if (userId != null) body['user_id'] = userId;
+    final response = await http.put(
+      uri,
+      headers: {'Content-Type': 'application/json'},
+      body: json.encode(body),
+    );
+
+    final data = json.decode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
+    if (response.statusCode == 200) {
+      return ApiResponse.success(data);
+    } else {
+      return ApiResponse.error(data);
+    }
+  }
+
+  // 목록·조회수 전용(각종소식) — 상세/생성/수정/삭제 API는 제거됨(미사용).
   // 어드민 CRUD는 웹 각종소식 어드민(news.html)에서 처리.
 }
