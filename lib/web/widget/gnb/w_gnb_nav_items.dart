@@ -1,4 +1,7 @@
 import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
+import 'package:com.snowlive/core/viewmodel/vm_user.dart';
+import 'package:com.snowlive/web/routes/routes_web.dart';
+import 'package:com.snowlive/web/viewmodel/fleamarket/vm_fleamarketPagination_web.dart';
 import 'package:com.snowlive/web/widget/gnb/w_gnb_current_route_web.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -67,6 +70,20 @@ bool gnbItemIsActive(GnbNavItemData item, String currentRoute) {
   return currentRoute.startsWith(item.routePrefix!);
 }
 
+/// 이미 들어와 있는 섹션의 메뉴를 다시 눌렀을 때 메인 목록을 새로고침한다.
+///
+/// 커뮤니티·각종소식 목록 화면은 StatefulWidget이라 [Get.offAllNamed]로 라우트가
+/// 새로 생성되며 initState에서 알아서 재조회한다. 반면 중고거래 목록은
+/// StatelessWidget이고 최초 로드가 뷰모델 onInit에서만 일어나므로, 재진입해도
+/// 자동 갱신되지 않는다 → 여기서 뷰모델을 직접 다시 로드해준다.
+void _reloadSectionList(String prefix) {
+  if (prefix == WebRoutes.fleamarketList &&
+      Get.isRegistered<FleamarketPaginationViewModelWeb>()) {
+    Get.find<FleamarketPaginationViewModelWeb>()
+        .loadFirstPage(userId: Get.find<UserViewModel>().user.user_id);
+  }
+}
+
 /// 사이드바/드로어가 공유하는 항목 1개 행. 라우트가 있으면 이동하고,
 /// 아직 화면이 없는 항목은 "준비 중" 스낵바만 띄운다. placeholder는 완전히 비활성.
 class GnbNavRow extends StatelessWidget {
@@ -89,12 +106,18 @@ class GnbNavRow extends StatelessWidget {
           onTap: item.isPlaceholder
               ? null
               : () {
-                  if (item.routePrefix != null) {
-                    if (!Get.currentRoute.startsWith(item.routePrefix!)) {
-                      Get.toNamed(item.routePrefix!);
-                    }
-                  } else {
+                  final prefix = item.routePrefix;
+                  if (prefix == null) {
                     Get.snackbar('준비 중입니다', '${item.label} 화면은 아직 준비 중이에요.');
+                    onNavigate?.call();
+                    return;
+                  }
+                  if (Get.currentRoute.startsWith(prefix)) {
+                    // 이미 이 섹션 안(목록/상세 등)에 있으면 → 메인 목록으로 되돌리며 새로고침.
+                    Get.offAllNamed(prefix);
+                    _reloadSectionList(prefix);
+                  } else {
+                    Get.toNamed(prefix);
                   }
                   onNavigate?.call();
                 },
