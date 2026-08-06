@@ -3,6 +3,7 @@ import 'package:com.snowlive/web/view/community/v_communityDetail_web.dart';
 import 'package:com.snowlive/web/view/community/v_communityHome_web.dart';
 import 'package:com.snowlive/web/view/community/v_communityUpload_web.dart';
 import 'package:com.snowlive/web/view/event/v_eventHome_web.dart';
+import 'package:com.snowlive/web/view/fleamarket/v_fleamarketAlert_web.dart';
 import 'package:com.snowlive/web/view/fleamarket/v_fleamarketDetail_web.dart';
 import 'package:com.snowlive/web/view/fleamarket/v_fleamarketHome_web.dart';
 import 'package:com.snowlive/web/view/fleamarket/v_fleamarketUpdate_web.dart';
@@ -83,7 +84,7 @@ class WebRoutes {
     ),
     GetPage(
       name: fleamarketAlert,
-      page: () => const _PlaceholderPage(title: '키워드 알림 설정'),
+      page: () => const FleamarketAlertViewWeb(),
       binding: WebFleamarketAlertBinding(),
     ),
     GetPage(

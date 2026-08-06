@@ -3,6 +3,7 @@ import 'package:com.snowlive/web/util/responsive_web.dart';
 import 'package:com.snowlive/web/view/fleamarket/w_fleamarket_filter_sheet_web.dart';
 import 'package:com.snowlive/web/viewmodel/community/vm_communityListPagination_web.dart';
 import 'package:com.snowlive/web/widget/w_web_filter_menu_web.dart';
+import 'package:com.snowlive/web/widget/w_web_text_tabs_web.dart';
 import 'package:flutter/material.dart';
 
 /// 데스크탑에서 타이틀 오른쪽에 붙는 검색바 폭(목업). 남은 폭을 다 먹지 않는다.
@@ -128,7 +129,12 @@ class CommunityFilterRowWeb extends StatelessWidget {
             labelStyle: SDSTextStyle.bold.copyWith(fontSize: 15, color: SDSColor.gray900),
           )
         else
-          ..._buildTextTabs(),
+          ...WebTextTabs<CommunityCategoryTab>(
+            values: CommunityCategoryTab.values,
+            selected: tab,
+            labelOf: (v) => v.label,
+            onSelected: onTabChanged,
+          ).buildChildren(),
         const Spacer(),
         if (showSort)
           FleamarketFilterPill<CommunitySortOption>(
@@ -146,66 +152,6 @@ class CommunityFilterRowWeb extends StatelessWidget {
     );
   }
 
-  List<Widget> _buildTextTabs() {
-    final widgets = <Widget>[];
-    for (var i = 0; i < CommunityCategoryTab.values.length; i++) {
-      final value = CommunityCategoryTab.values[i];
-      final isActive = value == tab;
-      if (i > 0) {
-        widgets.addAll([
-          const SizedBox(width: 12),
-          Text('|', style: SDSTextStyle.regular.copyWith(fontSize: 15, color: SDSColor.gray200)),
-          const SizedBox(width: 12),
-        ]);
-      }
-      widgets.add(
-        _HoverTabText(
-          label: value.label,
-          isActive: isActive,
-          onTap: () => onTabChanged(value),
-        ),
-      );
-    }
-    return widgets;
-  }
-}
-
-/// 카테고리 탭 하나. 마우스를 올리면 비활성 탭 글자색이 살짝 진해지고 클릭 커서가 뜬다.
-class _HoverTabText extends StatefulWidget {
-  final String label;
-  final bool isActive;
-  final VoidCallback onTap;
-
-  const _HoverTabText({required this.label, required this.isActive, required this.onTap});
-
-  @override
-  State<_HoverTabText> createState() => _HoverTabTextState();
-}
-
-class _HoverTabTextState extends State<_HoverTabText> {
-  bool _hovered = false;
-
-  @override
-  Widget build(BuildContext context) {
-    // 활성 탭은 진한색 고정. 비활성 탭만 hover 시 gray300 → gray600으로 살짝 진해진다.
-    final color = widget.isActive
-        ? SDSColor.gray900
-        : (_hovered ? SDSColor.gray600 : SDSColor.gray300);
-    return MouseRegion(
-      cursor: SystemMouseCursors.click,
-      onEnter: (_) => setState(() => _hovered = true),
-      onExit: (_) => setState(() => _hovered = false),
-      child: GestureDetector(
-        onTap: widget.onTap,
-        child: AnimatedDefaultTextStyle(
-          duration: const Duration(milliseconds: 120),
-          style: (widget.isActive ? SDSTextStyle.bold : SDSTextStyle.regular)
-              .copyWith(fontSize: 15, color: color),
-          child: Text(widget.label),
-        ),
-      ),
-    );
-  }
 }
 
 /// "OO 검색 결과입니다." 안내 박스. 결과가 0건이어도 검색 상태를 알 수 있게 유지한다.

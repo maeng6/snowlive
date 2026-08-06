@@ -15,18 +15,36 @@ class WebFormLabel extends StatelessWidget {
   final String text;
   final bool compact;
 
-  const WebFormLabel(this.text, {super.key, this.compact = false});
+  /// 필수 항목 표시. 라벨 뒤에 빨간 `*`를 올려 붙인다(온보딩 목업).
+  final bool required;
+
+  const WebFormLabel(this.text, {super.key, this.compact = false, this.required = false});
 
   @override
   Widget build(BuildContext context) {
+    final style = compact
+        ? SDSTextStyle.regular.copyWith(fontSize: 13, color: SDSColor.gray900)
+        : SDSTextStyle.bold.copyWith(fontSize: 14, color: SDSColor.gray900);
+
     return Padding(
       padding: const EdgeInsets.only(bottom: SDSSpacing.sm),
-      child: Text(
-        text,
-        style: compact
-            ? SDSTextStyle.regular.copyWith(fontSize: 13, color: SDSColor.gray900)
-            : SDSTextStyle.bold.copyWith(fontSize: 14, color: SDSColor.gray900),
-      ),
+      child: required
+          ? Text.rich(
+              TextSpan(
+                text: text,
+                style: style,
+                children: [
+                  WidgetSpan(
+                    alignment: PlaceholderAlignment.top,
+                    child: Text(
+                      '*',
+                      style: SDSTextStyle.bold.copyWith(fontSize: 11, color: SDSColor.red),
+                    ),
+                  ),
+                ],
+              ),
+            )
+          : Text(text, style: style),
     );
   }
 }
@@ -47,6 +65,13 @@ class WebFormTextField extends StatelessWidget {
   final String? helperText;
   final bool compact;
 
+  /// 라벨 뒤 빨간 `*`.
+  final bool isRequired;
+
+  /// helperText 대신 그릴 에러 문구. 지정되면 빨간색으로 helperText를 대체한다
+  /// (닉네임 중복 같은 서버 검증 결과를 필드 바로 아래에 붙이는 용도).
+  final String? errorText;
+
   const WebFormTextField({
     super.key,
     required this.label,
@@ -62,6 +87,8 @@ class WebFormTextField extends StatelessWidget {
     this.height,
     this.helperText,
     this.compact = false,
+    this.isRequired = false,
+    this.errorText,
   });
 
   @override
@@ -92,9 +119,12 @@ class WebFormTextField extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        WebFormLabel(label, compact: compact),
+        WebFormLabel(label, compact: compact, required: isRequired),
         height != null ? SizedBox(height: height, child: field) : field,
-        if (helperText != null) ...[
+        if (errorText != null) ...[
+          const SizedBox(height: 6),
+          Text(errorText!, style: SDSTextStyle.regular.copyWith(fontSize: 13, color: SDSColor.red)),
+        ] else if (helperText != null) ...[
           const SizedBox(height: 6),
           Text(helperText!, style: SDSTextStyle.regular.copyWith(fontSize: 12, color: SDSColor.gray400)),
         ],
@@ -122,6 +152,19 @@ class WebFormDropdownField<T> extends StatefulWidget {
   /// 상세 카테고리처럼 선행 선택이 필요한 필드에 쓴다.
   final bool Function()? canOpen;
 
+  /// 필드 아래 회색 안내 문구. `WebFormTextField`에는 있었는데 여기엔 없었다.
+  final String? helperText;
+
+  /// 라벨 뒤 빨간 `*`.
+  final bool isRequired;
+
+  /// 딤 시트에 **필드 라벨을 제목으로** 달지. 온보딩 목업의 모바일 드롭다운이 그렇다.
+  /// 중고거래·커뮤니티 폼 시트에는 제목이 없으므로 기본값은 false여야 한다.
+  final bool sheetShowsLabelTitle;
+
+  /// 딤 시트 항목을 좌측 정렬할지. 기존 시트는 중앙 정렬이라 기본값 false 유지.
+  final bool sheetAlignStart;
+
   const WebFormDropdownField({
     super.key,
     required this.label,
@@ -133,6 +176,10 @@ class WebFormDropdownField<T> extends StatefulWidget {
     this.compact = false,
     this.centerSheetOnTablet = false,
     this.canOpen,
+    this.helperText,
+    this.isRequired = false,
+    this.sheetShowsLabelTitle = false,
+    this.sheetAlignStart = false,
   });
 
   @override
@@ -156,6 +203,9 @@ class _WebFormDropdownFieldState<T> extends State<WebFormDropdownField<T>> {
         values: widget.values,
         labelOf: widget.labelOf,
         centerOnTablet: widget.centerSheetOnTablet,
+        title: widget.sheetShowsLabelTitle ? widget.label : null,
+        showTitle: widget.sheetShowsLabelTitle,
+        alignItemsStart: widget.sheetAlignStart,
       );
       // 배경 탭으로 닫으면 null — 선택했을 때만 콜백을 태운다.
       if (picked != null) widget.onSelected(picked);
@@ -182,7 +232,7 @@ class _WebFormDropdownFieldState<T> extends State<WebFormDropdownField<T>> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        WebFormLabel(widget.label, compact: widget.compact),
+        WebFormLabel(widget.label, compact: widget.compact, required: widget.isRequired),
         CompositedTransformTarget(
           link: _link,
           child: InkWell(
@@ -209,6 +259,13 @@ class _WebFormDropdownFieldState<T> extends State<WebFormDropdownField<T>> {
             ),
           ),
         ),
+        if (widget.helperText != null) ...[
+          const SizedBox(height: 6),
+          Text(
+            widget.helperText!,
+            style: SDSTextStyle.regular.copyWith(fontSize: 12, color: SDSColor.gray400),
+          ),
+        ],
       ],
     );
   }

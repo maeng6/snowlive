@@ -1,135 +1,85 @@
-import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
-import 'package:com.snowlive/model/m_resortModel.dart';
-import 'package:com.snowlive/web/view/fleamarket/w_fleamarket_filter_sheet_web.dart';
+import 'package:com.snowlive/web/routes/routes_web.dart';
+import 'package:com.snowlive/web/view/onboarding/w_onboarding_complete_modal_web.dart';
+import 'package:com.snowlive/web/view/onboarding/w_onboarding_profile_web.dart';
+import 'package:com.snowlive/web/view/onboarding/w_onboarding_scaffold_web.dart';
+import 'package:com.snowlive/web/view/onboarding/w_onboarding_terms_web.dart';
+import 'package:com.snowlive/web/viewmodel/auth/vm_authcheck_web.dart';
 import 'package:com.snowlive/web/viewmodel/auth/vm_onboarding_web.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-// 모바일 w_favoriteResort.dart와 동일하게 4번(에덴밸리리조트)은 선택지에서 제외.
-const List<int> kOnboardingSelectableResortIndexes = [0, 1, 2, 3, 5, 6, 7, 8, 9, 10, 11, 12];
-
-class OnboardingViewWeb extends StatelessWidget {
+/// 웹 온보딩(신규가입) 화면. 약관 동의 → 프로필 입력 두 단계를 **한 라우트 안에서**
+/// 넘긴다 — GetX 라우트를 `/onboarding/terms` 처럼 중첩하면 `/onboarding`으로
+/// 매칭돼버려서 하위 경로를 쓸 수 없다.
+class OnboardingViewWeb extends StatefulWidget {
   const OnboardingViewWeb({super.key});
 
   @override
+  State<OnboardingViewWeb> createState() => _OnboardingViewWebState();
+}
+
+class _OnboardingViewWebState extends State<OnboardingViewWeb> {
+  final OnboardingViewModelWeb vm = Get.find<OnboardingViewModelWeb>();
+
+  /// 0 = 약관 동의, 1 = 프로필 입력.
+  int _step = 0;
+
+  Worker? _worker;
+
+  /// 완료 모달이 두 번 뜨지 않게 하는 가드.
+  bool _completeShown = false;
+
+  @override
+  void initState() {
+    super.initState();
+    // 가입 성공 → 완료 모달 → 홈. 뷰모델이 직접 라우팅하지 않는다.
+    _worker = ever<WebOnboardingStatus>(vm.statusRx, (status) {
+      if (status != WebOnboardingStatus.success || _completeShown) return;
+      _completeShown = true;
+      // 가입이 끝나면 로그인된 상태다. 자동로그인 상태도 맞춰줘야 이 값을 보는
+      // 화면들이 로그인 전으로 남지 않는다(로그인 화면과 같은 이유).
+      Get.find<AuthCheckViewModelWeb>().markAuthenticated();
+      _showComplete();
+    });
+  }
+
+  @override
+  void dispose() {
+    _worker?.dispose();
+    super.dispose();
+  }
+
+  Future<void> _showComplete() async {
+    // 버튼·X·배경 탭 어느 쪽으로 닫혀도 가입은 끝난 상태다 → 항상 홈으로 보낸다.
+    await showOnboardingCompleteModal(context, displayName: vm.nickname.trim());
+    Get.offAllNamed(WebRoutes.fleamarketList);
+  }
+
+  void _onBack() {
+    if (_step > 0) {
+      setState(() => _step -= 1);
+      return;
+    }
+    Get.back();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final vm = Get.find<OnboardingViewModelWeb>();
+    if (_step == 0) {
+      return Obx(() => OnboardingScaffoldWeb(
+            onBack: _onBack,
+            primaryLabel: '다음',
+            onPrimary: vm.canProceedTerms ? () => setState(() => _step = 1) : null,
+            child: OnboardingTermsStepWeb(vm: vm),
+          ));
+    }
 
-    return Scaffold(
-      backgroundColor: SDSColor.gray50,
-      body: Center(
-        child: SingleChildScrollView(
-          child: Container(
-            width: 400,
-            padding: const EdgeInsets.all(SDSSpacing.xl),
-            margin: const EdgeInsets.symmetric(vertical: SDSSpacing.xl),
-            decoration: BoxDecoration(
-              color: SDSColor.snowliveWhite,
-              borderRadius: BorderRadius.circular(16),
-              boxShadow: [BoxShadow(color: SDSColor.gray200, blurRadius: 12, offset: const Offset(0, 4))],
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Text('프로필을 설정해주세요', style: SDSTextStyle.extraBold.copyWith(fontSize: 20, color: SDSColor.gray900)),
-                const SizedBox(height: SDSSpacing.sm),
-                Text('닉네임과 자주가는 스키장을 알려주세요.', style: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray500)),
-                const SizedBox(height: SDSSpacing.lg),
-
-                // 닉네임 + 중복검사
-                Obx(() => Stack(
-                      alignment: Alignment.centerRight,
-                      children: [
-                        TextField(
-                          controller: vm.nicknameController,
-                          maxLength: 10,
-                          style: SDSTextStyle.regular.copyWith(fontSize: 15),
-                          decoration: InputDecoration(
-                            hintText: '닉네임을 입력해 주세요 (최대 10자)',
-                            counterText: '',
-                            filled: true,
-                            fillColor: SDSColor.gray50,
-                            contentPadding: const EdgeInsets.only(left: 12, right: 64, top: 14, bottom: 14),
-                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide.none),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(right: 8),
-                          child: TextButton(
-                            onPressed: (vm.nicknameController.text.trim().isEmpty ||
-                                    vm.isCheckedDisplayName ||
-                                    vm.isCheckingDisplayName)
-                                ? null
-                                : () => vm.checkDisplayName(),
-                            child: vm.isCheckingDisplayName
-                                ? const SizedBox(width: 14, height: 14, child: CircularProgressIndicator(strokeWidth: 2))
-                                : Text(
-                                    vm.isCheckedDisplayName ? '확인완료' : '중복확인',
-                                    style: SDSTextStyle.bold.copyWith(
-                                      fontSize: 13,
-                                      color: vm.isCheckedDisplayName ? SDSColor.gray500 : SDSColor.snowliveBlue,
-                                    ),
-                                  ),
-                          ),
-                        ),
-                      ],
-                    )),
-                const SizedBox(height: SDSSpacing.md),
-
-                // 리조트 선택
-                Obx(() => InkWell(
-                      onTap: () => showFleamarketFilterSheet<int>(
-                        context,
-                        values: kOnboardingSelectableResortIndexes,
-                        labelOf: (i) => resortNameList[i] ?? '',
-                        onSelected: (i) => vm.selectResort(i),
-                      ),
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
-                        decoration: BoxDecoration(color: SDSColor.gray50, borderRadius: BorderRadius.circular(8)),
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: Text(
-                                vm.hasResortSelected ? (resortNameList[vm.selectedResortIndex] ?? '') : '자주가는 스키장을 선택해주세요',
-                                style: SDSTextStyle.regular.copyWith(
-                                  fontSize: 15,
-                                  color: vm.hasResortSelected ? SDSColor.gray900 : SDSColor.gray400,
-                                ),
-                              ),
-                            ),
-                            Icon(Icons.keyboard_arrow_down, color: SDSColor.gray500),
-                          ],
-                        ),
-                      ),
-                    )),
-                const SizedBox(height: SDSSpacing.lg),
-
-                Obx(() => vm.status == WebOnboardingStatus.error
-                    ? Padding(
-                        padding: const EdgeInsets.only(bottom: SDSSpacing.md),
-                        child: Text(vm.errorMessage, style: SDSTextStyle.regular.copyWith(fontSize: 13, color: SDSColor.red)),
-                      )
-                    : const SizedBox.shrink()),
-
-                Obx(() => ElevatedButton(
-                      onPressed: vm.canSubmit ? () => vm.submit() : null,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: SDSColor.snowliveBlue,
-                        disabledBackgroundColor: SDSColor.gray200,
-                        minimumSize: const Size(double.infinity, 48),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                      ),
-                      child: vm.status == WebOnboardingStatus.submitting
-                          ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
-                          : Text('시작하기', style: SDSTextStyle.bold.copyWith(fontSize: 16, color: SDSColor.snowliveWhite)),
-                    )),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
+    return Obx(() => OnboardingScaffoldWeb(
+          onBack: _onBack,
+          primaryLabel: '다음',
+          onPrimary: vm.canSubmitProfile ? vm.submit : null,
+          isSubmitting: vm.isSubmitting,
+          child: OnboardingProfileStepWeb(vm: vm),
+        ));
   }
 }

@@ -54,6 +54,21 @@ class AuthCheckViewModelWeb extends GetxController {
     }
   }
 
+  /// 로그인/회원가입이 끝난 직후 호출한다.
+  ///
+  /// ⚠️ [checkAuth]는 `onInit`에서 **앱 로드 때 한 번만** 돌고, 그 뒤 상태를 바꾸는 건
+  /// [signOut]뿐이었다. 그래서 세션 중에 로그인해도 `status`가 `unauthenticated`에
+  /// 머물러, 이 값을 보는 화면들이 전부 로그인 전 상태로 남았다
+  /// (키워드 알림 설정이 로그인 후에도 로그인 유도를 계속 띄우던 문제,
+  ///  커뮤니티·중고거래 상세의 `ever(statusRx)` 재조회가 안 걸리던 문제).
+  ///
+  /// 호출 시점에 [LoginViewModelWeb]/온보딩이 이미 서버 조회와 [UserViewModel]
+  /// 세팅을 마쳤으므로 다시 네트워크를 타지 않고 상태만 맞춘다.
+  void markAuthenticated() {
+    if (_status.value == WebAuthStatus.authenticated) return;
+    _status.value = WebAuthStatus.authenticated;
+  }
+
   Future<void> signOut() async {
     await FirebaseAuth.instance.signOut();
     _status.value = WebAuthStatus.unauthenticated;

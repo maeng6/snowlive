@@ -56,6 +56,27 @@ class ImageControllerWeb extends GetxController {
     );
   }
 
+  /// 온보딩·프로필 수정에서 쓰는 프로필 이미지 1장 업로드. 실패하면 빈 문자열.
+  ///
+  /// ⚠️ 파일명 키로 **Firebase uid**를 받는다. 모바일 앱은 SecureStorage의 `user_id`로
+  /// 파일명을 만드는데(`vm_imageController.dart:377`), 가입 단계에서는 `user_id`가
+  /// 아직 없어서 항상 빈 URL이 돼 **온보딩에서 고른 사진이 저장되지 않는다.**
+  /// 웹은 그 시점에도 확실히 있는 uid를 쓴다(경로 규칙 `user_profile/{키}_{ts}.jpg`는 동일).
+  Future<String> uploadProfileImage({
+    required XFile file,
+    required String uid,
+    Function(String requestType, String error)? onError,
+  }) async {
+    final stamp = DateTime.now().millisecondsSinceEpoch;
+    final urls = await _uploadAll(
+      files: [file],
+      pathOf: (_) => 'user_profile/${uid}_$stamp.jpg',
+      errorPrefix: 'profile',
+      onError: onError,
+    );
+    return urls.isEmpty ? '' : urls.first;
+  }
+
   /// 이미 바이트로 만들어진 이미지(라이딩 카드 캡처 PNG) 1장 업로드.
   /// 압축을 거치지 않는다 — 캡처 결과를 다시 인코딩하면 글자가 뭉개진다.
   Future<String?> uploadLiveTalkPng({

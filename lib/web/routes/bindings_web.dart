@@ -35,6 +35,11 @@ class WebLoginBinding extends Bindings {
 class WebOnboardingBinding extends Bindings {
   @override
   void dependencies() {
+    // OnboardingViewModelWeb이 pendingUid/pendingEmail을 읽으려고 LoginViewModelWeb을
+    // Get.find 한다. 여기서 등록하지 않으면 `/onboarding`으로 직접 진입하거나
+    // 새로고침했을 때 제출 시점에 "not found"로 죽는다(fenix는 한 번 등록된 뒤
+    // 삭제된 경우만 부활시키므로 도움이 안 된다).
+    Get.lazyPut(() => LoginViewModelWeb(), fenix: true);
     Get.lazyPut(() => OnboardingViewModelWeb(), fenix: true);
   }
 }

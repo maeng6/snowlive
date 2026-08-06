@@ -62,11 +62,22 @@ Future<T?> showWebFilterSheet<T>({
   String? title,
   bool showTitle = false,
   bool centerOnTablet = false,
+
+  /// 항목을 좌측 정렬할지. 기존 호출자(중고거래·랭킹·폼 필드)는 모두 중앙 정렬이라
+  /// **기본값을 바꾸면 회귀**가 된다. 온보딩 목업의 드롭다운 시트만 좌측 정렬이다.
+  bool alignItemsStart = false,
+
+  /// 데스크탑에서도 화면 중앙에 띄울지. 기본값(false)은 하단이다 — 데스크탑에서
+  /// 이 함수를 직접 부르는 곳은 앵커를 못 잡는 자리뿐이라 그동안 하단이었다.
+  /// 키워드 알림 목업은 데스크탑도 중앙 모달이다.
+  bool centerOnDesktop = false,
 }) {
-  final isTablet = context.screenType == WebScreenType.tablet;
+  final screenType = context.screenType;
+  final centered = (centerOnTablet && screenType == WebScreenType.tablet) ||
+      (centerOnDesktop && screenType == WebScreenType.desktop);
   return showWebOverlayModal<T>(
     context: context,
-    alignment: (centerOnTablet && isTablet) ? Alignment.center : Alignment.bottomCenter,
+    alignment: centered ? Alignment.center : Alignment.bottomCenter,
     padding: const EdgeInsets.all(16),
     builder: (_, close) => ConstrainedBox(
       constraints: const BoxConstraints(maxWidth: 360),
@@ -93,13 +104,15 @@ Future<T?> showWebFilterSheet<T>({
                   ),
                 for (final value in values)
                   ListTile(
-                    contentPadding: EdgeInsets.zero,
-                    title: Center(
-                      child: Text(
+                    contentPadding:
+                        alignItemsStart ? const EdgeInsets.symmetric(horizontal: 4) : EdgeInsets.zero,
+                    title: () {
+                      final label = Text(
                         labelOf(value),
                         style: SDSTextStyle.bold.copyWith(fontSize: 15, color: SDSColor.gray900),
-                      ),
-                    ),
+                      );
+                      return alignItemsStart ? label : Center(child: label);
+                    }(),
                     onTap: () => close(value),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                   ),

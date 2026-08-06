@@ -1,6 +1,5 @@
 import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/web/util/responsive_web.dart';
-import 'package:com.snowlive/web/view/community/w_community_row_web.dart';
 import 'package:com.snowlive/web/view/community/w_event_row_web.dart';
 import 'package:com.snowlive/web/viewmodel/event/vm_eventListPagination_web.dart';
 import 'package:com.snowlive/web/widget/w_empty_state_web.dart';
