@@ -25,10 +25,10 @@ import 'package:com.snowlive/core/viewmodel/fleamarket/vm_fleamarketSearch.dart'
 import 'package:com.snowlive/mobile/viewmodel/fleamarket/vm_fleamarketUpdate.dart';
 import 'package:com.snowlive/mobile/viewmodel/fleamarket/vm_fleamarketUpload.dart';
 import 'package:com.snowlive/viewmodel/forestPark/vm_forestPark.dart';
-import 'package:com.snowlive/viewmodel/friend/vm_friendDetail.dart';
-import 'package:com.snowlive/viewmodel/friend/vm_friendDetailUpdate.dart';
-import 'package:com.snowlive/viewmodel/friend/vm_friendDetail_recordRoom.dart';
-import 'package:com.snowlive/viewmodel/friend/vm_friendList.dart';
+import 'package:com.snowlive/core/viewmodel/friend/vm_friendDetail.dart';
+import 'package:com.snowlive/core/viewmodel/friend/vm_friendDetailUpdate.dart';
+import 'package:com.snowlive/core/viewmodel/friend/vm_friendDetail_recordRoom.dart';
+import 'package:com.snowlive/core/viewmodel/friend/vm_friendList.dart';
 import 'package:com.snowlive/core/viewmodel/ranking/vm_rankingIndivHistory.dart';
 import 'package:com.snowlive/mobile/viewmodel/auth/vm_login.dart';
 import 'package:com.snowlive/mobile/viewmodel/auth/vm_tos.dart';

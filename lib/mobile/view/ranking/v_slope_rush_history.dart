@@ -3,7 +3,7 @@ import 'package:com.snowlive/model/m_slolpe_rush_recordRoom.dart';
 import 'package:com.snowlive/routes/routes.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewDetail.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewMemberList.dart';
-import 'package:com.snowlive/viewmodel/friend/vm_friendDetail.dart';
+import 'package:com.snowlive/core/viewmodel/friend/vm_friendDetail.dart';
 import 'package:com.snowlive/mobile/viewmodel/ranking/vm_slope_rush_recordRoom.dart';
 import 'package:com.snowlive/core/viewmodel/vm_user.dart';
 import 'package:extended_image/extended_image.dart';

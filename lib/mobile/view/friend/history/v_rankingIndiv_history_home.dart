@@ -1,5 +1,5 @@
 import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
-import 'package:com.snowlive/view/friend/history/v_rankingIndiv_history.dart';
+import 'package:com.snowlive/mobile/view/friend/history/v_rankingIndiv_history.dart';
 import 'package:com.snowlive/core/viewmodel/ranking/vm_rankingList.dart';
 import 'package:com.snowlive/core/viewmodel/vm_user.dart';
 import 'package:flutter/cupertino.dart';

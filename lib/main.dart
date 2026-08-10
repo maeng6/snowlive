@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:com.snowlive/firebase_options.dart';
 import 'package:com.snowlive/util/pushNoitification.dart';
-import 'package:com.snowlive/viewmodel/friend/vm_friendDetail.dart';
+import 'package:com.snowlive/core/viewmodel/friend/vm_friendDetail.dart';
 import 'package:com.snowlive/mobile/viewmodel/auth/vm_authcheck.dart';
 import 'package:com.snowlive/viewmodel/vm_notificationController.dart';
 import 'package:com.snowlive/mobile/viewmodel/vm_splashController.dart';

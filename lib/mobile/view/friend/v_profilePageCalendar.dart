@@ -1,20 +1,17 @@
 import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
-import 'package:com.snowlive/viewmodel/friend/vm_friendDetail.dart';
-import 'package:com.snowlive/viewmodel/friend/vm_friendDetail_recordRoom.dart';
+import 'package:com.snowlive/core/viewmodel/friend/vm_friendDetail.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:intl/intl.dart';
 
-class ProfilePageCalendar_recordRoom extends StatefulWidget {
-  const ProfilePageCalendar_recordRoom({Key? key}) : super(key: key);
-
+class ProfilePageCalendar extends StatefulWidget {
   @override
-  _ProfilePageCalendar_recordRoomState createState() => _ProfilePageCalendar_recordRoomState();
+  _ProfilePageCalendarState createState() => _ProfilePageCalendarState();
 }
 
-class _ProfilePageCalendar_recordRoomState extends State<ProfilePageCalendar_recordRoom> {
-  FriendDetailViewModel_recordRoom _friendDetailViewModel_recordRoom = Get.find<FriendDetailViewModel_recordRoom>();
+class _ProfilePageCalendarState extends State<ProfilePageCalendar> {
+  FriendDetailViewModel _friendDetailViewModel = Get.find<FriendDetailViewModel>();
 
   late Map<DateTime, int> ridingHistory;
   CalendarFormat format = CalendarFormat.month;
@@ -29,13 +26,13 @@ class _ProfilePageCalendar_recordRoomState extends State<ProfilePageCalendar_rec
     super.initState();
 
     // 시즌 데이터에서 firstDay와 lastDay 설정
-    firstDay = DateTime.parse(_friendDetailViewModel_recordRoom.seasonStartDate);  // 시즌 시작일 설정
-    lastDay = DateTime.parse(_friendDetailViewModel_recordRoom.seasonEndDate);    // 시즌 종료일 설정
+    firstDay = DateTime.parse(_friendDetailViewModel.seasonStartDate);  // 시즌 시작일 설정
+    lastDay = DateTime.parse(_friendDetailViewModel.seasonEndDate);    // 시즌 종료일 설정
 
     // 라이딩 기록을 초기화
-    if (_friendDetailViewModel_recordRoom.friendDetailModel_recordRoom.calendarInfo.isNotEmpty) {
+    if (_friendDetailViewModel.friendDetailModel.calendarInfo.isNotEmpty) {
       ridingHistory = {
-        for (var info in _friendDetailViewModel_recordRoom.friendDetailModel_recordRoom.calendarInfo)
+        for (var info in _friendDetailViewModel.friendDetailModel.calendarInfo)
           DateTime(DateTime.parse(info.date).year, DateTime.parse(info.date).month, DateTime.parse(info.date).day): info.daily_total_count,
       };
     } else {
@@ -43,14 +40,7 @@ class _ProfilePageCalendar_recordRoomState extends State<ProfilePageCalendar_rec
     }
 
     // ridingHistory가 비어 있지 않은 경우, 가장 최근 날짜로 초기 포커스를 설정
-    DateTime initialFocus = ridingHistory.isNotEmpty ? ridingHistory.keys.first : DateTime.now().toLocal();
-    // focusedDay가 시즌 범위를 벗어나지 않도록 클램핑
-    if (initialFocus.isAfter(lastDay)) {
-      initialFocus = lastDay;
-    } else if (initialFocus.isBefore(firstDay)) {
-      initialFocus = firstDay;
-    }
-    focusedDay = initialFocus;
+    focusedDay = ridingHistory.isNotEmpty ? ridingHistory.keys.first : DateTime.now().toLocal();
     selectedDay = focusedDay;
   }
 
@@ -69,9 +59,9 @@ class _ProfilePageCalendar_recordRoomState extends State<ProfilePageCalendar_rec
 
       int index = ridingHistory.keys.toList().indexOf(selectDayWithoutTime);
       if (index != -1) {
-        _friendDetailViewModel_recordRoom.updateSelectedDailyIndex(index);
+        _friendDetailViewModel.updateSelectedDailyIndex(index);
       } else {
-        _friendDetailViewModel_recordRoom.updateSelectedDailyIndex(-1);
+        _friendDetailViewModel.updateSelectedDailyIndex(-1);
       }
     });
   }
@@ -79,9 +69,9 @@ class _ProfilePageCalendar_recordRoomState extends State<ProfilePageCalendar_rec
   void _loadRidingDataForSelectedDay() {
     if (ridingHistory.containsKey(focusedDay)) {
       int index = ridingHistory.keys.toList().indexOf(focusedDay);
-      _friendDetailViewModel_recordRoom.updateSelectedDailyIndex(index);
+      _friendDetailViewModel.updateSelectedDailyIndex(index);
     } else {
-      _friendDetailViewModel_recordRoom.updateSelectedDailyIndex(-1); // 데이터 없음
+      _friendDetailViewModel.updateSelectedDailyIndex(-1); // 데이터 없음
     }
   }
 

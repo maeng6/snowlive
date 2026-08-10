@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
-import 'package:com.snowlive/viewmodel/friend/vm_friendDetail.dart';
-import 'package:com.snowlive/viewmodel/friend/vm_friendDetailUpdate.dart';
+import 'package:com.snowlive/core/viewmodel/friend/vm_friendDetail.dart';
+import 'package:com.snowlive/core/viewmodel/friend/vm_friendDetailUpdate.dart';
 import 'package:com.snowlive/core/viewmodel/vm_user.dart';
 import 'package:com.snowlive/widget/w_favoriteResort.dart';
 import 'package:com.snowlive/core/widget/w_fullScreenDialog.dart';

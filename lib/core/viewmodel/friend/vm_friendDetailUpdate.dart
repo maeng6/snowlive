@@ -1,5 +1,5 @@
 import 'package:com.snowlive/core/api/ApiResponse.dart';
-import 'package:com.snowlive/api/api_friendDetail.dart';
+import 'package:com.snowlive/core/api/api_friendDetail.dart';
 import 'package:com.snowlive/core/api/api_login.dart';
 import 'package:com.snowlive/core/api/api_user.dart';
 import 'package:com.snowlive/model/m_resortModel.dart';

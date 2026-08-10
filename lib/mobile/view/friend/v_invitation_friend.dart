@@ -1,7 +1,7 @@
 import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
-import 'package:com.snowlive/view/friend/v_invitation_receive_friend.dart';
-import 'package:com.snowlive/view/friend/v_invitation_send_friend.dart';
-import 'package:com.snowlive/viewmodel/friend/vm_friendList.dart';
+import 'package:com.snowlive/mobile/view/friend/v_invitation_receive_friend.dart';
+import 'package:com.snowlive/mobile/view/friend/v_invitation_send_friend.dart';
+import 'package:com.snowlive/core/viewmodel/friend/vm_friendList.dart';
 import 'package:com.snowlive/core/viewmodel/vm_user.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';

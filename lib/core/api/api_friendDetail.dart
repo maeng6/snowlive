@@ -1,6 +1,6 @@
 import 'dart:convert';
-import 'package:com.snowlive/model/m_friendDetail.dart';
-import 'package:com.snowlive/model/m_friendDetail_recordRoom.dart';
+import 'package:com.snowlive/core/model/m_friendDetail.dart';
+import 'package:com.snowlive/core/model/m_friendDetail_recordRoom.dart';
 import 'package:http/http.dart' as http;
 import 'package:com.snowlive/core/api/ApiResponse.dart';
 

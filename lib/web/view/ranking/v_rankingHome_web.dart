@@ -559,7 +559,13 @@ class _RankingHomeViewWebState extends State<RankingHomeViewWeb> {
   Widget _buildCrewRow(CrewRanking crew) {
     final isResortScoped = _selectedResort != RankingFilter_resort.total;
     final logoUrl = (crew.crewLogoUrl?.isNotEmpty ?? false) ? crew.crewLogoUrl : crewDefaultLogoUrl[crew.color ?? ''];
-    final hasTierIcon = !isResortScoped && !_daily && (crew.overallTierIconUrl?.isNotEmpty ?? false);
+    // 크루랭킹에는 티어를 표시하지 않는다(개인랭킹만 티어 노출).
+    // 크루명 아래 회색 보조줄: 베이스 스키장 별명 · 크루 소개글 (모바일과 동일).
+    final baseNick = crew.baseResortNickname?.trim() ?? '';
+    final crewDesc = crew.description?.trim() ?? '';
+    final crewSubtitle = baseNick.isEmpty
+        ? crewDesc
+        : (crewDesc.isEmpty ? baseNick : '$baseNick · $crewDesc');
     return Container(
       margin: const EdgeInsets.only(bottom: 8),
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
@@ -584,12 +590,30 @@ class _RankingHomeViewWebState extends State<RankingHomeViewWeb> {
           ),
           const SizedBox(width: 10),
           Expanded(
-            child: Text(
-              crew.crewName ?? '',
-              maxLines: 1,
-              softWrap: false,
-              overflow: TextOverflow.ellipsis,
-              style: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray900),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  crew.crewName ?? '',
+                  maxLines: 1,
+                  softWrap: false,
+                  overflow: TextOverflow.ellipsis,
+                  style: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray900),
+                ),
+                if (crewSubtitle.isNotEmpty)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 2),
+                    child: Text(
+                      crewSubtitle,
+                      maxLines: 1,
+                      softWrap: false,
+                      overflow: TextOverflow.ellipsis,
+                      style: SDSTextStyle.regular.copyWith(fontSize: 12, color: SDSColor.gray500),
+                    ),
+                  ),
+              ],
             ),
           ),
           const SizedBox(width: 8),
@@ -603,10 +627,6 @@ class _RankingHomeViewWebState extends State<RankingHomeViewWeb> {
               style: SDSTextStyle.bold.copyWith(fontSize: 15, color: SDSColor.gray900),
             ),
           ),
-          if (hasTierIcon) ...[
-            const SizedBox(width: 6),
-            WebNetworkImage(url: crew.overallTierIconUrl, width: 24, height: 24, fit: BoxFit.contain),
-          ],
         ],
       ),
     );

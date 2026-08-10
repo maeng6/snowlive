@@ -5,7 +5,7 @@ import 'package:com.snowlive/core/util/util_1.dart';
 import 'package:com.snowlive/core/viewmodel/community/vm_communityBulletinList.dart';
 import 'package:com.snowlive/core/viewmodel/community/vm_communityCommentDetail.dart';
 import 'package:com.snowlive/core/viewmodel/community/vm_communityDetail.dart';
-import 'package:com.snowlive/viewmodel/friend/vm_friendDetail.dart';
+import 'package:com.snowlive/core/viewmodel/friend/vm_friendDetail.dart';
 import 'package:com.snowlive/viewmodel/resortHome/vm_alarmCenter.dart';
 import 'package:com.snowlive/core/viewmodel/vm_user.dart';
 import 'package:com.snowlive/core/widget/w_fullScreenDialog.dart';

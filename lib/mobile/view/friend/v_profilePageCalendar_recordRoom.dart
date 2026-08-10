@@ -1,17 +1,20 @@
 import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
-import 'package:com.snowlive/viewmodel/friend/vm_friendDetail.dart';
+import 'package:com.snowlive/core/viewmodel/friend/vm_friendDetail.dart';
+import 'package:com.snowlive/core/viewmodel/friend/vm_friendDetail_recordRoom.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:intl/intl.dart';
 
-class ProfilePageCalendar extends StatefulWidget {
+class ProfilePageCalendar_recordRoom extends StatefulWidget {
+  const ProfilePageCalendar_recordRoom({Key? key}) : super(key: key);
+
   @override
-  _ProfilePageCalendarState createState() => _ProfilePageCalendarState();
+  _ProfilePageCalendar_recordRoomState createState() => _ProfilePageCalendar_recordRoomState();
 }
 
-class _ProfilePageCalendarState extends State<ProfilePageCalendar> {
-  FriendDetailViewModel _friendDetailViewModel = Get.find<FriendDetailViewModel>();
+class _ProfilePageCalendar_recordRoomState extends State<ProfilePageCalendar_recordRoom> {
+  FriendDetailViewModel_recordRoom _friendDetailViewModel_recordRoom = Get.find<FriendDetailViewModel_recordRoom>();
 
   late Map<DateTime, int> ridingHistory;
   CalendarFormat format = CalendarFormat.month;
@@ -26,13 +29,13 @@ class _ProfilePageCalendarState extends State<ProfilePageCalendar> {
     super.initState();
 
     // 시즌 데이터에서 firstDay와 lastDay 설정
-    firstDay = DateTime.parse(_friendDetailViewModel.seasonStartDate);  // 시즌 시작일 설정
-    lastDay = DateTime.parse(_friendDetailViewModel.seasonEndDate);    // 시즌 종료일 설정
+    firstDay = DateTime.parse(_friendDetailViewModel_recordRoom.seasonStartDate);  // 시즌 시작일 설정
+    lastDay = DateTime.parse(_friendDetailViewModel_recordRoom.seasonEndDate);    // 시즌 종료일 설정
 
     // 라이딩 기록을 초기화
-    if (_friendDetailViewModel.friendDetailModel.calendarInfo.isNotEmpty) {
+    if (_friendDetailViewModel_recordRoom.friendDetailModel_recordRoom.calendarInfo.isNotEmpty) {
       ridingHistory = {
-        for (var info in _friendDetailViewModel.friendDetailModel.calendarInfo)
+        for (var info in _friendDetailViewModel_recordRoom.friendDetailModel_recordRoom.calendarInfo)
           DateTime(DateTime.parse(info.date).year, DateTime.parse(info.date).month, DateTime.parse(info.date).day): info.daily_total_count,
       };
     } else {
@@ -40,7 +43,14 @@ class _ProfilePageCalendarState extends State<ProfilePageCalendar> {
     }
 
     // ridingHistory가 비어 있지 않은 경우, 가장 최근 날짜로 초기 포커스를 설정
-    focusedDay = ridingHistory.isNotEmpty ? ridingHistory.keys.first : DateTime.now().toLocal();
+    DateTime initialFocus = ridingHistory.isNotEmpty ? ridingHistory.keys.first : DateTime.now().toLocal();
+    // focusedDay가 시즌 범위를 벗어나지 않도록 클램핑
+    if (initialFocus.isAfter(lastDay)) {
+      initialFocus = lastDay;
+    } else if (initialFocus.isBefore(firstDay)) {
+      initialFocus = firstDay;
+    }
+    focusedDay = initialFocus;
     selectedDay = focusedDay;
   }
 
@@ -59,9 +69,9 @@ class _ProfilePageCalendarState extends State<ProfilePageCalendar> {
 
       int index = ridingHistory.keys.toList().indexOf(selectDayWithoutTime);
       if (index != -1) {
-        _friendDetailViewModel.updateSelectedDailyIndex(index);
+        _friendDetailViewModel_recordRoom.updateSelectedDailyIndex(index);
       } else {
-        _friendDetailViewModel.updateSelectedDailyIndex(-1);
+        _friendDetailViewModel_recordRoom.updateSelectedDailyIndex(-1);
       }
     });
   }
@@ -69,9 +79,9 @@ class _ProfilePageCalendarState extends State<ProfilePageCalendar> {
   void _loadRidingDataForSelectedDay() {
     if (ridingHistory.containsKey(focusedDay)) {
       int index = ridingHistory.keys.toList().indexOf(focusedDay);
-      _friendDetailViewModel.updateSelectedDailyIndex(index);
+      _friendDetailViewModel_recordRoom.updateSelectedDailyIndex(index);
     } else {
-      _friendDetailViewModel.updateSelectedDailyIndex(-1); // 데이터 없음
+      _friendDetailViewModel_recordRoom.updateSelectedDailyIndex(-1); // 데이터 없음
     }
   }
 

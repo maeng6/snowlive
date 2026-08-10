@@ -5,7 +5,7 @@ import 'package:com.snowlive/mobile/view/ranking/v_entrance_snowballmarket_ranki
 import 'package:com.snowlive/mobile/view/ranking/v_rankingList_Indi.dart';
 import 'package:com.snowlive/mobile/view/ranking/history/v_rankingList_beta.dart';
 import 'package:com.snowlive/mobile/view/ranking/v_rankingList_crew.dart';
-import 'package:com.snowlive/viewmodel/friend/vm_friendDetail.dart';
+import 'package:com.snowlive/core/viewmodel/friend/vm_friendDetail.dart';
 import 'package:com.snowlive/core/viewmodel/ranking/vm_rankingList.dart';
 import 'package:com.snowlive/core/viewmodel/vm_user.dart';
 import 'package:com.snowlive/widget/w_floatingButton_ranking.dart';
