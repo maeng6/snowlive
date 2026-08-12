@@ -52,7 +52,11 @@ const List<GnbNavItemData> kGnbPrimaryItems = [
 
 /// 2차 그룹: 친구 / 메뉴명(placeholder) / 설정
 const List<GnbNavItemData> kGnbSecondaryItems = [
-  GnbNavItemData(label: '친구', materialIcon: Icons.person_outline),
+  GnbNavItemData(
+    label: '친구',
+    materialIcon: Icons.person_outline,
+    routePrefix: WebRoutes.friend,
+  ),
   GnbNavItemData(
     label: '메뉴명',
     materialIcon: Icons.widgets_outlined,

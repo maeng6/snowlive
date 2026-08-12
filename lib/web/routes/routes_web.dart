@@ -4,6 +4,10 @@ import 'package:com.snowlive/web/view/community/v_communityHome_web.dart';
 import 'package:com.snowlive/web/view/community/v_communityUpload_web.dart';
 import 'package:com.snowlive/web/view/event/v_eventHome_web.dart';
 import 'package:com.snowlive/web/view/fleamarket/v_fleamarketAlert_web.dart';
+import 'package:com.snowlive/web/view/friend/v_friendBlockList_web.dart';
+import 'package:com.snowlive/web/view/friend/v_friendHome_web.dart';
+import 'package:com.snowlive/web/view/friend/v_friendRequests_web.dart';
+import 'package:com.snowlive/web/view/friend/v_friendSettings_web.dart';
 import 'package:com.snowlive/web/view/fleamarket/v_fleamarketDetail_web.dart';
 import 'package:com.snowlive/web/view/fleamarket/v_fleamarketHome_web.dart';
 import 'package:com.snowlive/web/view/fleamarket/v_fleamarketUpdate_web.dart';
@@ -46,6 +50,13 @@ class WebRoutes {
   // 매칭해버려서 기록실 대신 랭킹 화면이 떴다. 별도 최상위 경로로 분리한다.
   static const rankingArchive = '/ranking-archive';
 
+  // 친구는 하위 경로(`/friend/settings`)로 두면 GetX가 부모 `/friend`로 매칭해버려
+  // 새로고침 시 목록이 뜬다 → 커뮤니티·랭킹처럼 형제 최상위 경로로 나눈다.
+  static const friend = '/friend';
+  static const friendSettings = '/friend-settings';
+  static const friendRequests = '/friend-requests';
+  static const friendBlockList = '/friend-blocklist';
+
   static final pages = [
     GetPage(
       name: fleamarketList,
@@ -86,6 +97,26 @@ class WebRoutes {
       name: fleamarketAlert,
       page: () => const FleamarketAlertViewWeb(),
       binding: WebFleamarketAlertBinding(),
+    ),
+    GetPage(
+      name: friend,
+      page: () => const FriendHomeViewWeb(),
+      binding: WebFriendBinding(),
+    ),
+    GetPage(
+      name: friendSettings,
+      page: () => const FriendSettingsViewWeb(),
+      binding: WebFriendBinding(),
+    ),
+    GetPage(
+      name: friendRequests,
+      page: () => const FriendRequestsViewWeb(),
+      binding: WebFriendBinding(),
+    ),
+    GetPage(
+      name: friendBlockList,
+      page: () => const FriendBlockListViewWeb(),
+      binding: WebFriendBinding(),
     ),
     GetPage(
       name: event,

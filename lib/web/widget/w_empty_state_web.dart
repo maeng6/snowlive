@@ -13,12 +13,20 @@ class WebEmptyState extends StatelessWidget {
   final String? actionLabel;
   final VoidCallback? onAction;
 
+  /// 아이콘 폭. 기본 64는 정사각 에셋 기준이다.
+  final double iconWidth;
+
+  /// 비정사각 에셋(친구 화면의 스마일 등)은 `contain`으로 넣어야 찌그러지지 않는다.
+  final BoxFit iconFit;
+
   const WebEmptyState({
     super.key,
     required this.message,
     this.iconAsset = 'assets/imgs/icons/icon_nodata.png',
     this.actionLabel,
     this.onAction,
+    this.iconWidth = 64,
+    this.iconFit = BoxFit.fill,
   });
 
   @override
@@ -29,7 +37,7 @@ class WebEmptyState extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Image.asset(iconAsset, width: 64, height: 64),
+            Image.asset(iconAsset, width: iconWidth, height: 64, fit: iconFit),
             const SizedBox(height: 12),
             Text(
               message,

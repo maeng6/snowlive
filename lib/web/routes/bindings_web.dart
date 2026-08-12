@@ -18,6 +18,8 @@ import 'package:com.snowlive/web/viewmodel/ranking/vm_rankingArchiveCrew_web.dar
 import 'package:com.snowlive/web/viewmodel/ranking/vm_rankingArchiveIndiv_web.dart';
 import 'package:com.snowlive/web/viewmodel/ranking/vm_rankingList_web.dart';
 import 'package:com.snowlive/web/viewmodel/ranking/vm_rankingListCrew_web.dart';
+import 'package:com.snowlive/core/viewmodel/friend/vm_friendList.dart';
+import 'package:com.snowlive/web/viewmodel/friend/vm_friend_web.dart';
 import 'package:com.snowlive/web/viewmodel/auth/vm_login_web.dart';
 import 'package:com.snowlive/web/viewmodel/auth/vm_authcheck_web.dart';
 import 'package:com.snowlive/web/viewmodel/auth/vm_onboarding_web.dart';
@@ -95,6 +97,10 @@ class WebRankingListBinding extends Bindings {
   void dependencies() {
     Get.lazyPut(() => RankingListViewModelWeb(), fenix: true);
     Get.lazyPut(() => RankingListCrewViewModelWeb(), fenix: true);
+    // 랭킹 목록의 프로필 모달에서 '친구 추가'를 누르면 FriendViewModelWeb을 쓴다
+    // → 랭킹 라우트에도 등록해야 "not found"로 죽지 않는다.
+    Get.lazyPut(() => FriendListViewModel(), fenix: true);
+    Get.lazyPut(() => FriendViewModelWeb(), fenix: true);
   }
 }
 
@@ -104,6 +110,10 @@ class WebRankingArchiveBinding extends Bindings {
   void dependencies() {
     Get.lazyPut(() => RankingArchiveIndivViewModelWeb(), fenix: true);
     Get.lazyPut(() => RankingArchiveCrewViewModelWeb(), fenix: true);
+    // 랭킹 목록의 프로필 모달에서 '친구 추가'를 누르면 FriendViewModelWeb을 쓴다
+    // → 랭킹 라우트에도 등록해야 "not found"로 죽지 않는다.
+    Get.lazyPut(() => FriendListViewModel(), fenix: true);
+    Get.lazyPut(() => FriendViewModelWeb(), fenix: true);
   }
 }
 
@@ -162,5 +172,16 @@ class WebFleamarketUpdateBinding extends Bindings {
   @override
   void dependencies() {
     Get.lazyPut(() => FleamarketUpdateViewModelWeb(), fenix: true);
+  }
+}
+
+/// 친구 라우트 4개(목록·설정·요청 관리·차단 관리) 공용 바인딩.
+class WebFriendBinding extends Bindings {
+  @override
+  void dependencies() {
+    // 읽기는 코어 뷰모델을 그대로 쓴다(웹 금지 의존성이 없다). FriendViewModelWeb이
+    // 이걸 Get.find 하므로 **함께** 등록해야 URL 직접 진입 시 죽지 않는다.
+    Get.lazyPut(() => FriendListViewModel(), fenix: true);
+    Get.lazyPut(() => FriendViewModelWeb(), fenix: true);
   }
 }
