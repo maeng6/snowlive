@@ -8,6 +8,19 @@ import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+/// 각종소식 크롤 계정 필터 항목. [id]가 null이면 '전체 계정'(필터 해제).
+class EventAccountFilter {
+  final int? id;
+  final String label;
+
+  const EventAccountFilter(this.id, this.label);
+
+  /// 전체 보기(필터 없음) 기본 항목.
+  static const EventAccountFilter all = EventAccountFilter(null, '전체 계정');
+
+  bool get isAll => id == null;
+}
+
 /// 웹 커뮤니티의 `이벤트` 탭 목록 뷰모델. **번호식 페이지 이동** 방식으로,
 /// 매 조회마다 리스트를 통째로 교체해 한 번에 한 페이지만 보여준다.
 /// 커뮤니티/중고거래/라이브톡 웹 페이지네이션 뷰모델과 같은 구조.
@@ -36,6 +49,14 @@ class EventListPaginationViewModelWeb extends GetxController {
   // 번호 이동 시 유지되어야 하므로 Rx가 아닌 평범한 필드.
   String? _searchQuery;
 
+  /// 선택된 크롤 계정 필터(null=전체). 검색과 독립적으로 유지·결합된다.
+  int? _crawlAccountId;
+
+  /// 필터 드롭다운에 채울 크롤 계정 목록(맨 앞은 '전체 계정'). 이름 가나다 순.
+  final RxList<EventAccountFilter> _accountFilters =
+      <EventAccountFilter>[EventAccountFilter.all].obs;
+  List<EventAccountFilter> get accountFilters => _accountFilters;
+
   List<EventModel> get items => _items;
   bool get isLoading => _isLoading.value;
 
@@ -62,6 +83,31 @@ class EventListPaginationViewModelWeb extends GetxController {
     await gotoPage(1);
   }
 
+  /// 크롤 계정 필터 선택(null=전체). 검색어는 유지한 채 1페이지부터 다시 조회한다.
+  Future<void> setCrawlAccount(int? crawlAccountId) async {
+    _crawlAccountId = crawlAccountId;
+    _totalPages.value = 1;
+    await gotoPage(1);
+  }
+
+  /// 필터 드롭다운용 크롤 계정 목록을 채운다(최초 진입 시 1회). 이름 가나다 순.
+  Future<void> fetchAccountFilters() async {
+    final accounts = await _api.fetchCrawlAccounts();
+    final filters = <EventAccountFilter>[];
+    for (final a in accounts) {
+      final id = a['crawl_account_id'];
+      if (id is! int) continue;
+      final name = (a['name'] as String?)?.trim() ?? '';
+      final username = (a['username'] as String?)?.trim() ?? '';
+      // 표시용 이름 우선, 없으면 인스타 아이디(username)로 대체.
+      final label = name.isNotEmpty ? name : username;
+      if (label.isEmpty) continue;
+      filters.add(EventAccountFilter(id, label));
+    }
+    filters.sort((a, b) => a.label.compareTo(b.label)); // 가나다 순
+    _accountFilters.value = [EventAccountFilter.all, ...filters];
+  }
+
   /// 번호식 페이지 이동 (하단 번호 클릭).
   Future<void> gotoPage(int page) async {
     if (page < 1) return;
@@ -85,6 +131,7 @@ class EventListPaginationViewModelWeb extends GetxController {
     try {
       final response = await _api.fetchEventList(
         searchQuery: _searchQuery,
+        crawlAccountId: _crawlAccountId,
         page: page,
       );
 
