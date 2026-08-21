@@ -1,6 +1,6 @@
 import 'package:com.snowlive/core/model/m_crewMemberRankingList.dart';
 import 'package:get/get.dart';
-import 'package:com.snowlive/api/api_crew.dart';
+import 'package:com.snowlive/core/api/api_crew.dart';
 
 class CrewRankingListViewModel extends GetxController {
   var crewRankingResponse = CrewRankingResponse().obs; // 크루 랭킹 데이터를 저장

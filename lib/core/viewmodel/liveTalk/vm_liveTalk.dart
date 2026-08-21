@@ -762,16 +762,24 @@ class LiveTalkViewModel extends GetxController {
   }
 
   /// 게시글 작성
+  /// 라이브톡 작성. [crewId]를 주면 크루 라이브톡이 되며, 이때 [secret]은 반드시
+  /// 지정해야 한다(true=크루 비공개 / false=전체공개). 일반 라이브톡은 둘 다 생략.
   Future<LiveTalk?> create({
     required String description,
     String? imageUrl,
+    int? crewId,
+    bool? secret,
   }) async {
+    assert(crewId == null || secret != null,
+        'crewId가 있으면 secret(공개/비공개)을 반드시 지정해야 합니다.');
     isSubmitting.value = true;
     try {
       final body = {
         'user_id': _userViewModel.user.user_id,
         'description': description,
         if (imageUrl != null) 'image_url': imageUrl,
+        if (crewId != null) 'crew_id': crewId,
+        if (crewId != null) 'secret': secret,
       };
 
       final response = await _api.create(body);

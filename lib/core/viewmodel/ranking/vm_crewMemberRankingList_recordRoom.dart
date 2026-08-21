@@ -1,9 +1,9 @@
 import 'package:com.snowlive/core/model/m_crewMemberRankingList_recordRoom.dart';
-import 'package:com.snowlive/viewmodel/crew/vm_crewDetail.dart';
+import 'package:com.snowlive/core/viewmodel/crew/vm_crewDetail.dart';
 import 'package:com.snowlive/core/viewmodel/ranking/vm_rankingList_recordRoom.dart';
 import 'package:com.snowlive/core/viewmodel/vm_user.dart';
 import 'package:get/get.dart';
-import 'package:com.snowlive/api/api_crew.dart';
+import 'package:com.snowlive/core/api/api_crew.dart';
 
 class CrewRankingListViewModel_recordRoom extends GetxController {
   var crewRankingResponse = CrewRankingResponse_recordRoom().obs; // 크루 랭킹 데이터를 저장

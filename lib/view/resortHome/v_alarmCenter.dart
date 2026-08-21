@@ -1,9 +1,9 @@
 import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/model/m_alarmCenterList.dart';
 import 'package:com.snowlive/routes/routes.dart';
-import 'package:com.snowlive/viewmodel/crew/vm_crewApply.dart';
-import 'package:com.snowlive/viewmodel/crew/vm_crewDetail.dart';
-import 'package:com.snowlive/viewmodel/crew/vm_searchCrew.dart';
+import 'package:com.snowlive/core/viewmodel/crew/vm_crewApply.dart';
+import 'package:com.snowlive/core/viewmodel/crew/vm_crewDetail.dart';
+import 'package:com.snowlive/core/viewmodel/crew/vm_searchCrew.dart';
 import 'package:com.snowlive/core/viewmodel/fleamarket/vm_fleamarketCommentDetail.dart';
 import 'package:com.snowlive/core/viewmodel/fleamarket/vm_fleamarketDetail.dart';
 import 'package:com.snowlive/core/viewmodel/fleamarket/vm_fleamarketList.dart';

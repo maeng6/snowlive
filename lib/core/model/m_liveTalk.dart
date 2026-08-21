@@ -166,6 +166,8 @@ class LiveTalk {
   int? livetalkId;
   int? userId;
   LiveTalkUserInfo? userInfo;
+  int? crewId;   // 크루 라이브톡이면 크루 id, 일반 라이브톡이면 null
+  bool? secret;  // 크루톡 공개/비공개. crew_id가 있으면 non-null(정책), 일반톡은 null
   String? description;
   String? imageUrl;
   int? likeCount;
@@ -181,6 +183,8 @@ class LiveTalk {
     this.livetalkId,
     this.userId,
     this.userInfo,
+    this.crewId,
+    this.secret,
     this.description,
     this.imageUrl,
     this.likeCount,
@@ -193,12 +197,17 @@ class LiveTalk {
     this.comments,
   });
 
+  /// 크루 라이브톡인지(crew_id가 있으면 크루톡).
+  bool get isCrewTalk => crewId != null;
+
   LiveTalk.fromJson(Map<String, dynamic> json) {
     livetalkId = json['livetalk_id'];
     userId = json['user_id'];
     userInfo = json['user_info'] != null
         ? LiveTalkUserInfo.fromJson(json['user_info'])
         : null;
+    crewId = json['crew_id'];
+    secret = json['secret'];
     description = json['description'];
     imageUrl = json['image_url'];
     likeCount = json['like_count'] ?? 0;
@@ -220,6 +229,8 @@ class LiveTalk {
       'livetalk_id': livetalkId,
       'user_id': userId,
       'user_info': userInfo?.toJson(),
+      'crew_id': crewId,
+      'secret': secret,
       'description': description,
       'image_url': imageUrl,
       'like_count': likeCount,
