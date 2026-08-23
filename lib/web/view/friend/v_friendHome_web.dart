@@ -79,6 +79,14 @@ class _FriendHomeViewWebState extends State<FriendHomeViewWeb> {
     final keyword = raw.trim();
     if (keyword.isEmpty || _isSearching) return;
 
+    // ⚠️ 검색 API는 `requesting_user_id`를 필수로 받는다. 비로그인 상태에서 그대로
+    // 부르면 서버가 500을 주고(실측) 화면은 "검색하신 친구가 없습니다."를 띄워서
+    // 로그인이 필요한 건지 정말 없는 건지 구분할 수 없다 → 아예 부르지 않고 안내한다.
+    if (_isGuest) {
+      await _showLoginRequiredDialog();
+      return;
+    }
+
     setState(() => _isSearching = true);
     // 이전 결과가 남아 있으면 "없음" 판정이 어긋난다.
     await _listVm.resetSearchFriend();
@@ -100,6 +108,67 @@ class _FriendHomeViewWebState extends State<FriendHomeViewWeb> {
       initialAvatarUrl: _listVm.searchFriend.profileImageUrlUser,
     );
     if (sent == true) await _vm.refreshAll();
+  }
+
+  Future<void> _showLoginRequiredDialog() {
+    return showWebOverlayModal<void>(
+      context: context,
+      builder: (_, close) => Material(
+        color: SDSColor.snowliveWhite,
+        borderRadius: BorderRadius.circular(16),
+        clipBehavior: Clip.antiAlias,
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 320),
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(24, 28, 24, 12),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  '로그인이 필요해요.',
+                  textAlign: TextAlign.center,
+                  style: SDSTextStyle.bold.copyWith(fontSize: 16, color: SDSColor.gray900),
+                ),
+                const SizedBox(height: SDSSpacing.sm),
+                Text(
+                  '친구 검색은 로그인한 뒤에 할 수 있어요.',
+                  textAlign: TextAlign.center,
+                  style: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray500),
+                ),
+                const SizedBox(height: SDSSpacing.lg),
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      close();
+                      Get.toNamed(WebRoutes.login);
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: SDSColor.snowliveBlue,
+                      elevation: 0,
+                      minimumSize: const Size(double.infinity, 48),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                    ),
+                    child: Text(
+                      '로그인하기',
+                      style:
+                          SDSTextStyle.bold.copyWith(fontSize: 15, color: SDSColor.snowliveWhite),
+                    ),
+                  ),
+                ),
+                TextButton(
+                  onPressed: close,
+                  child: Text(
+                    '다음에 하기',
+                    style: SDSTextStyle.bold.copyWith(fontSize: 15, color: SDSColor.gray900),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
   }
 
   Future<void> _showNotFoundDialog() {
@@ -306,6 +375,8 @@ class _FriendHomeViewWebState extends State<FriendHomeViewWeb> {
                 friendUserId: friend.friendInfo.userId,
                 initialName: friend.friendInfo.displayName,
                 initialAvatarUrl: friend.friendInfo.profileImageUrlUser,
+                // 친구 목록에서 열었으니 관계는 이미 안다.
+                initialAreWeFriend: true,
               );
             },
             trailing: _FriendMoreButton(

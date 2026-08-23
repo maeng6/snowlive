@@ -30,6 +30,12 @@ class FriendViewModelWeb extends GetxController {
 
   int? get _myUserId => _userVM.user.user_id;
 
+  /// 팝업이 `친구 추가`를 눌렀을 때 로그인 안내를 구분해 띄우는 데 쓴다.
+  bool get isLoggedIn => _myUserId != null;
+
+  /// 팝업이 **자기 자신**을 보고 있는지 판단하는 데 쓴다(친구 목록에는 내 행도 있다).
+  int? get myUserId => _myUserId;
+
   final RxBool _isSubmitting = false.obs;
   bool get isSubmitting => _isSubmitting.value;
 
@@ -129,7 +135,12 @@ class FriendViewModelWeb extends GetxController {
       final season = await fetchCurrentRankingSeason() ?? '';
       final ApiResponse res = await _friendDetailAPI.fetchFriendDetail(userId, friendUserId, season);
       if (!res.success) return null;
-      return FriendDetailModel.fromJson(res.data as Map<String, dynamic>);
+      // ⚠️ 이 API는 **이미 파싱된 모델**을 담아서 준다(`api_friendDetail.dart:22`).
+      // Map으로 캐스팅하면 예외가 나고, 그러면 아래 catch가 null을 돌려줘서 팝업이
+      // 소속·상태메시지·친구관계를 통째로 잃는다(이미 친구인데 `친구 추가`가 뜬 원인).
+      final data = res.data;
+      if (data is FriendDetailModel) return data;
+      return FriendDetailModel.fromJson(data as Map<String, dynamic>);
     } catch (e) {
       print('[Friend] 프로필 조회 실패: $e');
       return null;

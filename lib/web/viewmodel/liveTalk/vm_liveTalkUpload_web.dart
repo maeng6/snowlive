@@ -98,10 +98,18 @@ class LiveTalkUploadViewModelWeb extends GetxController {
   }
 
   /// 사진 글 등록. 성공하면 true.
-  Future<bool> submitPhoto({required int userId, required String description}) async {
+  ///
+  /// [crewId]를 주면 **크루톡**으로 올라간다. 이때 [secret]은 반드시 함께 지정한다
+  /// (true=크루 안에서만 / false=전체공개). 서버 규칙은 앱과 같다.
+  Future<bool> submitPhoto({
+    required int userId,
+    required String description,
+    int? crewId,
+    bool? secret,
+  }) async {
     final file = _pickedImage.value;
     if (file == null) return false;
-    return _submit(userId: userId, description: description, upload: () async {
+    return _submit(userId: userId, description: description, crewId: crewId, secret: secret, upload: () async {
       final urls = await _imageController.uploadLiveTalkImages(files: [file], userId: userId);
       return urls.isNotEmpty && urls.first.isNotEmpty ? urls.first : null;
     });
@@ -112,8 +120,10 @@ class LiveTalkUploadViewModelWeb extends GetxController {
     required int userId,
     required String description,
     required GlobalKey boundaryKey,
+    int? crewId,
+    bool? secret,
   }) async {
-    return _submit(userId: userId, description: description, upload: () async {
+    return _submit(userId: userId, description: description, crewId: crewId, secret: secret, upload: () async {
       final bytes = await _captureCard(boundaryKey);
       if (bytes == null) return null;
       return _imageController.uploadLiveTalkPng(bytes: bytes, userId: userId);
@@ -124,7 +134,10 @@ class LiveTalkUploadViewModelWeb extends GetxController {
     required int userId,
     required String description,
     required Future<String?> Function() upload,
+    int? crewId,
+    bool? secret,
   }) async {
+    assert(crewId == null || secret != null, 'crewId가 있으면 secret을 지정해야 한다');
     if (_isSubmitting.value) return false;
     _isSubmitting.value = true;
     try {
@@ -137,6 +150,8 @@ class LiveTalkUploadViewModelWeb extends GetxController {
         'user_id': userId,
         'description': description,
         'image_url': imageUrl,
+        if (crewId != null) 'crew_id': crewId,
+        if (crewId != null) 'secret': secret,
       });
       if (!response.success) {
         debugPrint('[LiveTalkUpload] 글 등록 실패: ${response.error}');

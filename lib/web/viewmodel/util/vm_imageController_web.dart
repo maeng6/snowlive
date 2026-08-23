@@ -77,6 +77,24 @@ class ImageControllerWeb extends GetxController {
     return urls.isEmpty ? '' : urls.first;
   }
 
+  /// 크루 로고 1장 업로드. 경로 규칙은 앱과 동일하게 `crewLogo/{크루명}_{ts}.jpg`
+  /// (실측: 기존 크루 로고 URL이 `crewLogo/스타크_1765515722923.jpg` 형태다).
+  /// 실패하면 빈 문자열 — 호출자는 로고 없이(색상 기본 로고로) 생성을 진행한다.
+  Future<String> uploadCrewLogo({
+    required XFile file,
+    required String crewName,
+    Function(String requestType, String error)? onError,
+  }) async {
+    final stamp = DateTime.now().millisecondsSinceEpoch;
+    final urls = await _uploadAll(
+      files: [file],
+      pathOf: (_) => 'crewLogo/${crewName}_$stamp.jpg',
+      errorPrefix: 'crew_logo',
+      onError: onError,
+    );
+    return urls.isEmpty ? '' : urls.first;
+  }
+
   /// 이미 바이트로 만들어진 이미지(라이딩 카드 캡처 PNG) 1장 업로드.
   /// 압축을 거치지 않는다 — 캡처 결과를 다시 인코딩하면 글자가 뭉개진다.
   Future<String?> uploadLiveTalkPng({

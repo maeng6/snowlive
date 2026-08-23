@@ -78,10 +78,20 @@ Future<T?> showWebAnchoredDropdown<T>({
   final overlay = Overlay.of(context, rootOverlay: true);
   final overlayBox = overlay.context.findRenderObject() as RenderBox;
   final anchorBox = context.findRenderObject() as RenderBox;
-  final anchorLeft = anchorBox.localToGlobal(Offset.zero, ancestor: overlayBox).dx;
+  final anchorOffset = anchorBox.localToGlobal(Offset.zero, ancestor: overlayBox);
+  final anchorLeft = anchorOffset.dx;
 
   // 오른쪽 끝에 가까운 앵커는 왼쪽 정렬하면 패널이 화면 밖으로 나간다 → 오른쪽 정렬.
   final alignRight = overlayBox.size.width - anchorLeft < _kAnchoredDropdownMinSpace;
+
+  // 아래로 펼칠 자리가 부족하면 **위로 뒤집는다**. 항목이 많은 드롭다운(예: 스키장 13개)이
+  // 아래로만 펼쳐지면 뷰포트 밖으로 나가 잘려 보였다(실측).
+  final spaceBelow =
+      overlayBox.size.height - (anchorOffset.dy + anchorBox.size.height) - gap - _kAnchoredDropdownEdgeMargin;
+  final spaceAbove = anchorOffset.dy - gap - _kAnchoredDropdownEdgeMargin;
+  final flipUp = spaceBelow < _kAnchoredDropdownMinHeight && spaceAbove > spaceBelow;
+  // 남은 높이를 그대로 최대 높이로 물려준다 → 패널 내부 스크롤이 살아난다.
+  final maxHeight = (flipUp ? spaceAbove : spaceBelow).clamp(120.0, double.infinity);
 
   final completer = Completer<T?>();
   late final OverlayEntry entry;
@@ -104,12 +114,19 @@ Future<T?> showWebAnchoredDropdown<T>({
         CompositedTransformFollower(
           link: link,
           showWhenUnlinked: false,
-          targetAnchor: alignRight ? Alignment.bottomRight : Alignment.bottomLeft,
-          followerAnchor: alignRight ? Alignment.topRight : Alignment.topLeft,
-          offset: Offset(0, gap),
+          targetAnchor: flipUp
+              ? (alignRight ? Alignment.topRight : Alignment.topLeft)
+              : (alignRight ? Alignment.bottomRight : Alignment.bottomLeft),
+          followerAnchor: flipUp
+              ? (alignRight ? Alignment.bottomRight : Alignment.bottomLeft)
+              : (alignRight ? Alignment.topRight : Alignment.topLeft),
+          offset: Offset(0, flipUp ? -gap : gap),
           child: Align(
             alignment: alignRight ? Alignment.topRight : Alignment.topLeft,
-            child: builder(entryContext, close, anchorBox.size.width),
+            child: ConstrainedBox(
+              constraints: BoxConstraints(maxHeight: maxHeight),
+              child: builder(entryContext, close, anchorBox.size.width),
+            ),
           ),
         ),
       ],
@@ -121,3 +138,9 @@ Future<T?> showWebAnchoredDropdown<T>({
 
 /// 이 폭이 안 나오면 앵커 오른쪽에 패널을 펼칠 자리가 없다고 보고 오른쪽 정렬로 뒤집는다.
 const double _kAnchoredDropdownMinSpace = 220;
+
+/// 아래로 이만큼도 못 펼치면 위로 뒤집는다.
+const double _kAnchoredDropdownMinHeight = 220;
+
+/// 뷰포트 끝에 딱 붙지 않도록 남겨두는 여백.
+const double _kAnchoredDropdownEdgeMargin = 12;

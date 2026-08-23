@@ -18,6 +18,14 @@ import 'package:com.snowlive/web/viewmodel/ranking/vm_rankingArchiveCrew_web.dar
 import 'package:com.snowlive/web/viewmodel/ranking/vm_rankingArchiveIndiv_web.dart';
 import 'package:com.snowlive/web/viewmodel/ranking/vm_rankingList_web.dart';
 import 'package:com.snowlive/web/viewmodel/ranking/vm_rankingListCrew_web.dart';
+import 'package:com.snowlive/core/viewmodel/crew/vm_crewHome.dart';
+import 'package:com.snowlive/web/viewmodel/crew/vm_crewCreate_web.dart';
+import 'package:com.snowlive/web/viewmodel/crew/vm_crewJoin_web.dart';
+import 'package:com.snowlive/web/viewmodel/crew/vm_crewSetting_web.dart';
+import 'package:com.snowlive/web/viewmodel/util/vm_imageController_web.dart';
+import 'package:com.snowlive/web/viewmodel/crew/vm_crewDetail_web.dart';
+import 'package:com.snowlive/web/viewmodel/crew/vm_crewRecord_web.dart';
+import 'package:com.snowlive/web/viewmodel/friend/vm_profileDetail_web.dart';
 import 'package:com.snowlive/core/viewmodel/friend/vm_friendList.dart';
 import 'package:com.snowlive/web/viewmodel/friend/vm_friend_web.dart';
 import 'package:com.snowlive/web/viewmodel/auth/vm_login_web.dart';
@@ -183,5 +191,82 @@ class WebFriendBinding extends Bindings {
     // 이걸 Get.find 하므로 **함께** 등록해야 URL 직접 진입 시 죽지 않는다.
     Get.lazyPut(() => FriendListViewModel(), fenix: true);
     Get.lazyPut(() => FriendViewModelWeb(), fenix: true);
+  }
+}
+
+/// 라이브크루 홈 라우트용 바인딩.
+class WebLiveCrewBinding extends Bindings {
+  @override
+  void dependencies() {
+    // 크루홈 집계 조회는 코어 뷰모델을 그대로 쓴다 — 웹 금지 의존성이 없고
+    // 화면이 필요한 4개 섹션이 이 응답 하나에서 나온다.
+    Get.lazyPut(() => CrewHomeViewModel(), fenix: true);
+    // 갤러리 사진의 `라이브톡에서 보기`·신고·숨기기가 라이브톡 상세 VM을 Get.find 한다
+    // → 함께 등록해야 URL 직접 진입(#/livecrew 새로고침)에서 죽지 않는다.
+    Get.lazyPut(() => LiveTalkDetailViewModelWeb(), fenix: true);
+  }
+}
+
+/// 크루홈 라우트 3개(크루홈·전체 멤버·크루톡 목록) 공용 바인딩.
+class WebCrewHomeBinding extends Bindings {
+  @override
+  void dependencies() {
+    Get.lazyPut(() => CrewDetailViewModelWeb(), fenix: true);
+    // 크루톡 상세 오버레이 + 크루톡 올리기 플로우가 쓴다.
+    Get.lazyPut(() => LiveTalkDetailViewModelWeb(), fenix: true);
+    Get.lazyPut(() => LiveTalkUploadViewModelWeb(), fenix: true);
+    // 멤버 프로필 팝업의 `친구 추가`가 쓴다(랭킹 바인딩과 같은 이유).
+    Get.lazyPut(() => FriendListViewModel(), fenix: true);
+    Get.lazyPut(() => FriendViewModelWeb(), fenix: true);
+  }
+}
+
+/// 크루 만들기 라우트용 바인딩.
+class WebCrewCreateBinding extends Bindings {
+  @override
+  void dependencies() {
+    Get.lazyPut(() => CrewCreateViewModelWeb(), fenix: true);
+    // 로고 업로드에 쓴다(온보딩·라이브톡과 같은 웹 이미지 파이프라인).
+    Get.lazyPut(() => ImageControllerWeb(), fenix: true);
+  }
+}
+
+/// 크루 가입하기 라우트용 바인딩.
+class WebCrewJoinBinding extends Bindings {
+  @override
+  void dependencies() {
+    Get.lazyPut(() => CrewJoinViewModelWeb(), fenix: true);
+  }
+}
+
+/// 개인 프로필 상세 라우트용 바인딩.
+class WebProfileBinding extends Bindings {
+  @override
+  void dependencies() {
+    Get.lazyPut(() => ProfileDetailViewModelWeb(), fenix: true);
+    // 헤더의 `친구 추가`가 쓴다(랭킹·크루홈 바인딩과 같은 이유).
+    Get.lazyPut(() => FriendListViewModel(), fenix: true);
+    Get.lazyPut(() => FriendViewModelWeb(), fenix: true);
+  }
+}
+
+/// 크루 기록 라우트 3개(시즌 기록실·일별 현황·크루원 시즌 랭킹) 공용 바인딩.
+class WebCrewRecordBinding extends Bindings {
+  @override
+  void dependencies() {
+    Get.lazyPut(() => CrewRecordViewModelWeb(), fenix: true);
+    // 멤버 프로필 팝업의 `친구 추가`가 쓴다(크루홈 바인딩과 같은 이유).
+    Get.lazyPut(() => FriendListViewModel(), fenix: true);
+    Get.lazyPut(() => FriendViewModelWeb(), fenix: true);
+  }
+}
+
+/// 크루 설정 라우트 7개(허브·소개글·공지·이미지·신청·크루원·권한) 공용 바인딩.
+class WebCrewSettingBinding extends Bindings {
+  @override
+  void dependencies() {
+    Get.lazyPut(() => CrewSettingViewModelWeb(), fenix: true);
+    // 로고 업로드에 쓴다(크루 만들기와 같은 웹 이미지 파이프라인).
+    Get.lazyPut(() => ImageControllerWeb(), fenix: true);
   }
 }

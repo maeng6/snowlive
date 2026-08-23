@@ -1,3 +1,4 @@
+import 'package:com.snowlive/web/routes/routes_web.dart';
 import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/core/model/m_friendDetail.dart';
 import 'package:com.snowlive/web/util/responsive_web.dart';
@@ -24,6 +25,10 @@ Future<bool?> showFriendProfileModal(
   required int friendUserId,
   String? initialName,
   String? initialAvatarUrl,
+
+  /// 호출한 쪽이 이미 친구임을 아는 경우(친구 목록 행). 상세 응답을 기다리는 동안
+  /// `친구 추가` 버튼이 잠깐 보이는 것을 막는다.
+  bool initialAreWeFriend = false,
 }) {
   final isMobile = context.screenType == WebScreenType.mobile;
   return showWebOverlayModal<bool>(
@@ -35,6 +40,7 @@ Future<bool?> showFriendProfileModal(
       friendUserId: friendUserId,
       initialName: initialName,
       initialAvatarUrl: initialAvatarUrl,
+      initialAreWeFriend: initialAreWeFriend,
       isSheet: isMobile,
       onClose: close,
     ),
@@ -45,6 +51,7 @@ class _FriendProfileSheet extends StatefulWidget {
   final int friendUserId;
   final String? initialName;
   final String? initialAvatarUrl;
+  final bool initialAreWeFriend;
   final bool isSheet;
   final void Function([bool? result]) onClose;
 
@@ -52,6 +59,7 @@ class _FriendProfileSheet extends StatefulWidget {
     required this.friendUserId,
     required this.initialName,
     required this.initialAvatarUrl,
+    required this.initialAreWeFriend,
     required this.isSheet,
     required this.onClose,
   });
@@ -118,20 +126,24 @@ class _FriendProfileSheetState extends State<_FriendProfileSheet> {
       action: _buildAction(info),
       footer: WebProfileFooterButton(
         label: '프로필 보러가기',
-        // 웹에는 아직 친구 상세 페이지가 없다(앱의 v_friendDetail은 방명록·라이딩 통계까지
-        // 포함한 2600줄짜리 화면이라 별건이다).
-        onTap: () => Get.snackbar('알림', '프로필 화면은 준비 중이에요.'),
+        onTap: () {
+          // 팝업을 먼저 닫는다(요청을 보냈으면 호출자가 목록을 갱신하도록 결과도 넘긴다).
+          widget.onClose(_requestSent);
+          Get.toNamed('${WebRoutes.userProfile}?id=${widget.friendUserId}');
+        },
       ),
     );
   }
 
-  Widget _buildAction(FriendUserInfo? info) {
+  Widget? _buildAction(FriendUserInfo? info) {
+    // 친구 목록에는 내 행도 있다(`지저스키 (나)`) → 나를 열었으면 버튼을 그리지 않는다.
+    if (_vm.myUserId != null && _vm.myUserId == widget.friendUserId) return null;
     if (_requestSent) {
-      return const WebProfilePillButton(label: '요청 보냄');
+      return const WebProfileStateBadge(label: '요청 보냄');
     }
     // 상세를 받기 전에는 관계를 모르므로 버튼을 눌러도 되게 두되, 이미 친구면 표시만 한다.
-    if (info?.areWeFriend ?? false) {
-      return const WebProfilePillButton(label: '내 친구');
+    if (info?.areWeFriend ?? widget.initialAreWeFriend) {
+      return const WebProfileStateBadge(label: '친구', isPositive: true);
     }
     return WebProfilePillButton(
       label: _isSending ? '요청 중…' : '친구 추가',

@@ -167,6 +167,44 @@ class WebProfilePillButton extends StatelessWidget {
   }
 }
 
+/// 누를 것이 없는 상태 표시(`친구`, `요청 보냄`).
+///
+/// 이미 친구인 사람에게 버튼 모양을 그리면 아직 추가할 수 있는 것처럼 보인다 →
+/// 테두리 없는 배지로 구분한다(사용자 지시). [isPositive]면 파랑, 아니면 회색.
+class WebProfileStateBadge extends StatelessWidget {
+  final String label;
+  final bool isPositive;
+
+  const WebProfileStateBadge({super.key, required this.label, this.isPositive = false});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: isPositive ? SDSColor.blue50 : SDSColor.gray50,
+        borderRadius: BorderRadius.circular(50),
+      ),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 9),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (isPositive) ...[
+            Icon(Icons.check, size: 16, color: SDSColor.snowliveBlue),
+            const SizedBox(width: 4),
+          ],
+          Text(
+            label,
+            style: SDSTextStyle.bold.copyWith(
+              fontSize: 13,
+              color: isPositive ? SDSColor.snowliveBlue : SDSColor.gray500,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 /// 프로필 카드 하단의 전체폭 회색 버튼(`프로필 보러가기`).
 class WebProfileFooterButton extends StatelessWidget {
   final String label;

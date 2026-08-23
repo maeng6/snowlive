@@ -11,12 +11,16 @@ class WebSettingsRow extends StatelessWidget {
   /// 라벨 뒤 파란 원형 배지에 표시할 개수. null이거나 0이면 배지를 그리지 않는다.
   final int? badgeCount;
 
+  /// 개수 대신 글자를 넣는 배지(크루 설정의 `NEW`). [badgeCount]보다 우선한다.
+  final String? badgeLabel;
+
   final VoidCallback onTap;
 
   const WebSettingsRow({
     super.key,
     required this.label,
     this.badgeCount,
+    this.badgeLabel,
     required this.onTap,
   });
 
@@ -31,7 +35,10 @@ class WebSettingsRow extends StatelessWidget {
         child: Row(
           children: [
             Text(label, style: SDSTextStyle.bold.copyWith(fontSize: 15, color: SDSColor.gray900)),
-            if (count > 0) ...[
+            if (badgeLabel?.isNotEmpty ?? false) ...[
+              const SizedBox(width: SDSSpacing.sm),
+              _TextBadge(label: badgeLabel!),
+            ] else if (count > 0) ...[
               const SizedBox(width: SDSSpacing.sm),
               _CountBadge(count: count),
             ],
@@ -64,6 +71,28 @@ class _CountBadge extends StatelessWidget {
       child: Text(
         '$count',
         style: SDSTextStyle.bold.copyWith(fontSize: 12, color: SDSColor.snowliveWhite),
+      ),
+    );
+  }
+}
+
+/// 글자 배지(`NEW`). 개수 배지와 달리 알약 모양이다.
+class _TextBadge extends StatelessWidget {
+  final String label;
+
+  const _TextBadge({required this.label});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+      decoration: BoxDecoration(
+        color: SDSColor.snowliveBlue,
+        borderRadius: BorderRadius.circular(50),
+      ),
+      child: Text(
+        label,
+        style: SDSTextStyle.bold.copyWith(fontSize: 11, color: SDSColor.snowliveWhite),
       ),
     );
   }

@@ -12,6 +12,23 @@ import 'package:com.snowlive/web/view/fleamarket/v_fleamarketDetail_web.dart';
 import 'package:com.snowlive/web/view/fleamarket/v_fleamarketHome_web.dart';
 import 'package:com.snowlive/web/view/fleamarket/v_fleamarketUpdate_web.dart';
 import 'package:com.snowlive/web/view/fleamarket/v_fleamarketUpload_web.dart';
+import 'package:com.snowlive/web/view/liveCrew/v_crewCreate_web.dart';
+import 'package:com.snowlive/web/view/liveCrew/v_crewDailyRecord_web.dart';
+import 'package:com.snowlive/web/view/liveCrew/v_crewRecordRoom_web.dart';
+import 'package:com.snowlive/web/view/liveCrew/v_crewSeasonRanking_web.dart';
+import 'package:com.snowlive/web/view/liveCrew/v_crewHome_web.dart';
+import 'package:com.snowlive/web/view/liveCrew/v_crewApplications_web.dart';
+import 'package:com.snowlive/web/view/liveCrew/v_crewJoin_web.dart';
+import 'package:com.snowlive/web/view/liveCrew/v_crewMemberAdmin_web.dart';
+import 'package:com.snowlive/web/view/liveCrew/v_crewPermissions_web.dart';
+import 'package:com.snowlive/web/view/liveCrew/v_crewSettingDesc_web.dart';
+import 'package:com.snowlive/web/view/liveCrew/v_crewSettingImage_web.dart';
+import 'package:com.snowlive/web/view/liveCrew/v_crewSettingNotice_web.dart';
+import 'package:com.snowlive/web/view/liveCrew/v_crewSetting_web.dart';
+import 'package:com.snowlive/web/view/liveCrew/v_crewMembers_web.dart';
+import 'package:com.snowlive/web/view/liveCrew/v_crewTalks_web.dart';
+import 'package:com.snowlive/web/view/liveCrew/v_liveCrewHome_web.dart';
+import 'package:com.snowlive/web/view/profile/v_profileDetail_web.dart';
 import 'package:com.snowlive/web/view/liveTalk/v_liveTalkComments_web.dart';
 import 'package:com.snowlive/web/view/liveTalk/v_liveTalkHome_web.dart';
 import 'package:com.snowlive/web/view/login/v_login_web.dart';
@@ -52,6 +69,32 @@ class WebRoutes {
 
   // 친구는 하위 경로(`/friend/settings`)로 두면 GetX가 부모 `/friend`로 매칭해버려
   // 새로고침 시 목록이 뜬다 → 커뮤니티·랭킹처럼 형제 최상위 경로로 나눈다.
+  // 라이브크루. 크루별 상세(크루홈)는 다음 작업이며, 그때도 하위 경로가 아니라
+  // '/livecrew-detail?id=N' 형태의 형제 최상위 경로로 붙인다.
+  static const liveCrew = '/livecrew';
+  // 크루홈(크루별 상세)과 그 하위 화면들. 하위 경로(`/livecrew/detail`)로 두면 GetX가
+  // 부모 `/livecrew`로 매칭해버려 새로고침 시 목록이 뜬다 → 형제 최상위 경로 + 쿼리 id.
+  static const crewHome = '/livecrew-detail';
+  static const crewMembers = '/livecrew-members';
+  static const crewTalks = '/livecrew-talks';
+  static const crewCreate = '/livecrew-create';
+  static const crewJoin = '/livecrew-join';
+  // 크루 설정 묶음. 하위 경로로 두면 GetX가 부모로 매칭하므로 형제 최상위 + 쿼리 id.
+  static const crewSetting = '/livecrew-setting';
+  static const crewSettingDesc = '/livecrew-desc';
+  static const crewSettingNotice = '/livecrew-notice';
+  static const crewSettingImage = '/livecrew-image';
+  static const crewApplications = '/livecrew-applications';
+  static const crewMemberAdmin = '/livecrew-member-admin';
+  static const crewPermissions = '/livecrew-permissions';
+  // 크루 기록 화면들. 시즌 축(기록실·크루원 랭킹)과 연도 축(일별 현황).
+  static const crewRecordRoom = '/livecrew-record';
+  static const crewDailyRecord = '/livecrew-daily';
+  static const crewSeasonRanking = '/livecrew-season-ranking';
+
+  /// 개인 프로필 상세(라이딩 통계·방명록·시즌 기록실). `?id={userId}`
+  static const userProfile = '/profile';
+
   static const friend = '/friend';
   static const friendSettings = '/friend-settings';
   static const friendRequests = '/friend-requests';
@@ -157,6 +200,91 @@ class WebRoutes {
       name: rankingArchive,
       page: () => const RankingArchiveViewWeb(),
       binding: WebRankingArchiveBinding(),
+    ),
+    GetPage(
+      name: liveCrew,
+      page: () => const LiveCrewHomeViewWeb(),
+      binding: WebLiveCrewBinding(),
+    ),
+    GetPage(
+      name: crewHome,
+      page: () => const CrewHomeViewWeb(),
+      binding: WebCrewHomeBinding(),
+    ),
+    GetPage(
+      name: crewMembers,
+      page: () => const CrewMembersViewWeb(),
+      binding: WebCrewHomeBinding(),
+    ),
+    GetPage(
+      name: crewTalks,
+      page: () => const CrewTalksViewWeb(),
+      binding: WebCrewHomeBinding(),
+    ),
+    GetPage(
+      name: crewCreate,
+      page: () => const CrewCreateViewWeb(),
+      binding: WebCrewCreateBinding(),
+    ),
+    GetPage(
+      name: crewJoin,
+      page: () => const CrewJoinViewWeb(),
+      binding: WebCrewJoinBinding(),
+    ),
+    GetPage(
+      name: crewSetting,
+      page: () => const CrewSettingViewWeb(),
+      binding: WebCrewSettingBinding(),
+    ),
+    GetPage(
+      name: crewSettingDesc,
+      page: () => const CrewSettingDescViewWeb(),
+      binding: WebCrewSettingBinding(),
+    ),
+    GetPage(
+      name: crewSettingNotice,
+      page: () => const CrewSettingNoticeViewWeb(),
+      binding: WebCrewSettingBinding(),
+    ),
+    GetPage(
+      name: crewSettingImage,
+      page: () => const CrewSettingImageViewWeb(),
+      binding: WebCrewSettingBinding(),
+    ),
+    GetPage(
+      name: userProfile,
+      page: () => const ProfileDetailViewWeb(),
+      binding: WebProfileBinding(),
+    ),
+    GetPage(
+      name: crewRecordRoom,
+      page: () => const CrewRecordRoomViewWeb(),
+      binding: WebCrewRecordBinding(),
+    ),
+    GetPage(
+      name: crewDailyRecord,
+      page: () => const CrewDailyRecordViewWeb(),
+      binding: WebCrewRecordBinding(),
+    ),
+    GetPage(
+      name: crewSeasonRanking,
+      page: () => const CrewSeasonRankingViewWeb(),
+      binding: WebCrewRecordBinding(),
+    ),
+    GetPage(
+      name: crewApplications,
+      page: () => const CrewApplicationsViewWeb(),
+      binding: WebCrewSettingBinding(),
+    ),
+    GetPage(
+      name: crewMemberAdmin,
+      page: () => const CrewMemberAdminViewWeb(),
+      binding: WebCrewSettingBinding(),
+    ),
+    GetPage(
+      name: crewPermissions,
+      page: () => const CrewPermissionsViewWeb(),
+      binding: WebCrewSettingBinding(),
     ),
   ];
 }

@@ -1,3 +1,4 @@
+import 'package:com.snowlive/web/routes/routes_web.dart';
 import 'package:com.snowlive/core/model/m_rankingListIndiv.dart';
 import 'package:com.snowlive/web/util/responsive_web.dart';
 import 'package:com.snowlive/web/viewmodel/friend/vm_friend_web.dart';
@@ -35,9 +36,39 @@ class _RankingProfileCardState extends State<_RankingProfileCard> {
   bool _isSending = false;
   bool _requestSent = false;
 
+  /// 이 사람과 이미 친구인지. null이면 아직 모른다(상세 조회 중) → 그동안 `친구 추가`를
+  /// 누를 수 없게 해서 **이미 친구인 사람에게 요청이 가는 일**을 막는다.
+  bool? _areWeFriend;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadRelation();
+  }
+
+  Future<void> _loadRelation() async {
+    final targetId = widget.user.userId;
+    if (targetId == null) {
+      if (mounted) setState(() => _areWeFriend = false);
+      return;
+    }
+    // 이 응답에만 친구 관계(`are_we_friend`)가 들어 있다(목록·랭킹 응답에는 없다).
+    final detail = await Get.find<FriendViewModelWeb>().fetchProfile(targetId);
+    if (!mounted) return;
+    setState(() => _areWeFriend = detail?.friendUserInfo.areWeFriend ?? false);
+  }
+
   Future<void> _sendRequest() async {
     final targetId = widget.user.userId;
     if (targetId == null) return;
+    final friendVm = Get.find<FriendViewModelWeb>();
+    if (!friendVm.isLoggedIn) {
+      showWebToast(context, '로그인이 필요해요.',
+          alignment: context.screenType == WebScreenType.mobile
+              ? Alignment.bottomCenter
+              : Alignment.topCenter);
+      return;
+    }
 
     setState(() => _isSending = true);
     final ok = await Get.find<FriendViewModelWeb>().sendRequest(targetId);
@@ -55,6 +86,22 @@ class _RankingProfileCardState extends State<_RankingProfileCard> {
     );
   }
 
+  /// 랭킹 응답에는 친구 관계가 없어서 상세 조회로 따로 확인한다(`_loadRelation`).
+  Widget? _buildAction() {
+    final friendVm = Get.find<FriendViewModelWeb>();
+    // 랭킹에는 내 행도 있다 → 나를 열었으면 버튼을 그리지 않는다.
+    if (friendVm.myUserId != null && friendVm.myUserId == widget.user.userId) return null;
+    if (_requestSent) return const WebProfileStateBadge(label: '요청 보냄');
+    if (_areWeFriend == true) {
+      return const WebProfileStateBadge(label: '친구', isPositive: true);
+    }
+    return WebProfilePillButton(
+      label: _isSending ? '요청 중…' : '친구 추가',
+      // 관계를 모르는 동안(조회 중)에는 누를 수 없게 둔다.
+      onTap: (_isSending || _areWeFriend == null) ? null : _sendRequest,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final user = widget.user;
@@ -69,19 +116,16 @@ class _RankingProfileCardState extends State<_RankingProfileCard> {
         crewName: user.crewName,
       ),
       onClose: widget.onClose,
-      // 랭킹 응답에는 친구 관계(`are_we_friend`)가 없어서 "이미 친구"인지 알 수 없다.
-      // 눌러보게 두고 중복이면 서버가 막아주는 걸 문구로 알린다.
-      action: _requestSent
-          ? const WebProfilePillButton(label: '요청 보냄')
-          : WebProfilePillButton(
-              label: _isSending ? '요청 중…' : '친구 추가',
-              onTap: _isSending ? null : _sendRequest,
-            ),
+      action: _buildAction(),
       footer: WebProfileFooterButton(
         label: '프로필 보러가기',
-        // 웹에는 아직 친구 상세 페이지가 없다(앱의 v_friendDetail은 방명록·라이딩 통계까지
-        // 포함한 2600줄짜리 화면이라 별건이다).
-        onTap: () => Get.snackbar('알림', '프로필 화면은 준비 중이에요.'),
+        onTap: user.userId == null
+            ? null
+            : () {
+                // 팝업을 먼저 닫아야 프로필 화면 위에 딤이 남지 않는다.
+                widget.onClose();
+                Get.toNamed('${WebRoutes.userProfile}?id=${user.userId}');
+              },
       ),
     );
   }

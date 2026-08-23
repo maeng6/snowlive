@@ -47,7 +47,7 @@ const List<GnbNavItemData> kGnbPrimaryItems = [
   GnbNavItemData(label: '커뮤니티', routePrefix: '/community', materialIcon: Icons.forum_outlined),
   GnbNavItemData(label: '라이브톡', routePrefix: '/livetalk', materialIcon: Icons.podcasts_outlined),
   GnbNavItemData(label: '랭킹', routePrefix: '/ranking', materialIcon: Icons.emoji_events_outlined),
-  GnbNavItemData(label: '라이브크루', materialIcon: Icons.groups_outlined),
+  GnbNavItemData(label: '라이브크루', routePrefix: '/livecrew', materialIcon: Icons.groups_outlined),
 ];
 
 /// 2차 그룹: 친구 / 메뉴명(placeholder) / 설정

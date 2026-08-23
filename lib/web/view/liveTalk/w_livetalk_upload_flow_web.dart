@@ -9,9 +9,12 @@ import 'package:get/get.dart';
 
 /// `라이브톡 올리기` — 사진 선택 → 글 작성 2단계(목업).
 /// 등록에 성공하면 true를 리턴해 호출자가 피드를 새로고침한다.
+/// [crewId]를 주면 **크루톡 올리기**로 동작한다(제목이 바뀌고 공개범위 토글이 붙는다).
+/// 올리는 절차 자체는 라이브톡과 완전히 같다(사용자 확정).
 Future<bool> showLiveTalkUploadFlow({
   required BuildContext context,
   required int userId,
+  int? crewId,
 }) async {
   final vm = Get.find<LiveTalkUploadViewModelWeb>();
   vm.reset();
@@ -25,7 +28,8 @@ Future<bool> showLiveTalkUploadFlow({
     padding: context.screenType == WebScreenType.mobile
         ? EdgeInsets.zero
         : const EdgeInsets.symmetric(horizontal: 24, vertical: 40),
-    builder: (ctx, close) => _UploadFlow(vm: vm, userId: userId, onClose: close),
+    builder: (ctx, close) =>
+        _UploadFlow(vm: vm, userId: userId, crewId: crewId, onClose: close),
   );
   return done ?? false;
 }
@@ -33,9 +37,17 @@ Future<bool> showLiveTalkUploadFlow({
 class _UploadFlow extends StatefulWidget {
   final LiveTalkUploadViewModelWeb vm;
   final int userId;
+
+  /// null이면 일반 라이브톡, 값이 있으면 그 크루의 크루톡.
+  final int? crewId;
   final void Function([bool? result]) onClose;
 
-  const _UploadFlow({required this.vm, required this.userId, required this.onClose});
+  const _UploadFlow({
+    required this.vm,
+    required this.userId,
+    required this.crewId,
+    required this.onClose,
+  });
 
   @override
   State<_UploadFlow> createState() => _UploadFlowState();
@@ -47,6 +59,11 @@ class _UploadFlowState extends State<_UploadFlow> {
 
   /// 파일을 문서 위로 끌고 온 상태. 드롭 영역에 테두리를 켜서 알려준다.
   bool _isDragging = false;
+
+  /// 크루톡 공개범위. 기본은 전체공개(라이브크루 홈 갤러리에도 노출된다).
+  bool _isPublic = true;
+
+  bool get _isCrewTalk => widget.crewId != null;
 
   WebFileDrop? _drop;
 
@@ -82,6 +99,9 @@ class _UploadFlowState extends State<_UploadFlow> {
     final ok = await _vm.submitPhoto(
       userId: widget.userId,
       description: _textController.text.trim(),
+      crewId: widget.crewId,
+      // 서버는 crew_id가 있으면 secret을 반드시 요구한다.
+      secret: _isCrewTalk ? !_isPublic : null,
     );
     if (!ok) {
       Get.snackbar('오류', '업로드에 실패했어요. 잠시 후 다시 시도해주세요.');
@@ -97,7 +117,7 @@ class _UploadFlowState extends State<_UploadFlow> {
     return Obx(() {
       final isStep0 = _step == 0;
       return LiveTalkStepModal(
-        title: '라이브톡 올리기',
+        title: _isCrewTalk ? '크루톡 올리기' : '라이브톡 올리기',
         subtitle: isStep0 ? _pickSubtitle(context) : '글 내용을 입력하세요.',
         onClose: widget.onClose,
         onBack: isStep0 ? null : () => setState(() => _step = 0),
@@ -166,6 +186,13 @@ class _UploadFlowState extends State<_UploadFlow> {
         Center(child: _ImageThumb(vm: _vm)),
         const SizedBox(height: SDSSpacing.lg),
         LiveTalkComposeField(controller: _textController),
+        if (_isCrewTalk) ...[
+          const SizedBox(height: SDSSpacing.md),
+          _VisibilityToggle(
+            isPublic: _isPublic,
+            onChanged: (value) => setState(() => _isPublic = value),
+          ),
+        ],
       ],
     );
   }
@@ -288,4 +315,41 @@ Future<void> showLiveTalkUploadDoneDialog(BuildContext context) {
       ),
     ),
   );
+}
+
+/// 크루톡 공개범위 스위치. 전체공개면 라이브크루 홈 갤러리에도 노출된다.
+class _VisibilityToggle extends StatelessWidget {
+  final bool isPublic;
+  final ValueChanged<bool> onChanged;
+
+  const _VisibilityToggle({required this.isPublic, required this.onChanged});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                '전체공개',
+                style: SDSTextStyle.bold.copyWith(fontSize: 14, color: SDSColor.gray900),
+              ),
+              const SizedBox(height: 2),
+              Text(
+                isPublic ? '라이브크루 홈에도 사진이 보여요.' : '크루원만 볼 수 있어요.',
+                style: SDSTextStyle.regular.copyWith(fontSize: 12, color: SDSColor.gray500),
+              ),
+            ],
+          ),
+        ),
+        Switch(
+          value: isPublic,
+          onChanged: onChanged,
+          activeTrackColor: SDSColor.snowliveBlue,
+        ),
+      ],
+    );
+  }
 }
