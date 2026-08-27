@@ -2,7 +2,7 @@ import 'dart:io';
 import 'dart:typed_data';
 import 'dart:ui' as ui;
 import 'package:com.snowlive/core/api/api_liveTalk.dart';
-import 'package:com.snowlive/model/m_dailyRidingCard.dart';
+import 'package:com.snowlive/core/model/m_dailyRidingCard.dart';
 import 'package:com.snowlive/core/model/m_liveTalk.dart';
 import 'package:com.snowlive/core/viewmodel/vm_user.dart';
 import 'package:firebase_storage/firebase_storage.dart';

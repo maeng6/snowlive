@@ -3,7 +3,7 @@ import 'dart:ui' as ui;
 
 import 'package:com.snowlive/core/api/api_liveTalk.dart';
 import 'package:com.snowlive/core/api/api_ranking.dart';
-import 'package:com.snowlive/model/m_dailyRidingCard.dart';
+import 'package:com.snowlive/core/model/m_dailyRidingCard.dart';
 import 'package:com.snowlive/web/viewmodel/util/vm_imageController_web.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/rendering.dart';

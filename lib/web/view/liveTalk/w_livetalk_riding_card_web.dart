@@ -1,5 +1,5 @@
 import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
-import 'package:com.snowlive/model/m_dailyRidingCard.dart';
+import 'package:com.snowlive/core/model/m_dailyRidingCard.dart';
 import 'package:flutter/material.dart';
 
 /// 라이딩 기록 카드 배경(모바일 앱과 같은 에셋).
