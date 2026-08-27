@@ -29,6 +29,8 @@ import 'package:com.snowlive/web/view/liveCrew/v_crewMembers_web.dart';
 import 'package:com.snowlive/web/view/liveCrew/v_crewTalks_web.dart';
 import 'package:com.snowlive/web/view/liveCrew/v_liveCrewHome_web.dart';
 import 'package:com.snowlive/web/view/profile/v_profileDetail_web.dart';
+import 'package:com.snowlive/web/view/ranking/v_ridingCards_web.dart';
+import 'package:com.snowlive/web/view/ranking/v_slopeCraft_web.dart';
 import 'package:com.snowlive/web/view/liveTalk/v_liveTalkComments_web.dart';
 import 'package:com.snowlive/web/view/liveTalk/v_liveTalkHome_web.dart';
 import 'package:com.snowlive/web/view/login/v_login_web.dart';
@@ -66,6 +68,11 @@ class WebRoutes {
   // '/ranking/archive'처럼 기존 라우트의 하위 경로로 두면 GetX가 부모('/ranking')로
   // 매칭해버려서 기록실 대신 랭킹 화면이 떴다. 별도 최상위 경로로 분리한다.
   static const rankingArchive = '/ranking-archive';
+  // 슬로프크래프트(슬로프 점령도). 랭킹 하위 경로로 두면 GetX가 부모로 매칭하므로
+  // 형제 최상위 경로로 둔다.
+  static const slopeCraft = '/slopecraft';
+  /// 라이딩 기록 카드(시즌 카드 + 데일리 카드 목록).
+  static const ridingCards = '/riding-cards';
 
   // 친구는 하위 경로(`/friend/settings`)로 두면 GetX가 부모 `/friend`로 매칭해버려
   // 새로고침 시 목록이 뜬다 → 커뮤니티·랭킹처럼 형제 최상위 경로로 나눈다.
@@ -250,6 +257,16 @@ class WebRoutes {
       name: crewSettingImage,
       page: () => const CrewSettingImageViewWeb(),
       binding: WebCrewSettingBinding(),
+    ),
+    GetPage(
+      name: ridingCards,
+      page: () => const RidingCardsViewWeb(),
+      binding: WebRidingCardsBinding(),
+    ),
+    GetPage(
+      name: slopeCraft,
+      page: () => const SlopeCraftViewWeb(),
+      binding: WebSlopeCraftBinding(),
     ),
     GetPage(
       name: userProfile,

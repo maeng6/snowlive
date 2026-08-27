@@ -42,6 +42,12 @@ class _LiveCrewHomeViewWebState extends State<LiveCrewHomeViewWeb> {
   /// 선택한 칩. 데이터가 오기 전엔 알 수 없으므로 null로 두고 빌드 때 첫 칩으로 정한다.
   CrewHomeChip? _selectedChip;
 
+  /// `스키장별`을 골랐을 때 2단에서 선택한 스키장 칩.
+  CrewHomeChip? _selectedResortChip;
+
+  /// 상단 캐러셀에서 보고 있는 주제(좌우 화살표로 넘긴다).
+  int _topicIndex = 0;
+
   @override
   void initState() {
     super.initState();
@@ -155,9 +161,15 @@ class _LiveCrewHomeViewWebState extends State<LiveCrewHomeViewWeb> {
       return isLoading ? const _LiveCrewSkeleton() : const SizedBox(height: 240);
     }
 
+    final sections = crewHomeSections(home);
     final chips = crewHomeChips(home);
     final selected = _resolveChip(chips);
-    final crews = crewsForChip(home, selected);
+    final resortChips =
+        selected?.kind == CrewHomeChipKind.byResort ? crewHomeResortChips(home) : const <CrewHomeChip>[];
+    final selectedResort = _resolveResortChip(resortChips);
+    // `스키장별`은 1단 자체에 목록이 없다 → 2단에서 고른 스키장의 크루를 쓴다.
+    final gridChip = resortChips.isEmpty ? selected : selectedResort;
+    final crews = crewsForChip(home, gridChip);
     final resortFullnames = crewResortFullnames(home);
     final crewIndex = crewIndexOf(home);
     final gallery = crewGalleryTalks(home);
@@ -165,32 +177,64 @@ class _LiveCrewHomeViewWebState extends State<LiveCrewHomeViewWeb> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if (home.slopeOccupied.isNotEmpty) ...[
-          LiveCrewTopCarouselWeb(
-            crews: home.slopeOccupied,
-            resortFullnames: resortFullnames,
-            onCrewTap: (crew) => showLiveCrewModal(context, crew, resortFullnames: resortFullnames),
-          ),
+        // 상단은 주제 하나만 보여주고 화살표로 넘긴다(사용자 확정).
+        if (sections.isNotEmpty) ...[
+          Builder(builder: (context) {
+            final index = _topicIndex.clamp(0, sections.length - 1);
+            final section = sections[index];
+            return LiveCrewTopCarouselWeb(
+              title: section.title,
+              subtitle: section.subtitle,
+              emptyMessage: section.emptyMessage,
+              crews: section.crews,
+              highlightFirst: section.highlightFirst,
+              resortFullnames: resortFullnames,
+              onCrewTap: (crew) =>
+                  showLiveCrewModal(context, crew, resortFullnames: resortFullnames),
+              onPrevTopic: index > 0 ? () => setState(() => _topicIndex = index - 1) : null,
+              onNextTopic: index < sections.length - 1
+                  ? () => setState(() => _topicIndex = index + 1)
+                  : null,
+            );
+          }),
           const SizedBox(height: SDSSpacing.xxl),
         ],
         LiveCrewFilterChipsWeb(
           chips: chips,
           selected: selected,
-          onSelected: (chip) => setState(() => _selectedChip = chip),
+          onSelected: (chip) => setState(() {
+            _selectedChip = chip;
+            // 다른 칩으로 옮기면 2단 선택은 버린다(다시 들어오면 첫 스키장부터).
+            if (chip.kind != CrewHomeChipKind.byResort) _selectedResortChip = null;
+          }),
+          resortChips: resortChips,
+          selectedResort: selectedResort,
+          onResortSelected: (chip) => setState(() => _selectedResortChip = chip),
         ),
         const SizedBox(height: SDSSpacing.lg),
         LiveCrewListGridWeb(
           crews: crews,
           onCrewTap: (crew) => showLiveCrewModal(context, crew, resortFullnames: resortFullnames),
         ),
-        // 이 목록은 서버가 리조트별 30개로 잘라 준다 → 30개면 더 있다는 뜻이므로
+        // 순위 칩(멤버 많은 순·라이브온 순)은 서버가 상위 30개만 준다. 전체 조회 API가
+        // 없어 화면 이동은 못 하므로 30개가 전부가 아니라는 것만 알린다.
+        if (crewHomeChipIsRankedTop(gridChip) && crews.isNotEmpty) ...[
+          const SizedBox(height: SDSSpacing.md),
+          Center(
+            child: Text(
+              '상위 ${crews.length}개 크루입니다.',
+              style: SDSTextStyle.regular.copyWith(fontSize: 12, color: SDSColor.gray400),
+            ),
+          ),
+        ],
+        // 스키장별 목록은 서버가 리조트별 30개로 잘라 준다 → 30개면 더 있다는 뜻이므로
         // 그 스키장의 크루를 전부 보는 화면으로 갈 길을 만든다.
-        if (selected != null && crewHomeListIsCapped(selected, crews)) ...[
+        if (gridChip != null && crewHomeListIsCapped(gridChip, crews)) ...[
           const SizedBox(height: SDSSpacing.md),
           Center(
             child: OutlinedButton(
               onPressed: () =>
-                  Get.toNamed('${WebRoutes.crewJoin}?resort=${selected.resortId}'),
+                  Get.toNamed('${WebRoutes.crewJoin}?resort=${gridChip.resortId}'),
               style: OutlinedButton.styleFrom(
                 side: BorderSide(color: SDSColor.gray200),
                 padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
@@ -199,7 +243,7 @@ class _LiveCrewHomeViewWebState extends State<LiveCrewHomeViewWeb> {
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
               ),
               child: Text(
-                '${selected.label} 크루 전체보기',
+                '${gridChip.label} 크루 전체보기',
                 style: SDSTextStyle.bold.copyWith(fontSize: 13, color: SDSColor.gray900),
               ),
             ),
@@ -226,6 +270,14 @@ class _LiveCrewHomeViewWebState extends State<LiveCrewHomeViewWeb> {
     if (current != null && chips.contains(current)) return current;
     return chips.first;
   }
+
+  /// 2단(스키장) 선택 결정. 같은 규칙으로 첫 스키장을 기본값으로 쓴다.
+  CrewHomeChip? _resolveResortChip(List<CrewHomeChip> resortChips) {
+    if (resortChips.isEmpty) return null;
+    final current = _selectedResortChip;
+    if (current != null && resortChips.contains(current)) return current;
+    return resortChips.first;
+  }
 }
 
 class _LiveCrewSkeleton extends StatelessWidget {
@@ -237,25 +289,37 @@ class _LiveCrewSkeleton extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // 상단 캐러셀이 5개라 두 줄 분량만 보여준다(나머지는 스크롤 아래).
+          for (var row = 0; row < 2; row++) ...[
+            if (row > 0) const SizedBox(height: SDSSpacing.xxl),
+            SizedBox(
+              height: 186,
+              // ListView가 넘치는 카드를 잘라 준다(Row로 두면 좁은 폭에서 오버플로).
+              child: ListView(
+                scrollDirection: Axis.horizontal,
+                physics: const NeverScrollableScrollPhysics(),
+                children: [
+                  for (var i = 0; i < 5; i++) ...[
+                    if (i > 0) const SizedBox(width: SDSSpacing.md),
+                    const SkeletonBox(width: 186, height: 186, radius: 12),
+                  ],
+                ],
+              ),
+            ),
+          ],
+          const SizedBox(height: SDSSpacing.xxl),
           SizedBox(
-            height: 186,
-            child: Row(
+            height: 38,
+            child: ListView(
+              scrollDirection: Axis.horizontal,
+              physics: const NeverScrollableScrollPhysics(),
               children: [
                 for (var i = 0; i < 5; i++) ...[
-                  if (i > 0) const SizedBox(width: SDSSpacing.md),
-                  const SkeletonBox(width: 186, height: 186, radius: 12),
+                  if (i > 0) const SizedBox(width: SDSSpacing.sm),
+                  const SkeletonBox(width: 92, height: 38, radius: 50),
                 ],
               ],
             ),
-          ),
-          const SizedBox(height: SDSSpacing.xxl),
-          Row(
-            children: [
-              for (var i = 0; i < 6; i++) ...[
-                if (i > 0) const SizedBox(width: SDSSpacing.sm),
-                const SkeletonBox(width: 92, height: 38, radius: 50),
-              ],
-            ],
           ),
           const SizedBox(height: SDSSpacing.lg),
           for (var i = 0; i < 6; i++) ...[

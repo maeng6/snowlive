@@ -14,21 +14,42 @@ const double _kCardGap = SDSSpacing.md;
 /// 데스크탑에서 좌측 문구 블록이 차지하는 폭(목업 실측 288).
 const double _kLeadWidth = 288;
 
-/// `오늘 가장 많은 슬로프를 점령한 크루` 캐러셀.
+/// 상단 캐러셀. **주제 하나만** 보여주고 좌우 화살표로 주제를 넘긴다
+/// (`이번 시즌 슬로프 점령` → `신규 크루` → `오늘 라이브온` → …, 사용자 확정).
 ///
-/// 좌우 화살표로 **카드 한 칸씩** 움직인다. 웹에 재사용할 캐러셀 위젯이 없어서
-/// (중고거래 상세는 `carousel_slider` + 점 인디케이터, 이미지 뷰어의 화살표는 private)
-/// `ScrollController.animateTo`로 직접 만든다.
+/// 우측 카드 줄은 **좌우 스크롤**(마우스 드래그·휠·터치)로 넘긴다 — 화살표는 카드를
+/// 밀지 않는다. 넘길 수 있는 경계는 반투명하게 지워 더 있다는 걸 알린다.
+///
+/// 제목·부제·빈 문구는 [crewHomeSections]가 정한다.
 class LiveCrewTopCarouselWeb extends StatefulWidget {
+  /// 두 줄 제목(`\n` 포함).
+  final String title;
+  final String subtitle;
+
+  /// 카드가 없을 때 레일 자리에 넣을 문구(비시즌의 `오늘 …` 섹션).
+  final String emptyMessage;
   final List<CrewCard> crews;
   final Map<int, String> resortFullnames;
   final void Function(CrewCard crew) onCrewTap;
 
+  /// 1위 카드를 크루 색으로 채울지(목업은 첫 섹션만).
+  final bool highlightFirst;
+
+  /// 이전/다음 **주제**로 넘기기. null이면 그 방향 화살표는 비활성.
+  final VoidCallback? onPrevTopic;
+  final VoidCallback? onNextTopic;
+
   const LiveCrewTopCarouselWeb({
     super.key,
+    required this.title,
+    required this.subtitle,
+    required this.emptyMessage,
     required this.crews,
     required this.onCrewTap,
+    this.highlightFirst = false,
     this.resortFullnames = const {},
+    this.onPrevTopic,
+    this.onNextTopic,
   });
 
   @override
@@ -41,13 +62,22 @@ class _LiveCrewTopCarouselWebState extends State<LiveCrewTopCarouselWeb> {
   @override
   void initState() {
     super.initState();
-    // 화살표 활성/비활성이 스크롤 위치를 따라가야 한다.
+    // 경계 페이드가 스크롤 위치를 따라가야 한다.
     _controller.addListener(_onScroll);
     // 첫 빌드 때는 컨트롤러가 아직 리스트에 붙지 않아 hasClients가 false다 →
-    // 스크롤 이벤트가 없으면 화살표가 영구히 비활성으로 남는다(실측). 한 번 깨워준다.
+    // 스크롤 이벤트가 없으면 페이드 판정이 갱신되지 않는다. 한 번 깨워준다.
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) setState(() {});
     });
+  }
+
+  @override
+  void didUpdateWidget(LiveCrewTopCarouselWeb oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // 주제가 바뀌면 새 목록을 처음부터 보여준다(이전 스크롤 위치가 남으면 중간부터 보인다).
+    if (oldWidget.title != widget.title && _controller.hasClients) {
+      _controller.jumpTo(0);
+    }
   }
 
   @override
@@ -61,21 +91,10 @@ class _LiveCrewTopCarouselWebState extends State<LiveCrewTopCarouselWeb> {
     if (mounted) setState(() {});
   }
 
-  bool get _canGoBack => _controller.hasClients && _controller.offset > 1;
+  bool get _canFadeLeft => _controller.hasClients && _controller.offset > 1;
 
-  bool get _canGoForward =>
+  bool get _canFadeRight =>
       _controller.hasClients && _controller.offset < _controller.position.maxScrollExtent - 1;
-
-  void _scrollBy(double delta) {
-    if (!_controller.hasClients) return;
-    final target = (_controller.offset + delta)
-        .clamp(0.0, _controller.position.maxScrollExtent);
-    _controller.animateTo(
-      target,
-      duration: const Duration(milliseconds: 250),
-      curve: Curves.easeOut,
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -105,26 +124,21 @@ class _LiveCrewTopCarouselWebState extends State<LiveCrewTopCarouselWeb> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          '오늘 가장 많은\n슬로프를 점령한 크루',
+          widget.title,
           style: SDSTextStyle.bold.copyWith(fontSize: 20, color: SDSColor.gray900, height: 1.35),
         ),
         const SizedBox(height: 6),
         Text(
-          '어느 크루가 최다 슬로프를 점령했을까?',
+          widget.subtitle,
           style: SDSTextStyle.regular.copyWith(fontSize: 12, color: SDSColor.gray500),
         ),
         const SizedBox(height: SDSSpacing.md),
+        // 화살표는 카드가 아니라 **주제**를 넘긴다(사용자 확정).
         Row(
           children: [
-            _ArrowButton(
-              icon: Icons.chevron_left,
-              onTap: _canGoBack ? () => _scrollBy(-(_kCardSize + _kCardGap)) : null,
-            ),
+            _ArrowButton(icon: Icons.chevron_left, onTap: widget.onPrevTopic),
             const SizedBox(width: SDSSpacing.sm),
-            _ArrowButton(
-              icon: Icons.chevron_right,
-              onTap: _canGoForward ? () => _scrollBy(_kCardSize + _kCardGap) : null,
-            ),
+            _ArrowButton(icon: Icons.chevron_right, onTap: widget.onNextTopic),
           ],
         ),
       ],
@@ -132,10 +146,27 @@ class _LiveCrewTopCarouselWebState extends State<LiveCrewTopCarouselWeb> {
   }
 
   Widget _buildRail() {
+    // 비시즌에는 `오늘 …` 리스트가 0개로 온다 → 섹션은 두고 안내만 보여준다(사용자 확정).
+    if (widget.crews.isEmpty) {
+      return Container(
+        height: _kCardSize,
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          color: SDSColor.gray50,
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Text(
+          widget.emptyMessage,
+          textAlign: TextAlign.center,
+          style: SDSTextStyle.regular.copyWith(fontSize: 13, color: SDSColor.gray400),
+        ),
+      );
+    }
+
     return _EdgeFade(
       // 더 넘길 수 있는 쪽만 흐려진다(목업: 잘린 카드가 경계에서 사라지는 효과).
-      fadeLeft: _canGoBack,
-      fadeRight: _canGoForward,
+      fadeLeft: _canFadeLeft,
+      fadeRight: _canFadeRight,
       child: SizedBox(
         height: _kCardSize,
         // 마우스로 끌어서도 넘길 수 있게 한다(웹 기본값은 휠만 허용).
@@ -149,8 +180,8 @@ class _LiveCrewTopCarouselWebState extends State<LiveCrewTopCarouselWeb> {
               final crew = widget.crews[index];
               return _CrewCarouselCard(
                 crew: crew,
-                // 오늘 1위 크루만 크루 색으로 채워 강조한다(목업의 초록 카드).
-                isHighlighted: index == 0,
+                // 1위 크루만 크루 색으로 채워 강조한다(목업의 파란 카드).
+                isHighlighted: widget.highlightFirst && index == 0,
                 resortFullnames: widget.resortFullnames,
                 onTap: () => widget.onCrewTap(crew),
               );

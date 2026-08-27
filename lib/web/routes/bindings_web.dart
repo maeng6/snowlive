@@ -26,6 +26,8 @@ import 'package:com.snowlive/web/viewmodel/util/vm_imageController_web.dart';
 import 'package:com.snowlive/web/viewmodel/crew/vm_crewDetail_web.dart';
 import 'package:com.snowlive/web/viewmodel/crew/vm_crewRecord_web.dart';
 import 'package:com.snowlive/web/viewmodel/friend/vm_profileDetail_web.dart';
+import 'package:com.snowlive/core/viewmodel/ranking/vm_ridingCard.dart';
+import 'package:com.snowlive/web/viewmodel/ranking/vm_slopeCraft_web.dart';
 import 'package:com.snowlive/core/viewmodel/friend/vm_friendList.dart';
 import 'package:com.snowlive/web/viewmodel/friend/vm_friend_web.dart';
 import 'package:com.snowlive/web/viewmodel/auth/vm_login_web.dart';
@@ -236,6 +238,26 @@ class WebCrewJoinBinding extends Bindings {
   @override
   void dependencies() {
     Get.lazyPut(() => CrewJoinViewModelWeb(), fenix: true);
+  }
+}
+
+/// 라이딩 기록 카드 라우트용 바인딩.
+class WebRidingCardsBinding extends Bindings {
+  @override
+  void dependencies() {
+    // 코어 뷰모델을 그대로 쓴다 — 웹 금지 의존성이 없고(api·모델·shared_preferences)
+    // 카드 스킨 저장·월별 그룹화까지 이미 들어 있다.
+    Get.lazyPut(() => RidingCardViewModel(), fenix: true);
+  }
+}
+
+/// 슬로프크래프트 라우트용 바인딩.
+class WebSlopeCraftBinding extends Bindings {
+  @override
+  void dependencies() {
+    Get.lazyPut(() => SlopeCraftViewModelWeb(), fenix: true);
+    // 상단 `전체 스키장 점령 TOP 5`는 전용 API가 없어 크루홈 집계를 쓴다.
+    Get.lazyPut(() => CrewHomeViewModel(), fenix: true);
   }
 }
 

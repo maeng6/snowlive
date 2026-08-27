@@ -30,7 +30,8 @@ class GnbNavItemData {
   });
 }
 
-/// 1차 그룹: 홈 / 중고거래 / 각종소식 / 커뮤니티 / 라이브톡 / 랭킹 / 라이브크루
+/// 1차 그룹: 홈 / 중고거래 / 각종소식 / 커뮤니티 / 라이브톡 / 랭킹 / 라이브크루 /
+/// 슬로프크래프트 / 라이딩 기록 카드
 const List<GnbNavItemData> kGnbPrimaryItems = [
   GnbNavItemData(
     label: '홈',
@@ -48,6 +49,18 @@ const List<GnbNavItemData> kGnbPrimaryItems = [
   GnbNavItemData(label: '라이브톡', routePrefix: '/livetalk', materialIcon: Icons.podcasts_outlined),
   GnbNavItemData(label: '랭킹', routePrefix: '/ranking', materialIcon: Icons.emoji_events_outlined),
   GnbNavItemData(label: '라이브크루', routePrefix: '/livecrew', materialIcon: Icons.groups_outlined),
+  GnbNavItemData(
+    label: '슬로프크래프트',
+    routePrefix: '/slopecraft',
+    // 앱에 이미 있는 슬로프 아이콘 쌍을 쓴다.
+    assetIconOn: 'assets/imgs/icons/icon_home_slope.png',
+    assetIconOff: 'assets/imgs/icons/icon_home_slope_off.png',
+  ),
+  GnbNavItemData(
+    label: '라이딩 기록 카드',
+    routePrefix: '/riding-cards',
+    materialIcon: Icons.badge_outlined,
+  ),
 ];
 
 /// 2차 그룹: 친구 / 메뉴명(placeholder) / 설정

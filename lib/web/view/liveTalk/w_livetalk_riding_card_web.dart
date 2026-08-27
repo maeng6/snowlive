@@ -20,8 +20,11 @@ const double _kBaseWidth = 320;
 /// 라이브톡에 올릴 라이딩 기록 카드.
 ///
 /// **모바일 앱의 카드 공유 다이얼로그([v_liveTalk_main.dart]의
-/// `_buildLargeCardPreview` + `_buildDialogCardType0Content`)를 1:1로 옮긴 것.**
+/// `_buildLargeCardPreview` + `_buildDialogCardType0Content/1Content`)를 1:1로 옮긴 것.**
 /// 값·단위·자릿수·라벨·글자 크기·여백을 모두 그쪽 기준(width 320)으로 맞췄다.
+///
+/// 스킨을 바꾸면 **배경만 바뀌는 게 아니라 내용 구성이 바뀐다**(앱과 동일) —
+/// 0번은 기록 5종, 1번 이상은 `슬로프 리스트`(총 라이딩 + 최다 슬로프 + 그날 탄 슬로프들).
 ///
 /// 미리보기와 **캡처가 같은 위젯**이다. 캡처는 [RepaintBoundary.toImage()]로 하는데
 /// 그건 캔버스에 그려진 것만 담으므로, 아바타는 `<img>` 폴백을 쓰는
@@ -110,13 +113,13 @@ class LiveTalkRidingCardWeb extends StatelessWidget {
                 ],
               ),
             ),
-            // 중앙: 기록 5종
+            // 중앙: 0번은 기록 5종, 1번 이상은 슬로프 리스트(앱의 카드 타입 구성).
             Positioned(
               top: _s(236),
               bottom: _s(80),
               left: _s(24),
               right: _s(24),
-              child: Center(child: _buildStats()),
+              child: Center(child: _isLight ? _buildStats() : _buildSlopeList()),
             ),
             Positioned(
               bottom: _s(40),
@@ -240,6 +243,85 @@ class LiveTalkRidingCardWeb extends StatelessWidget {
     );
   }
 
+  /// 슬로프 리스트 카드(앱 `_buildDialogCardType1Content`).
+  ///
+  /// 총 라이딩 → 가장 많이 탄 슬로프(큰 글씨) → 나머지 슬로프 이름들(최대 2줄, 넘치면 `+N`).
+  Widget _buildSlopeList() {
+    final entries = card.slopeCountsByName?.entries.toList() ?? [];
+    final first = entries.isNotEmpty ? entries.first : null;
+    final rest = entries.length > 1 ? entries.sublist(1) : const <MapEntry<String, int>>[];
+
+    // 카드 폭에서 좌우 패딩(24*2)을 뺀 값이 슬로프 이름이 쓸 수 있는 폭이다(앱과 동일).
+    final available = width - _s(48);
+    final spacing = _s(8);
+    final nameStyle = SDSTextStyle.bold.copyWith(fontSize: _s(14), color: Colors.white);
+
+    final displayCount = ridingCardSlopeCountForTwoLines(
+      slopes: rest.map((e) => e.key).toList(),
+      maxWidth: available,
+      style: nameStyle,
+      spacing: spacing,
+    );
+    final display = rest.take(displayCount).toList();
+    final remaining = rest.length - displayCount;
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(
+          '${card.totalSlopeCount ?? 0}',
+          style: SDSTextStyle.extraBold
+              .copyWith(fontSize: _s(40), color: Colors.white, height: 1.0),
+        ),
+        SizedBox(height: _s(4)),
+        Text(
+          '오늘 총 라이딩',
+          style: SDSTextStyle.regular
+              .copyWith(fontSize: _s(12), color: Colors.white.withValues(alpha: 0.7)),
+        ),
+        SizedBox(height: _s(24)),
+        Text(
+          first?.key ?? '-',
+          textAlign: TextAlign.center,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: SDSTextStyle.extraBold
+              .copyWith(fontSize: _s(24), color: Colors.white, height: 1.0),
+        ),
+        if (display.isNotEmpty) ...[
+          SizedBox(height: _s(6)),
+          Wrap(
+            alignment: WrapAlignment.center,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            spacing: spacing,
+            runSpacing: _s(2),
+            children: [
+              for (final entry in display) Text(entry.key, style: nameStyle),
+              if (remaining > 0)
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: _s(6)),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(_s(10)),
+                  ),
+                  child: Text(
+                    '+$remaining',
+                    style: SDSTextStyle.bold.copyWith(fontSize: _s(11), color: Colors.black),
+                  ),
+                ),
+            ],
+          ),
+        ],
+        SizedBox(height: _s(4)),
+        Text(
+          '라이딩 슬로프',
+          style: SDSTextStyle.regular
+              .copyWith(fontSize: _s(12), color: Colors.white.withValues(alpha: 0.7)),
+        ),
+      ],
+    );
+  }
+
   /// 0이면 단위 없이 `-`만 그린다(앱과 동일).
   List<InlineSpan> _valueWithUnit(
     double? raw, {
@@ -302,4 +384,63 @@ class _StatColumn extends StatelessWidget {
       ],
     );
   }
+}
+
+
+/// 슬로프 이름 하나의 렌더 폭.
+double ridingCardTextWidth(String text, TextStyle style) {
+  final painter = TextPainter(
+    text: TextSpan(text: text, style: style),
+    maxLines: 1,
+    textDirection: TextDirection.ltr,
+  )..layout();
+  return painter.width;
+}
+
+/// **2줄에 들어가는 슬로프 개수**(앱 `_getSlopeCountForTwoLines` 이식).
+///
+/// 넘치는 만큼은 `+N` 배지로 접는데, 그 배지가 들어갈 자리까지 고려해 개수를 줄인다.
+/// 앱 로직을 그대로 옮겼다 — 카드가 두 줄을 넘겨 잘리는 것을 막는 게 목적이다.
+int ridingCardSlopeCountForTwoLines({
+  required List<String> slopes,
+  required double maxWidth,
+  required TextStyle style,
+  required double spacing,
+}) {
+  double currentLineWidth = 0;
+  var lineCount = 1;
+  var count = 0;
+
+  for (var i = 0; i < slopes.length; i++) {
+    final textWidth = ridingCardTextWidth(slopes[i], style);
+
+    if (currentLineWidth + textWidth > maxWidth) {
+      lineCount++;
+      if (lineCount > 2) {
+        final plusWidth = ridingCardTextWidth('+${slopes.length - count}', style);
+        while (count > 0) {
+          var lastLineWidth = 0.0;
+          var tempLineCount = 1;
+          for (var j = 0; j < count; j++) {
+            final w = ridingCardTextWidth(slopes[j], style);
+            if (lastLineWidth + w > maxWidth) {
+              tempLineCount++;
+              lastLineWidth = w + spacing;
+            } else {
+              lastLineWidth += w + spacing;
+            }
+          }
+          if (tempLineCount <= 2 && lastLineWidth + plusWidth <= maxWidth) break;
+          if (tempLineCount < 2) break;
+          count--;
+        }
+        return count;
+      }
+      currentLineWidth = textWidth + spacing;
+    } else {
+      currentLineWidth += textWidth + spacing;
+    }
+    count++;
+  }
+  return count;
 }
