@@ -52,13 +52,17 @@ class _FleamarketDetailCommentsWebState extends State<FleamarketDetailCommentsWe
       Get.snackbar('알림', '로그인이 필요합니다.');
       return;
     }
+    // 서버는 문자열 `'true'`/`'false'`를 받는다(앱과 동일: `v_fleaMarketDetail.dart:2144`).
+    final isSecret = _detailVm.isSecret;
     await _detailVm.uploadFleamarketComments({
       'flea_id': widget.detail.fleaId,
       'content': text,
       'user_id': userId,
-      'secret': 'false',
+      'secret': '$isSecret',
     });
     _newCommentController.clear();
+    // 다음 댓글이 의도치 않게 비밀글이 되지 않도록 토글을 되돌린다.
+    if (isSecret) _detailVm.changeSecret();
     if (mounted) setState(() {});
   }
 
@@ -78,13 +82,15 @@ class _FleamarketDetailCommentsWebState extends State<FleamarketDetailCommentsWe
       Get.snackbar('알림', '로그인이 필요합니다.');
       return;
     }
+    final isSecret = _commentDetailVm.isSecret;
     _commentDetailVm.uploadFleamarketReply({
       'comment_id': comment.commentId.toString(),
       'content': text,
       'user_id': userId.toString(),
-      'secret': false,
+      'secret': isSecret,
     });
     _commentDetailVm.textEditingController.clear();
+    if (isSecret) _commentDetailVm.changeSecret();
   }
 
   @override
@@ -106,16 +112,32 @@ class _FleamarketDetailCommentsWebState extends State<FleamarketDetailCommentsWe
   }
 
   Widget _buildCommentInput() {
-    // 커뮤니티와 같은 공용 입력 위젯(전송 버튼은 입력이 있을 때만 활성화).
-    return WebCommentInput(
-      controller: _newCommentController,
-      hintText: '댓글을 남겨주세요',
-      onSubmit: _userVm.user.user_id == null ? null : (_) => _postComment(),
-      onGuestTap: () => Get.snackbar('알림', '로그인이 필요합니다.'),
-    );
+    // 커뮤니티와 같은 공용 입력 위젯(전송 버튼은 입력이 있을 때만 활성화) +
+    // 목업의 자물쇠 토글(비밀댓글). 상태는 코어 뷰모델의 `isSecret`을 쓴다(앱과 동일).
+    return Obx(() => WebCommentInput(
+          controller: _newCommentController,
+          hintText: _detailVm.isSecret ? '비밀 댓글을 남겨주세요' : '댓글을 남겨주세요',
+          onSubmit: _userVm.user.user_id == null ? null : (_) => _postComment(),
+          onGuestTap: () => Get.snackbar('알림', '로그인이 필요합니다.'),
+          leading: _SecretToggle(
+            isSecret: _detailVm.isSecret,
+            onTap: _detailVm.changeSecret,
+          ),
+        ));
+  }
+
+  /// 비밀댓글을 볼 수 있는 사람 — **작성자와 게시글 주인**만(앱과 동일).
+  bool _canSeeSecret(int? authorUserId) {
+    final myId = _userVm.user.user_id;
+    if (myId == null) return false;
+    return myId == authorUserId || myId == widget.detail.userId;
   }
 
   Widget _buildCommentTile(CommentModel_flea comment) {
+    // 비밀댓글은 작성자·게시글 주인 외에는 내용을 볼 수 없다(앱과 동일).
+    if ((comment.secret ?? false) && !_canSeeSecret(comment.userId)) {
+      return const _SecretPlaceholder(label: '이 글은 비밀글입니다.');
+    }
     final isAuthor = comment.userId != null && comment.userId == widget.detail.userId;
     final isMine = comment.userId != null && comment.userId == _userVm.user.user_id;
     final isMyPost = widget.detail.userId != null && widget.detail.userId == _userVm.user.user_id;
@@ -154,6 +176,10 @@ class _FleamarketDetailCommentsWebState extends State<FleamarketDetailCommentsWe
                         decoration: BoxDecoration(borderRadius: BorderRadius.circular(4), color: SDSColor.blue50),
                         child: Text('글쓴이', style: SDSTextStyle.bold.copyWith(fontSize: 10, color: SDSColor.snowliveBlue)),
                       ),
+                    ],
+                    if (comment.secret ?? false) ...[
+                      const SizedBox(width: 4),
+                      Icon(Icons.lock, size: 12, color: SDSColor.gray400),
                     ],
                     const SizedBox(width: 6),
                     Text(time, style: SDSTextStyle.regular.copyWith(fontSize: 12, color: SDSColor.gray400)),
@@ -227,9 +253,14 @@ class _FleamarketDetailCommentsWebState extends State<FleamarketDetailCommentsWe
             for (final reply in replies) _buildReplyTile(reply),
             WebCommentInput(
               controller: _commentDetailVm.textEditingController,
-              hintText: '답글을 남겨주세요',
+              hintText: _commentDetailVm.isSecret ? '비밀 답글을 남겨주세요' : '답글을 남겨주세요',
               onSubmit: _userVm.user.user_id == null ? null : (_) async => _postReply(comment),
               onGuestTap: () => Get.snackbar('알림', '로그인이 필요합니다.'),
+              leading: _SecretToggle(
+                isSecret: _commentDetailVm.isSecret,
+                onTap: _commentDetailVm.changeSecret,
+                size: 30,
+              ),
             ),
           ],
         ),
@@ -238,6 +269,9 @@ class _FleamarketDetailCommentsWebState extends State<FleamarketDetailCommentsWe
   }
 
   Widget _buildReplyTile(Reply reply) {
+    if ((reply.secret ?? false) && !_canSeeSecret(reply.userId)) {
+      return const _SecretPlaceholder(label: '이 답글은 비밀글입니다.', size: 24);
+    }
     final time = reply.uploadTime != null ? GetDatetime().getAgoString(reply.uploadTime!) : '';
     return Padding(
       padding: const EdgeInsets.only(bottom: SDSSpacing.sm),
@@ -262,6 +296,10 @@ class _FleamarketDetailCommentsWebState extends State<FleamarketDetailCommentsWe
                 Row(
                   children: [
                     Text(reply.userInfo?.displayName ?? '', style: SDSTextStyle.bold.copyWith(fontSize: 12, color: SDSColor.gray900)),
+                    if (reply.secret ?? false) ...[
+                      const SizedBox(width: 4),
+                      Icon(Icons.lock, size: 11, color: SDSColor.gray400),
+                    ],
                     const SizedBox(width: 6),
                     Text(time, style: SDSTextStyle.regular.copyWith(fontSize: 11, color: SDSColor.gray400)),
                   ],
@@ -282,6 +320,66 @@ class _FleamarketDetailCommentsWebState extends State<FleamarketDetailCommentsWe
       height: size,
       decoration: BoxDecoration(shape: BoxShape.circle, color: SDSColor.gray100),
       child: Icon(Icons.person, size: size * 0.6, color: SDSColor.gray400),
+    );
+  }
+}
+
+
+/// 비밀댓글 토글(자물쇠). 목업처럼 **원형 배경 없이 아이콘만** 두고, 켜지면 파란색이 된다.
+class _SecretToggle extends StatelessWidget {
+  final bool isSecret;
+  final VoidCallback onTap;
+  final double size;
+
+  const _SecretToggle({required this.isSecret, required this.onTap, this.size = 34});
+
+  @override
+  Widget build(BuildContext context) {
+    return Tooltip(
+      message: isSecret ? '비밀댓글 끄기' : '비밀댓글로 남기기',
+      child: MouseRegion(
+        cursor: SystemMouseCursors.click,
+        child: GestureDetector(
+          onTap: onTap,
+          behavior: HitTestBehavior.opaque,
+          child: SizedBox(
+            width: size,
+            height: size,
+            child: Icon(
+              Icons.lock,
+              size: size * 0.5,
+              color: isSecret ? SDSColor.snowliveBlue : SDSColor.gray400,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// 볼 권한이 없는 비밀댓글 자리(앱과 같은 문구·모양).
+class _SecretPlaceholder extends StatelessWidget {
+  final String label;
+  final double size;
+
+  const _SecretPlaceholder({required this.label, this.size = 28});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: SDSSpacing.lg),
+      child: Row(
+        children: [
+          Container(
+            width: size,
+            height: size,
+            decoration: BoxDecoration(shape: BoxShape.circle, color: SDSColor.gray100),
+            child: Icon(Icons.lock, size: size * 0.55, color: SDSColor.gray400),
+          ),
+          const SizedBox(width: SDSSpacing.sm),
+          Text(label, style: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray500)),
+        ],
+      ),
     );
   }
 }

@@ -148,9 +148,8 @@ class _FleamarketDetailViewState extends State<FleamarketDetailView> {
                         infoColumn,
                       ],
                     ),
-                  const SizedBox(height: SDSSpacing.xl),
-                  Container(height: 8, color: SDSColor.gray50),
-                  const SizedBox(height: SDSSpacing.xl),
+                  // 목업에는 댓글 위 구분선(회색 밴드)이 없다.
+                  const SizedBox(height: SDSSpacing.xxl),
                   FleamarketDetailCommentsWeb(detail: detail),
                   const SizedBox(height: SDSSpacing.xl),
                   FleamarketDetailRecommendWeb(categoryMain: detail.categoryMain, excludeFleaId: detail.fleaId),

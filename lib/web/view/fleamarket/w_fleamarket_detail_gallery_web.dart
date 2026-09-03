@@ -8,6 +8,9 @@ import 'package:com.snowlive/web/widget/w_network_image_web.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+/// 상세 사진 모서리(디자인 지정 6).
+const double kFleamarketDetailPhotoRadius = 6;
+
 /// 상세화면 상단 이미지 캐러셀 + 점 인디케이터.
 class FleamarketDetailGalleryWeb extends StatelessWidget {
   final List<Photo> photos;
@@ -22,7 +25,7 @@ class FleamarketDetailGalleryWeb extends StatelessWidget {
       return AspectRatio(
         aspectRatio: 1,
         child: ClipRRect(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(kFleamarketDetailPhotoRadius),
           child: Image.asset(kFleamarketDefaultImage, fit: BoxFit.cover),
         ),
       );
@@ -33,7 +36,7 @@ class FleamarketDetailGalleryWeb extends StatelessWidget {
         AspectRatio(
           aspectRatio: 1,
           child: ClipRRect(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(kFleamarketDetailPhotoRadius),
             child: CarouselSlider.builder(
               options: CarouselOptions(
                 viewportFraction: 1,

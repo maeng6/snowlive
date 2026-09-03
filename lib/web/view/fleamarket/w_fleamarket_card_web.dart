@@ -7,6 +7,9 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 const String kFleamarketDefaultImage = 'assets/imgs/imgs/img_flea_default.png';
+
+/// 목록 사진 모서리(디자인 지정 2.72). 카드 사진과 그 위 딤이 같은 값을 써야 한다.
+const double kFleamarketPhotoRadius = 2.72;
 final _priceFormat = NumberFormat('###,###,###,###');
 
 /// 중고거래 그리드 카드 1개: 정사각 이미지 + 제목/위치·시간/가격/조회수·댓글수.
@@ -32,11 +35,11 @@ class FleamarketCardWeb extends StatelessWidget {
               fit: StackFit.expand,
               children: [
                 ClipRRect(
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: BorderRadius.circular(kFleamarketPhotoRadius),
                   child: Container(
                     decoration: BoxDecoration(
                       border: Border.all(width: 0.5, color: SDSColor.gray100),
-                      borderRadius: BorderRadius.circular(8),
+                      borderRadius: BorderRadius.circular(kFleamarketPhotoRadius),
                     ),
                     child: photos.isNotEmpty
                         ? WebNetworkImage(
@@ -51,7 +54,8 @@ class FleamarketCardWeb extends StatelessWidget {
                   Container(
                     decoration: BoxDecoration(
                       color: Colors.black.withOpacity(0.6),
-                      borderRadius: BorderRadius.circular(8),
+                      // 딤도 사진과 같은 모서리라야 각이 튀지 않는다.
+                      borderRadius: BorderRadius.circular(kFleamarketPhotoRadius),
                     ),
                   ),
                 if (data.status == FleamarketStatus.soldOut.korean || data.status == FleamarketStatus.onBooking.korean)

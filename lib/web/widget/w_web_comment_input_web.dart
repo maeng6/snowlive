@@ -15,6 +15,9 @@ class WebCommentInput extends StatefulWidget {
   final Future<void> Function(String text)? onSubmit;
   final VoidCallback? onGuestTap;
 
+  /// 입력창 왼쪽에 붙는 위젯(중고거래 비밀댓글 자물쇠 토글). null이면 그리지 않는다.
+  final Widget? leading;
+
   const WebCommentInput({
     super.key,
     required this.controller,
@@ -23,6 +26,7 @@ class WebCommentInput extends StatefulWidget {
     this.isSubmitting = false,
     this.onSubmit,
     this.onGuestTap,
+    this.leading,
   });
 
   @override
@@ -83,6 +87,12 @@ class _WebCommentInputState extends State<WebCommentInput> {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
+          if (widget.leading != null) ...[
+            Padding(
+              padding: const EdgeInsets.only(right: 10, bottom: 4),
+              child: widget.leading!,
+            ),
+          ],
           Expanded(
             child: TextField(
               controller: widget.controller,

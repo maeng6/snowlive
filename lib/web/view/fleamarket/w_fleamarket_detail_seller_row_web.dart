@@ -60,14 +60,13 @@ class FleamarketDetailSellerRowWeb extends StatelessWidget {
               // 우측 사이드바 "찜 목록"도 즉시 반영되도록 새로고침.
               Get.find<FleamarketMyActivityViewModel>().fetchMyActivity(userId: userId);
             },
-            // 에셋이 아웃라인 한 종류뿐이라(채워진 버전 없음) 찜 상태는 색으로 구분한다.
+            // 찜한 상태는 같은 북마크 모양을 꽉 채운 에셋으로 구분한다(목업).
             icon: SvgPicture.asset(
-              'assets/imgs/icons/icon_header_bookmark_web.svg',
+              detail.isFavorite == true
+                  ? 'assets/imgs/icons/icon_header_bookmark_fill_web.svg'
+                  : 'assets/imgs/icons/icon_header_bookmark_web.svg',
               width: 22,
               height: 22,
-              colorFilter: detail.isFavorite == true
-                  ? ColorFilter.mode(SDSColor.snowliveBlue, BlendMode.srcIn)
-                  : null,
             ),
           ),
         if (!isOwner)

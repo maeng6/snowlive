@@ -132,12 +132,12 @@ class FleamarketUploadViewWeb extends StatelessWidget {
     // 제출 중에는 임시저장 버튼도 같이 잠가야 하는데, Obx로 판매하기 버튼만 감싸면
     // 임시저장 버튼은 리빌드되지 않아 계속 눌린다. 두 버튼을 하나의 Obx 안에서 만든다.
     return [
-      wrap(Obx(() => OutlinedButton(
+      // 목업: 임시저장은 테두리 없는 텍스트 버튼이다.
+      wrap(Obx(() => TextButton(
             onPressed: vm.isSubmitting.value ? null : () => Get.snackbar('알림', '임시저장 기능은 준비 중이에요.'),
-            style: OutlinedButton.styleFrom(
-              side: BorderSide(color: SDSColor.gray200),
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+            style: TextButton.styleFrom(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
             ),
             child: Text('임시저장', style: SDSTextStyle.bold.copyWith(fontSize: 14, color: SDSColor.gray900)),
           ))),
@@ -151,7 +151,8 @@ class FleamarketUploadViewWeb extends StatelessWidget {
             disabledBackgroundColor: SDSColor.gray200,
             elevation: 0,
             padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+            // 목업 지정 라운드 5.
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
           ),
           // 라벨을 스피너로 "교체"하면 버튼 폭이 튀므로, 라벨은 두고 앞에 끼워 넣는다.
           child: Row(
