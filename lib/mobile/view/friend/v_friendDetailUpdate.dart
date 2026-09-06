@@ -1,0 +1,913 @@
+import 'dart:io';
+import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
+import 'package:com.snowlive/core/viewmodel/friend/vm_friendDetail.dart';
+import 'package:com.snowlive/core/viewmodel/friend/vm_friendDetailUpdate.dart';
+import 'package:com.snowlive/core/viewmodel/vm_user.dart';
+import 'package:com.snowlive/widget/w_favoriteResort.dart';
+import 'package:com.snowlive/core/widget/w_fullScreenDialog.dart';
+import 'package:com.snowlive/widget/w_sex.dart';
+import 'package:com.snowlive/widget/w_skiorboard.dart';
+import 'package:extended_image/extended_image.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+
+class FriendDetailUpdateView extends StatelessWidget {
+
+  final FocusNode displayNameFocusNode = FocusNode();
+
+  @override
+  Widget build(BuildContext context) {
+
+    final FriendDetailUpdateViewModel _friendDetailUpdateViewModel = Get.find<FriendDetailUpdateViewModel>();
+    final FriendDetailViewModel _friendDetailViewModel = Get.find<FriendDetailViewModel>();
+    final UserViewModel _userViewModel = Get.find<UserViewModel>();
+
+    final double _statusBarSize = MediaQuery.of(context).padding.top;
+    int? selectedIndex;
+    String? selectedSkiOrBoard;
+    String? selectedSex;
+    Size _size = MediaQuery.of(context).size;
+
+    displayNameFocusNode.addListener(() {
+      if (displayNameFocusNode.hasFocus) {
+        // 텍스트 필드가 활성화될 때
+        _friendDetailUpdateViewModel.toggleActiveCheckDisplaynameButton(false);
+        _friendDetailUpdateViewModel.toggleIsCheckedDisplayName(true);
+      }
+    });
+
+
+    return GestureDetector(
+      onTap: () => FocusScope.of(context).unfocus(),
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        appBar: PreferredSize(
+          preferredSize: Size.fromHeight(44),
+          child: AppBar(
+            leading: Padding(
+              padding: EdgeInsets.only(left: 8),
+              child: IconButton(
+                onPressed: () {
+                  _friendDetailUpdateViewModel.cancelSelectedImage();
+                  Navigator.pop(context);
+                },
+                icon: SvgPicture.asset('assets/imgs/icons/icon_snowLive_back.svg', width: 26, height: 26),
+                highlightColor: Colors.transparent,
+              ),
+            ),
+            backgroundColor: Colors.white,
+            surfaceTintColor: Colors.transparent,
+            elevation: 0.0,
+            centerTitle: false,
+            titleSpacing: 0,
+          ),
+        ),
+        body: Column(
+          children: [
+            Expanded(
+              child: SingleChildScrollView(
+                child: Padding(
+                  padding: EdgeInsets.only(top: 10, left: 16, right: 16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      GestureDetector(
+                        onTap: (){
+                          showModalBottomSheet(
+                            backgroundColor: Colors.transparent,
+                            context: context,
+                            builder: (context) => Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.only(topLeft: Radius.circular(16), topRight: Radius.circular(16)),
+                                color: SDSColor.snowliveWhite,
+                              ),
+                              child: SafeArea(
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.only(topLeft: Radius.circular(16), topRight: Radius.circular(16)),
+                                    color: SDSColor.snowliveWhite,
+                                  ),
+                                  padding: EdgeInsets.only(bottom: 20, right: 20, left: 20, top: 12),
+                                  height: 210,
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: [
+                                      Column(
+                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                        mainAxisAlignment: MainAxisAlignment.start,
+                                        children: [
+                                          Padding(
+                                            padding: const EdgeInsets.only(bottom: 20),
+                                            child: Container(
+                                              height: 4,
+                                              width: 36,
+                                              decoration: BoxDecoration(
+                                                borderRadius: BorderRadius.circular(10),
+                                                color: SDSColor.gray200,
+                                              ),
+                                            ),
+                                          ),
+                                          Text(
+                                            '업로드 방법을 선택해주세요.',
+                                            style: SDSTextStyle.bold.copyWith(fontSize: 16, color: SDSColor.gray900),
+                                            textAlign: TextAlign.center,
+                                          ),
+                                          SizedBox(height: 8),
+                                          Text(
+                                            '프로필 이미지를 나중에 설정 하시려면,\n기본 이미지로 설정해주세요.',
+                                            style: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray500, height: 1.4),
+                                            textAlign: TextAlign.center,
+                                          ),
+                                        ],
+                                      ),
+                                      Expanded(child: Container()),
+                                      Row(
+                                        mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
+                                        children: [
+                                          Expanded(
+                                            child: ElevatedButton(
+                                              onPressed:
+                                                  () => _friendDetailUpdateViewModel.uploadImage(ImageSource.camera),
+                                              child: Text(
+                                                '사진 촬영',
+                                                style: SDSTextStyle.bold.copyWith(
+                                                    color: SDSColor.snowliveWhite,
+                                                    fontSize: 16),
+                                              ),
+                                              style: TextButton.styleFrom(
+                                                  shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(6))),
+                                                  splashFactory: InkRipple.splashFactory,
+                                                  elevation: 0,
+                                                  minimumSize: Size(100, 48),
+                                                  backgroundColor: SDSColor.sBlue500
+                                              ),
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            width: 10,
+                                          ),
+                                          Expanded(
+                                            child: ElevatedButton(
+                                              onPressed: () {
+                                                Navigator.pop(context);
+                                                _friendDetailUpdateViewModel.uploadImage(ImageSource.gallery);
+                                              },
+                                              child: Text(
+                                                '앨범에서 선택',
+                                                style: SDSTextStyle.bold.copyWith(
+                                                    color: SDSColor.snowliveWhite,
+                                                    fontSize: 16),
+                                              ),
+                                              style: TextButton.styleFrom(
+                                                shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(6))),
+                                                splashFactory: InkRipple.splashFactory,
+                                                elevation: 0,
+                                                minimumSize: Size(100, 48),
+                                                backgroundColor: SDSColor.snowliveBlue,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                        child: Obx(() => Stack(
+                          children: [
+                            if (_friendDetailUpdateViewModel.croppedFile != null)
+                              Container(
+                                width: 120,
+                                height: 120,
+                                child: CircleAvatar(
+                                  backgroundColor: SDSColor.gray50,
+                                  backgroundImage: FileImage(File(_friendDetailUpdateViewModel.croppedFile!.path)),
+                                ),
+                              )
+                            else if (_friendDetailUpdateViewModel.profileImageUrl.isNotEmpty)
+                              Container(
+                                width: 120,
+                                height: 120,
+                                child: CircleAvatar(
+                                  backgroundColor: SDSColor.gray50,
+                                  backgroundImage: NetworkImage(_friendDetailUpdateViewModel.profileImageUrl),
+                                ),
+                              )
+                            else
+                              Container(
+                                width: 120,
+                                height: 120,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                ),
+                                child: Image.asset(
+                                  'assets/imgs/profile/img_profile_default_circle.png',
+                                  width: 120,
+                                  height: 120,
+                                ),
+                              ),
+
+                            // 삭제 버튼 또는 추가 버튼 위치
+                            Positioned(
+                              bottom: 4,
+                              right: 4,
+                              child: GestureDetector(
+                                child: Image.asset(
+                                  _friendDetailUpdateViewModel.croppedFile != null || _friendDetailUpdateViewModel.profileImageUrl.isNotEmpty
+                                      ? 'assets/imgs/icons/icon_profile_delete.png'
+                                      : 'assets/imgs/icons/icon_profile_add.png',
+                                  scale: 4,
+                                ),
+                                onTap: () {
+                                  // 이미지가 선택되어 있거나 기존 네트워크 이미지가 있으면 삭제
+                                  if (_friendDetailUpdateViewModel.croppedFile != null || _friendDetailUpdateViewModel.profileImageUrl.isNotEmpty) {
+                                    _friendDetailUpdateViewModel.setCroppedFile(null);
+                                    _friendDetailUpdateViewModel.setProfileImageUrl('');
+                                  } else {
+                                    // 이미지가 없으면 업로드 바텀시트 표시
+                                    showModalBottomSheet(
+                                      backgroundColor: Colors.transparent,
+                                      context: context,
+                                      builder: (context) => Container(
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.only(topLeft: Radius.circular(16), topRight: Radius.circular(16)),
+                                          color: SDSColor.snowliveWhite,
+                                        ),
+                                        child: SafeArea(
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.only(topLeft: Radius.circular(16), topRight: Radius.circular(16)),
+                                              color: SDSColor.snowliveWhite,
+                                            ),
+                                            padding: EdgeInsets.only(bottom: 20, right: 20, left: 20, top: 12),
+                                            height: 210,
+                                            child: Column(
+                                              crossAxisAlignment: CrossAxisAlignment.center,
+                                              children: [
+                                                Column(
+                                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                                  mainAxisAlignment: MainAxisAlignment.start,
+                                                  children: [
+                                                    Padding(
+                                                      padding: const EdgeInsets.only(bottom: 20),
+                                                      child: Container(
+                                                        height: 4,
+                                                        width: 36,
+                                                        decoration: BoxDecoration(
+                                                          borderRadius: BorderRadius.circular(10),
+                                                          color: SDSColor.gray200,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    Text(
+                                                      '업로드 방법을 선택해주세요.',
+                                                      style: SDSTextStyle.bold.copyWith(fontSize: 16, color: SDSColor.gray900),
+                                                      textAlign: TextAlign.center,
+                                                    ),
+                                                    SizedBox(height: 8),
+                                                    Text(
+                                                      '프로필 이미지를 나중에 설정 하시려면,\n기본 이미지로 설정해주세요.',
+                                                      style: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray500, height: 1.4),
+                                                      textAlign: TextAlign.center,
+                                                    ),
+                                                  ],
+                                                ),
+                                                Expanded(child: Container()),
+                                                Row(
+                                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                                  children: [
+                                                    Expanded(
+                                                      child: ElevatedButton(
+                                                        onPressed: () => _friendDetailUpdateViewModel.uploadImage(ImageSource.camera),
+                                                        child: Text(
+                                                          '사진 촬영',
+                                                          style: SDSTextStyle.bold.copyWith(
+                                                              color: SDSColor.snowliveWhite,
+                                                              fontSize: 16),
+                                                        ),
+                                                        style: TextButton.styleFrom(
+                                                            shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(6))),
+                                                            splashFactory: InkRipple.splashFactory,
+                                                            elevation: 0,
+                                                            minimumSize: Size(100, 48),
+                                                            backgroundColor: SDSColor.sBlue500
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    SizedBox(width: 10),
+                                                    Expanded(
+                                                      child: ElevatedButton(
+                                                        onPressed: () {
+                                                          Navigator.pop(context);
+                                                          _friendDetailUpdateViewModel.uploadImage(ImageSource.gallery);
+                                                        },
+                                                        child: Text(
+                                                          '앨범에서 선택',
+                                                          style: SDSTextStyle.bold.copyWith(
+                                                              color: SDSColor.snowliveWhite,
+                                                              fontSize: 16),
+                                                        ),
+                                                        style: TextButton.styleFrom(
+                                                          shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(6))),
+                                                          splashFactory: InkRipple.splashFactory,
+                                                          elevation: 0,
+                                                          minimumSize: Size(100, 48),
+                                                          backgroundColor: SDSColor.snowliveBlue,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    );
+                                  }
+                                },
+                              ),
+                            ),
+                          ],
+                        )),
+
+
+                      ),
+                      SizedBox(height: 30,),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 4),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text('닉네임', style: SDSTextStyle.regular.copyWith(
+                                fontSize: 12,
+                                color: SDSColor.gray900
+                            ),),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 2, top: 2),
+                              child: Container(
+                                width: 4,
+                                height: 4,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                  color: SDSColor.red,
+                                ),
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                      SizedBox(height: 8),
+                      Form(
+                        key: _friendDetailUpdateViewModel.formKey,
+                        child: Container(
+                          child: Center(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Obx(() => Stack(
+                                  children: [
+                                    TextFormField(
+                                      focusNode: displayNameFocusNode,
+                                      textAlignVertical: TextAlignVertical.center,
+                                      cursorColor: SDSColor.snowliveBlue,
+                                      cursorHeight: 16,
+                                      cursorWidth: 2,
+                                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                                      controller: _friendDetailUpdateViewModel.textEditingController_displayName..text,
+                                      style: SDSTextStyle.regular.copyWith(fontSize: 15),
+                                      strutStyle: StrutStyle(fontSize: 14, leading: 0),
+                                      inputFormatters: [
+                                        FilteringTextInputFormatter.deny(RegExp(r'\s')), // 띄어쓰기 입력 차단
+                                        LengthLimitingTextInputFormatter(10), // 최대 10글자 제한
+                                      ],
+                                      decoration: InputDecoration(
+                                        floatingLabelBehavior: FloatingLabelBehavior.never,
+                                        errorMaxLines: 2,
+                                        errorStyle: SDSTextStyle.regular.copyWith(fontSize: 12, color: SDSColor.red),
+                                        labelStyle: SDSTextStyle.regular.copyWith(color: SDSColor.gray400, fontSize: 14),
+                                        hintStyle: SDSTextStyle.regular.copyWith(color: SDSColor.gray400, fontSize: 14),
+                                        hintText: '닉네임을 입력해 주세요.(최대 10자)',
+                                        labelText: '닉네임을 입력해 주세요.(최대 10자)',
+                                        contentPadding: EdgeInsets.only(top: 10, bottom: 10, left: 12, right: 50),
+                                        fillColor: SDSColor.gray50,
+                                        hoverColor: SDSColor.snowliveBlue,
+                                        filled: true,
+                                        focusColor: SDSColor.snowliveBlue,
+                                        border: OutlineInputBorder(
+                                          borderSide: BorderSide(color: SDSColor.gray50),
+                                          borderRadius: BorderRadius.circular(6),
+                                        ),
+                                        errorBorder: OutlineInputBorder(
+                                          borderSide: BorderSide(color: SDSColor.red, strokeAlign: BorderSide.strokeAlignInside, width: 1.5),
+                                        ),
+                                        focusedBorder: OutlineInputBorder(
+                                          borderSide: BorderSide(color: SDSColor.snowliveBlue, strokeAlign: BorderSide.strokeAlignInside, width: 1.5),
+                                        ),
+                                        enabledBorder: OutlineInputBorder(
+                                          borderSide: BorderSide(color: Colors.transparent),
+                                          borderRadius: BorderRadius.circular(6),
+                                        ),
+                                      ),
+                                      validator: (val) {
+                                        WidgetsBinding.instance.addPostFrameCallback((_) {
+                                          if ((val!.length <= 10 && val.length >= 1)
+                                              &&  (_friendDetailUpdateViewModel.textEditingController_displayName.text != _friendDetailViewModel.friendDetailModel.friendUserInfo.displayName)
+                                              && _friendDetailUpdateViewModel.isCheckedDisplayName ==false) {
+                                            _friendDetailUpdateViewModel.toggleActiveCheckDisplaynameButton(true);
+                                            _friendDetailUpdateViewModel.toggleIsCheckedDisplayName(false);
+                                          } else {
+                                            _friendDetailUpdateViewModel.toggleActiveCheckDisplaynameButton(false);
+                                            _friendDetailUpdateViewModel.toggleIsCheckedDisplayName(true);
+
+                                          }
+                                        });
+                                        if (val!.length <= 10 && val.length >= 1) {
+                                          return null;
+                                        } else if (val.length == 0) {
+                                          return '닉네임을 입력해주세요.';
+                                        } else {
+                                          return '최대 입력 가능한 글자 수를 초과했습니다.';
+                                        }
+                                      },
+                                    ),
+                                    Positioned(
+                                      right: 0,
+                                      top: 0,
+                                      bottom: 0,
+                                      child:
+                                      (_friendDetailUpdateViewModel.textEditingController_displayName.text != '')
+                                          ?TextButton(
+                                        onPressed: (_friendDetailUpdateViewModel.activeCheckDisplaynameButton == true && !_friendDetailUpdateViewModel.isCheckedDisplayName)
+                                            ? () async {
+                                          print(_friendDetailUpdateViewModel.textEditingController_displayName.text);
+                                          if(_friendDetailUpdateViewModel.textEditingController_displayName.text !=_friendDetailViewModel.friendDetailModel.friendUserInfo.displayName){
+                                            await _friendDetailUpdateViewModel.checkDisplayName({
+                                              "display_name": _friendDetailUpdateViewModel.textEditingController_displayName.text,
+                                            });}else{
+                                            _friendDetailUpdateViewModel.toggleActiveCheckDisplaynameButton(false);
+                                            _friendDetailUpdateViewModel.toggleIsCheckedDisplayName(true);
+                                            print(_friendDetailUpdateViewModel.isCheckedDisplayName);
+                                          }
+                                          FocusScope.of(context).unfocus();
+                                          if (!_friendDetailUpdateViewModel.isCheckedDisplayName)
+                                            Get.dialog(
+                                                AlertDialog(
+                                                  actionsPadding: EdgeInsets.only(bottom: 24, left: 24, right: 24, top: 30),
+                                                  contentPadding: EdgeInsets.only(left: 28, right: 28, top: 30),
+                                                  elevation: 0,
+                                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                                                  buttonPadding: EdgeInsets.symmetric(horizontal: 24, vertical: 0),
+                                                  content: Container(
+                                                    width: 232,
+                                                    child: Column(
+                                                      mainAxisSize: MainAxisSize.min,
+                                                      children: [
+                                                        Text('이미 존재하는 닉네임이에요',
+                                                          style: SDSTextStyle.bold.copyWith(fontSize: 16, color: SDSColor.gray900),
+                                                          textAlign: TextAlign.center,
+                                                        ),
+                                                        Padding(
+                                                          padding: EdgeInsets.only(top: 8),
+                                                          child: Text(
+                                                            '다른 사용자의 닉네임과 중복되지 않는\n다른 닉네임을 사용해주세요.',
+                                                            style: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray500),
+                                                            textAlign: TextAlign.center,
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                  actions: [
+                                                    Row(
+                                                      mainAxisAlignment: MainAxisAlignment.center,
+                                                      children: [
+                                                        Container(
+                                                          width: 240,
+                                                          child: TextButton(
+                                                            onPressed: () {
+                                                              Navigator.pop(context);
+                                                            },
+                                                            child: Text(
+                                                              '확인',
+                                                              style: SDSTextStyle.bold.copyWith(fontSize: 16, color: SDSColor.gray900),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ],
+                                                ));
+                                        }
+                                            : (){},
+                                        child: _friendDetailUpdateViewModel.isCheckedDisplayName
+                                            ? Text('검사완료', style: SDSTextStyle.bold.copyWith(
+                                            color: SDSColor.gray500
+                                        ),
+                                        )
+                                            : Text('중복검사',style: SDSTextStyle.bold.copyWith(
+                                            color: _friendDetailUpdateViewModel.activeCheckDisplaynameButton == true
+                                                ? SDSColor.snowliveBlue
+                                                : SDSColor.gray600
+                                        ),
+                                        ),
+                                      )
+                                          : Container(),
+                                    ),
+                                  ],
+                                )),
+                                SizedBox(height: 24),
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 4),
+                                  child: Row(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text('상태메세지', style: SDSTextStyle.regular.copyWith(
+                                          fontSize: 12,
+                                          color: SDSColor.gray900
+                                      ),),
+                                    ],
+                                  ),
+                                ),
+                                SizedBox(height: 8),
+                                Stack(
+                                  children: [
+                                    TextFormField(
+                                      textAlignVertical: TextAlignVertical.center,
+                                      cursorColor: SDSColor.snowliveBlue,
+                                      cursorHeight: 16,
+                                      cursorWidth: 2,
+                                      inputFormatters: [
+                                        LengthLimitingTextInputFormatter(20), // 최대 20글자 제한
+                                      ],
+                                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                                      controller: _friendDetailUpdateViewModel.textEditingController_stateMsg..text,
+                                      style: SDSTextStyle.regular.copyWith(fontSize: 15),
+                                      strutStyle: StrutStyle(fontSize: 14, leading: 0),
+                                      decoration: InputDecoration(
+                                        floatingLabelBehavior: FloatingLabelBehavior.never,
+                                        errorMaxLines: 2,
+                                        errorStyle: SDSTextStyle.regular.copyWith(fontSize: 12, color: SDSColor.red),
+                                        labelStyle: SDSTextStyle.regular.copyWith(color: SDSColor.gray400, fontSize: 14),
+                                        hintStyle: SDSTextStyle.regular.copyWith(color: SDSColor.gray400, fontSize: 14),
+                                        hintText: '상태메세지를 입력해 주세요.(최대 20자)',
+                                        labelText: '상태메세지를 입력해 주세요.(최대 20자)',
+                                        contentPadding: EdgeInsets.only(top: 10, bottom: 10, left: 12, right: 50),
+                                        fillColor: SDSColor.gray50,
+                                        hoverColor: SDSColor.snowliveBlue,
+                                        filled: true,
+                                        focusColor: SDSColor.snowliveBlue,
+                                        border: OutlineInputBorder(
+                                          borderSide: BorderSide(color: SDSColor.gray50),
+                                          borderRadius: BorderRadius.circular(6),
+                                        ),
+                                        errorBorder: OutlineInputBorder(
+                                          borderSide: BorderSide(color: SDSColor.red, strokeAlign: BorderSide.strokeAlignInside, width: 1.5),
+                                        ),
+                                        focusedBorder: OutlineInputBorder(
+                                          borderSide: BorderSide(color: SDSColor.snowliveBlue, strokeAlign: BorderSide.strokeAlignInside, width: 1.5),
+                                        ),
+                                        enabledBorder: OutlineInputBorder(
+                                          borderSide: BorderSide(color: Colors.transparent),
+                                          borderRadius: BorderRadius.circular(6),
+                                        ),
+                                      ),
+                                      validator: (val) {
+                                        if (val!.length <= 20 && val.length >= 0) {
+                                          return null;
+                                        } else {
+                                          return '최대 입력 가능한 글자 수를 초과했습니다.';
+                                        }
+                                      },
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(height: 24),
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 4),
+                                  child: Row(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text('자주가는 스키장', style: SDSTextStyle.regular.copyWith(
+                                          fontSize: 12,
+                                          color: SDSColor.gray900
+                                      ),),
+                                    ],
+                                  ),
+                                ),
+                                SizedBox(height: 8),
+                                GestureDetector(
+                                  onTap: () async {
+                                    selectedIndex = await showModalBottomSheet<int>(
+                                      constraints: BoxConstraints(
+                                        maxHeight: _size.height - _statusBarSize - 44,
+                                      ),
+                                      backgroundColor: Colors.transparent,
+                                      context: context,
+                                      isScrollControlled: true,
+                                      enableDrag: true,
+                                      isDismissible: true,
+                                      builder: (context) => Container(
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.only(topLeft: Radius.circular(16), topRight: Radius.circular(16)),
+                                            color: SDSColor.snowliveWhite,
+                                          ),
+                                          child: SafeArea(child: FavoriteResortWidget())),
+                                    );
+                                    if(selectedIndex != null)
+                                      _friendDetailUpdateViewModel.selectResortInfo(selectedIndex!);
+                                  },
+                                  child: Container(
+                                    height: 48,
+                                    decoration: BoxDecoration(
+                                      color: SDSColor.gray50,
+                                      borderRadius: BorderRadius.circular(6),
+                                    ),
+                                    padding: EdgeInsets.symmetric(horizontal: 12),
+                                    child: Obx(()=>Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          _friendDetailUpdateViewModel.selectedResortName == ''
+                                              ? '자주가는 스키장 선택'
+                                              : _friendDetailUpdateViewModel.selectedResortName,
+                                          style: SDSTextStyle.regular.copyWith(
+                                            color: _friendDetailUpdateViewModel.selectedResortName == '' ? SDSColor.gray400 : SDSColor.gray900,
+                                            fontSize: 14,
+                                          ),
+                                        ),
+                                        Image.asset(
+                                          'assets/imgs/icons/icon_dropdown.png',
+                                          fit: BoxFit.cover,
+                                          width: 20,
+                                        ),
+                                      ],
+                                    )),
+                                  ),
+                                ),
+                                SizedBox(height: 6),
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 4),
+                                  child: Text('자주가는 스키장과 관련된 다양한 서비스를 즐길 수 있습니다',
+                                    style: SDSTextStyle.regular.copyWith(
+                                        color: SDSColor.gray500,
+                                        fontSize: 12
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(height: 24),
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 4),
+                                  child: Text('종목', style: SDSTextStyle.regular.copyWith(
+                                      fontSize: 12,
+                                      color: SDSColor.gray900
+                                  ),),
+                                ),
+                                SizedBox(height: 8),
+                                GestureDetector(
+                                  onTap: () async {
+                                    selectedSkiOrBoard = await showModalBottomSheet<String>(
+                                      constraints: BoxConstraints(
+                                        maxHeight: 340,
+                                      ),
+                                      backgroundColor: Colors.transparent,
+                                      context: context,
+                                      isDismissible: true,
+                                      enableDrag: true,
+                                      isScrollControlled: true,
+                                      builder: (context) => Container(
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.only(topLeft: Radius.circular(16), topRight: Radius.circular(16)),
+                                            color: SDSColor.snowliveWhite,
+                                          ),
+                                          child: SafeArea(child: SkiorboardWidget())),
+                                    );
+                                    if(selectedSkiOrBoard != null)
+                                      _friendDetailUpdateViewModel.selectSkiOrBoard(selectedSkiOrBoard!);
+                                  },
+                                  child: Container(
+                                    height: 48,
+                                    decoration: BoxDecoration(
+                                      color: SDSColor.gray50,
+                                      borderRadius: BorderRadius.circular(6),
+                                    ),
+                                    padding: EdgeInsets.symmetric(horizontal: 12),
+                                    child: Obx(()=> Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          _friendDetailUpdateViewModel.selectedSkiOrBoard == ''
+                                              ? '스키 또는 스노보드 선택'
+                                              : _friendDetailUpdateViewModel.selectedSkiOrBoard,
+                                          style: SDSTextStyle.regular.copyWith(
+                                            color: _friendDetailUpdateViewModel.selectedSkiOrBoard == '' ? SDSColor.gray400 : SDSColor.gray900,
+                                            fontSize: 14,
+                                          ),
+                                        ),
+                                        Image.asset(
+                                          'assets/imgs/icons/icon_dropdown.png',
+                                          fit: BoxFit.cover,
+                                          width: 20,
+                                        ),
+                                      ],
+                                    )),
+                                  ),
+                                ),
+                                SizedBox(height: 24),
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 4),
+                                  child: Text('성별', style: SDSTextStyle.regular.copyWith(
+                                      fontSize: 12,
+                                      color: SDSColor.gray900
+                                  ),),
+                                ),
+                                SizedBox(height: 8),
+                                GestureDetector(
+                                  onTap: () async {
+                                    selectedSex = await showModalBottomSheet<String>(
+                                      constraints: BoxConstraints(
+                                        maxHeight: 340,
+                                      ),
+                                      backgroundColor: Colors.transparent,
+                                      context: context,
+                                      isDismissible: true,
+                                      enableDrag: true,
+                                      isScrollControlled: true,
+                                      builder: (context) => Container(
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.only(topLeft: Radius.circular(16), topRight: Radius.circular(16)),
+                                            color: SDSColor.snowliveWhite,
+                                          ),
+                                          child: SafeArea(child: SexWidget())),
+                                    );
+                                    if(selectedSex != null)
+                                      _friendDetailUpdateViewModel.selectSex(selectedSex!);
+                                  },
+                                  child: Container(
+                                    height: 48,
+                                    decoration: BoxDecoration(
+                                      color: SDSColor.gray50,
+                                      borderRadius: BorderRadius.circular(6),
+                                    ),
+                                    padding: EdgeInsets.symmetric(horizontal: 12),
+                                    child: Obx(()=> Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          _friendDetailUpdateViewModel.selectedSex == ''
+                                              ? '성별 선택'
+                                              : _friendDetailUpdateViewModel.selectedSex,
+                                          style: SDSTextStyle.regular.copyWith(
+                                            color: _friendDetailUpdateViewModel.selectedSex == '' ? SDSColor.gray400 : SDSColor.gray900,
+                                            fontSize: 14,
+                                          ),
+                                        ),
+                                        Image.asset(
+                                          'assets/imgs/icons/icon_dropdown.png',
+                                          fit: BoxFit.cover,
+                                          width: 20,
+                                        ),
+                                      ],
+                                    )),
+                                  ),
+                                ),
+                                SizedBox(height: 24),
+                                Padding(
+                                  padding: EdgeInsets.only(left: 4),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        "프로필 비공개",  // 토글 스위치 라벨
+                                        style: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray900),
+                                      ),
+                                      Obx(() => Switch(
+                                        value: _friendDetailUpdateViewModel.hideProfile,
+                                        onChanged: (value) {
+                                          _friendDetailUpdateViewModel.toggleHideProfile(value);
+                                        },
+                                        activeColor: SDSColor.snowliveWhite,
+                                        activeTrackColor: SDSColor.snowliveBlue,
+                                        inactiveTrackColor: SDSColor.gray100,
+                                        inactiveThumbColor: SDSColor.snowliveBlue,
+                                        trackOutlineWidth: MaterialStateProperty.resolveWith<double?>(
+                                              (Set<MaterialState> states) {
+                                            if (states.contains(MaterialState.selected)) {
+                                              return 0; // 스위치가 켜져 있을 때 외곽선 너비
+                                            } else {
+                                              return 0; // 스위치가 꺼져 있을 때 외곽선 너비
+                                            }
+                                          },
+                                        ),
+                                        trackOutlineColor: MaterialStateProperty.all(Colors.transparent),
+                                      )),
+                                    ],
+                                  ),
+                                ),
+
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 50,),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            SafeArea(
+              child: Column(
+                children: [
+                  Obx(() =>
+                  (_friendDetailUpdateViewModel.selectedResortIndex != 99 && _friendDetailUpdateViewModel.isCheckedDisplayName == true)
+                      ? Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                    child: ElevatedButton(
+                      onPressed: () async {
+                        CustomFullScreenDialog.showDialog();
+
+                        // 1) 이전 프로필 URL 잡아두기
+                        final String oldUrl =
+                            _friendDetailViewModel.friendDetailModel.friendUserInfo.profileImageUrlUser;
+
+                        // 2) 새 이미지 업로드 + URL 세팅 + 이전 파일 삭제
+                        await _friendDetailUpdateViewModel.getImageUrl(oldUrl: oldUrl);
+
+                        bool isSuccess = await _friendDetailUpdateViewModel.updateFriendDetail({
+                          "user_id": _userViewModel.user.user_id, // 필수
+                          "display_name": _friendDetailUpdateViewModel.textEditingController_displayName.text,
+                          "state_msg": _friendDetailUpdateViewModel.textEditingController_stateMsg.text, // 선택
+                          "profile_image_url_user": _friendDetailUpdateViewModel.profileImageUrl,
+                          "hide_profile": _friendDetailUpdateViewModel.hideProfile, // 선택
+                          "instant_resort": _userViewModel.user.instant_resort,
+                          "favorite_resort": _friendDetailUpdateViewModel.selectedResortIndex + 1,
+                          "sex": _friendDetailUpdateViewModel.selectedSex,
+                          "skiorboard": _friendDetailUpdateViewModel.selectedSkiOrBoard,
+                        });
+                        if (isSuccess) {
+                          await _friendDetailViewModel.fetchFriendDetailInfo(
+                            userId: _userViewModel.user.user_id,
+                            friendUserId: _userViewModel.user.user_id,
+                            season: _friendDetailViewModel.seasonDate,
+                          );
+                          await _userViewModel.updateUserModel_api(_userViewModel.user.user_id);
+                          CustomFullScreenDialog.cancelDialog();
+                          Get.back(); // 성공 시 이전 화면으로 돌아가기
+                        } else {
+                          CustomFullScreenDialog.cancelDialog();
+                          print('유저 정보 수정 실패');
+                          // 실패 시 추가적인 처리가 필요하다면 여기서 수행
+                        }
+                      },
+                      style: TextButton.styleFrom(
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(6)),
+                        ),
+                        elevation: 0,
+                        splashFactory: InkRipple.splashFactory,
+                        minimumSize: Size(double.infinity, 48),
+                        backgroundColor: SDSColor.snowliveBlue,
+                      ),
+                      child: Text('수정하기',
+                        style: SDSTextStyle.bold
+                            .copyWith(color: SDSColor.snowliveWhite, fontSize: 16),
+                      ),
+                    ),
+                  )
+                      : Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                    child: ElevatedButton(
+                      onPressed: () {},
+                      child: Text('수정하기',
+                        style: SDSTextStyle.bold
+                            .copyWith(color: SDSColor.snowliveWhite, fontSize: 16),
+                      ),
+                      style: TextButton.styleFrom(
+                          shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(6)),
+                          ),
+                          elevation: 0,
+                          splashFactory: InkRipple.splashFactory,
+                          minimumSize: Size(double.infinity, 48),
+                          backgroundColor:  SDSColor.gray200
+                      ),
+                    ),
+                  ),
+                  ),
+                ],
+              ),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+}

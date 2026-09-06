@@ -2,7 +2,6 @@ import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/core/viewmodel/vm_user.dart';
 import 'package:com.snowlive/web/util/responsive_web.dart';
 import 'package:com.snowlive/web/view/fleamarket/v_fleamarketHome_web.dart' show kFleamarketContentMaxWidth;
-import 'package:com.snowlive/web/view/fleamarket/w_fleamarket_filter_sheet_web.dart';
 import 'package:com.snowlive/web/view/fleamarket/w_fleamarket_form_fields_web.dart';
 import 'package:com.snowlive/web/viewmodel/fleamarket/vm_fleamarketPagination_web.dart';
 import 'package:com.snowlive/web/viewmodel/fleamarket/vm_fleamarketUpdate_web.dart';
@@ -35,7 +34,20 @@ class FleamarketUploadViewWeb extends StatelessWidget {
       Get.snackbar('알림', '필수 항목을 모두 입력해주세요.');
       return;
     }
+    // 이미 제출 중이면 무시한다. 버튼 비활성화와 별개로, 연타/중복 호출이 실제로
+    // 들어와도 글이 두 번 등록되지 않도록 하는 마지막 방어선.
+    if (vm.isSubmitting.value) return;
+    vm.isSubmitting.value = true;
+    try {
+      await _submitInner(context, vm, userId);
+    } finally {
+      // 성공 시 Get.back()으로 화면을 떠나지만, fenix 바인딩이라 뷰모델은 살아남는다.
+      // 반드시 되돌려야 다음 진입에서 버튼이 비활성인 채로 남지 않는다.
+      vm.isSubmitting.value = false;
+    }
+  }
 
+  Future<void> _submitInner(BuildContext context, FleamarketUploadViewModelWeb vm, int userId) async {
     final body = {
       'user_id': userId,
       'product_name': vm.textEditingController_productName.text,
@@ -117,28 +129,51 @@ class FleamarketUploadViewWeb extends StatelessWidget {
 
   List<Widget> _buildActionButtons(BuildContext context, FleamarketUploadViewModelWeb vm, {bool expand = false}) {
     Widget wrap(Widget child) => expand ? Expanded(child: child) : child;
+    // 제출 중에는 임시저장 버튼도 같이 잠가야 하는데, Obx로 판매하기 버튼만 감싸면
+    // 임시저장 버튼은 리빌드되지 않아 계속 눌린다. 두 버튼을 하나의 Obx 안에서 만든다.
     return [
-      wrap(OutlinedButton(
-        onPressed: () => Get.snackbar('알림', '임시저장 기능은 준비 중이에요.'),
-        style: OutlinedButton.styleFrom(
-          side: BorderSide(color: SDSColor.gray200),
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-        ),
-        child: Text('임시저장', style: SDSTextStyle.bold.copyWith(fontSize: 14, color: SDSColor.gray900)),
-      )),
-      const SizedBox(width: SDSSpacing.sm),
-      wrap(Obx(() => ElevatedButton(
-            onPressed: _canSubmit(vm) ? () => _submit(context, vm) : null,
-            style: ElevatedButton.styleFrom(
-              backgroundColor: SDSColor.snowliveBlue,
-              disabledBackgroundColor: SDSColor.gray200,
-              elevation: 0,
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+      // 목업: 임시저장은 테두리 없는 텍스트 버튼이다.
+      wrap(Obx(() => TextButton(
+            onPressed: vm.isSubmitting.value ? null : () => Get.snackbar('알림', '임시저장 기능은 준비 중이에요.'),
+            style: TextButton.styleFrom(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
             ),
-            child: Text('판매하기', style: SDSTextStyle.bold.copyWith(fontSize: 14, color: SDSColor.snowliveWhite)),
+            child: Text('임시저장', style: SDSTextStyle.bold.copyWith(fontSize: 14, color: SDSColor.gray900)),
           ))),
+      const SizedBox(width: SDSSpacing.sm),
+      wrap(Obx(() {
+        final isSubmitting = vm.isSubmitting.value;
+        return ElevatedButton(
+          onPressed: (_canSubmit(vm) && !isSubmitting) ? () => _submit(context, vm) : null,
+          style: ElevatedButton.styleFrom(
+            backgroundColor: SDSColor.snowliveBlue,
+            disabledBackgroundColor: SDSColor.gray200,
+            elevation: 0,
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+            // 목업 지정 라운드 5.
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+          ),
+          // 라벨을 스피너로 "교체"하면 버튼 폭이 튀므로, 라벨은 두고 앞에 끼워 넣는다.
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (isSubmitting) ...[
+                const SizedBox(
+                  width: 14,
+                  height: 14,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    valueColor: AlwaysStoppedAnimation<Color>(SDSColor.snowliveWhite),
+                  ),
+                ),
+                const SizedBox(width: SDSSpacing.sm),
+              ],
+              Text('판매하기', style: SDSTextStyle.bold.copyWith(fontSize: 14, color: SDSColor.snowliveWhite)),
+            ],
+          ),
+        );
+      })),
     ];
   }
 
@@ -146,7 +181,7 @@ class FleamarketUploadViewWeb extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        FleamarketFormTextField(
+        WebFormTextField(
           label: '제목',
           controller: vm.textEditingController_title,
           hint: '글 제목을 입력해 주세요. (최대 50자 이내)',
@@ -154,7 +189,7 @@ class FleamarketUploadViewWeb extends StatelessWidget {
           onChanged: (v) => vm.changeTitleWritten(v.trim().isNotEmpty),
         ),
         const SizedBox(height: SDSSpacing.lg),
-        FleamarketFormTextField(
+        WebFormTextField(
           label: '제품명',
           controller: vm.textEditingController_productName,
           hint: '제품명을 입력해 주세요. (최대 20자 이내)',
@@ -162,42 +197,37 @@ class FleamarketUploadViewWeb extends StatelessWidget {
           onChanged: (v) => vm.changeProductNameWritten(v.trim().isNotEmpty),
         ),
         const SizedBox(height: SDSSpacing.lg),
-        Obx(() => FleamarketFormTwoColumnRow(
-              left: FleamarketFormDropdownField(
+        Obx(() => WebFormTwoColumnRow(
+              left: WebFormDropdownField<String>(
                 label: '전체 카테고리',
                 value: vm.selectedCategoryMain,
                 placeholder: kFleamarketCategoryMainPlaceholder,
-                onTap: () => showFleamarketFilterSheet<String>(
-                  context,
-                  values: kFleamarketCategoryMainList,
-                  labelOf: (v) => v,
-                  onSelected: (v) {
-                    vm.selectCategoryMain(v);
-                    vm.resetCategorySub();
-                  },
-                ),
+                values: kFleamarketCategoryMainList,
+                labelOf: (v) => v,
+                onSelected: (v) {
+                  vm.selectCategoryMain(v);
+                  vm.resetCategorySub();
+                },
               ),
-              right: FleamarketFormDropdownField(
+              right: WebFormDropdownField<String>(
                 label: '상세 카테고리',
                 value: vm.selectedCategorySub,
                 placeholder: kFleamarketCategorySubPlaceholder,
-                onTap: () {
+                // Obx 안이라 전체 카테고리가 바뀌면 이 목록도 다시 계산된다.
+                values: vm.selectedCategoryMain == '스키' ? kFleamarketCategorySubSkiList : kFleamarketCategorySubBoardList,
+                labelOf: (v) => v,
+                onSelected: (v) => vm.selectCategorySub(v),
+                canOpen: () {
                   if (vm.selectedCategoryMain == kFleamarketCategoryMainPlaceholder) {
                     Get.snackbar('알림', '전체 카테고리를 먼저 선택해주세요.');
-                    return;
+                    return false;
                   }
-                  final list = vm.selectedCategoryMain == '스키' ? kFleamarketCategorySubSkiList : kFleamarketCategorySubBoardList;
-                  showFleamarketFilterSheet<String>(
-                    context,
-                    values: list,
-                    labelOf: (v) => v,
-                    onSelected: (v) => vm.selectCategorySub(v),
-                  );
+                  return true;
                 },
               ),
             )),
         const SizedBox(height: SDSSpacing.lg),
-        FleamarketFormTextField(
+        WebFormTextField(
           label: '가격',
           controller: vm.itemPriceTextEditingController,
           hint: '금액을 입력해 주세요.',
@@ -211,39 +241,33 @@ class FleamarketUploadViewWeb extends StatelessWidget {
         const SizedBox(height: SDSSpacing.lg),
         _PhotoUploadSection(vm: vm),
         const SizedBox(height: SDSSpacing.lg),
-        Obx(() => FleamarketFormTwoColumnRow(
-              left: FleamarketFormDropdownField(
+        Obx(() => WebFormTwoColumnRow(
+              left: WebFormDropdownField<String>(
                 label: '희망 거래 방법',
                 value: vm.selectedTradeMethod,
                 placeholder: kFleamarketTradeMethodPlaceholder,
-                onTap: () => showFleamarketFilterSheet<String>(
-                  context,
-                  values: kFleamarketTradeMethodList,
-                  labelOf: (v) => v,
-                  onSelected: (v) => vm.selectTradeMethod(v),
-                ),
+                values: kFleamarketTradeMethodList,
+                labelOf: (v) => v,
+                onSelected: (v) => vm.selectTradeMethod(v),
               ),
-              right: FleamarketFormDropdownField(
+              right: WebFormDropdownField<String>(
                 label: '거래 희망 장소',
                 value: vm.selectedTradeSpot,
                 placeholder: kFleamarketTradeSpotPlaceholder,
-                onTap: () => showFleamarketFilterSheet<String>(
-                  context,
-                  values: kFleamarketTradeSpotList,
-                  labelOf: (v) => v,
-                  onSelected: (v) => vm.selectTradeSpot(v),
-                ),
+                values: kFleamarketTradeSpotList,
+                labelOf: (v) => v,
+                onSelected: (v) => vm.selectTradeSpot(v),
               ),
             )),
         const SizedBox(height: SDSSpacing.lg),
-        FleamarketFormTextField(
+        WebFormTextField(
           label: '카카오 오픈채팅 URL',
           controller: vm.textEditingController_sns,
           hint: 'URL',
           helperText: '카카오톡에서 오픈채팅 URL을 복사할 경우, 다른 텍스트가 함께 복사되기 때문에 URL 부분만 입력되도록 확인 후 입력 부탁드립니다.',
         ),
         const SizedBox(height: SDSSpacing.lg),
-        FleamarketFormTextField(
+        WebFormTextField(
           label: '상세 설명',
           controller: vm.textEditingController_desc,
           hint: '상품에 대한 상세 설명을 작성해 주세요. (최대 1,000자 이내)\n\n부적절한 단어나 문장이 포함되는 경우 사전 고지없이 게시글 삭제가 될 수 있습니다.',
@@ -295,7 +319,7 @@ class _PhotoUploadSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const FleamarketFormLabel('사진 업로드'),
+        const WebFormLabel('사진 업로드'),
         Obx(() {
           final files = vm.imageFiles;
           return Wrap(

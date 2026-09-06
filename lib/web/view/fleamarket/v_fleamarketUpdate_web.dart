@@ -3,7 +3,6 @@ import 'package:com.snowlive/core/viewmodel/fleamarket/vm_fleamarketDetail.dart'
 import 'package:com.snowlive/core/viewmodel/vm_user.dart';
 import 'package:com.snowlive/web/util/responsive_web.dart';
 import 'package:com.snowlive/web/view/fleamarket/v_fleamarketHome_web.dart' show kFleamarketContentMaxWidth;
-import 'package:com.snowlive/web/view/fleamarket/w_fleamarket_filter_sheet_web.dart';
 import 'package:com.snowlive/web/view/fleamarket/w_fleamarket_form_fields_web.dart';
 import 'package:com.snowlive/web/viewmodel/fleamarket/vm_fleamarketPagination_web.dart';
 import 'package:com.snowlive/web/viewmodel/fleamarket/vm_fleamarketUpdate_web.dart';
@@ -39,7 +38,23 @@ class FleamarketUpdateViewWeb extends StatelessWidget {
       Get.snackbar('알림', '필수 항목을 모두 입력해주세요.');
       return;
     }
+    // 버튼 비활성화와 별개로, 연타/중복 호출이 실제로 들어와도 한 번만 전송되게 한다.
+    if (vm.isSubmitting.value) return;
+    vm.isSubmitting.value = true;
+    try {
+      await _submitInner(context, vm, userId, fleaId);
+    } finally {
+      // fenix 바인딩이라 화면을 떠나도 뷰모델이 살아남으므로 반드시 되돌린다.
+      vm.isSubmitting.value = false;
+    }
+  }
 
+  Future<void> _submitInner(
+    BuildContext context,
+    FleamarketUpdateViewModelWeb vm,
+    int userId,
+    int fleaId,
+  ) async {
     final body = {
       'user_id': userId,
       'product_name': vm.textEditingController_productName.text,
@@ -67,7 +82,8 @@ class FleamarketUpdateViewWeb extends StatelessWidget {
     }
 
     await vm.updateFleamarket(fleaId, body, merged);
-    await detailVm.fetchFleamarketDetailFromAPI(fleamarketId: fleaId, userId: userId);
+    await Get.find<FleamarketDetailViewModel>()
+        .fetchFleamarketDetailFromAPI(fleamarketId: fleaId, userId: userId);
     if (Get.isRegistered<FleamarketPaginationViewModelWeb>()) {
       Get.find<FleamarketPaginationViewModelWeb>().loadFirstPage(userId: userId);
     }
@@ -119,24 +135,44 @@ class FleamarketUpdateViewWeb extends StatelessWidget {
   }
 
   Widget _submitButton(BuildContext context, FleamarketUpdateViewModelWeb vm) {
-    return Obx(() => ElevatedButton(
-          onPressed: _canSubmit(vm) ? () => _submit(context, vm) : null,
-          style: ElevatedButton.styleFrom(
-            backgroundColor: SDSColor.snowliveBlue,
-            disabledBackgroundColor: SDSColor.gray200,
-            elevation: 0,
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-          ),
-          child: Text('수정하기', style: SDSTextStyle.bold.copyWith(fontSize: 14, color: SDSColor.snowliveWhite)),
-        ));
+    return Obx(() {
+      final isSubmitting = vm.isSubmitting.value;
+      return ElevatedButton(
+        onPressed: (_canSubmit(vm) && !isSubmitting) ? () => _submit(context, vm) : null,
+        style: ElevatedButton.styleFrom(
+          backgroundColor: SDSColor.snowliveBlue,
+          disabledBackgroundColor: SDSColor.gray200,
+          elevation: 0,
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+        ),
+        // 라벨을 스피너로 교체하면 버튼 폭이 튀므로 라벨은 두고 앞에 끼워 넣는다.
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (isSubmitting) ...[
+              const SizedBox(
+                width: 14,
+                height: 14,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  valueColor: AlwaysStoppedAnimation<Color>(SDSColor.snowliveWhite),
+                ),
+              ),
+              const SizedBox(width: SDSSpacing.sm),
+            ],
+            Text('수정하기', style: SDSTextStyle.bold.copyWith(fontSize: 14, color: SDSColor.snowliveWhite)),
+          ],
+        ),
+      );
+    });
   }
 
   Widget _buildForm(BuildContext context, FleamarketUpdateViewModelWeb vm) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        FleamarketFormTextField(
+        WebFormTextField(
           label: '제목',
           controller: vm.textEditingController_title,
           hint: '글 제목을 입력해 주세요. (최대 50자 이내)',
@@ -144,7 +180,7 @@ class FleamarketUpdateViewWeb extends StatelessWidget {
           onChanged: (v) => vm.changeTitleWritten(v.trim().isNotEmpty),
         ),
         const SizedBox(height: SDSSpacing.lg),
-        FleamarketFormTextField(
+        WebFormTextField(
           label: '제품명',
           controller: vm.textEditingController_productName,
           hint: '제품명을 입력해 주세요. (최대 20자 이내)',
@@ -152,42 +188,37 @@ class FleamarketUpdateViewWeb extends StatelessWidget {
           onChanged: (v) => vm.changeProductNameWritten(v.trim().isNotEmpty),
         ),
         const SizedBox(height: SDSSpacing.lg),
-        Obx(() => FleamarketFormTwoColumnRow(
-              left: FleamarketFormDropdownField(
+        Obx(() => WebFormTwoColumnRow(
+              left: WebFormDropdownField<String>(
                 label: '전체 카테고리',
                 value: vm.selectedCategoryMain,
                 placeholder: kFleamarketCategoryMainPlaceholder,
-                onTap: () => showFleamarketFilterSheet<String>(
-                  context,
-                  values: kFleamarketCategoryMainList,
-                  labelOf: (v) => v,
-                  onSelected: (v) {
-                    vm.selectCategoryMain(v);
-                    vm.resetCategorySub();
-                  },
-                ),
+                values: kFleamarketCategoryMainList,
+                labelOf: (v) => v,
+                onSelected: (v) {
+                  vm.selectCategoryMain(v);
+                  vm.resetCategorySub();
+                },
               ),
-              right: FleamarketFormDropdownField(
+              right: WebFormDropdownField<String>(
                 label: '상세 카테고리',
                 value: vm.selectedCategorySub,
                 placeholder: kFleamarketCategorySubPlaceholder,
-                onTap: () {
+                // Obx 안이라 전체 카테고리가 바뀌면 이 목록도 다시 계산된다.
+                values: vm.selectedCategoryMain == '스키' ? kFleamarketCategorySubSkiList : kFleamarketCategorySubBoardList,
+                labelOf: (v) => v,
+                onSelected: (v) => vm.selectCategorySub(v),
+                canOpen: () {
                   if (vm.selectedCategoryMain == kFleamarketCategoryMainPlaceholder) {
                     Get.snackbar('알림', '전체 카테고리를 먼저 선택해주세요.');
-                    return;
+                    return false;
                   }
-                  final list = vm.selectedCategoryMain == '스키' ? kFleamarketCategorySubSkiList : kFleamarketCategorySubBoardList;
-                  showFleamarketFilterSheet<String>(
-                    context,
-                    values: list,
-                    labelOf: (v) => v,
-                    onSelected: (v) => vm.selectCategorySub(v),
-                  );
+                  return true;
                 },
               ),
             )),
         const SizedBox(height: SDSSpacing.lg),
-        FleamarketFormTextField(
+        WebFormTextField(
           label: '가격',
           controller: vm.itemPriceTextEditingController,
           hint: '금액을 입력해 주세요.',
@@ -201,39 +232,33 @@ class FleamarketUpdateViewWeb extends StatelessWidget {
         const SizedBox(height: SDSSpacing.lg),
         _PhotoUploadSection(vm: vm),
         const SizedBox(height: SDSSpacing.lg),
-        Obx(() => FleamarketFormTwoColumnRow(
-              left: FleamarketFormDropdownField(
+        Obx(() => WebFormTwoColumnRow(
+              left: WebFormDropdownField<String>(
                 label: '희망 거래 방법',
                 value: vm.selectedTradeMethod,
                 placeholder: kFleamarketTradeMethodPlaceholder,
-                onTap: () => showFleamarketFilterSheet<String>(
-                  context,
-                  values: kFleamarketTradeMethodList,
-                  labelOf: (v) => v,
-                  onSelected: (v) => vm.selectTradeMethod(v),
-                ),
+                values: kFleamarketTradeMethodList,
+                labelOf: (v) => v,
+                onSelected: (v) => vm.selectTradeMethod(v),
               ),
-              right: FleamarketFormDropdownField(
+              right: WebFormDropdownField<String>(
                 label: '거래 희망 장소',
                 value: vm.selectedTradeSpot,
                 placeholder: kFleamarketTradeSpotPlaceholder,
-                onTap: () => showFleamarketFilterSheet<String>(
-                  context,
-                  values: kFleamarketTradeSpotList,
-                  labelOf: (v) => v,
-                  onSelected: (v) => vm.selectTradeSpot(v),
-                ),
+                values: kFleamarketTradeSpotList,
+                labelOf: (v) => v,
+                onSelected: (v) => vm.selectTradeSpot(v),
               ),
             )),
         const SizedBox(height: SDSSpacing.lg),
-        FleamarketFormTextField(
+        WebFormTextField(
           label: '카카오 오픈채팅 URL',
           controller: vm.textEditingController_sns,
           hint: 'URL',
           helperText: '카카오톡에서 오픈채팅 URL을 복사할 경우, 다른 텍스트가 함께 복사되기 때문에 URL 부분만 입력되도록 확인 후 입력 부탁드립니다.',
         ),
         const SizedBox(height: SDSSpacing.lg),
-        FleamarketFormTextField(
+        WebFormTextField(
           label: '상세 설명',
           controller: vm.textEditingController_desc,
           hint: '상품에 대한 상세 설명을 작성해 주세요. (최대 1,000자 이내)\n\n부적절한 단어나 문장이 포함되는 경우 사전 고지없이 게시글 삭제가 될 수 있습니다.',
@@ -285,7 +310,7 @@ class _PhotoUploadSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const FleamarketFormLabel('사진 업로드'),
+        const WebFormLabel('사진 업로드'),
         Obx(() {
           final existing = vm.existingImageUrls;
           final newFiles = vm.newImageFiles;

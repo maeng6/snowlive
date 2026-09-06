@@ -43,6 +43,10 @@ class FleamarketUploadViewModelWeb extends GetxController {
   RxBool _isCategorySelected = true.obs;
   RxInt _pk = 0.obs;
 
+  /// 등록 제출이 진행 중인지. 제출 플로우(등록 → 이미지 업로드 → 목록 갱신)가 뷰에
+  /// 있어서 뷰에서 토글한다. 버튼 비활성화에 쓰이며, 없으면 연타로 글이 중복 등록된다.
+  final RxBool isSubmitting = false.obs;
+
   List<XFile?> get imageFiles => _imageFiles;
   List<String?> get imageUrlList => _imageUrlList;
   List<Map<String, dynamic>?> get photos => _photos;

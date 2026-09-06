@@ -4,8 +4,30 @@
     {
       "name": "snowlive-web",
       "runtimeExecutable": "flutter",
-      "runtimeArgs": ["run", "-d", "web-server", "--web-port", "8765", "--target", "lib/main_web.dart"],
+      "runtimeArgs": [
+        "run",
+        "-d",
+        "web-server",
+        "--web-port",
+        "8765",
+        "--target",
+        "lib/main_web.dart"
+      ],
       "port": 8765
+    },
+    {
+      "name": "snowlive-web-verify",
+      "runtimeExecutable": "flutter",
+      "runtimeArgs": [
+        "run",
+        "-d",
+        "web-server",
+        "--web-port",
+        "8766",
+        "--target",
+        "lib/main_web.dart"
+      ],
+      "port": 8766
     }
   ]
 }

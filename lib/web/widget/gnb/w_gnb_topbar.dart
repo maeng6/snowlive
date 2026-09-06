@@ -1,5 +1,6 @@
 import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 /// 태블릿/모바일(<1024px) 전용 상단바: 로고 + 햄버거(드로어 오픈).
 /// AppBar 슬롯으로 사용되므로 build context가 Scaffold의 하위이며,
@@ -21,12 +22,10 @@ class WebGnbTopbar extends StatelessWidget implements PreferredSizeWidget {
       ),
       child: Row(
         children: [
-          Image.asset(
-            'assets/imgs/logos/snowliveLogo_main_new.png',
+          SvgPicture.asset(
+            'assets/imgs/logos/snowlive_logo_black_web.svg',
             height: 22,
             fit: BoxFit.contain,
-            color: Colors.black,
-            colorBlendMode: BlendMode.srcIn,
           ),
           const Spacer(),
           IconButton(

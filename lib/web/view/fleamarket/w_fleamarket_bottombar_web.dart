@@ -20,14 +20,19 @@ class FleamarketBottomBarWeb extends StatelessWidget {
       ),
       child: Row(
         children: [
+          // 데스크탑은 사이드바에 이 버튼이 있다. 좁은 폭에서는 사이드바가 없으므로
+          // 여기가 유일한 진입점이다.
           Expanded(
             child: OutlinedButton(
               onPressed: () => Get.toNamed(WebRoutes.fleamarketAlert),
               style: OutlinedButton.styleFrom(
                 side: BorderSide(color: SDSColor.gray200),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                padding: const EdgeInsets.symmetric(vertical: 18),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
               ),
-              child: Text('키워드 알림 설정', style: SDSTextStyle.bold.copyWith(fontSize: 14, color: SDSColor.gray900)),
+              child: Text('키워드 알림 설정',
+                  maxLines: 1,
+                  style: SDSTextStyle.bold.copyWith(fontSize: 15, color: SDSColor.gray900)),
             ),
           ),
           const SizedBox(width: SDSSpacing.sm),
@@ -37,9 +42,12 @@ class FleamarketBottomBarWeb extends StatelessWidget {
               style: ElevatedButton.styleFrom(
                 backgroundColor: SDSColor.snowliveBlue,
                 elevation: 0,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                padding: const EdgeInsets.symmetric(vertical: 18),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
               ),
-              child: Text('중고거래 물품 올리기', style: SDSTextStyle.bold.copyWith(fontSize: 14, color: SDSColor.snowliveWhite)),
+              child: Text('중고거래 물품 올리기',
+                  maxLines: 1,
+                  style: SDSTextStyle.bold.copyWith(fontSize: 15, color: SDSColor.snowliveWhite)),
             ),
           ),
         ],

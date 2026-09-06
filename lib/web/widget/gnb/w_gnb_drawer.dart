@@ -49,14 +49,19 @@ class WebGnbDrawer extends StatelessWidget {
               return Row(
                 children: [
                   Expanded(
-                    child: OutlinedButton(
+                    child: ElevatedButton(
                       onPressed: () {
                         Navigator.of(context).pop();
                         Get.toNamed(WebRoutes.login);
                       },
-                      style: OutlinedButton.styleFrom(
-                        side: BorderSide(color: SDSColor.gray200),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.transparent,
+                        elevation: 0,
+                        // 호버/클릭 오버레이와 그림자를 끈다(데스크탑 상단바와 동일 처리).
+                        shadowColor: Colors.transparent,
+                        overlayColor: Colors.transparent,
                         padding: const EdgeInsets.symmetric(vertical: 10),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
                       ),
                       child: Text('로그인', style: SDSTextStyle.bold.copyWith(fontSize: 13, color: SDSColor.gray900)),
                     ),
@@ -71,8 +76,10 @@ class WebGnbDrawer extends StatelessWidget {
                       style: ElevatedButton.styleFrom(
                         backgroundColor: SDSColor.gray900,
                         elevation: 0,
+                        shadowColor: Colors.transparent,
+                        overlayColor: Colors.transparent,
                         padding: const EdgeInsets.symmetric(vertical: 10),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
                       ),
                       child: Text('회원가입', style: SDSTextStyle.bold.copyWith(fontSize: 13, color: SDSColor.snowliveWhite)),
                     ),

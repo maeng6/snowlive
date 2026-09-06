@@ -182,37 +182,45 @@ class FleamarketSearchViewModel extends GetxController {
 
   Future<void> _loadRecentSearches() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    _recentSearches.value = prefs.getStringList('recentSearches') ?? [];
-  }
-  Future<void> saveRecentSearch(String searchQuery) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
+    final stored = prefs.getStringList('recentSearches') ?? [];
 
-    // 기존 검색어 리스트 불러오기
-    List<String> searches = prefs.getStringList('recentSearches') ?? [];
-
-    // 중복 검색어 제거
-    searches.remove(searchQuery);
-
-    // 최신 검색어를 리스트의 맨 앞에 추가
-    searches.insert(0, searchQuery);
-
-    // 최대 10개의 검색어만 저장 (필요에 따라 조정)
-    if (searches.length > 10) {
-      searches = searches.sublist(0, 10);
+    // 과거 버그로 저장된 중복 항목이 남아있을 수 있어 불러올 때 한 번 정리한다.
+    final deduped = <String>[];
+    for (final s in stored) {
+      if (!deduped.contains(s)) deduped.add(s);
     }
 
-    // SharedPreferences에 저장
-    await prefs.setStringList('recentSearches', searches);
+    _recentSearches.value = deduped;
+    if (deduped.length != stored.length) {
+      await prefs.setStringList('recentSearches', deduped);
+    }
+  }
+  Future<void> saveRecentSearch(String searchQuery) async {
+    // prefs를 다시 읽어서 병합하면(비동기 타이밍에 따라) 화면에 이미 떠 있는
+    // 최근 검색어 목록과 어긋날 수 있어, 화면이 실제로 보고 있는 현재 상태
+    // (_recentSearches)를 기준으로 병합한다 — 검색 직후 새로고침 없이도
+    // 방금 검색어 + 기존 검색어가 함께 보이도록.
+    final searches = List<String>.from(_recentSearches)
+      ..removeWhere((s) => s == searchQuery)
+      ..insert(0, searchQuery);
 
-    // 상태 반영
-    _recentSearches.value = searches;
+    // 최대 10개의 검색어만 저장 (필요에 따라 조정)
+    final capped = searches.length > 10 ? searches.sublist(0, 10) : searches;
+
+    // 상태 반영 (검색 직후 바로 드롭다운에 병합된 목록이 보이도록 먼저 갱신)
+    _recentSearches.value = capped;
+
+    // SharedPreferences에 저장
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setStringList('recentSearches', capped);
   }
 
 
   Future<void> deleteRecentSearch(String searchQuery) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    recentSearches.remove(searchQuery);
-    await prefs.setStringList('recentSearches', recentSearches);
+    final updated = List<String>.from(_recentSearches)..removeWhere((s) => s == searchQuery);
+    await prefs.setStringList('recentSearches', updated);
+    _recentSearches.value = updated;
   }
 
   void search(String query) {
@@ -224,8 +232,8 @@ class FleamarketSearchViewModel extends GetxController {
 
   Future<void> deleteAllRecentSearches() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    recentSearches.clear();
     await prefs.remove('recentSearches');
+    _recentSearches.value = [];
   }
 
 

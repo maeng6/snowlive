@@ -1,0 +1,363 @@
+import 'dart:io';
+
+import 'package:com.snowlive/core/api/api_crew.dart';
+import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
+import 'package:com.snowlive/routes/routes.dart';
+import 'package:com.snowlive/core/viewmodel/crew/vm_crewDetail.dart';
+import 'package:com.snowlive/core/viewmodel/crew/vm_crewMemberList.dart';
+import 'package:com.snowlive/core/viewmodel/friend/vm_friendDetail.dart';
+import 'package:com.snowlive/core/widget/w_fullScreenDialog.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:com.snowlive/core/viewmodel/vm_user.dart';
+import 'package:com.snowlive/viewmodel/util/vm_imageController.dart';
+import 'package:com.snowlive/model/m_resortModel.dart';
+import 'package:http/http.dart' as http;
+import 'package:path_provider/path_provider.dart';
+
+class SetCrewViewModel extends GetxController {
+
+  UserViewModel _userViewModel = Get.find<UserViewModel>();
+  CrewDetailViewModel _crewDetailViewModel = Get.find<CrewDetailViewModel>();
+  CrewMemberListViewModel _crewMemberListViewModel = Get.find<CrewMemberListViewModel>();
+  FriendDetailViewModel _friendDetailViewModel = Get.find<FriendDetailViewModel>();
+
+  // 로딩 상태 관리
+  RxBool isLoading = false.obs;
+
+  // 크루명 입력 필드와 폼 상태 관리
+  final TextEditingController textEditingController = TextEditingController();
+  final formKey = GlobalKey<FormState>();
+
+  // 상태 관리 변수
+  RxString _crewName = ''.obs;
+  RxInt _selectedResortIndex = 99.obs;
+  RxString _selectedResortName = ''.obs;
+  RxBool _isCrewNameChecked = false.obs; // 크루명 중복 체크 완료 여부
+  RxBool isNextButtonEnabled = false.obs;
+
+  // 이미지 및 색상 관련 변수
+  Rx<XFile?> _imageFile = Rx<XFile?>(null);
+  Rx<XFile?> _croppedFile = Rx<XFile?>(null);
+  Rx<Color> currentColor = Color(0XFFEA4E4E).obs;
+  Rx<Color> currentColorBackground = Color(0XFFEA4E4E).withOpacity(0.2).obs;
+
+  String? profileImageUrl;
+
+  final ImageController imageController = Get.put(ImageController());
+
+  // Getter
+  String get crewName => _crewName.value;
+  int get selectedResortIndex => _selectedResortIndex.value;
+  String get selectedResortName => _selectedResortName.value;
+  bool get isCrewNameChecked => _isCrewNameChecked.value;
+  XFile? get imageFile => _imageFile.value;
+  XFile? get croppedFile => _croppedFile.value;
+
+  // 크루명 입력 리스너
+  SetCrewViewModel() {
+    textEditingController.addListener(() {
+      _isCrewNameChecked.value = false; // 새로운 입력 시 중복 체크 상태 초기화
+      _crewName.value = textEditingController.text;
+      updateNextButtonState();
+    });
+  }
+
+  // 크루명 유효성 검사
+  String? validateCrewName(String? value) {
+    if (value == null || value.isEmpty) {
+      return '크루명을 입력해주세요.';
+    } else if (value.length > 10) {
+      return '최대 10자 이내로 입력해주세요.';
+    }
+    return null;
+  }
+
+  // 크루명 중복 체크
+  Future<void> checkCrewName() async {
+    if (crewName.isNotEmpty) {
+      try {
+        var response = await CrewAPI().checkCrewName(crewName);
+        if (response.success) {
+          _isCrewNameChecked.value = true; // 중복 체크 성공
+          CustomFullScreenDialog.cancelDialog();
+        } else {
+          _isCrewNameChecked.value = false; // 중복 체크 실패
+          CustomFullScreenDialog.cancelDialog();
+        }
+      } catch (e) {
+        _isCrewNameChecked.value = false;
+        CustomFullScreenDialog.cancelDialog();
+      } finally {
+        updateNextButtonState(); // 중복 체크 후 다음 버튼 활성화 상태 업데이트
+      }
+    }
+  }
+
+  // 리조트 선택
+  void selectResort(int selectedIndex) {
+    _selectedResortIndex.value = selectedIndex + 1;
+    _selectedResortName.value = resortNameList[selectedIndex]!;
+    updateNextButtonState();
+  }
+
+  // 이미지 업로드 로직
+  Future<void> uploadImage(ImageSource source) async {
+    try {
+      _imageFile.value = await imageController.getSingleImage(source);
+      if (_imageFile.value != null) {
+        _croppedFile.value = await imageController.cropImage(_imageFile.value);
+      }
+    } catch (e) {
+      print('Image upload error: $e');
+    }
+  }
+
+
+  Future<void> getImageUrl({String? oldUrl}) async {
+    // 1) 새 이미지 없음 = 사용자가 이미지 삭제함
+    if (_croppedFile.value == null) {
+      // 🔥 기존 Storage 이미지 삭제
+      if (oldUrl != null && oldUrl.isNotEmpty) {
+        try {
+          final oldRef = FirebaseStorage.instance.refFromURL(oldUrl);
+          await oldRef.delete();
+          print("Old crew image deleted due to reset.");
+        } catch (e) {
+          print("Delete old crew image error: $e");
+        }
+      }
+
+      // 🔥 디폴트 이미지 상태로 만들기
+      profileImageUrl = '';
+
+      return; // 여기서 끝
+    }
+
+    // 2) 새 이미지 업로드
+    try {
+      final newUrl = await imageController.setNewImage_Crew(
+        newImage: _croppedFile.value!,
+        crewID: _crewName.value,
+        onError: (String requestType, String error) {
+          _sendCrewErrorLog(requestType: requestType, error: error);
+        },
+      );
+
+      profileImageUrl = newUrl;
+
+      // 3) 기존 이미지 삭제
+      if (oldUrl != null && oldUrl.isNotEmpty && oldUrl != newUrl) {
+        try {
+          final oldRef = FirebaseStorage.instance.refFromURL(oldUrl);
+          await oldRef.delete();
+          print("Old crew image deleted: $oldUrl");
+        } catch (e) {
+          print("Delete old crew image error: $e");
+        }
+      }
+    } catch (e) {
+      print('Image upload error: $e');
+    }
+  }
+
+  /// 크루 이미지 업로드 에러 로그 전송
+  Future<void> _sendCrewErrorLog({
+    required String requestType,
+    required String error,
+  }) async {
+    try {
+      await CrewAPI().createErrorLog_crew({
+        "user_id": _userViewModel.user.user_id,
+        "request_type": requestType,
+        "error": error,
+      });
+      print('[CrewErrorLog] $requestType: $error');
+    } catch (e) {
+      print('[CrewErrorLog] 로그 전송 실패: $e');
+    }
+  }
+
+
+
+
+  Future<void> setCrewLogoAsCroppedFile() async {
+    if (_crewDetailViewModel.crewLogoUrl.isNotEmpty && _croppedFile.value == null) {
+      try {
+        // 네트워크에서 이미지 다운로드
+        final response = await http.get(Uri.parse(_crewDetailViewModel.crewLogoUrl));
+        if (response.statusCode == 200) {
+          // 로컬 파일로 저장
+          final directory = await getApplicationDocumentsDirectory();
+          final filePath = '${directory.path}/crew_logo_image.png';
+          final file = File(filePath);
+          await file.writeAsBytes(response.bodyBytes);
+
+          // 로컬 파일을 크롭된 파일처럼 설정
+          final croppedFile = XFile(filePath);
+          _croppedFile.value = croppedFile;
+        } else {
+          print('Failed to download image');
+        }
+      } catch (e) {
+        print('Error downloading crew logo: $e');
+      }
+    }
+  }
+
+
+  // 색상 선택
+  void selectColor(Color color) {
+    currentColor.value = color;
+    currentColorBackground.value = color.withOpacity(0.2);
+  }
+
+  // 색상을 16진수 문자열로 변환하는 함수 (0X 포함)
+  String colorToHex(Color color) {
+    return '0X' + color.value.toRadixString(16).toUpperCase(); // '0X'를 포함하여 변환
+  }
+
+  Future<void> initializeColor() async{
+    if (_crewDetailViewModel.color.isNotEmpty) {
+      // Assuming the color is in hex format (e.g., "0XFF3D83ED")
+      try {
+        // Convert the color from a hex string to a Color object
+        currentColor.value = Color(int.parse(_crewDetailViewModel.color));
+        currentColorBackground.value = Color(int.parse(_crewDetailViewModel.color)).withOpacity(0.2);
+      } catch (e) {
+        print('Error parsing color: $e');
+      }
+    }
+    currentColor.value = Color(0XFFEA4E4E);
+    currentColorBackground.value = Color(0XFFEA4E4E).withOpacity(0.2);
+  }
+
+  void initializeCrewName() {
+    if (_crewDetailViewModel.color.isNotEmpty) {
+      _crewName.value = _crewDetailViewModel.crewName;
+    }
+  }
+
+
+  // 다음 버튼 활성화 상태 업데이트
+  void updateNextButtonState() {
+    if (_crewName.isNotEmpty &&
+        _selectedResortName.isNotEmpty &&
+        _isCrewNameChecked.value) {
+      isNextButtonEnabled.value = true;
+    } else {
+      isNextButtonEnabled.value = false;
+    }
+  }
+
+  // 크루명, 스키장, 이미지, 색상 모두 서버로 전송하는 로직
+  Future<void> createCrew() async {
+    if (formKey.currentState!.validate() && _croppedFile != null) {
+      isLoading.value = true; // 로딩 시작
+
+      await getImageUrl(); // 이미지 URL 생성
+
+      // 서버로 전송할 데이터 준비
+      final crewData = {
+        "user_id": _userViewModel.user.user_id, // 유저 ID
+        "crew_name": _crewName.value,
+        "crew_logo_url": profileImageUrl ?? '',
+        "color": colorToHex(currentColor.value),
+        "base_resort_id": _selectedResortIndex.value,
+      };
+
+      // 서버에 크루 생성 요청
+      await CrewAPI().createCrew(crewData);
+      await _userViewModel.updateUserModel_api(_userViewModel.user.user_id);
+      await _crewDetailViewModel.fetchCrewDetail(
+          _userViewModel.user.crew_id,
+          _friendDetailViewModel.seasonDate
+      );
+      await _crewMemberListViewModel.fetchCrewMembers(crewId: _userViewModel.user.crew_id);
+
+      isLoading.value = false; // 로딩 끝
+    }
+  }
+
+  // 크루명과 스키장 선택 후 다음 화면으로 이동
+  void goToNextStep() {
+    if (formKey.currentState!.validate() && _isCrewNameChecked.value) {
+      Get.toNamed(AppRoutes.setCrewImageAndColor);
+    }
+  }
+
+  // 크루명과 스키장 정보 초기화
+  void resetAll() {
+    textEditingController.clear();
+    _crewName.value = '';
+    _selectedResortName.value = '';
+    _selectedResortIndex.value = 99;
+    _isCrewNameChecked.value = false;
+    isNextButtonEnabled.value = false;
+    _imageFile.value = null;
+    _croppedFile.value = null;
+    currentColor.value = Color(0XFFEA4E4E);
+    currentColorBackground.value = Color(0XFFEA4E4E).withOpacity(0.2);
+  }
+
+  // 이미지와 색상 초기화
+  void resetImageAndColor() {
+    _imageFile.value = null;
+    _croppedFile.value = null;
+    currentColor.value = Color(0XFFEA4E4E);
+    currentColorBackground.value = Color(0XFFEA4E4E).withOpacity(0.2);
+  }
+
+  // 이미지와 초기화
+  void resetImage() {
+    _imageFile.value = null;
+    _croppedFile.value = null;
+  }
+
+  // 크루 세부사항 업데이트 메서드
+  Future<void> updateCrewDetails(int crewId) async {
+    isLoading.value = true;  // 로딩 시작
+
+    final oldUrl = _crewDetailViewModel.crewLogoUrl;
+
+    try {
+      // 새 이미지 업로드 + oldUrl 삭제
+      await getImageUrl(oldUrl: oldUrl);
+
+      // 서버로 전송할 데이터 준비
+      final updateCrewData = {
+        "user_id": _userViewModel.user.user_id, // 유저 ID
+        "crew_name": _crewDetailViewModel.crewName,
+        "crew_logo_url": profileImageUrl ?? '',
+        "color": colorToHex(currentColor.value),
+        "base_resort_id": _crewDetailViewModel.crewDetailInfo.baseResortId,    //선택
+        "description": _crewDetailViewModel.crewDetailInfo.description,    //선택
+      };
+
+      print(_crewDetailViewModel.crewDetailInfo.notice);
+
+
+      // 서버에 크루 세부사항 업데이트 요청
+      var response = await CrewAPI().updateCrewDetails(crewId, updateCrewData);
+
+      if (response.success) {
+        // 업데이트 성공 후 필요한 추가 작업 (예: 로컬 모델 업데이트)
+        await _crewDetailViewModel.fetchCrewDetail(
+            _userViewModel.user.crew_id,
+            _friendDetailViewModel.seasonDate
+        );
+        print("크루 정보가 성공적으로 변경되었습니다");
+      } else {
+        // 오류 메시지 출력
+        print("크루 세부사항 업데이트 실패: ${response.error}");
+      }
+    } catch (e) {
+      print("크루 세부사항 업데이트 중 예외 발생: $e");
+    } finally {
+      isLoading.value = false;  // 로딩 종료
+    }
+  }
+
+}

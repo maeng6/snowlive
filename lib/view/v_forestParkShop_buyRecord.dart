@@ -1,6 +1,6 @@
 import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/viewmodel/forestPark/vm_forestPark.dart';
-import 'package:com.snowlive/viewmodel/ranking/vm_snowball.dart';
+import 'package:com.snowlive/mobile/viewmodel/ranking/vm_snowball.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';

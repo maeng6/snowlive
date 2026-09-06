@@ -68,7 +68,6 @@ migrate_working_dir/
 /macos/Flutter/ephemeral/
 
 # ───────── Web ─────────
-lib/generated_plugin_registrant.dart   # flutter build 시 재생성
 
 # ───────── Symbolication / Obfuscation ─────────
 app.*.symbols

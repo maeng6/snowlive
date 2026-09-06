@@ -5,6 +5,8 @@ import 'package:com.snowlive/web/routes/routes_web.dart';
 import 'package:com.snowlive/web/util/responsive_web.dart';
 import 'package:com.snowlive/web/view/fleamarket/w_fleamarket_card_web.dart';
 import 'package:com.snowlive/web/viewmodel/fleamarket/vm_fleamarketPagination_web.dart';
+import 'package:com.snowlive/web/widget/w_numbered_pagination_web.dart';
+import 'package:com.snowlive/web/widget/w_skeleton_web.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -35,11 +37,11 @@ class FleamarketGridWeb extends StatelessWidget {
       final items = paginationVm.items;
       final isLoading = paginationVm.isLoading;
 
+      // 첫 로딩(보여줄 게 아무것도 없을 때)만 스켈레톤. 페이지 번호 이동은
+      // items가 남아 있어 기존 그리드가 유지되고 상단 진행바만 도는데,
+      // 그게 웹에서 기대되는 동작이라 일부러 그대로 둔다.
       if (isLoading && items.isEmpty) {
-        return const Padding(
-          padding: EdgeInsets.only(top: 80),
-          child: Center(child: CircularProgressIndicator()),
-        );
+        return const FleamarketGridSkeleton();
       }
 
       if (items.isEmpty) {
@@ -79,11 +81,13 @@ class FleamarketGridWeb extends StatelessWidget {
                   return FleamarketCardWeb(
                     data: data,
                     onTap: () {
+                      // 즉시 표시용으로 목록 데이터를 먼저 주입하고, URL에 id를 실어
+                      // 이동한다(상세 화면이 그 id로 API 재조회 → 새로고침/직접진입도 됨).
                       detailVm.fetchFleamarketDetailFromList(fleamarketResponse: data);
-                      Get.toNamed(WebRoutes.fleamarketDetail);
-                      final userId = userVm.user.user_id;
-                      if (userId != null && data.fleaId != null) {
-                        detailVm.addViewerFleamarket(fleamarketId: data.fleaId!, userId: userId);
+                      Get.toNamed(WebRoutes.fleamarketDetail, parameters: {'id': '${data.fleaId}'});
+                      // 비로그인(게스트)도 조회수는 올라간다 → userId 없이도 호출.
+                      if (data.fleaId != null) {
+                        detailVm.addViewerFleamarket(fleamarketId: data.fleaId!, userId: userVm.user.user_id);
                       }
                     },
                   );
@@ -93,86 +97,17 @@ class FleamarketGridWeb extends StatelessWidget {
           ),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 24),
-            child: Wrap(
-              alignment: WrapAlignment.center,
-              crossAxisAlignment: WrapCrossAlignment.center,
-              spacing: 4,
-              children: [
-                IconButton(
-                  onPressed: paginationVm.hasPrevious ? () => _gotoPage(context, paginationVm, paginationVm.currentPage - 1) : null,
-                  icon: const Icon(Icons.chevron_left),
-                ),
-                if (paginationVm.pageWindow().first > 1) ...[
-                  _PageNumberButton(
-                    label: '1',
-                    isActive: false,
-                    onTap: () => _gotoPage(context, paginationVm, 1),
-                  ),
-                  if (paginationVm.pageWindow().first > 2)
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 4),
-                      child: Text('…', style: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray400)),
-                    ),
-                ],
-                for (final page in paginationVm.pageWindow())
-                  _PageNumberButton(
-                    label: '$page',
-                    isActive: page == paginationVm.currentPage,
-                    onTap: () => _gotoPage(context, paginationVm, page),
-                  ),
-                if (paginationVm.pageWindow().last < paginationVm.totalPages) ...[
-                  if (paginationVm.pageWindow().last < paginationVm.totalPages - 1)
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 4),
-                      child: Text('…', style: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray400)),
-                    ),
-                  _PageNumberButton(
-                    label: '${paginationVm.totalPages}',
-                    isActive: false,
-                    onTap: () => _gotoPage(context, paginationVm, paginationVm.totalPages),
-                  ),
-                ],
-                IconButton(
-                  onPressed: paginationVm.hasNext ? () => _gotoPage(context, paginationVm, paginationVm.currentPage + 1) : null,
-                  icon: const Icon(Icons.chevron_right),
-                ),
-              ],
+            child: NumberedPaginationBar(
+              currentPage: paginationVm.currentPage,
+              totalPages: paginationVm.totalPages,
+              hasPrevious: paginationVm.hasPrevious,
+              hasNext: paginationVm.hasNext,
+              pageWindow: paginationVm.pageWindow(),
+              onGotoPage: (page) => _gotoPage(context, paginationVm, page),
             ),
           ),
         ],
       );
     });
-  }
-}
-
-class _PageNumberButton extends StatelessWidget {
-  final String label;
-  final bool isActive;
-  final VoidCallback onTap;
-
-  const _PageNumberButton({required this.label, required this.isActive, required this.onTap});
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: isActive ? null : onTap,
-      borderRadius: BorderRadius.circular(6),
-      child: Container(
-        width: 32,
-        height: 32,
-        alignment: Alignment.center,
-        decoration: BoxDecoration(
-          color: isActive ? SDSColor.gray900 : Colors.transparent,
-          borderRadius: BorderRadius.circular(6),
-        ),
-        child: Text(
-          label,
-          style: (isActive ? SDSTextStyle.bold : SDSTextStyle.regular).copyWith(
-            fontSize: 14,
-            color: isActive ? SDSColor.snowliveWhite : SDSColor.gray700,
-          ),
-        ),
-      ),
-    );
   }
 }

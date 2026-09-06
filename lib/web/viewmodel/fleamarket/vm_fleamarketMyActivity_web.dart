@@ -46,11 +46,27 @@ class FleamarketMyActivityViewModel extends GetxController {
     // 새로고침 직후에는 AuthCheckViewModelWeb의 조용한 재로그인 확인이 아직 끝나지
     // 않아 위 시점엔 userId가 null일 수 있다. 인증 확인이 완료되는 순간을 기다렸다가
     // 다시 조회해서, 로그인 상태인데도 최근 본 상품/찜 목록이 빈 채로 남는 걸 막는다.
-    ever(Get.find<AuthCheckViewModelWeb>().statusRx, (status) {
+    final authVm = Get.find<AuthCheckViewModelWeb>();
+
+    // 인증 확인이 아직 진행 중이면 조회를 시작할지조차 모르는 상태다. 이때 isLoading이
+    // false면 화면이 "없어요"를 먼저 보여줬다가 데이터로 바뀌어 깜빡인다.
+    // 확인이 끝날 때까지는 로딩으로 두고, 게스트로 확정되면 그때 내린다.
+    if (authVm.status == WebAuthStatus.checking) {
+      isLoading.value = true;
+    }
+
+    ever(authVm.statusRx, (status) {
+      if (status == WebAuthStatus.checking) return;
       if (status == WebAuthStatus.authenticated) {
         final int? authedUserId = Get.find<UserViewModel>().user.user_id;
-        if (authedUserId != null) fetchMyActivity(userId: authedUserId);
+        if (authedUserId != null) {
+          fetchMyActivity(userId: authedUserId);
+          return;
+        }
       }
+      // 게스트 확정(또는 로그인됐지만 user_id가 없는 예외 상황) — 조회하지 않으므로
+      // 여기서 로딩을 내려야 스켈레톤이 빈 상태로 넘어간다.
+      isLoading.value = false;
     });
   }
 

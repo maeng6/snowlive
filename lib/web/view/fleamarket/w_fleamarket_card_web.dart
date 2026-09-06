@@ -2,11 +2,14 @@ import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/core/model/m_fleamarket.dart';
 import 'package:com.snowlive/core/util/util_1.dart';
 import 'package:com.snowlive/core/viewmodel/fleamarket/vm_fleamarketList.dart';
+import 'package:com.snowlive/web/widget/w_network_image_web.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:shimmer/shimmer.dart';
 
 const String kFleamarketDefaultImage = 'assets/imgs/imgs/img_flea_default.png';
+
+/// 목록 사진 모서리(디자인 지정 2.72). 카드 사진과 그 위 딤이 같은 값을 써야 한다.
+const double kFleamarketPhotoRadius = 2.72;
 final _priceFormat = NumberFormat('###,###,###,###');
 
 /// 중고거래 그리드 카드 1개: 정사각 이미지 + 제목/위치·시간/가격/조회수·댓글수.
@@ -32,26 +35,17 @@ class FleamarketCardWeb extends StatelessWidget {
               fit: StackFit.expand,
               children: [
                 ClipRRect(
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: BorderRadius.circular(kFleamarketPhotoRadius),
                   child: Container(
                     decoration: BoxDecoration(
                       border: Border.all(width: 0.5, color: SDSColor.gray100),
-                      borderRadius: BorderRadius.circular(8),
+                      borderRadius: BorderRadius.circular(kFleamarketPhotoRadius),
                     ),
                     child: photos.isNotEmpty
-                        ? Image.network(
-                            photos.first.urlFleaPhoto!,
+                        ? WebNetworkImage(
+                            url: photos.first.urlFleaPhoto,
                             fit: BoxFit.cover,
-                            loadingBuilder: (context, child, progress) {
-                              if (progress == null) return child;
-                              return Shimmer.fromColors(
-                                baseColor: SDSColor.gray200,
-                                highlightColor: SDSColor.gray50,
-                                child: Container(color: Colors.white),
-                              );
-                            },
-                            errorBuilder: (context, error, stackTrace) =>
-                                Image.asset(kFleamarketDefaultImage, fit: BoxFit.cover),
+                            fallback: Image.asset(kFleamarketDefaultImage, fit: BoxFit.cover),
                           )
                         : Image.asset(kFleamarketDefaultImage, fit: BoxFit.cover),
                   ),
@@ -60,7 +54,8 @@ class FleamarketCardWeb extends StatelessWidget {
                   Container(
                     decoration: BoxDecoration(
                       color: Colors.black.withOpacity(0.6),
-                      borderRadius: BorderRadius.circular(8),
+                      // 딤도 사진과 같은 모서리라야 각이 튀지 않는다.
+                      borderRadius: BorderRadius.circular(kFleamarketPhotoRadius),
                     ),
                   ),
                 if (data.status == FleamarketStatus.soldOut.korean || data.status == FleamarketStatus.onBooking.korean)
