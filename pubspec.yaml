@@ -69,7 +69,7 @@ dependencies:
   photo_view: ^0.15.0
   auto_size_text: ^3.0.0
   shimmer: ^3.0.0
-  flutter_quill: ^11.4.1
+  flutter_quill: ^11.5.1
   dart_quill_delta: ^10.0.0
   flutter_quill_extensions: ^11.0.0
   bubble: ^1.2.1
