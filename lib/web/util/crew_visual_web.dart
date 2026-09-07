@@ -1,4 +1,4 @@
-import 'package:com.snowlive/data/imgaUrls/Data_url_image.dart';
+import 'package:com.snowlive/core/data/imgaUrls/Data_url_image.dart';
 import 'package:flutter/material.dart';
 
 /// 크루의 색·로고 표현. 서버가 주는 값이 그대로 쓸 수 없는 형태라 한 곳에 모았다.

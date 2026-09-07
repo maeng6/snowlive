@@ -1,17 +1,17 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:com.snowlive/routes/routes.dart';
+import 'package:com.snowlive/mobile/routes/routes.dart';
 import 'package:com.snowlive/core/util/util_1.dart';
 import 'package:com.snowlive/core/viewmodel/fleamarket/vm_fleamarketDetail.dart';
 import 'package:com.snowlive/core/viewmodel/fleamarket/vm_fleamarketList.dart';
 import 'package:com.snowlive/core/viewmodel/friend/vm_friendDetail.dart';
-import 'package:com.snowlive/viewmodel/resortHome/vm_alarmCenter.dart';
+import 'package:com.snowlive/mobile/viewmodel/resortHome/vm_alarmCenter.dart';
 import 'package:com.snowlive/core/widget/w_fullScreenDialog.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:get/get.dart';
 
-import 'package:com.snowlive/data/imgaUrls/Data_url_image.dart';
+import 'package:com.snowlive/core/data/imgaUrls/Data_url_image.dart';
 import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/core/viewmodel/fleamarket/vm_fleamarketCommentDetail.dart';
 import 'package:com.snowlive/core/viewmodel/vm_user.dart';

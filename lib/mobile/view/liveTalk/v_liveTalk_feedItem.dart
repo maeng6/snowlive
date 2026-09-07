@@ -1,6 +1,6 @@
 import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/core/model/m_liveTalk.dart';
-import 'package:com.snowlive/routes/routes.dart';
+import 'package:com.snowlive/mobile/routes/routes.dart';
 import 'package:com.snowlive/core/util/util_1.dart';
 import 'package:com.snowlive/mobile/view/liveTalk/v_liveTalk_imageScreen.dart';
 import 'package:com.snowlive/core/viewmodel/friend/vm_friendDetail.dart';

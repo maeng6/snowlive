@@ -5,12 +5,12 @@ import 'package:com.snowlive/core/viewmodel/fleamarket/vm_fleamarketDetail.dart'
 import 'package:com.snowlive/core/viewmodel/fleamarket/vm_fleamarketList.dart';
 import 'package:com.snowlive/mobile/viewmodel/fleamarket/vm_fleamarketUpdate.dart';
 import 'package:com.snowlive/core/viewmodel/vm_user.dart';
-import 'package:com.snowlive/widget/w_category_main_fleamarket.dart';
-import 'package:com.snowlive/widget/w_category_sub_board_fleamarket.dart';
-import 'package:com.snowlive/widget/w_category_sub_ski_fleamarket.dart';
+import 'package:com.snowlive/mobile/widget/w_category_main_fleamarket.dart';
+import 'package:com.snowlive/mobile/widget/w_category_sub_board_fleamarket.dart';
+import 'package:com.snowlive/mobile/widget/w_category_sub_ski_fleamarket.dart';
 import 'package:com.snowlive/core/widget/w_fullScreenDialog.dart';
-import 'package:com.snowlive/widget/w_tradeMethod_fleamarket.dart';
-import 'package:com.snowlive/widget/w_tradeSpot_fleamarket.dart';
+import 'package:com.snowlive/mobile/widget/w_tradeMethod_fleamarket.dart';
+import 'package:com.snowlive/mobile/widget/w_tradeSpot_fleamarket.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';

@@ -1,6 +1,6 @@
 import 'dart:io' as io;
 import 'package:com.snowlive/core/api/api_community.dart';
-import 'package:com.snowlive/viewmodel/util/vm_imageController.dart';
+import 'package:com.snowlive/mobile/viewmodel/util/vm_imageController.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';

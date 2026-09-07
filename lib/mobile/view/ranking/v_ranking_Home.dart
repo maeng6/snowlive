@@ -1,6 +1,6 @@
 import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
-import 'package:com.snowlive/routes/routes.dart';
-import 'package:com.snowlive/view/banner/v_banner_ranking.dart';
+import 'package:com.snowlive/mobile/routes/routes.dart';
+import 'package:com.snowlive/mobile/view/banner/v_banner_ranking.dart';
 import 'package:com.snowlive/mobile/view/ranking/v_entrance_snowballmarket_ranking.dart';
 import 'package:com.snowlive/mobile/view/ranking/v_rankingList_Indi.dart';
 import 'package:com.snowlive/mobile/view/ranking/history/v_rankingList_beta.dart';
@@ -8,7 +8,7 @@ import 'package:com.snowlive/mobile/view/ranking/v_rankingList_crew.dart';
 import 'package:com.snowlive/core/viewmodel/friend/vm_friendDetail.dart';
 import 'package:com.snowlive/core/viewmodel/ranking/vm_rankingList.dart';
 import 'package:com.snowlive/core/viewmodel/vm_user.dart';
-import 'package:com.snowlive/widget/w_floatingButton_ranking.dart';
+import 'package:com.snowlive/mobile/widget/w_floatingButton_ranking.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

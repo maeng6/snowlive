@@ -1,11 +1,11 @@
 import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
-import 'package:com.snowlive/routes/routes.dart';
+import 'package:com.snowlive/mobile/routes/routes.dart';
 import 'package:com.snowlive/mobile/view/fleamarket/v_fleaMarketList_board.dart';
 import 'package:com.snowlive/mobile/view/fleamarket/v_fleaMarketList_favorite.dart';
 import 'package:com.snowlive/mobile/view/fleamarket/v_fleaMarketList_my.dart';
 import 'package:com.snowlive/mobile/view/fleamarket/v_fleaMarketList_ski.dart';
 import 'package:com.snowlive/mobile/view/fleamarket/v_fleaMarketList_total.dart';
-import 'package:com.snowlive/view/banner/v_banner_fleaMarket.dart';
+import 'package:com.snowlive/mobile/view/banner/v_banner_fleaMarket.dart';
 import 'package:com.snowlive/core/viewmodel/fleamarket/vm_fleamarketList.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';

@@ -1,4 +1,4 @@
-import 'package:com.snowlive/model/m_splash.dart';
+import 'package:com.snowlive/core/model/m_splash.dart';
 import 'package:com.snowlive/mobile/viewmodel/auth/vm_authcheck.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';

@@ -1,7 +1,7 @@
 import 'package:com.snowlive/core/api/ApiResponse.dart';
 import 'package:com.snowlive/core/api/api_friend.dart';
 import 'package:com.snowlive/core/model/m_bestFriendListModel.dart';
-import 'package:com.snowlive/model/m_blockUserList.dart';
+import 'package:com.snowlive/core/model/m_blockUserList.dart';
 import 'package:com.snowlive/core/model/m_requestFriendList.dart';
 import 'package:com.snowlive/core/model/m_searchFriend.dart';
 import 'package:com.snowlive/core/viewmodel/vm_user.dart';

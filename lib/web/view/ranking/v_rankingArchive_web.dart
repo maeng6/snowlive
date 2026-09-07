@@ -3,7 +3,7 @@ import 'package:com.snowlive/core/model/m_rankingListCrew_recordRoom.dart';
 import 'package:com.snowlive/core/model/m_rankingListIndiv_recordRoom.dart';
 import 'package:com.snowlive/core/viewmodel/ranking/vm_rankingList.dart' show RankingFilter_resort, RankingFilter_fed;
 import 'package:com.snowlive/core/viewmodel/ranking/vm_rankingList_recordRoom.dart' show RankingFilter_season;
-import 'package:com.snowlive/data/imgaUrls/Data_url_image.dart';
+import 'package:com.snowlive/core/data/imgaUrls/Data_url_image.dart';
 import 'package:com.snowlive/web/viewmodel/auth/vm_authcheck_web.dart';
 import 'package:com.snowlive/web/util/responsive_web.dart';
 import 'package:com.snowlive/web/view/fleamarket/w_fleamarket_filter_sheet_web.dart';

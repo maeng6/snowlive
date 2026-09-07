@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:com.snowlive/core/api/ApiResponse.dart';
-import 'package:com.snowlive/routes/routes.dart';
+import 'package:com.snowlive/mobile/routes/routes.dart';
 import 'package:com.snowlive/core/viewmodel/crew/vm_crewNotice.dart';
 import 'package:com.snowlive/core/viewmodel/friend/vm_friendDetail.dart';
 import 'package:com.snowlive/core/viewmodel/vm_user.dart';

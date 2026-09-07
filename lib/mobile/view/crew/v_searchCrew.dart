@@ -1,8 +1,8 @@
 
-import 'package:com.snowlive/data/imgaUrls/Data_url_image.dart';
+import 'package:com.snowlive/core/data/imgaUrls/Data_url_image.dart';
 import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/core/model/m_crewList.dart';
-import 'package:com.snowlive/routes/routes.dart';
+import 'package:com.snowlive/mobile/routes/routes.dart';
 import 'package:com.snowlive/core/viewmodel/crew/vm_crewApply.dart';
 import 'package:com.snowlive/core/viewmodel/crew/vm_crewDetail.dart';
 import 'package:com.snowlive/core/viewmodel/crew/vm_crewMemberList.dart';
@@ -10,7 +10,7 @@ import 'package:com.snowlive/core/viewmodel/crew/vm_crewRecordRoom.dart';
 import 'package:com.snowlive/core/viewmodel/crew/vm_searchCrew.dart';
 import 'package:com.snowlive/core/viewmodel/friend/vm_friendDetail.dart';
 import 'package:com.snowlive/core/viewmodel/ranking/vm_rankingList_recordRoom.dart';
-import 'package:com.snowlive/viewmodel/resortHome/vm_alarmCenter.dart';
+import 'package:com.snowlive/mobile/viewmodel/resortHome/vm_alarmCenter.dart';
 import 'package:com.snowlive/core/viewmodel/vm_user.dart';
 import 'package:com.snowlive/core/widget/w_fullScreenDialog.dart';
 import 'package:extended_image/extended_image.dart';

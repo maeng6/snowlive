@@ -1,6 +1,6 @@
 import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/core/viewmodel/vm_user.dart';
-import 'package:com.snowlive/model/m_resortModel.dart';
+import 'package:com.snowlive/core/model/m_resortModel.dart';
 import 'package:com.snowlive/web/routes/routes_web.dart';
 import 'package:com.snowlive/web/util/responsive_web.dart';
 import 'package:com.snowlive/web/view/liveCrew/w_crew_image_color_picker_web.dart';

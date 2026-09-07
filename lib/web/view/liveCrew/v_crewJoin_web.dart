@@ -1,7 +1,7 @@
 import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/core/model/m_crewDetail.dart';
 import 'package:com.snowlive/core/model/m_crewList.dart';
-import 'package:com.snowlive/model/m_resortModel.dart';
+import 'package:com.snowlive/core/model/m_resortModel.dart';
 import 'package:com.snowlive/web/routes/routes_web.dart';
 import 'package:com.snowlive/web/util/crew_visual_web.dart';
 import 'package:com.snowlive/web/util/responsive_web.dart';

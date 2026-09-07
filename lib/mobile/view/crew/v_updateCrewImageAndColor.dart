@@ -1,5 +1,5 @@
 import 'dart:io';
-import 'package:com.snowlive/data/imgaUrls/Data_url_image.dart';
+import 'package:com.snowlive/core/data/imgaUrls/Data_url_image.dart';
 import 'package:com.snowlive/core/model/m_crewList.dart';
 import 'package:com.snowlive/core/viewmodel/crew/vm_crewDetail.dart';
 import 'package:com.snowlive/core/viewmodel/vm_user.dart';

@@ -9,7 +9,7 @@ import 'package:get/get.dart';
 import 'package:get/get_rx/get_rx.dart';
 import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:get/state_manager.dart';
-import 'package:com.snowlive/viewmodel/util/vm_imageController.dart';
+import 'package:com.snowlive/mobile/viewmodel/util/vm_imageController.dart';
 import 'package:path/path.dart' as path;
 
 class CommunityUpdateViewModel extends GetxController {
