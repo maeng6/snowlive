@@ -4,7 +4,7 @@ import 'package:com.snowlive/core/api/api_friend.dart';
 import 'package:com.snowlive/core/api/api_friendDetail.dart';
 import 'package:com.snowlive/core/model/m_friendDetail.dart';
 import 'package:com.snowlive/core/model/m_friendsTalk.dart';
-import 'package:com.snowlive/viewmodel/util/vm_imageController.dart';
+import 'package:com.snowlive/mobile/viewmodel/util/vm_imageController.dart';
 import 'package:com.snowlive/core/viewmodel/vm_user.dart';
 import 'package:com.snowlive/core/widget/w_fullScreenDialog.dart';
 import 'package:flutter/material.dart';

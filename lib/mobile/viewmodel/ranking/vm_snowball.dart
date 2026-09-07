@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:com.snowlive/api/api_snowball.dart';
-import 'package:com.snowlive/model/m_snowball.dart';
+import 'package:com.snowlive/core/api/api_snowball.dart';
+import 'package:com.snowlive/core/model/m_snowball.dart';
 import 'package:com.snowlive/core/viewmodel/vm_user.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';

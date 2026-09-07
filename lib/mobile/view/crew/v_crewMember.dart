@@ -1,4 +1,4 @@
-import 'package:com.snowlive/routes/routes.dart';
+import 'package:com.snowlive/mobile/routes/routes.dart';
 import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/core/viewmodel/crew/vm_crewDetail.dart';
 import 'package:com.snowlive/core/viewmodel/crew/vm_crewMemberList.dart';

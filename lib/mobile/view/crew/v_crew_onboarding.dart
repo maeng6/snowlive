@@ -1,6 +1,6 @@
 import 'dart:io';
 import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
-import 'package:com.snowlive/routes/routes.dart';
+import 'package:com.snowlive/mobile/routes/routes.dart';
 import 'package:com.snowlive/core/viewmodel/crew/vm_crewApply.dart';
 import 'package:com.snowlive/core/viewmodel/crew/vm_searchCrew.dart';
 import 'package:com.snowlive/core/viewmodel/vm_user.dart';

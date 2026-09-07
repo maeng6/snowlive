@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:com.snowlive/core/api/api_crew.dart';
 import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
-import 'package:com.snowlive/routes/routes.dart';
+import 'package:com.snowlive/mobile/routes/routes.dart';
 import 'package:com.snowlive/core/viewmodel/crew/vm_crewDetail.dart';
 import 'package:com.snowlive/core/viewmodel/crew/vm_crewMemberList.dart';
 import 'package:com.snowlive/core/viewmodel/friend/vm_friendDetail.dart';
@@ -12,8 +12,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:com.snowlive/core/viewmodel/vm_user.dart';
-import 'package:com.snowlive/viewmodel/util/vm_imageController.dart';
-import 'package:com.snowlive/model/m_resortModel.dart';
+import 'package:com.snowlive/mobile/viewmodel/util/vm_imageController.dart';
+import 'package:com.snowlive/core/model/m_resortModel.dart';
 import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
 

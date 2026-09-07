@@ -1,13 +1,13 @@
 import 'package:com.snowlive/core/api/ApiResponse.dart';
 import 'package:com.snowlive/core/api/api_login.dart';
-import 'package:com.snowlive/model/m_resortModel.dart';
+import 'package:com.snowlive/core/model/m_resortModel.dart';
 import 'package:com.snowlive/core/widget/w_fullScreenDialog.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_rx/get_rx.dart';
 import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:com.snowlive/viewmodel/util/vm_imageController.dart';
+import 'package:com.snowlive/mobile/viewmodel/util/vm_imageController.dart';
 
 class SetProfileViewModel extends GetxController {
   final TextEditingController textEditingController = TextEditingController();

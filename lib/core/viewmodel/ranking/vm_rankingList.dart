@@ -1,7 +1,7 @@
 import 'package:com.snowlive/core/api/api_ranking.dart';
 import 'package:com.snowlive/core/model/m_rankingListCrew.dart';
 import 'package:com.snowlive/core/model/m_rankingListIndiv.dart';
-import 'package:com.snowlive/model/m_resortModel.dart';
+import 'package:com.snowlive/core/model/m_resortModel.dart';
 import 'package:com.snowlive/core/viewmodel/friend/vm_friendDetail.dart';
 import 'package:com.snowlive/core/viewmodel/vm_user.dart';
 import 'package:flutter/cupertino.dart';

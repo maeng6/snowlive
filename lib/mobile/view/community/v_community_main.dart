@@ -5,10 +5,10 @@ import 'package:com.snowlive/mobile/view/community/free/v_community_Bulletin_Fre
 import 'package:com.snowlive/mobile/view/community/free/v_community_Bulletin_Total.dart';
 import 'package:com.snowlive/mobile/view/community/free/v_community_Bulletin_Room.dart';
 import 'package:com.snowlive/mobile/view/liveTalk/v_liveTalk_main.dart';
-// [이벤트·소식 탭 비활성화] import 'package:com.snowlive/view/moreTab/w_eventPageEmbedded.dart';
+// [이벤트·소식 탭 비활성화] import 'package:com.snowlive/mobile/view/moreTab/w_eventPageEmbedded.dart';
 import 'package:com.snowlive/core/viewmodel/community/vm_communityAlarm.dart';
 import 'package:com.snowlive/core/viewmodel/community/vm_communityBulletinList.dart';
-// [이벤트·소식 탭 비활성화] import 'package:com.snowlive/viewmodel/vm_eventAlarm.dart';
+// [이벤트·소식 탭 비활성화] import 'package:com.snowlive/mobile/viewmodel/vm_eventAlarm.dart';
 import 'package:com.snowlive/core/viewmodel/vm_user.dart';
 // [이벤트·소식 탭 비활성화] import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';

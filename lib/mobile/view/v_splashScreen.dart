@@ -1,5 +1,5 @@
-import 'package:com.snowlive/routes/routes.dart';
-import 'package:com.snowlive/service/deep_link_service.dart';
+import 'package:com.snowlive/mobile/routes/routes.dart';
+import 'package:com.snowlive/mobile/service/deep_link_service.dart';
 import 'package:com.snowlive/mobile/viewmodel/auth/vm_authcheck.dart';
 import 'package:com.snowlive/mobile/viewmodel/vm_splashController.dart';
 import 'package:extended_image/extended_image.dart';

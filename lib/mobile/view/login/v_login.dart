@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
-import 'package:com.snowlive/routes/routes.dart';
+import 'package:com.snowlive/mobile/routes/routes.dart';
 import 'package:com.snowlive/mobile/view/login/v_email_login.dart';
 import 'package:com.snowlive/mobile/viewmodel/auth/vm_login.dart';
 import 'package:com.snowlive/core/widget/w_fullScreenDialog.dart';

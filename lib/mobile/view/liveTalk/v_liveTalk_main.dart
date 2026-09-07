@@ -3,7 +3,7 @@ import 'dart:ui' as ui;
 import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/core/model/m_dailyRidingCard.dart';
 import 'package:com.snowlive/core/model/m_liveTalk.dart';
-import 'package:com.snowlive/routes/routes.dart';
+import 'package:com.snowlive/mobile/routes/routes.dart';
 import 'package:com.snowlive/mobile/view/liveTalk/v_liveTalk_feedItem.dart';
 import 'package:com.snowlive/mobile/view/liveTalk/v_liveTalk_inputArea.dart';
 import 'package:com.snowlive/core/viewmodel/liveTalk/vm_liveTalk.dart';

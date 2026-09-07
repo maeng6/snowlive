@@ -1,9 +1,9 @@
 import 'dart:io';
-import 'package:com.snowlive/data/imgaUrls/Data_url_image.dart';
+import 'package:com.snowlive/core/data/imgaUrls/Data_url_image.dart';
 import 'package:com.snowlive/core/model/m_crewList.dart';
-import 'package:com.snowlive/routes/routes.dart';
+import 'package:com.snowlive/mobile/routes/routes.dart';
 import 'package:com.snowlive/core/viewmodel/crew/vm_crewApply.dart';
-import 'package:com.snowlive/viewmodel/vm_mainHome.dart';
+import 'package:com.snowlive/mobile/viewmodel/vm_mainHome.dart';
 import 'package:com.snowlive/core/viewmodel/vm_user.dart';
 import 'package:com.snowlive/core/widget/w_fullScreenDialog.dart';
 import 'package:flutter/material.dart';

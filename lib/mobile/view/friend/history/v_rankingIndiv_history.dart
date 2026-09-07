@@ -1,6 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
-import 'package:com.snowlive/routes/routes.dart';
+import 'package:com.snowlive/mobile/routes/routes.dart';
 import 'package:com.snowlive/mobile/view/friend/v_profilePageCalendar.dart';
 import 'package:com.snowlive/mobile/view/friend/v_profilePageCalendar_recordRoom.dart';
 import 'package:com.snowlive/core/viewmodel/friend/vm_friendDetail_recordRoom.dart';

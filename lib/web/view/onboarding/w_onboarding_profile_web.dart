@@ -1,5 +1,5 @@
 import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
-import 'package:com.snowlive/model/m_resortModel.dart';
+import 'package:com.snowlive/core/model/m_resortModel.dart';
 import 'package:com.snowlive/web/view/onboarding/w_onboarding_profile_image_picker_web.dart';
 import 'package:com.snowlive/web/viewmodel/auth/vm_onboarding_web.dart';
 import 'package:com.snowlive/web/widget/w_web_form_fields_web.dart';

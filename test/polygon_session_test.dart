@@ -1,7 +1,7 @@
 import 'dart:math' as math;
 import 'package:flutter_test/flutter_test.dart';
-import 'package:com.snowlive/test_polygon/slope_geometry.dart';
-import 'package:com.snowlive/test_polygon/polygon_session_machine.dart';
+import 'package:com.snowlive/mobile/test_polygon/slope_geometry.dart';
+import 'package:com.snowlive/mobile/test_polygon/polygon_session_machine.dart';
 
 // ── 로컬 좌표계: 미터(x=동/lng, y=북/lat) → 위경도 ──
 const double _oLat = 37.6529, _oLng = 126.8967;

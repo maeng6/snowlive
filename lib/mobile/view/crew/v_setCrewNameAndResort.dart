@@ -1,6 +1,6 @@
 import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/core/viewmodel/crew/vm_setCrew.dart';
-import 'package:com.snowlive/widget/w_favoriteResort.dart';
+import 'package:com.snowlive/mobile/widget/w_favoriteResort.dart';
 import 'package:com.snowlive/core/widget/w_fullScreenDialog.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';

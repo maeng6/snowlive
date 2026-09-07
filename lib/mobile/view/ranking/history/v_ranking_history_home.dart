@@ -1,5 +1,5 @@
 import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
-import 'package:com.snowlive/routes/routes.dart';
+import 'package:com.snowlive/mobile/routes/routes.dart';
 import 'package:com.snowlive/mobile/view/ranking/history/v_rankingList_Indi_recordRoom.dart';
 import 'package:com.snowlive/mobile/view/ranking/history/v_rankingList_beta.dart';
 import 'package:com.snowlive/mobile/view/ranking/history/v_rankingList_crew_recordRoom.dart';

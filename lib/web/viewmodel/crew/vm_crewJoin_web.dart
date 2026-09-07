@@ -5,7 +5,7 @@ import 'package:com.snowlive/core/api/api_crew.dart';
 import 'package:com.snowlive/core/model/m_crewDetail.dart';
 import 'package:com.snowlive/core/model/m_crewList.dart';
 import 'package:com.snowlive/core/viewmodel/vm_user.dart';
-import 'package:com.snowlive/model/m_resortModel.dart';
+import 'package:com.snowlive/core/model/m_resortModel.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
