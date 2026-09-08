@@ -10,6 +10,7 @@ import 'package:com.snowlive/web/widget/w_network_image_web.dart';
 import 'package:com.snowlive/web/widget/w_web_comment_input_web.dart';
 import 'package:com.snowlive/web/widget/w_web_more_menu_web.dart';
 import 'package:com.snowlive/web/widget/w_web_overlay_modal_web.dart';
+import 'package:com.snowlive/web/widget/w_web_profile_tap_web.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -213,14 +214,19 @@ class _LiveTalkDetailCardState extends State<_LiveTalkDetailCard> {
         children: [
           Row(
             children: [
-              ClipOval(
-                child: (userInfo?.profileImageUrl?.isNotEmpty ?? false)
-                    ? WebNetworkImage(
-                        url: userInfo!.profileImageUrl,
-                        width: 28,
-                        height: 28,
-                        fallback: _defaultAvatar())
-                    : _defaultAvatar(),
+              WebProfileTap(
+                userId: detail.userId,
+                name: userInfo?.displayName,
+                avatarUrl: userInfo?.profileImageUrl,
+                child: ClipOval(
+                  child: (userInfo?.profileImageUrl?.isNotEmpty ?? false)
+                      ? WebNetworkImage(
+                          url: userInfo!.profileImageUrl,
+                          width: 28,
+                          height: 28,
+                          fallback: _defaultAvatar())
+                      : _defaultAvatar(),
+                ),
               ),
               const SizedBox(width: SDSSpacing.sm),
               Expanded(

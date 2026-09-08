@@ -131,6 +131,9 @@ class CrewRanking {
   int? resortTotalScore;
   int? resortRank;
 
+  /// 어제(직전 집계) 대비 순위 변동. 양수면 상승(▲), 음수면 하락(▼), null이면 표시 없음.
+  int? rankChange;
+
   CrewRanking({
     this.crewId,
     this.crewName,
@@ -159,6 +162,7 @@ class CrewRanking {
     overallTierIconUrl = json['overall_tier_icon_url'];
     resortTotalScore = json['resort_total_score']?.round();
     resortRank = json['resort_rank'];
+    rankChange = json['rank_change'];
   }
 
   Map<String, dynamic> toJson() {

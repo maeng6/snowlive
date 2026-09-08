@@ -9,6 +9,7 @@ import 'package:com.snowlive/core/viewmodel/vm_user.dart';
 import 'package:com.snowlive/web/widget/w_network_image_web.dart';
 import 'package:com.snowlive/web/widget/w_web_comment_input_web.dart';
 import 'package:com.snowlive/web/widget/w_web_more_menu_web.dart';
+import 'package:com.snowlive/web/widget/w_web_profile_tap_web.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -150,15 +151,20 @@ class _FleamarketDetailCommentsWebState extends State<FleamarketDetailCommentsWe
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          ClipOval(
-            child: (comment.userInfo?.profileImageUrlUser?.isNotEmpty ?? false)
-                ? WebNetworkImage(
-                    url: comment.userInfo!.profileImageUrlUser,
-                    width: 28,
-                    height: 28,
-                    fallback: _defaultAvatar(),
-                  )
-                : _defaultAvatar(),
+          WebProfileTap(
+            userId: comment.userId,
+            name: comment.userInfo?.displayName,
+            avatarUrl: comment.userInfo?.profileImageUrlUser,
+            child: ClipOval(
+              child: (comment.userInfo?.profileImageUrlUser?.isNotEmpty ?? false)
+                  ? WebNetworkImage(
+                      url: comment.userInfo!.profileImageUrlUser,
+                      width: 28,
+                      height: 28,
+                      fallback: _defaultAvatar(),
+                    )
+                  : _defaultAvatar(),
+            ),
           ),
           const SizedBox(width: SDSSpacing.sm),
           Expanded(
@@ -278,15 +284,20 @@ class _FleamarketDetailCommentsWebState extends State<FleamarketDetailCommentsWe
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          ClipOval(
-            child: (reply.userInfo?.profileImageUrlUser?.isNotEmpty ?? false)
-                ? WebNetworkImage(
-                    url: reply.userInfo!.profileImageUrlUser,
-                    width: 22,
-                    height: 22,
-                    fallback: _defaultAvatar(size: 22),
-                  )
-                : _defaultAvatar(size: 22),
+          WebProfileTap(
+            userId: reply.userId,
+            name: reply.userInfo?.displayName,
+            avatarUrl: reply.userInfo?.profileImageUrlUser,
+            child: ClipOval(
+              child: (reply.userInfo?.profileImageUrlUser?.isNotEmpty ?? false)
+                  ? WebNetworkImage(
+                      url: reply.userInfo!.profileImageUrlUser,
+                      width: 22,
+                      height: 22,
+                      fallback: _defaultAvatar(size: 22),
+                    )
+                  : _defaultAvatar(size: 22),
+            ),
           ),
           const SizedBox(width: SDSSpacing.xs),
           Expanded(

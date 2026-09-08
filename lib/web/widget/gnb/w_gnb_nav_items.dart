@@ -4,6 +4,7 @@ import 'package:com.snowlive/web/routes/routes_web.dart';
 import 'package:com.snowlive/web/viewmodel/fleamarket/vm_fleamarketPagination_web.dart';
 import 'package:com.snowlive/web/widget/gnb/w_gnb_current_route_web.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 
 /// GNB(사이드바/드로어)에 표시되는 항목 하나를 표현.
@@ -16,6 +17,11 @@ class GnbNavItemData {
   final String? assetIconOn;
   final String? assetIconOff;
 
+  /// 웹 전용 벡터 아이콘 쌍. 있으면 이걸 먼저 쓴다(배율에 상관없이 선명하다).
+  /// 활성은 채워진 `_select`, 비활성은 외곽선 버전이다.
+  final String? assetIconSvgOn;
+  final String? assetIconSvgOff;
+
   /// "메뉴명"처럼 아직 정해지지 않은 자리표시자 항목은 true로 두면
   /// 탭 자체가 비활성화된다(다른 항목은 화면이 없어도 "준비 중" 안내는 뜬다).
   final bool isPlaceholder;
@@ -26,6 +32,8 @@ class GnbNavItemData {
     this.materialIcon,
     this.assetIconOn,
     this.assetIconOff,
+    this.assetIconSvgOn,
+    this.assetIconSvgOff,
     this.isPlaceholder = false,
   });
 }
@@ -35,51 +43,65 @@ class GnbNavItemData {
 const List<GnbNavItemData> kGnbPrimaryItems = [
   GnbNavItemData(
     label: '홈',
-    assetIconOn: 'assets/imgs/icons/icon_home_on.png',
-    assetIconOff: 'assets/imgs/icons/icon_home_off.png',
+    routePrefix: WebRoutes.home,
+    assetIconSvgOn: 'assets/imgs/icons/icon_web_home_select.svg',
+    assetIconSvgOff: 'assets/imgs/icons/icon_web_home.svg',
   ),
   GnbNavItemData(
     label: '중고거래',
     routePrefix: '/fleamarket',
-    assetIconOn: 'assets/imgs/icons/icon_market_on.png',
-    assetIconOff: 'assets/imgs/icons/icon_market_off.png',
+    assetIconSvgOn: 'assets/imgs/icons/icon_web_fleamarket_select.svg',
+    assetIconSvgOff: 'assets/imgs/icons/icon_web_fleamarket.svg',
   ),
-  GnbNavItemData(label: '각종소식', routePrefix: '/event', materialIcon: Icons.campaign_outlined),
-  GnbNavItemData(label: '커뮤니티', routePrefix: '/community', materialIcon: Icons.forum_outlined),
-  GnbNavItemData(label: '라이브톡', routePrefix: '/livetalk', materialIcon: Icons.podcasts_outlined),
-  GnbNavItemData(label: '랭킹', routePrefix: '/ranking', materialIcon: Icons.emoji_events_outlined),
-  GnbNavItemData(label: '라이브크루', routePrefix: '/livecrew', materialIcon: Icons.groups_outlined),
+  GnbNavItemData(
+    label: '각종소식',
+    routePrefix: '/event',
+    assetIconSvgOn: 'assets/imgs/icons/icon_web_news_select.svg',
+    assetIconSvgOff: 'assets/imgs/icons/icon_web_news.svg',
+  ),
+  GnbNavItemData(
+    label: '커뮤니티',
+    routePrefix: '/community',
+    assetIconSvgOn: 'assets/imgs/icons/icon_web_community_select.svg',
+    assetIconSvgOff: 'assets/imgs/icons/icon_web_community.svg',
+  ),
+  GnbNavItemData(
+    label: '라이브톡',
+    routePrefix: '/livetalk',
+    assetIconSvgOn: 'assets/imgs/icons/icon_web_livetalk_select.svg',
+    assetIconSvgOff: 'assets/imgs/icons/icon_web_livetalk.svg',
+  ),
+  GnbNavItemData(
+    label: '랭킹',
+    routePrefix: '/ranking',
+    assetIconSvgOn: 'assets/imgs/icons/icon_web_ranking_select.svg',
+    assetIconSvgOff: 'assets/imgs/icons/icon_web_ranking.svg',
+  ),
+  GnbNavItemData(
+    label: '라이브크루',
+    routePrefix: '/livecrew',
+    assetIconSvgOn: 'assets/imgs/icons/icon_web_crew_select.svg',
+    assetIconSvgOff: 'assets/imgs/icons/icon_web_crew.svg',
+  ),
   GnbNavItemData(
     label: '슬로프크래프트',
     routePrefix: '/slopecraft',
-    // 앱에 이미 있는 슬로프 아이콘 쌍을 쓴다.
-    assetIconOn: 'assets/imgs/icons/icon_home_slope.png',
-    assetIconOff: 'assets/imgs/icons/icon_home_slope_off.png',
+    assetIconSvgOn: 'assets/imgs/icons/icon_web_slopecraft_select.svg',
+    assetIconSvgOff: 'assets/imgs/icons/icon_web_slopecraft.svg',
   ),
   GnbNavItemData(
     label: '라이딩 기록 카드',
     routePrefix: '/riding-cards',
-    materialIcon: Icons.badge_outlined,
+    assetIconSvgOn: 'assets/imgs/icons/icon_web_ridingcard_select.svg',
+    assetIconSvgOff: 'assets/imgs/icons/icon_web_ridingcard.svg',
   ),
 ];
 
-/// 2차 그룹: 친구 / 메뉴명(placeholder) / 설정
+/// 2차 그룹: 친구 / 설정.
+/// 목업대로 **아이콘 없이 텍스트만** 쓴다(1차 그룹만 아이콘을 갖는다).
 const List<GnbNavItemData> kGnbSecondaryItems = [
-  GnbNavItemData(
-    label: '친구',
-    materialIcon: Icons.person_outline,
-    routePrefix: WebRoutes.friend,
-  ),
-  GnbNavItemData(
-    label: '메뉴명',
-    materialIcon: Icons.widgets_outlined,
-    isPlaceholder: true,
-  ),
-  GnbNavItemData(
-    label: '설정',
-    assetIconOn: 'assets/imgs/icons/icon_settings.png',
-    assetIconOff: 'assets/imgs/icons/icon_settings.png',
-  ),
+  GnbNavItemData(label: '친구', routePrefix: WebRoutes.friend),
+  GnbNavItemData(label: '설정', routePrefix: WebRoutes.settings),
 ];
 
 bool gnbItemIsActive(GnbNavItemData item, String currentRoute) {
@@ -116,6 +138,7 @@ class GnbNavRow extends StatelessWidget {
       final Color fg = item.isPlaceholder
           ? SDSColor.gray300
           : (active ? SDSColor.gray900 : SDSColor.gray700);
+      final Widget? icon = _buildIcon(item, active: active, fg: fg);
 
       return Material(
         color: Colors.transparent,
@@ -143,19 +166,11 @@ class GnbNavRow extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
             child: Row(
               children: [
-                SizedBox(
-                  width: 22,
-                  height: 22,
-                  child: item.assetIconOn != null
-                      ? Image.asset(
-                          active ? item.assetIconOn! : item.assetIconOff!,
-                          width: 22,
-                          height: 22,
-                          fit: BoxFit.contain,
-                        )
-                      : Icon(item.materialIcon, size: 20, color: fg),
-                ),
-                const SizedBox(width: 12),
+                // 아이콘이 없는 항목(친구·설정)은 자리도 비우지 않고 글자만 둔다.
+                if (icon != null) ...[
+                  SizedBox(width: 22, height: 22, child: icon),
+                  const SizedBox(width: 12),
+                ],
                 Text(
                   item.label,
                   style: (active ? SDSTextStyle.bold : SDSTextStyle.regular).copyWith(
@@ -169,5 +184,31 @@ class GnbNavRow extends StatelessWidget {
         ),
       );
     });
+  }
+
+  /// 아이콘 우선순위: 웹 벡터 쌍 → PNG on/off 쌍 → 머티리얼 아이콘.
+  ///
+  /// 벡터는 색을 덧칠하지 않는다 — 활성/비활성이 **채움 vs 외곽선**으로 이미
+  /// 구분되고, 슬로프크래프트·라이브톡처럼 안쪽에 흰 채움이 있는 그림은 단색으로
+  /// 덧칠하면 그 겹침이 사라진다.
+  /// 아이콘이 지정되지 않은 항목은 null을 돌려준다(2차 그룹은 텍스트만).
+  Widget? _buildIcon(GnbNavItemData item, {required bool active, required Color fg}) {
+    final svgOff = item.assetIconSvgOff;
+    if (svgOff != null) {
+      final svg = active ? (item.assetIconSvgOn ?? svgOff) : svgOff;
+      final icon = SvgPicture.asset(svg, width: 22, height: 22, fit: BoxFit.contain);
+      return item.isPlaceholder ? Opacity(opacity: 0.35, child: icon) : icon;
+    }
+    if (item.assetIconOn != null) {
+      return Image.asset(
+        active ? item.assetIconOn! : item.assetIconOff!,
+        width: 22,
+        height: 22,
+        fit: BoxFit.contain,
+      );
+    }
+    final materialIcon = item.materialIcon;
+    if (materialIcon == null) return null;
+    return Icon(materialIcon, size: 20, color: fg);
   }
 }

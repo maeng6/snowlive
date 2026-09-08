@@ -15,6 +15,7 @@ import 'package:com.snowlive/web/viewmodel/auth/vm_authcheck_web.dart';
 import 'package:com.snowlive/web/viewmodel/community/vm_communityDetail_web.dart';
 import 'package:com.snowlive/web/widget/w_empty_state_web.dart';
 import 'package:com.snowlive/web/widget/w_network_image_web.dart';
+import 'package:com.snowlive/web/widget/w_web_profile_tap_web.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -421,15 +422,20 @@ class _CommunityDetailViewWebState extends State<CommunityDetailViewWeb> {
 
     return Row(
       children: [
-        ClipOval(
-          child: (photo != null && photo.isNotEmpty)
-              ? WebNetworkImage(url: photo, width: 32, height: 32)
-              : Container(
-                  width: 32,
-                  height: 32,
-                  color: SDSColor.gray100,
-                  child: Icon(Icons.person, size: 18, color: SDSColor.gray400),
-                ),
+        WebProfileTap(
+          userId: detail.userId,
+          name: info?.displayName,
+          avatarUrl: photo,
+          child: ClipOval(
+            child: (photo != null && photo.isNotEmpty)
+                ? WebNetworkImage(url: photo, width: 32, height: 32)
+                : Container(
+                    width: 32,
+                    height: 32,
+                    color: SDSColor.gray100,
+                    child: Icon(Icons.person, size: 18, color: SDSColor.gray400),
+                  ),
+          ),
         ),
         const SizedBox(width: 10),
         Column(

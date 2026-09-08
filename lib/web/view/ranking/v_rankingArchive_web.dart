@@ -15,6 +15,7 @@ import 'package:com.snowlive/web/widget/w_numbered_pagination_web.dart';
 import 'package:com.snowlive/web/widget/w_skeleton_web.dart';
 import 'package:com.snowlive/web/widget/w_empty_state_web.dart';
 import 'package:com.snowlive/web/widget/w_network_image_web.dart';
+import 'package:com.snowlive/web/widget/w_web_profile_tap_web.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -406,15 +407,20 @@ class _RankingArchiveViewWebState extends State<RankingArchiveViewWeb> {
               ),
             ),
             const SizedBox(width: 8),
-            ClipOval(
-              child: (user.profileImageUrlUser?.isNotEmpty ?? false)
-                  ? WebNetworkImage(
-                      url: user.profileImageUrlUser,
-                      width: 32,
-                      height: 32,
-                      fallback: _avatarFallback(),
-                    )
-                  : _avatarFallback(),
+            WebProfileTap(
+              userId: user.userId,
+              name: user.displayName,
+              avatarUrl: user.profileImageUrlUser,
+              child: ClipOval(
+                child: (user.profileImageUrlUser?.isNotEmpty ?? false)
+                    ? WebNetworkImage(
+                        url: user.profileImageUrlUser,
+                        width: 32,
+                        height: 32,
+                        fallback: _avatarFallback(),
+                      )
+                    : _avatarFallback(),
+              ),
             ),
             const SizedBox(width: 10),
             Expanded(

@@ -133,7 +133,11 @@ class _CrewApplicationsViewWebState extends State<CrewApplicationsViewWeb> {
       children: [
         Row(
           children: [
-            WebAvatar(url: info?.profileImageUrlUser, size: 36),
+            WebAvatar(
+              url: info?.profileImageUrlUser,
+              size: 36,
+              userId: apply.applicantUserId ?? info?.userId,
+            ),
             const SizedBox(width: 12),
             Expanded(
               child: Text(

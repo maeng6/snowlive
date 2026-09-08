@@ -52,6 +52,23 @@ Future<void> showWebImageViewer({
   return completer.future;
 }
 
+/// 프로필 사진·크루 로고 한 장을 확대해서 본다(앱과 동일).
+///
+/// 사진이 한 장이면 뷰어가 썸네일·화살표를 자동으로 감추고 `✕`만 남긴다.
+Future<void> showWebPhotoViewer(
+  BuildContext context, {
+  required String? url,
+  String title = '',
+}) {
+  if (url == null || url.isEmpty) return Future.value();
+  return showWebImageViewer(
+    context: context,
+    title: title,
+    imageUrls: [url],
+    initialIndex: 0,
+  );
+}
+
 class _WebImageViewer extends StatefulWidget {
   final String title;
   final List<String> imageUrls;

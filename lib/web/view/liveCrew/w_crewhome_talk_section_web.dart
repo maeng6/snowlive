@@ -121,7 +121,11 @@ class CrewHomeTalkSectionWeb extends StatelessWidget {
           if (i > 0) const SizedBox(height: SDSSpacing.lg),
           Row(
             children: [
-              WebAvatar(url: groups[i].avatarUrl, size: 28),
+              WebAvatar(
+                url: groups[i].avatarUrl,
+                size: 28,
+                userId: groups[i].userId,
+              ),
               const SizedBox(width: SDSSpacing.sm),
               Text(
                 groups[i].name,

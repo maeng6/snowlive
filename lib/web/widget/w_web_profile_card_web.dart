@@ -1,5 +1,6 @@
 import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/web/widget/w_web_avatar_web.dart';
+import 'package:com.snowlive/web/widget/w_web_image_viewer_web.dart';
 import 'package:flutter/material.dart';
 
 /// 프로필 미리보기 카드에 필요한 값만 담은 VO.
@@ -104,7 +105,18 @@ class WebProfileCard extends StatelessWidget {
                   ),
                 ),
               ),
-            WebAvatar(url: data.avatarUrl, size: 88),
+            // 팝업 안의 사진도 누르면 확대된다(프로필 화면과 동일).
+            WebAvatar(
+              url: data.avatarUrl,
+              size: 88,
+              onTap: (data.avatarUrl?.isNotEmpty ?? false)
+                  ? () => showWebPhotoViewer(
+                        context,
+                        url: data.avatarUrl,
+                        title: data.displayName ?? '',
+                      )
+                  : null,
+            ),
             const SizedBox(height: SDSSpacing.md),
             Text(
               data.displayName ?? '',

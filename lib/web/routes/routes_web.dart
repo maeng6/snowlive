@@ -10,6 +10,8 @@ import 'package:com.snowlive/web/view/friend/v_friendRequests_web.dart';
 import 'package:com.snowlive/web/view/friend/v_friendSettings_web.dart';
 import 'package:com.snowlive/web/view/fleamarket/v_fleamarketDetail_web.dart';
 import 'package:com.snowlive/web/view/fleamarket/v_fleamarketHome_web.dart';
+import 'package:com.snowlive/web/view/home/v_home_web.dart';
+import 'package:com.snowlive/web/view/settings/v_settings_web.dart';
 import 'package:com.snowlive/web/view/fleamarket/v_fleamarketUpdate_web.dart';
 import 'package:com.snowlive/web/view/fleamarket/v_fleamarketUpload_web.dart';
 import 'package:com.snowlive/web/view/liveCrew/v_crewCreate_web.dart';
@@ -41,6 +43,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class WebRoutes {
+  /// 홈(랜딩). 배너·날씨·오늘의 랭킹·우리 크루는요·중고거래·푸터.
+  static const home = '/home';
   static const fleamarketList = '/fleamarket';
   static const fleamarketSearch = '/fleamarket/search';
   // 커뮤니티 상세와 같은 이유로 최상위 경로다(중첩 '/fleamarket/detail'로 두면 GetX가
@@ -102,12 +106,24 @@ class WebRoutes {
   /// 개인 프로필 상세(라이딩 통계·방명록·시즌 기록실). `?id={userId}`
   static const userProfile = '/profile';
 
+  /// 설정(친구·중고거래 알림·약관·계정).
+  static const settings = '/settings';
   static const friend = '/friend';
   static const friendSettings = '/friend-settings';
   static const friendRequests = '/friend-requests';
   static const friendBlockList = '/friend-blocklist';
 
   static final pages = [
+    GetPage(
+      name: settings,
+      page: () => const SettingsViewWeb(),
+      binding: WebSettingsBinding(),
+    ),
+    GetPage(
+      name: home,
+      page: () => const HomeViewWeb(),
+      binding: WebHomeBinding(),
+    ),
     GetPage(
       name: fleamarketList,
       page: () => const FleamarketHomeView(),

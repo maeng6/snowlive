@@ -175,6 +175,7 @@ class _CrewHomeViewWebState extends State<CrewHomeViewWeb> {
           totalScore: _vm.season?.overallTotalScore,
           // 내 크루가 아닐 때만 가입 신청을 노출한다(목업).
           onApply: _vm.isMyCrew ? null : _onApply,
+          onMembersTap: () => Get.toNamed('${WebRoutes.crewMembers}?id=$_crewId'),
         ),
         const SizedBox(height: SDSSpacing.xl),
         CrewHomeRidingStatsWeb(

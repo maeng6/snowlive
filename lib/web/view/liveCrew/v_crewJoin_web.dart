@@ -12,6 +12,8 @@ import 'package:com.snowlive/web/widget/w_skeleton_web.dart';
 import 'package:com.snowlive/web/widget/w_web_overlay_modal_web.dart';
 import 'package:com.snowlive/web/widget/w_web_search_field_web.dart';
 import 'package:com.snowlive/web/widget/w_web_toast_web.dart';
+import 'package:com.snowlive/web/widget/w_web_image_viewer_web.dart';
+import 'package:com.snowlive/web/widget/w_web_profile_tap_web.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -376,17 +378,23 @@ class _CrewJoinCardState extends State<_CrewJoinCard> {
                     ),
                   ),
                 ),
-              Container(
-                width: 76,
-                height: 76,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(14),
-                  border: Border.all(color: accent, width: 2),
+              // 팝업 안의 로고도 누르면 확대된다(개인 프로필 팝업과 동일).
+              WebProfileTap(
+                onTap: (logoUrl?.isNotEmpty ?? false)
+                    ? () => showWebPhotoViewer(context, url: logoUrl, title: crew.crewName ?? '')
+                    : null,
+                child: Container(
+                  width: 76,
+                  height: 76,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(14),
+                    border: Border.all(color: accent, width: 2),
+                  ),
+                  clipBehavior: Clip.antiAlias,
+                  child: (logoUrl?.isNotEmpty ?? false)
+                      ? WebNetworkImage(url: logoUrl, width: 76, height: 76)
+                      : Container(color: SDSColor.gray100),
                 ),
-                clipBehavior: Clip.antiAlias,
-                child: (logoUrl?.isNotEmpty ?? false)
-                    ? WebNetworkImage(url: logoUrl, width: 76, height: 76)
-                    : Container(color: SDSColor.gray100),
               ),
               const SizedBox(height: SDSSpacing.md),
               Text(

@@ -100,6 +100,10 @@ class RankingUser {
   String? tierNameKor;
   String? tierNameEng;
 
+  /// 어제(직전 집계) 대비 순위 변동. 양수면 상승(▲), 음수면 하락(▼), null이면 표시 없음.
+  /// 홈 `오늘의 랭킹`의 화살표가 이걸 쓴다. 서버가 아직 안 주면 null이라 화살표가 없다.
+  int? rankChange;
+
   RankingUser({
     this.userId,
     this.displayName,
@@ -134,5 +138,6 @@ class RankingUser {
     secondaryColor = json['secondary_color'] ?? 'F0F6FF';
     tierNameKor = json['tier_name_kor'] ?? '';
     tierNameEng = json['tier_name_eng'] ?? '';
+    rankChange = json['rank_change'];
   }
 }
