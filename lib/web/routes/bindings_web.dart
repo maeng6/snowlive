@@ -4,6 +4,9 @@ import 'package:com.snowlive/core/viewmodel/fleamarket/vm_fleamarketDetail.dart'
 import 'package:com.snowlive/core/viewmodel/fleamarket/vm_fleamarketCommentDetail.dart';
 import 'package:com.snowlive/core/viewmodel/fleamarket/vm_fleamarketAlert.dart';
 import 'package:com.snowlive/web/viewmodel/fleamarket/vm_fleamarketMyActivity_web.dart';
+import 'package:com.snowlive/web/viewmodel/home/vm_home_web.dart';
+import 'package:com.snowlive/web/viewmodel/home/vm_openChat_web.dart';
+import 'package:com.snowlive/web/viewmodel/settings/vm_settings_web.dart';
 import 'package:com.snowlive/web/viewmodel/fleamarket/vm_fleamarketPagination_web.dart';
 import 'package:com.snowlive/web/viewmodel/fleamarket/vm_fleamarketUpload_web.dart';
 import 'package:com.snowlive/web/viewmodel/fleamarket/vm_fleamarketUpdate_web.dart';
@@ -124,6 +127,25 @@ class WebRankingArchiveBinding extends Bindings {
     // → 랭킹 라우트에도 등록해야 "not found"로 죽지 않는다.
     Get.lazyPut(() => FriendListViewModel(), fenix: true);
     Get.lazyPut(() => FriendViewModelWeb(), fenix: true);
+  }
+}
+
+/// 설정 라우트용 바인딩. 로그아웃·회원탈퇴만 있어 뷰모델 하나로 끝난다.
+class WebSettingsBinding extends Bindings {
+  @override
+  void dependencies() {
+    Get.lazyPut(() => SettingsViewModelWeb(), fenix: true);
+  }
+}
+
+/// 홈 라우트용 바인딩. 홈은 섹션마다 소스가 달라서 필요한 VM이 여러 개다.
+class WebHomeBinding extends Bindings {
+  @override
+  void dependencies() {
+    Get.lazyPut(() => HomeViewModelWeb(), fenix: true);
+    Get.lazyPut(() => OpenChatViewModelWeb(), fenix: true);
+    // `우리 크루는요`는 크루홈 집계(공개 크루톡)를 그대로 쓴다.
+    Get.lazyPut(() => CrewHomeViewModel(), fenix: true);
   }
 }
 

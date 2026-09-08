@@ -5,6 +5,7 @@ import 'package:com.snowlive/web/util/responsive_web.dart';
 import 'package:com.snowlive/web/widget/w_web_more_menu_web.dart';
 import 'package:com.snowlive/web/viewmodel/community/vm_communityDetail_web.dart';
 import 'package:com.snowlive/web/widget/w_network_image_web.dart';
+import 'package:com.snowlive/web/widget/w_web_profile_tap_web.dart';
 import 'package:flutter/material.dart';
 
 /// 댓글/답글 목록.
@@ -74,6 +75,7 @@ class CommunityCommentsWeb extends StatelessWidget {
             avatarSize: 32,
             displayName: comment.userInfo?.displayName,
             photoUrl: comment.userInfo?.profileImageUrlUser,
+            userId: comment.userId,
             uploadTime: comment.uploadTime,
             content: comment.content ?? '',
             isPostAuthor: postAuthorId != null && comment.userId == postAuthorId,
@@ -104,6 +106,7 @@ class CommunityCommentsWeb extends StatelessWidget {
                 avatarSize: 26,
                 displayName: reply.userInfo?.displayName,
                 photoUrl: reply.userInfo?.profileImageUrlUser,
+                userId: reply.userId,
                 uploadTime: reply.uploadTime,
                 content: reply.content ?? '',
                 isPostAuthor: postAuthorId != null && reply.userId == postAuthorId,
@@ -159,6 +162,8 @@ class _CommentTile extends StatelessWidget {
   final double avatarSize;
   final String? displayName;
   final String? photoUrl;
+  /// 프로필 사진 탭 → 프로필 팝업.
+  final int? userId;
   final String? uploadTime;
   final String content;
   final bool isPostAuthor;
@@ -172,6 +177,7 @@ class _CommentTile extends StatelessWidget {
     required this.avatarSize,
     required this.displayName,
     required this.photoUrl,
+    required this.userId,
     required this.uploadTime,
     required this.content,
     required this.isPostAuthor,
@@ -187,15 +193,20 @@ class _CommentTile extends StatelessWidget {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        ClipOval(
-          child: (photoUrl != null && photoUrl!.isNotEmpty)
-              ? WebNetworkImage(url: photoUrl, width: avatarSize, height: avatarSize)
-              : Container(
-                  width: avatarSize,
-                  height: avatarSize,
-                  color: SDSColor.blue50,
-                  child: Icon(Icons.person, size: avatarSize * 0.55, color: SDSColor.gray400),
-                ),
+        WebProfileTap(
+          userId: userId,
+          name: displayName,
+          avatarUrl: photoUrl,
+          child: ClipOval(
+            child: (photoUrl != null && photoUrl!.isNotEmpty)
+                ? WebNetworkImage(url: photoUrl, width: avatarSize, height: avatarSize)
+                : Container(
+                    width: avatarSize,
+                    height: avatarSize,
+                    color: SDSColor.blue50,
+                    child: Icon(Icons.person, size: avatarSize * 0.55, color: SDSColor.gray400),
+                  ),
+          ),
         ),
         const SizedBox(width: 10),
         Expanded(

@@ -173,7 +173,11 @@ class _GuestbookRow extends StatelessWidget {
         children: [
           Row(
             children: [
-              WebAvatar(url: talk.authorInfo.profileImageUrlUser, size: 20),
+              WebAvatar(
+                url: talk.authorInfo.profileImageUrlUser,
+                size: 20,
+                userId: talk.authorInfo.userId,
+              ),
               const SizedBox(width: 8),
               Flexible(
                 child: Text(

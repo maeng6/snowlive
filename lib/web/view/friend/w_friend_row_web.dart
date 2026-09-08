@@ -18,6 +18,9 @@ class FriendRowWeb extends StatelessWidget {
   /// 행 전체 탭(프로필 팝업). null이면 탭을 받지 않는다.
   final VoidCallback? onTap;
 
+  /// 프로필 사진 탭 → 프로필 팝업. [onTap]이 있는 화면에서는 무시된다.
+  final int? userId;
+
   const FriendRowWeb({
     super.key,
     required this.avatarUrl,
@@ -25,6 +28,7 @@ class FriendRowWeb extends StatelessWidget {
     this.stateMsg,
     this.trailing,
     this.onTap,
+    this.userId,
   });
 
   @override
@@ -37,7 +41,9 @@ class FriendRowWeb extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: 8),
         child: Row(
           children: [
-            WebAvatar(url: avatarUrl, size: 40),
+            // 행 전체가 이미 팝업을 여는 화면(친구 목록)에서는 사진에 따로 붙이지
+            // 않는다 — 그쪽은 결과(요청 보냄)를 받아 목록을 갱신해야 한다.
+            WebAvatar(url: avatarUrl, size: 40, userId: onTap == null ? userId : null),
             const SizedBox(width: SDSSpacing.sm),
             Expanded(
               child: Column(
