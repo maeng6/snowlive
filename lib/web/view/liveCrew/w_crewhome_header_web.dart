@@ -4,6 +4,8 @@ import 'package:com.snowlive/web/routes/routes_web.dart';
 import 'package:com.snowlive/web/util/crew_visual_web.dart';
 import 'package:com.snowlive/web/util/responsive_web.dart';
 import 'package:com.snowlive/web/widget/w_network_image_web.dart';
+import 'package:com.snowlive/web/widget/w_web_image_viewer_web.dart';
+import 'package:com.snowlive/web/widget/w_web_profile_tap_web.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -44,18 +46,24 @@ class CrewHomeHeaderWeb extends StatelessWidget {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Container(
-          width: 64,
-          height: 64,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12),
-            // 목업의 로고 테두리는 크루 색이다.
-            border: Border.all(color: accent, width: 2),
+        // 크루 홈에서도 개인 프로필과 같이 로고를 누르면 확대해서 본다(앱과 동일).
+        WebProfileTap(
+          onTap: (logoUrl?.isNotEmpty ?? false)
+              ? () => showWebPhotoViewer(context, url: logoUrl, title: info.crewName ?? '')
+              : null,
+          child: Container(
+            width: 64,
+            height: 64,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(12),
+              // 목업의 로고 테두리는 크루 색이다.
+              border: Border.all(color: accent, width: 2),
+            ),
+            clipBehavior: Clip.antiAlias,
+            child: (logoUrl?.isNotEmpty ?? false)
+                ? WebNetworkImage(url: logoUrl, width: 64, height: 64)
+                : Container(color: SDSColor.gray100),
           ),
-          clipBehavior: Clip.antiAlias,
-          child: (logoUrl?.isNotEmpty ?? false)
-              ? WebNetworkImage(url: logoUrl, width: 64, height: 64)
-              : Container(color: SDSColor.gray100),
         ),
         const SizedBox(width: SDSSpacing.md),
         Expanded(
@@ -135,19 +143,27 @@ class CrewHomeSummaryBarWeb extends StatelessWidget {
   /// null이면 가입 신청 항목을 그리지 않는다(내 크루이거나 신청 불가).
   final VoidCallback? onApply;
 
+  /// `멤버(명)` 칸을 누르면 전체 멤버 화면으로 보낸다.
+  final VoidCallback? onMembersTap;
+
   const CrewHomeSummaryBarWeb({
     super.key,
     required this.memberCount,
     required this.overallRank,
     required this.totalScore,
     this.onApply,
+    this.onMembersTap,
   });
 
   @override
   Widget build(BuildContext context) {
     final isMobile = context.screenType == WebScreenType.mobile;
     final stats = [
-      _StatCell(label: '멤버(명)', value: _numberFormat.format(memberCount ?? 0)),
+      _StatCell(
+        label: '멤버(명)',
+        value: _numberFormat.format(memberCount ?? 0),
+        onTap: onMembersTap,
+      ),
       _StatCell(label: '통합 랭킹', value: _numberFormat.format(overallRank ?? 0)),
       _StatCell(label: '총 점수', value: _numberFormat.format((totalScore ?? 0).round())),
     ];
@@ -239,11 +255,14 @@ class _StatCell extends StatelessWidget {
   final String label;
   final String value;
 
-  const _StatCell({required this.label, required this.value});
+  /// 주면 칸 전체가 탭 대상이 된다(`멤버(명)` → 전체 멤버 화면).
+  final VoidCallback? onTap;
+
+  const _StatCell({required this.label, required this.value, this.onTap});
 
   @override
   Widget build(BuildContext context) {
-    return Row(
+    final cell = Row(
       mainAxisSize: MainAxisSize.min,
       children: [
         Text(label, style: SDSTextStyle.regular.copyWith(fontSize: 13, color: SDSColor.gray500)),
@@ -257,6 +276,14 @@ class _StatCell extends StatelessWidget {
           ),
         ),
       ],
+    );
+    if (onTap == null) return cell;
+
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(6),
+      // 숫자만 좁게 잡히지 않게 라벨+값 전체를 누를 수 있게 둔다.
+      child: Padding(padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2), child: cell),
     );
   }
 }

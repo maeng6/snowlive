@@ -98,6 +98,7 @@ class _FriendBlockListViewWebState extends State<FriendBlockListViewWeb> {
                   for (final item in blocked)
                     FriendRowWeb(
                       avatarUrl: item.blockUserInfo.profileImageUrlUser,
+                      userId: item.blockUserInfo.userId,
                       name: item.blockUserInfo.displayName,
                       stateMsg: item.blockUserInfo.stateMsg,
                       trailing: FriendRowActionButton(

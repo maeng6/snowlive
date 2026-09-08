@@ -156,7 +156,11 @@ class _CrewMemberAdminViewWebState extends State<CrewMemberAdminViewWeb> {
               padding: const EdgeInsets.symmetric(vertical: 8),
               child: Row(
                 children: [
-                  WebAvatar(url: member.userInfo?.profileImageUrlUser, size: 36),
+                  WebAvatar(
+                    url: member.userInfo?.profileImageUrlUser,
+                    size: 36,
+                    userId: userId,
+                  ),
                   const SizedBox(width: 12),
                   Expanded(
                     child: Text(

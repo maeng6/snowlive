@@ -7,6 +7,7 @@ import 'package:com.snowlive/core/viewmodel/vm_user.dart';
 import 'package:com.snowlive/web/viewmodel/fleamarket/vm_fleamarketMyActivity_web.dart';
 import 'package:com.snowlive/web/widget/w_network_image_web.dart';
 import 'package:com.snowlive/web/widget/w_web_more_menu_web.dart';
+import 'package:com.snowlive/web/widget/w_web_profile_tap_web.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -27,15 +28,20 @@ class FleamarketDetailSellerRowWeb extends StatelessWidget {
 
     return Row(
       children: [
-        ClipOval(
-          child: (userInfo?.profileImageUrlUser?.isNotEmpty ?? false)
-              ? WebNetworkImage(
-                  url: userInfo!.profileImageUrlUser,
-                  width: 32,
-                  height: 32,
-                  fallback: _defaultAvatar(),
-                )
-              : _defaultAvatar(),
+        WebProfileTap(
+          userId: detail.userId,
+          name: userInfo?.displayName,
+          avatarUrl: userInfo?.profileImageUrlUser,
+          child: ClipOval(
+            child: (userInfo?.profileImageUrlUser?.isNotEmpty ?? false)
+                ? WebNetworkImage(
+                    url: userInfo!.profileImageUrlUser,
+                    width: 32,
+                    height: 32,
+                    fallback: _defaultAvatar(),
+                  )
+                : _defaultAvatar(),
+          ),
         ),
         const SizedBox(width: SDSSpacing.sm),
         Expanded(

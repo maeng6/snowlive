@@ -251,6 +251,7 @@ class _FriendRequestsViewWebState extends State<FriendRequestsViewWeb> {
           FriendRowWeb(
             // 보낸 요청이든 받은 요청이든 화면에 보여야 하는 건 **상대방**이다.
             avatarUrl: request.friendUserInfo.profileImageUrlUser,
+            userId: request.friendUserInfo.userId,
             name: request.friendUserInfo.displayName,
             stateMsg: request.friendUserInfo.stateMsg,
             trailing: trailingOf(request),

@@ -7,6 +7,7 @@ import 'package:com.snowlive/web/view/liveCrew/w_crewhome_riding_stats_web.dart'
 import 'package:com.snowlive/web/widget/w_network_image_web.dart';
 import 'package:com.snowlive/web/widget/w_web_avatar_web.dart';
 import 'package:com.snowlive/web/widget/w_web_overlay_modal_web.dart';
+import 'package:com.snowlive/web/widget/w_web_image_viewer_web.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -48,7 +49,16 @@ class ProfileHeaderWeb extends StatelessWidget {
     if (isMobile) {
       return Column(
         children: [
-          WebAvatar(url: info?.profileImageUrlUser, size: 72),
+          WebAvatar(
+            url: info?.profileImageUrlUser,
+            size: 72,
+            // 프로필 화면에서는 사진을 누르면 확대해서 본다(앱과 동일).
+            onTap: () => showWebPhotoViewer(
+              context,
+              url: info?.profileImageUrlUser,
+              title: name,
+            ),
+          ),
           const SizedBox(height: 12),
           Text(
             name,
@@ -82,7 +92,16 @@ class ProfileHeaderWeb extends StatelessWidget {
         Expanded(
           child: Row(
             children: [
-              WebAvatar(url: info?.profileImageUrlUser, size: 48),
+              WebAvatar(
+                url: info?.profileImageUrlUser,
+                size: 48,
+                // 프로필 화면에서는 사진을 누르면 확대해서 본다(앱과 동일).
+                onTap: () => showWebPhotoViewer(
+                  context,
+                  url: info?.profileImageUrlUser,
+                  title: name,
+                ),
+              ),
               const SizedBox(width: 12),
               Flexible(
                 child: Text(

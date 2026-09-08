@@ -4,6 +4,7 @@ import 'package:com.snowlive/core/util/util_1.dart';
 import 'package:com.snowlive/web/viewmodel/liveTalk/vm_liveTalkDetail_web.dart';
 import 'package:com.snowlive/web/widget/w_network_image_web.dart';
 import 'package:com.snowlive/web/widget/w_web_more_menu_web.dart';
+import 'package:com.snowlive/web/widget/w_web_profile_tap_web.dart';
 import 'package:flutter/material.dart';
 
 /// 라이브톡 댓글·답글 목록. 상세 오버레이(데스크탑·태블릿)와 모바일 댓글 화면이 공유한다.
@@ -48,6 +49,7 @@ class LiveTalkCommentListWeb extends StatelessWidget {
         children: [
           _CommentRow(
             avatarUrl: comment.userInfo?.profileImageUrl,
+            userId: comment.userId,
             name: comment.userInfo?.displayName ?? '익명',
             isAuthor: postUserId != null && comment.userId == postUserId,
             time: comment.uploadTime,
@@ -69,6 +71,7 @@ class LiveTalkCommentListWeb extends StatelessWidget {
               padding: const EdgeInsets.only(left: SDSSpacing.lg, top: SDSSpacing.md),
               child: _CommentRow(
                 avatarUrl: reply.userInfo?.profileImageUrl,
+                userId: reply.userId,
                 name: reply.userInfo?.displayName ?? '익명',
                 isAuthor: postUserId != null && reply.userId == postUserId,
                 time: reply.uploadTime,
@@ -118,6 +121,8 @@ class LiveTalkCommentsEmpty extends StatelessWidget {
 /// 댓글/답글 한 줄. 둘의 차이는 아바타 크기와 멘션뿐이다.
 class _CommentRow extends StatelessWidget {
   final String? avatarUrl;
+  /// 프로필 사진 탭 → 프로필 팝업.
+  final int? userId;
   final String name;
   final bool isAuthor;
   final String? time;
@@ -130,6 +135,7 @@ class _CommentRow extends StatelessWidget {
 
   const _CommentRow({
     required this.avatarUrl,
+    required this.userId,
     required this.name,
     required this.isAuthor,
     required this.time,
@@ -148,15 +154,20 @@ class _CommentRow extends StatelessWidget {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        ClipOval(
-          child: (avatarUrl?.isNotEmpty ?? false)
-              ? WebNetworkImage(
-                  url: avatarUrl,
-                  width: avatarSize,
-                  height: avatarSize,
-                  fallback: _defaultAvatar(),
-                )
-              : _defaultAvatar(),
+        WebProfileTap(
+          userId: userId,
+          name: name,
+          avatarUrl: avatarUrl,
+          child: ClipOval(
+            child: (avatarUrl?.isNotEmpty ?? false)
+                ? WebNetworkImage(
+                    url: avatarUrl,
+                    width: avatarSize,
+                    height: avatarSize,
+                    fallback: _defaultAvatar(),
+                  )
+                : _defaultAvatar(),
+          ),
         ),
         const SizedBox(width: SDSSpacing.sm),
         Expanded(

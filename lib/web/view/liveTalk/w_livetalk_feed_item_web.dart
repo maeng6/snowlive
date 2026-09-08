@@ -3,6 +3,7 @@ import 'package:com.snowlive/core/model/m_liveTalk.dart';
 import 'package:com.snowlive/core/util/util_1.dart';
 import 'package:com.snowlive/web/widget/w_network_image_web.dart';
 import 'package:com.snowlive/web/widget/w_web_more_menu_web.dart';
+import 'package:com.snowlive/web/widget/w_web_profile_tap_web.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -83,15 +84,20 @@ class LiveTalkFeedItemWeb extends StatelessWidget {
 
     return Row(
       children: [
-        ClipOval(
-          child: (userInfo?.profileImageUrl?.isNotEmpty ?? false)
-              ? WebNetworkImage(
-                  url: userInfo!.profileImageUrl,
-                  width: 28,
-                  height: 28,
-                  fallback: _defaultAvatar(),
-                )
-              : _defaultAvatar(),
+        WebProfileTap(
+          userId: item.userId,
+          name: userInfo?.displayName,
+          avatarUrl: userInfo?.profileImageUrl,
+          child: ClipOval(
+            child: (userInfo?.profileImageUrl?.isNotEmpty ?? false)
+                ? WebNetworkImage(
+                    url: userInfo!.profileImageUrl,
+                    width: 28,
+                    height: 28,
+                    fallback: _defaultAvatar(),
+                  )
+                : _defaultAvatar(),
+          ),
         ),
         const SizedBox(width: SDSSpacing.sm),
         Expanded(
