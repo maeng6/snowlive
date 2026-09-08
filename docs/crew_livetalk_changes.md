@@ -133,6 +133,30 @@ base_resort_nickname, member_count` + 리스트별 지표.
 
 ---
 
-## 5. TODO (프론트 후속)
+## 5. 크루홈 방문자 집계 (게스트 포함, 5분 스로틀)
+
+**목적**: 크루홈 헤더의 `방문자 Today / Total`을 실제 집계로 표시. 비로그인(게스트) 방문도 포함.
+
+### 백엔드 (snowlive-api / crew_app)
+- 모델 `Crew_visit_log(crew_id, user_id[nullable], ip, visited_at)` + 인덱스. 마이그레이션 `0017`.
+- `POST /api/crew/visit/<crew_id>/`
+  - 바디: `{"user_id": 123}` (게스트는 생략)
+  - **5분 스로틀**: 로그인=`(크루,유저)`, 게스트=`(크루,IP)` 기준. 프록시(Heroku) 뒤에선 `X-Forwarded-For` 첫 IP.
+  - 응답: `{counted, today, total}`
+- `GET /api/crew/detail/?crew_id=`(크루상세) 응답 `crew_detail_info`에 `visitor_today`/`visitor_total` 추가(초기 렌더용).
+
+### 프런트 (Flutter)
+- `core/api/api_crew.dart` → `visitCrew(crewId, {userId})`.
+- `core/model/m_crewDetail.dart` → `CrewDetailInfo.visitorToday/visitorTotal` (`visitor_today`/`visitor_total`).
+- **웹**: `web/viewmodel/crew/vm_crewDetail_web.dart`
+  - `load()`에서 상세 응답의 방문자수로 먼저 seed → `_logVisit()`가 진입당 1회 `visitCrew` POST 후 응답 `today/total`로 최신화.
+  - `_visitLoggedCrewId`로 자동로그인 확정 재로딩 시 중복 POST 방지.
+  - 헤더 `w_crewhome_header_web.dart`에 `visitorToday/visitorTotal` 전달, 값 없으면 `-`.
+- **모바일**: `core/viewmodel/crew/vm_crewDetail.dart` `fetchCrewDetail()` 성공 시 `_logCrewVisit()`(비차단) 호출.
+  모바일엔 방문자 표시 UI가 없지만 **앱 방문도 같은 집계에 포함**시키기 위함. `fetchCrewDetail`은 사실상 모든 크루홈 진입 직전에 불리므로 커버리지 넓음(권한 토글 등 소수 재조회는 5분 스로틀로 흡수).
+
+---
+
+## 6. TODO (프론트 후속)
 - 크루 메뉴 → **크루홈**(위 `CrewHomeViewModel`) → 크루 누르면 **크루상세**로 이동하는 라우팅/뷰.
 - 크루 라이브톡 작성 UI에서 `crewId`/`secret`(공개/비공개 토글) 전달.

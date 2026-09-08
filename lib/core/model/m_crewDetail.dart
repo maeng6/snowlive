@@ -35,6 +35,8 @@ class CrewDetailInfo {
   String? notice;
   int? crewLeaderUserId;
   String? crewLeaderDisplayName;
+  int? visitorToday; // 크루홈 방문자수(오늘) — 헤더 표시용
+  int? visitorTotal; // 크루홈 방문자수(전체)
 
   CrewDetailInfo({
     this.crewId,
@@ -57,6 +59,8 @@ class CrewDetailInfo {
     this.notice,
     this.crewLeaderUserId,
     this.crewLeaderDisplayName,
+    this.visitorToday,
+    this.visitorTotal,
   });
 
   CrewDetailInfo.fromJson(Map<String, dynamic> json) {
@@ -80,6 +84,8 @@ class CrewDetailInfo {
     notice = json['notice'];
     crewLeaderUserId = json['crew_leader_user_id'];
     crewLeaderDisplayName = json['crew_leader_display_name'];
+    visitorToday = json['visitor_today'];
+    visitorTotal = json['visitor_total'];
   }
 }
 

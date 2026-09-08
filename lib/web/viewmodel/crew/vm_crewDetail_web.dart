@@ -34,7 +34,15 @@ class CrewDetailViewModelWeb extends GetxController {
   final RxBool _hasError = false.obs;
   final RxBool _isSubmitting = false.obs;
 
+  // 방문자수(오늘/전체). 상세 응답으로 먼저 채우고, 방문 POST 응답으로 최신화한다.
+  final RxnInt _visitorToday = RxnInt();
+  final RxnInt _visitorTotal = RxnInt();
+
   int? _crewId;
+
+  /// 이 진입에서 방문 로그를 이미 POST한 크루. 같은 크루로 재로딩(자동로그인 확정 등)
+  /// 될 때 중복 POST를 막는다(서버도 5분 스로틀하지만, 굳이 두 번 부르지 않는다).
+  int? _visitLoggedCrewId;
 
   CrewDetailInfo? get info => _info.value;
   SeasonRankingInfo? get season => _season.value;
@@ -43,6 +51,8 @@ class CrewDetailViewModelWeb extends GetxController {
   bool get hasError => _hasError.value;
   bool get isSubmitting => _isSubmitting.value;
   int? get crewId => _crewId;
+  int? get visitorToday => _visitorToday.value;
+  int? get visitorTotal => _visitorTotal.value;
 
   /// 지금 보고 있는 크루가 내 크루인지. 서버가 유저 정보에 `crew_id`를 준다.
   bool get isMyCrew {
@@ -66,6 +76,11 @@ class CrewDetailViewModelWeb extends GetxController {
       final parsed = CrewDetailResponse.fromJson(res.data as Map<String, dynamic>);
       _info.value = parsed.crewDetailInfo;
       _season.value = parsed.seasonRankingInfo;
+      // 상세 응답이 준 방문자수로 먼저 채운 뒤(=우리 방문 POST 이전 값),
+      // 방문 POST가 오늘 카운트를 +1 반영한 최신값으로 덮어쓴다.
+      _visitorToday.value = parsed.crewDetailInfo?.visitorToday;
+      _visitorTotal.value = parsed.crewDetailInfo?.visitorTotal;
+      _logVisit(crewId); // 진입당 1회 방문 집계(비차단)
       await _loadMembers(crewId: crewId, season: season);
     } catch (e) {
       debugPrint('[CrewDetail] 조회 예외: $e');
@@ -78,6 +93,22 @@ class CrewDetailViewModelWeb extends GetxController {
   Future<void> refresh() async {
     final id = _crewId;
     if (id != null) await load(id);
+  }
+
+  /// 크루홈 방문 집계(게스트 포함, 서버가 5분 스로틀). 진입당 1회만 POST하고,
+  /// 응답의 today/total로 헤더 표시값을 최신화한다. 실패해도 화면엔 영향 없다.
+  Future<void> _logVisit(int crewId) async {
+    if (_visitLoggedCrewId == crewId) return; // 같은 진입 재로딩 → 중복 방지
+    _visitLoggedCrewId = crewId;
+    try {
+      final res = await _api.visitCrew(crewId, userId: _userVM.user.user_id);
+      if (res.success && res.data != null) {
+        _visitorToday.value = res.data!['today'] as int?;
+        _visitorTotal.value = res.data!['total'] as int?;
+      }
+    } catch (e) {
+      debugPrint('[CrewDetail] 방문 집계 실패(무시): $e');
+    }
   }
 
   /// 멤버 랭킹.
