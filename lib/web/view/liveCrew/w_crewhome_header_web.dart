@@ -17,7 +17,19 @@ class CrewHomeHeaderWeb extends StatelessWidget {
   /// 설정 톱니를 그릴지. 앱과 같이 **내 크루일 때만** 보여준다.
   final bool showSettings;
 
-  const CrewHomeHeaderWeb({super.key, required this.info, this.showSettings = false});
+  /// 방문자수(오늘/전체). null이면 `-`로 표시(아직 집계 전).
+  final int? visitorToday;
+  final int? visitorTotal;
+
+  const CrewHomeHeaderWeb({
+    super.key,
+    required this.info,
+    this.showSettings = false,
+    this.visitorToday,
+    this.visitorTotal,
+  });
+
+  String _fmtVisitor(int? v) => v == null ? '-' : _numberFormat.format(v);
 
   @override
   Widget build(BuildContext context) {
@@ -69,11 +81,11 @@ class CrewHomeHeaderWeb extends StatelessWidget {
             ],
           ),
         ),
-        // 방문자 집계 API가 아직 없어서 자리만 두고 값은 `-`로 둔다(사용자 확정).
+        // 방문자수(게스트 포함, 유저/IP당 5분 스로틀). 서버 POST /crew/visit/{id}/ 집계.
         if (context.isDesktop) ...[
           const SizedBox(width: SDSSpacing.md),
           Text(
-            '방문자 Today -  |  Total -',
+            '방문자 Today ${_fmtVisitor(visitorToday)}  |  Total ${_fmtVisitor(visitorTotal)}',
             style: SDSTextStyle.regular.copyWith(fontSize: 12, color: SDSColor.gray400),
           ),
         ],

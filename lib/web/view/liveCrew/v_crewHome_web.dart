@@ -167,7 +167,12 @@ class _CrewHomeViewWebState extends State<CrewHomeViewWeb> {
     final content = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        CrewHomeHeaderWeb(info: info, showSettings: _vm.isMyCrew),
+        CrewHomeHeaderWeb(
+          info: info,
+          showSettings: _vm.isMyCrew,
+          visitorToday: _vm.visitorToday,
+          visitorTotal: _vm.visitorTotal,
+        ),
         const SizedBox(height: SDSSpacing.md),
         CrewHomeSummaryBarWeb(
           memberCount: info.crewMemberTotal,

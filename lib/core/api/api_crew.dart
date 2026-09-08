@@ -380,6 +380,22 @@ class CrewAPI {
     }
   }
 
+  // 크루홈 방문 집계 (게스트 포함, 서버가 5분 스로틀). 응답: {counted, today, total}
+  // 로그인 유저는 user_id를 넣고, 게스트면 생략한다(서버가 IP로 스로틀).
+  Future<ApiResponse<Map<String, dynamic>>> visitCrew(int crewId, {int? userId}) async {
+    final response = await http.post(
+      Uri.parse('$baseUrl/visit/$crewId/'),
+      headers: {'Content-Type': 'application/json'},
+      body: json.encode({if (userId != null) 'user_id': userId}),
+    );
+
+    if (response.statusCode == 200) {
+      return ApiResponse.success(json.decode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>);
+    } else {
+      return ApiResponse.error(json.decode(utf8.decode(response.bodyBytes)));
+    }
+  }
+
   Future<ApiResponse> createErrorLog_crew(Map<String, dynamic> body) async {
     final response = await http.post(
       Uri.parse('$baseUrl/error-log/'),

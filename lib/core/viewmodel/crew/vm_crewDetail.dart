@@ -106,6 +106,8 @@ class CrewDetailViewModel extends GetxController {
         crewDetailResponse.value = CrewDetailResponse.fromJson(response.data!);
         // 공지사항은 별도 로딩 상태가 있으므로 await 없이 병렬 실행
         _crewNoticeViewModel.fetchCrewNotices();
+        // 크루홈 방문 집계(앱/게스트 포함, 서버가 유저당 5분 스로틀). 비차단.
+        _logCrewVisit(crewId);
 
 
       } else {
@@ -116,6 +118,17 @@ class CrewDetailViewModel extends GetxController {
     } finally {
     }
     isLoading.value = false;
+  }
+
+  /// 크루홈 방문 로그. 화면 표시는 없지만(모바일 헤더엔 방문자 UI가 없다),
+  /// 웹과 같은 집계에 앱 방문도 포함시키기 위해 진입 시 서버에 POST한다.
+  /// 실패해도 크루홈 로딩엔 영향이 없도록 삼킨다.
+  Future<void> _logCrewVisit(int crewId) async {
+    try {
+      await CrewAPI().visitCrew(crewId, userId: _userViewModel.user.user_id);
+    } catch (e) {
+      print('크루 방문 집계 실패(무시): $e');
+    }
   }
 
 
