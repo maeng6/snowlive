@@ -28,9 +28,15 @@ class NumberedPaginationBar extends StatelessWidget {
       crossAxisAlignment: WrapCrossAlignment.center,
       spacing: 4,
       children: [
-        IconButton(
-          onPressed: hasPrevious ? () => onGotoPage(currentPage - 1) : null,
-          icon: const Icon(Icons.chevron_left),
+        // 양 끝(비활성)에서는 화살표를 숨긴다. 자리는 유지해서 숫자가 흔들리지 않게.
+        // 화살표 ↔ 숫자 간격은 spacing(2)보다 넓게 띄운다.
+        Padding(
+          padding: const EdgeInsets.only(right: 10),
+          child: _EdgeArrow(
+            icon: Icons.chevron_left,
+            enabled: hasPrevious,
+            onTap: () => onGotoPage(currentPage - 1),
+          ),
         ),
         if (pageWindow.first > 1) ...[
           _PageNumberButton(label: '1', isActive: false, onTap: () => onGotoPage(1)),
@@ -50,16 +56,43 @@ class NumberedPaginationBar extends StatelessWidget {
             ),
           _PageNumberButton(label: '$totalPages', isActive: false, onTap: () => onGotoPage(totalPages)),
         ],
-        IconButton(
-          onPressed: hasNext ? () => onGotoPage(currentPage + 1) : null,
-          icon: const Icon(Icons.chevron_right),
+        Padding(
+          padding: const EdgeInsets.only(left: 10),
+          child: _EdgeArrow(
+            icon: Icons.chevron_right,
+            enabled: hasNext,
+            onTap: () => onGotoPage(currentPage + 1),
+          ),
         ),
       ],
     );
   }
 }
 
-class _PageNumberButton extends StatelessWidget {
+/// 이전/다음 화살표 — 비활성이면 **미노출**(투명)하되 자리는 그대로 차지한다.
+class _EdgeArrow extends StatelessWidget {
+  final IconData icon;
+  final bool enabled;
+  final VoidCallback onTap;
+
+  const _EdgeArrow({required this.icon, required this.enabled, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return Visibility(
+      visible: enabled,
+      maintainSize: true,
+      maintainAnimation: true,
+      maintainState: true,
+      child: IconButton(
+        onPressed: enabled ? onTap : null,
+        icon: Icon(icon),
+      ),
+    );
+  }
+}
+
+class _PageNumberButton extends StatefulWidget {
   final String label;
   final bool isActive;
   final VoidCallback onTap;
@@ -67,23 +100,41 @@ class _PageNumberButton extends StatelessWidget {
   const _PageNumberButton({required this.label, required this.isActive, required this.onTap});
 
   @override
+  State<_PageNumberButton> createState() => _PageNumberButtonState();
+}
+
+class _PageNumberButtonState extends State<_PageNumberButton> {
+  bool _hovered = false;
+
+  @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: isActive ? null : onTap,
-      borderRadius: BorderRadius.circular(6),
-      child: Container(
-        width: 32,
-        height: 32,
-        alignment: Alignment.center,
-        decoration: BoxDecoration(
-          color: isActive ? SDSColor.gray900 : Colors.transparent,
-          borderRadius: BorderRadius.circular(6),
-        ),
-        child: Text(
-          label,
-          style: (isActive ? SDSTextStyle.bold : SDSTextStyle.regular).copyWith(
-            fontSize: 14,
-            color: isActive ? SDSColor.snowliveWhite : SDSColor.gray700,
+    final bool isActive = widget.isActive;
+    // 미선택 숫자: hover 시 폰트 60% 불투명도.
+    final Color numberColor = _hovered
+        ? SDSColor.gray700.withValues(alpha: 0.6)
+        : SDSColor.gray700;
+
+    return MouseRegion(
+      onEnter: (_) => setState(() => _hovered = true),
+      onExit: (_) => setState(() => _hovered = false),
+      child: InkWell(
+        onTap: isActive ? null : widget.onTap,
+        customBorder: const CircleBorder(),
+        child: Container(
+          width: 32,
+          height: 32,
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+            color: isActive ? SDSColor.gray900 : Colors.transparent,
+            shape: BoxShape.circle,
+          ),
+          child: Text(
+            widget.label,
+            // 미선택도 Bold (색으로만 구분).
+            style: SDSTextStyle.bold.copyWith(
+              fontSize: 14,
+              color: isActive ? SDSColor.snowliveWhite : numberColor,
+            ),
           ),
         ),
       ),

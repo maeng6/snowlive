@@ -4,6 +4,7 @@ import 'package:com.snowlive/core/viewmodel/vm_user.dart';
 import 'package:com.snowlive/web/routes/routes_web.dart';
 import 'package:com.snowlive/web/util/responsive_web.dart';
 import 'package:com.snowlive/web/view/fleamarket/w_fleamarket_card_web.dart';
+import 'package:com.snowlive/web/viewmodel/fleamarket/vm_fleamarketMyActivity_web.dart';
 import 'package:com.snowlive/web/viewmodel/fleamarket/vm_fleamarketPagination_web.dart';
 import 'package:com.snowlive/web/widget/w_numbered_pagination_web.dart';
 import 'package:com.snowlive/web/widget/w_skeleton_web.dart';
@@ -31,7 +32,6 @@ class FleamarketGridWeb extends StatelessWidget {
     final paginationVm = Get.find<FleamarketPaginationViewModelWeb>();
     final detailVm = Get.find<FleamarketDetailViewModel>();
     final userVm = Get.find<UserViewModel>();
-    final crossAxisCount = context.isDesktop ? 5 : 2;
 
     return Obx(() {
       final items = paginationVm.items;
@@ -63,46 +63,67 @@ class FleamarketGridWeb extends StatelessWidget {
         children: [
           LayoutBuilder(
             builder: (context, constraints) {
-              final spacing = SDSSpacing.md;
-              final cellWidth = (constraints.maxWidth - spacing * (crossAxisCount - 1)) / crossAxisCount;
-              return GridView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                padding: const EdgeInsets.only(top: 16),
-                itemCount: items.length,
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: crossAxisCount,
-                  crossAxisSpacing: spacing,
-                  mainAxisSpacing: SDSSpacing.lg,
-                  mainAxisExtent: cellWidth + kFleamarketCardTextBlockHeight,
+              final bool isDesktop = context.isDesktop;
+              // PC(피그마): 열 간격 8 / 행 간격 56. 그 외 기존 16/24.
+              final double spacing = isDesktop ? 8 : SDSSpacing.md;
+              // PC: 셀 최소 150px을 유지하도록 열 수를 3~5 사이에서 조절한다.
+              final int crossAxisCount = isDesktop
+                  ? ((constraints.maxWidth + 8) / (150 + 8)).floor().clamp(3, 5)
+                  : 2;
+              // 반올림 오차로 마지막 칸이 다음 줄로 밀리지 않게 살짝 내림.
+              final double cellWidth =
+                  ((constraints.maxWidth - spacing * (crossAxisCount - 1)) / crossAxisCount)
+                      .floorToDouble();
+              // 셀 높이를 고정하지 않고(Wrap) 각 줄이 그 줄에서 가장 긴 카드
+              // 높이에 맞춰지게 한다 — 제목 1~2줄 차이로 생기던 오버플로우 방지.
+              return Padding(
+                // PC: 탭줄 ↔ 그리드 30 (피그마 — 배너 영역은 보류라 그리드가 바로 온다).
+                padding: EdgeInsets.only(top: isDesktop ? 30 : 16),
+                child: Wrap(
+                  spacing: spacing,
+                  runSpacing: isDesktop ? 48 : SDSSpacing.lg,
+                  children: [
+                    for (final data in items)
+                      SizedBox(
+                        width: cellWidth,
+                        child: FleamarketCardWeb(
+                          data: data,
+                          onTap: () async {
+                            // 즉시 표시용으로 목록 데이터를 먼저 주입하고, URL에 id를 실어
+                            // 이동한다(상세 화면이 그 id로 API 재조회 → 새로고침/직접진입도 됨).
+                            detailVm.fetchFleamarketDetailFromList(fleamarketResponse: data);
+                            // 비로그인(게스트)도 조회수는 올라간다 → userId 없이도 호출.
+                            if (data.fleaId != null) {
+                              detailVm.addViewerFleamarket(
+                                  fleamarketId: data.fleaId!, userId: userVm.user.user_id);
+                            }
+                            await Get.toNamed(WebRoutes.fleamarketDetail,
+                                parameters: {'id': '${data.fleaId}'});
+                            // 상세에서 돌아오면 사이드바의 최근 본 상품/찜 목록을 갱신한다
+                            // (조회 기록이 서버에 반영된 뒤라 새로 본 상품이 바로 뜬다).
+                            final userId = userVm.user.user_id;
+                            if (userId != null) {
+                              Get.find<FleamarketMyActivityViewModel>()
+                                  .fetchMyActivity(userId: userId);
+                            }
+                          },
+                        ),
+                      ),
+                  ],
                 ),
-                itemBuilder: (context, index) {
-                  final data = items[index];
-                  return FleamarketCardWeb(
-                    data: data,
-                    onTap: () {
-                      // 즉시 표시용으로 목록 데이터를 먼저 주입하고, URL에 id를 실어
-                      // 이동한다(상세 화면이 그 id로 API 재조회 → 새로고침/직접진입도 됨).
-                      detailVm.fetchFleamarketDetailFromList(fleamarketResponse: data);
-                      Get.toNamed(WebRoutes.fleamarketDetail, parameters: {'id': '${data.fleaId}'});
-                      // 비로그인(게스트)도 조회수는 올라간다 → userId 없이도 호출.
-                      if (data.fleaId != null) {
-                        detailVm.addViewerFleamarket(fleamarketId: data.fleaId!, userId: userVm.user.user_id);
-                      }
-                    },
-                  );
-                },
               );
             },
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 24),
+            // 그리드 ↔ 페이지네이션 40, 아래 24.
+            padding: const EdgeInsets.only(top: 40, bottom: 24),
             child: NumberedPaginationBar(
               currentPage: paginationVm.currentPage,
               totalPages: paginationVm.totalPages,
               hasPrevious: paginationVm.hasPrevious,
               hasNext: paginationVm.hasNext,
-              pageWindow: paginationVm.pageWindow(),
+              // 가운데 페이지 번호는 최대 5개까지만 노출한다
+              pageWindow: paginationVm.pageWindow(span: 5),
               onGotoPage: (page) => _gotoPage(context, paginationVm, page),
             ),
           ),

@@ -3,8 +3,6 @@ import 'package:com.snowlive/core/viewmodel/fleamarket/vm_fleamarketList.dart';
 import 'package:com.snowlive/core/viewmodel/fleamarket/vm_fleamarketSearch.dart';
 import 'package:com.snowlive/core/viewmodel/vm_user.dart';
 import 'package:com.snowlive/web/util/responsive_web.dart';
-import 'package:com.snowlive/web/view/community/w_community_header_web.dart'
-    show kCommunityDesktopSearchBarWidth;
 import 'package:com.snowlive/web/view/fleamarket/w_fleamarket_filter_sheet_web.dart';
 import 'package:com.snowlive/web/viewmodel/fleamarket/vm_fleamarketPagination_web.dart';
 import 'package:com.snowlive/web/widget/w_web_filter_menu_web.dart';
@@ -203,7 +201,10 @@ class _FleamarketHeaderWebState extends State<FleamarketHeaderWeb> {
   Widget build(BuildContext context) {
     // 커뮤니티와 같은 기준(데스크탑)에서 검색창이 타이틀 오른쪽 같은 줄에 놓인다.
     final isWide = context.isDesktop;
-    final titleText = Text('중고거래', style: SDSTextStyle.extraBold.copyWith(fontSize: 28, color: SDSColor.gray900));
+    // 타이틀: PC 32 (피그마 32:17109) / 그 외 기존 28.
+    final titleText = Text('중고거래',
+        style: SDSTextStyle.extraBold
+            .copyWith(fontSize: isWide ? 32 : 28, color: SDSColor.gray900));
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -213,28 +214,31 @@ class _FleamarketHeaderWebState extends State<FleamarketHeaderWeb> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               titleText,
-              const SizedBox(width: SDSSpacing.lg),
-              // 남은 폭을 다 먹지 않고 커뮤니티와 같은 고정폭으로 맞춘다.
-              SizedBox(width: kCommunityDesktopSearchBarWidth, child: _buildSearchBar()),
+              // 타이틀 ↔ 검색바 36 (피그마).
+              const SizedBox(width: 36),
+              // 검색바 260x40 (피그마).
+              SizedBox(width: 260, child: _buildSearchBar(isWide)),
             ],
           )
         else ...[
           titleText,
           const SizedBox(height: SDSSpacing.md),
-          _buildSearchBar(),
+          _buildSearchBar(isWide),
         ],
-        const SizedBox(height: SDSSpacing.md),
+        // 타이틀줄 ↔ 탭줄 30 (피그마, PC). 그 외 기존 16.
+        SizedBox(height: isWide ? 30 : SDSSpacing.md),
         _buildTabsAndFilters(),
       ],
     );
   }
 
-  Widget _buildSearchBar() {
+  Widget _buildSearchBar(bool isWide) {
     return Container(
       key: _searchBarKey,
-      height: 44,
+      // PC: 높이 40 / 좌우 14 (피그마). 그 외 기존 44/16.
+      height: isWide ? 40 : 44,
       decoration: BoxDecoration(color: SDSColor.gray50, borderRadius: BorderRadius.circular(8)),
-      padding: const EdgeInsets.symmetric(horizontal: 16),
+      padding: EdgeInsets.symmetric(horizontal: isWide ? 14 : 16),
       child: Row(
         children: [
           Image.asset('assets/imgs/icons/icon_search.png', width: 16, height: 16),
@@ -263,7 +267,7 @@ class _FleamarketHeaderWebState extends State<FleamarketHeaderWeb> {
       final tapName = _vm.tapName;
       final showFilters = tapName == '전체' || tapName == '스키' || tapName == '스노보드';
 
-      // 모바일은 탭 5개와 필터 2개가 한 줄에 들어가지 않아 탭이 필터에 잘려 붙었다
+      // 모바일은 탭 5개와 필터 2개가 한 줄에 들어가지 않아 탭이 필터에 잘려 붙었다.
       // (실측) → 목업처럼 **탭을 드롭다운 하나로 접는다**.
       final isMobile = context.screenType == WebScreenType.mobile;
 
@@ -287,7 +291,12 @@ class _FleamarketHeaderWebState extends State<FleamarketHeaderWeb> {
                     for (var i = 0; i < kFleamarketTabs.length; i++) ...[
                       // 목업은 탭 사이를 `|`로 나눈다(밑줄 대신).
                       if (i > 0) _buildTabDivider(),
-                      _buildTabButton(kFleamarketTabs[i], tapName == kFleamarketTabs[i]),
+                      _buildTabButton(
+                        kFleamarketTabs[i],
+                        tapName == kFleamarketTabs[i],
+                        // 첫 탭은 콘텐츠 왼쪽 끝에 딱 붙인다(피그마).
+                        isFirst: i == 0,
+                      ),
                     ],
                   ],
                 ),
@@ -315,32 +324,22 @@ class _FleamarketHeaderWebState extends State<FleamarketHeaderWeb> {
   }
 
   /// 탭 하나. 목업에 밑줄 표시가 없어 **선택 여부는 글자 굵기·색으로만** 나타낸다.
-  Widget _buildTabButton(String label, bool isSelected) {
-    return MouseRegion(
-      cursor: SystemMouseCursors.click,
-      child: GestureDetector(
-        onTap: () {
-          _vm.changeTap(label);
-          _loadPaginationForTab(label);
-        },
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-          child: Text(
-            label,
-            style: (isSelected ? SDSTextStyle.bold : SDSTextStyle.regular).copyWith(
-              fontSize: 16,
-              color: isSelected ? SDSColor.gray900 : SDSColor.gray300,
-            ),
-          ),
-        ),
-      ),
+  Widget _buildTabButton(String label, bool isSelected, {bool isFirst = false}) {
+    return _FleamarketTabButton(
+      label: label,
+      isSelected: isSelected,
+      isFirst: isFirst,
+      onTap: () {
+        _vm.changeTap(label);
+        _loadPaginationForTab(label);
+      },
     );
   }
 
   Widget _buildTabDivider() {
     return Container(
       width: 1,
-      height: 14,
+      height: 15,
       color: _kTabDividerColor,
     );
   }
@@ -410,12 +409,59 @@ class _FleamarketHeaderWebState extends State<FleamarketHeaderWeb> {
 }
 
 
+/// 하위 탭 버튼 — 미선택은 gray200, hover 시 gray400으로 진해진다.
+class _FleamarketTabButton extends StatefulWidget {
+  final String label;
+  final bool isSelected;
+  final bool isFirst;
+  final VoidCallback onTap;
+
+  const _FleamarketTabButton({
+    required this.label,
+    required this.isSelected,
+    required this.isFirst,
+    required this.onTap,
+  });
+
+  @override
+  State<_FleamarketTabButton> createState() => _FleamarketTabButtonState();
+}
+
+class _FleamarketTabButtonState extends State<_FleamarketTabButton> {
+  bool _hovered = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final Color color = widget.isSelected
+        ? SDSColor.gray900
+        : (_hovered ? SDSColor.gray400 : SDSColor.gray200);
+
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      onEnter: (_) => setState(() => _hovered = true),
+      onExit: (_) => setState(() => _hovered = false),
+      child: GestureDetector(
+        onTap: widget.onTap,
+        child: Padding(
+          // 첫 탭은 콘텐츠 왼쪽 끝에 딱 붙인다(피그마).
+          padding: EdgeInsets.fromLTRB(widget.isFirst ? 0 : 10, 10, 10, 10),
+          child: Text(
+            widget.label,
+            style: (widget.isSelected ? SDSTextStyle.bold : SDSTextStyle.regular)
+                .copyWith(fontSize: 16, color: color),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 /// 최근검색어 한 줄.
 ///
 /// ⚠️ **tap이 아니라 pointer down에서 실행한다.** 이 목록은 root Overlay에 떠 있고
 /// 검색창 포커스가 빠지면 곧바로 사라지는데, 항목을 누르면 **tap-up 전에 포커스가 빠져
-/// 오버레이가 먼저 제거돼서** `onTap`이 아예 호출되지 않았다(실측: 눌러도 검색이 안 됨).
-/// 삭제(`✕`)도 같은 이유로 pointer down에서 처리한다.
+/// 오버레이가 먼저 제거돼서** `onTap`이 아예 호출되지 않았다(실측: 눌러도 검색이 안 됨)
+/// 삭제(`✕`)도 같은 이유로 pointer down에서 처리한다
 class _RecentSearchRow extends StatefulWidget {
   final String term;
   final VoidCallback onSelect;

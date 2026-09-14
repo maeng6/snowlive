@@ -36,7 +36,7 @@ class SnowliveWebApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: '스노우라이브 - 중고거래',
       getPages: WebRoutes.pages,
-      initialRoute: WebRoutes.fleamarketList,
+      initialRoute: WebRoutes.home,
       // 웹에서 좌우 슬라이드 전환은 "모바일 앱을 그대로 옮긴" 느낌의 가장 큰 원인이다.
       // GNB(사이드바/상단바)는 라우트 Navigator 바깥이라 고정된 채 콘텐츠만 바뀌는데,
       // 슬라이드를 쓰면 콘텐츠가 사이드바 밑에서 밀려 나오는 것처럼 보인다.
@@ -85,7 +85,14 @@ class SnowliveWebApp extends StatelessWidget {
       locale: const Locale('ko', 'KR'),
       theme: ThemeData(
         primaryColor: SDSColor.snowliveBlue,
+        // 머티리얼3 기본 서피스 틴트(연보라)를 쓰지 않고 흰 배경으로 고정한다.
+        scaffoldBackgroundColor: SDSColor.snowliveWhite,
         fontFamily: 'Pretendard',
+        // 웹은 탭 리플(테마 기본 하늘색)을 쓰지 않는다 — 전역에서 끈다.
+        splashColor: Colors.transparent,
+        highlightColor: Colors.transparent,
+        hoverColor: Colors.transparent,
+        splashFactory: NoSplash.splashFactory,
       ),
       builder: (context, child) {
         // [Flutter 웹 프레임워크 버그 우회] 브라우저 창이 포커스를 받을 때

@@ -1,4 +1,3 @@
-import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/web/widget/w_web_profile_tap_web.dart';
 import 'package:com.snowlive/web/widget/w_network_image_web.dart';
 import 'package:flutter/material.dart';
@@ -46,12 +45,14 @@ class WebAvatar extends StatelessWidget {
       width: size,
       height: size,
       isCircle: true,
-      fallback: Container(
-        width: size,
-        height: size,
-        decoration: BoxDecoration(shape: BoxShape.circle, color: SDSColor.gray100),
-        // 지름에 비례해 아이콘을 키운다(원본들이 28→16, 88→44로 대략 절반이었다).
-        child: Icon(Icons.person, size: size * 0.5, color: SDSColor.gray400),
+      // 모바일 앱과 동일한 기본 프로필 이미지로 폴백한다.
+      fallback: ClipOval(
+        child: Image.asset(
+          'assets/imgs/profile/img_profile_default_circle.png',
+          width: size,
+          height: size,
+          fit: BoxFit.cover,
+        ),
       ),
     );
 

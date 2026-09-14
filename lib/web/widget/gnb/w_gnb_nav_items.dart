@@ -129,7 +129,10 @@ class GnbNavRow extends StatelessWidget {
   final GnbNavItemData item;
   final VoidCallback? onNavigate;
 
-  const GnbNavRow({super.key, required this.item, this.onNavigate});
+  /// LNB가 접힌 상태면 라벨 없이 아이콘만 가운데 정렬로 그린다.
+  final bool collapsed;
+
+  const GnbNavRow({super.key, required this.item, this.onNavigate, this.collapsed = false});
 
   @override
   Widget build(BuildContext context) {
@@ -161,21 +164,47 @@ class GnbNavRow extends StatelessWidget {
                   }
                   onNavigate?.call();
                 },
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(6),
+          hoverColor: SDSColor.gray50,
+          // 클릭 시 스플래시/하이라이트 효과 제거.
+          splashFactory: NoSplash.splashFactory,
+          highlightColor: Colors.transparent,
           child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+            // 아이콘 유무와 무관하게 모든 항목의 높이를 동일하게 고정한다.
+            // 접힘 상태에서는 폭 10+24+10=44가 되어 정사각형이 된다.
+            height: 44,
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            decoration: BoxDecoration(
+              color: active ? SDSColor.snowliveBlue.withOpacity(0.08) : null,
+              borderRadius: BorderRadius.circular(6),
+            ),
             child: Row(
               children: [
                 // 아이콘이 없는 항목(친구·설정)은 자리도 비우지 않고 글자만 둔다.
-                if (icon != null) ...[
-                  SizedBox(width: 22, height: 22, child: icon),
-                  const SizedBox(width: 12),
-                ],
-                Text(
-                  item.label,
-                  style: (active ? SDSTextStyle.bold : SDSTextStyle.regular).copyWith(
-                    fontSize: 15,
-                    color: fg,
+                // 아이콘은 접힘/펼침과 무관하게 항상 같은 x 위치에 고정된다.
+                if (icon != null)
+                  SizedBox(width: 24, height: 24, child: icon),
+                // 라벨(과 아이콘-라벨 간격)은 트리에서 제거하지 않고 페이드+클리핑으로
+                // 자연스럽게 사라진다. 간격을 이 안에 넣어야 접힘 폭이 정확히 44가 된다.
+                Flexible(
+                  child: ClipRect(
+                    child: AnimatedOpacity(
+                      opacity: collapsed ? 0 : 1,
+                      duration: const Duration(milliseconds: 150),
+                      child: Padding(
+                        padding: EdgeInsets.only(left: icon != null ? 6 : 0),
+                        child: Text(
+                          item.label,
+                          maxLines: 1,
+                          softWrap: false,
+                          overflow: TextOverflow.clip,
+                          style: (active ? SDSTextStyle.bold : SDSTextStyle.bold).copyWith(
+                            fontSize: 14,
+                            color: fg,
+                          ),
+                        ),
+                      ),
+                    ),
                   ),
                 ),
               ],
@@ -196,14 +225,14 @@ class GnbNavRow extends StatelessWidget {
     final svgOff = item.assetIconSvgOff;
     if (svgOff != null) {
       final svg = active ? (item.assetIconSvgOn ?? svgOff) : svgOff;
-      final icon = SvgPicture.asset(svg, width: 22, height: 22, fit: BoxFit.contain);
+      final icon = SvgPicture.asset(svg, width: 24, height: 24, fit: BoxFit.contain);
       return item.isPlaceholder ? Opacity(opacity: 0.35, child: icon) : icon;
     }
     if (item.assetIconOn != null) {
       return Image.asset(
         active ? item.assetIconOn! : item.assetIconOff!,
-        width: 22,
-        height: 22,
+        width: 24,
+        height: 24,
         fit: BoxFit.contain,
       );
     }

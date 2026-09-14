@@ -65,6 +65,7 @@ class HomeViewModelWeb extends GetxController {
   final RxBool _isCrewLoading = false.obs;
   bool get isCrewLoading => _isCrewLoading.value;
   CrewHomeModel? get crewHome => Get.find<CrewHomeViewModel>().home;
+
   List<HomeCrewCard> get crewCards => homeCrewCards(crewHome);
 
   // ── 중고거래 ──

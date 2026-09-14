@@ -39,8 +39,8 @@ class _LoginViewWebState extends State<LoginViewWeb> {
         // AuthCheckViewModelWeb이 unauthenticated에 머물러서, 그 값을 보는 화면들이
         // (키워드 알림 설정, 커뮤니티·중고거래 상세의 재조회 등) 로그인 전으로 남는다.
         Get.find<AuthCheckViewModelWeb>().markAuthenticated();
-        // 로그인은 항상 다른 화면 위에서 push되므로, 로그인 전 보던 화면으로 복귀.
-        Get.back();
+        // 로그인 성공 시 홈으로 이동한다(요청 — 이전 화면 복귀 대신).
+        Get.offAllNamed(WebRoutes.home);
       } else if (status == WebLoginStatus.needOnboarding) {
         Get.toNamed(WebRoutes.onboarding);
       }

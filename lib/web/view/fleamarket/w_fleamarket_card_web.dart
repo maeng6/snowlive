@@ -8,118 +8,190 @@ import 'package:intl/intl.dart';
 
 const String kFleamarketDefaultImage = 'assets/imgs/imgs/img_flea_default.png';
 
-/// 목록 사진 모서리(디자인 지정 2.72). 카드 사진과 그 위 딤이 같은 값을 써야 한다.
-const double kFleamarketPhotoRadius = 2.72;
+/// 목록 사진 모서리(디자인 지정 6). 카드 사진과 그 위 딤이 같은 값을 써야 한다.
+const double kFleamarketPhotoRadius = 6;
 final _priceFormat = NumberFormat('###,###,###,###');
 
-/// 중고거래 그리드 카드 1개: 정사각 이미지 + 제목/위치·시간/가격/조회수·댓글수.
-class FleamarketCardWeb extends StatelessWidget {
+/// 중고거래 그리드 카드 1개: 정사각 이미지 + 제목/위치·시간/가격/조회수·댓글수
+class FleamarketCardWeb extends StatefulWidget {
   final Fleamarket data;
   final VoidCallback onTap;
 
   const FleamarketCardWeb({super.key, required this.data, required this.onTap});
 
   @override
+  State<FleamarketCardWeb> createState() => _FleamarketCardWebState();
+}
+
+class _FleamarketCardWebState extends State<FleamarketCardWeb> {
+  bool _hovered = false;
+
+  Fleamarket get data => widget.data;
+
+  @override
   Widget build(BuildContext context) {
     final photos = data.photos ?? [];
-    final time = data.uploadTime != null ? GetDatetime().getAgoString(data.uploadTime!) : '';
+    final time = data.uploadTime != null
+        ? GetDatetime().getAgoString(data.uploadTime!)
+        : '';
 
-    return GestureDetector(
-      onTap: onTap,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          AspectRatio(
-            aspectRatio: 1,
-            child: Stack(
-              fit: StackFit.expand,
-              children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(kFleamarketPhotoRadius),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      border: Border.all(width: 0.5, color: SDSColor.gray100),
-                      borderRadius: BorderRadius.circular(kFleamarketPhotoRadius),
-                    ),
-                    child: photos.isNotEmpty
-                        ? WebNetworkImage(
-                            url: photos.first.urlFleaPhoto,
-                            fit: BoxFit.cover,
-                            fallback: Image.asset(kFleamarketDefaultImage, fit: BoxFit.cover),
-                          )
-                        : Image.asset(kFleamarketDefaultImage, fit: BoxFit.cover),
-                  ),
-                ),
-                if (data.status == FleamarketStatus.soldOut.korean)
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Colors.black.withOpacity(0.6),
-                      // 딤도 사진과 같은 모서리라야 각이 튀지 않는다.
-                      borderRadius: BorderRadius.circular(kFleamarketPhotoRadius),
-                    ),
-                  ),
-                if (data.status == FleamarketStatus.soldOut.korean || data.status == FleamarketStatus.onBooking.korean)
-                  Positioned(
-                    top: 8,
-                    left: 8,
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(4),
-                        color: data.status == FleamarketStatus.soldOut.korean
-                            ? SDSColor.snowliveWhite
-                            : SDSColor.snowliveBlue,
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      onEnter: (_) => setState(() => _hovered = true),
+      onExit: (_) => setState(() => _hovered = false),
+      child: GestureDetector(
+        onTap: widget.onTap,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            AspectRatio(
+              aspectRatio: 1,
+              // 홈 카드와 동일 — hover 시 이미지가 라운드째 2% 축소.
+              child: AnimatedScale(
+                scale: _hovered ? 0.98 : 1.0,
+                duration: const Duration(milliseconds: 200),
+                curve: Curves.easeOut,
+                child: Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(
+                        kFleamarketPhotoRadius,
                       ),
-                      child: Text(
-                        data.status ?? '',
-                        style: SDSTextStyle.bold.copyWith(
-                          fontSize: 11,
-                          color: data.status == FleamarketStatus.soldOut.korean
-                              ? SDSColor.snowliveBlack
-                              : SDSColor.snowliveWhite,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            width: 0.5,
+                            color: SDSColor.gray100,
+                          ),
+                          borderRadius: BorderRadius.circular(
+                            kFleamarketPhotoRadius,
+                          ),
+                        ),
+                        child: photos.isNotEmpty
+                            ? WebNetworkImage(
+                                url: photos.first.urlFleaPhoto,
+                                fit: BoxFit.cover,
+                                fallback: Image.asset(
+                                  kFleamarketDefaultImage,
+                                  fit: BoxFit.cover,
+                                ),
+                              )
+                            : Image.asset(
+                                kFleamarketDefaultImage,
+                                fit: BoxFit.cover,
+                              ),
+                      ),
+                    ),
+                    if (data.status == FleamarketStatus.soldOut.korean)
+                      Container(
+                        decoration: BoxDecoration(
+                          color: Colors.black.withOpacity(0.6),
+                          // 딤도 사진과 같은 모서리라야 각이 튀지 않는다.
+                          borderRadius: BorderRadius.circular(
+                            kFleamarketPhotoRadius,
+                          ),
                         ),
                       ),
+                    if (data.status == FleamarketStatus.soldOut.korean ||
+                        data.status == FleamarketStatus.onBooking.korean)
+                      Positioned(
+                        top: 8,
+                        left: 8,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 6,
+                            vertical: 3,
+                          ),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(4),
+                            color:
+                                data.status == FleamarketStatus.soldOut.korean
+                                ? SDSColor.snowliveWhite
+                                : SDSColor.snowliveBlue,
+                          ),
+                          child: Text(
+                            data.status ?? '',
+                            style: SDSTextStyle.bold.copyWith(
+                              fontSize: 11,
+                              color:
+                                  data.status == FleamarketStatus.soldOut.korean
+                                  ? SDSColor.snowliveBlack
+                                  : SDSColor.snowliveWhite,
+                            ),
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+            ),
+            SizedBox(height: 10),
+            Text(
+              data.title ?? '',
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: SDSTextStyle.regular.copyWith(
+                fontSize: 13,
+                color: SDSColor.gray900,
+              ),
+            ),
+            SizedBox(height: 2),
+            Text(
+              '${data.spot ?? ''} · $time',
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: SDSTextStyle.regular.copyWith(
+                fontSize: 12,
+                color: SDSColor.gray500,
+              ),
+            ),
+            const SizedBox(height: 2),
+            Text(
+              '${_priceFormat.format(data.price ?? 0)}원',
+              style: SDSTextStyle.bold.copyWith(
+                fontSize: 16,
+                color: SDSColor.gray900,
+              ),
+            ),
+            SizedBox(height: 6),
+            Row(
+              children: [
+                if ((data.viewsCount ?? 0) != 0) ...[
+                  Image.asset(
+                    'assets/imgs/icons/icon_list_view.png',
+                    width: 14,
+                    height: 14,
+                  ),
+                  const SizedBox(width: 3),
+                  Text(
+                    '${data.viewsCount}',
+                    style: SDSTextStyle.regular.copyWith(
+                      fontSize: 12,
+                      color: SDSColor.gray500,
                     ),
                   ),
+                ],
+                if ((data.commentCount ?? 0) != 0) ...[
+                  const SizedBox(width: 8),
+                  Image.asset(
+                    'assets/imgs/icons/icon_list_reply.png',
+                    width: 14,
+                    height: 14,
+                  ),
+                  const SizedBox(width: 3),
+                  Text(
+                    '${data.commentCount}',
+                    style: SDSTextStyle.regular.copyWith(
+                      fontSize: 12,
+                      color: SDSColor.gray500,
+                    ),
+                  ),
+                ],
               ],
             ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            data.title ?? '',
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-            style: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray900),
-          ),
-          const SizedBox(height: 2),
-          Text(
-            '${data.spot ?? ''} · $time',
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: SDSTextStyle.regular.copyWith(fontSize: 12, color: SDSColor.gray500),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            '${_priceFormat.format(data.price ?? 0)}원',
-            style: SDSTextStyle.bold.copyWith(fontSize: 16, color: SDSColor.gray900),
-          ),
-          const SizedBox(height: 4),
-          Row(
-            children: [
-              if ((data.viewsCount ?? 0) != 0) ...[
-                Image.asset('assets/imgs/icons/icon_list_view.png', width: 14, height: 14),
-                const SizedBox(width: 3),
-                Text('${data.viewsCount}', style: SDSTextStyle.regular.copyWith(fontSize: 12, color: SDSColor.gray500)),
-              ],
-              if ((data.commentCount ?? 0) != 0) ...[
-                const SizedBox(width: 8),
-                Image.asset('assets/imgs/icons/icon_list_reply.png', width: 14, height: 14),
-                const SizedBox(width: 3),
-                Text('${data.commentCount}', style: SDSTextStyle.regular.copyWith(fontSize: 12, color: SDSColor.gray500)),
-              ],
-            ],
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

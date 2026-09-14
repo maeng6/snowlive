@@ -37,7 +37,8 @@ class WebEmptyState extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Image.asset(iconAsset, width: iconWidth, height: 64, fit: iconFit),
+            // 정사각 에셋 기준이므로 높이도 iconWidth를 따라간다(높이 고정 시 fill에서 찌그러짐).
+            Image.asset(iconAsset, width: iconWidth, height: iconWidth, fit: iconFit),
             const SizedBox(height: 12),
             Text(
               message,

@@ -83,7 +83,11 @@ class _FleamarketFilterPillState<T> extends State<FleamarketFilterPill<T>> {
       style: ElevatedButton.styleFrom(
         shadowColor: Colors.transparent,
         overlayColor: Colors.transparent,
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 9),
+        // 높이 36 (피그마). 데스크탑 웹은 compact density가 높이를 8px 깎아서
+        // 표준 density로 고정해야 실측이 맞는다 — 이전 36도 실제로는 더 낮았다.
+        visualDensity: VisualDensity.standard,
+        minimumSize: const Size(0, 36),
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 0),
         side: BorderSide(width: 1, color: isActive ? SDSColor.gray900 : SDSColor.gray100),
         backgroundColor: isActive ? SDSColor.gray900 : SDSColor.snowliveWhite,
         foregroundColor: isActive ? SDSColor.snowliveWhite : SDSColor.gray900,
@@ -91,7 +95,7 @@ class _FleamarketFilterPillState<T> extends State<FleamarketFilterPill<T>> {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
       ),
       // ElevatedButton.icon은 아이콘을 라벨 앞에 붙인다. 앱 디자인은 라벨 뒤이므로
-      // Row로 직접 배치한다.
+      // Row로 직접 배치한다
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -103,7 +107,7 @@ class _FleamarketFilterPillState<T> extends State<FleamarketFilterPill<T>> {
             ),
           ),
           const SizedBox(width: 6),
-          // 모바일 앱 필터와 같은 원형 화살표 배지 에셋을 그대로 쓴다.
+          // 모바일 앱 필터와 같은 원형 화살표 배지 에셋을 그대로 쓴다
           // 흰 pill에는 검정 원(흰 화살표), 선택된 검정 pill에는 흰 원(검정 화살표).
           Image.asset(
             isActive ? kFilterPillArrowOnDark : kFilterPillArrowOnLight,

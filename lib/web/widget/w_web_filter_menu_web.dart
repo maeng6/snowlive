@@ -73,7 +73,8 @@ Future<T?> showWebFilterSheet<T>({
   bool centerOnDesktop = false,
 }) {
   final screenType = context.screenType;
-  final centered = (centerOnTablet && screenType == WebScreenType.tablet) ||
+  final centered =
+      (centerOnTablet && screenType == WebScreenType.tablet) ||
       (centerOnDesktop && screenType == WebScreenType.desktop);
   return showWebOverlayModal<T>(
     context: context,
@@ -99,22 +100,31 @@ Future<T?> showWebFilterSheet<T>({
                     padding: const EdgeInsets.only(left: 4, bottom: 4),
                     child: Text(
                       title,
-                      style: SDSTextStyle.regular.copyWith(fontSize: 12, color: SDSColor.gray400),
+                      style: SDSTextStyle.regular.copyWith(
+                        fontSize: 12,
+                        color: SDSColor.gray400,
+                      ),
                     ),
                   ),
                 for (final value in values)
                   ListTile(
-                    contentPadding:
-                        alignItemsStart ? const EdgeInsets.symmetric(horizontal: 4) : EdgeInsets.zero,
+                    contentPadding: alignItemsStart
+                        ? const EdgeInsets.symmetric(horizontal: 4)
+                        : EdgeInsets.zero,
                     title: () {
                       final label = Text(
                         labelOf(value),
-                        style: SDSTextStyle.bold.copyWith(fontSize: 15, color: SDSColor.gray900),
+                        style: SDSTextStyle.bold.copyWith(
+                          fontSize: 15,
+                          color: SDSColor.gray900,
+                        ),
                       );
                       return alignItemsStart ? label : Center(child: label);
                     }(),
                     onTap: () => close(value),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
                   ),
               ],
             ),
@@ -146,49 +156,109 @@ class WebFilterDropdownPanel<T> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: SDSColor.snowliveWhite,
-      borderRadius: BorderRadius.circular(12),
+    // 피그마 comp_popup: 화이트 + #ECECEC 1px 보더 + radius 6 + 은은한 그림자(0,2,8/8%).
+    return Container(
+      decoration: BoxDecoration(
+        color: SDSColor.snowliveWhite,
+        borderRadius: BorderRadius.circular(6),
+        border: Border.all(color: const Color(0xFFECECEC)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.08),
+            offset: const Offset(0, 2),
+            blurRadius: 8,
+          ),
+        ],
+      ),
       clipBehavior: Clip.antiAlias,
-      elevation: 8,
-      shadowColor: Colors.black26,
-      child: ConstrainedBox(
-        constraints: BoxConstraints(
-          minWidth: minWidth,
-          maxWidth: 280,
-          // 항목이 많아도 짧은 뷰포트에서는 스크롤된다.
-          maxHeight: MediaQuery.sizeOf(context).height * 0.6,
-        ),
-        // 항목 중 가장 긴 라벨에 폭을 맞춘다(고정폭이면 긴 라벨이 잘린다).
-        child: IntrinsicWidth(
-          child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                if (title != null)
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(16, 14, 16, 6),
-                    child: Text(
-                      title!,
-                      style: SDSTextStyle.regular.copyWith(fontSize: 12, color: SDSColor.gray400),
-                    ),
-                  )
-                else
-                  const SizedBox(height: 8),
-                for (final value in values)
-                  InkWell(
-                    onTap: () => onPick(value),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 9),
-                      child: Text(
-                        labelOf(value),
-                        style: SDSTextStyle.bold.copyWith(fontSize: 14, color: SDSColor.gray900),
+      // Material 조상이 없으면 Text에 노란 밑줄이 생긴다(투명 Material로 감싼다).
+      child: Material(
+        type: MaterialType.transparency,
+        child: ConstrainedBox(
+          constraints: BoxConstraints(
+            // 앵커가 아무리 좁아도 최소 180은 확보한다(피그마 기준).
+            minWidth: minWidth < 180 ? 180 : minWidth,
+            maxWidth: 280,
+            // 항목이 많아도 짧은 뷰포트에서는 스크롤된다.
+            maxHeight: MediaQuery.sizeOf(context).height * 0.6,
+          ),
+          // 항목 중 가장 긴 라벨에 폭을 맞춘다(고정폭이면 긴 라벨이 잘린다).
+          child: IntrinsicWidth(
+            child: SingleChildScrollView(
+              // 패널 여백: 좌우 16, 상하 14 (피그마 기준).
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 14,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    if (title != null)
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 6),
+                        child: Text(
+                          title!,
+                          style: SDSTextStyle.regular.copyWith(
+                            fontSize: 12,
+                            color: SDSColor.gray400,
+                          ),
+                        ),
                       ),
-                    ),
-                  ),
-                const SizedBox(height: 8),
-              ],
+                    // 항목: 높이 28, 항목 사이 간격 6 (피그마 기준).
+                    for (int i = 0; i < values.length; i++) ...[
+                      if (i > 0) const SizedBox(height: 6),
+                      _WebFilterMenuItem(
+                        label: labelOf(values[i]),
+                        onTap: () => onPick(values[i]),
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// 데스크탑 드롭다운 항목 한 줄. hover 시 텍스트 투명도 80%.
+class _WebFilterMenuItem extends StatefulWidget {
+  final String label;
+  final VoidCallback onTap;
+
+  const _WebFilterMenuItem({required this.label, required this.onTap});
+
+  @override
+  State<_WebFilterMenuItem> createState() => _WebFilterMenuItemState();
+}
+
+class _WebFilterMenuItemState extends State<_WebFilterMenuItem> {
+  bool _hovered = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      onEnter: (_) => setState(() => _hovered = true),
+      onExit: (_) => setState(() => _hovered = false),
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: widget.onTap,
+        child: Container(
+          height: 28,
+          // 좌우 여백은 패널 패딩(16)이 담당한다.
+          alignment: Alignment.centerLeft,
+          child: Text(
+            widget.label,
+            style: SDSTextStyle.bold.copyWith(
+              fontSize: 14,
+              color: _hovered
+                  ? SDSColor.gray900.withOpacity(0.6)
+                  : SDSColor.gray900,
             ),
           ),
         ),
@@ -236,7 +306,8 @@ class WebDropdownTextButton<T> extends StatefulWidget {
   });
 
   @override
-  State<WebDropdownTextButton<T>> createState() => _WebDropdownTextButtonState<T>();
+  State<WebDropdownTextButton<T>> createState() =>
+      _WebDropdownTextButtonState<T>();
 }
 
 class _WebDropdownTextButtonState<T> extends State<WebDropdownTextButton<T>> {
@@ -258,9 +329,15 @@ class _WebDropdownTextButtonState<T> extends State<WebDropdownTextButton<T>> {
 
   @override
   Widget build(BuildContext context) {
-    final style = widget.labelStyle ??
+    final style =
+        widget.labelStyle ??
         SDSTextStyle.bold.copyWith(fontSize: 14, color: SDSColor.gray900);
-    final labelText = Text(widget.label, maxLines: 1, overflow: TextOverflow.ellipsis, style: style);
+    final labelText = Text(
+      widget.label,
+      maxLines: 1,
+      overflow: TextOverflow.ellipsis,
+      style: style,
+    );
 
     return CompositedTransformTarget(
       link: _link,
@@ -283,7 +360,11 @@ class _WebDropdownTextButtonState<T> extends State<WebDropdownTextButton<T>> {
                 else
                   labelText,
                 const SizedBox(width: 2),
-                Icon(Icons.keyboard_arrow_down, size: widget.iconSize, color: style.color),
+                Icon(
+                  Icons.keyboard_arrow_down,
+                  size: widget.iconSize,
+                  color: style.color,
+                ),
               ],
             ),
           ),

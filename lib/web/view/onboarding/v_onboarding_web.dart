@@ -52,7 +52,7 @@ class _OnboardingViewWebState extends State<OnboardingViewWeb> {
   Future<void> _showComplete() async {
     // 버튼·X·배경 탭 어느 쪽으로 닫혀도 가입은 끝난 상태다 → 항상 홈으로 보낸다.
     await showOnboardingCompleteModal(context, displayName: vm.nickname.trim());
-    Get.offAllNamed(WebRoutes.fleamarketList);
+    Get.offAllNamed(WebRoutes.home);
   }
 
   void _onBack() {
