@@ -85,6 +85,7 @@ class CommunitySearchBarWeb extends StatelessWidget {
                 hintStyle: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray400),
               ),
               style: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray900),
+              cursorHeight: 16,
             ),
           ),
         ],

@@ -168,6 +168,7 @@ class _RankingArchiveViewWebState extends State<RankingArchiveViewWeb> {
                 hintStyle: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray400),
               ),
               style: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray900),
+              cursorHeight: 16,
             ),
           ),
           Obx(() => _searchQuery.value.isEmpty

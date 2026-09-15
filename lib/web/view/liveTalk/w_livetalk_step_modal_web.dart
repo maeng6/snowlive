@@ -319,6 +319,7 @@ class LiveTalkComposeField extends StatelessWidget {
             textAlignVertical: TextAlignVertical.top,
             maxLength: 1000,
             style: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray900),
+            cursorHeight: 16,
             decoration: InputDecoration(
               hintText: '라이브톡 글을 남겨주세요.',
               hintStyle: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray400),

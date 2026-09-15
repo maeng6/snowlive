@@ -103,6 +103,7 @@ class WebFormTextField extends StatelessWidget {
       onChanged: onChanged,
       textAlignVertical: expands ? TextAlignVertical.top : null,
       style: SDSTextStyle.regular.copyWith(fontSize: 15, color: SDSColor.gray900),
+      cursorHeight: 17, // 커서 높이 = 글자 크기 + 2(웹 공통 규칙)
       decoration: InputDecoration(
         hintText: hint,
         hintStyle: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray400),

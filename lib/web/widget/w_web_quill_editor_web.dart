@@ -119,6 +119,7 @@ class _WebQuillEditorState extends State<WebQuillEditor> {
                 keyboardType: TextInputType.url,
                 onSubmitted: (v) => close(v.trim()),
                 style: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray900),
+                cursorHeight: 16,
                 decoration: InputDecoration(
                   hintText: 'https://',
                   hintStyle: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray400),

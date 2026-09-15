@@ -227,6 +227,7 @@ class _RankingHomeViewWebState extends State<RankingHomeViewWeb> {
                 hintStyle: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray400),
               ),
               style: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray900),
+              cursorHeight: 16,
             ),
           ),
           Obx(() => _searchQuery.value.isEmpty

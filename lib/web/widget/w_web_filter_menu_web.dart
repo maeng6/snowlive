@@ -28,8 +28,14 @@ Future<T?> showWebFilterMenu<T>({
   /// 딤 패널에서 태블릿은 화면 중앙, 모바일은 하단에 붙인다(목업).
   /// 기존 호출자(중고거래·랭킹)는 항상 하단이었으므로 기본값은 false.
   bool centerSheetOnTablet = false,
+
+  /// 태블릿에서도 데스크탑처럼 앵커 드롭다운을 띄울지. 중고거래
+  /// 카테고리/거래장소 pill만 true다(요청) — 기본값을 바꾸면 다른 호출자
+  /// (랭킹·커뮤니티 등)의 태블릿 딤 시트가 전부 바뀌는 회귀가 된다.
+  bool dropdownOnTablet = false,
 }) {
-  if (context.isDesktop) {
+  if (context.isDesktop ||
+      (dropdownOnTablet && context.screenType == WebScreenType.tablet)) {
     return showWebAnchoredDropdown<T>(
       context: context,
       link: link,
@@ -156,12 +162,14 @@ class WebFilterDropdownPanel<T> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // 피그마 comp_popup: 화이트 + #ECECEC 1px 보더 + radius 6 + 은은한 그림자(0,2,8/8%).
+    // 피그마 comp_popup: 화이트 + 1px 보더 + radius 6 + 은은한 그림자(0,2,8/8%).
+    // 보더는 피그마 실측 #ECECEC 대신 gray100(#EFEFEF)으로 통일(2026-09-16 결정,
+    // 밝기 차 3/255라 육안 구분 불가).
     return Container(
       decoration: BoxDecoration(
         color: SDSColor.snowliveWhite,
         borderRadius: BorderRadius.circular(6),
-        border: Border.all(color: const Color(0xFFECECEC)),
+        border: Border.all(color: SDSColor.gray100),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.08),
@@ -207,6 +215,8 @@ class WebFilterDropdownPanel<T> extends StatelessWidget {
                         ),
                       ),
                     // 항목: 높이 28, 항목 사이 간격 6 (피그마 기준).
+                    // 별도 등장 애니메이션은 없다 — 패널 박스가 펼쳐지며(마스킹)
+                    // 제자리의 텍스트가 그 속도 그대로 드러난다(요청).
                     for (int i = 0; i < values.length; i++) ...[
                       if (i > 0) const SizedBox(height: 6),
                       _WebFilterMenuItem(

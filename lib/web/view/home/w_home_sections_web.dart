@@ -1445,7 +1445,8 @@ class HomeFooterWeb extends StatelessWidget {
     final screenType = context.screenType;
     final isMobile = screenType == WebScreenType.mobile;
 
-    // 피그마: 상단 구분선 없음, 콘텐츠 ↔ 구분선(#ECECEC) ↔ 하단행 간격 각 30
+    // 피그마: 상단 구분선 없음, 콘텐츠 ↔ 구분선 ↔ 하단행 간격 각 30
+    // (구분선은 피그마 실측 #ECECEC 대신 gray100으로 통일 — 2026-09-16 결정)
     // 좌우 여백은 페이지 콘텐츠 패딩(40)이 담당하므로 상하 40만 갖는다.
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 40),
@@ -1454,7 +1455,7 @@ class HomeFooterWeb extends StatelessWidget {
         children: [
           if (isMobile) ..._buildMobile() else ..._buildWide(screenType),
           const SizedBox(height: 30),
-          const Divider(height: 1, color: Color(0xFFECECEC)),
+          const Divider(height: 1, color: SDSColor.gray100),
           const SizedBox(height: 30),
           _buildBottomRow(isMobile),
         ],

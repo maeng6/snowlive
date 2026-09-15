@@ -1,7 +1,9 @@
 import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/web/util/responsive_web.dart';
 import 'package:com.snowlive/web/view/community/w_community_row_web.dart' show communityTableRowShell;
-import 'package:com.snowlive/web/view/fleamarket/w_fleamarket_grid_web.dart' show kFleamarketCardTextBlockHeight;
+import 'package:com.snowlive/web/view/fleamarket/w_fleamarket_card_web.dart' show kFleamarketPhotoRadius;
+import 'package:com.snowlive/web/view/fleamarket/w_fleamarket_grid_web.dart'
+    show FleamarketGridLayout, kFleamarketCardTextBlockHeight;
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -75,7 +77,8 @@ class SkeletonLine extends StatelessWidget {
 }
 
 /// 중고거래 상품 그리드 자리표시.
-/// 실제 그리드와 **같은 열 수/간격/mainAxisExtent**를 써야 데이터 도착 시 점프가 없다.
+/// 열 수/간격/상단 여백은 실제 그리드와 같은 [FleamarketGridLayout]에서 가져온다 —
+/// 여기가 어긋나면 데이터 도착 시 레이아웃이 튄다.
 class FleamarketGridSkeleton extends StatelessWidget {
   final int itemCount;
 
@@ -83,28 +86,32 @@ class FleamarketGridSkeleton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final crossAxisCount = context.isDesktop ? 5 : 2;
-    const spacing = SDSSpacing.md;
-
     return SkeletonShimmer(
       child: LayoutBuilder(
         builder: (context, constraints) {
-          final cellWidth = (constraints.maxWidth - spacing * (crossAxisCount - 1)) / crossAxisCount;
+          final layout =
+              FleamarketGridLayout.of(context.screenType, constraints.maxWidth);
+          final cellWidth = layout.cellWidth;
           return GridView.builder(
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
-            padding: const EdgeInsets.only(top: 16),
+            padding: EdgeInsets.only(top: layout.topPadding),
             itemCount: itemCount,
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: crossAxisCount,
-              crossAxisSpacing: spacing,
-              mainAxisSpacing: SDSSpacing.lg,
+              crossAxisCount: layout.crossAxisCount,
+              crossAxisSpacing: layout.spacing,
+              mainAxisSpacing: layout.runSpacing,
               mainAxisExtent: cellWidth + kFleamarketCardTextBlockHeight,
             ),
             itemBuilder: (context, index) => Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SkeletonBox(width: cellWidth, height: cellWidth, radius: 8),
+                // 라운드는 실제 썸네일(kFleamarketPhotoRadius)과 동일해야
+                // 데이터 도착 시 모서리가 튀지 않는다.
+                SkeletonBox(
+                    width: cellWidth,
+                    height: cellWidth,
+                    radius: kFleamarketPhotoRadius),
                 const SizedBox(height: 10),
                 const SkeletonLine(width: double.infinity, height: 14),
                 const SizedBox(height: 6),

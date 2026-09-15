@@ -26,7 +26,8 @@ class HomeOpenChatWeb extends StatefulWidget {
 }
 
 /// 피그마 공통 스타일.
-const Color _kBorderColor = Color(0xFFECECEC);
+/// 보더는 피그마 실측 #ECECEC 대신 gray100(#EFEFEF)으로 통일(2026-09-16 결정).
+const Color _kBorderColor = SDSColor.gray100;
 const Color _kPanelBorderColor = Color(0xFFF5F5F5);
 const Color _kInputFillColor = Color(0xFFF6F6F6);
 const double _kHeaderHeight = 53;
@@ -540,6 +541,7 @@ class _HomeOpenChatWebState extends State<HomeOpenChatWeb>
                   fontSize: 12,
                   color: SDSColor.gray900,
                 ),
+                cursorHeight: 14,
                 decoration: InputDecoration(
                   isDense: true,
                   border: InputBorder.none,

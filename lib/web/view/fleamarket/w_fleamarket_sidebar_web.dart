@@ -15,20 +15,23 @@ final _sidebarPriceFormat = NumberFormat('###,###,###,###');
 
 /// 데스크탑 전용 우측 열: 키워드 알림 설정 + 최근 본 상품 + 찜 목록.
 class FleamarketSidebarWeb extends StatelessWidget {
-  const FleamarketSidebarWeb({super.key});
+  /// 화면 폭에 따라 호출자가 줄여줄 수 있다(1024px에서 200까지).
+  final double width;
+
+  const FleamarketSidebarWeb({super.key, this.width = kFleamarketSidebarWidth});
 
   @override
   Widget build(BuildContext context) {
     final myActivityVm = Get.find<FleamarketMyActivityViewModel>();
 
     return Container(
-      width: kFleamarketSidebarWidth,
+      width: width,
       // 콘텐츠와의 간격(40)은 홈 레이아웃의 SizedBox가 담당한다 — 내부 left 패딩 없음.
       padding: const EdgeInsets.only(top: 56),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // 버튼 높이 48 (피그마 32:18009). hover 시 배경색 80% 불투명도.
+          // 버튼 높이 48 (피그마 32:18009). hover 시 배경에 검정 10%를 섞어 어둡게.
           ElevatedButton(
             onPressed: () => Get.toNamed(WebRoutes.fleamarketUpload),
             style: ButtonStyle(
@@ -42,33 +45,38 @@ class FleamarketSidebarWeb extends StatelessWidget {
                   RoundedRectangleBorder(borderRadius: BorderRadius.circular(6))),
               backgroundColor: WidgetStateProperty.resolveWith(
                 (states) => states.contains(WidgetState.hovered)
-                    ? SDSColor.snowliveBlue.withValues(alpha: 0.8)
+                    ? Color.alphaBlend(
+                        Colors.black.withValues(alpha: 0.1), SDSColor.snowliveBlue)
                     : SDSColor.snowliveBlue,
               ),
             ),
-            child: Text('중고거래 물품 올리기', style: SDSTextStyle.bold.copyWith(fontSize: 16, color: SDSColor.snowliveWhite)),
+            child: Text('중고거래 물품 올리기', style: SDSTextStyle.bold.copyWith(fontSize: 15, color: SDSColor.snowliveWhite)),
           ),
           const SizedBox(height: SDSSpacing.sm),
           // 피그마에는 없지만 기능 진입점이라 유지한다(요청 전까지).
-          // hover 시 텍스트만 60% 불투명도(보더·배경은 그대로).
-          OutlinedButton(
+          // 공통 색 규칙(태블릿 하단바와 동일): 보더 없이 연회색(gray100) 채움.
+          // hover 시 배경에 검정 10%를 섞어 어둡게.
+          ElevatedButton(
             onPressed: () => Get.toNamed(WebRoutes.fleamarketAlert),
             style: ButtonStyle(
               // hover 색 전환을 애니메이션 없이 즉시 적용.
               animationDuration: Duration.zero,
+              elevation: const WidgetStatePropertyAll(0),
+              shadowColor: const WidgetStatePropertyAll(Colors.transparent),
               overlayColor: const WidgetStatePropertyAll(Colors.transparent),
-              side: WidgetStatePropertyAll(BorderSide(color: SDSColor.gray200)),
+              backgroundColor: WidgetStateProperty.resolveWith(
+                (states) => states.contains(WidgetState.hovered)
+                    ? Color.alphaBlend(
+                        Colors.black.withValues(alpha: 0.1), SDSColor.gray100)
+                    : SDSColor.gray100,
+              ),
               minimumSize: const WidgetStatePropertyAll(Size.fromHeight(48)),
               shape: WidgetStatePropertyAll(
                   RoundedRectangleBorder(borderRadius: BorderRadius.circular(6))),
-              foregroundColor: WidgetStateProperty.resolveWith(
-                (states) => states.contains(WidgetState.hovered)
-                    ? SDSColor.gray900.withValues(alpha: 0.6)
-                    : SDSColor.gray900,
-              ),
+              foregroundColor: const WidgetStatePropertyAll(SDSColor.gray900),
             ),
-            // 색은 foregroundColor가 상태별로 입힌다(여기서 지정하면 hover가 안 먹는다).
-            child: Text('키워드 알림 설정', style: SDSTextStyle.bold.copyWith(fontSize: 16)),
+            // 색은 foregroundColor가 입힌다(여기서 지정하면 상태별 색이 안 먹는다).
+            child: Text('키워드 알림 설정', style: SDSTextStyle.bold.copyWith(fontSize: 15)),
           ),
           // 인기 검색어(_PopularKeywords)는 서버 집계 API가 준비되면 다시 켠다.
           // 켤 때: 버튼 ↔ 인기 검색어 30, 섹션 간 40 (피그마 32:18013).

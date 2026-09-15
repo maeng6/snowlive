@@ -111,6 +111,7 @@ class _WebCommentInputState extends State<WebCommentInput> {
                 hintStyle: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray400),
               ),
               style: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray900),
+              cursorHeight: 16,
             ),
           ),
           const SizedBox(width: 8),
