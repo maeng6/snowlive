@@ -23,7 +23,18 @@ class EventListWeb extends StatelessWidget {
 
       // 첫 로딩에만 스켈레톤을 쓴다. 페이지 이동 중에는 기존 목록을 유지해서
       // (전역 상단 진행바가 이미 돌고 있다) 목록이 통째로 사라지지 않게 한다.
-      if (vm.isLoading && items.isEmpty) return const CommunityListSkeleton();
+      // 표 헤더 줄은 정적 텍스트라 로딩 중에도 실제 헤더를 그대로 그린다
+      // (커뮤니티와 동일 — 스켈레톤만 두면 데이터 도착 시 헤더 높이만큼 밀린다).
+      if (vm.isLoading && items.isEmpty) {
+        final isMobileLoading = context.screenType == WebScreenType.mobile;
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            if (!isMobileLoading) const EventTableHeaderRow(),
+            const EventListSkeleton(),
+          ],
+        );
+      }
 
       if (vm.hasError) return WebErrorState(onRetry: vm.retry);
 
@@ -50,6 +61,8 @@ class EventListWeb extends StatelessWidget {
             hasNext: vm.hasNext,
             pageWindow: vm.pageWindow(),
             onGotoPage: (page) => _gotoPage(context, vm, page),
+            // 커뮤니티와 동일 — 배경 없는 텍스트형.
+            textOnly: true,
           ),
         ],
       );
@@ -65,9 +78,9 @@ class EventListWeb extends StatelessWidget {
     await vm.gotoPage(page);
     if (!context.mounted) return;
     Scrollable.maybeOf(context)?.position.animateTo(
-          0,
-          duration: const Duration(milliseconds: 200),
-          curve: Curves.easeOut,
-        );
+      0,
+      duration: const Duration(milliseconds: 200),
+      curve: Curves.easeOut,
+    );
   }
 }

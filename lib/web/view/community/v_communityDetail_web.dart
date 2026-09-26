@@ -3,19 +3,22 @@ import 'package:com.snowlive/core/model/m_communityDetail.dart';
 import 'package:com.snowlive/core/viewmodel/vm_user.dart';
 import 'package:com.snowlive/web/routes/routes_web.dart';
 import 'package:com.snowlive/web/util/responsive_web.dart';
-import 'package:com.snowlive/web/view/community/v_communityHome_web.dart' show kCommunityContentMaxWidth;
+import 'package:com.snowlive/web/view/fleamarket/v_fleamarketDetail_web.dart'
+    show kFleamarketDetailContentWidth;
 import 'package:com.snowlive/web/widget/w_web_more_menu_web.dart';
 import 'package:com.snowlive/web/view/community/w_community_body_web.dart';
 import 'package:com.snowlive/web/widget/w_web_comment_input_web.dart';
 import 'package:com.snowlive/web/view/community/w_community_comments_web.dart';
 import 'package:com.snowlive/web/widget/w_web_image_viewer_web.dart';
 import 'package:com.snowlive/web/view/community/w_community_row_web.dart'
-    show CommunityCategoryChip, communityDateLabel;
+    show communityDateLabel;
 import 'package:com.snowlive/web/viewmodel/auth/vm_authcheck_web.dart';
 import 'package:com.snowlive/web/viewmodel/community/vm_communityDetail_web.dart';
 import 'package:com.snowlive/web/widget/w_empty_state_web.dart';
 import 'package:com.snowlive/web/widget/w_network_image_web.dart';
 import 'package:com.snowlive/web/widget/w_web_profile_tap_web.dart';
+import 'package:com.snowlive/web/widget/w_web_back_icon_web.dart';
+import 'package:com.snowlive/web/widget/w_web_icon_button_web.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -33,7 +36,8 @@ class CommunityDetailViewWeb extends StatefulWidget {
 }
 
 class _CommunityDetailViewWebState extends State<CommunityDetailViewWeb> {
-  final CommunityDetailViewModelWeb _vm = Get.find<CommunityDetailViewModelWeb>();
+  final CommunityDetailViewModelWeb _vm =
+      Get.find<CommunityDetailViewModelWeb>();
   final UserViewModel _userVm = Get.find<UserViewModel>();
   final AuthCheckViewModelWeb _authVm = Get.find<AuthCheckViewModelWeb>();
 
@@ -115,7 +119,8 @@ class _CommunityDetailViewWebState extends State<CommunityDetailViewWeb> {
     final id = _communityId;
     if (id == null) return;
     // 웹은 해시 URL 전략이라 '#'을 포함해야 같은 화면으로 다시 들어온다.
-    final url = '${Uri.base.removeFragment()}#${WebRoutes.communityDetail}?id=$id';
+    final url =
+        '${Uri.base.removeFragment()}#${WebRoutes.communityDetail}?id=$id';
     Clipboard.setData(ClipboardData(text: url));
     Get.snackbar('링크 복사 완료', '게시글 주소가 복사되었어요.');
   }
@@ -137,7 +142,9 @@ class _CommunityDetailViewWebState extends State<CommunityDetailViewWeb> {
         return ok;
       },
       onReport: _vm.reportPost,
-      onHideUser: detail?.userId == null ? null : () => _vm.blockUser(detail!.userId!),
+      onHideUser: detail?.userId == null
+          ? null
+          : () => _vm.blockUser(detail!.userId!),
     );
   }
 
@@ -157,16 +164,19 @@ class _CommunityDetailViewWebState extends State<CommunityDetailViewWeb> {
 
     final scrollArea = Container(
       color: SDSColor.snowliveWhite,
-      padding: EdgeInsets.fromLTRB(
-        isDesktop ? SDSSpacing.xl : SDSSpacing.md,
-        32,
-        isDesktop ? SDSSpacing.xl : SDSSpacing.md,
-        SDSSpacing.xl,
-      ),
       child: SingleChildScrollView(
+        // 여백은 스크롤 영역 **안쪽**(웹 공통 규칙) — 바깥에 두면 스크롤바가
+        // 브라우저 우측 끝이 아니라 콘텐츠 안쪽에 뜬다.
+        padding: webSubPagePadding(context),
         child: Center(
           child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: kCommunityContentMaxWidth),
+            // PC만 800 고정 중앙(피그마 64:127458) — 태블릿·모바일은 제한 없이
+            // 화면(패딩 제외)을 가득 채운다(중고거래 상세와 동일 규칙).
+            constraints: BoxConstraints(
+              maxWidth: isDesktop
+                  ? kFleamarketDetailContentWidth
+                  : double.infinity,
+            ),
             child: Obx(_buildContent),
           ),
         ),
@@ -181,10 +191,14 @@ class _CommunityDetailViewWebState extends State<CommunityDetailViewWeb> {
     // 바 높이는 _replyTargetCommentId(State 필드)만 따라가므로 setState로 충분하다.
     // 여기를 Obx로 감싸면 안 된다 — 답글 대상이 없을 때 빌더가 관찰 대상을 하나도
     // 읽지 않아 GetX가 "improper use of a GetX" 예외를 던지고 화면이 통째로 죽는다.
-    final barHeight = _replyTargetCommentId != null ? 116.0 : 76.0;
+    // 바 66(패딩 10 + 입력 46 + 10, 피그마 64:138416), 답글 모드는 스트립 40 추가.
+    final barHeight = _replyTargetCommentId != null ? 106.0 : 66.0;
     return Stack(
       children: [
-        Padding(padding: EdgeInsets.only(bottom: barHeight), child: scrollArea),
+        Padding(
+          padding: EdgeInsets.only(bottom: barHeight),
+          child: scrollArea,
+        ),
         Positioned(left: 0, right: 0, bottom: 0, child: _buildMobileInputBar()),
       ],
     );
@@ -202,19 +216,25 @@ class _CommunityDetailViewWebState extends State<CommunityDetailViewWeb> {
       final targetName = target == null || commentCount == 0
           ? null
           : _vm.comments
-              .firstWhereOrNull((c) => c.commentId == target)
-              ?.userInfo
-              ?.displayName;
+                .firstWhereOrNull((c) => c.commentId == target)
+                ?.userInfo
+                ?.displayName;
 
       return _mobileInputBarShell(target: target, targetName: targetName);
     });
   }
 
-  Widget _mobileInputBarShell({required int? target, required String? targetName}) {
+  Widget _mobileInputBarShell({
+    required int? target,
+    required String? targetName,
+  }) {
     return Container(
       decoration: BoxDecoration(
         color: SDSColor.snowliveWhite,
-        border: Border(top: BorderSide(color: SDSColor.gray100)),
+        // 답글 모드에서는 상단 라인이 대상 스트립 쪽에 있으므로 여기선 뺀다.
+        border: (target != null && targetName != null)
+            ? null
+            : Border(top: BorderSide(color: SDSColor.gray100)),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -225,13 +245,18 @@ class _CommunityDetailViewWebState extends State<CommunityDetailViewWeb> {
               onCancel: () => setState(() => _replyTargetCommentId = null),
             ),
           Padding(
-            padding: const EdgeInsets.all(SDSSpacing.md),
+            // 피그마 64:138416 — 바 66 = 패딩 10 + 입력 46 + 10.
+            padding: const EdgeInsets.all(10),
             child: WebCommentInput(
-              controller: target == null ? _commentController : _replyControllerFor(target),
+              controller: target == null
+                  ? _commentController
+                  : _replyControllerFor(target),
               hintText: target == null ? '댓글을 남겨주세요' : '답글을 남겨주세요',
               isSubmitting: _isSubmitting,
               onSubmit: _vm.isLoggedIn
-                  ? (text) => target == null ? _submitComment(text) : _submitReply(target, text)
+                  ? (text) => target == null
+                        ? _submitComment(text)
+                        : _submitReply(target, text)
                   : null,
               onGuestTap: _requireLogin,
             ),
@@ -261,17 +286,30 @@ class _CommunityDetailViewWebState extends State<CommunityDetailViewWeb> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _buildTopActions(),
-        const SizedBox(height: SDSSpacing.md),
+        // 뒤로가기 ↔ 헤더 31 (피그마 64:127458).
+        const SizedBox(height: 20),
         _buildHeader(detail),
-        const SizedBox(height: SDSSpacing.md),
+        // 메타 ↔ 프로필 24 (피그마 64:127458).
+        const SizedBox(height: 24),
         _buildAuthorCard(detail),
-        Divider(color: SDSColor.gray50, height: 32, thickness: 1),
-        CommunityBodyWeb(document: detail.description, onImageTap: _openImageViewer),
-        const SizedBox(height: SDSSpacing.xl),
-        Container(height: 8, color: SDSColor.gray50),
-        const SizedBox(height: SDSSpacing.lg),
+        // 프로필 ↔ 구분선 ↔ 본문: PC·태블릿 30 (피그마 64:127458) / 모바일 24
+        SizedBox(
+          height: context.screenType == WebScreenType.mobile ? 24 : 30,
+        ),
+        Container(height: 1, color: SDSColor.gray100),
+        SizedBox(
+          height: context.screenType == WebScreenType.mobile ? 24 : 30,
+        ),
+        CommunityBodyWeb(
+          document: detail.description,
+          onImageTap: _openImageViewer,
+        ),
+        // 본문 ↔ 댓글 48 (피그마 64:127458 — 회색 띠 없음).
+        const SizedBox(height: 48),
         _buildCommentsSection(detail),
-        const SizedBox(height: SDSSpacing.xl),
+        // 댓글 영역 하단: PC·태블릿 32 / 모바일 0 (하단 고정 입력바가 여백 역할).
+        if (context.screenType != WebScreenType.mobile)
+          const SizedBox(height: SDSSpacing.xl),
       ],
     );
   }
@@ -284,9 +322,15 @@ class _CommunityDetailViewWebState extends State<CommunityDetailViewWeb> {
       children: [
         Text(
           '댓글 ${detail.commentCount ?? 0}',
-          style: SDSTextStyle.bold.copyWith(fontSize: 16, color: SDSColor.gray900),
+          // bold 16 — 중고거래 댓글 헤더와 통일(목업 64:127630의 18 대신, 사용자 결정).
+          style: SDSTextStyle.bold.copyWith(
+            fontSize: 16,
+            color: SDSColor.gray900,
+          ),
         ),
-        const SizedBox(height: SDSSpacing.md),
+        // PC·태블릿: 헤더 ↔ 입력창 12 (피그마 64:127628).
+        // 모바일: 입력창이 하단 고정이라 헤더 ↔ 목록 30 (피그마 64:136666).
+        SizedBox(height: isMobile ? 30 : 12),
         // 모바일은 입력창이 화면 하단에 고정이라 여기 두지 않는다.
         if (!isMobile) ...[
           WebCommentInput(
@@ -296,41 +340,48 @@ class _CommunityDetailViewWebState extends State<CommunityDetailViewWeb> {
             onSubmit: _vm.isLoggedIn ? _submitComment : null,
             onGuestTap: _requireLogin,
           ),
-          const SizedBox(height: SDSSpacing.lg),
+          // 입력창 ↔ 목록 30 (피그마 64:127458).
+          const SizedBox(height: 30),
         ],
         CommunityCommentsWeb(
           vm: _vm,
           postAuthorId: detail.userId,
           myUserId: _userVm.user.user_id,
           replyTargetCommentId: _replyTargetCommentId,
-          onReplyTargetChanged: (id) => setState(() => _replyTargetCommentId = id),
+          onReplyTargetChanged: (id) =>
+              setState(() => _replyTargetCommentId = id),
           // 태블릿·데스크탑은 스레드 아래에 인라인 답글 입력창이 열린다.
           inlineReplyInputBuilder: isMobile
               ? null
               : (commentId) => WebCommentInput(
-                    controller: _replyControllerFor(commentId),
-                    hintText: '답글을 남겨주세요',
-                    isSubmitting: _isSubmitting,
-                    onSubmit: _vm.isLoggedIn
-                        ? (text) => _submitReply(commentId, text)
-                        : null,
-                    onGuestTap: _requireLogin,
-                  ),
+                  controller: _replyControllerFor(commentId),
+                  hintText: '답글을 남겨주세요',
+                  isSubmitting: _isSubmitting,
+                  onSubmit: _vm.isLoggedIn
+                      ? (text) => _submitReply(commentId, text)
+                      : null,
+                  onGuestTap: _requireLogin,
+                ),
         ),
       ],
     );
   }
 
   Widget _buildTopActions() {
-    return Align(
-      alignment: Alignment.centerLeft,
-      child: IconButton(
-        onPressed: _goBack,
-        icon: Icon(Icons.arrow_back, color: SDSColor.gray900),
-        padding: EdgeInsets.zero,
-        constraints: const BoxConstraints(),
-      ),
+    final isMobile = context.screenType == WebScreenType.mobile;
+    final back = IconButton(
+      onPressed: _goBack,
+      icon: const WebBackIcon(),
+      padding: EdgeInsets.zero,
+      constraints: const BoxConstraints(),
     );
+    // 모바일은 공유·⋯가 제목 줄이 아니라 뒤로가기 줄 우측에 온다(피그마 64:138413).
+    if (isMobile) {
+      return Row(
+        children: [back, const Spacer(), _buildTitleActions()],
+      );
+    }
+    return Align(alignment: Alignment.centerLeft, child: back);
   }
 
   /// 제목 줄 우측 액션. 커뮤니티는 **공유 + 더보기 두 개뿐**이다(북마크 없음).
@@ -338,20 +389,24 @@ class _CommunityDetailViewWebState extends State<CommunityDetailViewWeb> {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        IconButton(
-          onPressed: _copyLink,
+        // 웹 공통 아이콘 hover(60% 페이드) — 옆의 ⋯ 버튼과 동일. Material
+        // IconButton의 원형 hover 배경을 쓰지 않는다.
+        // 피그마 64:127537 — 아이콘 26, 사이 간격 16. 클릭 영역 28(패딩 1).
+        WebIconButton(
+          onTap: _copyLink,
+          tooltip: '링크 복사',
+          padding: const EdgeInsets.all(1),
           icon: SvgPicture.asset(
             'assets/imgs/icons/icon_header_share_web.svg',
-            width: 22,
-            height: 22,
+            width: 26,
+            height: 26,
           ),
-          tooltip: '링크 복사',
-          padding: const EdgeInsets.all(6),
-          constraints: const BoxConstraints(),
         ),
-        const SizedBox(width: 4),
+        const SizedBox(width: 16),
         WebMoreButton(
-          iconSize: 22,
+          iconSize: 26,
+          // 클릭 영역 28(아이콘 26 + 패딩 1).
+          hitPadding: 1,
           // 내 글이면 삭제, 남의 글이면 신고/숨기기 (중고거래와 동일한 구성)
           actions: _vm.isAuthor
               ? const [WebMoreAction.delete]
@@ -364,19 +419,36 @@ class _CommunityDetailViewWebState extends State<CommunityDetailViewWeb> {
 
   Widget _buildHeader(CommunityDetailModel detail) {
     final sub = detail.categorySub;
-    final metaStyle = SDSTextStyle.regular.copyWith(fontSize: 13, color: SDSColor.gray700);
+    // 메타: regular 13 gray500 (중고거래·목록과 색 통일).
+    final metaStyle = SDSTextStyle.regular.copyWith(
+      fontSize: 13,
+      color: SDSColor.gray500,
+    );
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if (sub != null && sub.isNotEmpty)
-          CommunityCategoryChip(
-            label: sub,
-            background: SDSColor.blue50,
-            textColor: SDSColor.snowliveBlue,
+        if (sub != null && sub.isNotEmpty) ...[
+          // 상세 전용 배지 — 목록 칩(regular 11/r2)과 달리 bold 12·패딩 5/4·r4
+          // (피그마 64:127533).
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 4),
+            decoration: BoxDecoration(
+              color: SDSColor.blue50,
+              borderRadius: BorderRadius.circular(4),
+            ),
+            child: Text(
+              sub,
+              style: SDSTextStyle.bold.copyWith(
+                fontSize: 12,
+                color: SDSColor.snowliveBlue,
+              ),
+            ),
           ),
-        const SizedBox(height: 10),
-        // 목업대로 제목과 같은 줄 오른쪽 끝에 공유·더보기를 둔다.
+          // 배지 ↔ 제목 4 (피그마 64:127532).
+          const SizedBox(height: 4),
+        ],
+        // 목업대로 제목과 같은 줄 오른쪽 끝에 공유·더보기를 둔다
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -385,25 +457,37 @@ class _CommunityDetailViewWebState extends State<CommunityDetailViewWeb> {
                 detail.title ?? '',
                 maxLines: 3,
                 overflow: TextOverflow.ellipsis,
-                style: SDSTextStyle.bold.copyWith(fontSize: 18, color: SDSColor.gray900),
+                // 피그마 64:127536 — bold 20, lh 1.4.
+                style: SDSTextStyle.bold.copyWith(
+                  fontSize: 20,
+                  height: 1.4,
+                  color: SDSColor.gray900,
+                ),
               ),
             ),
-            const SizedBox(width: SDSSpacing.md),
-            _buildTitleActions(),
+            // 모바일은 공유·⋯가 뒤로가기 줄로 올라가고 제목이 전체폭을 쓴다.
+            if (context.screenType != WebScreenType.mobile) ...[
+              const SizedBox(width: SDSSpacing.md),
+              _buildTitleActions(),
+            ],
           ],
         ),
-        const SizedBox(height: 6),
+        // 제목 ↔ 메타 4 (피그마 64:127532).
+        const SizedBox(height: 4),
         Row(
           children: [
             Text(detail.userInfo?.displayName ?? '', style: metaStyle),
             _metaDivider(),
             Text(communityDateLabel(detail.uploadTime), style: metaStyle),
             _metaDivider(),
-            Image.asset('assets/imgs/icons/icon_eye_rounded.png', width: 14, height: 14),
+            // 채움형 아이콘(폰트 글리프) — 구멍이 살아 있어 틴트해도 디테일 유지
+            // 색은 메타 텍스트와 동일(gray600)
+            Icon(Icons.visibility, size: 14, color: SDSColor.gray400),
             const SizedBox(width: 2),
             Text('${detail.viewsCount ?? 0}', style: metaStyle),
-            const SizedBox(width: 6),
-            Image.asset('assets/imgs/icons/icon_reply_rounded.png', width: 14, height: 14),
+            // 조회수 그룹 ↔ 댓글수 그룹 8 (피그마 64:127543).
+            const SizedBox(width: 8),
+            Icon(Icons.comment, size: 14, color: SDSColor.gray400),
             const SizedBox(width: 2),
             Text('${detail.commentCount ?? 0}', style: metaStyle),
           ],
@@ -426,14 +510,19 @@ class _CommunityDetailViewWebState extends State<CommunityDetailViewWeb> {
           userId: detail.userId,
           name: info?.displayName,
           avatarUrl: photo,
+          // 피그마 64:127550 — 아바타 40, 텍스트와 간격 12.
           child: ClipOval(
             child: (photo != null && photo.isNotEmpty)
-                ? WebNetworkImage(url: photo, width: 32, height: 32)
+                ? WebNetworkImage(url: photo, width: 40, height: 40)
                 : Container(
-                    width: 32,
-                    height: 32,
+                    width: 40,
+                    height: 40,
                     color: SDSColor.gray100,
-                    child: Icon(Icons.person, size: 18, color: SDSColor.gray400),
+                    child: Icon(
+                      Icons.person,
+                      size: 22,
+                      color: SDSColor.gray400,
+                    ),
                   ),
           ),
         ),
@@ -441,23 +530,34 @@ class _CommunityDetailViewWebState extends State<CommunityDetailViewWeb> {
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // 피그마 64:127566 — 이름 14 gray900, 간격 2, 소속 13 gray500.
             Text(
               info?.displayName ?? '',
-              style: SDSTextStyle.regular.copyWith(fontSize: 12, color: SDSColor.gray900),
+              style: SDSTextStyle.regular.copyWith(
+                fontSize: 14,
+                color: SDSColor.gray900,
+              ),
             ),
-            if (subtitle.isNotEmpty)
+            if (subtitle.isNotEmpty) ...[
               Text(
                 subtitle,
-                style: SDSTextStyle.regular.copyWith(fontSize: 12, color: SDSColor.gray500),
+                style: SDSTextStyle.regular.copyWith(
+                  fontSize: 13,
+                  color: SDSColor.gray500,
+                ),
               ),
+            ],
           ],
         ),
       ],
     );
   }
 
-  Widget _metaDivider() => Text(
-        '  |  ',
-        style: SDSTextStyle.regular.copyWith(fontSize: 13, color: SDSColor.gray300),
-      );
+  /// 메타 구분자 — 1×10 세로선 gray200, 좌우 간격 10 (목록과 동일 규칙)
+  Widget _metaDivider() => Container(
+    width: 1,
+    height: 10,
+    margin: const EdgeInsets.symmetric(horizontal: 10),
+    color: SDSColor.gray200,
+  );
 }

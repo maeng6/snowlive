@@ -1,5 +1,7 @@
 import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/web/util/responsive_web.dart';
+import 'package:com.snowlive/web/widget/w_web_back_icon_web.dart';
+import 'package:com.snowlive/web/widget/w_web_icon_button_web.dart';
 import 'package:flutter/material.dart';
 
 /// 데스크탑 폼·버튼 폭. 목업 실측 354.
@@ -48,11 +50,12 @@ class OnboardingScaffoldWeb extends StatelessWidget {
 
     final backButton = Align(
       alignment: Alignment.centerLeft,
-      child: IconButton(
-        onPressed: onBack,
-        padding: EdgeInsets.zero,
-        constraints: const BoxConstraints(),
-        icon: Icon(Icons.arrow_back, size: 24, color: SDSColor.gray900),
+      // 공통 헤더 표준 뒤로가기(30, hover 페이드).
+      // 좌측 히트 여백만 0 — 아이콘이 콘텐츠 좌측선에 붙는다.
+      child: WebIconButton(
+        onTap: onBack,
+        padding: const EdgeInsets.fromLTRB(0, 4, 4, 4),
+        icon: const WebBackIcon(size: 30),
       ),
     );
 

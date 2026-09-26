@@ -7,10 +7,16 @@ import 'package:com.snowlive/web/widget/w_web_more_menu_web.dart';
 import 'package:com.snowlive/web/widget/w_web_profile_tap_web.dart';
 import 'package:flutter/material.dart';
 
+/// 댓글 빈 상태 아이콘 — 앱 라이브톡 댓글 화면과 같은 빈 말풍선.
+const String kLiveTalkCommentsEmptyIcon =
+    'assets/imgs/icons/icon_friendsTalk_nodata.png';
+
+/// 빈 상태가 차지할 최소 높이. 이 안에서 가운데보다 [_kEmptyRaise]만큼 위에 놓는다
+/// — 정확히 가운데면 아래로 처져 보인다(사용자 확정).
+const double _kEmptyMinHeight = 160;
+const double _kEmptyRaise = 20;
+
 /// 라이브톡 댓글·답글 목록. 상세 오버레이(데스크탑·태블릿)와 모바일 댓글 화면이 공유한다.
-///
-/// 답글 앞에는 **그 스레드 댓글 작성자의 닉네임을 파란색으로** 붙인다(목업).
-/// 서버가 멘션 텍스트를 주지 않으므로 UI가 합성한다 — 커뮤니티와 같은 규칙.
 class LiveTalkCommentListWeb extends StatelessWidget {
   final LiveTalkDetailViewModelWeb vm;
 
@@ -54,7 +60,8 @@ class LiveTalkCommentListWeb extends StatelessWidget {
             isAuthor: postUserId != null && comment.userId == postUserId,
             time: comment.uploadTime,
             content: comment.content ?? '',
-            avatarSize: 28,
+            // 댓글 아바타 32 (피그마 80:220289). 답글은 한 단계 작은 26 유지.
+            avatarSize: 32,
             onReplyTap: () => onReplyTap(comment),
             moreActions: vm.isMyComment(comment.userId)
                 ? const [WebMoreAction.delete]
@@ -76,8 +83,8 @@ class LiveTalkCommentListWeb extends StatelessWidget {
                 isAuthor: postUserId != null && reply.userId == postUserId,
                 time: reply.uploadTime,
                 content: reply.content ?? '',
-                // 목업: 답글 본문 앞에 스레드 댓글 작성자 닉네임을 파란색으로.
-                mention: comment.userInfo?.displayName,
+                // 멘션은 서버가 내려주지 않는 값이라 UI 합성을 하지 않는다
+                // (커뮤니티와 동일 — 서버에 대상 필드가 생기면 다시 붙인다).
                 avatarSize: 26,
                 onReplyTap: () => onReplyTap(comment),
                 moreActions: vm.isMyComment(reply.userId)
@@ -98,27 +105,55 @@ class LiveTalkCommentListWeb extends StatelessWidget {
 }
 
 /// 댓글 0건 상태(목업: 말풍선 아이콘 + 문구).
+/// 댓글 빈 상태. 아이콘은 앱 라이브톡 댓글 화면·웹 방명록과 같은 빈 말풍선
+/// (`icon_friendsTalk_nodata.png`, 74) — 문구만 웹 공통('댓글이 없어요' 14 gray500).
+///
+/// [fillHeight]면 남은 영역 **세로 중앙**에 놓는다(오버레이처럼 댓글 칸 높이가
+/// 정해진 곳). 아니면 위아래 여백만 두고 흐름대로 놓는다.
 class LiveTalkCommentsEmpty extends StatelessWidget {
-  const LiveTalkCommentsEmpty({super.key});
+  final bool fillHeight;
+
+  const LiveTalkCommentsEmpty({super.key, this.fillHeight = false});
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 48),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(Icons.chat_bubble_outline, size: 32, color: SDSColor.gray200),
-          const SizedBox(height: SDSSpacing.sm),
-          Text('댓글이 없어요',
-              style: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray400)),
-        ],
+    final content = Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Image.asset(kLiveTalkCommentsEmptyIcon, width: 74),
+        Text('댓글이 없어요',
+            style: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray500)),
+      ],
+    );
+    // 가운데에서 [_kEmptyRaise]만큼 위로. Padding으로 아래를 키우면 영역 자체가
+    // 커지고, Alignment는 "빈 공간의 비율"이라 콘텐츠 높이에 따라 이동량이
+    // 달라진다 — 레이아웃을 건드리지 않는 Transform으로 정확히 그만큼만 올린다.
+    final raised = Center(
+      child: Transform.translate(
+        offset: const Offset(0, -_kEmptyRaise),
+        child: content,
       ),
     );
+
+    if (!fillHeight) {
+      // 카드 높이가 내용에 따라 줄어드는 자리(태블릿·모바일)에서는 남는 영역이
+      // 없다 — 대신 최소 높이를 주고 그 안에 놓는다.
+      return ConstrainedBox(
+        constraints: const BoxConstraints(
+          minWidth: double.infinity,
+          minHeight: _kEmptyMinHeight,
+        ),
+        child: raised,
+      );
+    }
+    return raised;
   }
 }
 
-/// 댓글/답글 한 줄. 둘의 차이는 아바타 크기와 멘션뿐이다.
+/// 댓글/답글 한 줄. 둘의 차이는 아바타 크기뿐이다.
+///
+/// 답글 앞의 파란 멘션은 **서버가 대상 필드를 안 내려줘서** 뺐다(커뮤니티와 동일 —
+/// 필드가 생기면 다시 붙인다).
 class _CommentRow extends StatelessWidget {
   final String? avatarUrl;
   /// 프로필 사진 탭 → 프로필 팝업.
@@ -127,7 +162,6 @@ class _CommentRow extends StatelessWidget {
   final bool isAuthor;
   final String? time;
   final String content;
-  final String? mention;
   final double avatarSize;
   final VoidCallback onReplyTap;
   final List<WebMoreAction> moreActions;
@@ -144,7 +178,6 @@ class _CommentRow extends StatelessWidget {
     required this.onReplyTap,
     required this.moreActions,
     required this.onMoreAction,
-    this.mention,
   });
 
   @override
@@ -169,7 +202,8 @@ class _CommentRow extends StatelessWidget {
                 : _defaultAvatar(),
           ),
         ),
-        const SizedBox(width: SDSSpacing.sm),
+        // 아바타 ↔ 내용 10 — 피드·상세 헤더와 같은 값(사용자 확정).
+        const SizedBox(width: 10),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -198,12 +232,6 @@ class _CommentRow extends StatelessWidget {
               Text.rich(
                 TextSpan(
                   children: [
-                    if (mention != null && mention!.isNotEmpty)
-                      TextSpan(
-                        text: '$mention ',
-                        style: SDSTextStyle.bold
-                            .copyWith(fontSize: 14, color: SDSColor.snowliveBlue, height: 1.4),
-                      ),
                     TextSpan(
                       text: content,
                       style: SDSTextStyle.regular
@@ -225,7 +253,14 @@ class _CommentRow extends StatelessWidget {
             ],
           ),
         ),
-        WebMoreButton(iconSize: 18, actions: moreActions, onSelected: onMoreAction),
+        // ⋯ 26(클릭 영역 28) — 피드·상세 헤더와 동일한 웹 공통 규격.
+        WebMoreButton(
+          iconSize: 26,
+          hitPadding: 1,
+          iconColor: SDSColor.gray500,
+          actions: moreActions,
+          onSelected: onMoreAction,
+        ),
       ],
     );
   }

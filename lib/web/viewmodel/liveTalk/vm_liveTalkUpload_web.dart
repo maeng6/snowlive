@@ -11,6 +11,16 @@ import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 
+/// 🔧 **로컬 확인용 스위치 — 배포 전 반드시 false로 되돌릴 것.**
+///
+/// 라이딩 기록 카드는 앱에서 라이브온을 해야 생기는데 웹에서는 만들 수 없어,
+/// 로컬에서는 `라이딩 카드 공유`가 늘 "기록 없음"만 보인다. true로 바꾸면
+/// 서버 조회 대신 [LiveTalkUploadViewModelWeb.useFakeRidingCard]의 가짜 기록을
+/// 써서 카드 선택·글 작성 단계를 눈으로 확인할 수 있다(로그아웃 상태도 동작).
+///
+/// ⚠️ 업로드(✓)는 로그인한 사용자만 된다 — 가짜 데이터로는 화면만 확인된다.
+const bool kDebugFakeRidingCard = true;
+
 /// 웹 라이브톡 업로드 뷰모델 — 사진 글과 라이딩 기록 카드 글을 모두 담당한다.
 ///
 /// 라이브톡 글은 `image_url` 하나 + `description`이 전부다. 라이딩 카드 글도
@@ -87,6 +97,27 @@ class LiveTalkUploadViewModelWeb extends GetxController {
     } finally {
       _isLoadingCard.value = false;
     }
+  }
+
+  /// [kDebugFakeRidingCard] 전용 — 목업(피그마 80:218042)과 같은 값의 가짜 기록.
+  /// 서버를 타지 않으므로 로그아웃 상태에서도 카드 화면을 볼 수 있다.
+  void useFakeRidingCard() {
+    _ridingCard.value = DailyRidingCard(
+      cardId: -1,
+      date: _todayKey(),
+      weekday: '토',
+      totalSlopeCount: 17,
+      totalDistance: 12.4,
+      mostRiddenSlope: '스패',
+      mostRiddenCount: 23,
+      topSpeed: 24.6,
+      avgSlope: 18.2,
+      riderTitle: '눈꽃 감상하며 타는 스피드 왕',
+      resorts: ['휘닉스파크'],
+      // 1·2번 스킨은 이 목록으로 슬로프별 횟수를 그린다.
+      slopeCountsByName: const {'스패': 23, '파노라마': 8, '챌린지': 5, '밸리': 3},
+    );
+    _isLoadingCard.value = false;
   }
 
   /// 서버 `date` 필드와 같은 형식(`yyyy-MM-dd`). 앱과 동일하게 **기기 로컬 날짜**를 쓴다.

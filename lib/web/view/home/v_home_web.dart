@@ -7,6 +7,7 @@ import 'package:com.snowlive/web/view/home/w_home_sections_web.dart';
 import 'package:com.snowlive/web/view/home/w_home_weather_web.dart';
 import 'package:com.snowlive/web/viewmodel/auth/vm_authcheck_web.dart';
 import 'package:com.snowlive/web/viewmodel/home/vm_home_web.dart';
+import 'package:com.snowlive/web/widget/w_web_sticky_footer_scroll_web.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -101,16 +102,21 @@ class _HomeViewWebState extends State<HomeViewWeb> {
       key: _stackKey,
       children: [
         Positioned.fill(
-          child: SingleChildScrollView(
+          // 콘텐츠가 짧으면 푸터가 뷰포트 하단에 붙는다(공통 골격).
+          // 패딩은 1280 박스 안쪽 구조를 유지해야 해서(폭이 변하면 안 됨)
+          // 래퍼 패딩 대신 content/footer 각자의 Padding으로 나눠 든다.
+          child: WebStickyFooterScroll(
             controller: _scrollController,
-            child: Center(
+            content: Center(
               child: ConstrainedBox(
                 constraints: const BoxConstraints(maxWidth: kHomeMaxContentWidth),
                 child: Padding(
                   // 상하 여백도 좌우와 동일 규칙(PC 40 / 태블릿 20 / 모바일 16).
-                  padding: EdgeInsets.symmetric(
-                    horizontal: horizontal,
-                    vertical: horizontal,
+                  padding: EdgeInsets.fromLTRB(
+                    horizontal,
+                    horizontal,
+                    horizontal,
+                    0,
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -151,11 +157,23 @@ class _HomeViewWebState extends State<HomeViewWeb> {
                             items: _vm.fleamarket,
                             isLoading: _vm.isFleamarketLoading,
                           )),
-                      // 콘텐츠 ↔ 푸터 간격은 항상 120.
-                      const SizedBox(height: 120),
-                      HomeFooterWeb(key: _footerKey),
                     ],
                   ),
+                ),
+              ),
+            ),
+            // 콘텐츠 ↔ 푸터 간격은 최소 120(짧으면 푸터가 하단으로 밀린다).
+            footer: Center(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: kHomeMaxContentWidth),
+                child: Padding(
+                  padding: EdgeInsets.fromLTRB(
+                    horizontal,
+                    120,
+                    horizontal,
+                    horizontal,
+                  ),
+                  child: HomeFooterWeb(key: _footerKey),
                 ),
               ),
             ),
@@ -181,8 +199,9 @@ class _HomeViewWebState extends State<HomeViewWeb> {
   }
 }
 
-/// 홈 콘텐츠 최대폭(콘텐츠 1280 + 좌우 여백 40*2)
-const double kHomeMaxContentWidth = 1360;
+/// 홈 콘텐츠 최대폭(콘텐츠 1280(웹 공통) + 좌우 여백 40*2).
+/// 홈은 좌우 패딩이 ConstrainedBox 안쪽에 있어서 여백 몫 80을 더해 둔다.
+const double kHomeMaxContentWidth = kWebDesktopListMaxWidth + 80;
 
 /// 오픈 채팅 바·패널 폭(데스크탑·태블릿, 피그마 328)
 const double kHomeChatWidth = 328;

@@ -3,16 +3,15 @@ import 'package:com.snowlive/web/util/responsive_web.dart';
 import 'package:com.snowlive/web/view/community/w_community_header_web.dart';
 import 'package:com.snowlive/web/view/community/w_event_list_web.dart';
 import 'package:com.snowlive/web/view/fleamarket/w_fleamarket_filter_sheet_web.dart';
+import 'package:com.snowlive/web/view/home/w_home_sections_web.dart' show HomeFooterWeb;
 import 'package:com.snowlive/web/viewmodel/community/vm_communityListPagination_web.dart';
 import 'package:com.snowlive/web/viewmodel/event/vm_eventListPagination_web.dart';
-import 'package:com.snowlive/web/widget/gnb/w_gnb_sidebar.dart';
+import 'package:com.snowlive/web/widget/w_web_sticky_footer_scroll_web.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-/// 커뮤니티와 같은 계산식(1440px - GNB - 좌우 여백)으로 콘텐츠 폭을 맞춘다.
-/// 각종소식은 우측 사이드바가 없어 목록이 이 폭을 전부 쓴다.
-const double kEventContentMaxWidth =
-    WebBreakpoints.maxContentWidth - kGnbSidebarWidth - (SDSSpacing.xl * 2);
+/// 각종소식은 우측 사이드바가 없어 목록 최대폭(웹 공통 1280)만 쓴다.
+const double kEventContentMaxWidth = kWebDesktopListMaxWidth;
 
 /// 웹 각종소식(이벤트) 독립 목록 화면.
 /// 커뮤니티에서 분리해 좌측 GNB의 "각종소식" 항목으로 진입한다.
@@ -65,7 +64,8 @@ class _EventHomeViewWebState extends State<EventHomeViewWeb> {
     final isDesktop = context.isDesktop;
     final titleText = Text(
       '각종소식',
-      style: SDSTextStyle.extraBold.copyWith(fontSize: 28, color: SDSColor.gray900),
+      // 홈 타이틀 공통: PC 32 / 태블릿·모바일 24 (중고거래 홈 기준).
+      style: SDSTextStyle.extraBold.copyWith(fontSize: webHomeTitleSize(context), color: SDSColor.gray900),
     );
     final searchBar = CommunitySearchBarWeb(
       controller: _searchController,
@@ -82,9 +82,13 @@ class _EventHomeViewWebState extends State<EventHomeViewWeb> {
     final accountFilter = Obx(
       () => FleamarketFilterPill<EventAccountFilter>(
         label: _account.label,
+        // 커뮤니티 정렬 pill과 동일(bold 14).
+        labelFontSize: 14,
         isActive: !_account.isAll,
         title: '계정 필터',
         showTitleInSheet: true,
+        // 태블릿은 PC식 앵커 드롭다운(커뮤니티 정렬 pill과 동일 규칙).
+        dropdownOnTablet: true,
         values: _vm.accountFilters.toList(),
         labelOf: (a) => a.label,
         onSelected: _onAccountSelected,
@@ -94,27 +98,36 @@ class _EventHomeViewWebState extends State<EventHomeViewWeb> {
     final content = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if (isDesktop)
-          // 데스크탑: 타이틀 + 검색바 + 계정 필터가 한 줄에 온다.
+        if (isDesktop) ...[
+          // 데스크탑: 타이틀 + 고정폭 검색바 한 줄, 필터는 아래 줄 우측 —
+          // 커뮤니티 홈과 동일한 골격.
           Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               titleText,
-              const SizedBox(width: SDSSpacing.lg),
+              // 타이틀 ↔ 검색바 36 (커뮤니티와 동일).
+              const SizedBox(width: 36),
               SizedBox(width: kCommunityDesktopSearchBarWidth, child: searchBar),
-              const SizedBox(width: SDSSpacing.md),
-              accountFilter,
             ],
-          )
-        else ...[
+          ),
+          // 타이틀·검색 영역 ↔ 필터 줄 30 (커뮤니티와 동일).
+          const SizedBox(height: 30),
+          Row(children: [const Spacer(), accountFilter]),
+          // 필터 줄 ↔ 목록 20 (커뮤니티와 동일).
+          const SizedBox(height: 20),
+        ] else ...[
           titleText,
           const SizedBox(height: SDSSpacing.md),
           searchBar,
-          const SizedBox(height: SDSSpacing.md),
-          // 모바일: 검색바 아래에 계정 필터를 오른쪽 정렬로 둔다.
+          // 검색 영역 ↔ 필터 줄: 태블릿 24 / 모바일 20 (커뮤니티와 동일).
+          SizedBox(
+            height: context.screenType == WebScreenType.tablet ? 24 : 20,
+          ),
+          // 태블릿·모바일: 검색바 아래에 계정 필터를 오른쪽 정렬로 둔다.
           Align(alignment: Alignment.centerRight, child: accountFilter),
+          // 필터 줄 ↔ 목록 20 (커뮤니티와 동일).
+          const SizedBox(height: 20),
         ],
-        const SizedBox(height: SDSSpacing.lg),
         // 검색 중이면 안내 박스를 목록 위에 둔다. 서버에 실제로 보낸 검색어를 쓴다.
         Obx(() {
           final query = _vm.appliedQuery;
@@ -130,18 +143,22 @@ class _EventHomeViewWebState extends State<EventHomeViewWeb> {
 
     return Container(
       color: SDSColor.snowliveWhite,
-      padding: EdgeInsets.fromLTRB(
-        isDesktop ? SDSSpacing.xl : SDSSpacing.md,
-        32,
-        isDesktop ? SDSSpacing.xl : SDSSpacing.md,
-        SDSSpacing.xl,
-      ),
-      child: SingleChildScrollView(
-        child: Center(
+      // 콘텐츠가 짧으면 푸터가 뷰포트 하단에 붙는다(공통 골격).
+      child: WebStickyFooterScroll(
+        padding: webHomePagePadding(context),
+        content: Center(
           child: ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: kEventContentMaxWidth),
             child: content,
           ),
+        ),
+        // 홈과 동일한 푸터 — 1280 제한 밖, 콘텐츠 영역 폭(푸터 정책).
+        // 간격은 최소값(콘텐츠가 길면 이 값 그대로).
+        footer: Column(
+          children: [
+            SizedBox(height: isDesktop ? 120 : 80),
+            const HomeFooterWeb(),
+          ],
         ),
       ),
     );

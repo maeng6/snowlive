@@ -16,7 +16,7 @@ import 'package:get/get.dart';
 /// 크루원 관리. `#/livecrew-member-admin?id=334`
 ///
 /// 목업대로 **행을 누르면 바로 아래에 액션 패널이 펼쳐진다.** 역할 변경·강퇴는 확인 후
-/// 즉시 적용하므로(사용자 확정) 별도 `저장하기` 버튼은 두지 않는다.
+/// 즉시 적용하므로 별도 `저장하기` 버튼은 두지 않는다.
 class CrewMemberAdminViewWeb extends StatefulWidget {
   const CrewMemberAdminViewWeb({super.key});
 

@@ -143,7 +143,7 @@ class WebProfileCard extends StatelessWidget {
               const SizedBox(height: SDSSpacing.md),
               action!,
             ],
-            // 점수·통합랭킹·티어 3분할은 뺐다(요청). 카드는 신원 + 하단 버튼만 남긴다.
+            // 점수·통합랭킹·티어 3분할은 뺐다. 카드는 신원 + 하단 버튼만 남긴다.
             if (footer != null) ...[
               const SizedBox(height: SDSSpacing.lg),
               SizedBox(width: double.infinity, child: footer!),
@@ -182,7 +182,7 @@ class WebProfilePillButton extends StatelessWidget {
 /// 누를 것이 없는 상태 표시(`친구`, `요청 보냄`).
 ///
 /// 이미 친구인 사람에게 버튼 모양을 그리면 아직 추가할 수 있는 것처럼 보인다 →
-/// 테두리 없는 배지로 구분한다(사용자 지시). [isPositive]면 파랑, 아니면 회색.
+/// 테두리 없는 배지로 구분한다. [isPositive]면 파랑, 아니면 회색.
 class WebProfileStateBadge extends StatelessWidget {
   final String label;
   final bool isPositive;

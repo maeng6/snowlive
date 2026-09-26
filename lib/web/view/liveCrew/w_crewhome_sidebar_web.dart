@@ -1,5 +1,6 @@
 import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/web/routes/routes_web.dart';
+import 'package:com.snowlive/web/util/responsive_web.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -68,17 +69,23 @@ class CrewTalkUploadButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton(
-      onPressed: onTap,
-      style: ElevatedButton.styleFrom(
-        backgroundColor: SDSColor.snowliveBlue,
-        elevation: 0,
-        padding: const EdgeInsets.symmetric(vertical: 15),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
-      ),
-      child: Text(
-        '크루톡 올리기',
-        style: SDSTextStyle.bold.copyWith(fontSize: 15, color: SDSColor.snowliveWhite),
+    // 높이는 공용 webActionButtonHeight(PC 44 / 그 외 48) — 이 버튼은 PC
+    // 사이드바와 좁은 폭의 본문 끝 양쪽에서 쓰인다.
+    return SizedBox(
+      height: webActionButtonHeight(context),
+      child: ElevatedButton(
+        onPressed: onTap,
+        style: ElevatedButton.styleFrom(
+          backgroundColor: SDSColor.snowliveBlue,
+          elevation: 0,
+          padding: EdgeInsets.zero,
+          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
+        ),
+        child: Text(
+          '크루톡 올리기',
+          style: SDSTextStyle.bold.copyWith(fontSize: 15, color: SDSColor.snowliveWhite),
+        ),
       ),
     );
   }

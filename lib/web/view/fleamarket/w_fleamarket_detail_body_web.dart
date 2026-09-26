@@ -27,7 +27,7 @@ class FleamarketDetailBodyWeb extends StatelessWidget {
           detail.title ?? '',
           maxLines: 3,
           overflow: TextOverflow.ellipsis,
-          style: SDSTextStyle.bold.copyWith(fontSize: 20, color: SDSColor.gray900),
+          style: SDSTextStyle.bold.copyWith(fontSize: 20, color: SDSColor.gray900, height: 1.4),
         ),
         const SizedBox(height: SDSSpacing.xs),
         // 목업: 올린 시간이 오른쪽 끝이 아니라 `장소 · 카테고리` 바로 뒤에 붙는다.
@@ -38,11 +38,11 @@ class FleamarketDetailBodyWeb extends StatelessWidget {
                 '${detail.spot ?? ''} · ${detail.categoryMain ?? ''}',
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: SDSTextStyle.regular.copyWith(fontSize: 13, color: SDSColor.gray500),
+                style: SDSTextStyle.regular.copyWith(fontSize: 13, color: SDSColor.gray500, height: 1.4),
               ),
             ),
-            const SizedBox(width: SDSSpacing.md),
-            Text(time, style: SDSTextStyle.regular.copyWith(fontSize: 13, color: SDSColor.gray500)),
+            const SizedBox(width: SDSSpacing.sm),
+            Text(time, style: SDSTextStyle.regular.copyWith(fontSize: 13, color: SDSColor.gray500, height: 1.4)),
           ],
         ),
         // 목업: 상태·가격제안 배지가 제목 아래·가격 위에 한 줄로 나란히 온다.
@@ -68,23 +68,28 @@ class FleamarketDetailBodyWeb extends StatelessWidget {
             ],
           ),
         ],
-        const SizedBox(height: SDSSpacing.sm),
+        const SizedBox(height: 16),
         Text(
           '${_priceFormat.format(detail.price ?? 0)}원',
-          style: SDSTextStyle.bold.copyWith(fontSize: 22, color: SDSColor.gray900),
+          // 피그마(46:12903): 제목과 동급 20.
+          style: SDSTextStyle.bold.copyWith(fontSize: 22, color: SDSColor.gray900, height: 1.3),
         ),
         // 목업에는 가격 아래 구분선이 없다.
         const SizedBox(height: SDSSpacing.md),
         Text(
           isSoldOut ? '거래가 완료된 물품입니다.' : (detail.description ?? ''),
-          style: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray700, height: 1.5),
+          style: SDSTextStyle.regular.copyWith(fontSize: 15, color: SDSColor.gray900, height: 1.4),
         ),
-        const SizedBox(height: SDSSpacing.md),
-        Divider(color: SDSColor.gray100),
-        const SizedBox(height: SDSSpacing.md),
+        // 설명 ↔ 구분선 ↔ 필드: 각 20 (피그마). Divider 기본 height(16)가 위아래
+        // 여백을 더해 어긋나므로 height 1로 고정한다.
+        const SizedBox(height: 20),
+        Divider(height: 1, color: SDSColor.gray100),
+        const SizedBox(height: 20),
         Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Expanded(child: _DetailField(label: '물품명', value: detail.productName ?? '')),
+            SizedBox(width: 16,),
             Expanded(child: _DetailField(label: '거래방식', value: detail.method ?? '')),
           ],
         ),
@@ -105,7 +110,7 @@ class _StatusBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(4),
         color: isFilled ? color : SDSColor.snowliveWhite,
@@ -135,8 +140,9 @@ class _DetailField extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(label, style: SDSTextStyle.regular.copyWith(fontSize: 12, color: SDSColor.gray400)),
-        const SizedBox(height: SDSSpacing.xs),
-        Text(value, style: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray900)),
+        // 라벨 ↔ 값 2, 값 15 (피그마 46:12903).
+        const SizedBox(height: 2),
+        Text(value, style: SDSTextStyle.regular.copyWith(fontSize: 15, color: SDSColor.gray900)),
       ],
     );
   }

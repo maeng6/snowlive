@@ -181,7 +181,7 @@ class _FriendHomeViewWebState extends State<FriendHomeViewWeb> {
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 320),
           child: Padding(
-            padding: const EdgeInsets.fromLTRB(24, 28, 24, 8),
+            padding: const EdgeInsets.fromLTRB(24, 28, 24, 12),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -265,12 +265,8 @@ class _FriendHomeViewWebState extends State<FriendHomeViewWeb> {
 
     return Container(
       color: SDSColor.snowliveWhite,
-      padding: EdgeInsets.fromLTRB(
-        isDesktop ? SDSSpacing.xl : SDSSpacing.md,
-        32,
-        isDesktop ? SDSSpacing.xl : SDSSpacing.md,
-        SDSSpacing.xl,
-      ),
+      // 홈 공통 여백(중고거래 홈 기준).
+      padding: webHomePagePadding(context),
       child: SingleChildScrollView(
         child: Center(
           child: ConstrainedBox(
@@ -293,8 +289,9 @@ class _FriendHomeViewWebState extends State<FriendHomeViewWeb> {
   List<Widget> _buildHeader(bool isDesktop) {
     final title = Text(
       '친구',
+      // 홈 타이틀 공통: PC 32 / 태블릿·모바일 24 (중고거래 홈 기준).
       style: SDSTextStyle.extraBold.copyWith(
-        fontSize: isDesktop ? 28 : 20,
+        fontSize: webHomeTitleSize(context),
         color: SDSColor.gray900,
       ),
     );

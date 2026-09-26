@@ -27,7 +27,8 @@ class FleamarketFilterPill<T> extends StatefulWidget {
   final bool isActive;
 
   /// 드롭다운 헤더 문구(데스크탑 전용). 목업의 '카테고리'/'거래장소'.
-  final String title;
+  /// null이면 드롭다운/시트에 헤더를 그리지 않는다(커뮤니티 정렬 pill).
+  final String? title;
   final List<T> values;
   final String Function(T value) labelOf;
   final void Function(T value) onSelected;
@@ -38,24 +39,29 @@ class FleamarketFilterPill<T> extends StatefulWidget {
   final bool showTitleInSheet;
 
   /// 태블릿에서도 PC처럼 pill 아래 앵커 드롭다운을 띄울지.
-  /// 중고거래 카테고리/거래장소만 true다(요청) — 랭킹·커뮤니티 등 다른 호출자는
+  /// 중고거래 카테고리/거래장소만 true다 — 랭킹·커뮤니티 등 다른 호출자는
   /// 기존 딤 시트를 유지한다.
   final bool dropdownOnTablet;
+
+  /// 라벨 크기. 중고거래 확정값 13이 기본 — 커뮤니티 정렬 pill 목업만 14다.
+  final double labelFontSize;
 
   const FleamarketFilterPill({
     super.key,
     required this.label,
     required this.isActive,
-    required this.title,
+    this.title,
     required this.values,
     required this.labelOf,
     required this.onSelected,
     this.showTitleInSheet = false,
     this.dropdownOnTablet = false,
+    this.labelFontSize = 13,
   });
 
   @override
-  State<FleamarketFilterPill<T>> createState() => _FleamarketFilterPillState<T>();
+  State<FleamarketFilterPill<T>> createState() =>
+      _FleamarketFilterPillState<T>();
 }
 
 class _FleamarketFilterPillState<T> extends State<FleamarketFilterPill<T>> {
@@ -84,10 +90,7 @@ class _FleamarketFilterPillState<T> extends State<FleamarketFilterPill<T>> {
 
   @override
   Widget build(BuildContext context) {
-    return CompositedTransformTarget(
-      link: _link,
-      child: _buildPill(),
-    );
+    return CompositedTransformTarget(link: _link, child: _buildPill());
   }
 
   Widget _buildPill() {
@@ -101,7 +104,8 @@ class _FleamarketFilterPillState<T> extends State<FleamarketFilterPill<T>> {
             : SDSColor.gray900;
       }
       // hover·드롭다운 열림 모두 gray50 — 두 상태를 구분하지 않는다.
-      if (_menuOpen || states.contains(WidgetState.hovered)) return SDSColor.gray50;
+      if (_menuOpen || states.contains(WidgetState.hovered))
+        return SDSColor.gray50;
       return SDSColor.snowliveWhite;
     }
 
@@ -126,14 +130,17 @@ class _FleamarketFilterPillState<T> extends State<FleamarketFilterPill<T>> {
         visualDensity: VisualDensity.standard,
         minimumSize: const WidgetStatePropertyAll(Size(0, 36)),
         padding: const WidgetStatePropertyAll(
-            EdgeInsets.symmetric(horizontal: 14, vertical: 0)),
+          EdgeInsets.symmetric(horizontal: 14, vertical: 0),
+        ),
         side: WidgetStateProperty.resolveWith(sideFor),
         backgroundColor: WidgetStateProperty.resolveWith(backgroundFor),
         foregroundColor: WidgetStatePropertyAll(
-            isActive ? SDSColor.snowliveWhite : SDSColor.gray900),
+          isActive ? SDSColor.snowliveWhite : SDSColor.gray900,
+        ),
         elevation: const WidgetStatePropertyAll(0),
         shape: WidgetStatePropertyAll(
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(50))),
+          RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
+        ),
       ),
       // ElevatedButton.icon은 아이콘을 라벨 앞에 붙인다. 앱 디자인은 라벨 뒤이므로
       // Row로 직접 배치한다
@@ -143,13 +150,13 @@ class _FleamarketFilterPillState<T> extends State<FleamarketFilterPill<T>> {
           Text(
             widget.label,
             style: SDSTextStyle.bold.copyWith(
-              fontSize: 13,
+              fontSize: widget.labelFontSize,
               color: isActive ? SDSColor.snowliveWhite : SDSColor.gray900,
             ),
           ),
           const SizedBox(width: 6),
-          // 모바일 앱 필터와 같은 원형 화살표 배지 에셋을 그대로 쓴다
-          // 흰 pill에는 검정 원(흰 화살표), 선택된 검정 pill에는 흰 원(검정 화살표).
+          // 모바일 앱 필터와 같은 원형 화살표 배지 에셋을 그대로 쓴다.
+          // 흰 pill에는 검정 원(흰 화살표), 선택된 검정 pill에는 흰 원(검정 화살표)
           Image.asset(
             isActive ? kFilterPillArrowOnDark : kFilterPillArrowOnLight,
             width: 16,
@@ -163,7 +170,8 @@ class _FleamarketFilterPillState<T> extends State<FleamarketFilterPill<T>> {
 }
 
 /// 흰 배경 pill 위에 올리는 검정 원형 화살표(흰 화살표).
-const String kFilterPillArrowOnLight = 'assets/imgs/icons/icon_check_round_black.png';
+const String kFilterPillArrowOnLight =
+    'assets/imgs/icons/icon_check_round_black.png';
 
 /// 선택되어 검정 배경이 된 pill 위에 올리는 흰 원형 화살표(검정 화살표).
 const String kFilterPillArrowOnDark = 'assets/imgs/icons/icon_check_round.png';

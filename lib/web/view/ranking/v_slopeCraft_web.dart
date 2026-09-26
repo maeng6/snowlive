@@ -38,7 +38,7 @@ class _SlopeCraftViewWebState extends State<SlopeCraftViewWeb> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
       _vm.load();
-      // TOP 5는 전용 API가 없어 크루홈 집계를 쓴다(사용자 확정). 이미 받아 뒀으면 생략.
+      // TOP 5는 전용 API가 없어 크루홈 집계를 쓴다. 이미 받아 뒀으면 생략.
       if (_crewHomeVm.home == null && !_crewHomeVm.isLoading) {
         _crewHomeVm.fetchCrewHome();
       }
@@ -47,16 +47,11 @@ class _SlopeCraftViewWebState extends State<SlopeCraftViewWeb> {
 
   @override
   Widget build(BuildContext context) {
-    final isDesktop = context.isDesktop;
 
     return Container(
       color: SDSColor.snowliveWhite,
-      padding: EdgeInsets.fromLTRB(
-        isDesktop ? SDSSpacing.xl : SDSSpacing.md,
-        32,
-        isDesktop ? SDSSpacing.xl : SDSSpacing.md,
-        SDSSpacing.xl,
-      ),
+      // 홈 공통 여백(중고거래 홈 기준).
+      padding: webHomePagePadding(context),
       child: SingleChildScrollView(
         child: Center(
           child: ConstrainedBox(
@@ -109,7 +104,7 @@ class _SlopeCraftViewWebState extends State<SlopeCraftViewWeb> {
             ],
           ),
         ],
-        // TOP 5는 이번 시즌 집계만 있어서 지난 시즌 탭에서는 그리지 않는다(사용자 확정).
+        // TOP 5는 이번 시즌 집계만 있어서 지난 시즌 탭에서는 그리지 않는다.
         if (!isPast && topCrews.isNotEmpty) ...[
           const SizedBox(height: SDSSpacing.lg),
           SlopeCraftTopCrewsWeb(crews: topCrews),
@@ -134,8 +129,9 @@ class _SlopeCraftViewWebState extends State<SlopeCraftViewWeb> {
     final isMobile = context.screenType == WebScreenType.mobile;
     final title = Text(
       '슬로프크래프트',
-      style: SDSTextStyle.extraBold
-          .copyWith(fontSize: isMobile ? 22 : 28, color: SDSColor.gray900),
+      // 홈 타이틀 공통: PC 32 / 태블릿·모바일 24 (중고거래 홈 기준).
+      style: SDSTextStyle.extraBold.copyWith(
+          fontSize: webHomeTitleSize(context), color: SDSColor.gray900),
     );
     final note = Text(
       '슬로프에서 가장 최근 라이딩 횟수 500회 기준으로 계산',

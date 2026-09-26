@@ -629,7 +629,7 @@ class CrewRecordMonthList extends StatelessWidget {
 /// 기록실 상단 요약 — `시즌 통합 랭킹` / `시즌 총 점수` + `크루원 시즌 랭킹` 진입.
 ///
 /// 모바일 목업에는 랭킹 진입점이 없지만 그러면 그 화면이 고립되므로 카드 아래
-/// 전체폭 버튼으로 둔다(사용자 확정).
+/// 전체폭 버튼으로 둔다.
 class CrewRecordSummaryCard extends StatelessWidget {
   final int? overallRank;
   final double? totalScore;

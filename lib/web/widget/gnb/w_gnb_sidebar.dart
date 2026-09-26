@@ -54,7 +54,7 @@ class WebGnbSidebar extends StatelessWidget {
               ],
               const Spacer(),
               // 접기/펼치기 토글 버튼(원형, 1px 보더).
-              // 좌측 오프셋 16(=12+4)에 고정하면 접힘 폭(69)에서 정확히 가운데가 되어
+              // 좌측 오프셋 16(=12+4)에 고정하면 접힘 폭(69)에서 정확히 가운데가 되어.
               // 접고 펼 때 버튼이 움직이지 않는다.
               Padding(
                 padding: const EdgeInsets.only(left: 16),
@@ -67,7 +67,7 @@ class WebGnbSidebar extends StatelessWidget {
                       onTap: () => gnbSidebarCollapsed.toggle(),
                       customBorder: const CircleBorder(),
                       hoverColor: SDSColor.gray50,
-                      // 클릭 시 스플래시/하이라이트 효과 제거.
+                      // 클릭 시 스플래시/하이라이트 효과 제거
                       splashFactory: NoSplash.splashFactory,
                       highlightColor: Colors.transparent,
                       child: SizedBox(

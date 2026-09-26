@@ -75,6 +75,7 @@ class FleamarketDetailOwnerActionsWeb extends StatelessWidget {
       tradeMethod: detail.method ?? kFleamarketTradeMethodPlaceholder,
       tradeSpot: detail.spot ?? kFleamarketTradeSpotPlaceholder,
       desc: detail.description ?? '',
+      sns: detail.snsUrl ?? '',
       photos: detail.photos,
     );
     updateVm.setIsSelectedCategoryTrue();

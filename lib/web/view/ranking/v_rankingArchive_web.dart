@@ -16,6 +16,7 @@ import 'package:com.snowlive/web/widget/w_skeleton_web.dart';
 import 'package:com.snowlive/web/widget/w_empty_state_web.dart';
 import 'package:com.snowlive/web/widget/w_network_image_web.dart';
 import 'package:com.snowlive/web/widget/w_web_profile_tap_web.dart';
+import 'package:com.snowlive/web/widget/w_web_page_header_web.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -86,12 +87,12 @@ class _RankingArchiveViewWebState extends State<RankingArchiveViewWeb> {
 
   @override
   Widget build(BuildContext context) {
-    final isDesktop = context.isDesktop;
     final isWide = MediaQuery.sizeOf(context).width >= _wideLayoutBreakpoint;
 
     return Container(
       color: SDSColor.snowliveWhite,
-      padding: EdgeInsets.fromLTRB(isDesktop ? SDSSpacing.xl : SDSSpacing.md, 32, isDesktop ? SDSSpacing.xl : SDSSpacing.md, SDSSpacing.xl),
+      // 서브 페이지 공통 여백(중고거래 상세·폼 기준).
+      padding: webSubPagePadding(context),
       child: SingleChildScrollView(
         child: Center(
           child: ConstrainedBox(
@@ -128,20 +129,12 @@ class _RankingArchiveViewWebState extends State<RankingArchiveViewWeb> {
   }
 
   Widget _buildTitleRow() {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        InkWell(
-          onTap: () => Get.back(),
-          borderRadius: BorderRadius.circular(8),
-          child: Padding(
-            padding: const EdgeInsets.all(4),
-            child: Icon(Icons.arrow_back, size: 24, color: SDSColor.gray900),
-          ),
-        ),
-        const SizedBox(width: SDSSpacing.sm),
-        Text('랭킹 기록실', style: SDSTextStyle.extraBold.copyWith(fontSize: 28, color: SDSColor.gray900)),
-      ],
+    // 서브 페이지 공통 헤더 — 데스크탑은 같은 줄 우측에 검색바가 이어져
+    // 타이틀을 확장하지 않는다.
+    return WebPageHeader(
+      title: '랭킹 기록실',
+      onBack: () => Get.back(),
+      expandTitle: false,
     );
   }
 

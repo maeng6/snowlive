@@ -95,7 +95,7 @@ class _WebAppShellState extends State<WebAppShell>
     // 진행바는 데스크탑과 동일하게 뷰포트 최상단에 둔다. Scaffold의 appBar 슬롯에
     // 상단바를 넣으면 진행바가 그 아래로 밀려서 최상단이 아니게 되므로, 상단바도
     // body Column 안으로 내린다(WebGnbTopbar 내부가 고정 높이라 그대로 동작한다)
-    // 메뉴는 드로어 대신 **앱바 아래 영역**을 덮는 패널로 뜬다(요청).
+    // 메뉴는 드로어 대신 **앱바 아래 영역**을 덮는 패널로 뜬다.
     final topbar = WebGnbTopbar(
       menuProgress: _menuCtrl,
       onMenuTap: _toggleMenu,
@@ -113,7 +113,7 @@ class _WebAppShellState extends State<WebAppShell>
                 fit: StackFit.expand,
                 children: [
                   widget.child,
-                  // 메뉴 패널은 페이드 없이 바로 뜨고 바로 사라진다(요청).
+                  // 메뉴 패널은 페이드 없이 바로 뜨고 바로 사라진다.
                   // 아이콘 모프(햄버거↔X)만 컨트롤러로 애니메이션한다.
                   AnimatedBuilder(
                     animation: _menuCtrl,

@@ -62,16 +62,19 @@ class _FleamarketDetailRecommendWebState extends State<FleamarketDetailRecommend
 
         final detailVm = Get.find<FleamarketDetailViewModel>();
         final userVm = Get.find<UserViewModel>();
-        final crossAxisCount = context.isDesktop ? 5 : 2;
+        // 태블릿도 PC와 같은 5열 (피그마 46:5562), 모바일만 2열.
+        final crossAxisCount =
+            context.screenType == WebScreenType.mobile ? 2 : 5;
 
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text('추천 중고거래 물품', style: SDSTextStyle.bold.copyWith(fontSize: 16, color: SDSColor.gray900)),
-            const SizedBox(height: SDSSpacing.md),
+            // 제목 ↔ 그리드 20, 열 간격 8 / 행 간격 40 (피그마 46:12903).
+            const SizedBox(height: 20),
             LayoutBuilder(
               builder: (context, constraints) {
-                final spacing = SDSSpacing.md;
+                const double spacing = 8;
                 final cellWidth = (constraints.maxWidth - spacing * (crossAxisCount - 1)) / crossAxisCount;
                 return GridView.builder(
                   shrinkWrap: true,
@@ -80,13 +83,15 @@ class _FleamarketDetailRecommendWebState extends State<FleamarketDetailRecommend
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: crossAxisCount,
                     crossAxisSpacing: spacing,
-                    mainAxisSpacing: SDSSpacing.lg,
+                    mainAxisSpacing: 10,
                     mainAxisExtent: cellWidth + kFleamarketCardTextBlockHeight,
                   ),
                   itemBuilder: (context, index) {
                     final data = items[index];
                     return FleamarketCardWeb(
                       data: data,
+                      // 시안의 추천 카드에는 조회수/댓글수 통계 행이 없다.
+                      showStats: false,
                       onTap: () {
                         detailVm.fetchFleamarketDetailFromList(fleamarketResponse: data);
                         Get.offNamed(WebRoutes.fleamarketDetail, parameters: {'id': '${data.fleaId}'});

@@ -7,14 +7,37 @@ import 'package:com.snowlive/web/view/fleamarket/w_fleamarket_form_fields_web.da
 import 'package:com.snowlive/web/viewmodel/auth/vm_authcheck_web.dart';
 import 'package:com.snowlive/web/widget/w_empty_state_web.dart';
 import 'package:com.snowlive/web/widget/w_web_delete_chip_web.dart';
+import 'package:com.snowlive/web/widget/w_web_floating_bottombar_web.dart';
+import 'package:com.snowlive/web/widget/w_web_more_menu_web.dart' show showWebConfirmDialog;
 import 'package:com.snowlive/web/widget/w_web_filter_menu_web.dart';
 import 'package:com.snowlive/web/widget/w_web_text_tabs_web.dart';
+import 'package:com.snowlive/web/widget/w_web_page_header_web.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 /// 목업 실측 802. 커뮤니티 작성 폼(800)과 같은 급의 좁은 폼 폭이다 —
 /// 넓히면 입력창만 길어지고 칩이 한 줄에 너무 많이 늘어선다.
 const double kFleamarketAlertContentMaxWidth = 800;
+
+/// 키워드 알림 설정 진입 공통 처리(PC 사이드바·태블릿/모바일 하단바 공용).
+/// 미로그인 확정 상태면 페이지에 들어가지 않고 로그인 유도 팝업을 띄운다 —
+/// PC·태블릿·모바일 모두 동일. 자동로그인 확인 중(checking)이면 일단
+/// 들여보낸다(페이지의 auth 워커가 늦은 확정을 처리한다).
+Future<void> openFleamarketAlert(BuildContext context) async {
+  final bool isGuest =
+      Get.find<AuthCheckViewModelWeb>().status == WebAuthStatus.unauthenticated;
+  if (!isGuest) {
+    Get.toNamed(WebRoutes.fleamarketAlert);
+    return;
+  }
+  final bool goLogin = await showWebConfirmDialog(
+    context: context,
+    title: '로그인이 필요해요',
+    message: '키워드 알림 설정은 로그인 후 이용할 수 있어요.',
+    confirmLabel: '로그인하기',
+  );
+  if (goLogin) Get.toNamed(WebRoutes.login);
+}
 
 /// 상위 카테고리에 따른 하위 카테고리 목록.
 /// 값은 앱·웹 작성 폼과 동일하다(목업 모달에 그려진 항목은 더미다).
@@ -50,9 +73,6 @@ class _FleamarketAlertViewWebState extends State<FleamarketAlertViewWeb> {
   _AlertTab _tab = _AlertTab.keyword;
   Worker? _authWorker;
   bool _isSubmitting = false;
-
-  /// 하단 고정바 높이(패딩 16*2 + 버튼 48).
-  static const double _bottomBarHeight = 80;
 
   @override
   void initState() {
@@ -154,88 +174,79 @@ class _FleamarketAlertViewWebState extends State<FleamarketAlertViewWeb> {
   @override
   Widget build(BuildContext context) {
     final isDesktop = context.isDesktop;
+    final isMobile = context.screenType == WebScreenType.mobile;
 
-    final scrollArea = Container(
-      color: SDSColor.snowliveWhite,
-      padding: EdgeInsets.fromLTRB(
-        isDesktop ? SDSSpacing.xl : SDSSpacing.md,
-        32,
-        isDesktop ? SDSSpacing.xl : SDSSpacing.md,
-        SDSSpacing.xl,
+    final Widget scroll = SingleChildScrollView(
+      // 여백은 스크롤 영역 안쪽(서브 페이지 공통) — 모바일은 콘텐츠가 하단
+      // 플로팅 바 뒤로 지나가도록 바 높이만큼 하단 여백을 확보한다.
+      padding: webSubPagePadding(
+        context,
+        bottom: isMobile && !_isGuest
+            ? kWebFloatingBottomBarHeight + SDSSpacing.md
+            : SDSSpacing.xl,
       ),
-      child: SingleChildScrollView(
-        child: Center(
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: kFleamarketAlertContentMaxWidth),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _buildTitleRow(isDesktop),
-                const SizedBox(height: SDSSpacing.lg),
-                if (_isGuest) _buildGuestBody() else ..._buildBody(),
-              ],
-            ),
+      child: Center(
+        child: ConstrainedBox(
+          // PC만 800 고정 중앙 — 태블릿·모바일은 제한 없이 화면(패딩 제외)을
+          // 가득 채운다(올리기·수정·상세와 동일 규칙).
+          constraints: BoxConstraints(
+            maxWidth: isDesktop
+                ? kFleamarketAlertContentMaxWidth
+                : double.infinity,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildTitleRow(isMobile),
+              // 타이틀 ↔ 탭 PC 40(피그마 64:105620) / 태블릿·모바일 26
+              // (올리기 헤더↔폼과 동일 규칙).
+              SizedBox(height: isDesktop ? 40 : 26),
+              if (_isGuest) _buildGuestBody() else ..._buildBody(),
+            ],
           ),
         ),
       ),
     );
 
-    // 데스크탑은 '등록하기'가 타이틀 줄 우상단이라 하단바가 없다.
-    if (isDesktop || _isGuest) return scrollArea;
+    // PC·태블릿은 '등록하기'가 타이틀 줄 우측이라 하단바가 없다(올리기와 동일).
+    if (!isMobile || _isGuest) {
+      return Container(color: SDSColor.snowliveWhite, child: scroll);
+    }
 
-    // 태블릿·모바일은 버튼이 뷰포트 하단에 고정된다. 셸이 페이지를 Expanded에 넣으므로
-    // Stack의 bottom이 곧 뷰포트 하단이다. Stack 뒤가 비치면 셸 Scaffold의 표면 틴트가
-    // 바 위쪽에 라벤더 띠로 보이므로 페이지 배경을 흰색으로 깔아 막는다.
+    // 모바일: 하단 플로팅 바 — 목록·올리기 하단바와 동일 규격(페이드 + 버튼 48).
     return Container(
       color: SDSColor.snowliveWhite,
       child: Stack(
         children: [
-          Padding(padding: const EdgeInsets.only(bottom: _bottomBarHeight), child: scrollArea),
-          Positioned(left: 0, right: 0, bottom: 0, child: _buildBottomBar()),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildTitleRow(bool isDesktop) {
-    return Row(
-      children: [
-        IconButton(
-          onPressed: _goBack,
-          // 좌측 여백을 콘텐츠 왼쪽 끝에 정렬한다.
-          padding: EdgeInsets.zero,
-          constraints: const BoxConstraints(),
-          icon: Icon(Icons.arrow_back, color: SDSColor.gray900, size: 24),
-        ),
-        const SizedBox(width: SDSSpacing.md),
-        Text(
-          '키워드 알림 설정',
-          style: SDSTextStyle.extraBold.copyWith(
-            fontSize: isDesktop ? 22 : 18,
-            color: SDSColor.gray900,
+          scroll,
+          Positioned(
+            left: 0,
+            right: 0,
+            bottom: 0,
+            child: WebFloatingBottomBar(
+              child: _SubmitButton(
+                enabled: _canSubmit,
+                isSubmitting: _isSubmitting,
+                onTap: _onSubmit,
+                expand: true,
+              ),
+            ),
           ),
-        ),
-        if (isDesktop && !_isGuest) ...[
-          const Spacer(),
-          _SubmitButton(enabled: _canSubmit, isSubmitting: _isSubmitting, onTap: _onSubmit),
         ],
-      ],
+      ),
     );
   }
 
-  Widget _buildBottomBar() {
-    return Container(
-      decoration: BoxDecoration(
-        color: SDSColor.snowliveWhite,
-        border: Border(top: BorderSide(color: SDSColor.gray100)),
-      ),
-      padding: const EdgeInsets.all(SDSSpacing.md),
-      child: _SubmitButton(
-        enabled: _canSubmit,
-        isSubmitting: _isSubmitting,
-        onTap: _onSubmit,
-        expand: true,
-      ),
+  Widget _buildTitleRow(bool isMobile) {
+    // 서브 페이지 공통 헤더 표준(WebPageHeader) — 타이틀·뒤로가기 크기는
+    // 위젯이 브레이크포인트별로 처리한다. PC·태블릿은 등록하기가 우측에 온다.
+    return WebPageHeader(
+      title: '키워드 알림 설정',
+      onBack: _goBack,
+      actions: [
+        if (!isMobile && !_isGuest)
+          _SubmitButton(enabled: _canSubmit, isSubmitting: _isSubmitting, onTap: _onSubmit),
+      ],
     );
   }
 
@@ -251,6 +262,7 @@ class _FleamarketAlertViewWebState extends State<FleamarketAlertViewWeb> {
 
   List<Widget> _buildBody() {
     return [
+      // 탭: bold 16, 비활성 gray200, 1px 세로선 구분자, 간격 10 (피그마 64:105852).
       WebTextTabs<_AlertTab>(
         values: _AlertTab.values,
         selected: _tab,
@@ -259,17 +271,30 @@ class _FleamarketAlertViewWebState extends State<FleamarketAlertViewWeb> {
           if (v == _tab) return;
           setState(() => _tab = v);
         },
+        fontSize: 16,
+        inactiveBold: true,
+        inactiveColor: SDSColor.gray200,
+        lineDivider: true,
+        dividerGap: 10,
       ),
-      const SizedBox(height: SDSSpacing.lg),
+      // 탭 ↔ 폼 40 (피그마 64:105620).
+      const SizedBox(height: 40),
       if (_tab == _AlertTab.keyword) ...[
         WebFormTextField(
           label: '키워드 알림 추가',
           controller: _keywordController,
-          hint: '예: 버튼, 플레이트',
+          hint: '예. 버튼, 플레이트',
           maxLength: 20,
-          helperText: '알림 받고 싶은 키워드를 입력해주세요.',
         ),
-        const SizedBox(height: SDSSpacing.lg),
+        // 인풋 ↔ 헬퍼 10, 헬퍼 12 gray500 (피그마 64:105712 —
+        // WebFormTextField 내장 헬퍼는 간격 6·gray400이라 직접 그린다).
+        const SizedBox(height: 10),
+        Text(
+          '알림 받고 싶은 키워드를 입력해주세요.',
+          style: SDSTextStyle.regular.copyWith(fontSize: 12, color: SDSColor.gray500),
+        ),
+        // 폼 ↔ 카운터 30 (피그마 64:105620).
+        const SizedBox(height: 30),
       ],
       Obx(() => _tab == _AlertTab.keyword ? _buildKeywordList() : _buildCategoryList()),
     ];
@@ -334,7 +359,8 @@ class _FleamarketAlertViewWebState extends State<FleamarketAlertViewWeb> {
           '$counterLabel $count/$max',
           style: SDSTextStyle.bold.copyWith(fontSize: 14, color: SDSColor.gray900),
         ),
-        const SizedBox(height: SDSSpacing.md),
+        // 카운터 ↔ 칩 8 (피그마 64:105620).
+        const SizedBox(height: SDSSpacing.sm),
         if (chips.isEmpty)
           // 첫 로딩 중에 '없어요'를 먼저 보여주면 데이터가 오는 순간 깜빡인다.
           isLoading
@@ -344,7 +370,8 @@ class _FleamarketAlertViewWebState extends State<FleamarketAlertViewWeb> {
                 )
               : WebEmptyState(message: emptyMessage)
         else
-          Wrap(spacing: SDSSpacing.sm, runSpacing: SDSSpacing.sm, children: chips),
+          // 칩 간격 6 (피그마 64:105810).
+          Wrap(spacing: 6, runSpacing: 6, children: chips),
       ],
     );
   }
@@ -366,38 +393,68 @@ class _SubmitButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton(
+    // 컴팩트(PC 헤더)는 업로드 헤더 버튼(판매하기)과 동일 규격 —
+    // 높이 40 고정(visualDensity에 눌리지 않게 SizedBox + minimumSize 병행),
+    // 패딩 16, 라운드 5, bold 16, 비활성은 gray200 배경에 흰 글자 유지.
+    final button = ElevatedButton(
       onPressed: enabled ? onTap : null,
-      style: ElevatedButton.styleFrom(
-        backgroundColor: SDSColor.snowliveBlue,
-        disabledBackgroundColor: SDSColor.gray200,
-        elevation: 0,
-        minimumSize: expand ? const Size(double.infinity, 48) : null,
-        padding: expand
-            ? null
-            : const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+      // hover는 그림자·리플 대신 배경에 검정 10% 블렌드 즉시 적용 —
+      // 사이드바·하단바·팝업 박스 버튼과 동일한 웹 공통 규칙.
+      style: ButtonStyle(
+        splashFactory: NoSplash.splashFactory,
+        overlayColor: const WidgetStatePropertyAll(Colors.transparent),
+        shadowColor: const WidgetStatePropertyAll(Colors.transparent),
+        elevation: const WidgetStatePropertyAll(0),
+        animationDuration: Duration.zero,
+        backgroundColor: WidgetStateProperty.resolveWith(
+          (states) => states.contains(WidgetState.disabled)
+              ? SDSColor.gray200
+              : states.contains(WidgetState.hovered)
+                  ? Color.alphaBlend(
+                      Colors.black.withValues(alpha: 0.1), SDSColor.snowliveBlue)
+                  : SDSColor.snowliveBlue,
+        ),
+        minimumSize: WidgetStatePropertyAll(
+          expand ? const Size(double.infinity, 48) : const Size(0, 40),
+        ),
+        padding: WidgetStatePropertyAll(
+          expand ? null : const EdgeInsets.symmetric(horizontal: 16),
+        ),
+        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+        shape: WidgetStatePropertyAll(
+          RoundedRectangleBorder(
+            // 전체폭(모바일 플로팅 바)은 목록 하단바 버튼과 같은 라운드 6.
+            borderRadius: BorderRadius.circular(expand ? 6 : 5),
+          ),
+        ),
       ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
+      // 제출 중에는 라벨을 **투명하게 남겨** 버튼 폭을 고정한 채,
+      // 그 자리에 스피너만 가운데로 띄운다(라벨 앞에 끼우는 방식 아님).
+      child: Stack(
+        alignment: Alignment.center,
         children: [
-          if (isSubmitting) ...[
+          Opacity(
+            opacity: isSubmitting ? 0 : 1,
+            child: Text(
+              '등록하기',
+              style: SDSTextStyle.bold.copyWith(
+                // 전체폭(모바일 플로팅 바)은 목록 하단바 버튼과 같은 bold 15.
+                fontSize: expand ? 15 : 16,
+                color: SDSColor.snowliveWhite,
+              ),
+            ),
+          ),
+          if (isSubmitting)
             const SizedBox(
               width: 14,
               height: 14,
               child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
             ),
-            const SizedBox(width: SDSSpacing.sm),
-          ],
-          Text(
-            '등록하기',
-            style: SDSTextStyle.bold.copyWith(
-              fontSize: expand ? 16 : 14,
-              color: enabled ? SDSColor.snowliveWhite : SDSColor.gray400,
-            ),
-          ),
         ],
       ),
     );
+    // visualDensity(웹 기본 compact)가 minimumSize 높이를 ~8px 깎으므로
+    // 두 변형 모두 SizedBox로 높이를 강제한다(전체폭 48 / 컴팩트 40).
+    return SizedBox(height: expand ? 48 : 40, child: button);
   }
 }

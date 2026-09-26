@@ -116,7 +116,7 @@ class CrewDetailViewModelWeb extends GetxController {
   /// ⚠️ 이 API는 `user_id`를 **필수**로 받는다(없으면 400: "crew_id와 user_id는
   /// 필수입니다"). 그런데 응답(`ranking_results`)에는 개인화된 값이 하나도 없어서
   /// 누구 id로 부르든 결과가 같다(실측). 그래서 비로그인 방문자에게도 목업대로
-  /// 멤버를 보여주기 위해 **크루장 id로 채워** 호출한다(사용자 확정).
+  /// 멤버를 보여주기 위해 **크루장 id로 채워** 호출한다.
   Future<void> _loadMembers({required int crewId, required String season}) async {
     final userId = _userVM.user.user_id ?? _info.value?.crewLeaderUserId;
     if (userId == null) {

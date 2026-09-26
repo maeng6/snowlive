@@ -86,7 +86,8 @@ class _CrewJoinViewWebState extends State<CrewJoinViewWeb> {
       color: SDSColor.snowliveWhite,
       padding: EdgeInsets.fromLTRB(
         isDesktop ? SDSSpacing.xl : SDSSpacing.md,
-        32,
+        // 상단은 서브 페이지 공통(PC 32 / 태블릿 16 / 모바일 20 — 홈과 동일).
+        webSubPagePadding(context).top,
         isDesktop ? SDSSpacing.xl : SDSSpacing.md,
         SDSSpacing.xl,
       ),

@@ -26,9 +26,18 @@ class CommunityImageBlock extends CommunityBodyBlock {
 class _Piece {
   final String text;
   final bool bold;
+  final bool italic;
   final bool underline;
+  final bool strike;
   final String? link;
-  const _Piece(this.text, {this.bold = false, this.underline = false, this.link});
+  const _Piece(
+    this.text, {
+    this.bold = false,
+    this.italic = false,
+    this.underline = false,
+    this.strike = false,
+    this.link,
+  });
 }
 
 /// Delta 파싱 결과. 블록과 이미지 URL 목록을 **한 번의 순회로 함께** 만든다.
@@ -85,13 +94,24 @@ CommunityBodyParseResult parseCommunityBody(quill.Document? document) {
     if (data is! String) continue;
 
     final bold = attrs?['bold'] == true;
+    final italic = attrs?['italic'] == true;
     final underline = attrs?['underline'] == true;
+    final strike = attrs?['strike'] == true;
     final link = attrs?['link'] is String ? attrs!['link'] as String : null;
 
     final segments = data.split('\n');
     for (var i = 0; i < segments.length; i++) {
       if (segments[i].isNotEmpty) {
-        current.add(_Piece(segments[i], bold: bold, underline: underline, link: link));
+        current.add(
+          _Piece(
+            segments[i],
+            bold: bold,
+            italic: italic,
+            underline: underline,
+            strike: strike,
+            link: link,
+          ),
+        );
       }
       // 마지막 조각 뒤에는 개행이 없다.
       if (i < segments.length - 1) flush();
@@ -106,14 +126,18 @@ CommunityBodyParseResult parseCommunityBody(quill.Document? document) {
 ///
 /// QuillEditor를 쓰지 않는다 — 읽기 전용 화면에 에디터의 스크롤·포커스 기계를 얹으면
 /// 웹의 긴 페이지에서 중첩 스크롤이 생기고, 이미지 탭·문단 간격을 정확히 제어하기 어렵다.
-/// 실데이터가 쓰는 서식은 bold·underline·link 3종뿐이라 직접 그리는 편이 단순하다.
+/// 지원 서식은 에디터와 짝을 맞춘 bold·italic·underline·strike·link 5종이다.
 class CommunityBodyWeb extends StatefulWidget {
   final quill.Document? document;
 
   /// 본문 이미지를 탭했을 때. 이미지 전체 목록과 탭한 인덱스를 넘긴다.
   final void Function(List<String> imageUrls, int index) onImageTap;
 
-  const CommunityBodyWeb({super.key, required this.document, required this.onImageTap});
+  const CommunityBodyWeb({
+    super.key,
+    required this.document,
+    required this.onImageTap,
+  });
 
   @override
   State<CommunityBodyWeb> createState() => _CommunityBodyWebState();
@@ -168,11 +192,14 @@ class _CommunityBodyWebState extends State<CommunityBodyWeb> {
     final children = <Widget>[];
     for (var i = 0; i < _parsed.blocks.length; i++) {
       final block = _parsed.blocks[i];
-      if (i > 0) children.add(SizedBox(height: block is CommunityImageBlock ? 16 : 12));
+      // 블록(문단·이미지) 사이 간격 20 (피그마 64:127570).
+      if (i > 0) children.add(const SizedBox(height: 20));
 
       switch (block) {
         case CommunityTextBlock(:final pieces):
-          children.add(SelectableText.rich(TextSpan(children: _spansOf(pieces))));
+          children.add(
+            SelectableText.rich(TextSpan(children: _spansOf(pieces))),
+          );
         case CommunityImageBlock(:final url, :final imageIndex):
           children.add(
             MouseRegion(
@@ -181,11 +208,19 @@ class _CommunityBodyWebState extends State<CommunityBodyWeb> {
                 behavior: HitTestBehavior.opaque,
                 onTap: () => widget.onImageTap(_parsed.imageUrls, imageIndex),
                 child: ClipRRect(
-                  borderRadius: BorderRadius.circular(8),
+                  // 라운드 6 (확정값 — 기존 8에서 조정).
+                  borderRadius: BorderRadius.circular(6),
                   // 원본 크기를 모르므로 박스를 먼저 잡아 로딩 중 셔머가 찌그러지지 않게 한다.
                   child: ConstrainedBox(
-                    constraints: const BoxConstraints(minHeight: 200, maxHeight: 640),
-                    child: WebNetworkImage(url: url, width: double.infinity, fit: BoxFit.contain),
+                    constraints: const BoxConstraints(
+                      minHeight: 200,
+                      maxHeight: 640,
+                    ),
+                    child: WebNetworkImage(
+                      url: url,
+                      width: double.infinity,
+                      fit: BoxFit.contain,
+                    ),
                   ),
                 ),
               ),
@@ -194,11 +229,18 @@ class _CommunityBodyWebState extends State<CommunityBodyWeb> {
       }
     }
 
-    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: children);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: children,
+    );
   }
 
   List<TextSpan> _spansOf(List<_Piece> pieces) {
-    final base = SDSTextStyle.regular.copyWith(fontSize: 15, color: SDSColor.gray900, height: 1.6);
+    final base = SDSTextStyle.regular.copyWith(
+      fontSize: 15,
+      color: SDSColor.gray900,
+      height: 1.6,
+    );
     return [
       for (final p in pieces)
         if (p.link != null)
@@ -218,7 +260,14 @@ class _CommunityBodyWebState extends State<CommunityBodyWeb> {
               fontSize: 15,
               color: SDSColor.gray900,
               height: 1.6,
-              decoration: p.underline ? TextDecoration.underline : null,
+              fontStyle: p.italic ? FontStyle.italic : null,
+              // 밑줄·취소선은 동시에 걸릴 수 있어 combine으로 합친다.
+              decoration: (p.underline || p.strike)
+                  ? TextDecoration.combine([
+                      if (p.underline) TextDecoration.underline,
+                      if (p.strike) TextDecoration.lineThrough,
+                    ])
+                  : null,
             ),
           ),
     ];

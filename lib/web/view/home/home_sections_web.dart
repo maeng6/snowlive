@@ -270,8 +270,8 @@ List<List<T>> homeCarouselPages<T>(List<T> items, int size) {
 /// 새 채팅 말풍선이 떠 있는 시간(요청: 3초 후 사라짐).
 const Duration kHomeChatBubbleDuration = Duration(seconds: 3);
 
-/// 접힌 바 아래에 동시에 쌓이는 말풍선 최대 개수(요청).
+/// 접힌 바 아래에 동시에 쌓이는 말풍선 최대 개수.
 const int kHomeChatMaxBubbles = 3;
 
-/// 이 스크롤 오프셋을 넘으면 오픈 채팅을 아이콘으로 접는다(요청).
+/// 이 스크롤 오프셋을 넘으면 오픈 채팅을 아이콘으로 접는다.
 const double kHomeChatCollapseOffset = 80;

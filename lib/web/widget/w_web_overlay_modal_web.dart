@@ -85,7 +85,7 @@ class _ModalOpenTransitionState extends State<_ModalOpenTransition>
   late final AnimationController _ctrl = AnimationController(
     vsync: this,
     // 드롭다운(220ms)보다 느리게 — 면적이 큰 팝업은 더 길어야 자연스럽다
-    // (220은 너무 빠르다는 피드백, 2026-09-16).
+    // (220은 너무 빠르다는 피드백).
     duration: const Duration(milliseconds: 320),
   )..forward();
   late final Animation<double> _t =

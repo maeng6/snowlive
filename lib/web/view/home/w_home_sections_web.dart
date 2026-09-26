@@ -257,7 +257,7 @@ class _HomeTodayRankingWebState extends State<HomeTodayRankingWeb> {
             onTap: widget.crew[i].crewId == null
                 ? null
                 : () => Get.toNamed('${WebRoutes.crewHome}?id=${widget.crew[i].crewId}'),
-            // 로고가 없는 크루는 크루 색 기본 `LIVE CREW` 로고로 대체한다(요청).
+            // 로고가 없는 크루는 크루 색 기본 `LIVE CREW` 로고로 대체한다.
             // 기본 로고 PNG는 자체 테두리/라운드 디자인이 있어 장식을 겹치지 않는다.
             leading: _CrewLogo(
               logoUrl: crewLogoUrlOf(
@@ -1440,32 +1440,46 @@ class HomeFooterWeb extends StatelessWidget {
     ['Instagram', 'Kakao'],
   ];
 
+  /// 이 폭이 안 되면 배지를 세로 스택으로(태블릿형), 그마저 안 되면 모바일형으로.
+  /// 화면 브레이크포인트가 아니라 **실제 가용 폭** 기준 — 페이지마다 푸터가 놓이는
+  /// 컨테이너 폭이 달라서(홈 블록/중고거래 상세 콘텐츠 영역), screenType 기준으로는
+  /// 배치가 전환되기 전에 Row가 오버플로우 났다(실측).
+  static const double _kWideMinWidth = 880;
+  static const double _kTabletMinWidth = 660;
+
   @override
   Widget build(BuildContext context) {
-    final screenType = context.screenType;
-    final isMobile = screenType == WebScreenType.mobile;
-
     // 피그마: 상단 구분선 없음, 콘텐츠 ↔ 구분선 ↔ 하단행 간격 각 30
-    // (구분선은 피그마 실측 #ECECEC 대신 gray100으로 통일 — 2026-09-16 결정)
+    // (구분선은 피그마 실측 #ECECEC 대신 gray100으로 통일)
     // 좌우 여백은 페이지 콘텐츠 패딩(40)이 담당하므로 상하 40만 갖는다.
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 40),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          if (isMobile) ..._buildMobile() else ..._buildWide(screenType),
-          const SizedBox(height: 30),
-          const Divider(height: 1, color: SDSColor.gray100),
-          const SizedBox(height: 30),
-          _buildBottomRow(isMobile),
-        ],
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final double w = constraints.maxWidth;
+          final bool isWide = w >= _kWideMinWidth;
+          final bool isMobileLayout = w < _kTabletMinWidth;
+
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              if (isMobileLayout)
+                ..._buildMobile()
+              else
+                ..._buildWide(stackBadges: !isWide),
+              const SizedBox(height: 30),
+              const Divider(height: 1, color: SDSColor.gray100),
+              const SizedBox(height: 30),
+              _buildBottomRow(isMobileLayout),
+            ],
+          );
+        },
       ),
     );
   }
 
-  List<Widget> _buildWide(WebScreenType screenType) {
-    final isTablet = screenType == WebScreenType.tablet;
-    if (isTablet) {
+  List<Widget> _buildWide({required bool stackBadges}) {
+    if (stackBadges) {
       // 태블릿(피그마): 로고 좌 / Contact 3열(간격 40) + 배지 세로 스택(높이 36) 우.
       return [
         Row(

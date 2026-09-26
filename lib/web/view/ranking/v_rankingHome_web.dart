@@ -132,7 +132,10 @@ class _RankingHomeViewWebState extends State<RankingHomeViewWeb> {
   @override
   Widget build(BuildContext context) {
     final isDesktop = context.isDesktop;
-    final titleText = Text('랭킹', style: SDSTextStyle.extraBold.copyWith(fontSize: 28, color: SDSColor.gray900));
+    // 홈 타이틀 공통: PC 32 / 태블릿·모바일 24 (중고거래 홈 기준).
+    final titleText = Text('랭킹',
+        style: SDSTextStyle.extraBold.copyWith(
+            fontSize: webHomeTitleSize(context), color: SDSColor.gray900));
 
     final content = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -182,7 +185,8 @@ class _RankingHomeViewWebState extends State<RankingHomeViewWeb> {
 
     return Container(
       color: SDSColor.snowliveWhite,
-      padding: EdgeInsets.fromLTRB(isDesktop ? SDSSpacing.xl : SDSSpacing.md, 32, isDesktop ? SDSSpacing.xl : SDSSpacing.md, SDSSpacing.xl),
+      // 홈 공통 여백(중고거래 홈 기준).
+      padding: webHomePagePadding(context),
       child: SingleChildScrollView(
         child: Center(
           child: ConstrainedBox(

@@ -1,5 +1,6 @@
 import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/web/routes/routes_web.dart';
+import 'package:com.snowlive/web/util/responsive_web.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -27,33 +28,44 @@ class LiveCrewCtaButtons extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // 높이는 공용 webActionButtonHeight(PC 44). 세로 패딩 대신 SizedBox로
+    // 못 박는다 — 패딩만 두면 웹 기본 visualDensity가 8을 깎는다.
+    final buttonHeight = webActionButtonHeight(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        ElevatedButton(
-          onPressed: () => Get.toNamed(WebRoutes.crewCreate),
-          style: ElevatedButton.styleFrom(
-            backgroundColor: SDSColor.snowliveBlue,
-            elevation: 0,
-            padding: const EdgeInsets.symmetric(vertical: 15),
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
-          ),
-          child: Text(
-            '크루 만들기',
-            style: SDSTextStyle.bold.copyWith(fontSize: 15, color: SDSColor.snowliveWhite),
+        SizedBox(
+          height: buttonHeight,
+          child: ElevatedButton(
+            onPressed: () => Get.toNamed(WebRoutes.crewCreate),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: SDSColor.snowliveBlue,
+              elevation: 0,
+              padding: EdgeInsets.zero,
+              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
+            ),
+            child: Text(
+              '크루 만들기',
+              style: SDSTextStyle.bold.copyWith(fontSize: 15, color: SDSColor.snowliveWhite),
+            ),
           ),
         ),
         const SizedBox(height: SDSSpacing.sm),
-        OutlinedButton(
-          onPressed: () => Get.toNamed(WebRoutes.crewJoin),
-          style: OutlinedButton.styleFrom(
-            side: BorderSide(color: SDSColor.gray200),
-            padding: const EdgeInsets.symmetric(vertical: 15),
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
-          ),
-          child: Text(
-            '크루 가입하기',
-            style: SDSTextStyle.bold.copyWith(fontSize: 15, color: SDSColor.gray900),
+        SizedBox(
+          height: buttonHeight,
+          child: OutlinedButton(
+            onPressed: () => Get.toNamed(WebRoutes.crewJoin),
+            style: OutlinedButton.styleFrom(
+              side: BorderSide(color: SDSColor.gray200),
+              padding: EdgeInsets.zero,
+              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
+            ),
+            child: Text(
+              '크루 가입하기',
+              style: SDSTextStyle.bold.copyWith(fontSize: 15, color: SDSColor.gray900),
+            ),
           ),
         ),
       ],

@@ -12,7 +12,7 @@ import 'package:get/get.dart';
 const List<String> kFleamarketTabs = ['전체', '스키', '스노보드', '찜 목록', '내 게시글'];
 
 /// 하위 탭 사이 구분선 색. 피그마 실측은 #ECECEC지만 gray100(#EFEFEF)으로
-/// 통일했다(2026-09-16 결정 — 밝기 차 3/255라 육안 구분 불가).
+/// 통일했다(밝기 차 3/255라 육안 구분 불가).
 const Color _kTabDividerColor = SDSColor.gray100;
 
 /// 제목 + 인라인 검색(최근검색어 드롭다운 포함) + 탭 + 필터 pill + (데스크탑) 물품 올리기 버튼.
@@ -202,11 +202,10 @@ class _FleamarketHeaderWebState extends State<FleamarketHeaderWeb> {
     // 커뮤니티와 같은 기준(데스크탑)에서 검색창이 타이틀 오른쪽 같은 줄에 놓인다.
     final isWide = context.isDesktop;
     final isTablet = context.screenType == WebScreenType.tablet;
-    // 타이틀: PC 32 (피그마 32:17109) / 태블릿·모바일 24 (2026-09-16 확정 —
-    // 모바일은 피그마 실측 28 대신 20↔24 비교 후 24로 결정).
+    // 타이틀은 홈 공통 크기(PC 32 / 태블릿 24 / 모바일 20).
     final titleText = Text('중고거래',
         style: SDSTextStyle.extraBold.copyWith(
-            fontSize: isWide ? 32 : 24, color: SDSColor.gray900));
+            fontSize: webHomeTitleSize(context), color: SDSColor.gray900));
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -227,7 +226,7 @@ class _FleamarketHeaderWebState extends State<FleamarketHeaderWeb> {
           const SizedBox(height: SDSSpacing.md),
           _buildSearchBar(),
         ],
-        // 타이틀줄 ↔ 탭줄: PC 30 (피그마) / 태블릿 24 (요청) / 모바일 20 (피그마 32:19273)
+        // 타이틀줄 ↔ 탭줄: PC 30 (피그마) / 태블릿 24 / 모바일 20 (피그마 32:19273)
         SizedBox(height: isWide ? 30 : (isTablet ? 24 : 20)),
         _buildTabsAndFilters(),
       ],
@@ -237,9 +236,10 @@ class _FleamarketHeaderWebState extends State<FleamarketHeaderWeb> {
   Widget _buildSearchBar() {
     return Container(
       key: _searchBarKey,
-      // 높이 40 / 좌우 14 — PC·태블릿·모바일 공통 (모바일도 피그마 32:19273 실측 40/14)
+      // 높이 40 / 좌우 14 — PC·태블릿·모바일 공통 (모바일도 피그마 32:19273 실측 40/14).
+      // 라운드 6 — 커뮤니티 신규 목업(64:112895) 기준으로 웹 검색바 공통 통일.
       height: 40,
-      decoration: BoxDecoration(color: SDSColor.gray50, borderRadius: BorderRadius.circular(8)),
+      decoration: BoxDecoration(color: SDSColor.gray50, borderRadius: BorderRadius.circular(6)),
       padding: const EdgeInsets.symmetric(horizontal: 14),
       child: Row(
         children: [
@@ -387,7 +387,7 @@ class _FleamarketHeaderWebState extends State<FleamarketHeaderWeb> {
           label: selectedSub,
           isActive: selectedSub != FleamarketCategory_sub.total.korean,
           title: '카테고리',
-          // 태블릿도 PC처럼 pill 아래 드롭다운(요청 2026-09-16).
+          // 태블릿도 PC처럼 pill 아래 드롭다운.
           dropdownOnTablet: true,
           values: FleamarketCategory_sub.values,
           labelOf: (v) => v.korean,

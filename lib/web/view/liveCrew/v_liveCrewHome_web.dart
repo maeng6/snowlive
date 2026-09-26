@@ -64,7 +64,7 @@ class _LiveCrewHomeViewWebState extends State<LiveCrewHomeViewWeb> {
     if (id == null) return;
     // 라이브톡 홈의 분기를 그대로 따른다 — 모바일만 별도 화면, 그 외는 오버레이.
     if (context.screenType == WebScreenType.mobile) {
-      await Get.toNamed('${WebRoutes.liveTalkComments}?id=$id');
+      await Get.toNamed('${WebRoutes.liveTalkDetail}?id=$id');
       return;
     }
     await showLiveTalkDetailOverlay(
@@ -114,7 +114,9 @@ class _LiveCrewHomeViewWebState extends State<LiveCrewHomeViewWeb> {
       children: [
         Text(
           '라이브크루',
-          style: SDSTextStyle.extraBold.copyWith(fontSize: 28, color: SDSColor.gray900),
+          // 홈 타이틀 공통: PC 32 / 태블릿·모바일 24 (중고거래 홈 기준).
+          style: SDSTextStyle.extraBold.copyWith(
+              fontSize: webHomeTitleSize(context), color: SDSColor.gray900),
         ),
         const SizedBox(height: SDSSpacing.xl),
         Obx(_buildSections),
@@ -123,12 +125,8 @@ class _LiveCrewHomeViewWebState extends State<LiveCrewHomeViewWeb> {
 
     return Container(
       color: SDSColor.snowliveWhite,
-      padding: EdgeInsets.fromLTRB(
-        isDesktop ? SDSSpacing.xl : SDSSpacing.md,
-        32,
-        isDesktop ? SDSSpacing.xl : SDSSpacing.md,
-        SDSSpacing.xl,
-      ),
+      // 홈 공통 여백(중고거래 홈 기준).
+      padding: webHomePagePadding(context),
       child: SingleChildScrollView(
         child: Center(
           child: ConstrainedBox(
@@ -177,7 +175,7 @@ class _LiveCrewHomeViewWebState extends State<LiveCrewHomeViewWeb> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // 상단은 주제 하나만 보여주고 화살표로 넘긴다(사용자 확정).
+        // 상단은 주제 하나만 보여주고 화살표로 넘긴다.
         if (sections.isNotEmpty) ...[
           Builder(builder: (context) {
             final index = _topicIndex.clamp(0, sections.length - 1);

@@ -66,7 +66,7 @@ class _CrewTalksViewWebState extends State<CrewTalksViewWeb> {
     final id = item.livetalkId;
     if (id == null) return;
     if (context.screenType == WebScreenType.mobile) {
-      await Get.toNamed('${WebRoutes.liveTalkComments}?id=$id');
+      await Get.toNamed('${WebRoutes.liveTalkDetail}?id=$id');
       return;
     }
     await showLiveTalkDetailOverlay(
@@ -127,7 +127,9 @@ class _CrewTalksViewWebState extends State<CrewTalksViewWeb> {
         if (talks.isEmpty)
           const WebEmptyState(message: '아직 크루톡이 없어요')
         else
-          for (var i = 0; i < talks.length; i++)
+          for (var i = 0; i < talks.length; i++) ...[
+            // 카드 사이 간격 — 카드 자체에는 상하 패딩·구분선이 없다(라이브톡 공통).
+            if (i > 0) SizedBox(height: liveTalkFeedItemGap(context)),
             LiveTalkFeedItemWeb(
               item: talks[i],
               onTapImage: () => _openDetail(talks[i]),
@@ -137,8 +139,8 @@ class _CrewTalksViewWebState extends State<CrewTalksViewWeb> {
                   ? const [WebMoreAction.delete]
                   : const [WebMoreAction.reportPost, WebMoreAction.hideUser],
               onMoreAction: (action) => _onMoreAction(talks[i], action),
-              isLast: i == talks.length - 1,
             ),
+          ],
         // 크루톡은 크루원만 올릴 수 있다.
         if (!isDesktop && _vm.isMyCrew) ...[
           const SizedBox(height: SDSSpacing.xl),

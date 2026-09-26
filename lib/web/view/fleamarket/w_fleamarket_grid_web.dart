@@ -63,7 +63,7 @@ Future<void> _gotoPage(
   FleamarketPaginationViewModelWeb vm,
   int page,
 ) async {
-  // 클릭 즉시 스크롤 없이 최상단으로 점프한다(요청 — 스르륵 올라가지 않게).
+  // 클릭 즉시 스크롤 없이 최상단으로 점프한다(스르륵 올라가지 않게).
   // 그 사이 그리드 자리에는 스켈레톤이 떠 있다(아래 build 참고).
   Scrollable.maybeOf(context)?.position.jumpTo(0);
   await vm.gotoPage(page);
@@ -117,7 +117,7 @@ class FleamarketGridWeb extends StatelessWidget {
         children: [
           // 페이지 번호 이동 중에는 첫 로딩과 같은 두 줄짜리 스켈레톤만 보여주고,
           // 아래를 빈 공간으로 채워 페이지네이션이 짧아진 콘텐츠를 따라
-          // 화면 위로 올라오지 않게 한다(요청).
+          // 화면 위로 올라오지 않게 한다.
           if (isLoading) ...[
             const FleamarketGridSkeleton(),
             SizedBox(height: MediaQuery.sizeOf(context).height * 0.5),

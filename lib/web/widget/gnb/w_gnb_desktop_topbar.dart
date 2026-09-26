@@ -145,7 +145,7 @@ class GnbProfileMenuButtonState extends State<GnbProfileMenuButton> {
           _ProfileMenuAction.logout => '로그아웃',
         };
 
-    // 태블릿에서도 딤 시트가 아니라 PC와 같은 앵커 드롭다운을 쓴다(요청).
+    // 태블릿에서도 딤 시트가 아니라 PC와 같은 앵커 드롭다운을 쓴다.
     final selected = await showWebAnchoredDropdown<_ProfileMenuAction>(
       context: context,
       link: _link,
