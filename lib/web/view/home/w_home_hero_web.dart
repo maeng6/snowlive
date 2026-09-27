@@ -38,6 +38,14 @@ const HomeBanner _kDefaultSlide = HomeBanner(
   subtitle: '라이딩 기록부터 커뮤니티까지, 스키장의 모든 것',
 );
 
+/// 모바일 히어로 높이(사용자 확정). PC 348 / 태블릿 248처럼 **고정 높이**로
+/// 잡는다 — 비율로 두면 폰 폭에 따라 높이가 320~500까지 널뛰어서 문구 블록이
+/// 들어갈 자리를 가늠할 수 없다.
+///
+/// 이미지는 `cover`라 폭에 맞춰 채우고 남는 위아래가 잘린다. 소재는 375폭 기준
+/// 375×400(≈1:1.07) 근처 세로형이면 잘림이 가장 적다(권장 1080×1150 내외).
+const double kHomeHeroMobileHeight = 400;
+
 const String _kDefaultHeroAsset = 'assets/imgs/imgs/Main_Top_image.png';
 const String _kDefaultHeroAssetMobile = 'assets/imgs/imgs/Main_Top_image_m.png';
 
@@ -51,8 +59,21 @@ class _HomeHeroWebState extends State<HomeHeroWeb> {
   int _index = 0;
   Timer? _timer;
 
-  List<HomeBanner> get _slides =>
-      widget.banners.isEmpty ? const [_kDefaultSlide] : widget.banners;
+  /// 이미 미리 받아둔 이미지 URL. PageView는 보이는 장만 만들어서, 이게 없으면
+  /// 넘어가는 순간에야 다음 사진을 받기 시작해 한 박자 늦게 툭 나타난다.
+  final Set<String> _precached = <String>{};
+
+  /// **첫 장 사진까지** 준비됐는지. 문서만 받고 스켈레톤을 걷으면 빈 프레임이
+  /// 한 박자 보였다가 사진이 툭 나타나서, 사진이 준비된 뒤에 걷는다(사용자 확정).
+  /// 한 번 true가 되면 되돌리지 않는다 — 폭이 바뀌어 URL이 달라져도 이미 화면에
+  /// 내용이 있으므로 다시 스켈레톤으로 돌아가면 더 어색하다.
+  bool _firstImageReady = false;
+
+  /// 사진이 느리거나 실패해도 스켈레톤을 무한정 붙잡지 않는다. 먼저 걷어도
+  /// [WebNetworkImage]가 자기 셔머를 깔아줘서 빈 칸이 보이지는 않는다.
+  static const Duration _kFirstImageTimeout = Duration(seconds: 3);
+
+  List<HomeBanner> get _slides => widget.banners.isEmpty ? const [_kDefaultSlide] : widget.banners;
 
   @override
   void didUpdateWidget(HomeHeroWeb oldWidget) {
@@ -100,6 +121,53 @@ class _HomeHeroWebState extends State<HomeHeroWeb> {
     });
   }
 
+  /// 그 폭에서 **실제로 그리는** URL(모바일은 세로 전용 이미지).
+  /// [_buildImage]와 같은 규칙이어야 헛다리를 짚지 않는다.
+  String _urlFor(HomeBanner slide, bool isMobile) =>
+      isMobile ? (slide.imageUrlMobile ?? slide.imageUrl) : slide.imageUrl;
+
+  /// 첫 장 사진이 준비되면 스켈레톤을 걷는다. 문서를 받기 전에는 아무것도 하지
+  /// 않는다 — 그때의 `_slides`는 기본 슬라이드(로컬 에셋)라 바로 준비됐다고
+  /// 판단해버려서, 정작 진짜 사진은 다시 셔머를 보게 된다.
+  void _revealWhenFirstImageReady(bool isMobile) {
+    if (_firstImageReady || !widget.isLoaded) return;
+    final slides = _slides;
+    final url = slides.isEmpty ? '' : _urlFor(slides[_index], isMobile);
+    // 기본 슬라이드는 로컬 에셋이라 기다릴 게 없다.
+    if (url.isEmpty) {
+      setState(() => _firstImageReady = true);
+      return;
+    }
+    _precached.add(url);
+    precacheImage(
+      NetworkImage(url),
+      context,
+    ).timeout(_kFirstImageTimeout).catchError((_) {}).whenComplete(() {
+      if (mounted && !_firstImageReady) {
+        setState(() => _firstImageReady = true);
+      }
+    });
+  }
+
+  /// 지금 장과 **다음 장**을 미리 받아둔다. 롤링을 따라가며 한 장씩 앞서 받으므로
+  /// 배너가 몇 장이든 넘어갈 때는 이미 캐시에 있다.
+  ///
+  /// [WebNetworkImage]가 바이트 경로에서 `Image.network`를 쓰므로 여기서 채운
+  /// [ImageCache]를 그대로 재사용한다(같은 URL이면 즉시 그려진다).
+  void _precacheAround(bool isMobile) {
+    final slides = _slides;
+    if (slides.isEmpty) return;
+    for (final i in <int>{_index, (_index + 1) % slides.length}) {
+      final url = _urlFor(slides[i], isMobile);
+      // 기본 슬라이드는 URL이 비어 있다(로컬 에셋이라 받을 게 없다).
+      if (url.isEmpty) continue;
+      // 폭이 바뀌면 URL도 바뀌므로 URL 기준으로 중복을 막는다.
+      if (!_precached.add(url)) continue;
+      // 실패해도 화면은 각자 폴백이 있다 — 여기서 막을 건 예외 전파뿐이다.
+      precacheImage(NetworkImage(url), context).catchError((_) {});
+    }
+  }
+
   Future<void> _openButtonUrl(HomeBanner slide) async {
     final url = slide.buttonUrl ?? slide.landingUrl;
     if (url.isEmpty) return;
@@ -114,8 +182,17 @@ class _HomeHeroWebState extends State<HomeHeroWeb> {
     final bool isMobile = screenType == WebScreenType.mobile;
     final bool isTablet = screenType == WebScreenType.tablet;
 
-    // 문서를 받기 전에는 스켈레톤으로 자리만 잡는다(레이아웃이 튀지 않게).
-    if (!widget.isLoaded && widget.banners.isEmpty) {
+    // 첫 프레임 뒤에 사진을 받는다 — build 중 이미지 캐시를 건드리면 안 된다.
+    // 스켈레톤을 그리는 동안에도 돌아야 해서 조기 리턴보다 **앞**에 둔다.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      _revealWhenFirstImageReady(isMobile);
+      _precacheAround(isMobile);
+    });
+
+    // 문서 + **첫 장 사진**이 준비될 때까지 스켈레톤으로 자리만 잡는다
+    // (레이아웃이 튀지 않게).
+    if (!widget.isLoaded || !_firstImageReady) {
       return _frame(
         isMobile: isMobile,
         isTablet: isTablet,
@@ -150,6 +227,8 @@ class _HomeHeroWebState extends State<HomeHeroWeb> {
                 : const NeverScrollableScrollPhysics(),
             onPageChanged: (page) {
               setState(() => _index = page % slides.length);
+              // 새 현재 장 기준으로 그 다음 장을 미리 받는다.
+              _precacheAround(isMobile);
               // 수동 스와이프 후 자동 롤링 타이머를 처음부터 다시 센다.
               _restartTimer();
             },
@@ -168,10 +247,7 @@ class _HomeHeroWebState extends State<HomeHeroWeb> {
                 gradient: LinearGradient(
                   begin: isMobile ? Alignment.topCenter : Alignment.centerLeft,
                   end: isMobile ? Alignment.bottomCenter : Alignment.centerRight,
-                  colors: [
-                    Colors.black.withOpacity(0.35),
-                    Colors.transparent,
-                  ],
+                  colors: [Colors.black.withOpacity(0.35), Colors.transparent],
                   stops: const [0.0, 0.65],
                 ),
               ),
@@ -193,22 +269,21 @@ class _HomeHeroWebState extends State<HomeHeroWeb> {
     );
   }
 
-  /// 공통 프레임 — 모바일은 원본 비율(1024x1200), PC 348 / 태블릿 228 고정 높이 +
+  /// 공통 프레임 — 모바일 400 / PC 348 / 태블릿 248 고정 높이 +
   /// 좌우 cover 마스킹(폭이 줄어도 높이가 유지된다). radius 20.
-  Widget _frame({
-    required bool isMobile,
-    required bool isTablet,
-    required Widget child,
-  }) {
-    final framed = isMobile
-        ? AspectRatio(aspectRatio: 1024 / 1200, child: child)
-        : SizedBox(height: isTablet ? 248 : 348, width: double.infinity, child: child);
-    return ClipRRect(borderRadius: BorderRadius.circular(20), child: framed);
+  Widget _frame({required bool isMobile, required bool isTablet, required Widget child}) {
+    final framed = SizedBox(
+      height: isMobile ? kHomeHeroMobileHeight : (isTablet ? 248 : 348),
+      width: double.infinity,
+      child: child,
+    );
+    // 모바일은 화면 끝까지 꽉 차므로 라운드를 주지 않는다 — 모서리만 둥글면
+    // 화면 가장자리와 어긋나 보인다.
+    return ClipRRect(borderRadius: BorderRadius.circular(isMobile ? 0 : 20), child: framed);
   }
 
   Widget _buildImage(HomeBanner slide, bool isMobile) {
-    final String url =
-        isMobile ? (slide.imageUrlMobile ?? slide.imageUrl) : slide.imageUrl;
+    final String url = isMobile ? (slide.imageUrlMobile ?? slide.imageUrl) : slide.imageUrl;
     if (url.isEmpty) {
       // 기본 슬라이드(로컬 에셋).
       return Image.asset(
@@ -290,11 +365,14 @@ class _HeroOverlayState extends State<_HeroOverlay> with TickerProviderStateMixi
   static const int _kItemMs = 300;
   static const int _kStaggerMs = 100;
 
-  late final AnimationController _enter =
-      AnimationController(vsync: this, duration: const Duration(milliseconds: _kEnterMs))
-        ..forward();
-  late final AnimationController _exit =
-      AnimationController(vsync: this, duration: const Duration(milliseconds: 150));
+  late final AnimationController _enter = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: _kEnterMs),
+  )..forward();
+  late final AnimationController _exit = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 150),
+  );
 
   /// 현재 화면에 그려지는 슬라이드(퇴장 애니메이션 동안은 이전 슬라이드를 유지).
   late HomeBanner _shown = widget.slide;
@@ -332,10 +410,7 @@ class _HeroOverlayState extends State<_HeroOverlay> with TickerProviderStateMixi
       animation: animation,
       builder: (_, __) => Opacity(
         opacity: animation.value,
-        child: Transform.translate(
-          offset: Offset(0, (1 - animation.value) * 12),
-          child: child,
-        ),
+        child: Transform.translate(offset: Offset(0, (1 - animation.value) * 12), child: child),
       ),
       child: child,
     );
@@ -368,8 +443,7 @@ class _HeroOverlayState extends State<_HeroOverlay> with TickerProviderStateMixi
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment:
-                isMobile ? MainAxisAlignment.start : MainAxisAlignment.center,
+            mainAxisAlignment: isMobile ? MainAxisAlignment.start : MainAxisAlignment.center,
             children: [
               if (title != null)
                 // 타이틀: Bold 32(PC) / 22(태블릿) / 24(모바일), 화이트.
@@ -419,9 +493,7 @@ class _HeroOverlayState extends State<_HeroOverlay> with TickerProviderStateMixi
                       minimumSize: Size(0, buttonHeight),
                       fixedSize: Size.fromHeight(buttonHeight),
                       tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(40),
-                      ),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
                     ),
                     child: Text(
                       buttonLabel,

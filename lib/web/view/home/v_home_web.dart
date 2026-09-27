@@ -74,8 +74,7 @@ class _HomeViewWebState extends State<HomeViewWeb> {
     final footerBox = _footerKey.currentContext?.findRenderObject() as RenderBox?;
     final chatBox = _chatKey.currentContext?.findRenderObject() as RenderBox?;
     if (stackBox == null || footerBox == null) return;
-    final double footerTop =
-        footerBox.localToGlobal(Offset.zero, ancestor: stackBox).dy;
+    final double footerTop = footerBox.localToGlobal(Offset.zero, ancestor: stackBox).dy;
     double push = stackBox.size.height - footerTop + 20;
     // 위젯(바/패널) 높이만큼은 화면 안에 남긴다.
     final double chatHeight = chatBox?.size.height ?? 0;
@@ -110,55 +109,75 @@ class _HomeViewWebState extends State<HomeViewWeb> {
             content: Center(
               child: ConstrainedBox(
                 constraints: const BoxConstraints(maxWidth: kHomeMaxContentWidth),
-                child: Padding(
-                  // 상하 여백도 좌우와 동일 규칙(PC 40 / 태블릿 20 / 모바일 16).
-                  padding: EdgeInsets.fromLTRB(
-                    horizontal,
-                    horizontal,
-                    horizontal,
-                    0,
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      // 최상단 히어로 캐러셀 — Firestore `banner/home` 데이터로 그린다.
-                      Obx(() => HomeHeroWeb(
-                            banners: _vm.banners,
-                            isLoaded: _vm.isBannerLoaded,
-                          )),
-                      // 히어로 ↔ 날씨 간격: PC 40 / 태블릿 30 / 모바일 16.
-                      SizedBox(
-                        height: switch (screenType) {
-                          WebScreenType.desktop => 40.0,
-                          WebScreenType.tablet => 30.0,
-                          WebScreenType.mobile => 20,
-                        },
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    // 최상단 히어로 캐러셀 — Firestore `banner/homeHeroWeb` 데이터.
+                    //
+                    // ⚠️ 모바일은 **패딩 바깥**에 둔다 — 상단·좌우 여백 없이 화면
+                    // 끝까지 꽉 차야 해서다(사용자 확정). 그래서 아래 본문 Padding을
+                    // 히어로와 나눠 든다.
+                    if (isMobile)
+                      Obx(() => HomeHeroWeb(banners: _vm.banners, isLoaded: _vm.isBannerLoaded)),
+                    Padding(
+                      // 상하 여백도 좌우와 동일 규칙(PC 40 / 태블릿 20 / 모바일 16).
+                      // 모바일은 히어로가 위를 덮으므로 상단 여백을 주지 않는다.
+                      padding: EdgeInsets.fromLTRB(
+                        horizontal,
+                        isMobile ? 0 : horizontal,
+                        horizontal,
+                        0,
                       ),
-                      Obx(() => HomeWeatherBarWeb(
-                            resort: _vm.resort,
-                            weather: _vm.weather,
-                            onResortSelected: _vm.selectResort,
-                          )),
-                      // 날씨 ↔ 오늘의 랭킹 간격 30.
-                      SizedBox(height: 30),
-                      Obx(() => HomeTodayRankingWeb(
-                            today: _vm.today,
-                            indiv: _vm.todayIndiv,
-                            crew: _vm.todayCrew,
-                            isLoading: _vm.isRankingLoading,
-                          )),
-                      SizedBox(height: isMobile ? SDSSpacing.xl : SDSSpacing.xxl),
-                      Obx(() => HomeCrewCardsWeb(
-                            cards: _vm.crewCards,
-                            isLoading: _vm.isCrewLoading,
-                          )),
-                      SizedBox(height: isMobile ? SDSSpacing.xl : SDSSpacing.xxl),
-                      Obx(() => HomeFleamarketWeb(
-                            items: _vm.fleamarket,
-                            isLoading: _vm.isFleamarketLoading,
-                          )),
-                    ],
-                  ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          if (!isMobile)
+                            Obx(
+                              () => HomeHeroWeb(banners: _vm.banners, isLoaded: _vm.isBannerLoaded),
+                            ),
+                          // 히어로 ↔ 날씨 간격: PC 40 / 태블릿 30 / 모바일 20.
+                          SizedBox(
+                            height: switch (screenType) {
+                              WebScreenType.desktop => 40.0,
+                              WebScreenType.tablet => 30.0,
+                              WebScreenType.mobile => 20,
+                            },
+                          ),
+                          Obx(
+                            () => HomeWeatherBarWeb(
+                              resort: _vm.resort,
+                              weather: _vm.weather,
+                              onResortSelected: _vm.selectResort,
+                            ),
+                          ),
+                          // 날씨 ↔ 오늘의 랭킹 간격 30.
+                          SizedBox(height: 30),
+                          Obx(
+                            () => HomeTodayRankingWeb(
+                              today: _vm.today,
+                              indiv: _vm.todayIndiv,
+                              crew: _vm.todayCrew,
+                              isLoading: _vm.isRankingLoading,
+                            ),
+                          ),
+                          SizedBox(height: isMobile ? SDSSpacing.xl : SDSSpacing.xxl),
+                          Obx(
+                            () => HomeCrewCardsWeb(
+                              cards: _vm.crewCards,
+                              isLoading: _vm.isCrewLoading,
+                            ),
+                          ),
+                          SizedBox(height: isMobile ? SDSSpacing.xl : SDSSpacing.xxl),
+                          Obx(
+                            () => HomeFleamarketWeb(
+                              items: _vm.fleamarket,
+                              isLoading: _vm.isFleamarketLoading,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -167,12 +186,7 @@ class _HomeViewWebState extends State<HomeViewWeb> {
               child: ConstrainedBox(
                 constraints: const BoxConstraints(maxWidth: kHomeMaxContentWidth),
                 child: Padding(
-                  padding: EdgeInsets.fromLTRB(
-                    horizontal,
-                    120,
-                    horizontal,
-                    horizontal,
-                  ),
+                  padding: EdgeInsets.fromLTRB(horizontal, 120, horizontal, horizontal),
                   child: HomeFooterWeb(key: _footerKey),
                 ),
               ),
