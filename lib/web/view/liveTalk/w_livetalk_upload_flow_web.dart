@@ -5,12 +5,13 @@ import 'package:com.snowlive/web/view/liveTalk/w_livetalk_step_modal_web.dart';
 import 'package:com.snowlive/web/viewmodel/liveTalk/vm_liveTalkUpload_web.dart';
 import 'package:com.snowlive/web/widget/w_web_overlay_modal_web.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 
 /// `라이브톡 올리기` — 사진 선택 → 글 작성 2단계(목업).
 /// 등록에 성공하면 true를 리턴해 호출자가 피드를 새로고침한다.
 /// [crewId]를 주면 **크루톡 올리기**로 동작한다(제목이 바뀌고 공개범위 토글이 붙는다).
-/// 올리는 절차 자체는 라이브톡과 완전히 같다(사용자 확정).
+/// 올리는 절차 자체는 라이브톡과 완전히 같다.
 Future<bool> showLiveTalkUploadFlow({
   required BuildContext context,
   required int userId,
@@ -65,6 +66,9 @@ class _UploadFlowState extends State<_UploadFlow> {
 
   bool get _isCrewTalk => widget.crewId != null;
 
+  /// 모바일만 하단 시트 — 중앙 카드와 여백 규칙이 다르다.
+  bool get _isMobile => context.screenType == WebScreenType.mobile;
+
   WebFileDrop? _drop;
 
   LiveTalkUploadViewModelWeb get _vm => widget.vm;
@@ -118,21 +122,37 @@ class _UploadFlowState extends State<_UploadFlow> {
       final isStep0 = _step == 0;
       return LiveTalkStepModal(
         title: _isCrewTalk ? '크루톡 올리기' : '라이브톡 올리기',
-        subtitle: isStep0 ? _pickSubtitle(context) : '글 내용을 입력하세요.',
+        // 모바일은 시트가 안내 문구를 그리지 않는다 — 1단계는 **사진 칸 아래**,
+        // 2단계는 문구 자체가 없는 게 목업이라 위치를 본문이 정한다.
+        subtitle: _isMobile
+            ? null
+            : (isStep0 ? _pickSubtitle(context) : '글 내용을 입력하세요.'),
         onClose: widget.onClose,
         onBack: isStep0 ? null : () => setState(() => _step = 0),
         onNext: _nextAction(isStep0),
         nextLabel: isStep0 ? '다음' : '업로드',
         isFinalStep: !isStep0,
+        // 두 단계가 같은 높이라 다음/이전을 눌러도 카드가 흔들리지 않는다.
+        // 본문 아래 여백은 이 높이에서 **남는 만큼**이 자동으로 된다
+        // (PC 1단계 40·2단계 30 / 태블릿 1단계 25 — 전부 목업값과 일치).
+        minHeight: switch (context.screenType) {
+          WebScreenType.desktop => kLiveTalkModalHeight,
+          WebScreenType.tablet => kLiveTalkModalHeightTablet,
+          WebScreenType.mobile => kLiveTalkSheetHeightMobile,
+        },
+        // 모바일 시트는 요소마다 좌우 여백이 다르다(버튼 20 / 글 작성 16 /
+        // 안내 20) — 본문이 직접 든다.
+        mobileBodyPadding: EdgeInsets.zero,
         body: isStep0 ? _buildPickStep(context) : _buildComposeStep(),
       );
     });
   }
 
-  /// 데스크탑은 드래그 안내, 태블릿·모바일은 앨범/촬영 안내(목업).
-  String _pickSubtitle(BuildContext context) => context.isDesktop
-      ? '여기에 사진을 드래그하세요'
-      : '라이브톡에 올릴 사진을\n앨범에서 선택하거나 촬영해주세요';
+  /// PC·태블릿은 같은 드래그 안내(목업 80:217253 / 80:228872), 모바일만 앨범/촬영 안내.
+  String _pickSubtitle(BuildContext context) =>
+      context.screenType == WebScreenType.mobile
+          ? '라이브톡에 올릴 사진을\n앨범에서 선택하거나 촬영해주세요'
+          : '여기에 사진을 드래그하세요';
 
   VoidCallback? _nextAction(bool isStep0) {
     if (_vm.isSubmitting) return null;
@@ -143,62 +163,127 @@ class _UploadFlowState extends State<_UploadFlow> {
     return _submit;
   }
 
+  /// 사진 칸 → 간격 → (모바일만 안내 문구) → 버튼
+  /// (피그마 PC 80:217253 / 태블릿 80:228872 / 모바일 80:249711).
+  ///
+  /// PC·태블릿은 버튼 아래 여백을 쓰지 않는다 — 카드 높이에서 남는 만큼이 그대로
+  /// 여백이 된다(PC 40 / 태블릿 25). 높이가 고정이 아닌 모바일 시트만 직접 든다.
   Widget _buildPickStep(BuildContext context) {
+    final isMobile = _isMobile;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        _ImagePreviewBox(vm: _vm, isDragging: _isDragging),
-        const SizedBox(height: SDSSpacing.lg),
+        Center(child: _ImagePreviewBox(vm: _vm, isDragging: _isDragging)),
+        SizedBox(
+          height: switch (context.screenType) {
+            WebScreenType.desktop => 42,
+            WebScreenType.tablet => 50,
+            // 모바일은 사진 칸 아래에 안내 문구가 먼저 온다.
+            WebScreenType.mobile => 16,
+          },
+        ),
+        if (isMobile) ...[
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Text(
+              _pickSubtitle(context),
+              textAlign: TextAlign.center,
+              style: SDSTextStyle.regular.copyWith(
+                fontSize: 14,
+                color: SDSColor.gray500,
+                height: 20 / 14,
+              ),
+            ),
+          ),
+          const SizedBox(height: 34),
+        ],
         if (context.isDesktop)
-          _WideButton(
-            label: '이미지 직접 선택하기',
-            isPrimary: false,
-            onTap: () => _vm.pickImage(),
+          Center(
+            child: SizedBox(
+              // 사진 칸(240)보다 좁은 208 — 목업 실측.
+              width: kLiveTalkPickButtonWidth,
+              child: LiveTalkWideButton(
+                label: '이미지 직접 선택하기',
+                kind: LiveTalkWideButtonKind.quiet,
+                onTap: () => _vm.pickImage(),
+              ),
+            ),
           )
         else
-          Row(
-            children: [
-              Expanded(
-                child: _WideButton(
-                  label: '앨범에서 선택',
-                  isPrimary: false,
-                  onTap: () => _vm.pickImage(),
+          // 좌우는 태블릿 20 / 모바일 10(목업), 사이는 둘 다 10.
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: isMobile ? 10 : 20),
+            child: Row(
+              children: [
+                Expanded(
+                  child: LiveTalkWideButton(
+                    label: '앨범에서 선택',
+                    kind: LiveTalkWideButtonKind.secondary,
+                    onTap: () => _vm.pickImage(),
+                  ),
                 ),
-              ),
-              const SizedBox(width: SDSSpacing.sm),
-              Expanded(
-                child: _WideButton(
-                  label: '촬영',
-                  isPrimary: true,
-                  onTap: () => _vm.pickImage(fromCamera: true),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: LiveTalkWideButton(
+                    label: '촬영',
+                    kind: LiveTalkWideButtonKind.primary,
+                    onTap: () => _vm.pickImage(fromCamera: true),
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
+        if (isMobile) const SizedBox(height: 10),
       ],
     );
   }
 
+  /// 썸네일 → 간격 → 글 작성 (피그마 PC 80:219456 / 모바일 80:253768).
+  /// PC·태블릿의 아래 여백은 1단계와 같은 이유로 카드 높이에서 남는 만큼이 된다.
   Widget _buildComposeStep() {
+    final isMobile = _isMobile;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Center(child: _ImageThumb(vm: _vm)),
-        const SizedBox(height: SDSSpacing.lg),
-        LiveTalkComposeField(controller: _textController),
-        if (_isCrewTalk) ...[
-          const SizedBox(height: SDSSpacing.md),
-          _VisibilityToggle(
-            isPublic: _isPublic,
-            onChanged: (value) => setState(() => _isPublic = value),
+        Center(child: _ImageThumb(vm: _vm, size: isMobile ? 120 : 100)),
+        SizedBox(height: isMobile ? 20 : 30),
+        Padding(
+          // 모바일 시트는 좌우 여백을 요소마다 따로 든다(글 작성 블록 16).
+          padding: EdgeInsets.symmetric(horizontal: isMobile ? SDSSpacing.md : 0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              LiveTalkComposeField(
+                controller: _textController,
+                height: isMobile ? 195 : 181,
+              ),
+              if (_isCrewTalk) ...[
+                const SizedBox(height: SDSSpacing.md),
+                _VisibilityToggle(
+                  isPublic: _isPublic,
+                  onChanged: (value) => setState(() => _isPublic = value),
+                ),
+              ],
+            ],
           ),
-        ],
+        ),
+        if (isMobile) const SizedBox(height: 20),
       ],
     );
   }
 }
 
-/// 1단계의 큰 미리보기 박스. 사진이 없으면 빈 회색 박스다(목업).
+/// 1단계 사진 칸 한 변(PC·태블릿 목업 240). 카드 390 안에서 좌우 75씩 남는다.
+const double kLiveTalkPickBoxSize = 240;
+
+/// 모바일 1단계 사진 칸 한 변(목업 80:249711). 시트 375 안에서 좌우 72.5씩.
+const double kLiveTalkPickBoxSizeMobile = 230;
+
+/// 1단계 `이미지 직접 선택하기` 버튼 폭(목업 208).
+const double kLiveTalkPickButtonWidth = 208;
+
+/// 1단계의 사진 칸(240 정사각). 사진이 없으면 회색 바탕에 카메라 아이콘만
+/// 보인다 — 크루 만들기 사진 선택과 같은 구성이다.
 class _ImagePreviewBox extends StatelessWidget {
   final LiveTalkUploadViewModelWeb vm;
 
@@ -210,67 +295,52 @@ class _ImagePreviewBox extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final file = vm.pickedImage;
-    return AspectRatio(
-      aspectRatio: 1,
-      child: Container(
-        decoration: BoxDecoration(
-          color: isDragging ? SDSColor.blue50 : SDSColor.gray50,
-          borderRadius: BorderRadius.circular(4),
-          border: isDragging ? Border.all(color: SDSColor.snowliveBlue, width: 2) : null,
-        ),
-        clipBehavior: Clip.antiAlias,
-        // 웹의 XFile.path는 blob URL이라 Image.network로 그린다.
-        child: file == null
-            ? null
-            : Image.network(file.path, fit: BoxFit.cover),
+    final side = context.screenType == WebScreenType.mobile
+        ? kLiveTalkPickBoxSizeMobile
+        : kLiveTalkPickBoxSize;
+    return Container(
+      width: side,
+      height: side,
+      decoration: BoxDecoration(
+        color: isDragging ? SDSColor.blue50 : SDSColor.gray50,
+        borderRadius: BorderRadius.circular(4),
+        border: isDragging ? Border.all(color: SDSColor.snowliveBlue, width: 2) : null,
       ),
+      clipBehavior: Clip.antiAlias,
+      // 웹의 XFile.path는 blob URL이라 Image.network로 그린다.
+      child: file == null
+          ? Center(
+              // ⚠️ colorFilter로 색을 덮지 않는다 — srcIn은 실루엣 전체를 칠해서
+              // 렌즈처럼 흰색으로 뚫어둔 구멍까지 메워버린다. 색은 그대로 두고
+              // 불투명도만 낮춰 연하게 만든다(검정 10%를 덮었을 때와 같은 밝기).
+              child: Opacity(
+                opacity: 0.25,
+                child: SvgPicture.asset(
+                  'assets/imgs/icons/icon_input_camera.svg',
+                  width: 48,
+                  height: 48,
+                ),
+              ),
+            )
+          : Image.network(file.path, fit: BoxFit.cover),
     );
   }
 }
 
-/// 2단계의 작은 썸네일.
+/// 2단계의 작은 썸네일. PC·태블릿 100 / 모바일 120(목업).
 class _ImageThumb extends StatelessWidget {
   final LiveTalkUploadViewModelWeb vm;
+  final double size;
 
-  const _ImageThumb({required this.vm});
+  const _ImageThumb({required this.vm, required this.size});
 
   @override
   Widget build(BuildContext context) {
     final file = vm.pickedImage;
-    if (file == null) return const SizedBox.shrink();
+    if (file == null) return SizedBox(height: size);
     return ClipRRect(
       borderRadius: BorderRadius.circular(4),
-      child: Image.network(file.path, width: 100, height: 100, fit: BoxFit.cover),
-    );
-  }
-}
-
-class _WideButton extends StatelessWidget {
-  final String label;
-  final bool isPrimary;
-  final VoidCallback onTap;
-
-  const _WideButton({required this.label, required this.isPrimary, required this.onTap});
-
-  @override
-  Widget build(BuildContext context) {
-    return ElevatedButton(
-      onPressed: onTap,
-      style: ElevatedButton.styleFrom(
-        backgroundColor: isPrimary ? SDSColor.snowliveBlue : SDSColor.gray50,
-        elevation: 0,
-        shadowColor: Colors.transparent,
-        overlayColor: Colors.transparent,
-        padding: const EdgeInsets.symmetric(vertical: 14),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-      ),
-      child: Text(
-        label,
-        style: SDSTextStyle.bold.copyWith(
-          fontSize: 14,
-          color: isPrimary ? SDSColor.snowliveWhite : SDSColor.gray900,
-        ),
-      ),
+      child: Image.network(file.path, width: size, height: size, fit: BoxFit.cover),
     );
   }
 }
@@ -280,13 +350,15 @@ Future<void> showLiveTalkUploadDoneDialog(BuildContext context) {
   return showWebOverlayModal<void>(
     context: context,
     barrierDismissible: false,
+    // 웹 표준 팝업 카드 스펙(라운드 16 / 최대폭 320 / 패딩 24,28,24,12 /
+    // 타이틀 bold 16) — showWebConfirmDialog와 동일. 버튼 구성만 목업대로.
     builder: (_, close) => Material(
       color: SDSColor.snowliveWhite,
-      borderRadius: BorderRadius.circular(4),
+      borderRadius: BorderRadius.circular(16),
       clipBehavior: Clip.antiAlias,
       child: Container(
-        constraints: const BoxConstraints(maxWidth: 290),
-        padding: const EdgeInsets.fromLTRB(20, 24, 20, 20),
+        constraints: const BoxConstraints(maxWidth: 320),
+        padding: const EdgeInsets.fromLTRB(24, 28, 24, 12),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -294,7 +366,7 @@ Future<void> showLiveTalkUploadDoneDialog(BuildContext context) {
             Text(
               '라이브톡 업로드 완료됐어요',
               textAlign: TextAlign.center,
-              style: SDSTextStyle.bold.copyWith(fontSize: 15, color: SDSColor.gray900),
+              style: SDSTextStyle.bold.copyWith(fontSize: 16, color: SDSColor.gray900),
             ),
             const SizedBox(height: SDSSpacing.lg),
             ElevatedButton(

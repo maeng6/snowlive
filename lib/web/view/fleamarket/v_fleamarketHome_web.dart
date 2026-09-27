@@ -4,61 +4,93 @@ import 'package:com.snowlive/web/view/fleamarket/w_fleamarket_bottombar_web.dart
 import 'package:com.snowlive/web/view/fleamarket/w_fleamarket_grid_web.dart';
 import 'package:com.snowlive/web/view/fleamarket/w_fleamarket_header_web.dart';
 import 'package:com.snowlive/web/view/fleamarket/w_fleamarket_sidebar_web.dart';
-import 'package:com.snowlive/web/view/home/v_home_web.dart' show kHomeMaxContentWidth;
-import 'package:com.snowlive/web/widget/gnb/w_gnb_sidebar.dart';
+import 'package:com.snowlive/web/view/home/w_home_sections_web.dart' show HomeFooterWeb;
+import 'package:com.snowlive/web/widget/w_web_sticky_footer_scroll_web.dart';
+import 'package:com.snowlive/web/widget/w_web_sticky_sidebar_web.dart';
 import 'package:flutter/material.dart';
 
 /// PC 콘텐츠 좌우 여백 — 디자인 가이드 확정값(웹 공통 40).
 const double kFleamarketDesktopHPad = 40;
 
-/// 1440px 기준 GNB(240)/좌우 여백(40*2)을 뺀, "중고거래 리스트 영역 + 우측 사이드바"를
-/// 하나로 묶은 기준 폭. 화면이 1440보다 넓어져도 이 블록 전체가 이 폭에서 고정된 채
-/// 가운데로 오고, 우측 사이드바는 계속 리스트 영역 옆에 붙어 있는다(화면 끝으로 가지 않음).
-/// 화면 끝까지 붙는 건 GNB(좌)와 로그인/회원가입(우, 상단바)뿐이다.
-const double kFleamarketContentMaxWidth =
-    WebBreakpoints.maxContentWidth - kGnbSidebarWidth - (kFleamarketDesktopHPad * 2);
-
 /// 중고거래 웹 홈(목록) 화면.
-class FleamarketHomeView extends StatelessWidget {
+class FleamarketHomeView extends StatefulWidget {
   const FleamarketHomeView({super.key});
+
+  @override
+  State<FleamarketHomeView> createState() => _FleamarketHomeViewState();
+}
+
+class _FleamarketHomeViewState extends State<FleamarketHomeView> {
+  /// 사이드바를 스크롤에 맞춰 상단에 붙이려면 페이지 스크롤을 직접 잡아야 한다.
+  final ScrollController _scrollController = ScrollController();
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     if (context.isDesktop) {
       // 구조: [콘텐츠(최대 1280) + 40 + 사이드바(240)] 블록 전체를 가운데 정렬.
-      // 사이드바는 콘텐츠 옆에 붙고, 화면이 좁아지면 콘텐츠 폭만 줄어든다.
+      // 사이드바는 콘텐츠 옆에 붙고, 화면이 좁아지면 콘텐츠 폭이 줄어들되
+      // 사이드바도 1440→1024 구간에서 240→200으로 선형으로 함께 줄어든다.
+      final double screenWidth = MediaQuery.sizeOf(context).width;
+      final double sidebarWidth =
+          (200 +
+                  (screenWidth - WebBreakpoints.desktop) /
+                      (WebBreakpoints.maxContentWidth - WebBreakpoints.desktop) *
+                      (kFleamarketSidebarWidth - 200))
+              .clamp(200.0, kFleamarketSidebarWidth);
+
+      // 목록 1280(웹 공통) + 간격 40 + 사이드바 240 = 1560.
+      const blockConstraints = BoxConstraints(
+        maxWidth: kWebDesktopListMaxWidth + kFleamarketDesktopHPad + kFleamarketSidebarWidth,
+      );
+
       return Container(
         color: SDSColor.snowliveWhite,
-        // 좌우 40(디자인 가이드 공통), 상단 58(피그마 32:17109).
-        padding: const EdgeInsets.fromLTRB(
-            kFleamarketDesktopHPad, 58, kFleamarketDesktopHPad, SDSSpacing.xl),
-        child: SingleChildScrollView(
-          child: Center(
+        // 콘텐츠가 짧으면 푸터가 뷰포트 하단에 붙는다(공통 골격).
+        // 패딩은 스크롤뷰 **안쪽**에 둔다 — 바깥에 두면 스크롤바가 브라우저
+        // 우측 끝이 아니라 콘텐츠 안쪽(40px 들어온 자리)에 뜬다.
+        child: WebStickyFooterScroll(
+          controller: _scrollController,
+          padding: webHomePagePadding(context),
+          content: Center(
             child: ConstrainedBox(
-              constraints: const BoxConstraints(
-                // 콘텐츠 1280(홈과 동일) + 간격 40 + 사이드바 240.
-                maxWidth: kHomeMaxContentWidth -
-                    kFleamarketDesktopHPad * 2 +
-                    kFleamarketDesktopHPad +
-                    kFleamarketSidebarWidth,
-              ),
-              child: const Row(
+              constraints: blockConstraints,
+              child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Expanded(
+                  const Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        FleamarketHeaderWeb(),
-                        FleamarketGridWeb(),
-                      ],
+                      children: [FleamarketHeaderWeb(), FleamarketGridWeb()],
                     ),
                   ),
                   // 콘텐츠 ↔ 사이드바 간격 40.
-                  SizedBox(width: kFleamarketDesktopHPad),
-                  FleamarketSidebarWeb(),
+                  const SizedBox(width: kFleamarketDesktopHPad),
+                  // 스크롤을 내리면 사이드바가 화면 상단 30에 멈춰 따라붙고
+                  // 목록만 올라간다(라이브톡·커뮤니티와 동일). 상단 오프셋은
+                  // 바깥에 둬야 sticky가 그 여백까지 밀지 않는다.
+                  Padding(
+                    padding: const EdgeInsets.only(top: kFleamarketSidebarTopOffset),
+                    child: WebStickySidebar(
+                      controller: _scrollController,
+                      naturalTop: webHomePagePadding(context).top + kFleamarketSidebarTopOffset,
+                      child: FleamarketSidebarWeb(width: sidebarWidth),
+                    ),
+                  ),
                 ],
               ),
+            ),
+          ),
+          // 홈과 동일한 푸터. 콘텐츠 ↔ 푸터 120(홈과 동일) — 기존대로 블록 폭.
+          footer: Center(
+            child: ConstrainedBox(
+              constraints: blockConstraints,
+              child: const Column(children: [SizedBox(height: 120), HomeFooterWeb()]),
             ),
           ),
         ),
@@ -69,24 +101,24 @@ class FleamarketHomeView extends StatelessWidget {
       color: SDSColor.snowliveWhite,
       child: Stack(
         children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(SDSSpacing.md, SDSSpacing.md, SDSSpacing.md, kFleamarketBottomBarHeight),
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: const [
-                  FleamarketHeaderWeb(),
-                  FleamarketGridWeb(),
-                ],
-              ),
+          WebStickyFooterScroll(
+            // 여백은 전부 스크롤 영역 **안쪽**에 둔다 — 상단은 바깥에 두면
+            // 스크롤된 콘텐츠가 상단바 아래가 아니라 여백 경계에서 잘려 보이고,
+            // 좌우는 바깥에 두면 스크롤바가 브라우저 우측 끝이 아니라 콘텐츠
+            // 안쪽에 뜬다. 하단 여백은 페이드 바가 콘텐츠를 덮는 구조라
+            // 바 높이만큼 확보한다.
+            padding: webHomePagePadding(
+              context,
+              bottom: kFleamarketBottomBarHeight + SDSSpacing.md,
             ),
+            content: const Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [FleamarketHeaderWeb(), FleamarketGridWeb()],
+            ),
+            // 홈과 동일한 푸터. 좁은 폭은 여백 80.
+            footer: const Column(children: [SizedBox(height: 80), HomeFooterWeb()]),
           ),
-          const Positioned(
-            left: 0,
-            right: 0,
-            bottom: 0,
-            child: FleamarketBottomBarWeb(),
-          ),
+          const Positioned(left: 0, right: 0, bottom: 0, child: FleamarketBottomBarWeb()),
         ],
       ),
     );

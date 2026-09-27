@@ -17,7 +17,7 @@ const int kCrewHomeListCap = 30;
 bool crewHomeListIsCapped(CrewHomeChip? chip, List<CrewCard> crews) =>
     chip?.kind == CrewHomeChipKind.resort && crews.length >= kCrewHomeListCap;
 
-/// 스키/보드가 많은 크루의 기준(사용자 확정: 크루원 10명 이상 중 **70% 이상**).
+/// 스키/보드가 많은 크루의 기준(크루원 10명 이상 중 **70% 이상**).
 ///
 /// ⚠️ 서버는 `10명 이상 + 50% 초과`로 보낸다(실측: 스키 리스트에 60.6%·64.3% 섞임) →
 /// 웹에서 한 번 더 거른다. 서버 기준이 70%로 바뀌면 이 상수를 쓰는 곳만 지우면 된다.
@@ -59,7 +59,7 @@ class CrewHomeSection {
 ///
 /// ⚠️ `slope_occupied`는 **오늘이 아니라 이번 시즌 누적**이다(실측: 비시즌인 8월에도 값이
 /// 차 있고, 진짜 오늘 리스트인 `liveon_today`·`today_score`는 0개다) → 제목도 시즌으로 적는다.
-/// 비어 있는 섹션도 목록에 남긴다 — 화면이 안내 문구를 보여준다(사용자 확정).
+/// 비어 있는 섹션도 목록에 남긴다 — 화면이 안내 문구를 보여준다.
 List<CrewHomeSection> crewHomeSections(CrewHomeModel home) => [
       CrewHomeSection(
         kind: CrewHomeSectionKind.slopeOccupied,

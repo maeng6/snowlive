@@ -76,9 +76,12 @@ class FleamarketUpdateViewModelWeb extends GetxController {
     required String tradeMethod,
     required String tradeSpot,
     required String desc,
+    required String sns,
     required List<Photo>? photos,
   }) async {
     textEditingController_title.text = title;
+    // 프리필하지 않으면 수정 저장 시 빈 값으로 덮어써서 오픈채팅 링크가 날아간다.
+    textEditingController_sns.text = sns;
     _selectedCategorySub.value = categorySub;
     _selectedCategoryMain.value = categoryMain;
     textEditingController_productName.text = productName;
@@ -112,15 +115,19 @@ class FleamarketUpdateViewModelWeb extends GetxController {
     changeIsGettingImageFromGallery(true);
     var imageList = await imageController.getMultiImage(ImageSource.gallery);
     if (imageList.isNotEmpty) {
-      _newImageFiles.value = imageList;
+      // 기존 사진 + 새 선택에 **누적**한다(교체 아님). 총 5장까지(앱과 동일),
+      // 넘치면 잘라내고 안내.
+      final remaining =
+          5 - _existingImageUrls.length - _newImageFiles.length;
+      if (imageList.length > remaining) {
+        Get.snackbar('알림', '사진은 최대 5장까지 등록할 수 있어요.');
+      }
+      if (remaining > 0) {
+        _newImageFiles.addAll(imageList.take(remaining));
+      }
     }
     _updateTotalImageCount();
-    if (_totalImageCount.value <= 10) {
-      changeFleaImageSelected(true);
-    } else {
-      _newImageFiles.clear();
-      _updateTotalImageCount();
-    }
+    changeFleaImageSelected(_totalImageCount.value > 0);
     changeIsGettingImageFromGallery(false);
   }
 

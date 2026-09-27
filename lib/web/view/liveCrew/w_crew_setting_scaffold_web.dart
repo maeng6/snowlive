@@ -1,6 +1,7 @@
 import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/web/routes/routes_web.dart';
 import 'package:com.snowlive/web/util/responsive_web.dart';
+import 'package:com.snowlive/web/widget/w_web_page_header_web.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -49,17 +50,15 @@ class CrewSettingScaffoldWeb extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDesktop = context.isDesktop;
     final isMobile = context.screenType == WebScreenType.mobile;
     final hasAction = actionLabel != null;
 
     final scrollArea = Container(
       color: SDSColor.snowliveWhite,
-      padding: EdgeInsets.fromLTRB(
-        isDesktop ? SDSSpacing.xl : SDSSpacing.md,
-        32,
-        isDesktop ? SDSSpacing.xl : SDSSpacing.md,
-        isMobile && hasAction ? _kMobileBarHeight : SDSSpacing.xl,
+      // 서브 페이지 공통 여백(중고거래 상세·폼 기준) + 모바일 하단바 확보.
+      padding: webSubPagePadding(
+        context,
+        bottom: isMobile && hasAction ? _kMobileBarHeight : SDSSpacing.xl,
       ),
       child: SingleChildScrollView(
         child: Center(
@@ -68,26 +67,12 @@ class CrewSettingScaffoldWeb extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Row(
-                  children: [
-                    if (showBack) ...[
-                      InkWell(
-                        onTap: () => _goBack(context),
-                        customBorder: const CircleBorder(),
-                        child: Padding(
-                          padding: const EdgeInsets.all(4),
-                          child: Icon(Icons.arrow_back, size: 24, color: SDSColor.gray900),
-                        ),
-                      ),
-                      const SizedBox(width: SDSSpacing.sm),
-                    ],
-                    Expanded(
-                      child: Text(
-                        title,
-                        style: SDSTextStyle.extraBold
-                            .copyWith(fontSize: 28, color: SDSColor.gray900),
-                      ),
-                    ),
+                // 서브 페이지 공통 헤더(뒤로 30 + 12 + bold 30).
+                WebPageHeader(
+                  title: title,
+                  onBack: () => _goBack(context),
+                  showBack: showBack,
+                  actions: [
                     if (hasAction && !isMobile) _buildActionButton(fullWidth: false),
                   ],
                 ),

@@ -15,7 +15,7 @@ const double _kCardGap = SDSSpacing.md;
 const double _kLeadWidth = 288;
 
 /// 상단 캐러셀. **주제 하나만** 보여주고 좌우 화살표로 주제를 넘긴다
-/// (`이번 시즌 슬로프 점령` → `신규 크루` → `오늘 라이브온` → …, 사용자 확정).
+/// (`이번 시즌 슬로프 점령` → `신규 크루` → `오늘 라이브온` → …).
 ///
 /// 우측 카드 줄은 **좌우 스크롤**(마우스 드래그·휠·터치)로 넘긴다 — 화살표는 카드를
 /// 밀지 않는다. 넘길 수 있는 경계는 반투명하게 지워 더 있다는 걸 알린다.
@@ -133,7 +133,7 @@ class _LiveCrewTopCarouselWebState extends State<LiveCrewTopCarouselWeb> {
           style: SDSTextStyle.regular.copyWith(fontSize: 12, color: SDSColor.gray500),
         ),
         const SizedBox(height: SDSSpacing.md),
-        // 화살표는 카드가 아니라 **주제**를 넘긴다(사용자 확정).
+        // 화살표는 카드가 아니라 **주제**를 넘긴다.
         Row(
           children: [
             _ArrowButton(icon: Icons.chevron_left, onTap: widget.onPrevTopic),
@@ -146,7 +146,7 @@ class _LiveCrewTopCarouselWebState extends State<LiveCrewTopCarouselWeb> {
   }
 
   Widget _buildRail() {
-    // 비시즌에는 `오늘 …` 리스트가 0개로 온다 → 섹션은 두고 안내만 보여준다(사용자 확정).
+    // 비시즌에는 `오늘 …` 리스트가 0개로 온다 → 섹션은 두고 안내만 보여준다.
     if (widget.crews.isEmpty) {
       return Container(
         height: _kCardSize,

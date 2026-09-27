@@ -1,7 +1,15 @@
 import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/web/util/responsive_web.dart';
 import 'package:com.snowlive/web/view/community/w_community_row_web.dart' show communityTableRowShell;
-import 'package:com.snowlive/web/view/fleamarket/w_fleamarket_grid_web.dart' show kFleamarketCardTextBlockHeight;
+import 'package:com.snowlive/web/view/community/w_event_row_web.dart' show eventTableRowShell;
+import 'package:com.snowlive/web/view/liveTalk/w_livetalk_feed_item_web.dart'
+    show
+        kLiveTalkFeedImageRadius,
+        kLiveTalkFeedImageRatio,
+        liveTalkFeedItemGap;
+import 'package:com.snowlive/web/view/fleamarket/w_fleamarket_card_web.dart' show kFleamarketPhotoRadius;
+import 'package:com.snowlive/web/view/fleamarket/w_fleamarket_grid_web.dart'
+    show FleamarketGridLayout, kFleamarketCardTextBlockHeight;
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -75,7 +83,8 @@ class SkeletonLine extends StatelessWidget {
 }
 
 /// 중고거래 상품 그리드 자리표시.
-/// 실제 그리드와 **같은 열 수/간격/mainAxisExtent**를 써야 데이터 도착 시 점프가 없다.
+/// 열 수/간격/상단 여백은 실제 그리드와 같은 [FleamarketGridLayout]에서 가져온다 —
+/// 여기가 어긋나면 데이터 도착 시 레이아웃이 튄다.
 class FleamarketGridSkeleton extends StatelessWidget {
   final int itemCount;
 
@@ -83,28 +92,32 @@ class FleamarketGridSkeleton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final crossAxisCount = context.isDesktop ? 5 : 2;
-    const spacing = SDSSpacing.md;
-
     return SkeletonShimmer(
       child: LayoutBuilder(
         builder: (context, constraints) {
-          final cellWidth = (constraints.maxWidth - spacing * (crossAxisCount - 1)) / crossAxisCount;
+          final layout =
+              FleamarketGridLayout.of(context.screenType, constraints.maxWidth);
+          final cellWidth = layout.cellWidth;
           return GridView.builder(
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
-            padding: const EdgeInsets.only(top: 16),
+            padding: EdgeInsets.only(top: layout.topPadding),
             itemCount: itemCount,
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: crossAxisCount,
-              crossAxisSpacing: spacing,
-              mainAxisSpacing: SDSSpacing.lg,
+              crossAxisCount: layout.crossAxisCount,
+              crossAxisSpacing: layout.spacing,
+              mainAxisSpacing: layout.runSpacing,
               mainAxisExtent: cellWidth + kFleamarketCardTextBlockHeight,
             ),
             itemBuilder: (context, index) => Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SkeletonBox(width: cellWidth, height: cellWidth, radius: 8),
+                // 라운드는 실제 썸네일(kFleamarketPhotoRadius)과 동일해야
+                // 데이터 도착 시 모서리가 튀지 않는다.
+                SkeletonBox(
+                    width: cellWidth,
+                    height: cellWidth,
+                    radius: kFleamarketPhotoRadius),
                 const SizedBox(height: 10),
                 const SkeletonLine(width: double.infinity, height: 14),
                 const SizedBox(height: 6),
@@ -147,18 +160,20 @@ class _CommunityTableRowSkeleton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // 실제 행과 동일 규격 — 행 높이 52 고정, 배지 20(간격 12), 제목 15, 메타 14.
     return communityTableRowShell(
+      rowHeight: 52,
       border: Border(bottom: BorderSide(color: SDSColor.gray100)),
       titleCell: Row(
         children: const [
-          SkeletonBox(width: 42, height: 17),
-          SizedBox(width: 6),
-          Expanded(child: SkeletonLine(height: 14)),
+          SkeletonBox(width: 42, height: 20),
+          SizedBox(width: 12),
+          Expanded(child: SkeletonLine(height: 15)),
         ],
       ),
-      authorCell: const SkeletonLine(width: 56, height: 13),
-      dateCell: const SkeletonLine(width: 72, height: 13),
-      viewsCell: const SkeletonLine(width: 40, height: 13),
+      authorCell: const SkeletonLine(width: 56, height: 14),
+      dateCell: const SkeletonLine(width: 72, height: 14),
+      viewsCell: const SkeletonLine(width: 40, height: 14),
     );
   }
 }
@@ -168,9 +183,11 @@ class _CommunityCardRowSkeleton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // 실제 카드 행과 동일 규격 — 패딩 13, 배지 20(간격 12), 제목 15,
+    // 제목↔메타 10, 메타 13.
     return Container(
       decoration: BoxDecoration(border: Border(bottom: BorderSide(color: SDSColor.gray100))),
-      padding: const EdgeInsets.symmetric(vertical: 12),
+      padding: const EdgeInsets.symmetric(vertical: 13),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -180,18 +197,172 @@ class _CommunityCardRowSkeleton extends StatelessWidget {
               children: const [
                 Row(
                   children: [
-                    SkeletonBox(width: 42, height: 17),
-                    SizedBox(width: 6),
-                    Expanded(child: SkeletonLine(height: 14)),
+                    SkeletonBox(width: 42, height: 20),
+                    SizedBox(width: 12),
+                    Expanded(child: SkeletonLine(height: 15)),
                   ],
                 ),
-                SizedBox(height: 8),
-                SkeletonLine(width: 180, height: 12),
+                SizedBox(height: 10),
+                SkeletonLine(width: 180, height: 13),
               ],
             ),
           ),
         ],
       ),
+    );
+  }
+}
+
+/// 각종소식 목록 자리표시. 표 열 구성이 커뮤니티와 달라(분류·이름 열, 제목 우측
+/// 정사각 썸네일) 실제와 같은 [eventTableRowShell]로 골격을 그린다.
+class EventListSkeleton extends StatelessWidget {
+  final int rowCount;
+
+  const EventListSkeleton({super.key, this.rowCount = 8});
+
+  @override
+  Widget build(BuildContext context) {
+    final isMobile = context.screenType == WebScreenType.mobile;
+    return SkeletonShimmer(
+      child: Column(
+        children: List.generate(
+          rowCount,
+          (_) => isMobile ? const _EventCardRowSkeleton() : const _EventTableRowSkeleton(),
+        ),
+      ),
+    );
+  }
+}
+
+class _EventCardRowSkeleton extends StatelessWidget {
+  const _EventCardRowSkeleton();
+
+  @override
+  Widget build(BuildContext context) {
+    // 실제 카드와 동일 규격 — 패딩 13, 칩 20(간격 8), 제목 15,
+    // 제목↔메타 10, 메타 13, 우측 정사각 썸네일 40.
+    return Container(
+      decoration: BoxDecoration(border: Border(bottom: BorderSide(color: SDSColor.gray100))),
+      padding: const EdgeInsets.symmetric(vertical: 13),
+      child: Row(
+        children: const [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    SkeletonBox(width: 42, height: 20),
+                    SizedBox(width: 8),
+                    Expanded(child: SkeletonLine(height: 15)),
+                  ],
+                ),
+                SizedBox(height: 10),
+                SkeletonLine(width: 180, height: 13),
+              ],
+            ),
+          ),
+          // 실제 카드 썸네일(제목 2줄 + 10 + 메타 16 고정) 근사값.
+          SizedBox(width: 16),
+          SkeletonBox(width: 68, height: 68),
+        ],
+      ),
+    );
+  }
+}
+
+class _EventTableRowSkeleton extends StatelessWidget {
+  const _EventTableRowSkeleton();
+
+  @override
+  Widget build(BuildContext context) {
+    // 실제 행과 동일 규격 — 행 높이 52 고정, 분류 칩 20(hug), 이름 14,
+    // 제목 15 + 우측 정사각 썸네일 30, 메타 14.
+    return eventTableRowShell(
+      rowHeight: 52,
+      border: Border(bottom: BorderSide(color: SDSColor.gray100)),
+      categoryCell: Row(children: const [SkeletonBox(width: 42, height: 20)]),
+      nameCell: const SkeletonLine(width: 70, height: 14),
+      titleCell: Row(
+        children: const [
+          Expanded(child: SkeletonLine(height: 15)),
+          SizedBox(width: 8),
+          SkeletonBox(width: 30, height: 30),
+        ],
+      ),
+      dateCell: const SkeletonLine(width: 72, height: 14),
+      viewsCell: const SkeletonLine(width: 40, height: 14),
+    );
+  }
+}
+
+/// 라이브톡 피드 자리표시. 표형이 아니라 SNS 피드형이라 전용으로 둔다.
+/// 실제 카드 순서대로 [아바타 30 + 이름] → **사진(1:1, 라운드 4)** → 본문 →
+/// 액션 줄을 그린다 — 사진 있는 글이 대부분이라 사진 자리를 비워두면 데이터
+/// 도착 시 목록이 크게 밀린다. 비율은 실제로는 원본대로라 1:1은 어림값이고,
+/// 실제 카드의 로딩 자리표시(`WebNetworkImage.placeholderAspectRatio`)와 **같은
+/// 값이어야 한다** — 다르면 스켈레톤에서 사진으로 넘어갈 때 크기가 튄다.
+class LiveTalkFeedSkeleton extends StatelessWidget {
+  final int itemCount;
+
+  const LiveTalkFeedSkeleton({super.key, this.itemCount = 3});
+
+  @override
+  Widget build(BuildContext context) {
+    // 셔머 컨트롤러는 섹션당 1개만 — 카드마다 감싸면 컨트롤러가 itemCount개가 된다.
+    return SkeletonShimmer(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          for (var i = 0; i < itemCount; i++) ...[
+            // 실제 카드와 같은 간격.
+            if (i > 0) SizedBox(height: liveTalkFeedItemGap(context)),
+            const _LiveTalkFeedItemSkeleton(),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+class _LiveTalkFeedItemSkeleton extends StatelessWidget {
+  const _LiveTalkFeedItemSkeleton();
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Row(
+          children: [
+            SkeletonBox(width: 30, height: 30, isCircle: true),
+            SizedBox(width: 12),
+            SkeletonLine(width: 70, height: 13),
+            Spacer(),
+            SkeletonLine(width: 60, height: 13),
+          ],
+        ),
+        // 헤더 ↔ 사진 10. 비율·라운드는 실제 카드의 로딩 자리표시와 같은 상수를 쓴다
+        // (다르면 스켈레톤 → 사진으로 넘어갈 때 크기가 튄다).
+        const SizedBox(height: 10),
+        const AspectRatio(
+          aspectRatio: kLiveTalkFeedImageRatio,
+          child: SkeletonBox(radius: kLiveTalkFeedImageRadius),
+        ),
+        // 사진 ↔ 글 14.
+        const SizedBox(height: 14),
+        const SkeletonLine(width: double.infinity, height: 14),
+        const SizedBox(height: 6),
+        const SkeletonLine(width: 220, height: 14),
+        const SizedBox(height: 12),
+        const Row(
+          children: [
+            SkeletonLine(width: 44, height: 20),
+            SizedBox(width: 8),
+            SkeletonLine(width: 44, height: 20),
+          ],
+        ),
+      ],
     );
   }
 }

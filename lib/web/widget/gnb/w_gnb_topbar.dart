@@ -84,12 +84,12 @@ class WebGnbTopbar extends StatelessWidget implements PreferredSizeWidget {
             }),
           IconButton(
             onPressed: onMenuTap,
-            // 탭 시 파란 리플(테마 기본색)이 비치지 않게 효과를 전부 끈다
+            // 탭 시 파란 리플(테마 기본색)이 비치지 않게 효과를 전부 끈다.
             splashColor: Colors.transparent,
             highlightColor: Colors.transparent,
             hoverColor: Colors.transparent,
             focusColor: Colors.transparent,
-            // Material3 IconButton은 위 색 대신 style의 overlayColor를 쓴다.
+            // Material3 IconButton은 위 색 대신 style의 overlayColor를 쓴다
             style: const ButtonStyle(
               overlayColor: WidgetStatePropertyAll(Colors.transparent),
               splashFactory: NoSplash.splashFactory,

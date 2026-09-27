@@ -33,7 +33,7 @@ import 'package:com.snowlive/web/view/liveCrew/v_liveCrewHome_web.dart';
 import 'package:com.snowlive/web/view/profile/v_profileDetail_web.dart';
 import 'package:com.snowlive/web/view/ranking/v_ridingCards_web.dart';
 import 'package:com.snowlive/web/view/ranking/v_slopeCraft_web.dart';
-import 'package:com.snowlive/web/view/liveTalk/v_liveTalkComments_web.dart';
+import 'package:com.snowlive/web/view/liveTalk/v_liveTalkDetail_web.dart';
 import 'package:com.snowlive/web/view/liveTalk/v_liveTalkHome_web.dart';
 import 'package:com.snowlive/web/view/login/v_login_web.dart';
 import 'package:com.snowlive/web/view/onboarding/v_onboarding_web.dart';
@@ -67,6 +67,10 @@ class WebRoutes {
   static const communityUpload = '/community-upload';
   static const liveTalk = '/livetalk';
   // 상세/작성과 같은 이유로 하위 경로가 아니라 최상위다(GetX 부모 매칭 사고 방지).
+  static const liveTalkDetail = '/livetalk-detail';
+
+  /// 예전 경로(댓글 전용 화면이던 시절). 공유·북마크된 링크가 깨지지 않게 남겨
+  /// 두고 같은 페이지를 띄운다.
   static const liveTalkComments = '/livetalk-comments';
   static const ranking = '/ranking';
   // '/ranking/archive'처럼 기존 라우트의 하위 경로로 두면 GetX가 부모('/ranking')로
@@ -200,8 +204,14 @@ class WebRoutes {
       binding: WebLiveTalkBinding(),
     ),
     GetPage(
+      name: liveTalkDetail,
+      page: () => const LiveTalkDetailViewWeb(),
+      binding: WebLiveTalkBinding(),
+    ),
+    // 예전 경로로 저장된 링크도 같은 화면을 띄운다.
+    GetPage(
       name: liveTalkComments,
-      page: () => const LiveTalkCommentsViewWeb(),
+      page: () => const LiveTalkDetailViewWeb(),
       binding: WebLiveTalkBinding(),
     ),
     GetPage(

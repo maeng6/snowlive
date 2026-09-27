@@ -93,6 +93,24 @@ class SnowliveWebApp extends StatelessWidget {
         highlightColor: Colors.transparent,
         hoverColor: Colors.transparent,
         splashFactory: NoSplash.splashFactory,
+        // 인풋 커서는 웹 공통 snowliveBlue. 높이는 전역 테마
+        // 속성이 없어서 각 TextField에 cursorHeight(= fontSize + 2)로 지정한다.
+        // 드래그 선택 영역도 같은 파랑 25% — 안 주면 Material 기본(보라)이 뜬다.
+        // (커뮤니티 글쓰기 에디터가 쓰던 값을 웹 전체 공통으로 올렸다.)
+        textSelectionTheme: TextSelectionThemeData(
+          cursorColor: SDSColor.snowliveBlue,
+          selectionColor: SDSColor.snowliveBlue.withValues(alpha: 0.25),
+          selectionHandleColor: SDSColor.snowliveBlue,
+        ),
+        // 웹 공통 스크롤바(PC/태블릿/모바일): 두께 6px, 알약형 라운드,
+        // 뷰포트 우측 끝에서 4px 띄움. 스크롤뷰가 화면 전체 폭이어야 브라우저
+        // 우측 끝에 붙는다 — 페이지 좌우 패딩은 스크롤뷰 "안쪽"에 둘 것.
+        // 색은 기본값(onSurface 10%, hover 50%, drag 60%).
+        scrollbarTheme: const ScrollbarThemeData(
+          thickness: WidgetStatePropertyAll(6),
+          radius: Radius.circular(3),
+          crossAxisMargin: 4,
+        ),
       ),
       builder: (context, child) {
         // [Flutter 웹 프레임워크 버그 우회] 브라우저 창이 포커스를 받을 때

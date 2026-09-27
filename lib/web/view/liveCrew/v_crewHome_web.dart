@@ -80,7 +80,7 @@ class _CrewHomeViewWebState extends State<CrewHomeViewWeb> {
     if (id == null) return;
     // 라이브톡과 같은 분기 — 모바일만 별도 화면, 그 외는 사진+댓글 오버레이(목업).
     if (context.screenType == WebScreenType.mobile) {
-      await Get.toNamed('${WebRoutes.liveTalkComments}?id=$id');
+      await Get.toNamed('${WebRoutes.liveTalkDetail}?id=$id');
       return;
     }
     await showLiveTalkDetailOverlay(

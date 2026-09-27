@@ -8,6 +8,8 @@ import 'package:com.snowlive/web/view/liveCrew/w_crewcreate_image_picker_web.dar
 import 'package:com.snowlive/web/viewmodel/crew/vm_crewCreate_web.dart';
 import 'package:com.snowlive/web/widget/w_web_form_fields_web.dart';
 import 'package:com.snowlive/web/widget/w_web_overlay_modal_web.dart';
+import 'package:com.snowlive/web/widget/w_web_back_icon_web.dart';
+import 'package:com.snowlive/web/widget/w_web_icon_button_web.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -102,21 +104,23 @@ class _CrewCreateViewWebState extends State<CrewCreateViewWeb> {
     return showWebOverlayModal<void>(
       context: context,
       barrierDismissible: false,
+      // 웹 표준 팝업 카드 스펙(라운드 16 / 최대폭 320 / 패딩 24,28,24,12 /
+      // 타이틀 bold 16) — showWebConfirmDialog와 동일. 버튼 구성만 목업대로.
       builder: (_, close) => Material(
         color: SDSColor.snowliveWhite,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(16),
         clipBehavior: Clip.antiAlias,
         child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 288),
+          constraints: const BoxConstraints(maxWidth: 320),
           child: Padding(
-            padding: const EdgeInsets.fromLTRB(SDSSpacing.lg, SDSSpacing.lg, SDSSpacing.lg, SDSSpacing.md),
+            padding: const EdgeInsets.fromLTRB(24, 28, 24, 12),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
                   '크루 생성이 완료되었어요!',
                   textAlign: TextAlign.center,
-                  style: SDSTextStyle.bold.copyWith(fontSize: 15, color: SDSColor.gray900),
+                  style: SDSTextStyle.bold.copyWith(fontSize: 16, color: SDSColor.gray900),
                 ),
                 const SizedBox(height: SDSSpacing.md),
                 SizedBox(
@@ -153,7 +157,8 @@ class _CrewCreateViewWebState extends State<CrewCreateViewWeb> {
       color: SDSColor.snowliveWhite,
       padding: EdgeInsets.fromLTRB(
         isDesktop ? SDSSpacing.xl : SDSSpacing.md,
-        32,
+        // 상단은 서브 페이지 공통(PC 32 / 태블릿 16 / 모바일 20 — 홈과 동일).
+        webSubPagePadding(context).top,
         isDesktop ? SDSSpacing.xl : SDSSpacing.md,
         isMobile ? _kMobileBarHeight : SDSSpacing.xl,
       ),
@@ -241,13 +246,12 @@ class _CrewCreateViewWebState extends State<CrewCreateViewWeb> {
   Widget _buildTopBar({required bool isMobile}) {
     return Row(
       children: [
-        InkWell(
+        // 공통 헤더 표준 뒤로가기(30, hover 페이드).
+        // 좌측 히트 여백만 0 — 아이콘이 콘텐츠 좌측선에 붙는다.
+        WebIconButton(
           onTap: _onBack,
-          customBorder: const CircleBorder(),
-          child: Padding(
-            padding: const EdgeInsets.all(6),
-            child: Icon(Icons.arrow_back, size: 24, color: SDSColor.gray900),
-          ),
+          padding: const EdgeInsets.fromLTRB(0, 4, 4, 4),
+          icon: const WebBackIcon(size: 30),
         ),
         const Spacer(),
         if (!isMobile && _step > 0)

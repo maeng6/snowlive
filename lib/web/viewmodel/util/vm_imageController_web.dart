@@ -1,7 +1,5 @@
 import 'dart:typed_data';
-import 'package:com.snowlive/web/widget/w_web_overlay_modal_web.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:image/image.dart' as img;
@@ -208,40 +206,11 @@ class ImageControllerWeb extends GetxController {
     return Uint8List.fromList(img.encodeJpg(image, quality: 70));
   }
 
+  /// 갤러리 다중 선택. 장수 제한은 호출자(뷰모델)가 **누적 총량 기준**으로
+  /// 관리한다 — 여기서 한 번에 고른 장수로 제한하면 나눠 골라 추가하는
+  /// 흐름(중고거래 최대 10장)과 어긋난다.
   Future<List<XFile>> getMultiImage(ImageSource source) async {
     final ImagePicker picker = ImagePicker();
-    List<XFile> selectedImages = await picker.pickMultiImage(imageQuality: 70);
-
-    if (selectedImages.length > 5) {
-      // Get.dialog는 셸 안쪽 Navigator에 붙어서 딤이 GNB를 못 덮는다.
-      // 뷰모델이라 BuildContext가 없으므로 GetX가 들고 있는 오버레이 컨텍스트를 쓴다.
-      final overlayContext = Get.overlayContext;
-      if (overlayContext != null) {
-        showWebOverlayModal<void>(
-          context: overlayContext,
-          builder: (_, close) => Material(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(16),
-            clipBehavior: Clip.antiAlias,
-            child: Container(
-              constraints: const BoxConstraints(maxWidth: 320),
-              padding: const EdgeInsets.all(20),
-              child: Text(
-                '최대 5장까지 업로드 가능합니다',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black87,
-                ),
-                textAlign: TextAlign.center,
-              ),
-            ),
-          ),
-        );
-      }
-      return [];
-    }
-
-    return selectedImages;
+    return picker.pickMultiImage(imageQuality: 70);
   }
 }

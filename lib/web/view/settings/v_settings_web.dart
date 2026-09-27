@@ -4,6 +4,7 @@ import 'package:com.snowlive/web/util/responsive_web.dart';
 import 'package:com.snowlive/web/viewmodel/settings/vm_settings_web.dart';
 import 'package:com.snowlive/web/widget/w_web_more_menu_web.dart';
 import 'package:com.snowlive/web/widget/w_web_toast_web.dart';
+import 'package:com.snowlive/web/widget/w_web_page_header_web.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -44,10 +45,8 @@ class _SettingsViewWebState extends State<SettingsViewWeb> {
     return ColoredBox(
       color: SDSColor.snowliveWhite,
       child: SingleChildScrollView(
-        padding: EdgeInsets.symmetric(
-          horizontal: isMobile ? SDSSpacing.md : SDSSpacing.lg,
-          vertical: isMobile ? SDSSpacing.md : SDSSpacing.lg,
-        ),
+        // 서브 페이지 공통 여백(중고거래 상세·폼 기준).
+        padding: webSubPagePadding(context),
         child: Align(
           alignment: Alignment.topLeft,
           child: ConstrainedBox(
@@ -68,26 +67,11 @@ class _SettingsViewWebState extends State<SettingsViewWeb> {
   }
 
   Widget _buildTitle(bool isDesktop) {
-    return Row(
-      children: [
-        // 목업: 데스크탑은 사이드바가 있어 뒤로가기가 없고, 태블릿·모바일에만 붙는다.
-        if (!isDesktop) ...[
-          IconButton(
-            onPressed: () => Get.back(),
-            padding: EdgeInsets.zero,
-            constraints: const BoxConstraints(),
-            icon: Icon(Icons.arrow_back, color: SDSColor.gray900, size: 24),
-          ),
-          const SizedBox(width: SDSSpacing.sm),
-        ],
-        Text(
-          '설정',
-          style: SDSTextStyle.extraBold.copyWith(
-            fontSize: isDesktop ? 28 : 18,
-            color: SDSColor.gray900,
-          ),
-        ),
-      ],
+    // 서브 페이지 공통 헤더 — 데스크탑은 사이드바가 있어 뒤로가기 없음(목업).
+    return WebPageHeader(
+      title: '설정',
+      onBack: () => Get.back(),
+      showBack: !isDesktop,
     );
   }
 

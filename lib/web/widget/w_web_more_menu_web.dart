@@ -1,9 +1,10 @@
-import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/web/widget/w_web_filter_menu_web.dart';
-import 'package:com.snowlive/web/widget/w_web_overlay_modal_web.dart';
+import 'package:com.snowlive/web/widget/w_web_popup_web.dart' show showWebConfirmDialog;
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+
+export 'package:com.snowlive/web/widget/w_web_popup_web.dart' show showWebConfirmDialog;
 
 /// 신고/차단 API가 정상 등록과 중복을 모두 success로 돌려주기 때문에 결과를 나눠서
 /// 화면이 다른 안내를 띄울 수 있게 한다.
@@ -27,12 +28,31 @@ class WebMoreButton extends StatefulWidget {
   final ValueChanged<WebMoreAction> onSelected;
   final double iconSize;
 
+  /// 태블릿에서도 데스크탑처럼 앵커 드롭다운을 띄울지(기본은 중앙 딤 시트).
+  /// 중고거래 상세(판매자 행·댓글)만 true — 기본값을 바꾸면 다른 호출자의
+  /// 태블릿 프레젠테이션이 전부 바뀌는 회귀가 된다.
+  final bool dropdownOnTablet;
+
   const WebMoreButton({
     super.key,
     required this.actions,
     required this.onSelected,
     this.iconSize = 20,
+    this.iconAsset = 'assets/imgs/icons/icon_header_more_web.svg',
+    this.iconColor,
+    this.dropdownOnTablet = false,
+    this.hitPadding = 2,
   });
+
+  /// ⋯ 아이콘 에셋. 기본은 웹 공통 SVG — 앱과 아이콘을 맞춰야 하는 화면
+  /// (중고거래 상세)만 앱 에셋(png)으로 바꾼다.
+  final String iconAsset;
+
+  /// 아이콘 틴트 색. null이면 에셋 원색 그대로.
+  final Color? iconColor;
+
+  /// 히트 영역 확보용 여백(사방). 기본 2 — 아이콘 26 기준 클릭 영역 30.
+  final double hitPadding;
 
   @override
   State<WebMoreButton> createState() => _WebMoreButtonState();
@@ -42,6 +62,9 @@ class _WebMoreButtonState extends State<WebMoreButton> {
   /// 앵커 링크는 ⋯ 아이콘 **자체에만** 감는다. 부모에 감으면 드롭다운 위치가 틀어진다.
   final LayerLink _link = LayerLink();
 
+  /// hover 시 아이콘 60% 투명도(웹 공통 아이콘 hover 규칙).
+  bool _hovered = false;
+
   Future<void> _open() async {
     final selected = await showWebFilterMenu<WebMoreAction>(
       context: context,
@@ -49,6 +72,7 @@ class _WebMoreButtonState extends State<WebMoreButton> {
       values: widget.actions,
       labelOf: (a) => a.label,
       centerSheetOnTablet: true,
+      dropdownOnTablet: widget.dropdownOnTablet,
     );
     if (selected == null) return;
     widget.onSelected(selected);
@@ -60,15 +84,36 @@ class _WebMoreButtonState extends State<WebMoreButton> {
       link: _link,
       child: MouseRegion(
         cursor: SystemMouseCursors.click,
+        onEnter: (_) => setState(() => _hovered = true),
+        onExit: (_) => setState(() => _hovered = false),
         child: GestureDetector(
           behavior: HitTestBehavior.opaque,
           onTap: _open,
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
-            child: SvgPicture.asset(
-              'assets/imgs/icons/icon_header_more_web.svg',
-              width: widget.iconSize,
-              height: widget.iconSize,
+            padding: EdgeInsets.all(widget.hitPadding),
+            child: AnimatedOpacity(
+              opacity: _hovered ? 0.6 : 1.0,
+              duration: const Duration(milliseconds: 150),
+              curve: Curves.easeOut,
+              child: widget.iconAsset.endsWith('.svg')
+                  ? SvgPicture.asset(
+                      widget.iconAsset,
+                      width: widget.iconSize,
+                      height: widget.iconSize,
+                      colorFilter: widget.iconColor == null
+                          ? null
+                          : ColorFilter.mode(
+                              widget.iconColor!,
+                              BlendMode.srcIn,
+                            ),
+                    )
+                  : Image.asset(
+                      widget.iconAsset,
+                      width: widget.iconSize,
+                      height: widget.iconSize,
+                      fit: BoxFit.contain,
+                      color: widget.iconColor,
+                    ),
             ),
           ),
         ),
@@ -165,73 +210,4 @@ void _showResult(
   }
 }
 
-/// 웹 공용 확인 다이얼로그. 모바일 앱이 신고·숨기기·삭제 전부 확인을 받으므로 맞춘다.
-Future<bool> showWebConfirmDialog({
-  required BuildContext context,
-  required String title,
-  String? message,
-  String confirmLabel = '확인',
-  String cancelLabel = '취소',
-  bool isDestructive = false,
-}) async {
-  final result = await showWebOverlayModal<bool>(
-    context: context,
-    builder: (_, close) => Material(
-      // Overlay 직삽이라 Material 조상이 없다 → 카드 표면을 Material로 만든다.
-      color: SDSColor.snowliveWhite,
-      borderRadius: BorderRadius.circular(16),
-      clipBehavior: Clip.antiAlias,
-      child: ConstrainedBox(
-        constraints: const BoxConstraints(maxWidth: 320),
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(24, 28, 24, 12),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                title,
-                textAlign: TextAlign.center,
-                style: SDSTextStyle.bold.copyWith(fontSize: 16, color: SDSColor.gray900),
-              ),
-              if (message != null) ...[
-                const SizedBox(height: 8),
-                Text(
-                  message,
-                  textAlign: TextAlign.center,
-                  style: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray500),
-                ),
-              ],
-              const SizedBox(height: 20),
-              Row(
-                children: [
-                  Expanded(
-                    child: TextButton(
-                      onPressed: () => close(false),
-                      child: Text(
-                        cancelLabel,
-                        style: SDSTextStyle.bold.copyWith(fontSize: 15, color: SDSColor.gray500),
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    child: TextButton(
-                      onPressed: () => close(true),
-                      child: Text(
-                        confirmLabel,
-                        style: SDSTextStyle.bold.copyWith(
-                          fontSize: 15,
-                          color: isDestructive ? SDSColor.red : SDSColor.snowliveBlue,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
-      ),
-    ),
-  );
-  return result ?? false;
-}
+// showWebConfirmDialog는 w_web_popup_web.dart로 이동했다(아래 export로 호환 유지).

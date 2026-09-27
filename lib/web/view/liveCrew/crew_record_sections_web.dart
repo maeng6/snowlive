@@ -6,7 +6,7 @@ import 'package:com.snowlive/core/viewmodel/ranking/vm_rankingList_recordRoom.da
 
 /// 서버에 데이터가 없는 시즌. 세 record-room 엔드포인트 전부 400을 준다
 /// (실측: `Ranking_record_2324 모델을 찾을 수 없습니다`). 앱은 이 시즌만 별도 베타
-/// API로 그리는데 그 데이터원이 웹에는 없어서 탭 자체를 만들지 않는다(사용자 확정).
+/// API로 그리는데 그 데이터원이 웹에는 없어서 탭 자체를 만들지 않는다.
 const String kUnsupportedRecordSeason = '2324';
 
 /// 일별 현황 연도 탭의 가장 오래된 해. 서버 데이터도 2025-11부터 있다(실측).

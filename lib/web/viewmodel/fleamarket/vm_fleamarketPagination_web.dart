@@ -13,6 +13,9 @@ import 'package:get/get.dart';
 ///  - 하단 번호: `pageWindow()`로 번호 리스트 렌더 → 클릭 시 `gotoPage(n)`
 ///  - 이전/다음: `loadPrevious()` / `loadNext()` (hasPrevious/hasNext)
 class FleamarketPaginationViewModelWeb extends GetxController {
+  /// 서버가 한 페이지에 내려주는 아이템 수.
+  static const int pageSize = 30;
+
   final FleamarketAPI _api = FleamarketAPI();
 
   final RxList<Fleamarket> _items = <Fleamarket>[].obs;
@@ -100,7 +103,7 @@ class FleamarketPaginationViewModelWeb extends GetxController {
         _items.value = parsed.results ?? [];
         _totalCount.value = (data['count'] ?? 0) as int;
         _totalPages.value =
-            (data['total_pages'] ?? ((_totalCount.value + 29) ~/ 30)) as int;
+            (data['total_pages'] ?? ((_totalCount.value + pageSize - 1) ~/ pageSize)) as int;
         _currentPage.value = (data['current_page'] ?? page) as int;
       } else if (attempt < 1) {
         await Future.delayed(const Duration(seconds: 2));

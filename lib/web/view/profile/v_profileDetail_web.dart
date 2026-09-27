@@ -36,7 +36,7 @@ enum _StatsMode { total, daily }
 
 /// 프로필 상세. `#/profile?id=750`
 ///
-/// 탭 3개(`라이딩 통계` · `방명록` · `시즌 기록실`)는 폭에 상관없이 같다(사용자 확정).
+/// 탭 3개(`라이딩 통계` · `방명록` · `시즌 기록실`)는 폭에 상관없이 같다.
 /// 데이터는 `friend-detail-page` 한 번 호출로 헤더·랭킹·통계·일간 캘린더가 모두 오고,
 /// 기록실만 같은 API의 `recordroom/`을 시즌별로 다시 부른다.
 class ProfileDetailViewWeb extends StatefulWidget {
@@ -144,7 +144,8 @@ class _ProfileDetailViewWebState extends State<ProfileDetailViewWeb> {
       color: SDSColor.snowliveWhite,
       padding: EdgeInsets.fromLTRB(
         isDesktop ? SDSSpacing.xl : SDSSpacing.md,
-        32,
+        // 상단은 서브 페이지 공통(PC 32 / 태블릿 16 / 모바일 20 — 홈과 동일).
+        webSubPagePadding(context).top,
         isDesktop ? SDSSpacing.xl : SDSSpacing.md,
         // 모바일 방명록 탭은 하단 입력줄이 떠 있어 그만큼 여백을 둔다.
         isMobile && _tab == _ProfileTab.guestbook ? _kMobileInputBarHeight : SDSSpacing.xl,
@@ -245,7 +246,7 @@ class _ProfileDetailViewWebState extends State<ProfileDetailViewWeb> {
   String _tabLabel(_ProfileTab tab) => switch (tab) {
         _ProfileTab.stats => '라이딩 통계',
         _ProfileTab.guestbook => '방명록',
-        // 남의 프로필에서도 어색하지 않게 `내`를 뺀다(사용자 지시).
+        // 남의 프로필에서도 어색하지 않게 `내`를 뺀다.
         _ProfileTab.recordRoom => '시즌 기록실',
       };
 
@@ -255,7 +256,7 @@ class _ProfileDetailViewWebState extends State<ProfileDetailViewWeb> {
     // 자동로그인 확인 중에는 판단할 근거가 없다 → 잘못된 버튼을 띄우지 않는다.
     if (_authVm.status == WebAuthStatus.checking) return null;
     if (_vm.isMe) return null;
-    // 비로그인 방문자에게도 버튼을 보여주고, 누르면 로그인 화면으로 보낸다(사용자 지시).
+    // 비로그인 방문자에게도 버튼을 보여주고, 누르면 로그인 화면으로 보낸다.
     if (!_vm.isLoggedIn) {
       return _HeaderPill(
         label: '친구 추가',

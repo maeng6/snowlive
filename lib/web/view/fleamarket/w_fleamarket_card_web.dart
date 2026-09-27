@@ -17,7 +17,15 @@ class FleamarketCardWeb extends StatefulWidget {
   final Fleamarket data;
   final VoidCallback onTap;
 
-  const FleamarketCardWeb({super.key, required this.data, required this.onTap});
+  /// 조회수/댓글수 통계 행 표시 여부 — 상세의 추천 카드만 false(피그마 46:12903).
+  final bool showStats;
+
+  const FleamarketCardWeb({
+    super.key,
+    required this.data,
+    required this.onTap,
+    this.showStats = true,
+  });
 
   @override
   State<FleamarketCardWeb> createState() => _FleamarketCardWebState();
@@ -154,42 +162,44 @@ class _FleamarketCardWebState extends State<FleamarketCardWeb> {
                 color: SDSColor.gray900,
               ),
             ),
-            SizedBox(height: 6),
-            Row(
-              children: [
-                if ((data.viewsCount ?? 0) != 0) ...[
-                  Image.asset(
-                    'assets/imgs/icons/icon_list_view.png',
-                    width: 14,
-                    height: 14,
-                  ),
-                  const SizedBox(width: 3),
-                  Text(
-                    '${data.viewsCount}',
-                    style: SDSTextStyle.regular.copyWith(
-                      fontSize: 12,
-                      color: SDSColor.gray500,
+            if (widget.showStats) ...[
+              SizedBox(height: 6),
+              Row(
+                children: [
+                  if ((data.viewsCount ?? 0) != 0) ...[
+                    Image.asset(
+                      'assets/imgs/icons/icon_list_view.png',
+                      width: 14,
+                      height: 14,
                     ),
-                  ),
-                ],
-                if ((data.commentCount ?? 0) != 0) ...[
-                  const SizedBox(width: 8),
-                  Image.asset(
-                    'assets/imgs/icons/icon_list_reply.png',
-                    width: 14,
-                    height: 14,
-                  ),
-                  const SizedBox(width: 3),
-                  Text(
-                    '${data.commentCount}',
-                    style: SDSTextStyle.regular.copyWith(
-                      fontSize: 12,
-                      color: SDSColor.gray500,
+                    const SizedBox(width: 3),
+                    Text(
+                      '${data.viewsCount}',
+                      style: SDSTextStyle.regular.copyWith(
+                        fontSize: 12,
+                        color: SDSColor.gray500,
+                      ),
                     ),
-                  ),
+                  ],
+                  if ((data.commentCount ?? 0) != 0) ...[
+                    const SizedBox(width: 8),
+                    Image.asset(
+                      'assets/imgs/icons/icon_list_reply.png',
+                      width: 14,
+                      height: 14,
+                    ),
+                    const SizedBox(width: 3),
+                    Text(
+                      '${data.commentCount}',
+                      style: SDSTextStyle.regular.copyWith(
+                        fontSize: 12,
+                        color: SDSColor.gray500,
+                      ),
+                    ),
+                  ],
                 ],
-              ],
-            ),
+              ),
+            ],
           ],
         ),
       ),

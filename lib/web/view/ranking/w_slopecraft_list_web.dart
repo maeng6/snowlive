@@ -239,7 +239,7 @@ String slopeCraftRatioLabel(double ratio) {
 
 /// `전체 스키장 점령 TOP 5 크루` 가로 줄.
 ///
-/// 전용 API가 없어 **크루홈 집계의 `이번 시즌 슬로프 점령` 상위 5개**를 쓴다(사용자 확정).
+/// 전용 API가 없어 **크루홈 집계의 `이번 시즌 슬로프 점령` 상위 5개**를 쓴다.
 /// 그래서 지난 시즌 탭에서는 화면이 이 줄을 그리지 않는다.
 class SlopeCraftTopCrewsWeb extends StatelessWidget {
   final List<CrewCard> crews;

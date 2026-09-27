@@ -69,14 +69,15 @@ class FleamarketUploadViewModelWeb extends GetxController {
     changeIsGettingImageFromGallery(true);
     var imageList = await imageController.getMultiImage(ImageSource.gallery);
     if (imageList.isNotEmpty) {
-      _imageFiles.value = imageList;
+      // 기존 선택에 **누적**한다(교체 아님). 총 5장까지(앱과 동일), 넘치면 잘라내고 안내.
+      final remaining = 5 - _imageFiles.length;
+      if (imageList.length > remaining) {
+        Get.snackbar('알림', '사진은 최대 5장까지 등록할 수 있어요.');
+      }
+      _imageFiles.addAll(imageList.take(remaining));
     }
-    if (_imageFiles.length <= 10) {
-      changeFleaImageSelected(true);
-      setImageLength();
-    } else {
-      deleteImageFromGallery();
-    }
+    changeFleaImageSelected(_imageFiles.isNotEmpty);
+    setImageLength();
     changeIsGettingImageFromGallery(false);
   }
 

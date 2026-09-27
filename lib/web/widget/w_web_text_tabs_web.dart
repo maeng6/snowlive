@@ -1,10 +1,12 @@
 import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
 import 'package:flutter/material.dart';
 
-/// `전체 | 잡담 | 시즌방` 처럼 `|`로 구분되는 텍스트 탭 한 줄.
+/// `전체 | 잡담 | 시즌방` 처럼 구분자로 나뉘는 텍스트 탭 한 줄.
 ///
 /// 커뮤니티 카테고리 탭에만 있던 구현을 그대로 올려 공용화했다 — 키워드 알림
-/// 설정처럼 같은 모양의 탭이 필요한 화면이 생겨서다. 렌더 결과는 이전과 동일하다.
+/// 설정처럼 같은 모양의 탭이 필요한 화면이 생겨서다. 기본값은 기존과 동일하고,
+/// 키워드 알림 목업(64:105852) 스타일은 옵션으로 켠다
+/// (bold 16 / 비활성 gray200 / 1px 세로선 구분자 / 간격 10).
 ///
 /// 폭에 따른 처리는 **호출자가 정한다**. 커뮤니티는 탭이 5개라 모바일에서 드롭다운으로
 /// 접지만, 탭이 2~3개면 모바일에서도 한 줄에 들어간다.
@@ -14,12 +16,32 @@ class WebTextTabs<T> extends StatelessWidget {
   final String Function(T value) labelOf;
   final ValueChanged<T> onSelected;
 
+  /// 탭 글자 크기(기본 15 — 커뮤니티 기존값).
+  final double fontSize;
+
+  /// 비활성 탭도 bold로 쓸지(키워드 알림 목업은 활성/비활성 모두 bold).
+  final bool inactiveBold;
+
+  /// 비활성 탭 색(기본 gray300 — 커뮤니티 기존값).
+  final Color inactiveColor;
+
+  /// true면 구분자를 `|` 글자 대신 1px 세로선(gray100, 높이 15)으로 그린다.
+  final bool lineDivider;
+
+  /// 구분자 좌우 간격(기본 12 — 커뮤니티 기존값).
+  final double dividerGap;
+
   const WebTextTabs({
     super.key,
     required this.values,
     required this.selected,
     required this.labelOf,
     required this.onSelected,
+    this.fontSize = 15,
+    this.inactiveBold = false,
+    this.inactiveColor = SDSColor.gray300,
+    this.lineDivider = false,
+    this.dividerGap = 12,
   });
 
   @override
@@ -35,9 +57,12 @@ class WebTextTabs<T> extends StatelessWidget {
       final value = values[i];
       if (i > 0) {
         widgets.addAll([
-          const SizedBox(width: 12),
-          Text('|', style: SDSTextStyle.regular.copyWith(fontSize: 15, color: SDSColor.gray200)),
-          const SizedBox(width: 12),
+          SizedBox(width: dividerGap),
+          if (lineDivider)
+            Container(width: 1, height: 15, color: SDSColor.gray100)
+          else
+            Text('|', style: SDSTextStyle.regular.copyWith(fontSize: 15, color: SDSColor.gray200)),
+          SizedBox(width: dividerGap),
         ]);
       }
       widgets.add(
@@ -45,6 +70,9 @@ class WebTextTabs<T> extends StatelessWidget {
           label: labelOf(value),
           isActive: value == selected,
           onTap: () => onSelected(value),
+          fontSize: fontSize,
+          inactiveBold: inactiveBold,
+          inactiveColor: inactiveColor,
         ),
       );
     }
@@ -57,8 +85,18 @@ class _HoverTabText extends StatefulWidget {
   final String label;
   final bool isActive;
   final VoidCallback onTap;
+  final double fontSize;
+  final bool inactiveBold;
+  final Color inactiveColor;
 
-  const _HoverTabText({required this.label, required this.isActive, required this.onTap});
+  const _HoverTabText({
+    required this.label,
+    required this.isActive,
+    required this.onTap,
+    required this.fontSize,
+    required this.inactiveBold,
+    required this.inactiveColor,
+  });
 
   @override
   State<_HoverTabText> createState() => _HoverTabTextState();
@@ -69,10 +107,10 @@ class _HoverTabTextState extends State<_HoverTabText> {
 
   @override
   Widget build(BuildContext context) {
-    // 활성 탭은 진한색 고정. 비활성 탭만 hover 시 gray300 → gray600으로 살짝 진해진다.
+    // 활성 탭은 진한색 고정. 비활성 탭만 hover 시 gray600으로 살짝 진해진다.
     final color = widget.isActive
         ? SDSColor.gray900
-        : (_hovered ? SDSColor.gray600 : SDSColor.gray300);
+        : (_hovered ? SDSColor.gray600 : widget.inactiveColor);
     return MouseRegion(
       cursor: SystemMouseCursors.click,
       onEnter: (_) => setState(() => _hovered = true),
@@ -81,8 +119,10 @@ class _HoverTabTextState extends State<_HoverTabText> {
         onTap: widget.onTap,
         child: AnimatedDefaultTextStyle(
           duration: const Duration(milliseconds: 120),
-          style: (widget.isActive ? SDSTextStyle.bold : SDSTextStyle.regular)
-              .copyWith(fontSize: 15, color: color),
+          style: (widget.isActive || widget.inactiveBold
+                  ? SDSTextStyle.bold
+                  : SDSTextStyle.regular)
+              .copyWith(fontSize: widget.fontSize, color: color),
           child: Text(widget.label),
         ),
       ),

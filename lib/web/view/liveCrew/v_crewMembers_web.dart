@@ -7,6 +7,7 @@ import 'package:com.snowlive/web/viewmodel/crew/vm_crewDetail_web.dart';
 import 'package:com.snowlive/web/widget/w_empty_state_web.dart';
 import 'package:com.snowlive/web/widget/w_numbered_pagination_web.dart';
 import 'package:com.snowlive/web/widget/w_skeleton_web.dart';
+import 'package:com.snowlive/web/widget/w_web_page_header_web.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -56,16 +57,11 @@ class _CrewMembersViewWebState extends State<CrewMembersViewWeb> {
 
   @override
   Widget build(BuildContext context) {
-    final isDesktop = context.isDesktop;
 
     return Container(
       color: SDSColor.snowliveWhite,
-      padding: EdgeInsets.fromLTRB(
-        isDesktop ? SDSSpacing.xl : SDSSpacing.md,
-        32,
-        isDesktop ? SDSSpacing.xl : SDSSpacing.md,
-        SDSSpacing.xl,
-      ),
+      // 서브 페이지 공통 여백(중고거래 상세·폼 기준).
+      padding: webSubPagePadding(context),
       child: SingleChildScrollView(
         child: Center(
           child: ConstrainedBox(
@@ -73,23 +69,8 @@ class _CrewMembersViewWebState extends State<CrewMembersViewWeb> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(
-                  children: [
-                    InkWell(
-                      onTap: _goBack,
-                      customBorder: const CircleBorder(),
-                      child: Padding(
-                        padding: const EdgeInsets.all(4),
-                        child: Icon(Icons.arrow_back, size: 24, color: SDSColor.gray900),
-                      ),
-                    ),
-                    const SizedBox(width: SDSSpacing.sm),
-                    Text(
-                      '멤버',
-                      style: SDSTextStyle.extraBold.copyWith(fontSize: 28, color: SDSColor.gray900),
-                    ),
-                  ],
-                ),
+                // 서브 페이지 공통 헤더(뒤로 30 + 12 + bold 30).
+                WebPageHeader(title: '멤버', onBack: _goBack),
                 const SizedBox(height: SDSSpacing.xl),
                 Obx(_buildList),
               ],

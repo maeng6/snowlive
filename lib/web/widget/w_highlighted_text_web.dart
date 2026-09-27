@@ -16,6 +16,11 @@ class HighlightedText extends StatelessWidget {
   final int? maxLines;
   final TextOverflow overflow;
 
+  /// 텍스트 앞에 인라인으로 끼우는 요소(배지 칩 등). Row로 나란히 두는 것과 달리
+  /// **텍스트 흐름에 포함**되므로, 여러 줄로 꺾일 때 둘째 줄이 이 요소 오른쪽이
+  /// 아니라 왼쪽 끝에서 시작한다(각종소식 모바일 카드).
+  final InlineSpan? leading;
+
   const HighlightedText({
     super.key,
     required this.text,
@@ -24,16 +29,22 @@ class HighlightedText extends StatelessWidget {
     this.highlightColor = SDSColor.snowliveBlue,
     this.maxLines,
     this.overflow = TextOverflow.ellipsis,
+    this.leading,
   });
 
   @override
   Widget build(BuildContext context) {
     final spans = _buildSpans();
-    if (spans == null) {
+    if (leading == null && spans == null) {
       return Text(text, style: style, maxLines: maxLines, overflow: overflow);
     }
     return Text.rich(
-      TextSpan(children: spans),
+      TextSpan(
+        children: [
+          if (leading != null) leading!,
+          if (spans != null) ...spans else TextSpan(text: text),
+        ],
+      ),
       style: style,
       maxLines: maxLines,
       overflow: overflow,

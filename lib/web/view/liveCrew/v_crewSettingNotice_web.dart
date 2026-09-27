@@ -29,7 +29,7 @@ enum _NoticeAction {
 /// 공지사항 작성 + 올라온 공지 목록(수정·삭제). `#/livecrew-notice?id=334`
 ///
 /// 목업에는 작성 화면만 있지만, 목록이 없으면 한번 올린 공지를 웹에서 고칠 수도 지울 수도
-/// 없어서 함께 둔다(사용자 확정).
+/// 없어서 함께 둔다.
 class CrewSettingNoticeViewWeb extends StatefulWidget {
   const CrewSettingNoticeViewWeb({super.key});
 

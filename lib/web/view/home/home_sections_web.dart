@@ -11,11 +11,12 @@ const int kHomeRankingCount = 8;
 
 // ────────────────────────────────── 배너 ──────────────────────────────────
 
-/// 홈 상단 배너(히어로 슬라이드) 한 장. 앱과 같은 Firestore 문서(`banner/home`)를 읽는다.
+/// 홈 상단 배너(히어로 슬라이드) 한 장. **웹 전용** Firestore 문서
+/// [kHomeHeroBannerDoc]에서 읽는다.
 ///
-/// `imageUrl`/`landingUrl`/`visible`은 모바일 앱과 공유하는 필드고,
-/// 그 외(타이틀·서브문구·버튼·모바일 이미지)는 **웹 히어로 전용 추가 배열**이다.
-/// 없는 필드는 안전하게 생략된다(모바일 앱은 추가 필드를 읽지 않으므로 영향 없다).
+/// 앱이 쓰는 `banner/home`과 분리돼 있다 — 웹은 앱에 없는 값(문구·버튼·모바일
+/// 전용 이미지)이 필요하고 이미지 비율도 달라서, 한 문서를 같이 쓰면 한쪽 사정에
+/// 다른 쪽이 끌려간다. 앱 문서는 이 코드가 건드리지 않는다.
 class HomeBanner {
   final String imageUrl;
   final String landingUrl;
@@ -45,45 +46,47 @@ class HomeBanner {
 /// 배너 자동 롤링 간격(앱과 동일).
 const Duration kHomeBannerInterval = Duration(seconds: 5);
 
-/// `banner/home` 문서 → 노출할 배너 목록.
-///
-/// 앱과 동일한 구조다 — `imageUrl`/`landingUrl`/`visible` **세 배열이 같은 인덱스로**
-/// 짝지어져 있고, 운영에서 `visible`을 껐다 켜서 배너를 노출/숨긴다.
-/// 배열 길이가 서로 다를 수 있으므로(운영 실수) 인덱스마다 안전하게 접근한다.
-List<HomeBanner> homeVisibleBanners(Map<String, dynamic>? data) {
-  if (data == null) return const [];
-  final images = (data['imageUrl'] as List?) ?? const [];
-  final landings = (data['landingUrl'] as List?) ?? const [];
-  final visibles = (data['visible'] as List?) ?? const [];
-  final imagesMobile = (data['imageUrlMobile'] as List?) ?? const [];
-  final titles = (data['title'] as List?) ?? const [];
-  final subtitles = (data['subtitle'] as List?) ?? const [];
-  final buttonLabels = (data['buttonLabel'] as List?) ?? const [];
-  final buttonUrls = (data['buttonUrl'] as List?) ?? const [];
+/// 웹 홈 히어로 배너 문서. 앱이 쓰는 `banner/home`과 **다른 문서**다.
+const String kHomeHeroBannerCollection = 'banner';
+const String kHomeHeroBannerDoc = 'homeHeroWeb';
 
-  // 배열에서 i번째 문자열을 안전하게 꺼낸다(없거나 빈 값이면 null).
-  String? stringAt(List list, int i) {
-    if (i >= list.length) return null;
-    final value = list[i];
+/// `banner/homeHeroWeb` 문서 → 노출할 배너 목록.
+///
+/// 문서에는 `slides` 배열 하나만 있고, **배너 하나가 맵 하나**다(평행 배열이
+/// 아니라서 순서를 바꾸거나 중간을 지워도 짝이 깨지지 않는다).
+///
+/// 맵 키: `visible`(bool) · `imageUrl` · `imageUrlMobile` · `landingUrl` ·
+/// `title` · `subtitle` · `buttonLabel` · `buttonUrl`.
+/// 운영 실수에 대비해 타입이 어긋나는 값은 조용히 건너뛴다.
+List<HomeBanner> homeVisibleBanners(Map<String, dynamic>? data) {
+  final slides = data?['slides'];
+  if (slides is! List) return const [];
+
+  // 빈 문자열은 "값 없음"으로 본다(콘솔에서 지우는 대신 비워두는 경우가 많다).
+  String? stringOf(Map slide, String key) {
+    final value = slide[key];
     if (value is! String || value.isEmpty) return null;
     return value;
   }
 
   final result = <HomeBanner>[];
-  for (var i = 0; i < images.length; i++) {
-    // visible이 없는 인덱스는 노출하지 않는다(운영에서 켜야 보이는 쪽이 안전하다).
-    if (i >= visibles.length || visibles[i] != true) continue;
-    final image = images[i];
-    if (image is! String || image.isEmpty) continue;
+  for (final slide in slides) {
+    if (slide is! Map) continue;
+    // visible을 켜야 보이는 쪽이 안전하다(빠뜨리면 숨김).
+    if (slide['visible'] != true) continue;
+    // 사진이 없는 배너는 그릴 수 없다.
+    final image = stringOf(slide, 'imageUrl');
+    if (image == null) continue;
+
     result.add(HomeBanner(
       imageUrl: image,
-      landingUrl: stringAt(landings, i) ?? '',
-      imageUrlMobile: stringAt(imagesMobile, i),
+      landingUrl: stringOf(slide, 'landingUrl') ?? '',
+      imageUrlMobile: stringOf(slide, 'imageUrlMobile'),
       // Firestore 콘솔에서는 개행을 `\n` 문자로 넣으므로 실제 줄바꿈으로 바꾼다.
-      title: stringAt(titles, i)?.replaceAll(r'\n', '\n'),
-      subtitle: stringAt(subtitles, i)?.replaceAll(r'\n', '\n'),
-      buttonLabel: stringAt(buttonLabels, i),
-      buttonUrl: stringAt(buttonUrls, i),
+      title: stringOf(slide, 'title')?.replaceAll(r'\n', '\n'),
+      subtitle: stringOf(slide, 'subtitle')?.replaceAll(r'\n', '\n'),
+      buttonLabel: stringOf(slide, 'buttonLabel'),
+      buttonUrl: stringOf(slide, 'buttonUrl'),
     ));
   }
   return result;
@@ -270,8 +273,8 @@ List<List<T>> homeCarouselPages<T>(List<T> items, int size) {
 /// 새 채팅 말풍선이 떠 있는 시간(요청: 3초 후 사라짐).
 const Duration kHomeChatBubbleDuration = Duration(seconds: 3);
 
-/// 접힌 바 아래에 동시에 쌓이는 말풍선 최대 개수(요청).
+/// 접힌 바 아래에 동시에 쌓이는 말풍선 최대 개수.
 const int kHomeChatMaxBubbles = 3;
 
-/// 이 스크롤 오프셋을 넘으면 오픈 채팅을 아이콘으로 접는다(요청).
+/// 이 스크롤 오프셋을 넘으면 오픈 채팅을 아이콘으로 접는다.
 const double kHomeChatCollapseOffset = 80;

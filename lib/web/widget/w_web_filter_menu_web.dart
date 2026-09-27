@@ -28,8 +28,14 @@ Future<T?> showWebFilterMenu<T>({
   /// 딤 패널에서 태블릿은 화면 중앙, 모바일은 하단에 붙인다(목업).
   /// 기존 호출자(중고거래·랭킹)는 항상 하단이었으므로 기본값은 false.
   bool centerSheetOnTablet = false,
+
+  /// 태블릿에서도 데스크탑처럼 앵커 드롭다운을 띄울지. 중고거래
+  /// 카테고리/거래장소 pill만 true다 — 기본값을 바꾸면 다른 호출자
+  /// (랭킹·커뮤니티 등)의 태블릿 딤 시트가 전부 바뀌는 회귀가 된다.
+  bool dropdownOnTablet = false,
 }) {
-  if (context.isDesktop) {
+  if (context.isDesktop ||
+      (dropdownOnTablet && context.screenType == WebScreenType.tablet)) {
     return showWebAnchoredDropdown<T>(
       context: context,
       link: link,
@@ -76,56 +82,62 @@ Future<T?> showWebFilterSheet<T>({
   final centered =
       (centerOnTablet && screenType == WebScreenType.tablet) ||
       (centerOnDesktop && screenType == WebScreenType.desktop);
+  // 카드·행 규격은 피그마 comp_popup(62:96775) — 중앙 모달·하단 시트 공통.
   return showWebOverlayModal<T>(
     context: context,
     alignment: centered ? Alignment.center : Alignment.bottomCenter,
     padding: const EdgeInsets.all(16),
-    builder: (_, close) => ConstrainedBox(
-      constraints: const BoxConstraints(maxWidth: 360),
-      // ListTile은 Material 조상을 요구한다. 시트 표면을 Material로 만들어
-      // 배경색과 잉크를 같은 레이어에서 처리한다.
-      child: Material(
-        color: SDSColor.snowliveWhite,
-        borderRadius: BorderRadius.circular(16),
-        clipBehavior: Clip.antiAlias,
-        child: Padding(
-          padding: const EdgeInsets.all(16),
+    // Overlay 직삽이라 Material 조상이 없다 — 없으면 텍스트가 노란 밑줄
+    // 폴백 스타일로 그려지므로 투명 Material로 감싼다(표면은 Container가 그림).
+    builder: (_, close) => Material(
+      type: MaterialType.transparency,
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 351),
+        child: Container(
+          decoration: BoxDecoration(
+            color: SDSColor.snowliveWhite,
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(color: SDSColor.gray100),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.08),
+                offset: const Offset(0, 2),
+                blurRadius: 8,
+              ),
+            ],
+          ),
+          clipBehavior: Clip.antiAlias,
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
           child: SingleChildScrollView(
             child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                if (title != null && showTitle)
-                  Padding(
-                    padding: const EdgeInsets.only(left: 4, bottom: 4),
-                    child: Text(
-                      title,
-                      style: SDSTextStyle.regular.copyWith(
-                        fontSize: 12,
-                        color: SDSColor.gray400,
+                if (title != null && showTitle) ...[
+                  SizedBox(
+                    height: 28,
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        title,
+                        style: SDSTextStyle.regular.copyWith(
+                          fontSize: 13,
+                          color: SDSColor.gray500,
+                        ),
                       ),
                     ),
                   ),
-                for (final value in values)
-                  ListTile(
-                    contentPadding: alignItemsStart
-                        ? const EdgeInsets.symmetric(horizontal: 4)
-                        : EdgeInsets.zero,
-                    title: () {
-                      final label = Text(
-                        labelOf(value),
-                        style: SDSTextStyle.bold.copyWith(
-                          fontSize: 15,
-                          color: SDSColor.gray900,
-                        ),
-                      );
-                      return alignItemsStart ? label : Center(child: label);
-                    }(),
-                    onTap: () => close(value),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
-                    ),
+                  const SizedBox(height: 6),
+                ],
+                for (var i = 0; i < values.length; i++) ...[
+                  // 항목 사이 간격 2 (눈으로 맞춘 확정값).
+                  if (i > 0) const SizedBox(height: 2),
+                  _FilterSheetRow(
+                    label: labelOf(values[i]),
+                    alignStart: alignItemsStart,
+                    onTap: () => close(values[i]),
                   ),
+                ],
               ],
             ),
           ),
@@ -133,6 +145,57 @@ Future<T?> showWebFilterSheet<T>({
       ),
     ),
   );
+}
+
+/// 시트 항목 한 행 — 높이 44, bold 16 (피그마 62:96780).
+/// hover 시 텍스트 60% 투명 즉시 적용(웹 공통 텍스트 hover 규칙).
+class _FilterSheetRow extends StatefulWidget {
+  final String label;
+  final bool alignStart;
+  final VoidCallback onTap;
+
+  const _FilterSheetRow({
+    required this.label,
+    required this.alignStart,
+    required this.onTap,
+  });
+
+  @override
+  State<_FilterSheetRow> createState() => _FilterSheetRowState();
+}
+
+class _FilterSheetRowState extends State<_FilterSheetRow> {
+  bool _hovered = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      onEnter: (_) => setState(() => _hovered = true),
+      onExit: (_) => setState(() => _hovered = false),
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: widget.onTap,
+        child: Container(
+          height: 44,
+          alignment: widget.alignStart
+              ? Alignment.centerLeft
+              : Alignment.center,
+          color: Colors.transparent,
+          child: Opacity(
+            opacity: _hovered ? 0.6 : 1.0,
+            child: Text(
+              widget.label,
+              style: SDSTextStyle.bold.copyWith(
+                fontSize: 16,
+                color: SDSColor.gray900,
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 }
 
 /// 데스크탑 앵커 드롭다운 패널. 헤더 한 줄(선택) + 항목 목록.
@@ -156,12 +219,13 @@ class WebFilterDropdownPanel<T> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // 피그마 comp_popup: 화이트 + #ECECEC 1px 보더 + radius 6 + 은은한 그림자(0,2,8/8%).
+    // 피그마 comp_popup: 화이트 + 1px 보더 + radius 6 + 은은한 그림자(0,2,8/8%).
+    // 보더는 피그마 실측 #ECECEC 대신 gray100(#EFEFEF)으로 통일(밝기 차 3/255라 육안 구분 불가).
     return Container(
       decoration: BoxDecoration(
         color: SDSColor.snowliveWhite,
         borderRadius: BorderRadius.circular(6),
-        border: Border.all(color: const Color(0xFFECECEC)),
+        border: Border.all(color: SDSColor.gray100),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.08),
@@ -207,6 +271,8 @@ class WebFilterDropdownPanel<T> extends StatelessWidget {
                         ),
                       ),
                     // 항목: 높이 28, 항목 사이 간격 6 (피그마 기준).
+                    // 별도 등장 애니메이션은 없다 — 패널 박스가 펼쳐지며(마스킹)
+                    // 제자리의 텍스트가 그 속도 그대로 드러난다.
                     for (int i = 0; i < values.length; i++) ...[
                       if (i > 0) const SizedBox(height: 6),
                       _WebFilterMenuItem(
@@ -290,6 +356,10 @@ class WebDropdownTextButton<T> extends StatefulWidget {
   /// 열려 있으면 투명 배리어가 서로를 삼키므로, 여기서 먼저 닫는 용도.
   final VoidCallback? onBeforeOpen;
 
+  /// 태블릿에서도 데스크탑처럼 앵커 드롭다운을 띄울지(커뮤니티 검색범위 등).
+  /// 기본값을 바꾸면 다른 호출자의 태블릿 딤 시트가 전부 바뀌는 회귀가 된다.
+  final bool dropdownOnTablet;
+
   const WebDropdownTextButton({
     super.key,
     required this.label,
@@ -303,6 +373,7 @@ class WebDropdownTextButton<T> extends StatefulWidget {
     this.iconSize = 18,
     this.labelWidth,
     this.onBeforeOpen,
+    this.dropdownOnTablet = false,
   });
 
   @override
@@ -323,6 +394,7 @@ class _WebDropdownTextButtonState<T> extends State<WebDropdownTextButton<T>> {
       title: widget.title,
       showTitleInSheet: widget.showTitleInSheet,
       centerSheetOnTablet: widget.centerSheetOnTablet,
+      dropdownOnTablet: widget.dropdownOnTablet,
     );
     if (selected != null) widget.onSelected(selected);
   }
@@ -359,7 +431,6 @@ class _WebDropdownTextButtonState<T> extends State<WebDropdownTextButton<T>> {
                   SizedBox(width: widget.labelWidth, child: labelText)
                 else
                   labelText,
-                const SizedBox(width: 2),
                 Icon(
                   Icons.keyboard_arrow_down,
                   size: widget.iconSize,

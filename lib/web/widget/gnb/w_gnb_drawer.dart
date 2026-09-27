@@ -11,15 +11,15 @@ import 'package:get/get.dart';
 
 /// 태블릿/모바일 전용 전체 화면 메뉴 패널(피그마 1:16330 비로그인 / 1:17339 로그인).
 ///
-///  - 드로어가 아니라 **앱바 아래** 영역을 가득 채우는 패널로 뜬다(요청).
+///  - 드로어가 아니라 **앱바 아래** 영역을 가득 채우는 패널로 뜬다.
 ///    상단바(로고+메뉴/X 아이콘)는 그대로 보이고, 닫기는 셸의 X 아이콘이 담당한다.
-///  - 열릴 때 항목들이 위에서부터 순차적으로 페이드인된다(요청).
+///  - 열릴 때 항목들이 위에서부터 순차적으로 페이드인된다.
 ///  - 로그인: 상단 프로필 블록(아바타·닉네임·리조트·상태메시지) +
 ///    계정 그룹(마이페이지/멤버십 업그레이드/로그아웃).
 ///  - 비로그인: 하단 고정 로그인/회원가입 버튼.
-///  - 메뉴 구성은 피그마와 달리 **사이드바와 동일하게 전부** 노출한다(요청).
-///  - 알림·멤버십 업그레이드는 화면이 아직 없어 "준비 중" 스낵바만 띄운다(요청).
-///  - 앱 다운로드 배너는 보류(요청).
+///  - 메뉴 구성은 피그마와 달리 **사이드바와 동일하게 전부** 노출한다.
+///  - 알림·멤버십 업그레이드는 화면이 아직 없어 "준비 중" 스낵바만 띄운다.
+///  - 앱 다운로드 배너는 보류.
 class WebGnbMenuPanel extends StatefulWidget {
   /// 항목 탭 등으로 메뉴를 닫아야 할 때 호출한다(셸이 패널을 내린다).
   final VoidCallback onClose;
@@ -36,7 +36,7 @@ class _WebGnbMenuPanelState extends State<WebGnbMenuPanel>
   static const GnbNavItemData _kAlarmItem = GnbNavItemData(label: '알림');
 
   /// **세 그룹**(아이콘 메뉴 / 친구·알림·설정 / 계정)으로 나눠 부드럽게
-  /// 페이드인한다(요청). 그룹당 350ms + 살짝(8px) 위로 올라오며 등장,
+  /// 페이드인한다. 그룹당 350ms + 살짝(8px) 위로 올라오며 등장,
   /// 그룹 간 120ms 지연으로 자연스럽게 겹친다.
   static const int _kFadeMs = 550;
   static const int _kDelayMs = 180;
@@ -185,7 +185,7 @@ class _WebGnbMenuPanelState extends State<WebGnbMenuPanel>
   }
 
   /// 로그인 상태 상단 프로필 블록 — 아바타 64 + 닉네임 + 리조트 + 상태메시지(피그마).
-  /// 크루명은 아직 이름을 받아오지 않아 제외한다(요청 — 리조트명만).
+  /// 크루명은 아직 이름을 받아오지 않아 제외한다(리조트명만).
   Widget _buildProfileBlock(dynamic user) {
     final String? resortName = _resortNameOf(user.favorite_resort as int?);
     final String? stateMsg = user.state_msg as String?;

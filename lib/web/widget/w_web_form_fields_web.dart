@@ -22,9 +22,10 @@ class WebFormLabel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // 피그마 62:98906 — 폼 라벨은 regular 14.
     final style = compact
         ? SDSTextStyle.regular.copyWith(fontSize: 13, color: SDSColor.gray900)
-        : SDSTextStyle.bold.copyWith(fontSize: 14, color: SDSColor.gray900);
+        : SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray900);
 
     return Padding(
       padding: const EdgeInsets.only(bottom: SDSSpacing.sm),
@@ -103,16 +104,19 @@ class WebFormTextField extends StatelessWidget {
       onChanged: onChanged,
       textAlignVertical: expands ? TextAlignVertical.top : null,
       style: SDSTextStyle.regular.copyWith(fontSize: 15, color: SDSColor.gray900),
+      cursorHeight: 17, // 커서 높이 = 글자 크기 + 2(웹 공통 규칙)
+      // 피그마 62:98906 — 인풋 radius 6, 패딩 12/14(높이 46), hint 15 gray400,
+      // suffix('원') regular 14.
       decoration: InputDecoration(
         hintText: hint,
-        hintStyle: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray400),
+        hintStyle: SDSTextStyle.regular.copyWith(fontSize: 15, color: SDSColor.gray400),
         counterText: '',
         suffixText: suffixText,
-        suffixStyle: SDSTextStyle.bold.copyWith(fontSize: 15, color: SDSColor.gray900),
+        suffixStyle: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray900),
         filled: true,
         fillColor: SDSColor.gray50,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide.none),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(6), borderSide: BorderSide.none),
       ),
     );
 
@@ -148,6 +152,10 @@ class WebFormDropdownField<T> extends StatefulWidget {
   /// 중고거래 폼은 하단 시트라 기본값(false)을 유지해야 외형이 지금과 같다.
   final bool centerSheetOnTablet;
 
+  /// 태블릿에서도 PC와 같은 앵커 드롭다운(필드 아래, 딤 없음)을 쓸지.
+  /// 중고거래 올리기/수정 폼이 이렇다. true면 [centerSheetOnTablet]은 무시된다.
+  final bool anchoredOnTablet;
+
   /// 열기 전 검사. false를 리턴하면 열지 않는다(안내 문구는 이 콜백에서 띄운다).
   /// 상세 카테고리처럼 선행 선택이 필요한 필드에 쓴다.
   final bool Function()? canOpen;
@@ -175,6 +183,7 @@ class WebFormDropdownField<T> extends StatefulWidget {
     required this.onSelected,
     this.compact = false,
     this.centerSheetOnTablet = false,
+    this.anchoredOnTablet = false,
     this.canOpen,
     this.helperText,
     this.isRequired = false,
@@ -197,7 +206,11 @@ class _WebFormDropdownFieldState<T> extends State<WebFormDropdownField<T>> {
     if (widget.canOpen != null && !widget.canOpen!()) return;
 
     // 데스크탑은 필드 아래에 붙는 드롭다운(목업), 태블릿/모바일은 딤 처리된 시트.
-    if (!context.isDesktop) {
+    // 단, [anchoredOnTablet]이면 태블릿도 데스크탑과 같은 앵커 드롭다운을 쓴다.
+    final bool useAnchored = context.isDesktop ||
+        (widget.anchoredOnTablet &&
+            context.screenType == WebScreenType.tablet);
+    if (!useAnchored) {
       final picked = await showWebFilterSheet<T>(
         context: context,
         values: widget.values,
@@ -215,7 +228,8 @@ class _WebFormDropdownFieldState<T> extends State<WebFormDropdownField<T>> {
     final selected = await showWebAnchoredDropdown<T>(
       context: _boxKey.currentContext!,
       link: _link,
-      gap: 4,
+      // 패널은 인풋 필드 하단에 딱 붙는다.
+      gap: 0,
       builder: (_, close, anchorWidth) => _FormDropdownPanel<T>(
         values: widget.values,
         labelOf: widget.labelOf,
@@ -237,11 +251,12 @@ class _WebFormDropdownFieldState<T> extends State<WebFormDropdownField<T>> {
           link: _link,
           child: InkWell(
             key: _boxKey,
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: BorderRadius.circular(6),
             onTap: _open,
+            // 피그마 62:98906 — 인풋과 동일(radius 6, 패딩 12/14), 화살표 16.
             child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-              decoration: BoxDecoration(color: SDSColor.gray50, borderRadius: BorderRadius.circular(8)),
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+              decoration: BoxDecoration(color: SDSColor.gray50, borderRadius: BorderRadius.circular(6)),
               child: Row(
                 children: [
                   Expanded(
@@ -253,7 +268,12 @@ class _WebFormDropdownFieldState<T> extends State<WebFormDropdownField<T>> {
                       ),
                     ),
                   ),
-                  Icon(Icons.keyboard_arrow_down, color: SDSColor.gray500),
+                  // 앱과 동일한 드롭다운 화살표 에셋.
+                  Image.asset(
+                    'assets/imgs/icons/icon_dropdown.png',
+                    width: 20,
+                    fit: BoxFit.cover,
+                  ),
                 ],
               ),
             ),
@@ -338,7 +358,8 @@ class WebFormTwoColumnRow extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Expanded(child: left),
-        const SizedBox(width: SDSSpacing.md),
+        // 피그마 62:98906 — 2열 간격 14.
+        const SizedBox(width: 14),
         Expanded(child: right),
       ],
     );

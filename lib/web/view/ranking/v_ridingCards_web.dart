@@ -119,16 +119,11 @@ class _RidingCardsViewWebState extends State<RidingCardsViewWeb> {
 
   @override
   Widget build(BuildContext context) {
-    final isDesktop = context.isDesktop;
 
     return Container(
       color: SDSColor.snowliveWhite,
-      padding: EdgeInsets.fromLTRB(
-        isDesktop ? SDSSpacing.xl : SDSSpacing.md,
-        32,
-        isDesktop ? SDSSpacing.xl : SDSSpacing.md,
-        SDSSpacing.xl,
-      ),
+      // 홈 공통 여백(중고거래 홈 기준).
+      padding: webHomePagePadding(context),
       child: SingleChildScrollView(
         child: Center(
           child: ConstrainedBox(
@@ -157,8 +152,9 @@ class _RidingCardsViewWebState extends State<RidingCardsViewWeb> {
       children: [
         Text(
           '라이딩 기록 카드',
+          // 홈 타이틀 공통: PC 32 / 태블릿·모바일 24 (중고거래 홈 기준).
           style: SDSTextStyle.extraBold.copyWith(
-            fontSize: context.screenType == WebScreenType.mobile ? 22 : 28,
+            fontSize: webHomeTitleSize(context),
             color: SDSColor.gray900,
           ),
         ),

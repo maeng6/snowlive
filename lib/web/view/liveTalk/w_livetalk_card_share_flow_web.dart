@@ -3,11 +3,47 @@ import 'package:com.snowlive/core/viewmodel/vm_user.dart';
 import 'package:com.snowlive/web/util/responsive_web.dart';
 import 'package:com.snowlive/web/view/liveTalk/w_livetalk_riding_card_web.dart';
 import 'package:com.snowlive/web/view/liveTalk/w_livetalk_step_modal_web.dart';
-import 'package:com.snowlive/web/view/liveTalk/w_livetalk_upload_flow_web.dart' show showLiveTalkUploadDoneDialog;
+import 'package:com.snowlive/web/view/liveTalk/w_livetalk_upload_flow_web.dart'
+    show showLiveTalkUploadDoneDialog;
 import 'package:com.snowlive/web/viewmodel/liveTalk/vm_liveTalkUpload_web.dart';
 import 'package:com.snowlive/web/widget/w_web_overlay_modal_web.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
+/// 카드 선택·글 작성 단계의 카드 높이(피그마 80:218042 551 / 80:218562 552).
+/// 1 차이라 큰 쪽으로 통일해 단계 전환 시 카드가 안 흔들리게 한다.
+/// 여기에 [kCardShareExtraBottom]을 더한 값이 실제 높이다.
+const double kCardShareHeight = 552 + kCardShareExtraBottom;
+
+/// 카드 아래 추가 여백(사용자 확정). 선택 테두리 칸이 썸네일 줄을 목업보다
+/// 키워서 썸네일이 카드 바닥에 붙어 보이는 걸 되돌린다.
+const double kCardShareExtraBottom = 10;
+
+/// 기록 없음 안내 카드 높이(피그마 80:219429).
+const double kCardShareNoRecordHeight = 323;
+
+/// 1단계 큰 미리보기 카드 폭(목업 200 → 높이 317.5).
+const double kCardSharePreviewWidth = 200;
+
+/// 2단계 작은 카드 폭(목업 100.8 → 높이 160).
+const double kCardShareThumbWidth = 100;
+
+/// 1단계 배경 썸네일 폭(목업 40 → 높이 64).
+const double kCardShareThumbSize = 40;
+
+/// 모바일 시트 높이(피그마 80:250491 / 80:251381 — 두 단계 모두 551).
+const double kCardShareSheetHeightMobile = 551;
+
+/// 모바일 1단계에서 썸네일 줄 **위아래** 간격. 목업은 24인데, 선택 테두리 칸이
+/// 썸네일을 6씩 감싸서 그만큼 줄여야 보이는 간격이 24가 되고 시트도 551에 맞는다.
+/// (PC는 대신 카드 높이를 [kCardShareExtraBottom]만큼 키우는 쪽을 택했다.)
+const double kCardShareThumbRowGapMobile = 18;
+
+/// 모바일 기록 없음 시트 높이(피그마 80:252210).
+const double kCardShareNoRecordSheetHeightMobile = 317;
+
+/// 모바일 2단계 카드 폭(목업 135.4 → 높이 215). PC(100)보다 크다.
+const double kCardShareThumbWidthMobile = 135;
 
 /// `라이딩 기록 카드 공유` — 기록없음 / 카드 선택 → 글 작성(목업).
 ///
@@ -19,15 +55,18 @@ Future<bool> showLiveTalkCardShareFlow({
 }) async {
   final vm = Get.find<LiveTalkUploadViewModelWeb>();
   vm.reset();
-  if (userId != null) await vm.loadRidingCard(userId);
+  // 로컬 확인용 스위치가 켜져 있으면 서버 대신 가짜 기록을 쓴다(배포 전 false).
+  if (kDebugFakeRidingCard) {
+    vm.useFakeRidingCard();
+  } else if (userId != null) {
+    await vm.loadRidingCard(userId);
+  }
 
   final isMobile = context.screenType == WebScreenType.mobile;
   final done = await showWebOverlayModal<bool>(
     context: context,
     alignment: isMobile ? Alignment.bottomCenter : Alignment.center,
-    padding: isMobile
-        ? EdgeInsets.zero
-        : const EdgeInsets.symmetric(horizontal: 24, vertical: 40),
+    padding: isMobile ? EdgeInsets.zero : const EdgeInsets.symmetric(horizontal: 24, vertical: 40),
     builder: (ctx, close) => _CardShareFlow(vm: vm, userId: userId, onClose: close),
   );
   return done ?? false;
@@ -76,6 +115,11 @@ class _CardShareFlowState extends State<_CardShareFlow> {
     await showLiveTalkUploadDoneDialog(context);
   }
 
+  bool get _isMobile => context.screenType == WebScreenType.mobile;
+
+  /// 중앙 카드(PC·태블릿)와 하단 시트(모바일)는 높이가 다르다.
+  double _cardHeight({required double wide, required double mobile}) => _isMobile ? mobile : wide;
+
   @override
   Widget build(BuildContext context) {
     return Obx(() {
@@ -84,8 +128,13 @@ class _CardShareFlowState extends State<_CardShareFlow> {
           title: '라이딩 기록 카드 공유',
           onClose: widget.onClose,
           showNext: false,
+          // 기록 유무를 모르는 동안은 작은 쪽(기록 없음) 높이로 둔다.
+          minHeight: _cardHeight(
+            wide: kCardShareNoRecordHeight,
+            mobile: kCardShareNoRecordSheetHeightMobile,
+          ),
           body: const SizedBox(
-            height: 200,
+            height: 140,
             child: Center(child: CircularProgressIndicator(strokeWidth: 2)),
           ),
         );
@@ -96,7 +145,8 @@ class _CardShareFlowState extends State<_CardShareFlow> {
     });
   }
 
-  /// 기록 없음 — 카드 단계로 넘어갈 수 없으므로 진행 버튼을 아예 두지 않는다.
+  /// 기록 없음(피그마 80:219429 — 카드 390×323).
+  /// 카드 단계로 넘어갈 수 없으므로 진행 버튼을 아예 두지 않는다.
   Widget _buildNoRecord() {
     return LiveTalkStepModal(
       title: '라이딩 기록 카드 공유',
@@ -104,46 +154,49 @@ class _CardShareFlowState extends State<_CardShareFlow> {
       onClose: widget.onClose,
       // 다음 단계가 없는 화면이라 진행 버튼을 아예 두지 않는다(목업).
       showNext: false,
+      minHeight: _cardHeight(
+        wide: kCardShareNoRecordHeight,
+        mobile: kCardShareNoRecordSheetHeightMobile,
+      ),
+      mobileBodyPadding: EdgeInsets.zero,
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // 카드 데이터가 없으니 배경만 작게 보여준다(목업).
-          Center(
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(4),
-              child: Image.asset(kRidingCardBackgrounds[0], width: 48, height: 68, fit: BoxFit.cover),
+          // 모바일은 안내 ↔ 아이콘이 30이라 셸의 15에 15를 더한다(목업 80:252210).
+          if (_isMobile) const SizedBox(height: 15),
+          // 카드 데이터가 없으니 배경만 작게 보여준다(목업 50×80 — 카드와 같은 비율).
+          Center(child: _CardBackgroundThumb(asset: kRidingCardBackgrounds[0], width: 50)),
+          const SizedBox(height: 40),
+          Padding(
+            // 모바일 버튼은 시트 좌우 10(목업). PC·태블릿은 셸 여백 안쪽 그대로.
+            padding: EdgeInsets.symmetric(horizontal: _isMobile ? 10 : 0),
+            child: LiveTalkWideButton(
+              label: '앱 다운로드 받기',
+              kind: LiveTalkWideButtonKind.quiet,
+              onTap: () => Get.snackbar('알림', '앱 다운로드 링크는 준비 중이에요.'),
             ),
           ),
-          const SizedBox(height: SDSSpacing.lg),
-          ElevatedButton(
-            onPressed: () => Get.snackbar('알림', '앱 다운로드 링크는 준비 중이에요.'),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: SDSColor.gray50,
-              elevation: 0,
-              shadowColor: Colors.transparent,
-              overlayColor: Colors.transparent,
-              padding: const EdgeInsets.symmetric(vertical: 16),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-            ),
-            child: Text('앱 다운로드 받기',
-                style: SDSTextStyle.bold.copyWith(fontSize: 15, color: SDSColor.gray900)),
-          ),
+          if (_isMobile) const SizedBox(height: 10),
         ],
       ),
     );
   }
 
-  /// 카드 3종 중 하나를 고른다.
+  /// 카드 3종 중 하나를 고른다(피그마 80:218042 — 카드 390×551).
   Widget _buildSelectStep() {
     return LiveTalkStepModal(
       title: '라이딩 기록 카드 공유',
-      subtitle: '원하는 카드를 선택해 업로드하세요.',
       onClose: widget.onClose,
       onNext: () => setState(() => _step = 1),
+      minHeight: _cardHeight(wide: kCardShareHeight, mobile: kCardShareSheetHeightMobile),
+      mobileBodyPadding: EdgeInsets.zero,
+      // 모바일은 안내 문구가 **썸네일 줄 아래**라 본문이 직접 그린다(목업 80:250491).
+      subtitle: _isMobile ? null : '원하는 카드를 선택해 업로드하세요.',
       body: Column(
         children: [
-          _buildCard(width: 200),
-          const SizedBox(height: SDSSpacing.lg),
+          _buildCard(width: kCardSharePreviewWidth),
+          // 큰 카드 ↔ 썸네일 줄 — 목업 24, 모바일은 테두리 칸 몫을 뺀 18.
+          SizedBox(height: _isMobile ? kCardShareThumbRowGapMobile : SDSSpacing.lg),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -153,31 +206,62 @@ class _CardShareFlowState extends State<_CardShareFlow> {
                   isSelected: _vm.selectedCardType == i,
                   onTap: () => _vm.selectCardType(i),
                 ),
-                if (i != kRidingCardBackgrounds.length - 1) const SizedBox(width: SDSSpacing.sm),
+                // 썸네일 사이 10 — 선택 테두리 칸이 붙으면서 넓어 보여 목업(12.8)에서 줄임.
+                if (i != kRidingCardBackgrounds.length - 1) const SizedBox(width: 10),
               ],
             ],
           ),
+          // 모바일은 안내 문구가 썸네일 줄 아래에 온다(목업 80:250491).
+          if (_isMobile) ...[
+            const SizedBox(height: kCardShareThumbRowGapMobile),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Text(
+                '원하는 카드를 선택해 업로드하세요.',
+                textAlign: TextAlign.center,
+                style: SDSTextStyle.regular.copyWith(
+                  fontSize: 14,
+                  color: SDSColor.gray500,
+                  height: 20 / 14,
+                ),
+              ),
+            ),
+            const SizedBox(height: 30),
+          ],
         ],
       ),
     );
   }
 
+  /// 글 작성(피그마 80:218562 — 카드 390×552, 1단계와 같은 높이).
   Widget _buildComposeStep() {
     return LiveTalkStepModal(
       title: '라이딩 기록 카드 공유',
-      subtitle: '원하는 카드를 선택해 업로드하세요.',
       onClose: widget.onClose,
       onBack: () => setState(() => _step = 0),
       onNext: _vm.isSubmitting ? null : _submit,
       nextLabel: '업로드',
       isFinalStep: true,
+      minHeight: _cardHeight(wide: kCardShareHeight, mobile: kCardShareSheetHeightMobile),
+      mobileBodyPadding: EdgeInsets.zero,
+      // 모바일 2단계는 안내 문구가 없다(목업 80:251381).
+      subtitle: _isMobile ? null : '원하는 카드를 선택해 업로드하세요.',
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           // 캡처 대상은 항상 트리에 있어야 한다. 작성 단계에서도 카드를 그려둔다.
-          Center(child: _buildCard(width: 100)),
-          const SizedBox(height: SDSSpacing.lg),
-          LiveTalkComposeField(controller: _textController),
+          Center(
+            child: _buildCard(width: _isMobile ? kCardShareThumbWidthMobile : kCardShareThumbWidth),
+          ),
+          // 카드 ↔ 글 작성 — PC 30 / 모바일 20(목업).
+          SizedBox(height: _isMobile ? 20 : 30),
+          Padding(
+            // 모바일 글 작성 블록은 시트 좌우 16(목업).
+            padding: EdgeInsets.symmetric(horizontal: _isMobile ? SDSSpacing.md : 0),
+            // 입력칸 높이 PC 187 / 모바일 195(목업).
+            child: LiveTalkComposeField(controller: _textController, height: _isMobile ? 195 : 187),
+          ),
+          if (_isMobile) const SizedBox(height: 20),
         ],
       ),
     );
@@ -202,8 +286,39 @@ class _CardShareFlowState extends State<_CardShareFlow> {
   }
 }
 
-/// 카드 배경 썸네일. 선택된 것에 파란 테두리(목업).
+/// 카드 배경만 보여주는 작은 그림. 높이는 카드 종횡비로 계산해서
+/// 어떤 폭에서도 배경이 잘리지 않게 한다(목업도 같은 비율).
+class _CardBackgroundThumb extends StatelessWidget {
+  final String asset;
+  final double width;
+
+  const _CardBackgroundThumb({required this.asset, required this.width});
+
+  @override
+  Widget build(BuildContext context) {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(3),
+      child: Image.asset(
+        asset,
+        width: width,
+        height: width / kRidingCardAspectRatio,
+        fit: BoxFit.cover,
+      ),
+    );
+  }
+}
+
+/// 카드 배경 썸네일 40×64. 선택되면 **바깥에 파란 2px 테두리**가 붙는다.
+/// 테두리와 썸네일 사이는 [_kSelectRingGap]만큼 띄우고 모서리도 둥글린다
+/// (목업은 각진 사각형에 여백 0이었는데 붙어 보여서 조정 — 사용자 확정).
+/// 선택 여부와 무관하게 자리를 차지해야 고를 때마다 줄이 흔들리지 않으므로
+/// 테두리 칸은 늘 그린다(선택 전에는 투명).
 class _CardThumb extends StatelessWidget {
+  /// 테두리 ↔ 썸네일 여백.
+  static const double _kSelectRingGap = 3;
+  static const double _kSelectRingWidth = 3;
+  static const double _kSelectRingRadius = 6;
+
   final String asset;
   final bool isSelected;
   final VoidCallback onTap;
@@ -217,18 +332,15 @@ class _CardThumb extends StatelessWidget {
       child: GestureDetector(
         onTap: onTap,
         child: Container(
-          padding: const EdgeInsets.all(3),
+          padding: const EdgeInsets.all(_kSelectRingGap),
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(6),
+            borderRadius: BorderRadius.circular(_kSelectRingRadius),
             border: Border.all(
               color: isSelected ? SDSColor.snowliveBlue : Colors.transparent,
-              width: 2,
+              width: _kSelectRingWidth,
             ),
           ),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(3),
-            child: Image.asset(asset, width: 40, height: 56, fit: BoxFit.cover),
-          ),
+          child: _CardBackgroundThumb(asset: asset, width: kCardShareThumbSize),
         ),
       ),
     );

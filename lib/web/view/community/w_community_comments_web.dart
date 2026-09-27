@@ -38,12 +38,27 @@ class CommunityCommentsWeb extends StatelessWidget {
   Widget build(BuildContext context) {
     final comments = vm.comments;
     if (comments.isEmpty) {
-      return Padding(
-        padding: const EdgeInsets.symmetric(vertical: 40),
-        child: Center(
-          child: Text(
-            '첫 댓글을 남겨보세요.',
-            style: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray400),
+      // 빈 상태 — 중고거래 댓글과 동일(icon_nodata + 문구, 가운데 정렬).
+      return SizedBox(
+        width: double.infinity,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 32),
+          child: Column(
+            children: [
+              Image.asset(
+                'assets/imgs/icons/icon_nodata.png',
+                width: 64,
+                height: 64,
+              ),
+              const SizedBox(height: 6),
+              Text(
+                '댓글이 없어요',
+                style: SDSTextStyle.regular.copyWith(
+                  fontSize: 14,
+                  color: SDSColor.gray500,
+                ),
+              ),
+            ],
           ),
         ),
       );
@@ -67,7 +82,8 @@ class CommunityCommentsWeb extends StatelessWidget {
         isReplying && !context.isMobileWidth && inlineReplyInputBuilder != null;
 
     return Padding(
-      padding: const EdgeInsets.only(bottom: SDSSpacing.lg),
+      // 스레드 사이 20 (중고거래 댓글과 동일).
+      padding: const EdgeInsets.only(bottom: 20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -78,9 +94,13 @@ class CommunityCommentsWeb extends StatelessWidget {
             userId: comment.userId,
             uploadTime: comment.uploadTime,
             content: comment.content ?? '',
-            isPostAuthor: postAuthorId != null && comment.userId == postAuthorId,
-            contentStyle: SDSTextStyle.regular
-                .copyWith(fontSize: 14, color: SDSColor.gray900, height: 1.4),
+            isPostAuthor:
+                postAuthorId != null && comment.userId == postAuthorId,
+            contentStyle: SDSTextStyle.regular.copyWith(
+              fontSize: 14,
+              color: SDSColor.gray900,
+              height: 1.4,
+            ),
             onReply: commentId == null
                 ? null
                 : () => onReplyTargetChanged(isReplying ? null : commentId),
@@ -89,39 +109,49 @@ class CommunityCommentsWeb extends StatelessWidget {
               context,
               isMine: myUserId != null && comment.userId == myUserId,
               targetUserId: comment.userId,
-              onDelete: commentId == null ? null : () => vm.deleteComment(commentId),
-              onReport: commentId == null ? null : () => vm.reportCommentById(commentId),
+              onDelete: commentId == null
+                  ? null
+                  : () => vm.deleteComment(commentId),
+              onReport: commentId == null
+                  ? null
+                  : () => vm.reportCommentById(commentId),
             ),
           ),
           if (showInlineInput)
             Padding(
-              padding: const EdgeInsets.only(left: 42, top: SDSSpacing.sm),
+              // 들여쓰기 = 댓글 텍스트 시작선(아바타 32 + 간격 8 = 40, 중고거래와 동일).
+              padding: const EdgeInsets.only(left: 40, top: SDSSpacing.sm),
               child: inlineReplyInputBuilder!(commentId),
             ),
           for (final reply in replies)
             Padding(
-              // 답글 들여쓰기
-              padding: const EdgeInsets.only(left: 42, top: SDSSpacing.md),
+              // 답글: 댓글과 완전히 같은 타일(아바타 32·본문 14), 들여쓰기 40,
+              // 위 간격 20 — 중고거래 댓글과 동일.
+              padding: const EdgeInsets.only(left: 40, top: 20),
               child: _CommentTile(
-                avatarSize: 26,
+                avatarSize: 32,
                 displayName: reply.userInfo?.displayName,
                 photoUrl: reply.userInfo?.profileImageUrlUser,
                 userId: reply.userId,
                 uploadTime: reply.uploadTime,
                 content: reply.content ?? '',
-                isPostAuthor: postAuthorId != null && reply.userId == postAuthorId,
-                contentStyle: SDSTextStyle.regular
-                    .copyWith(fontSize: 13, color: SDSColor.gray900, height: 1.4),
-                // 서버 답글 데이터에는 멘션이 없다. 그 스레드의 댓글 작성자 닉네임을
-                // UI가 파란색으로 붙여서 목업과 같은 모양을 만든다.
-                mentionName: comment.userInfo?.displayName,
+                isPostAuthor:
+                    postAuthorId != null && reply.userId == postAuthorId,
+                contentStyle: SDSTextStyle.regular.copyWith(
+                  fontSize: 14,
+                  color: SDSColor.gray900,
+                  height: 1.4,
+                ),
                 trailing: _buildMenu(
                   context,
                   isMine: myUserId != null && reply.userId == myUserId,
                   targetUserId: reply.userId,
-                  onDelete: reply.replyId == null ? null : () => vm.deleteReply(reply.replyId!),
-                  onReport:
-                      reply.replyId == null ? null : () => vm.reportReplyById(reply.replyId!),
+                  onDelete: reply.replyId == null
+                      ? null
+                      : () => vm.deleteReply(reply.replyId!),
+                  onReport: reply.replyId == null
+                      ? null
+                      : () => vm.reportReplyById(reply.replyId!),
                 ),
               ),
             ),
@@ -140,6 +170,10 @@ class CommunityCommentsWeb extends StatelessWidget {
     // 게스트는 신고/차단할 수 없다.
     if (myUserId == null) return const SizedBox.shrink();
     return WebMoreButton(
+      // 중고거래 댓글과 동일 — ⋯ 26, gray500, 태블릿도 앵커 드롭다운.
+      iconSize: 26,
+      iconColor: SDSColor.gray500,
+      dropdownOnTablet: true,
       actions: isMine
           ? const [WebMoreAction.delete]
           : const [WebMoreAction.report, WebMoreAction.hideUser],
@@ -148,7 +182,9 @@ class CommunityCommentsWeb extends StatelessWidget {
         action: action,
         onDelete: onDelete,
         onReport: onReport,
-        onHideUser: targetUserId == null ? null : () => vm.blockUser(targetUserId),
+        onHideUser: targetUserId == null
+            ? null
+            : () => vm.blockUser(targetUserId),
       ),
     );
   }
@@ -162,13 +198,13 @@ class _CommentTile extends StatelessWidget {
   final double avatarSize;
   final String? displayName;
   final String? photoUrl;
+
   /// 프로필 사진 탭 → 프로필 팝업.
   final int? userId;
   final String? uploadTime;
   final String content;
   final bool isPostAuthor;
   final TextStyle contentStyle;
-  final String? mentionName;
   final VoidCallback? onReply;
   final String replyLabel;
   final Widget trailing;
@@ -183,7 +219,6 @@ class _CommentTile extends StatelessWidget {
     required this.isPostAuthor,
     required this.contentStyle,
     required this.trailing,
-    this.mentionName,
     this.onReply,
     this.replyLabel = '답글 달기',
   });
@@ -199,20 +234,31 @@ class _CommentTile extends StatelessWidget {
           avatarUrl: photoUrl,
           child: ClipOval(
             child: (photoUrl != null && photoUrl!.isNotEmpty)
-                ? WebNetworkImage(url: photoUrl, width: avatarSize, height: avatarSize)
+                ? WebNetworkImage(
+                    url: photoUrl,
+                    width: avatarSize,
+                    height: avatarSize,
+                  )
+                // 기본 아바타 — 중고거래 댓글과 동일(gray100 + person 0.6배).
                 : Container(
                     width: avatarSize,
                     height: avatarSize,
-                    color: SDSColor.blue50,
-                    child: Icon(Icons.person, size: avatarSize * 0.55, color: SDSColor.gray400),
+                    color: SDSColor.gray100,
+                    child: Icon(
+                      Icons.person,
+                      size: avatarSize * 0.6,
+                      color: SDSColor.gray400,
+                    ),
                   ),
           ),
         ),
-        const SizedBox(width: 10),
+        // 아바타 ↔ 본문 8 (피그마 64:127645).
+        const SizedBox(width: 8),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // 이름 줄 우측 끝에 ⋯ — 중고거래 댓글 타일과 동일한 구성.
               Row(
                 children: [
                   Flexible(
@@ -220,62 +266,69 @@ class _CommentTile extends StatelessWidget {
                       displayName ?? '',
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: SDSTextStyle.bold.copyWith(fontSize: 13, color: SDSColor.gray900),
+                      // 피그마 64:127983 — 닉네임 bold 12.
+                      style: SDSTextStyle.bold.copyWith(
+                        fontSize: 12,
+                        color: SDSColor.gray900,
+                      ),
                     ),
                   ),
                   const SizedBox(width: 6),
                   Text(
                     _relativeTime(uploadTime),
-                    style: SDSTextStyle.regular.copyWith(fontSize: 12, color: SDSColor.gray500),
+                    style: SDSTextStyle.regular.copyWith(
+                      fontSize: 12,
+                      color: SDSColor.gray500,
+                    ),
                   ),
                   if (isPostAuthor) ...[
                     const SizedBox(width: 6),
+                    // 작성자 배지 — 목록 카테고리 배지와 동일 규격
+                    // (regular 11, r2, 패딩 4, 높이 20).
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                      height: 20,
+                      alignment: Alignment.center,
+                      padding: const EdgeInsets.symmetric(horizontal: 4),
                       decoration: BoxDecoration(
                         color: SDSColor.blue50,
-                        borderRadius: BorderRadius.circular(4),
+                        borderRadius: BorderRadius.circular(2),
                       ),
                       child: Text(
                         '작성자',
-                        style:
-                            SDSTextStyle.bold.copyWith(fontSize: 11, color: SDSColor.snowliveBlue),
+                        style: SDSTextStyle.regular.copyWith(
+                          fontSize: 11,
+                          color: SDSColor.snowliveBlue,
+                        ),
                       ),
                     ),
                   ],
+                  const Spacer(),
+                  trailing,
                 ],
               ),
-              const SizedBox(height: 4),
-              Text.rich(
-                TextSpan(
-                  children: [
-                    if (mentionName != null && mentionName!.isNotEmpty)
-                      TextSpan(
-                        text: '$mentionName ',
-                        style: contentStyle.copyWith(
-                          color: SDSColor.snowliveBlue,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    TextSpan(text: content),
-                  ],
-                ),
-                style: contentStyle,
-              ),
+              // 이름 줄 ↔ 내용은 ⋯ 버튼 높이가 여백을 만든다(중고거래와 동일 —
+              // 별도 간격을 더하면 중고거래보다 벌어진다).
+              Text(content, style: contentStyle),
               if (onReply != null) ...[
-                const SizedBox(height: 8),
+                // 내용 ↔ 답글 달기 6.
+                const SizedBox(height: 6),
                 GestureDetector(
                   onTap: onReply,
-                  child: Text(
-                    replyLabel,
-                    style: SDSTextStyle.bold.copyWith(fontSize: 13, color: SDSColor.gray900),
+                  child: MouseRegion(
+                    cursor: SystemMouseCursors.click,
+                    child: Text(
+                      replyLabel,
+                      style: SDSTextStyle.bold.copyWith(
+                        fontSize: 13,
+                        color: SDSColor.gray900,
+                      ),
+                    ),
                   ),
                 ),
               ],
             ],
           ),
         ),
-        trailing,
       ],
     );
   }

@@ -17,7 +17,7 @@ import 'package:get/get.dart';
 
 /// 웹 홈 화면의 데이터.
 ///
-/// 섹션별 소스가 전부 다르다 — 배너는 Firestore(`banner/home`), 날씨는 기상청 API +
+/// 섹션별 소스가 전부 다르다 — 배너는 Firestore(`banner/homeHeroWeb`), 날씨는 기상청 API +
 /// 정적 리조트 목록(nx/ny·링크), 오늘의 랭킹은 랭킹 API의 `daily=true`, 우리 크루는요는
 /// 크루홈 집계의 공개 크루톡, 중고거래는 중고거래 목록 첫 페이지다.
 ///
@@ -102,12 +102,13 @@ class HomeViewModelWeb extends GetxController {
     selectResort(homeDefaultResort(favorite));
   }
 
-  // ── 배너: 앱과 같은 문서를 구독한다(운영에서 `visible`을 껐다 켜면 즉시 반영) ──
+  // ── 배너: **웹 전용 문서**를 구독한다(운영에서 값을 바꾸면 새로고침 없이 반영).
+  //     앱이 쓰는 `banner/home`과 분리돼 있어 서로 영향이 없다. ──
   void _listenBanner() {
     _bannerSub?.cancel();
     _bannerSub = FirebaseFirestore.instance
-        .collection('banner')
-        .doc('home')
+        .collection(kHomeHeroBannerCollection)
+        .doc(kHomeHeroBannerDoc)
         .snapshots()
         .listen(
           (snapshot) {

@@ -179,7 +179,7 @@ class CrewRecordViewModelWeb extends GetxController {
 
   /// 일별 리포트에 실을 `user_id`. 응답에 개인화된 값이 없어서(누구 id로 불러도 같다)
   /// 비로그인 방문자에게는 **크루장 id로 채워** 호출한다(`vm_crewDetail_web.dart:99`와
-  /// 같은 처리, 사용자 확정).
+  /// 같은 처리).
   Future<int?> _resolveUserId(int crewId) async {
     final mine = _userVM.user.user_id;
     if (mine != null) return mine;

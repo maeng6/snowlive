@@ -82,14 +82,24 @@ class _WebCommentInputState extends State<WebCommentInput> {
     final isGuest = widget.onSubmit == null;
 
     return Container(
-      decoration: BoxDecoration(color: SDSColor.gray50, borderRadius: BorderRadius.circular(8)),
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+      // 피그마 55:19789 — radius 6, 접힌 높이 46(세로 패딩은 contentPadding이 만든다).
+      decoration: BoxDecoration(
+        color: SDSColor.gray50,
+        borderRadius: BorderRadius.circular(6),
+      ),
+      // 자물쇠(leading)가 있으면 자체 히트 패딩이 있어 좌측을 좁힌다.
+      padding: EdgeInsets.only(
+        left: widget.leading != null ? 8 : 12,
+        right: 10,
+      ),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.end,
+        // 자물쇠·전송 버튼·텍스트를 상하 중앙 정렬
+        // 여러 줄로 늘어나면 컨트롤들이 입력창 세로 가운데에 온다.
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           if (widget.leading != null) ...[
             Padding(
-              padding: const EdgeInsets.only(right: 10, bottom: 4),
+              padding: const EdgeInsets.only(right: 2),
               child: widget.leading!,
             ),
           ],
@@ -106,11 +116,19 @@ class _WebCommentInputState extends State<WebCommentInput> {
               decoration: InputDecoration(
                 border: InputBorder.none,
                 isDense: true,
-                contentPadding: const EdgeInsets.symmetric(vertical: 12),
+                contentPadding: const EdgeInsets.symmetric(vertical: 14),
                 hintText: widget.hintText,
-                hintStyle: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray400),
+                // 피그마 64:127633 — 텍스트 15.
+                hintStyle: SDSTextStyle.regular.copyWith(
+                  fontSize: 15,
+                  color: SDSColor.gray500,
+                ),
               ),
-              style: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray900),
+              style: SDSTextStyle.regular.copyWith(
+                fontSize: 15,
+                color: SDSColor.gray900,
+              ),
+              cursorHeight: 17,
             ),
           ),
           const SizedBox(width: 8),
@@ -118,7 +136,9 @@ class _WebCommentInputState extends State<WebCommentInput> {
           // 눌렀을 때 로그인 안내는 떠야 하므로 탭은 살려둔다.
           _SendButton(
             active: _hasText && !widget.isSubmitting,
-            onTap: (isGuest || (_hasText && !widget.isSubmitting)) ? _submit : null,
+            onTap: (isGuest || (_hasText && !widget.isSubmitting))
+                ? _submit
+                : null,
           ),
         ],
       ),
@@ -135,18 +155,17 @@ class _SendButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 6),
-      child: Material(
-        color: active ? SDSColor.snowliveBlue : SDSColor.gray200,
-        shape: const CircleBorder(),
-        clipBehavior: Clip.antiAlias,
-        child: InkWell(
-          onTap: onTap,
-          child: const Padding(
-            padding: EdgeInsets.all(4),
-            child: Icon(Icons.arrow_upward, size: 16, color: Colors.white),
-          ),
+    return Material(
+      color: active ? SDSColor.snowliveBlue : SDSColor.gray200,
+      shape: const CircleBorder(),
+      clipBehavior: Clip.antiAlias,
+      child: InkWell(
+        onTap: onTap,
+        // 피그마 64:127634 — 원 22.
+        child: const SizedBox(
+          width: 22,
+          height: 22,
+          child: Icon(Icons.arrow_upward, size: 15, color: Colors.white),
         ),
       ),
     );
@@ -158,14 +177,23 @@ class WebReplyTargetBar extends StatelessWidget {
   final String targetName;
   final VoidCallback onCancel;
 
-  const WebReplyTargetBar({super.key, required this.targetName, required this.onCancel});
+  const WebReplyTargetBar({
+    super.key,
+    required this.targetName,
+    required this.onCancel,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      color: SDSColor.blue50,
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+      // 입력창 위에 덧붙는 확장처럼 보이게 — 흰 배경 + 상단 라인(구분은 이 라인이
+      // 담당하므로, 이 스트립을 얹는 바 컨테이너는 자기 상단 라인을 빼야 한다).
+      decoration: BoxDecoration(
+        color: SDSColor.snowliveWhite,
+        border: Border(top: BorderSide(color: SDSColor.gray100)),
+      ),
+      padding: const EdgeInsets.only(left: 16, right: 16, top: 12, bottom: 8),
       child: Row(
         children: [
           Expanded(
@@ -174,7 +202,10 @@ class WebReplyTargetBar extends StatelessWidget {
               textAlign: TextAlign.center,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: SDSTextStyle.bold.copyWith(fontSize: 13, color: SDSColor.snowliveBlue),
+              style: SDSTextStyle.bold.copyWith(
+                fontSize: 13,
+                color: SDSColor.gray900,
+              ),
             ),
           ),
           GestureDetector(

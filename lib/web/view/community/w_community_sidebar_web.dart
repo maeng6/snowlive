@@ -1,11 +1,14 @@
 import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
+import 'package:com.snowlive/web/util/responsive_web.dart';
 import 'package:flutter/material.dart';
 
-/// 좌측 여백(lg)을 포함한 폭. 콘텐츠 최대폭 안에서 이 폭을 뺀 나머지가 목록 영역이다.
-const double kCommunitySidebarWidth = 280;
+/// 우측 열 폭(피그마 64:112972 246 대신 공통 블록 1560 유지용 240 —
+/// 중고거래 사이드바와 동일). 목록과의 간격 40은 홈 Row가 담당한다.
+const double kCommunitySidebarWidth = 240;
 
-/// 데스크탑 전용 우측 열. 목업에는 `게시글 올리기` 버튼만 있다.
-/// (태블릿·모바일에서는 이 열을 접고 콘텐츠 끝에 전체폭 버튼을 둔다)
+/// 데스크탑 전용 우측 열. 목업(64:112373)은 `게시글 올리기` 버튼 + 배너 3개인데,
+/// 배너는 운영 이미지가 아직 없어 추후 작업이다(버튼만 둔다).
+/// (태블릿·모바일에서는 이 열을 접고 하단 플로팅 바를 쓴다)
 class CommunitySidebarWeb extends StatelessWidget {
   final VoidCallback onWritePost;
 
@@ -13,10 +16,8 @@ class CommunitySidebarWeb extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       width: kCommunitySidebarWidth,
-      // 카테고리 탭 줄과 버튼이 나란히 오도록 내린다(중고거래 사이드바와 같은 규격).
-      padding: const EdgeInsets.only(left: SDSSpacing.lg, top: 56),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [CommunityWritePostButton(onTap: onWritePost)],
@@ -25,7 +26,9 @@ class CommunitySidebarWeb extends StatelessWidget {
   }
 }
 
-/// 파란 `게시글 올리기` 버튼. 데스크탑은 사이드바, 그 외는 콘텐츠 끝에서 쓴다.
+/// 파란 `게시글 올리기` 버튼 — 246×48 comp_button(피그마 64:112972)을 폭 240에 적용.
+/// 높이는 공용 [webActionButtonHeight](웹 visualDensity가 minimumSize를 깎으므로 SizedBox로 강제),
+/// 라운드 5, bold 16. hover는 배경 검정 10% 블렌드 즉시(웹 공통, 리플 없음).
 class CommunityWritePostButton extends StatelessWidget {
   final VoidCallback onTap;
 
@@ -33,19 +36,38 @@ class CommunityWritePostButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton(
-      onPressed: onTap,
-      style: ElevatedButton.styleFrom(
-        backgroundColor: SDSColor.snowliveBlue,
-        elevation: 0,
-        shadowColor: Colors.transparent,
-        overlayColor: Colors.transparent,
-        padding: const EdgeInsets.symmetric(vertical: 16),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-      ),
-      child: Text(
-        '게시글 올리기',
-        style: SDSTextStyle.bold.copyWith(fontSize: 15, color: SDSColor.snowliveWhite),
+    final height = webActionButtonHeight(context);
+    return SizedBox(
+      height: height,
+      child: ElevatedButton(
+        onPressed: onTap,
+        style: ButtonStyle(
+          splashFactory: NoSplash.splashFactory,
+          overlayColor: const WidgetStatePropertyAll(Colors.transparent),
+          shadowColor: const WidgetStatePropertyAll(Colors.transparent),
+          elevation: const WidgetStatePropertyAll(0),
+          animationDuration: Duration.zero,
+          backgroundColor: WidgetStateProperty.resolveWith(
+            (states) => states.contains(WidgetState.hovered)
+                ? Color.alphaBlend(
+                    Colors.black.withValues(alpha: 0.1),
+                    SDSColor.snowliveBlue,
+                  )
+                : SDSColor.snowliveBlue,
+          ),
+          minimumSize: WidgetStatePropertyAll(Size(0, height)),
+          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          shape: WidgetStatePropertyAll(
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+          ),
+        ),
+        child: Text(
+          '게시글 올리기',
+          style: SDSTextStyle.bold.copyWith(
+            fontSize: 16,
+            color: SDSColor.snowliveWhite,
+          ),
+        ),
       ),
     );
   }

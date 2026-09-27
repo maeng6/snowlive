@@ -47,6 +47,7 @@ class WebSearchField extends StatelessWidget {
               textInputAction: TextInputAction.search,
               onSubmitted: onSubmitted,
               style: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray900),
+              cursorHeight: 16,
               decoration: InputDecoration(
                 hintText: hint,
                 hintStyle: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray400),
