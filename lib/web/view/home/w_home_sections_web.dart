@@ -1523,6 +1523,16 @@ class HomeFooterWeb extends StatelessWidget {
       );
 
   Widget _contactColumns({double gap = 70}) {
+    // 좁은 폭(모바일 375)에서는 3열 + 간격이 그대로는 들어가지 않아 넘쳤다(실측 130px).
+    // 바로 아래 스토어 배지와 같은 방식으로, 비율은 유지한 채 줄여서 한 줄에 담는다.
+    return FittedBox(
+      fit: BoxFit.scaleDown,
+      alignment: Alignment.centerLeft,
+      child: _contactColumnsRow(gap),
+    );
+  }
+
+  Widget _contactColumnsRow(double gap) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
