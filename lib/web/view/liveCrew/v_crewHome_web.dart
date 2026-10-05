@@ -373,45 +373,187 @@ class _CrewHomeSkeleton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDesktop = context.isDesktop;
-    // 실제 레이아웃과 같은 로고 크기·간격(PC 64 / 그 외 56, 간격 12).
-    final double logoSize = isDesktop ? 64 : 56;
+    final isMobile = context.screenType == WebScreenType.mobile;
+    // 실제 레이아웃과 같은 값으로만 자리를 잡는다 — 하나라도 다르면 데이터가
+    // 도착하는 순간 화면이 튄다.
+    final double logoSize = switch (context.screenType) {
+      WebScreenType.desktop => 64,
+      WebScreenType.tablet => 56,
+      WebScreenType.mobile => 36,
+    };
+    final double titleHeight = webSubPageTitleSize(context);
+
+    final header = Row(
+      children: [
+        SkeletonBox(
+          width: logoSize,
+          height: logoSize,
+          radius: crewLogoRadius(logoSize),
+        ),
+        const SizedBox(width: 12),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            SkeletonBox(width: isMobile ? 140 : 180, height: titleHeight),
+            const SizedBox(height: 2),
+            const SkeletonBox(width: 120, height: 16),
+          ],
+        ),
+        const Spacer(),
+        // 알림·설정 아이콘 자리(26 + 간격 12 + 26).
+        const SkeletonBox(width: 26, height: 26, radius: 6),
+        const SizedBox(width: 12),
+        const SkeletonBox(width: 26, height: 26, radius: 6),
+      ],
+    );
+
+    // 통계 바 — PC·태블릿 54, 모바일은 값/라벨 2줄이라 73.
+    final summaryBar = SkeletonBox(height: isMobile ? 73 : 54, radius: 16);
+
+    final content = Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        summaryBar,
+        SizedBox(height: isMobile ? 32 : 40),
+        const _SectionTitleSkeleton(buttonWidth: 109),
+        const SizedBox(height: 12),
+        // 라이딩 통계 카드 — 모바일만 세로 2단.
+        if (isMobile)
+          const Column(
+            children: [
+              SkeletonBox(height: 310, radius: 16),
+              SizedBox(height: 20),
+              SkeletonBox(height: 310, radius: 16),
+            ],
+          )
+        else
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                flex: isDesktop ? 423 : 1,
+                child: const SkeletonBox(height: 310, radius: 16),
+              ),
+              SizedBox(width: isDesktop ? 21 : 20),
+              Expanded(
+                flex: isDesktop ? 430 : 1,
+                child: const SkeletonBox(height: 310, radius: 16),
+              ),
+            ],
+          ),
+        const SizedBox(height: 40),
+        const _SectionTitleSkeleton(buttonWidth: 72),
+        const SizedBox(height: SDSSpacing.md),
+        CrewMemberListSkeleton(
+          count: crewHomeTopMemberCount(context),
+          columnGap: 48,
+        ),
+        const SizedBox(height: 48),
+        const _SectionTitleSkeleton(buttonWidth: 73),
+        const SizedBox(height: SDSSpacing.md),
+        const _TalkGridSkeleton(),
+      ],
+    );
 
     return SkeletonShimmer(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           if (!isDesktop) ...[
-            const SkeletonBox(width: 26, height: 26, radius: 4),
-            const SizedBox(height: 28),
-          ],
-          Row(
-            children: [
-              SkeletonBox(
-                width: logoSize,
-                height: logoSize,
-                radius: crewLogoRadius(logoSize),
-              ),
-              const SizedBox(width: 12),
-              const SkeletonBox(width: 220, height: 28),
-            ],
-          ),
-          // 좁은 폭은 크루명 아래 기록 링크 줄이 한 줄 더 있다.
-          if (!isDesktop) ...[
-            const SizedBox(height: 10),
+            // 뒤로가기 줄(PC·태블릿 30 / 모바일 24)과 그 아래 간격.
+            SkeletonBox(width: isMobile ? 24 : 30, height: isMobile ? 24 : 30, radius: 4),
+            SizedBox(height: isMobile ? 18 : 28),
+            header,
+            // 기록 링크 줄(`시즌 기록실 · 일별 현황`).
+            SizedBox(height: isMobile ? 12 : 10),
             const SkeletonBox(width: 180, height: 17),
-            const SizedBox(height: 20),
-          ] else
-            const SizedBox(height: SDSSpacing.md),
-          const SkeletonBox(height: 56, radius: 10),
-          const SizedBox(height: SDSSpacing.xl),
-          const SkeletonBox(height: 260, radius: 10),
-          const SizedBox(height: SDSSpacing.xl),
-          for (var i = 0; i < 5; i++) ...[
-            if (i > 0) const SizedBox(height: 12),
-            const SkeletonBox(height: 40, radius: 8),
+            SizedBox(height: isMobile ? 16 : 20),
+            content,
+          ] else ...[
+            header,
+            const SizedBox(height: 30),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(child: content),
+                const SizedBox(width: kCrewHomeSidebarGap),
+                // 우측 열 — 올리기 버튼(44) + 30 + 링크 카드 2장(52, 사이 8).
+                const SizedBox(
+                  width: kCrewHomeSidebarWidth,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      SkeletonBox(height: 44, radius: 5),
+                      SizedBox(height: 30),
+                      SkeletonBox(height: 52, radius: 12),
+                      SizedBox(height: 8),
+                      SkeletonBox(height: 52, radius: 12),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ],
         ],
       ),
+    );
+  }
+}
+
+/// 섹션 제목줄(높이 36) — 제목 글줄 + 오른쪽 링크 버튼.
+class _SectionTitleSkeleton extends StatelessWidget {
+  final double buttonWidth;
+
+  const _SectionTitleSkeleton({required this.buttonWidth});
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 36,
+      child: Row(
+        children: [
+          const SkeletonBox(width: 110, height: 19),
+          const Spacer(),
+          SkeletonBox(width: buttonWidth, height: 36, radius: 6),
+        ],
+      ),
+    );
+  }
+}
+
+/// 크루톡 사진 그리드 — 실제와 같은 열 수·간격으로 두 줄만 깔아 둔다.
+class _TalkGridSkeleton extends StatelessWidget {
+  const _TalkGridSkeleton();
+
+  @override
+  Widget build(BuildContext context) {
+    final columns = switch (context.screenType) {
+      WebScreenType.desktop => 5,
+      WebScreenType.tablet => 4,
+      WebScreenType.mobile => 2,
+    };
+    const spacing = 2.0;
+
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final cell = (constraints.maxWidth - spacing * (columns - 1)) / columns;
+        return Column(
+          children: [
+            for (var row = 0; row < 2; row++) ...[
+              if (row > 0) const SizedBox(height: spacing),
+              Row(
+                children: [
+                  for (var i = 0; i < columns; i++) ...[
+                    if (i > 0) const SizedBox(width: spacing),
+                    SkeletonBox(width: cell, height: cell),
+                  ],
+                ],
+              ),
+            ],
+          ],
+        );
+      },
     );
   }
 }

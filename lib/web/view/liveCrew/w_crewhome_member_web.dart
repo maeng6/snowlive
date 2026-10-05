@@ -63,6 +63,90 @@ class CrewMemberListInset extends StatelessWidget {
   }
 }
 
+/// 멤버 목록 스켈레톤 — **실제 목록과 같은 열 수·행 피치·좌우 빼내기**를 쓴다.
+/// 랭킹 목록 스켈레톤(`RankingListSkeleton`)은 순위 숫자 열이 있어 여기엔 맞지 않는다.
+class CrewMemberListSkeleton extends StatelessWidget {
+  /// 전체 행 수(열로 나눠 담는다).
+  final int count;
+
+  /// 열 사이 간격 — 크루홈 48 / 멤버 화면은 폭별 값.
+  final double columnGap;
+
+  const CrewMemberListSkeleton({
+    super.key,
+    required this.count,
+    required this.columnGap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final columns = context.screenType == WebScreenType.mobile ? 1 : 2;
+    final perColumn = (count / columns).ceil();
+    final gap = crewMemberRowGap(context);
+
+    return SkeletonShimmer(
+      child: CrewMemberListInset(
+        rowCount: perColumn,
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            for (var c = 0; c < columns; c++) ...[
+              if (c > 0) SizedBox(width: columnGap),
+              Expanded(
+                child: Column(
+                  children: [
+                    for (var i = 0; i < perColumn; i++) ...[
+                      if (i > 0) SizedBox(height: gap),
+                      const _CrewMemberRowSkeleton(),
+                    ],
+                  ],
+                ),
+              ),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _CrewMemberRowSkeleton extends StatelessWidget {
+  const _CrewMemberRowSkeleton();
+
+  @override
+  Widget build(BuildContext context) {
+    final m = RankingRowMetrics.of(context);
+    return Container(
+      height: m.boxHeight,
+      padding: EdgeInsets.symmetric(
+        horizontal: kCrewMemberRowInset,
+        vertical: m.verticalPadding,
+      ),
+      child: Row(
+        children: [
+          SkeletonBox(width: m.avatar, height: m.avatar, isCircle: true),
+          SizedBox(width: m.nameGap),
+          const Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SkeletonBox(width: 110, height: 14),
+                SizedBox(height: 4),
+                SkeletonBox(width: 80, height: 12),
+              ],
+            ),
+          ),
+          const SizedBox(width: SDSSpacing.sm),
+          const SkeletonBox(width: 56, height: 16),
+          const SizedBox(width: 8),
+          const SkeletonBox(width: 36, height: 36, radius: 8),
+        ],
+      ),
+    );
+  }
+}
+
 class CrewMemberRowWeb extends StatefulWidget {
   final CrewRanking member;
   final VoidCallback onTap;

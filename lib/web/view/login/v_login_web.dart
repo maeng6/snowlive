@@ -26,21 +26,38 @@ class _LoginViewWebState extends State<LoginViewWeb> {
   final LoginViewModelWeb vm = Get.find<LoginViewModelWeb>();
   Worker? _worker;
 
+  /// 로그인 성공 후 돌아갈 화면. 로그인 화면에 **들어온 순간** 잡아둔다 —
+  /// 성공 시점에는 이미 라우팅 상태가 바뀌어 있을 수 있다.
+  /// 잡을 게 없으면 null이고, 그때만 홈으로 간다.
+  String? _returnRoute;
+
   /// 어느 버튼을 눌렀는지. 뷰모델은 "로딩 중"만 알려주고 어떤 제공자인지는 모르므로,
   /// 스피너를 누른 버튼 안에만 띄우기 위해 화면 로컬로 기억한다.
   String? _pendingProvider;
 
+  /// 로그인 화면으로 오기 직전에 보던 경로(쿼리 포함). 돌아가면 안 되는 곳
+  /// — 로그인·온보딩 자신, 또는 URL 직접 진입이라 이전 경로가 없는 경우 — 은 null.
+  String? _captureReturnRoute() {
+    final previous = Get.previousRoute;
+    if (previous.isEmpty) return null;
+    final path = previous.split('?').first;
+    if (path == WebRoutes.login || path == WebRoutes.onboarding) return null;
+    return previous;
+  }
+
   @override
   void initState() {
     super.initState();
+    _returnRoute = _captureReturnRoute();
     _worker = ever<WebLoginStatus>(vm.statusRx, (status) {
       if (status == WebLoginStatus.success) {
         // 자동로그인 상태를 함께 갱신해야 한다. 이걸 안 하면 세션 중에 로그인해도
         // AuthCheckViewModelWeb이 unauthenticated에 머물러서, 그 값을 보는 화면들이
         // (키워드 알림 설정, 커뮤니티·중고거래 상세의 재조회 등) 로그인 전으로 남는다.
         Get.find<AuthCheckViewModelWeb>().markAuthenticated();
-        // 로그인 성공 시 홈으로 이동한다(이전 화면 복귀 대신).
-        Get.offAllNamed(WebRoutes.home);
+        // 보던 화면으로 돌려보낸다(없으면 홈). 상세에서 "로그인이 필요합니다"를
+        // 보고 로그인한 사용자가 그 상세로 그대로 돌아오게 하는 흐름이다.
+        Get.offAllNamed(_returnRoute ?? WebRoutes.home);
       } else if (status == WebLoginStatus.needOnboarding) {
         Get.toNamed(WebRoutes.onboarding);
       }

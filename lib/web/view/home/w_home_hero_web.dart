@@ -196,8 +196,14 @@ class _HomeHeroWebState extends State<HomeHeroWeb> {
       return _frame(
         isMobile: isMobile,
         isTablet: isTablet,
-        child: const SkeletonShimmer(
-          child: SkeletonBox(width: double.infinity, height: double.infinity, radius: 20),
+        child: SkeletonShimmer(
+          // 라운드는 프레임과 같은 값 — 모바일은 꽉 찬 사각(0), 그 외 20.
+          // 프레임이 0으로 자르더라도 스켈레톤 자신이 둥글면 모서리가 비어 보인다.
+          child: SkeletonBox(
+            width: double.infinity,
+            height: double.infinity,
+            radius: isMobile ? 0 : 20,
+          ),
         ),
       );
     }
