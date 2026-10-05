@@ -243,8 +243,8 @@ class _FleamarketHeaderWebState extends State<FleamarketHeaderWeb> {
       padding: const EdgeInsets.symmetric(horizontal: 14),
       child: Row(
         children: [
-          Image.asset('assets/imgs/icons/icon_search.png', width: 16, height: 16),
-          const SizedBox(width: 8),
+          Image.asset('assets/imgs/icons/icon_search.png', width: 18, height: 18),
+          const SizedBox(width: 6),
           Expanded(
             child: TextField(
               controller: _searchController,

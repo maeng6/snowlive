@@ -103,7 +103,8 @@ List<CrewHomeSection> crewHomeSections(CrewHomeModel home) => [
       ),
     ];
 
-/// 칩 종류. 1단은 `스키장별`·순위 2종·종목 2종이고, `resort`는 **2단(스키장) 칩**이다.
+/// 칩 종류. `byResort`는 스키장 드롭다운 pill, 나머지 넷은 일반 칩이고,
+/// `resort`는 그 드롭다운 **항목**(화면에 칩으로 그려지지 않는다)이다.
 enum CrewHomeChipKind { byResort, mostMembers, liveonSeason, ski, board, resort }
 
 /// `어떤 크루가 있을까요?` 줄의 칩 하나.
@@ -126,31 +127,33 @@ class CrewHomeChip {
   int get hashCode => Object.hash(kind, resortId);
 }
 
-/// 1단 칩. 사용자가 확정한 순서 — `스키장별` · `멤버 많은 순` ·
-/// `이번 시즌 라이브온 많이 한 순` · `스키가 많은 크루` · `보드가 많은 크루`.
+/// 칩 순서(사용자 확정) — `스키장별 크루` · `대형 크루` · `시즌 최다 라이브온` ·
+/// `스키어 중심 크루` · `보더 중심 크루`. 라벨은 칩 한 줄에 들어가도록 짧게 쓰고,
+/// 종목이 아니라 **사람**을 가리킨다 — 기준이 크루원 구성비(70%)라서다.
+/// (`멤버 많은 순`·`이번 시즌 라이브온 많이 한 순`에서 줄임).
 /// 해당 목록이 비면 눌러도 빈 화면이므로 칩을 만들지 않는다.
 List<CrewHomeChip> crewHomeChips(CrewHomeModel home) {
   final chips = <CrewHomeChip>[];
   if (crewHomeResortChips(home).isNotEmpty) {
-    chips.add(const CrewHomeChip(kind: CrewHomeChipKind.byResort, label: '스키장별'));
+    chips.add(const CrewHomeChip(kind: CrewHomeChipKind.byResort, label: '스키장별 크루'));
   }
   if (home.mostMembers.isNotEmpty) {
-    chips.add(const CrewHomeChip(kind: CrewHomeChipKind.mostMembers, label: '멤버 많은 순'));
+    chips.add(const CrewHomeChip(kind: CrewHomeChipKind.mostMembers, label: '대형 크루'));
   }
   if (home.liveonSeason.isNotEmpty) {
     chips.add(const CrewHomeChip(
-        kind: CrewHomeChipKind.liveonSeason, label: '이번 시즌 라이브온 많이 한 순'));
+        kind: CrewHomeChipKind.liveonSeason, label: '시즌 최다 라이브온'));
   }
   if (crewMajorityCrews(home.skiMajority).isNotEmpty) {
-    chips.add(const CrewHomeChip(kind: CrewHomeChipKind.ski, label: '스키가 많은 크루'));
+    chips.add(const CrewHomeChip(kind: CrewHomeChipKind.ski, label: '스키어 중심 크루'));
   }
   if (crewMajorityCrews(home.boardMajority).isNotEmpty) {
-    chips.add(const CrewHomeChip(kind: CrewHomeChipKind.board, label: '보드가 많은 크루'));
+    chips.add(const CrewHomeChip(kind: CrewHomeChipKind.board, label: '보더 중심 크루'));
   }
   return chips;
 }
 
-/// 2단(스키장) 칩. `스키장별`을 고른 뒤에만 그린다. 라벨은 `resort_fullname`
+/// 스키장 드롭다운에 담을 항목. 라벨은 `resort_fullname`
 /// (곤지암리조트 · 휘닉스파크 …)이고 크루가 없는 리조트는 뺀다.
 List<CrewHomeChip> crewHomeResortChips(CrewHomeModel home) {
   final chips = <CrewHomeChip>[];
@@ -171,7 +174,7 @@ List<CrewHomeChip> crewHomeResortChips(CrewHomeModel home) {
 
 /// 선택한 칩에 해당하는 크루 목록(그리드에 뿌릴 것).
 ///
-/// `스키장별`(1단) 자체는 목록이 없다 — 화면이 2단에서 고른 리조트 칩을 넘겨야 한다.
+/// `스키장별 크루` 칩 자체는 목록이 없다 — 화면이 드롭다운에서 고른 리조트 칩을 넘겨야 한다.
 List<CrewCard> crewsForChip(CrewHomeModel home, CrewHomeChip? chip) {
   if (chip == null) return const [];
   switch (chip.kind) {
@@ -244,6 +247,20 @@ List<LiveTalk> crewGalleryTalks(CrewHomeModel home) {
   return home.crewTalks
       .where((talk) => talk.secret != true && (talk.imageUrl?.isNotEmpty ?? false))
       .toList();
+}
+
+/// 한 열에 [rowsPerColumn]개씩 끊는다(마지막 열만 모자랄 수 있다).
+///
+/// 열 **개수**로 나누는 [splitIntoColumns]와 달리 화면 폭이 바뀌어도 열 구성이
+/// 그대로다 — 좁은 폭에서 열 단위로 가로 스와이프하는 목록이 쓴다.
+List<List<CrewCard>> chunkCrewsByRows(List<CrewCard> crews, int rowsPerColumn) {
+  if (crews.isEmpty || rowsPerColumn <= 0) return [crews];
+  final result = <List<CrewCard>>[];
+  for (var start = 0; start < crews.length; start += rowsPerColumn) {
+    final end = start + rowsPerColumn;
+    result.add(crews.sublist(start, end > crews.length ? crews.length : end));
+  }
+  return result;
 }
 
 /// 목록을 **열 우선**으로 [columns]개 열에 나눈다(목업은 한 열을 위에서 아래로 채운다).

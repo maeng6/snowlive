@@ -22,9 +22,10 @@ class LiveCrewGalleryWeb extends StatelessWidget {
       children: [
         Text(
           '우리 이런 크루입니다',
-          style: SDSTextStyle.bold.copyWith(fontSize: 15, color: SDSColor.gray900),
+          style: SDSTextStyle.bold.copyWith(fontSize: 16, color: SDSColor.gray900),
         ),
-        const SizedBox(height: SDSSpacing.md),
+        // 제목 ↔ 그리드 16 (목업).
+        const SizedBox(height: 16),
         if (talks.isEmpty)
           const WebEmptyState(message: '아직 사진이 없어요')
         else
@@ -36,15 +37,19 @@ class LiveCrewGalleryWeb extends StatelessWidget {
   Widget _buildGrid(BuildContext context) {
     final columns = switch (context.screenType) {
       WebScreenType.desktop => 5,
-      WebScreenType.tablet => 3,
+      // 태블릿 4열 — 목업(161:63990) 셀 192.67, 간격 2.
+      WebScreenType.tablet => 4,
       WebScreenType.mobile => 2,
     };
-    const spacing = SDSSpacing.xs;
+    // 셀 사이 간격 2 — 사진이 거의 맞붙은 모자이크다(목업 161:39737~)
+    const spacing = 2.0;
+    // 셀은 정사각이 아니라 세로가 살짝 길다(173.2 × 175.8).
+    const cellAspect = 175.8 / 173.2;
 
     return LayoutBuilder(
       builder: (context, constraints) {
-        // 부모가 SingleChildScrollView라 GridView는 shrinkWrap + 스크롤 비활성이어야 한다
-        // (중고거래 그리드와 같은 계산).
+        // 부모가 SingleChildScrollView라 GridView는 shrinkWrap + 스크롤 비활성이어야 한다.
+        // (중고거래 그리드와 같은 계산)
         final cellWidth = (constraints.maxWidth - spacing * (columns - 1)) / columns;
         return GridView.builder(
           shrinkWrap: true,
@@ -54,25 +59,58 @@ class LiveCrewGalleryWeb extends StatelessWidget {
             crossAxisCount: columns,
             crossAxisSpacing: spacing,
             mainAxisSpacing: spacing,
-            mainAxisExtent: cellWidth,
+            mainAxisExtent: cellWidth * cellAspect,
           ),
-          itemBuilder: (_, index) {
-            final talk = talks[index];
-            return MouseRegion(
-              cursor: SystemMouseCursors.click,
-              child: GestureDetector(
-                behavior: HitTestBehavior.opaque,
-                onTap: () => onPhotoTap(index),
-                child: WebNetworkImage(
-                  url: talk.imageUrl,
-                  width: cellWidth,
-                  height: cellWidth,
-                ),
-              ),
-            );
-          },
+          itemBuilder: (_, index) => _PhotoCell(
+            talk: talks[index],
+            size: cellWidth,
+            onTap: () => onPhotoTap(index),
+          ),
         );
       },
+    );
+  }
+}
+
+/// 사진 한 칸. hover에서 **검정 8%**가 덮여 살짝 어두워진다(누를 수 있다는 신호)
+class _PhotoCell extends StatefulWidget {
+  final LiveTalk talk;
+  final double size;
+  final VoidCallback onTap;
+
+  const _PhotoCell({required this.talk, required this.size, required this.onTap});
+
+  @override
+  State<_PhotoCell> createState() => _PhotoCellState();
+}
+
+class _PhotoCellState extends State<_PhotoCell> {
+  bool _hovered = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      onEnter: (_) => setState(() => _hovered = true),
+      onExit: (_) => setState(() => _hovered = false),
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: widget.onTap,
+        child: Stack(
+          fit: StackFit.expand,
+          children: [
+            WebNetworkImage(
+              url: widget.talk.imageUrl,
+              width: widget.size,
+              height: widget.size,
+            ),
+            // 사진마다 색이 달라 배경 틴트로는 반응이 안 보인다 → 위에 덮는다.
+            // 전환은 웹 공통대로 애니메이션 없이 즉시.
+            if (_hovered)
+              ColoredBox(color: Colors.black.withValues(alpha: 0.08)),
+          ],
+        ),
+      ),
     );
   }
 }

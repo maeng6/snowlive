@@ -68,16 +68,10 @@ class CrewCreateViewModelWeb extends GetxController {
   bool get isSubmitting => _isSubmitting.value;
   String? get nameError => _nameError.value;
 
-  @override
-  void onInit() {
-    super.onInit();
-    // 목업 기본값은 그 사람이 자주 가는 스키장이다. 모르면 고르지 않은 상태로 두어
-    // placeholder가 보이게 한다(목업 모바일 화면).
-    final favorite = _userVM.user.favorite_resort;
-    if (favorite != null && favorite >= 1 && favorite <= resortNameList.length) {
-      _resortIndex.value = favorite - 1;
-    }
-  }
+  // 베이스 스키장은 **고르지 않은 상태로 시작**한다(사용자 확정).
+  // 예전에는 자주 가는 스키장을 미리 채웠는데, 그러면 placeholder
+  // (`베이스 스키장을 선택해주세요`)가 한 번도 보이지 않고 고르지 않아도
+  // 고른 것처럼 보였다.
 
   void reset() {
     _resortIndex.value = noResortSelected;
@@ -85,7 +79,6 @@ class CrewCreateViewModelWeb extends GetxController {
     _logoFile.value = null;
     _colorIndex.value = kCrewDefaultColorIndex;
     _nameError.value = null;
-    onInit();
   }
 
   void setCrewName(String value) {
@@ -163,10 +156,18 @@ class CrewCreateViewModelWeb extends GetxController {
         return (ok: false, crewId: null, message: _readableError(response.body));
       }
 
-      // 유저 모델을 다시 받아 `crew_id`를 채운다. 이게 없으면 방금 만든 크루가
-      // "내 크루"로 안 잡혀서 크루톡 올리기 버튼이 안 뜬다(앱과 같은 처리).
-      await _userVM.updateUserModel_api(userId);
-      final int? crewId = _userVM.user.crew_id;
+      // ⚠️ 여기서부터는 **크루가 이미 만들어진 뒤**다. 뒷정리(유저 모델 갱신)가
+      // 실패해도 "생성 실패"로 보고하면 안 된다 — 사용자가 다시 시도하면 그때는
+      // `이미 존재하는 크루 이름입니다`로 막혀서 원인을 못 찾는다(실측 제보).
+      int? crewId = _readCrewId(response.body);
+      try {
+        // 유저 모델을 다시 받아 `crew_id`를 채운다. 이게 없으면 방금 만든 크루가
+        // "내 크루"로 안 잡혀서 크루톡 올리기 버튼이 안 뜬다(앱과 같은 처리).
+        await _userVM.updateUserModel_api(userId);
+        crewId ??= _userVM.user.crew_id;
+      } catch (e) {
+        debugPrint('[CrewCreate] 생성 후 유저 갱신 실패(생성은 성공): $e');
+      }
       return (ok: true, crewId: crewId, message: null);
     } catch (e) {
       debugPrint('[CrewCreate] 생성 예외: $e');
@@ -174,6 +175,19 @@ class CrewCreateViewModelWeb extends GetxController {
     } finally {
       _isSubmitting.value = false;
     }
+  }
+
+  /// 생성 응답에서 새 크루 id를 뽑는다. 없으면 null(유저 모델에서 다시 찾는다).
+  int? _readCrewId(String body) {
+    try {
+      final decoded = json.decode(body);
+      if (decoded is Map) {
+        final value = decoded['crew_id'] ?? decoded['id'];
+        if (value is int) return value;
+        if (value is String) return int.tryParse(value);
+      }
+    } catch (_) {}
+    return null;
   }
 
   /// 서버 에러 본문에서 사람이 읽을 문장을 뽑는다. 형식이 다르면 null.

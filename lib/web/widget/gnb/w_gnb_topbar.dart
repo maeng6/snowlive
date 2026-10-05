@@ -65,8 +65,8 @@ class WebGnbTopbar extends StatelessWidget implements PreferredSizeWidget {
             ),
           ),
           const Spacer(),
-          // 태블릿에서는 로그인 시 프로필+아이디를 노출한다(데스크탑과 동일 드롭다운)
-          // 모바일은 드로어의 프로필 블록이 담당하므로 상단바에는 두지 않는다.
+          // 태블릿에서는 로그인 시 프로필+아이디를 노출한다(데스크탑과 동일 드롭다운).
+          // 모바일은 드로어의 프로필 블록이 담당하므로 상단바에는 두지 않는다
           if (isTablet)
             Obx(() {
               final user = userVM.user;

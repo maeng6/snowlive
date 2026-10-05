@@ -1,27 +1,44 @@
+import 'dart:math' as math;
+
 import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/core/model/m_rankingListCrew.dart';
 import 'package:com.snowlive/core/model/m_rankingListIndiv.dart';
 import 'package:com.snowlive/core/viewmodel/ranking/vm_rankingList.dart' show RankingFilter_resort, RankingFilter_fed;
 import 'package:com.snowlive/core/viewmodel/vm_user.dart';
-import 'package:com.snowlive/core/data/imgaUrls/Data_url_image.dart';
 import 'package:com.snowlive/web/routes/routes_web.dart';
 import 'package:com.snowlive/web/viewmodel/auth/vm_authcheck_web.dart';
+import 'package:com.snowlive/web/util/crew_visual_web.dart';
 import 'package:com.snowlive/web/util/responsive_web.dart';
 import 'package:com.snowlive/web/view/fleamarket/w_fleamarket_filter_sheet_web.dart';
+import 'package:com.snowlive/web/view/home/w_home_sections_web.dart';
 import 'package:com.snowlive/web/view/ranking/w_ranking_profile_modal_web.dart';
+import 'package:com.snowlive/core/model/m_crewHome.dart';
+import 'package:com.snowlive/web/view/liveCrew/w_livecrew_crew_modal_web.dart';
+import 'package:com.snowlive/web/view/ranking/w_ranking_my_card_web.dart';
 import 'package:com.snowlive/web/view/ranking/w_ranking_sidebar_web.dart';
 import 'package:com.snowlive/web/view/ranking/w_ranking_tier_guide_web.dart';
 import 'package:com.snowlive/web/viewmodel/ranking/vm_rankingList_web.dart';
 import 'package:com.snowlive/web/viewmodel/ranking/vm_rankingListCrew_web.dart';
 import 'package:com.snowlive/web/widget/w_numbered_pagination_web.dart';
 import 'package:com.snowlive/web/widget/w_skeleton_web.dart';
+import 'package:com.snowlive/web/widget/w_web_filter_menu_web.dart';
+import 'package:com.snowlive/web/widget/w_web_text_tabs_web.dart';
+import 'package:com.snowlive/web/widget/w_web_sticky_footer_scroll_web.dart';
 import 'package:com.snowlive/web/widget/w_empty_state_web.dart';
 import 'package:com.snowlive/web/widget/w_network_image_web.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-/// 데스크탑 콘텐츠 최대폭 (중고거래 화면과 동일 톤으로 맞춤).
-const double kRankingContentMaxWidth = 1136;
+/// 랭킹 목록 열 폭. 한 명씩 순서대로 읽히도록 목록은 1열로 두고, 한 줄이 너무 길어지지
+/// 않게 폭을 묶는다.
+const double kRankingListMaxWidth = 700;
+
+/// 목록 ↔ 사이드바 간격. 중고거래·커뮤니티 홈과 동일.
+const double kRankingSidebarGap = 40;
+
+/// 목록 + 간격 + 우측 사이드바를 합친 데스크탑 블록 폭.
+const double kRankingContentMaxWidth =
+    kRankingListMaxWidth + kRankingSidebarGap + kRankingSidebarWidth;
 
 /// 랭킹 리조트 픽커 표시 순서(총 스키장 랭킹 enum) → 실제 backend resort_id.
 /// 4(에덴밸리/한솔)가 빠져서 4 다음이 6으로 건너뛴다(모바일과 동일한 매핑).
@@ -55,7 +72,44 @@ const List<RankingFilter_resort> kRankingSelectableResorts = [
   RankingFilter_resort.phoenix,
 ];
 
+/// 순위 숫자 칸 폭. 고정폭으로 두면 한 자리 순위에선 여백이 뜨고 네 자리(1000위~)에선
+/// 글줄이 넘어간다. 한 페이지의 순위는 연속 구간이라 **가장 큰 순위 하나만 실제로 재서**
+/// 그 폭으로 칸을 통일한다 — 이름 줄의 세로 정렬은 유지되고 남는 여백만 사라진다.
+double rankColumnWidth(BuildContext context, Iterable<int?> ranks) {
+  var widest = 0;
+  for (final rank in ranks) {
+    if ((rank ?? 0) > widest) widest = rank!;
+  }
+  final painter = TextPainter(
+    text: TextSpan(
+      text: '$widest',
+      style: SDSTextStyle.bold.copyWith(fontSize: 14),
+    ),
+    textDirection: TextDirection.ltr,
+    textScaler: MediaQuery.textScalerOf(context),
+  )..layout();
+  // 한 자리만 있는 페이지에서도 숫자가 답답해 보이지 않게 최소폭을 둔다.
+  return math.max(painter.width, 16);
+}
+
 const List<RankingFilter_fed> kRankingSelectableFeds = [RankingFilter_fed.univ_ski, RankingFilter_fed.univ_board];
+
+/// 랭킹 크루 → 크루 미리보기 팝업이 받는 [CrewCard].
+///
+/// 랭킹 응답에는 **멤버 수·베이스 리조트 id가 없어서** 팝업의 `N명` 줄은 비고 부제는
+/// 리조트 별명으로 채워진다(추가 조회 없이 보여줄 수 있는 범위 — 슬로프크래프트의
+/// `slopeCrewToCard`와 같은 판단).
+CrewCard rankingCrewToCard(CrewRanking crew) => CrewCard(
+      crewId: crew.crewId,
+      crewName: crew.crewName,
+      crewLogoUrl: crew.crewLogoUrl,
+      color: crew.color,
+      description: crew.description,
+      baseResortNickname: crew.baseResortNickname,
+    );
+
+/// 누적/일간 바 높이 — 상단 9 + 텍스트 22 + 간격 8 + 밑줄 2.
+const double _kDailyTabBarHeight = 41;
 
 enum _RankingTab { individual, crew }
 
@@ -115,14 +169,62 @@ class _RankingHomeViewWebState extends State<RankingHomeViewWeb> {
   int? get _resortId => _selectedResort == RankingFilter_resort.total ? null : kRankingResortIds[_selectedResort];
   String? get _federation => _selectedFed == RankingFilter_fed.initial ? null : _selectedFed.english;
 
-  void _reload() {
+  /// 첫 화면에 보이는 프로필/크루 로고를 미리 받는 중. 이 동안에는 목록 대신
+  /// 스켈레톤을 유지한다(라이브톡 첫 로딩과 같은 방식).
+  bool _warmingImages = false;
+
+  /// 미리 받아둘 이미지 수 — 첫 화면에 보이는 만큼만. 30개를 다 기다리면 너무 길다.
+  static const int _kWarmUpImageCount = 10;
+
+  /// 이미지가 느리면 기다리지 않고 목록을 보여준다(멈춘 것처럼 보이지 않게).
+  static const Duration _kWarmUpTimeout = Duration(seconds: 1);
+
+  void _reload() => _reloadAndWarm();
+
+  Future<void> _reloadAndWarm() async {
     final q = _searchQuery.value.trim();
     final sq = q.isEmpty ? null : q;
+    if (mounted) setState(() => _warmingImages = true);
     if (_tab == _RankingTab.individual) {
-      _vm.loadFirstPage(resortId: _resortId, federation: _federation, daily: _daily, searchQuery: sq);
+      await _vm.loadFirstPage(resortId: _resortId, federation: _federation, daily: _daily, searchQuery: sq);
     } else {
-      _crewVm.loadFirstPage(userId: _userVm.user.user_id, resortId: _resortId, federation: _federation, daily: _daily, searchQuery: sq);
+      await _crewVm.loadFirstPage(
+          userId: _userVm.user.user_id, resortId: _resortId, federation: _federation, daily: _daily, searchQuery: sq);
     }
+    await _warmUpImages();
+  }
+
+  /// 페이지 이동도 같은 흐름을 탄다 — 새 페이지의 이미지가 뒤늦게 들어차지 않게.
+  Future<void> _gotoPageAndWarm(int page) async {
+    if (mounted) setState(() => _warmingImages = true);
+    if (_tab == _RankingTab.individual) {
+      await _vm.gotoPage(page);
+    } else {
+      await _crewVm.gotoPage(page);
+    }
+    await _warmUpImages();
+  }
+
+  Future<void> _warmUpImages() async {
+    if (!mounted) return;
+    final urls = <String>{
+      if (_tab == _RankingTab.individual)
+        for (final u in _vm.items.take(_kWarmUpImageCount))
+          ...[
+            if (u.profileImageUrlUser?.isNotEmpty ?? false) u.profileImageUrlUser!,
+            if (u.overallTierIconUrl?.isNotEmpty ?? false) u.overallTierIconUrl!,
+          ]
+      else
+        for (final c in _crewVm.items.take(_kWarmUpImageCount))
+          if (c.crewLogoUrl?.isNotEmpty ?? false) c.crewLogoUrl!,
+    };
+    if (urls.isNotEmpty) {
+      await Future.wait(
+        // 한 장이 404·CORS로 실패해도 나머지를 막지 않는다.
+        urls.map((url) => precacheImage(NetworkImage(url), context).catchError((_) {})),
+      ).timeout(_kWarmUpTimeout, onTimeout: () => const <void>[]);
+    }
+    if (mounted) setState(() => _warmingImages = false);
   }
 
   /// 데스크탑에서 타이틀 오른쪽에 붙는 검색창 폭(목업 기준). 남은 폭을 다 먹지 않고
@@ -146,7 +248,8 @@ class _RankingHomeViewWebState extends State<RankingHomeViewWeb> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               titleText,
-              const SizedBox(width: SDSSpacing.lg),
+              // 타이틀 ↔ 검색바 36 (커뮤니티 홈과 동일).
+              const SizedBox(width: 36),
               SizedBox(width: _desktopSearchBarWidth, child: _buildSearchBar()),
             ],
           )
@@ -172,23 +275,29 @@ class _RankingHomeViewWebState extends State<RankingHomeViewWeb> {
           const SizedBox(height: SDSSpacing.md),
           _buildSearchBar(),
         ],
-        const SizedBox(height: SDSSpacing.lg),
+        // 타이틀·검색 영역 ↔ 필터 줄: PC 30 / 태블릿 24 / 모바일 20 (홈 목록 공통).
+        SizedBox(height: isDesktop ? 30 : (context.screenType == WebScreenType.tablet ? 24 : 20)),
         _buildTabRow(),
-        const SizedBox(height: SDSSpacing.md),
-        _buildDailyTabBar(),
-        const SizedBox(height: SDSSpacing.lg),
+        // 탭·필터 줄 ↔ 누적/일간 16 (랭킹 목업 — 커뮤니티의 '필터↔목록 20'과는
+        // 아래에 오는 요소가 달라서 별도 값으로 둔다).
+        const SizedBox(height: 16),
+        _buildDailyTabBarSlot(),
+        // 누적/일간 ↔ 내 랭킹 카드 30.
+        const SizedBox(height: 30),
         // 아래 여백은 카드 안(margin)에 있어서, 카드가 숨겨지면 여백도 같이 사라진다.
         _tab == _RankingTab.individual ? _buildMyRankingCard() : _buildMyCrewRankingCard(),
         _tab == _RankingTab.individual ? _buildIndivList() : _buildCrewList(),
       ],
     );
 
+    // 콘텐츠가 짧으면 푸터가 뷰포트 하단에 붙는다(공통 골격). 여백은 스크롤
+    // 영역 안쪽에 둔다(웹 공통 규칙 — 바깥에 두면 스크롤바가 브라우저 끝에 안 붙는다).
     return Container(
       color: SDSColor.snowliveWhite,
-      // 홈 공통 여백(중고거래 홈 기준).
-      padding: webHomePagePadding(context),
-      child: SingleChildScrollView(
-        child: Center(
+      child: WebStickyFooterScroll(
+        // 홈 공통 여백(중고거래 홈 기준).
+        padding: webHomePagePadding(context),
+        content: Center(
           child: ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: kRankingContentMaxWidth),
             // 데스크탑에서만 우측 열을 붙인다(중고거래 홈과 동일한 구조).
@@ -197,11 +306,38 @@ class _RankingHomeViewWebState extends State<RankingHomeViewWeb> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Expanded(child: content),
+                      // 목록 ↔ 사이드바 간격 40 (중고거래 홈과 동일).
+                      const SizedBox(width: kRankingSidebarGap),
                       const RankingSidebarWeb(),
                     ],
                   )
                 : content,
           ),
+        ),
+        // 페이지네이션은 푸터 블록에 둔다 — 목록이 짧아도 화면 아래쪽에 머물고,
+        // 길면 목록 바로 뒤에 자연스럽게 이어진다(스티키 푸터 골격이 그렇게 민다).
+        footer: Column(
+          children: [
+            const SizedBox(height: SDSSpacing.lg),
+            // 푸터 블록은 페이지 전체 폭이라 그냥 두면 페이지 한가운데에 온다 →
+            // 목록은 [목록 + 간격 + 사이드바] 블록의 왼쪽에 있어서 오른쪽으로
+            // 치우쳐 보인다. 같은 블록으로 묶고 사이드바 몫을 비워 목록 기준
+            // 가운데에 오게 한다.
+            Center(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: kRankingContentMaxWidth),
+                child: Row(
+                  children: [
+                    Expanded(child: _buildPagination()),
+                    if (isDesktop)
+                      const SizedBox(width: kRankingSidebarGap + kRankingSidebarWidth),
+                  ],
+                ),
+              ),
+            ),
+            SizedBox(height: isDesktop ? 120 : 80),
+            const HomeFooterWeb(),
+          ],
         ),
       ),
     );
@@ -209,13 +345,15 @@ class _RankingHomeViewWebState extends State<RankingHomeViewWeb> {
 
   Widget _buildSearchBar() {
     return Container(
-      height: 44,
-      decoration: BoxDecoration(color: SDSColor.gray50, borderRadius: BorderRadius.circular(8)),
-      padding: const EdgeInsets.symmetric(horizontal: 16),
+      // 웹 검색바 공통(피그마 64:112895 — 커뮤니티·각종소식과 동일):
+      // 높이 40 / 좌우 14 / 라운드 6 / 아이콘 18(텍스트와 6) / 텍스트 15(힌트 gray500).
+      height: 40,
+      decoration: BoxDecoration(color: SDSColor.gray50, borderRadius: BorderRadius.circular(6)),
+      padding: const EdgeInsets.symmetric(horizontal: 14),
       child: Row(
         children: [
           Icon(Icons.search, size: 18, color: SDSColor.gray400),
-          const SizedBox(width: 8),
+          const SizedBox(width: 6),
           Expanded(
             // 서버 통합검색: 닉네임/상태메세지/자주가는스키장 + 소속 크루의 크루명/소개글/베이스스키장.
             // onChanged로 검색어를 담아 결과 하이라이트에 쓰고, 제출(엔터) 시 서버 재조회한다.
@@ -228,10 +366,10 @@ class _RankingHomeViewWebState extends State<RankingHomeViewWeb> {
                 border: InputBorder.none,
                 isDense: true,
                 hintText: '닉네임·크루·스키장 검색',
-                hintStyle: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray400),
+                hintStyle: SDSTextStyle.regular.copyWith(fontSize: 15, color: SDSColor.gray500),
               ),
-              style: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray900),
-              cursorHeight: 16,
+              style: SDSTextStyle.regular.copyWith(fontSize: 15, color: SDSColor.gray900),
+              cursorHeight: 17,
             ),
           ),
           Obx(() => _searchQuery.value.isEmpty
@@ -276,49 +414,47 @@ class _RankingHomeViewWebState extends State<RankingHomeViewWeb> {
 
     return Row(
       children: [
-        // 모바일은 두 탭 + pill 두 개를 한 줄에 넣을 폭이 안 나온다 →
-        // 목업대로 현재 탭만 보여주는 드롭다운으로 접는다(pill과 같은 시트 UI 재사용).
         if (isMobile)
-          InkWell(
-            onTap: () => showFleamarketFilterSheet<_RankingTab>(
-              context,
-              values: const [_RankingTab.crew, _RankingTab.individual],
-              labelOf: _tabLabel,
-              onSelected: _selectTab,
-            ),
-            child: Row(
-              children: [
-                Text(_tabLabel(_tab), style: SDSTextStyle.bold.copyWith(fontSize: 15, color: SDSColor.gray900)),
-                const SizedBox(width: 4),
-                Icon(Icons.keyboard_arrow_down, size: 18, color: SDSColor.gray900),
-              ],
+          // 모바일은 두 탭 + pill 두 개를 한 줄에 넣을 폭이 안 나온다 →
+          // 현재 탭만 보여주는 드롭다운으로 접는다(커뮤니티 카테고리 탭과 동일).
+          WebDropdownTextButton<_RankingTab>(
+            label: _tabLabel(_tab),
+            values: const [_RankingTab.individual, _RankingTab.crew],
+            labelOf: _tabLabel,
+            onSelected: _selectTab,
+            labelStyle: SDSTextStyle.bold.copyWith(
+              fontSize: 15,
+              color: SDSColor.gray900,
             ),
           )
-        else ...[
-          _ToggleTab(
-            label: _tabLabel(_RankingTab.crew),
-            isActive: _tab == _RankingTab.crew,
-            onTap: () => _selectTab(_RankingTab.crew),
-          ),
-          const SizedBox(width: 12),
-          Text('|', style: SDSTextStyle.regular.copyWith(fontSize: 15, color: SDSColor.gray200)),
-          const SizedBox(width: 12),
-          _ToggleTab(
-            label: _tabLabel(_RankingTab.individual),
-            isActive: _tab == _RankingTab.individual,
-            onTap: () => _selectTab(_RankingTab.individual),
-          ),
-        ],
+        else
+          // 탭 표준(피그마 64:112870) — bold 16, 비활성 gray200,
+          // 1px 세로선 구분자, 간격 10 (커뮤니티·각종소식과 동일).
+          ...WebTextTabs<_RankingTab>(
+            values: const [_RankingTab.individual, _RankingTab.crew],
+            selected: _tab,
+            labelOf: _tabLabel,
+            onSelected: _selectTab,
+            fontSize: 16,
+            inactiveBold: true,
+            inactiveColor: SDSColor.gray200,
+            lineDivider: true,
+            dividerGap: 10,
+          ).buildChildren(),
         const Spacer(),
         FleamarketFilterPill<RankingFilter_resort>(
           label: _selectedResort.korean,
           isActive: _selectedResort != RankingFilter_resort.total,
           title: '스키장',
+          // 태블릿도 PC식 앵커 드롭다운(중고거래·커뮤니티·각종소식과 동일 규칙).
+          dropdownOnTablet: true,
           values: [RankingFilter_resort.total, ...kRankingSelectableResorts],
           labelOf: (v) => v == RankingFilter_resort.total ? '전체 스키장' : v.korean,
           onSelected: (v) => setState(() {
             _selectedResort = v;
-            _selectedFed = RankingFilter_fed.initial;
+            // 서버가 스키장·리그를 동시에 못 받아서 한쪽을 고르면 다른 쪽을 푼다.
+            // 단 '전체 스키장'(해제)은 리그 선택을 건드리지 않는다.
+            if (v != RankingFilter_resort.total) _selectedFed = RankingFilter_fed.initial;
             _reload();
           }),
         ),
@@ -327,11 +463,14 @@ class _RankingHomeViewWebState extends State<RankingHomeViewWeb> {
           label: _selectedFed == RankingFilter_fed.initial ? '대학 리그' : _selectedFed.korean,
           isActive: _selectedFed != RankingFilter_fed.initial,
           title: '대학 리그',
-          values: kRankingSelectableFeds,
-          labelOf: (v) => v.korean,
+          dropdownOnTablet: true,
+          // 해제 값(initial)을 맨 앞에 넣어야 다시 전체로 돌아올 수 있다.
+          values: const [RankingFilter_fed.initial, ...kRankingSelectableFeds],
+          labelOf: (v) => v == RankingFilter_fed.initial ? '전체 리그' : v.korean,
           onSelected: (v) => setState(() {
             _selectedFed = v;
-            _selectedResort = RankingFilter_resort.total;
+            // '전체 리그'(해제)는 스키장 선택을 건드리지 않는다.
+            if (v != RankingFilter_fed.initial) _selectedResort = RankingFilter_resort.total;
             _reload();
           }),
         ),
@@ -340,16 +479,54 @@ class _RankingHomeViewWebState extends State<RankingHomeViewWeb> {
   }
 
   /// 누적/일간 — 목업대로 콘텐츠 폭을 반씩 나눠 갖는 밑줄 탭바.
+  /// 태블릿·모바일에서 좌우 페이지 여백을 넘어 화면 끝까지 늘린다
+  /// (목업 — 태블릿 106:23260 / 모바일 106:31618 모두 풀폭).
+  /// 페이지 패딩 안에 있는 위젯이라 OverflowBox로 폭을 되돌려준다.
+  /// ⚠️ 높이를 반드시 못 박아야 한다 — Column 안에서는 높이 제약이 무한이라
+  /// null로 두면 OverflowBox가 그걸 그대로 받아 자식이 아예 안 그려진다.
+  Widget _fullBleedOnTablet(Widget child, {required double height}) {
+    if (context.isDesktop) return child;
+    final screenWidth = MediaQuery.sizeOf(context).width;
+    return SizedBox(
+      height: height,
+      child: OverflowBox(
+        minWidth: screenWidth,
+        maxWidth: screenWidth,
+        minHeight: height,
+        maxHeight: height,
+        child: child,
+      ),
+    );
+  }
+
+  Widget _buildDailyTabBarSlot() =>
+      _fullBleedOnTablet(_buildDailyTabBar(), height: _kDailyTabBarHeight);
+
   Widget _buildDailyTabBar() {
-    return Row(
-      children: [
-        Expanded(
-          child: _SegmentTab(label: '누적', isActive: !_daily, onTap: () => setState(() { _daily = false; _reload(); })),
-        ),
-        Expanded(
-          child: _SegmentTab(label: '일간', isActive: _daily, onTap: () => setState(() { _daily = true; _reload(); })),
-        ),
-      ],
+    // comp_tab(피그마 106:14937) — 아래 전체 폭 1px 라인 위에 활성 탭의
+    // 2px 밑줄이 겹쳐 그려진다. 탭 사이 1px.
+    // 높이 41 = 상단 9 + 텍스트 22 + 간격 8 + 밑줄 2.
+    return SizedBox(
+      height: _kDailyTabBarHeight,
+      child: Stack(
+        children: [
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Container(height: 1, color: SDSColor.gray100),
+          ),
+          Row(
+            children: [
+              Expanded(
+                child: _SegmentTab(label: '누적', isActive: !_daily, onTap: () => setState(() { _daily = false; _reload(); })),
+              ),
+              const SizedBox(width: 1),
+              Expanded(
+                child: _SegmentTab(label: '일간', isActive: _daily, onTap: () => setState(() { _daily = true; _reload(); })),
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 
@@ -361,21 +538,28 @@ class _RankingHomeViewWebState extends State<RankingHomeViewWeb> {
         // 리스트를 통째로 밀어낸다. 같은 높이의 자리표시로 공간을 먼저 잡아둔다.
         // 게스트는 카드가 아예 없는 게 확정이므로 바로 접는다(불필요한 자리 차지 방지).
         final isGuest = _authVm.status == WebAuthStatus.unauthenticated;
-        if (!isGuest && _vm.isLoading) return const MyRankingCardSkeleton();
+        if (!isGuest && (_vm.isLoading || !_vm.hasLoadedOnce)) return const MyRankingCardSkeleton();
         return const SizedBox.shrink();
       }
       final isResortScoped = _selectedResort != RankingFilter_resort.total;
       final isMobile = context.screenType == WebScreenType.mobile;
 
-      return _MyRankingCardShell(
+      return RankingMyCardShell(
         label: '내 랭킹',
         isMobile: isMobile,
         groups: [
-          _MyRankingStat(label: '개인 점수', value: '${isResortScoped ? my.resortTotalScore : my.overallTotalScore}', stacked: isMobile),
-          _MyRankingStat(label: '개인 랭킹', value: '${isResortScoped ? my.resortRank : my.overallRank}', stacked: isMobile),
+          // 모바일은 카드 좌측의 '내 랭킹' 라벨이 없어서 통계 라벨이 그 역할을 한다(목업).
+          RankingMyStat(
+              label: isMobile ? '내 점수' : '개인 점수',
+              value: '${isResortScoped ? my.resortTotalScore : my.overallTotalScore}',
+              stacked: isMobile),
+          RankingMyStat(
+              label: isMobile ? '내 랭킹' : '개인 랭킹',
+              value: '${isResortScoped ? my.resortRank : my.overallRank}',
+              stacked: isMobile),
           // 리조트별/일간에는 티어가 오지 않으므로 그때만 그룹을 뺀다.
           if (!isResortScoped && !_daily)
-            _TierBadge(
+            RankingTierBadge(
               iconUrl: my.overallTierIconUrl,
               name: my.tierNameKor ?? '',
               stacked: isMobile,
@@ -394,68 +578,84 @@ class _RankingHomeViewWebState extends State<RankingHomeViewWeb> {
       if (my == null) {
         // 개인랭킹 카드와 동일: 로딩 중이면 같은 높이로 자리를 잡아 리스트가 밀리지 않게 한다.
         final isGuest = _authVm.status == WebAuthStatus.unauthenticated;
-        if (!isGuest && _crewVm.isLoading) return const MyRankingCardSkeleton();
+        if (!isGuest && (_crewVm.isLoading || !_crewVm.hasLoadedOnce)) return const MyRankingCardSkeleton();
         return const SizedBox.shrink();
       }
       final isResortScoped = _selectedResort != RankingFilter_resort.total;
       final isMobile = context.screenType == WebScreenType.mobile;
 
-      return _MyRankingCardShell(
+      return RankingMyCardShell(
         label: '크루 랭킹',
         isMobile: isMobile,
         groups: [
-          _MyRankingStat(label: '크루 점수', value: '${isResortScoped ? my.resortTotalScore : my.overallTotalScore}', stacked: isMobile),
-          _MyRankingStat(label: '크루 랭킹', value: '${isResortScoped ? my.resortRank : my.overallRank}', stacked: isMobile),
-          _CrewIdentity(
+          RankingMyStat(label: '크루 점수', value: '${isResortScoped ? my.resortTotalScore : my.overallTotalScore}', stacked: isMobile),
+          RankingMyStat(label: '크루 랭킹', value: '${isResortScoped ? my.resortRank : my.overallRank}', stacked: isMobile),
+          RankingCrewIdentity(
             name: my.crewName ?? '',
-            logoUrl: my.crewLogoUrl,
+            // 로고가 없으면 목록·팝업과 같은 색별 기본 `LIVE CREW` 로고를 쓴다
+            // (여기만 사람 아이콘으로 떨어지고 있었다).
+            logoUrl: crewLogoUrlOf(logoUrl: my.crewLogoUrl, color: my.color),
             stacked: isMobile,
-            // 웹에는 아직 크루 상세 화면이 없다(GNB의 '라이브크루'도 플레이스홀더).
-            // 목업의 화살표 버튼은 그대로 두고, 화면이 생기면 여기만 라우팅으로 바꾼다.
-            onTap: () => Get.snackbar('알림', '크루 화면은 준비 중이에요.'),
+            onTap: my.crewId == null
+                ? null
+                : () => Get.toNamed('${WebRoutes.crewHome}?id=${my.crewId}'),
           ),
         ],
       );
     });
   }
 
+  /// 현재 탭의 페이지네이션. 조회 중이거나 한 페이지뿐이면 그리지 않는다.
+  Widget _buildPagination() {
+    return Obx(() {
+      final isIndiv = _tab == _RankingTab.individual;
+      final loading = (isIndiv ? _vm.isLoading : _crewVm.isLoading) || _warmingImages;
+      final totalPages = isIndiv ? _vm.totalPages : _crewVm.totalPages;
+      if (loading || totalPages <= 1) return const SizedBox.shrink();
+      return NumberedPaginationBar(
+        currentPage: isIndiv ? _vm.currentPage : _crewVm.currentPage,
+        totalPages: totalPages,
+        hasPrevious: isIndiv ? _vm.hasPrevious : _crewVm.hasPrevious,
+        hasNext: isIndiv ? _vm.hasNext : _crewVm.hasNext,
+        pageWindow: isIndiv ? _vm.pageWindow() : _crewVm.pageWindow(),
+        onGotoPage: _gotoPageAndWarm,
+      );
+    });
+  }
+
+  /// 결과 0건. 검색 중이면 **서버에 실제로 보낸** 검색어를 문구에 쓴다
+  /// (입력 중인 값을 쓰면 아직 조회하지 않은 글자가 문구에 먼저 나온다).
+  Widget _emptyState(String query) => WebEmptyState(
+        message: query.isEmpty ? '랭킹 데이터가 없습니다.' : "'$query' 검색 결과가 없어요.",
+        // 아이콘은 공용 기본값(icon_nodata.png)을 쓴다 — 랭킹 전용 에셋
+        // (icon_ranking_nodata*.png)은 구 디자인 방패라 지금 티어 아이콘과 안 맞는다.
+      );
+
   Widget _buildIndivList() {
     return Obx(() {
       final items = _vm.items;
       final isLoading = _vm.isLoading;
 
-      if (isLoading && items.isEmpty) {
-        return const RankingListSkeleton();
+      // 탭·필터·검색·페이지 — 어느 걸 눌러도 서버를 다시 받는 구조라(캐시 없음)
+      // 조회 중이면 항상 스켈레톤으로 바꿔 끼운다. 첫 조회 전(hasLoadedOnce=false)도
+      // 마찬가지 — 시즌을 먼저 받아오는 구간에는 isLoading이 아직 false여서
+      // "데이터 없음"이 먼저 스쳤다.
+      if (isLoading || _warmingImages || !_vm.hasLoadedOnce) {
+        // 티어는 전체 스키장 + 누적일 때만 나온다 — 스켈레톤도 같은 조건으로
+        // 자리를 잡아야 점수 줄이 실제 텍스트와 같은 위치에 온다.
+        return RankingListSkeleton(
+          showTier: _selectedResort == RankingFilter_resort.total && !_daily,
+        );
       }
-      if (items.isEmpty) {
-        return const WebEmptyState(message: '랭킹 데이터가 없습니다.');
-      }
+      if (items.isEmpty) return _emptyState(_vm.appliedQuery);
 
-      final half = (items.length / 2).ceil();
-      final left = items.sublist(0, half);
-      final right = items.sublist(half);
-
-      return Column(
-        children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(child: Column(children: [for (final u in left) _buildIndivRow(u)])),
-              const SizedBox(width: SDSSpacing.xl),
-              Expanded(child: Column(children: [for (final u in right) _buildIndivRow(u)])),
-            ],
-          ),
-          const SizedBox(height: SDSSpacing.lg),
-          NumberedPaginationBar(
-            currentPage: _vm.currentPage,
-            totalPages: _vm.totalPages,
-            hasPrevious: _vm.hasPrevious,
-            hasNext: _vm.hasNext,
-            pageWindow: _vm.pageWindow(),
-            onGotoPage: (page) => _vm.gotoPage(page),
-          ),
-        ],
+      final isResortScoped = _selectedResort != RankingFilter_resort.total;
+      final rankWidth = rankColumnWidth(
+        context,
+        items.map((u) => isResortScoped ? u.resortRank : u.overallRank),
       );
+
+      return Column(children: [for (final u in items) _buildIndivRow(u, rankWidth)]);
     });
   }
 
@@ -464,106 +664,111 @@ class _RankingHomeViewWebState extends State<RankingHomeViewWeb> {
       final items = _crewVm.items;
       final isLoading = _crewVm.isLoading;
 
-      if (isLoading && items.isEmpty) {
-        return const RankingListSkeleton();
+      if (isLoading || _warmingImages || !_crewVm.hasLoadedOnce) {
+        // 크루 랭킹 행: 로고는 사각, 티어 없음(사양).
+        return const RankingListSkeleton(circleAvatar: false, showTier: false, compactText: true);
       }
-      if (items.isEmpty) {
-        return const WebEmptyState(message: '랭킹 데이터가 없습니다.');
-      }
+      if (items.isEmpty) return _emptyState(_crewVm.appliedQuery);
 
-      final half = (items.length / 2).ceil();
-      final left = items.sublist(0, half);
-      final right = items.sublist(half);
-
-      return Column(
-        children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(child: Column(children: [for (final c in left) _buildCrewRow(c)])),
-              const SizedBox(width: SDSSpacing.xl),
-              Expanded(child: Column(children: [for (final c in right) _buildCrewRow(c)])),
-            ],
-          ),
-          const SizedBox(height: SDSSpacing.lg),
-          NumberedPaginationBar(
-            currentPage: _crewVm.currentPage,
-            totalPages: _crewVm.totalPages,
-            hasPrevious: _crewVm.hasPrevious,
-            hasNext: _crewVm.hasNext,
-            pageWindow: _crewVm.pageWindow(),
-            onGotoPage: (page) => _crewVm.gotoPage(page),
-          ),
-        ],
+      final isResortScoped = _selectedResort != RankingFilter_resort.total;
+      final rankWidth = rankColumnWidth(
+        context,
+        items.map((c) => isResortScoped ? c.resortRank : c.overallRank),
       );
+
+      return Column(children: [for (final c in items) _buildCrewRow(c, rankWidth)]);
     });
   }
 
-  Widget _buildIndivRow(RankingUser user) {
+  Widget _buildIndivRow(RankingUser user, double rankWidth) {
     final isResortScoped = _selectedResort != RankingFilter_resort.total;
-    return Obx(() {
-      final query = _searchQuery.value;
-      final isHighlighted = query.isNotEmpty && (user.displayName?.contains(query) ?? false);
-      return InkWell(
-        onTap: () => showRankingProfileModal(context, user),
-        child: Container(
-          margin: const EdgeInsets.only(bottom: 8),
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-          decoration: BoxDecoration(
-            color: isHighlighted ? SDSColor.blue50 : Colors.transparent,
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: Row(
-            children: [
-              SizedBox(
-                width: 32,
-                child: Text(
-                  '${isResortScoped ? user.resortRank ?? '' : user.overallRank ?? ''}',
-                  style: SDSTextStyle.bold.copyWith(fontSize: 14, color: SDSColor.gray900),
+    final m = RankingRowMetrics.of(context);
+    // hover 잉크는 조상 Material 캔버스에 그려진다 — 페이지 흰 배경 Container가
+    // 그 위를 덮어 안 보이므로, 행 바로 위에 투명 Material을 끼운다.
+    // 행 간격(8)은 잉크 밖으로 빼서 hover 박스가 행 크기에만 맞게 한다.
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: Material(
+        type: MaterialType.transparency,
+        child: InkWell(
+          onTap: () => showRankingProfileModal(context, user),
+          borderRadius: BorderRadius.circular(8),
+          // hover 시 행 배경 검정 3% (커뮤니티·각종소식 표 행과 동일).
+          hoverColor: SDSColor.gray900.withValues(alpha: 0.03),
+          child: Container(
+            padding: EdgeInsets.symmetric(horizontal: 8, vertical: m.verticalPadding),
+            // 높이를 공용 규격으로 못 박는다 — 안 그러면 이름+소속 두 줄의
+            // line height가 행 높이를 결정해서 스켈레톤과 어긋난다.
+            height: m.boxHeight,
+            child: Row(
+              children: [
+                SizedBox(
+                  width: rankWidth,
+                  child: Text(
+                    '${isResortScoped ? user.resortRank ?? '' : user.overallRank ?? ''}',
+                    maxLines: 1,
+                    softWrap: false,
+                    style: SDSTextStyle.bold.copyWith(fontSize: 14, color: SDSColor.gray900),
+                  ),
                 ),
-              ),
-              const SizedBox(width: 8),
-              ClipOval(
-                child: (user.profileImageUrlUser?.isNotEmpty ?? false)
-                    ? WebNetworkImage(url: user.profileImageUrlUser, width: 32, height: 32)
-                    : Container(width: 32, height: 32, color: SDSColor.gray100, child: Icon(Icons.person, size: 18, color: SDSColor.gray400)),
-              ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(user.displayName ?? '', style: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray900)),
-                    Text(
-                      [
-                        if (user.resortNickname?.isNotEmpty ?? false) user.resortNickname,
-                        if (user.crewName?.isNotEmpty ?? false) user.crewName,
-                      ].join(' · '),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: SDSTextStyle.regular.copyWith(fontSize: 12, color: SDSColor.gray500),
-                    ),
-                  ],
+                // 순위 ↔ 프로필 12.
+                SizedBox(width: m.rankGap),
+                ClipOval(
+                  child: (user.profileImageUrlUser?.isNotEmpty ?? false)
+                      ? WebNetworkImage(url: user.profileImageUrlUser, width: m.avatar, height: m.avatar)
+                      : Container(
+                          width: m.avatar,
+                          height: m.avatar,
+                          color: SDSColor.gray100,
+                          child: Icon(Icons.person, size: 18, color: SDSColor.gray400)),
                 ),
-              ),
-              Text(
-                '${isResortScoped ? user.resortTotalScore ?? 0 : user.overallTotalScore ?? 0}점',
-                style: SDSTextStyle.bold.copyWith(fontSize: 15, color: SDSColor.gray900),
-              ),
-              if (!isResortScoped && !_daily && (user.overallTierIconUrl?.isNotEmpty ?? false)) ...[
-                const SizedBox(width: 6),
-                WebNetworkImage(url: user.overallTierIconUrl, width: 24, height: 24, fit: BoxFit.contain),
+                SizedBox(width: m.nameGap),
+                Expanded(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // line height를 묶어야 행 높이가 계산 가능해진다(Pretendard 기본값은 더 크다).
+                      Text(user.displayName ?? '',
+                          style: SDSTextStyle.regular.copyWith(
+                              fontSize: m.nameSize,
+                              height: 20 / 15,
+                              color: SDSColor.gray900)),
+                      Text(
+                        [
+                          if (user.resortNickname?.isNotEmpty ?? false) user.resortNickname,
+                          if (user.crewName?.isNotEmpty ?? false) user.crewName,
+                        ].join(' · '),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: SDSTextStyle.regular.copyWith(
+                            fontSize: m.subSize, height: 17 / 13, color: SDSColor.gray500),
+                      ),
+                    ],
+                  ),
+                ),
+                Text(
+                  '${isResortScoped ? user.resortTotalScore ?? 0 : user.overallTotalScore ?? 0}점',
+                  style: SDSTextStyle.regular
+                      .copyWith(fontSize: m.scoreSize, color: SDSColor.gray900),
+                ),
+                if (!isResortScoped && !_daily && (user.overallTierIconUrl?.isNotEmpty ?? false)) ...[
+                  const SizedBox(width: 8),
+                  WebNetworkImage(url: user.overallTierIconUrl, width: 36, height: 36, fit: BoxFit.contain, showPlaceholder: false),
+                ],
               ],
-            ],
+            ),
           ),
         ),
-      );
-    });
+      ),
+    );
   }
 
-  Widget _buildCrewRow(CrewRanking crew) {
+  Widget _buildCrewRow(CrewRanking crew, double rankWidth) {
     final isResortScoped = _selectedResort != RankingFilter_resort.total;
-    final logoUrl = (crew.crewLogoUrl?.isNotEmpty ?? false) ? crew.crewLogoUrl : crewDefaultLogoUrl[crew.color ?? ''];
+    final m = RankingRowMetrics.of(context);
+    // 로고가 없으면 색별 기본 `LIVE CREW` 로고, 색도 없으면 회색 기본으로 떨어진다.
+    final logoUrl = crewLogoUrlOf(logoUrl: crew.crewLogoUrl, color: crew.color);
     // 크루랭킹에는 티어를 표시하지 않는다(개인랭킹만 티어 노출).
     // 크루명 아래 회색 보조줄: 베이스 스키장 별명 · 크루 소개글 (모바일과 동일).
     final baseNick = crew.baseResortNickname?.trim() ?? '';
@@ -571,340 +776,166 @@ class _RankingHomeViewWebState extends State<RankingHomeViewWeb> {
     final crewSubtitle = baseNick.isEmpty
         ? crewDesc
         : (crewDesc.isEmpty ? baseNick : '$baseNick · $crewDesc');
-    return Container(
-      margin: const EdgeInsets.only(bottom: 8),
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          SizedBox(
-            width: 32,
-            child: Text(
-              '${isResortScoped ? crew.resortRank ?? '' : crew.overallRank ?? ''}',
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: SDSTextStyle.bold.copyWith(fontSize: 14, color: SDSColor.gray900),
-            ),
-          ),
-          const SizedBox(width: 8),
-          ClipRRect(
-            borderRadius: BorderRadius.circular(8),
-            child: (logoUrl?.isNotEmpty ?? false)
-                ? WebNetworkImage(url: logoUrl, width: 32, height: 32)
-                : Container(width: 32, height: 32, color: SDSColor.gray100),
-          ),
-          const SizedBox(width: 10),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.center,
-              mainAxisSize: MainAxisSize.min,
+    final crewId = crew.crewId;
+    // 개인 행과 같은 구조 — 투명 Material 위의 InkWell이라야 hover 잉크가 보이고,
+    // 행 간격(8)은 잉크 밖으로 빼야 hover 박스가 행 크기에만 맞는다.
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: Material(
+        type: MaterialType.transparency,
+        child: InkWell(
+          onTap: crewId == null
+              ? null
+              : () => showLiveCrewModal(context, rankingCrewToCard(crew)),
+          borderRadius: BorderRadius.circular(8),
+          hoverColor: SDSColor.gray900.withValues(alpha: 0.03),
+          child: Container(
+            padding: EdgeInsets.symmetric(horizontal: 8, vertical: m.verticalPadding),
+            // 개인 행과 같은 높이 — 탭을 바꿔도, 스켈레톤에서 넘어와도 목록이 안 튄다.
+            height: m.boxHeight,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Text(
-                  crew.crewName ?? '',
-                  maxLines: 1,
-                  softWrap: false,
-                  overflow: TextOverflow.ellipsis,
-                  style: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray900),
-                ),
-                if (crewSubtitle.isNotEmpty)
-                  Padding(
-                    padding: const EdgeInsets.only(top: 2),
-                    child: Text(
-                      crewSubtitle,
-                      maxLines: 1,
-                      softWrap: false,
-                      overflow: TextOverflow.ellipsis,
-                      style: SDSTextStyle.regular.copyWith(fontSize: 12, color: SDSColor.gray500),
-                    ),
+                SizedBox(
+                  width: rankWidth,
+                  child: Text(
+                    '${isResortScoped ? crew.resortRank ?? '' : crew.overallRank ?? ''}',
+                    maxLines: 1,
+                    softWrap: false,
+                    style: SDSTextStyle.bold.copyWith(fontSize: 14, color: SDSColor.gray900),
                   ),
+                ),
+                SizedBox(width: m.rankGap),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(5),
+                  child: (logoUrl?.isNotEmpty ?? false)
+                      ? WebNetworkImage(url: logoUrl, width: m.avatar, height: m.avatar)
+                      : Container(width: m.avatar, height: m.avatar, color: SDSColor.gray100),
+                ),
+                SizedBox(width: m.nameGap),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        crew.crewName ?? '',
+                        maxLines: 1,
+                        softWrap: false,
+                        overflow: TextOverflow.ellipsis,
+                        style: SDSTextStyle.regular
+                            .copyWith(fontSize: 14, height: 19 / 14, color: SDSColor.gray900),
+                      ),
+                      // ⚠️ 줄 사이에 따로 여백을 주지 않는다 — line height(19 + 16)만으로
+                      // 모바일 행 내용 높이(36)에 딱 맞는다. 2라도 더하면 넘친다.
+                      if (crewSubtitle.isNotEmpty)
+                        Text(
+                          crewSubtitle,
+                          maxLines: 1,
+                          softWrap: false,
+                          overflow: TextOverflow.ellipsis,
+                          style: SDSTextStyle.regular
+                              .copyWith(fontSize: 12, height: 16 / 12, color: SDSColor.gray500),
+                        ),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 8),
+                ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 100),
+                  child: Text(
+                    '${isResortScoped ? crew.resortTotalScore ?? 0 : crew.overallTotalScore ?? 0}점',
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    textAlign: TextAlign.right,
+                    style: SDSTextStyle.regular.copyWith(fontSize: 15, color: SDSColor.gray900),
+                  ),
+                ),
               ],
             ),
-          ),
-          const SizedBox(width: 8),
-          ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 100),
-            child: Text(
-              '${isResortScoped ? crew.resortTotalScore ?? 0 : crew.overallTotalScore ?? 0}점',
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              textAlign: TextAlign.right,
-              style: SDSTextStyle.bold.copyWith(fontSize: 15, color: SDSColor.gray900),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-/// 타이틀 줄 오른쪽 끝에 붙는 진입 링크(태블릿/모바일). 아이콘 없이 텍스트만 두고,
-/// 두 링크 사이는 탭 줄과 같은 '|' 구분자로 나눈다.
-class _EntryLink extends StatelessWidget {
-  final String label;
-  final VoidCallback onTap;
-
-  const _EntryLink({required this.label, required this.onTap});
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      child: Text(label, style: SDSTextStyle.bold.copyWith(fontSize: 14, color: SDSColor.gray900)),
-    );
-  }
-}
-
-class _ToggleTab extends StatelessWidget {
-  final String label;
-  final bool isActive;
-  final VoidCallback onTap;
-
-  const _ToggleTab({required this.label, required this.isActive, required this.onTap});
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Text(
-        label,
-        style: (isActive ? SDSTextStyle.bold : SDSTextStyle.regular).copyWith(
-          fontSize: 15,
-          color: isActive ? SDSColor.gray900 : SDSColor.gray300,
-        ),
-      ),
-    );
-  }
-}
-
-/// 내 랭킹/내 크루 랭킹 카드의 공통 껍데기.
-///
-/// 데스크탑·태블릿은 왼쪽에 카드 라벨을 두고 정보 그룹을 오른쪽 끝에 몰아 붙이고,
-/// 모바일은 라벨을 빼고 그룹들이 카드 폭을 균등하게 나눠 갖는다(목업).
-class _MyRankingCardShell extends StatelessWidget {
-  final String label;
-  final bool isMobile;
-  final List<Widget> groups;
-
-  const _MyRankingCardShell({required this.label, required this.isMobile, required this.groups});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      // 카드가 숨겨질 때 아래 여백까지 같이 사라지도록 간격을 카드 안에 둔다.
-      margin: const EdgeInsets.only(bottom: SDSSpacing.xl),
-      padding: EdgeInsets.symmetric(horizontal: isMobile ? 12 : 20, vertical: 16),
-      decoration: BoxDecoration(color: SDSColor.gray50, borderRadius: BorderRadius.circular(12)),
-      child: Row(
-        children: [
-          if (!isMobile) ...[
-            Text(label, style: SDSTextStyle.bold.copyWith(fontSize: 14, color: SDSColor.gray900)),
-            const Spacer(),
-          ],
-          for (var i = 0; i < groups.length; i++) ...[
-            if (i > 0)
-              Container(
-                width: 1,
-                height: 32,
-                color: SDSColor.gray200,
-                margin: EdgeInsets.symmetric(horizontal: isMobile ? SDSSpacing.sm : SDSSpacing.lg),
-              ),
-            isMobile ? Expanded(child: groups[i]) : groups[i],
-          ],
-        ],
-      ),
-    );
-  }
-}
-
-class _MyRankingStat extends StatelessWidget {
-  final String label;
-  final String value;
-
-  /// 모바일: 값 위 / 라벨 아래로 쌓는다. 그 외: 라벨 왼쪽 / 값 오른쪽 한 줄.
-  final bool stacked;
-
-  const _MyRankingStat({required this.label, required this.value, this.stacked = false});
-
-  @override
-  Widget build(BuildContext context) {
-    final labelText = Text(
-      label,
-      maxLines: 1,
-      overflow: TextOverflow.ellipsis,
-      style: SDSTextStyle.regular.copyWith(fontSize: stacked ? 12 : 13, color: SDSColor.gray500),
-    );
-    final valueText = Text(
-      value,
-      maxLines: 1,
-      overflow: TextOverflow.ellipsis,
-      style: SDSTextStyle.bold.copyWith(fontSize: stacked ? 17 : 15, color: SDSColor.gray900),
-    );
-
-    if (stacked) {
-      return Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [valueText, const SizedBox(height: 2), labelText],
-      );
-    }
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [labelText, const SizedBox(width: 8), valueText],
-    );
-  }
-}
-
-/// 티어 아이콘 + 티어명 그룹(개인랭킹 카드).
-class _TierBadge extends StatelessWidget {
-  final String? iconUrl;
-  final String name;
-  final bool stacked;
-
-  const _TierBadge({required this.iconUrl, required this.name, required this.stacked});
-
-  @override
-  Widget build(BuildContext context) {
-    final hasIcon = iconUrl?.isNotEmpty ?? false;
-    final nameText = Text(
-      name,
-      maxLines: 1,
-      overflow: TextOverflow.ellipsis,
-      style: SDSTextStyle.bold.copyWith(fontSize: stacked ? 13 : 14, color: SDSColor.gray900),
-    );
-
-    if (stacked) {
-      return Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          if (hasIcon) WebNetworkImage(url: iconUrl, width: 24, height: 24, fit: BoxFit.contain),
-          if (hasIcon) const SizedBox(height: 2),
-          nameText,
-        ],
-      );
-    }
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        if (hasIcon) ...[
-          WebNetworkImage(url: iconUrl, width: 28, height: 28, fit: BoxFit.contain),
-          const SizedBox(width: 8),
-        ],
-        nameText,
-      ],
-    );
-  }
-}
-
-/// 크루명 + 크루 로고 + 크루 화면 진입 버튼 그룹(크루랭킹 카드).
-class _CrewIdentity extends StatelessWidget {
-  final String name;
-  final String? logoUrl;
-  final bool stacked;
-  final VoidCallback onTap;
-
-  const _CrewIdentity({required this.name, required this.logoUrl, required this.stacked, required this.onTap});
-
-  @override
-  Widget build(BuildContext context) {
-    final logo = (logoUrl?.isNotEmpty ?? false)
-        ? WebNetworkImage(url: logoUrl, width: stacked ? 24 : 28, height: stacked ? 24 : 28, fit: BoxFit.contain)
-        : Icon(Icons.groups_outlined, size: stacked ? 22 : 26, color: SDSColor.gray400);
-    final nameText = Text(
-      name,
-      maxLines: 1,
-      overflow: TextOverflow.ellipsis,
-      style: SDSTextStyle.bold.copyWith(fontSize: stacked ? 13 : 14, color: SDSColor.gray900),
-    );
-
-    if (stacked) {
-      return Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          logo,
-          const SizedBox(height: 2),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Flexible(child: nameText),
-              const SizedBox(width: 4),
-              _CircleArrowButton(onTap: onTap),
-            ],
-          ),
-        ],
-      );
-    }
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        nameText,
-        const SizedBox(width: 8),
-        logo,
-        const SizedBox(width: 8),
-        _CircleArrowButton(onTap: onTap),
-      ],
-    );
-  }
-}
-
-class _CircleArrowButton extends StatelessWidget {
-  final VoidCallback onTap;
-
-  const _CircleArrowButton({required this.onTap});
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      color: SDSColor.gray900,
-      shape: const CircleBorder(),
-      clipBehavior: Clip.antiAlias,
-      child: InkWell(
-        onTap: onTap,
-        child: const Padding(
-          padding: EdgeInsets.all(3),
-          child: Icon(Icons.chevron_right, size: 18, color: Colors.white),
-        ),
-      ),
-    );
-  }
-}
-
-/// 누적/일간 밑줄 탭. 비활성 쪽에도 같은 자리에 연한 선을 깔아 밑줄이 끊기지 않게 한다.
-class _SegmentTab extends StatelessWidget {
-  final String label;
-  final bool isActive;
-  final VoidCallback onTap;
-
-  const _SegmentTab({required this.label, required this.isActive, required this.onTap});
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(bottom: 12),
-            child: Text(
-              label,
-              textAlign: TextAlign.center,
-              style: (isActive ? SDSTextStyle.bold : SDSTextStyle.regular)
-                  .copyWith(fontSize: 15, color: isActive ? SDSColor.gray900 : SDSColor.gray300),
-            ),
-          ),
-          // 두 탭의 선 두께가 달라도 아래쪽 끝이 맞도록 같은 높이의 띠 안에서 정렬한다.
-          SizedBox(
-            height: 3,
-            child: Align(
-              alignment: Alignment.bottomCenter,
-              child: Container(
-                height: isActive ? 3 : 1,
-                color: isActive ? SDSColor.gray900 : SDSColor.gray200,
+                ),
               ),
             ),
-          ),
-        ],
+          );
+        }
+      }
+
+      /// 타이틀 줄 오른쪽 끝에 붙는 진입 링크(태블릿/모바일). 아이콘 없이 텍스트만 두고,
+      /// 두 링크 사이는 탭 줄과 같은 '|' 구분자로 나눈다.
+      class _EntryLink extends StatelessWidget {
+        final String label;
+        final VoidCallback onTap;
+
+        const _EntryLink({required this.label, required this.onTap});
+
+        @override
+        Widget build(BuildContext context) {
+          return InkWell(
+            onTap: onTap,
+            child: Text(label, style: SDSTextStyle.bold.copyWith(fontSize: 14, color: SDSColor.gray900)),
+          );
+        }
+      }
+
+
+      /// 내 랭킹/내 크루 랭킹 카드의 공통 껍데기.
+      ///
+
+
+
+
+
+      /// 누적/일간 밑줄 탭. 비활성 쪽에도 같은 자리에 연한 선을 깔아 밑줄이 끊기지 않게 한다.
+      class _SegmentTab extends StatefulWidget {
+        final String label;
+        final bool isActive;
+        final VoidCallback onTap;
+
+        const _SegmentTab({required this.label, required this.isActive, required this.onTap});
+
+        @override
+        State<_SegmentTab> createState() => _SegmentTabState();
+      }
+
+      class _SegmentTabState extends State<_SegmentTab> {
+        bool _hovered = false;
+
+        @override
+        Widget build(BuildContext context) {
+          // 활성은 검정 고정. 비활성만 hover 시 20% → 35%로 아주 살짝 진해진다
+          // (공용 텍스트 탭과 같은 120ms 전환·클릭 커서).
+          final color = widget.isActive
+              ? SDSColor.gray900
+              : SDSColor.gray900.withValues(alpha: _hovered ? 0.35 : 0.2);
+
+          return MouseRegion(
+            cursor: SystemMouseCursors.click,
+            onEnter: (_) => setState(() => _hovered = true),
+            onExit: (_) => setState(() => _hovered = false),
+            child: GestureDetector(
+              onTap: widget.onTap,
+              // 투명 영역도 눌리게 — 글자 밖 여백까지 탭 범위다.
+              behavior: HitTestBehavior.opaque,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  const SizedBox(height: 9),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 6),
+                    child: AnimatedDefaultTextStyle(
+                      duration: const Duration(milliseconds: 120),
+                      // line height 22는 글자 크기와 무관하게 묶는다 — 안 묶으면
+                      // Pretendard가 알아서 잡아 바 높이가 흔들린다.
+                      style: (widget.isActive ? SDSTextStyle.extraBold : SDSTextStyle.regular)
+                          .copyWith(fontSize: 15, height: 22 / 15, color: color),
+                      child: Text(widget.label, textAlign: TextAlign.center),
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Container(height: 2, color: widget.isActive ? SDSColor.gray900 : Colors.transparent),
+                ],
+              ),
       ),
     );
   }

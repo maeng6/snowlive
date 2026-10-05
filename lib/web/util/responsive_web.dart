@@ -34,6 +34,19 @@ extension ResponsiveContext on BuildContext {
 /// 스타일은 `SDSTextStyle.extraBold` + `SDSColor.gray900`이 공통이다.
 /// 새 홈 화면은 숫자를 직접 쓰지 말고 이 함수를 쓸 것(값이 화면마다 갈리면
 /// 타이틀 크기가 페이지마다 달라진다).
+/// 서브 페이지 타이틀 크기 — PC 30 / 태블릿 24 / 모바일 20.
+/// 뒤로가기와 함께 서는 헤더(`WebPageHeader`)와 크루홈 크루명이 같은 값을 쓴다.
+double webSubPageTitleSize(BuildContext context) {
+  switch (context.screenType) {
+    case WebScreenType.desktop:
+      return 30;
+    case WebScreenType.tablet:
+      return 24;
+    case WebScreenType.mobile:
+      return 20;
+  }
+}
+
 double webHomeTitleSize(BuildContext context) {
   switch (context.screenType) {
     case WebScreenType.desktop:
@@ -68,17 +81,18 @@ EdgeInsets webHomePagePadding(BuildContext context, {double bottom = 32}) {
 }
 
 /// 서브 페이지(뒤로가기 헤더가 있는 화면) 공통 페이지 패딩 — 중고거래 상세·폼 기준.
-/// 좌우: PC 40 / 태블릿 20 / 모바일 16. 상단: PC 32 / 태블릿 16 / **모바일 12**
-/// (모바일은 원래 홈과 같은 20이었는데, 화면이 좁아 뒤로가기 위 여백이 과해 보여
-/// 12로 낮췄다 — 2026-09-26 사용자 확정, 서브 페이지 전체 공통).
+/// 좌우: PC 40 / 태블릿 20 / 모바일 16.
+/// 상단: **PC 58 · 태블릿 20 · 모바일 16** — 세 폭 모두 홈·목록 화면과 같다
+/// (PC 2026-10-01, 태블릿·모바일 2026-10-02 사용자 확정. 모바일은 한때 12였는데
+/// 서브 페이지만 위가 떠 보여 홈과 같은 16으로 되돌렸다).
 EdgeInsets webSubPagePadding(BuildContext context, {double bottom = 32}) {
   switch (context.screenType) {
     case WebScreenType.desktop:
-      return EdgeInsets.fromLTRB(40, 32, 40, bottom);
+      return EdgeInsets.fromLTRB(40, 58, 40, bottom);
     case WebScreenType.tablet:
-      return EdgeInsets.fromLTRB(20, 16, 20, bottom);
+      return EdgeInsets.fromLTRB(20, 20, 20, bottom);
     case WebScreenType.mobile:
-      return EdgeInsets.fromLTRB(16, 12, 16, bottom);
+      return EdgeInsets.fromLTRB(16, 16, 16, bottom);
   }
 }
 

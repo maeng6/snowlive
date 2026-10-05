@@ -35,9 +35,10 @@ class CrewRecordScaffoldWeb extends StatelessWidget {
 
     return Container(
       color: SDSColor.snowliveWhite,
-      // 서브 페이지 공통 여백(중고거래 상세·폼 기준).
-      padding: webSubPagePadding(context),
+      // ⚠️ 페이지 여백은 **스크롤 영역 안쪽**에 둔다(웹 공통) — 바깥 Container에 주면
+      // 스크롤바가 여백 안쪽에 생겨 브라우저 오른쪽 끝에 붙지 않는다.
       child: SingleChildScrollView(
+        padding: webSubPagePadding(context),
         child: Center(
           child: ConstrainedBox(
             constraints: BoxConstraints(maxWidth: maxWidth),

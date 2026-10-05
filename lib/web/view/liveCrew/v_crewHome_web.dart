@@ -2,7 +2,9 @@ import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/core/model/m_crewMemberRankingList.dart';
 import 'package:com.snowlive/core/model/m_liveTalk.dart';
 import 'package:com.snowlive/core/viewmodel/vm_user.dart';
+import 'package:com.snowlive/core/model/m_crewDetail.dart';
 import 'package:com.snowlive/web/routes/routes_web.dart';
+import 'package:com.snowlive/web/util/crew_visual_web.dart';
 import 'package:com.snowlive/web/util/responsive_web.dart';
 import 'package:com.snowlive/web/view/liveCrew/w_crewhome_header_web.dart';
 import 'package:com.snowlive/web/view/liveCrew/w_crewhome_member_web.dart';
@@ -13,6 +15,10 @@ import 'package:com.snowlive/web/view/liveTalk/w_livetalk_detail_overlay_web.dar
 import 'package:com.snowlive/web/view/liveTalk/w_livetalk_upload_flow_web.dart';
 import 'package:com.snowlive/web/viewmodel/crew/vm_crewDetail_web.dart';
 import 'package:com.snowlive/web/widget/w_empty_state_web.dart';
+import 'package:com.snowlive/web/widget/w_web_back_icon_web.dart';
+import 'package:com.snowlive/web/widget/w_web_floating_bottombar_web.dart';
+import 'package:com.snowlive/web/widget/w_web_icon_button_web.dart';
+import 'package:com.snowlive/web/widget/w_web_section_link_button_web.dart';
 import 'package:com.snowlive/web/widget/w_skeleton_web.dart';
 import 'package:com.snowlive/web/widget/w_web_more_menu_web.dart';
 import 'package:com.snowlive/web/widget/w_web_toast_web.dart';
@@ -20,10 +26,20 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 /// 1440 - GNB 사이드바 240 - 좌우 패딩 32*2 = 1136 (다른 화면과 같은 계산식).
-const double kCrewHomeContentMaxWidth = 1136;
+/// 본문(목록) 폭 — 라이브크루 홈과 같은 874(목업 161:86732).
+const double kCrewHomeListMaxWidth = 874;
 
-/// 목업의 `랭킹 TOP 10 멤버` — 2열 × 5행.
-const int kCrewHomeTopMemberCount = 10;
+/// 본문 ↔ 사이드바 간격.
+const double kCrewHomeSidebarGap = 40;
+
+/// 블록 전체 폭 = 본문 874 + 간격 40 + 사이드바 220.
+const double kCrewHomeContentMaxWidth =
+    kCrewHomeListMaxWidth + kCrewHomeSidebarGap + kCrewHomeSidebarWidth;
+
+/// 목업의 `랭킹 TOP N 멤버` — PC·태블릿은 2열 × 5행으로 10명,
+/// 모바일은 1열이라 5명만 보여준다(목업 161:101758 `랭킹 TOP 5 멤버`).
+int crewHomeTopMemberCount(BuildContext context) =>
+    context.screenType == WebScreenType.mobile ? 5 : 10;
 
 /// 크루홈(크루별 상세). `#/livecrew-detail?id=334`로 직접 진입해도 동작한다.
 class CrewHomeViewWeb extends StatefulWidget {
@@ -58,6 +74,10 @@ class _CrewHomeViewWebState extends State<CrewHomeViewWeb> {
   /// (`/livetalk/list/`가 crew_id를 무시하고 전체를 준다 — 실측).
   /// 서버가 필터를 열어주면 이 getter만 뷰모델 값으로 바꾸면 된다.
   List<LiveTalk> get _talks => const [];
+
+  SeasonRankingInfo? get _season => _vm.season;
+
+  List<CrewRanking> get _memberList => _vm.members;
 
   Future<void> _onUploadTalk() async {
     final userId = _userVm.user.user_id;
@@ -99,6 +119,15 @@ class _CrewHomeViewWebState extends State<CrewHomeViewWeb> {
     );
   }
 
+  void _goBack() {
+    // URL 직접 진입이라 돌아갈 화면이 없으면 라이브크루 홈으로 보낸다.
+    if (Navigator.of(context).canPop()) {
+      Get.back();
+      return;
+    }
+    Get.offAllNamed(WebRoutes.liveCrew);
+  }
+
   Future<void> _onApply() async {
     if (_userVm.user.user_id == null) {
       Get.snackbar('알림', '로그인이 필요합니다.');
@@ -128,24 +157,49 @@ class _CrewHomeViewWebState extends State<CrewHomeViewWeb> {
 
   @override
   Widget build(BuildContext context) {
-    final isDesktop = context.isDesktop;
-
     return Container(
       color: SDSColor.snowliveWhite,
-      padding: EdgeInsets.fromLTRB(
-        isDesktop ? SDSSpacing.xl : SDSSpacing.md,
-        32,
-        isDesktop ? SDSSpacing.xl : SDSSpacing.md,
-        SDSSpacing.xl,
-      ),
-      child: SingleChildScrollView(
-        child: Center(
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: kCrewHomeContentMaxWidth),
-            child: Obx(_buildBody),
-          ),
-        ),
-      ),
+      child: Obx(() {
+        // 좁은 폭에서는 `크루톡 올리기`가 본문 끝이 아니라 **뷰포트 하단 플로팅 바**에
+        // 고정된다(목업 161:93978 — 바 68, 버튼 780×48). 크루톡은 크루원만 올린다.
+        final hasFloatingBar = !context.isDesktop && _vm.isMyCrew;
+
+        return Stack(
+          children: [
+            Positioned.fill(
+              // 페이지 여백은 서브 페이지 공통(PC 40/58 · 태블릿 20/20 · 모바일 16/16).
+              // ⚠️ 여백은 **스크롤 영역 안쪽**에 둔다(웹 공통) — 바깥에 주면 스크롤바가
+              // 여백 안쪽에 생겨 브라우저 오른쪽 끝에 붙지 않는다.
+              child: SingleChildScrollView(
+                padding: webSubPagePadding(
+                  context,
+                  // 콘텐츠가 플로팅 바 뒤로 지나가도록 바 높이만큼 비우고, 끝까지
+                  // 내렸을 때 마지막 사진이 버튼에 닿지 않도록 40을 더 둔다.
+                  bottom: hasFloatingBar
+                      ? kWebFloatingBottomBarHeight + 40
+                      : SDSSpacing.xl,
+                ),
+                child: Center(
+                  child: ConstrainedBox(
+                    constraints:
+                        const BoxConstraints(maxWidth: kCrewHomeContentMaxWidth),
+                    child: _buildBody(),
+                  ),
+                ),
+              ),
+            ),
+            if (hasFloatingBar)
+              Positioned(
+                left: 0,
+                right: 0,
+                bottom: 0,
+                child: WebFloatingBottomBar(
+                  child: CrewTalkUploadButton(onTap: _onUploadTalk),
+                ),
+              ),
+          ],
+        );
+      }),
     );
   }
 
@@ -154,7 +208,7 @@ class _CrewHomeViewWebState extends State<CrewHomeViewWeb> {
     // 세 값을 무조건 먼저 읽어야 Obx 구독이 확실히 걸린다(분기 뒤로 미루면 놓친다).
     final isLoading = _vm.isLoading;
     final hasError = _vm.hasError;
-    final members = _vm.members;
+    final members = _memberList;
 
     if (_crewId == null) {
       return const WebEmptyState(message: '크루 정보를 찾을 수 없어요.');
@@ -164,33 +218,38 @@ class _CrewHomeViewWebState extends State<CrewHomeViewWeb> {
       return isLoading ? const _CrewHomeSkeleton() : const SizedBox(height: 240);
     }
 
+    // 헤더는 **블록 전체 폭**(목업 — 로고~설정 아이콘이 사이드바 오른쪽 끝까지 간다).
+    // 그 아래부터 본문 874 / 사이드바 220으로 나뉜다.
+    final header = CrewHomeHeaderWeb(
+      info: info,
+      showSettings: _vm.isMyCrew,
+      visitorToday: _vm.visitorToday,
+      visitorTotal: _vm.visitorTotal,
+    );
+
     final content = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        CrewHomeHeaderWeb(
-          info: info,
-          showSettings: _vm.isMyCrew,
-          visitorToday: _vm.visitorToday,
-          visitorTotal: _vm.visitorTotal,
-        ),
-        const SizedBox(height: SDSSpacing.md),
         CrewHomeSummaryBarWeb(
           memberCount: info.crewMemberTotal,
-          overallRank: _vm.season?.overallRank,
-          totalScore: _vm.season?.overallTotalScore,
+          overallRank: _season?.overallRank,
+          totalScore: _season?.overallTotalScore,
           // 내 크루가 아닐 때만 가입 신청을 노출한다(목업).
           onApply: _vm.isMyCrew ? null : _onApply,
           onMembersTap: () => Get.toNamed('${WebRoutes.crewMembers}?id=$_crewId'),
         ),
-        const SizedBox(height: SDSSpacing.xl),
+        // 통계 바 ↔ 라이딩 통계 (PC·태블릿 40 / 모바일 32 — 목업).
+        SizedBox(height: context.screenType == WebScreenType.mobile ? 32 : 40),
         CrewHomeRidingStatsWeb(
-          season: _vm.season,
+          season: _season,
           crewName: info.crewName ?? '',
           crewLogoUrl: info.crewLogoUrl,
+          crewColor: info.color,
         ),
-        const SizedBox(height: SDSSpacing.xl),
+        // 라이딩 통계 ↔ 랭킹 40 / 랭킹 ↔ 크루톡 48 (목업).
+        const SizedBox(height: 40),
         _buildMemberSection(members),
-        const SizedBox(height: SDSSpacing.xl),
+        const SizedBox(height: 48),
         CrewHomeTalkSectionWeb(
           talks: _talks,
           mode: _talkMode,
@@ -198,36 +257,66 @@ class _CrewHomeViewWebState extends State<CrewHomeViewWeb> {
           onTalkTap: _onTalkTap,
           onSeeAll: () => Get.toNamed('${WebRoutes.crewTalks}?id=$_crewId'),
         ),
-        // 우측 열이 접히는 폭에서는 업로드 버튼과 기록 링크를 본문 끝으로 옮긴다.
-        // 크루톡은 크루원만 올릴 수 있어서 **내 크루일 때만** 버튼을 노출한다.
-        if (!context.isDesktop) ...[
-          if (_vm.isMyCrew) ...[
-            const SizedBox(height: SDSSpacing.xl),
-            CrewTalkUploadButton(onTap: _onUploadTalk),
-          ],
-          const SizedBox(height: SDSSpacing.md),
-          CrewRecordLinkCards(crewId: _crewId),
-        ],
       ],
     );
 
-    if (!context.isDesktop) return content;
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
+    if (!context.isDesktop) {
+      final isMobile = context.screenType == WebScreenType.mobile;
+      // 좁은 폭 구성(목업 161:93085): 뒤로가기 줄 → 크루 헤더 → 기록 링크 줄 → 본문
+      // 우측 열이 접히므로 기록 링크는 크루명 바로 아래 텍스트 줄로 내려온다
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          WebIconButton(
+            onTap: _goBack,
+            // 좌측 히트 여백 0 — 화살표가 콘텐츠 좌측선에 붙는다(공통 헤더와 같은 처리).
+            padding: const EdgeInsets.fromLTRB(0, 0, 4, 0),
+            // 서브 페이지 공통 뒤로가기 크기(PC·태블릿 30 / 모바일 24) — 목업은
+            // 26이지만 다른 화면과 같은 값을 쓴다(확정 표준).
+            icon: WebBackIcon(
+              size: context.screenType == WebScreenType.mobile ? 24 : 30,
+            ),
+          ),
+          // 뒤로가기 ↔ 로고 줄 (목업 — 태블릿 28 / 모바일 18).
+          SizedBox(height: isMobile ? 18 : 28),
+          header,
+          // 로고 줄 ↔ 링크 줄 (태블릿 10 / 모바일 12), 링크 줄 ↔ 통계 바는
+          // 헤더 블록 아래 여백으로 태블릿 20 / 모바일 16 (목업 161:94357·102331).
+          SizedBox(height: isMobile ? 12 : 10),
+          CrewRecordLinkRow(crewId: _crewId),
+          SizedBox(height: isMobile ? 16 : 20),
+          content,
+        ],
+      );
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Expanded(child: content),
-        CrewHomeSidebarWeb(
-          // 내 크루가 아니면 업로드 버튼 없이 링크 카드만 보인다.
-          onUploadTalk: _vm.isMyCrew ? _onUploadTalk : null,
-          crewId: _crewId,
+        header,
+        // 헤더 ↔ 통계 바 10 (목업 — 헤더 블록 196, 통계 바 206)
+        const SizedBox(height: 30),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(child: content),
+            const SizedBox(width: kCrewHomeSidebarGap),
+            CrewHomeSidebarWeb(
+              // 내 크루가 아니면 업로드 버튼 없이 링크 카드만 보인다
+              onUploadTalk: _vm.isMyCrew ? _onUploadTalk : null,
+              crewId: _crewId,
+            ),
+          ],
         ),
       ],
     );
   }
 
   Widget _buildMemberSection(List<CrewRanking> members) {
-    final top = members.take(kCrewHomeTopMemberCount).toList();
-    final columns = context.isDesktop ? 2 : 1;
+    final topCount = crewHomeTopMemberCount(context);
+    final top = members.take(topCount).toList();
+    // 2열은 태블릿까지(목업 161:93789 — 760 안에 356 × 2, 간격 48). 모바일만 1열.
+    final columns = context.screenType == WebScreenType.mobile ? 1 : 2;
     final perColumn = (top.length / columns).ceil();
 
     return Column(
@@ -236,23 +325,13 @@ class _CrewHomeViewWebState extends State<CrewHomeViewWeb> {
         Row(
           children: [
             Text(
-              '랭킹 TOP $kCrewHomeTopMemberCount 멤버',
-              style: SDSTextStyle.bold.copyWith(fontSize: 15, color: SDSColor.gray900),
+              '랭킹 TOP $topCount 멤버',
+              style: SDSTextStyle.bold.copyWith(fontSize: 16, color: SDSColor.gray900),
             ),
             const Spacer(),
-            OutlinedButton(
-              onPressed: () => Get.toNamed('${WebRoutes.crewMembers}?id=$_crewId'),
-              style: OutlinedButton.styleFrom(
-                side: BorderSide(color: SDSColor.gray200),
-                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-                minimumSize: Size.zero,
-                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
-              ),
-              child: Text(
-                '전체 멤버',
-                style: SDSTextStyle.bold.copyWith(fontSize: 13, color: SDSColor.gray900),
-              ),
+            WebSectionLinkButton(
+              label: '전체 멤버',
+              onTap: () => Get.toNamed('${WebRoutes.crewMembers}?id=$_crewId'),
             ),
           ],
         ),
@@ -260,21 +339,28 @@ class _CrewHomeViewWebState extends State<CrewHomeViewWeb> {
         if (top.isEmpty)
           const WebEmptyState(message: '아직 멤버 기록이 없어요.')
         else
-          Row(
+          CrewMemberListInset(
+            rowCount: perColumn,
+            child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               for (var i = 0; i < columns; i++) ...[
-                if (i > 0) const SizedBox(width: SDSSpacing.lg),
+                // 열 사이 48 (목업 — 열 413, 다음 열 461).
+                if (i > 0) const SizedBox(width: 48),
                 Expanded(
                   child: Column(
                     children: [
-                      for (final member in top.skip(i * perColumn).take(perColumn))
+                      for (final (index, member)
+                          in top.skip(i * perColumn).take(perColumn).indexed) ...[
+                        if (index > 0) SizedBox(height: crewMemberRowGap(context)),
                         CrewMemberRowWeb(member: member, onTap: () => _onMemberTap(member)),
+                      ],
                     ],
                   ),
                 ),
               ],
             ],
+            ),
           ),
       ],
     );
@@ -286,18 +372,36 @@ class _CrewHomeSkeleton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDesktop = context.isDesktop;
+    // 실제 레이아웃과 같은 로고 크기·간격(PC 64 / 그 외 56, 간격 12).
+    final double logoSize = isDesktop ? 64 : 56;
+
     return SkeletonShimmer(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          if (!isDesktop) ...[
+            const SkeletonBox(width: 26, height: 26, radius: 4),
+            const SizedBox(height: 28),
+          ],
           Row(
-            children: const [
-              SkeletonBox(width: 64, height: 64, radius: 12),
-              SizedBox(width: SDSSpacing.md),
-              SkeletonBox(width: 220, height: 28),
+            children: [
+              SkeletonBox(
+                width: logoSize,
+                height: logoSize,
+                radius: crewLogoRadius(logoSize),
+              ),
+              const SizedBox(width: 12),
+              const SkeletonBox(width: 220, height: 28),
             ],
           ),
-          const SizedBox(height: SDSSpacing.md),
+          // 좁은 폭은 크루명 아래 기록 링크 줄이 한 줄 더 있다.
+          if (!isDesktop) ...[
+            const SizedBox(height: 10),
+            const SkeletonBox(width: 180, height: 17),
+            const SizedBox(height: 20),
+          ] else
+            const SizedBox(height: SDSSpacing.md),
           const SkeletonBox(height: 56, radius: 10),
           const SizedBox(height: SDSSpacing.xl),
           const SkeletonBox(height: 260, radius: 10),

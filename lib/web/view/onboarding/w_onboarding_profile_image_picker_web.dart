@@ -124,10 +124,16 @@ class _DesktopDropModalState extends State<_DesktopDropModal> {
                         : null,
                   ),
                   child: Center(
-                    child: SvgPicture.asset(
-                      'assets/imgs/icons/icon_input_camera.svg',
-                      width: 40,
-                      height: 40,
+                    // ⚠️ colorFilter로 색을 덮지 않는다 — srcIn은 실루엣 전체를 칠해서
+                    // 안쪽 흰 부분까지 사라진다. 불투명도만 낮춘다
+                    // (크루 이미지 피커·라이브톡 업로드와 같은 처리).
+                    child: Opacity(
+                      opacity: 0.25,
+                      child: SvgPicture.asset(
+                        'assets/imgs/icons/icon_input_camera.svg',
+                        width: 40,
+                        height: 40,
+                      ),
                     ),
                   ),
                 ),

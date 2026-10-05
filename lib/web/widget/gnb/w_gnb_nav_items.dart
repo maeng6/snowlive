@@ -181,11 +181,11 @@ class GnbNavRow extends StatelessWidget {
             child: Row(
               children: [
                 // 아이콘이 없는 항목(친구·설정)은 자리도 비우지 않고 글자만 둔다.
-                // 아이콘은 접힘/펼침과 무관하게 항상 같은 x 위치에 고정된다.
+                // 아이콘은 접힘/펼침과 무관하게 항상 같은 x 위치에 고정된다
                 if (icon != null)
                   SizedBox(width: 24, height: 24, child: icon),
                 // 라벨(과 아이콘-라벨 간격)은 트리에서 제거하지 않고 페이드+클리핑으로
-                // 자연스럽게 사라진다. 간격을 이 안에 넣어야 접힘 폭이 정확히 44가 된다.
+                // 자연스럽게 사라진다. 간격을 이 안에 넣어야 접힘 폭이 정확히 44가 된다
                 Flexible(
                   child: ClipRect(
                     child: AnimatedOpacity(

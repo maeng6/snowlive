@@ -29,7 +29,8 @@ class CommunityListWeb extends StatelessWidget {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            if (!isMobileLoading) const CommunityTableHeaderRow(),
+            // 아직 데이터가 없으니 헤더 글자 폭만으로 열을 잡는다.
+            if (!isMobileLoading) CommunityTableHeaderRow(widths: CommunityMetaWidths.skeleton),
             const CommunityListSkeleton(),
           ],
         );
@@ -44,14 +45,16 @@ class CommunityListWeb extends StatelessWidget {
       }
 
       final isMobile = context.screenType == WebScreenType.mobile;
+      // 메타 열 폭은 이 페이지의 가장 긴 값에서 한 번만 재서 헤더·모든 행이 공유한다.
+      final widths = isMobile ? null : CommunityMetaWidths.of(items);
       return Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          if (!isMobile) const CommunityTableHeaderRow(),
+          if (!isMobile) CommunityTableHeaderRow(widths: widths!),
           for (final community in items)
             isMobile
                 ? CommunityCardRow(community: community, query: query)
-                : CommunityTableRow(community: community, query: query),
+                : CommunityTableRow(widths: widths!, community: community, query: query),
           const SizedBox(height: SDSSpacing.lg),
           NumberedPaginationBar(
             currentPage: vm.currentPage,

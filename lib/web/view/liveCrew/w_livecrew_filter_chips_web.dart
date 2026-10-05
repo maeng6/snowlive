@@ -1,32 +1,33 @@
 import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
+import 'package:com.snowlive/web/util/responsive_web.dart';
+import 'package:com.snowlive/web/view/fleamarket/w_fleamarket_filter_sheet_web.dart';
 import 'package:com.snowlive/web/view/liveCrew/crew_home_sections_web.dart';
 import 'package:flutter/material.dart';
 
-/// 칩 한 줄의 높이. 칩마다 이 높이를 **강제**해야 접힘 상태에서 둘째 줄이
-/// 삐져나오지 않는다(글꼴 렌더링에 따라 버튼 높이가 미세하게 달라진다).
-const double _kChipRowHeight = 40;
+/// 칩 한 줄의 높이. 칩마다 이 높이를 **강제**해야 글꼴 렌더링에 따라 버튼 높이가
+/// 미세하게 달라지는 걸 막는다. 목업(161:38968) 36 = 상하 10 + 글자 줄높이 16
+/// (= 스키장 드롭다운 pill의 높이와 같다).
+const double _kChipRowHeight = 36;
 
-/// 2단(스키장) 칩 한 줄의 높이. 1단보다 작게 그려 계층이 보이게 한다.
-const double _kSubChipRowHeight = 34;
-
-/// `어떤 크루가 있을까요?` 칩 필터(2단).
+/// `어떤 크루가 있을까요?` 칩 필터.
 ///
-/// 1단은 `스키장별` · `멤버 많은 순` · `이번 시즌 라이브온 많이 한 순` ·
-/// `스키가 많은 크루` · `보드가 많은 크루` 다섯 개고 **단일 선택**이다.
-/// `스키장별`을 고르면 **바로 아래에 스키장 칩 줄**이 나타난다.
+/// 칩은 `스키장별 크루` · `대형 크루` · `시즌 최다 라이브온` ·
+/// `스키어 중심 크루` · `보더 중심 크루` 다섯 개고 **단일 선택**이다.
 ///
-/// 1단은 5개라 한 줄에 들어가서 접기 토글이 필요 없다 — 접기 `^`는 스키장이 12개인
-/// **2단에만** 둔다(접힘 상태는 한 줄).
-///
-/// 중고거래의 [FleamarketFilterPill]은 라벨 뒤에 드롭다운 화살표 배지가 붙는
-/// **필터 트리거**라 여기 쓸 수 없다 → 색·radius·패딩만 같은 값으로 옮겨 왔다.
-class LiveCrewFilterChipsWeb extends StatefulWidget {
+/// `스키장별 크루`만 모양이 다르다 — **앱 랭킹 필터와 같은 드롭다운 pill**
+/// ([FleamarketFilterPill], 라벨 뒤 원형 화살표)이라 누르면 스키장 목록이
+/// 드롭다운(모바일·태블릿은 딤 시트)으로 뜨고 거기서 고른다.
+/// 예전에는 아래에 스키장 칩을 한 줄 더 깔았는데, **같은 알약 모양이 두 줄로 쌓여
+/// 어느 쪽이 상위 필터인지 헷갈린다**는 피드백으로 드롭다운으로 접었다.
+class LiveCrewFilterChipsWeb extends StatelessWidget {
   final List<CrewHomeChip> chips;
   final CrewHomeChip? selected;
   final ValueChanged<CrewHomeChip> onSelected;
 
-  /// 2단 칩. 비어 있으면 그리지 않는다(`스키장별`이 아닌 칩을 고른 상태).
+  /// 드롭다운에 담을 스키장 목록. 비어 있으면 `스키장별` 칩 자체가 없다.
   final List<CrewHomeChip> resortChips;
+
+  /// 지금 고른 스키장(= pill에 찍히는 이름). 아직 안 골랐으면 null.
   final CrewHomeChip? selectedResort;
   final ValueChanged<CrewHomeChip>? onResortSelected;
 
@@ -41,80 +42,53 @@ class LiveCrewFilterChipsWeb extends StatefulWidget {
   });
 
   @override
-  State<LiveCrewFilterChipsWeb> createState() => _LiveCrewFilterChipsWebState();
-}
-
-class _LiveCrewFilterChipsWebState extends State<LiveCrewFilterChipsWeb> {
-  bool _isResortExpanded = false;
-
-  @override
   Widget build(BuildContext context) {
-    if (widget.chips.isEmpty) return const SizedBox.shrink();
+    if (chips.isEmpty) return const SizedBox.shrink();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           '어떤 크루가 있을까요?',
-          style: SDSTextStyle.bold.copyWith(fontSize: 15, color: SDSColor.gray900),
+          style: SDSTextStyle.bold.copyWith(fontSize: 16, color: SDSColor.gray900),
         ),
-        const SizedBox(height: SDSSpacing.md),
+        // 제목 ↔ 칩: PC 16 / 좁은 폭 20 (태블릿 목업 — 제목 끝 449, 칩 469).
+        SizedBox(height: context.isDesktop ? 12 : 12),
         Wrap(
           spacing: SDSSpacing.sm,
           runSpacing: SDSSpacing.sm,
           children: [
-            for (final chip in widget.chips)
+            for (final chip in chips)
               SizedBox(
                 height: _kChipRowHeight,
-                child: _ToggleChip(
-                  label: chip.label,
-                  isActive: chip == widget.selected,
-                  onTap: () => widget.onSelected(chip),
-                ),
+                child: chip.kind == CrewHomeChipKind.byResort
+                    ? _buildResortPill(chip)
+                    : _ToggleChip(
+                        label: chip.label,
+                        isActive: chip == selected,
+                        onTap: () => onSelected(chip),
+                      ),
               ),
           ],
         ),
-        if (widget.resortChips.isNotEmpty) ...[
-          const SizedBox(height: SDSSpacing.md),
-          _buildResortRow(),
-        ],
       ],
     );
   }
 
-  Widget _buildResortRow() {
-    final wrap = Wrap(
-      spacing: 6,
-      runSpacing: 6,
-      children: [
-        for (final chip in widget.resortChips)
-          SizedBox(
-            height: _kSubChipRowHeight,
-            child: _ToggleChip(
-              label: chip.label,
-              isActive: chip == widget.selectedResort,
-              isSub: true,
-              onTap: () => widget.onResortSelected?.call(chip),
-            ),
-          ),
-      ],
-    );
-
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Expanded(
-          // 접힘 상태는 첫 줄만 보이게 잘라낸다(Wrap은 줄 수를 제한할 수 없다).
-          child: _isResortExpanded
-              ? wrap
-              : ClipRect(child: SizedBox(height: _kSubChipRowHeight, child: wrap)),
-        ),
-        const SizedBox(width: SDSSpacing.sm),
-        _ExpandToggle(
-          isExpanded: _isResortExpanded,
-          onTap: () => setState(() => _isResortExpanded = !_isResortExpanded),
-        ),
-      ],
+  Widget _buildResortPill(CrewHomeChip byResort) {
+    final isActive = selected?.kind == CrewHomeChipKind.byResort;
+    return FleamarketFilterPill<CrewHomeChip>(
+      // 고른 스키장이 곧 필터값이라 pill에 그 이름을 찍는다(앱 랭킹 필터와 같다).
+      label: isActive ? (selectedResort?.label ?? byResort.label) : byResort.label,
+      isActive: isActive,
+      title: '스키장',
+      values: resortChips,
+      labelOf: (chip) => chip.label,
+      onSelected: (chip) {
+        // 스키장을 고르는 것으로 `스키장별` 선택까지 끝난다 — 칩을 먼저 누를 필요가 없다.
+        onSelected(byResort);
+        onResortSelected?.call(chip);
+      },
     );
   }
 }
@@ -124,66 +98,53 @@ class _ToggleChip extends StatelessWidget {
   final bool isActive;
   final VoidCallback onTap;
 
-  /// 2단(스키장) 칩. 조금 작고 배경이 회색이라 1단과 구분된다.
-  final bool isSub;
-
   const _ToggleChip({
     required this.label,
     required this.isActive,
     required this.onTap,
-    this.isSub = false,
   });
 
   @override
   Widget build(BuildContext context) {
-    final background = isActive
-        ? SDSColor.gray900
-        : (isSub ? SDSColor.gray50 : SDSColor.snowliveWhite);
-    final border = isActive ? SDSColor.gray900 : (isSub ? SDSColor.gray50 : SDSColor.gray100);
+    final background = isActive ? SDSColor.gray900 : SDSColor.snowliveWhite;
+    final border = isActive ? SDSColor.gray900 : SDSColor.gray100;
 
     return ElevatedButton(
       onPressed: onTap,
-      style: ElevatedButton.styleFrom(
-        shadowColor: Colors.transparent,
-        overlayColor: Colors.transparent,
-        padding: EdgeInsets.symmetric(horizontal: isSub ? 12 : 14, vertical: isSub ? 7 : 9),
-        side: BorderSide(width: 1, color: border),
-        backgroundColor: background,
-        foregroundColor: isActive ? SDSColor.snowliveWhite : SDSColor.gray900,
-        elevation: 0,
-        minimumSize: Size.zero,
+      // hover — 칩도 버튼과 같이 **면이 어두워진다**(테두리는 고정).
+      // 선택됨은 배경에 검정 10%, 미선택은 흰 배경 → gray50.
+      style: ButtonStyle(
+        splashFactory: NoSplash.splashFactory,
+        shadowColor: const WidgetStatePropertyAll(Colors.transparent),
+        overlayColor: const WidgetStatePropertyAll(Colors.transparent),
+        elevation: const WidgetStatePropertyAll(0),
+        animationDuration: Duration.zero,
+        padding: const WidgetStatePropertyAll(
+          EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+        ),
+        side: WidgetStatePropertyAll(BorderSide(width: 1, color: border)),
+        backgroundColor: WidgetStateProperty.resolveWith((states) {
+          if (!states.contains(WidgetState.hovered)) return background;
+          return isActive
+              ? Color.alphaBlend(Colors.black.withValues(alpha: 0.1), background)
+              : SDSColor.gray50;
+        }),
+        foregroundColor: WidgetStatePropertyAll(
+          isActive ? SDSColor.snowliveWhite : SDSColor.gray900,
+        ),
+        minimumSize: const WidgetStatePropertyAll(Size.zero),
         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
+        shape: WidgetStatePropertyAll(
+          RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
+        ),
       ),
       child: Text(
         label,
-        style: (isSub ? SDSTextStyle.regular : SDSTextStyle.bold).copyWith(
-          fontSize: isSub ? 12 : 13,
+        style: SDSTextStyle.bold.copyWith(
+          fontSize: 13,
+          // 줄높이를 묶어야 칩 높이가 36으로 계산된다(안 묶으면 Pretendard가 더 크게 잡는다).
+          height: 16 / 13,
           color: isActive ? SDSColor.snowliveWhite : SDSColor.gray900,
-        ),
-      ),
-    );
-  }
-}
-
-class _ExpandToggle extends StatelessWidget {
-  final bool isExpanded;
-  final VoidCallback onTap;
-
-  const _ExpandToggle({required this.isExpanded, required this.onTap});
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: 32,
-      height: _kSubChipRowHeight,
-      child: InkWell(
-        onTap: onTap,
-        customBorder: const CircleBorder(),
-        child: Icon(
-          isExpanded ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
-          size: 22,
-          color: SDSColor.gray900,
         ),
       ),
     );

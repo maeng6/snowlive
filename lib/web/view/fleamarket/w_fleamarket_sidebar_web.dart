@@ -17,7 +17,8 @@ import 'package:intl/intl.dart';
 /// sticky 계산이 어긋나지 않게 **홈 레이아웃이 사이드바 바깥에서** 준다.
 const double kFleamarketSidebarTopOffset = 56;
 
-const double kFleamarketSidebarWidth = 240;
+/// 웹 사이드바 공통 폭 — 220(2026-10-03 240에서 축소, 사용자 확정).
+const double kFleamarketSidebarWidth = 220;
 final _sidebarPriceFormat = NumberFormat('###,###,###,###');
 
 /// 데스크탑 전용 우측 열: 키워드 알림 설정 + 최근 본 상품 + 찜 목록.
@@ -64,7 +65,7 @@ class FleamarketSidebarWeb extends StatelessWidget {
               ),
               child: Text(
                 '중고거래 물품 올리기',
-                style: SDSTextStyle.bold.copyWith(fontSize: 15, color: SDSColor.snowliveWhite),
+                style: SDSTextStyle.bold.copyWith(fontSize: 14, color: SDSColor.snowliveWhite),
               ),
             ),
           ),
@@ -96,7 +97,7 @@ class FleamarketSidebarWeb extends StatelessWidget {
                 foregroundColor: const WidgetStatePropertyAll(SDSColor.gray900),
               ),
               // 색은 foregroundColor가 입힌다(여기서 지정하면 상태별 색이 안 먹는다).
-              child: Text('키워드 알림 설정', style: SDSTextStyle.bold.copyWith(fontSize: 15)),
+              child: Text('키워드 알림 설정', style: SDSTextStyle.bold.copyWith(fontSize: 14)),
             ),
           ),
           // 인기 검색어(_PopularKeywords)는 서버 집계 API가 준비되면 다시 켠다.

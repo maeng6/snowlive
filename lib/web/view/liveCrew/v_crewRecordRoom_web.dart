@@ -128,10 +128,19 @@ class _RecordRoomSkeleton extends StatelessWidget {
     return const Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        SkeletonBox(height: 76, radius: 10),
+        // ⚠️ 색은 SkeletonShimmer가 입힌다 — 안 감싸면 흰 배경에 흰 박스다.
+        SkeletonShimmer(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              SkeletonBox(height: 76, radius: 10),
+              SizedBox(height: SDSSpacing.xl),
+              SkeletonBox(height: 240, radius: 10),
+            ],
+          ),
+        ),
         SizedBox(height: SDSSpacing.xl),
-        SkeletonBox(height: 240, radius: 10),
-        SizedBox(height: SDSSpacing.xl),
+        // 단독으로도 쓰이는 위젯이라 자기 shimmer를 갖고 있다.
         CrewRecordListSkeleton(),
       ],
     );

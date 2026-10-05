@@ -24,6 +24,11 @@ class WebNetworkImage extends StatefulWidget {
   /// 이전 이미지를 유지해서 흰 깜빡임이 사라진다.
   final bool gaplessPlayback;
 
+  /// 로딩 중 스켈레톤 **밑판**을 깔지. 사진·썸네일은 깔아야 자리가 잡히지만,
+  /// 배경이 투명한 아이콘(티어 배지 등)은 밑판이 회색 사각으로 비쳐서
+  /// 로드되는 순간 깜빡이므로 끈다.
+  final bool showPlaceholder;
+
   /// **높이를 고정하지 않는 이미지**(원본 비율로 그리는 피드 사진)의 로딩 중
   /// 자리를 이 비율(가로/세로)로 잡아둔다 — 실제 크기는 받아봐야 알 수 있으니
   /// 어림값이다. 로드되면 원본 비율로 바뀐다.
@@ -43,6 +48,7 @@ class WebNetworkImage extends StatefulWidget {
     this.isCircle = false,
     this.fallback,
     this.gaplessPlayback = false,
+    this.showPlaceholder = true,
     this.placeholderAspectRatio,
   });
 
@@ -109,9 +115,9 @@ class _WebNetworkImageState extends State<WebNetworkImage> {
       // 크기가 고정된 이미지는 로딩 동안 스켈레톤을 **밑판**으로 깐다.
       // loadingBuilder만으로는 부족하다 — CORS가 막힌 호스트는 <img> 폴백으로
       // 렌더되는데 그 경로에서는 loadingBuilder/frameBuilder가 불리지 않아
-      // 스켈레톤 없이 빈 칸 → 툭 나타나는 문제가 있었다(프사 등, 실측).
+      // 스켈레톤 없이 빈 칸 → 툭 나타나는 문제가 있었다(프사 등, 실측)
       final placeholderRatio = widget.placeholderAspectRatio;
-      if (width != null && height != null && !_loaded) {
+      if (width != null && height != null && !_loaded && widget.showPlaceholder) {
         content = Stack(
           children: [
             SkeletonShimmer(

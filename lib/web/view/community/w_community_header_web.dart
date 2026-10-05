@@ -37,7 +37,7 @@ class CommunitySearchBarWeb extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // 피그마 64:112895 — 높이 40(패딩 14/10), 라운드 6, 아이콘 16,
+    // 피그마 64:112895 — 높이 40(패딩 14/10), 라운드 6, 아이콘 18(텍스트와 6),
     // 구분선 없이 범위 ↔ 입력 16, 텍스트 15(범위 gray900 / 힌트 gray500).
     return Container(
       height: 40,
@@ -48,8 +48,8 @@ class CommunitySearchBarWeb extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 14),
       child: Row(
         children: [
-          Icon(Icons.search, size: 16, color: SDSColor.gray400),
-          const SizedBox(width: 8),
+          Icon(Icons.search, size: 18, color: SDSColor.gray400),
+          const SizedBox(width: 6),
           if (!scopeLocked) ...[
             WebDropdownTextButton<CommunitySearchScope>(
               label: scope.label,

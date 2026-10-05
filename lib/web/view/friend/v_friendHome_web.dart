@@ -266,8 +266,10 @@ class _FriendHomeViewWebState extends State<FriendHomeViewWeb> {
     return Container(
       color: SDSColor.snowliveWhite,
       // 홈 공통 여백(중고거래 홈 기준).
-      padding: webHomePagePadding(context),
+      // ⚠️ 페이지 여백은 **스크롤 영역 안쪽**에 둔다(웹 공통) — 바깥에 주면
+      // 스크롤바가 여백 안쪽에 생겨 브라우저 오른쪽 끝에 붙지 않는다.
       child: SingleChildScrollView(
+        padding: webHomePagePadding(context),
         child: Center(
           child: ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: kFriendContentMaxWidth),

@@ -1,3 +1,4 @@
+import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/web/routes/routes_web.dart';
 import 'package:com.snowlive/core/model/m_rankingListIndiv.dart';
 import 'package:com.snowlive/web/util/responsive_web.dart';
@@ -16,9 +17,14 @@ import 'package:get/get.dart';
 ///
 /// 딤이 GNB/상단바까지 덮도록 다른 팝업들과 같이 showWebOverlayModal 위에 올린다.
 Future<void> showRankingProfileModal(BuildContext context, RankingUser user) {
+  final isMobile = context.screenType == WebScreenType.mobile;
   return showWebOverlayModal<void>(
     context: context,
-    builder: (_, close) => _RankingProfileCard(user: user, onClose: close),
+    // 모바일은 하단에 붙는 시트라 좌우 여백이 없어야 한다(친구 프로필과 동일).
+    alignment: isMobile ? Alignment.bottomCenter : Alignment.center,
+    padding: isMobile ? EdgeInsets.zero : const EdgeInsets.all(SDSSpacing.lg),
+    builder: (_, close) =>
+        _RankingProfileCard(user: user, onClose: close, isSheet: isMobile),
   );
 }
 
@@ -26,7 +32,14 @@ class _RankingProfileCard extends StatefulWidget {
   final RankingUser user;
   final VoidCallback onClose;
 
-  const _RankingProfileCard({required this.user, required this.onClose});
+  /// 모바일은 중앙 카드가 아니라 하단 시트(드래그 핸들 + 상단만 라운드).
+  final bool isSheet;
+
+  const _RankingProfileCard({
+    required this.user,
+    required this.onClose,
+    required this.isSheet,
+  });
 
   @override
   State<_RankingProfileCard> createState() => _RankingProfileCardState();
@@ -115,7 +128,9 @@ class _RankingProfileCardState extends State<_RankingProfileCard> {
         resortName: user.resortNickname,
         crewName: user.crewName,
       ),
-      onClose: widget.onClose,
+      isSheet: widget.isSheet,
+      // 시트는 닫기 X 대신 드래그 핸들을 쓴다.
+      onClose: widget.isSheet ? null : widget.onClose,
       action: _buildAction(),
       footer: WebProfileFooterButton(
         label: '프로필 보러가기',

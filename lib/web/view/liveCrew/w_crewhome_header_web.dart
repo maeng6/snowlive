@@ -4,6 +4,7 @@ import 'package:com.snowlive/web/routes/routes_web.dart';
 import 'package:com.snowlive/web/util/crew_visual_web.dart';
 import 'package:com.snowlive/web/util/responsive_web.dart';
 import 'package:com.snowlive/web/widget/w_network_image_web.dart';
+import 'package:com.snowlive/web/widget/w_web_icon_button_web.dart';
 import 'package:com.snowlive/web/widget/w_web_image_viewer_web.dart';
 import 'package:com.snowlive/web/widget/w_web_profile_tap_web.dart';
 import 'package:flutter/material.dart';
@@ -35,13 +36,19 @@ class CrewHomeHeaderWeb extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final accent = crewColorOf(info.color) ?? SDSColor.snowliveBlue;
     final logoUrl = crewLogoUrlOf(logoUrl: info.crewLogoUrl, color: info.color);
     final desc = info.description?.trim().replaceAll('\n', ' ') ?? '';
     final resort = info.baseResortFullname?.trim().isNotEmpty ?? false
         ? info.baseResortFullname!
         : (info.baseResortNickname ?? '');
     final subtitle = [if (desc.isNotEmpty) desc, if (resort.isNotEmpty) resort].join(' · ');
+
+    // 로고 PC 64 / 태블릿 56 / 모바일 36 (목업 161:94357 · 161:102334).
+    final double logoSize = switch (context.screenType) {
+      WebScreenType.desktop => 64,
+      WebScreenType.tablet => 56,
+      WebScreenType.mobile => 36,
+    };
 
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -52,21 +59,25 @@ class CrewHomeHeaderWeb extends StatelessWidget {
               ? () => showWebPhotoViewer(context, url: logoUrl, title: info.crewName ?? '')
               : null,
           child: Container(
-            width: 64,
-            height: 64,
+            width: logoSize,
+            height: logoSize,
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(12),
-              // 목업의 로고 테두리는 크루 색이다.
-              border: Border.all(color: accent, width: 2),
+              // 라운드는 공용 비율(한 변의 0.2). 목업에는 크루색 테두리가 없지만
+              // 선을 아예 빼면 흰 기본 마크가 흰 배경에 묻혀서 gray100으로 바꾼다
+              // (크루 팝업·목록 행과 같은 처리).
+              borderRadius: BorderRadius.circular(crewLogoRadius(logoSize)),
+              border: Border.all(color: SDSColor.gray100),
             ),
             clipBehavior: Clip.antiAlias,
             child: (logoUrl?.isNotEmpty ?? false)
-                ? WebNetworkImage(url: logoUrl, width: 64, height: 64)
+                ? WebNetworkImage(url: logoUrl, width: logoSize, height: logoSize)
                 : Container(color: SDSColor.gray100),
           ),
         ),
-        const SizedBox(width: SDSSpacing.md),
+        // 로고 ↔ 텍스트 12 (목업 161:87212).
+        const SizedBox(width: 12),
         Expanded(
+          flex: 3,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
@@ -75,15 +86,19 @@ class CrewHomeHeaderWeb extends StatelessWidget {
                 info.crewName ?? '',
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: SDSTextStyle.extraBold.copyWith(fontSize: 28, color: SDSColor.gray900),
+                // 크루명은 서브 페이지 타이틀 공통값(PC 30 / 태블릿 24 / 모바일 20).
+                // 목업 PC가 30이라 공통값과 같다.
+                style: SDSTextStyle.bold
+                    .copyWith(fontSize: webSubPageTitleSize(context), color: SDSColor.gray900),
               ),
               if (subtitle.isNotEmpty) ...[
+                // 이름 ↔ 부제 2 (목업 161:94376).
                 const SizedBox(height: 2),
                 Text(
                   subtitle,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: SDSTextStyle.regular.copyWith(fontSize: 13, color: SDSColor.gray500),
+                  style: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray500),
                 ),
               ],
             ],
@@ -92,22 +107,42 @@ class CrewHomeHeaderWeb extends StatelessWidget {
         // 방문자수(게스트 포함, 유저/IP당 5분 스로틀). 서버 POST /crew/visit/{id}/ 집계.
         if (context.isDesktop) ...[
           const SizedBox(width: SDSSpacing.md),
-          Text(
-            '방문자 Today ${_fmtVisitor(visitorToday)}  |  Total ${_fmtVisitor(visitorTotal)}',
-            style: SDSTextStyle.regular.copyWith(fontSize: 12, color: SDSColor.gray400),
+          // 목업에는 없는 줄(실제 동작하는 집계)이라 유지하되, 좁아지면 **먼저 줄어든다**.
+          // ⚠️ `Flexible`(loose)로 두면 **남는 폭을 다 쓰지 않아** 그만큼이 줄 끝에
+          // 남고 아이콘이 우측선에서 안쪽으로 밀린다 → `Expanded` + 우측 정렬.
+          Expanded(
+            flex: 2,
+            child: Align(
+              alignment: Alignment.centerRight,
+              child: Text(
+              '방문자 Today ${_fmtVisitor(visitorToday)}  |  Total ${_fmtVisitor(visitorTotal)}',
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              textAlign: TextAlign.right,
+                style: SDSTextStyle.regular.copyWith(fontSize: 12, color: SDSColor.gray400),
+              ),
+            ),
           ),
         ],
         const SizedBox(width: SDSSpacing.md),
         _HeaderIconButton(
-          icon: Icons.notifications_none,
+          // 앱과 같은 에셋(v_crewMain.dart:72) — 알림은 틴트 없이 그대로 쓴다.
+          asset: 'assets/imgs/icons/icon_alarm_resortHome.png',
           // 크루 알림 화면은 목업이 없어 다음 작업이다.
           onTap: () => Get.snackbar('알림', '크루 알림은 준비 중이에요.'),
+          // 설정이 없으면 이게 마지막 아이콘이다.
+          flushRight: !showSettings,
         ),
         if (showSettings) ...[
+          // 아이콘 **사이 12**(목업 — 묶음 64 = 26 + 12 + 26). 각 버튼이 히트 여백
+          // 4씩을 갖고 있으므로 여기서는 4만 준다(4+4+4 = 12).
           const SizedBox(width: 4),
           _HeaderIconButton(
-            icon: Icons.settings_outlined,
+            // 앱과 같은 에셋(v_fleaMarketMain.dart:99) — 설정은 gray900으로 틴트한다.
+            asset: 'assets/imgs/icons/icon_header_setting.png',
+            tint: SDSColor.gray900,
             onTap: () => Get.toNamed('${WebRoutes.crewSetting}?id=${info.crewId}'),
+            flushRight: true,
           ),
         ],
       ],
@@ -115,21 +150,33 @@ class CrewHomeHeaderWeb extends StatelessWidget {
   }
 }
 
+/// 헤더 우측 아이콘 — **앱과 같은 PNG 에셋**을 쓴다(Material 아이콘은 모양이 다르다).
+/// hover는 웹 공통 아이콘 버튼(`WebIconButton`)과 같은 **불투명도 페이드**(1.0 → 0.6).
 class _HeaderIconButton extends StatelessWidget {
-  final IconData icon;
+  final String asset;
   final VoidCallback onTap;
 
-  const _HeaderIconButton({required this.icon, required this.onTap});
+  /// 단색 아이콘만 틴트한다(설정). 알림은 에셋 색을 그대로 쓴다.
+  final Color? tint;
+
+  /// 마지막 아이콘은 **오른쪽 히트 여백을 빼서** 아이콘이 콘텐츠 우측선에 붙는다
+  /// (뒤로가기가 좌측선에 붙는 것과 같은 처리).
+  final bool flushRight;
+
+  const _HeaderIconButton({
+    required this.asset,
+    required this.onTap,
+    this.tint,
+    this.flushRight = false,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
+    return WebIconButton(
       onTap: onTap,
-      customBorder: const CircleBorder(),
-      child: Padding(
-        padding: const EdgeInsets.all(6),
-        child: Icon(icon, size: 22, color: SDSColor.gray900),
-      ),
+      padding: EdgeInsets.fromLTRB(4, 4, flushRight ? 0 : 4, 4),
+      // 목업(161:87215)·앱 모두 26.
+      icon: Image.asset(asset, width: 26, height: 26, color: tint),
     );
   }
 }
@@ -163,30 +210,55 @@ class CrewHomeSummaryBarWeb extends StatelessWidget {
         label: '멤버(명)',
         value: _numberFormat.format(memberCount ?? 0),
         onTap: onMembersTap,
+        stacked: isMobile,
       ),
-      _StatCell(label: '통합 랭킹', value: _numberFormat.format(overallRank ?? 0)),
-      _StatCell(label: '총 점수', value: _numberFormat.format((totalScore ?? 0).round())),
+      _StatCell(
+        label: '통합 랭킹',
+        value: _numberFormat.format(overallRank ?? 0),
+        stacked: isMobile,
+      ),
+      _StatCell(
+        label: '총 점수',
+        value: _numberFormat.format((totalScore ?? 0).round()),
+        stacked: isMobile,
+      ),
     ];
 
+    // 랭킹 `내 랭킹 카드`(w_ranking_my_card_web.dart)와 **같은 규격**으로 맞춘다
+    // (사용자 확정) — gray50 · 라운드 16 · PC 패딩 30/7 ·
+    // 라벨 Regular 14(검정 50%) · 값 Bold 17 · 구분선 1×16 gray700 10%, 좌우 24.
+    // 크루홈 목업(161:86732)은 15/18/30/60이지만 같은 성격의 지표 바라 통일한다.
+    //
+    // 높이는 **54**로 못 박는다 — 랭킹 카드는 티어 아이콘(40)이 높이를 만들어
+    // 7+40+7 = 54가 되는데, 여기는 아이콘이 없어 그냥 두면 40으로 얇아진다.
     return Container(
+      constraints: BoxConstraints(minHeight: isMobile ? 0 : 54),
+      alignment: isMobile ? null : Alignment.centerLeft,
       decoration: BoxDecoration(
         color: SDSColor.gray50,
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(16),
       ),
-      padding: EdgeInsets.symmetric(horizontal: isMobile ? SDSSpacing.md : SDSSpacing.lg, vertical: 18),
-      // 모바일은 세 지표 + 신청 링크를 한 줄에 넣으면 넘친다 → 세로로 쌓는다.
+      // 좌우 30은 세 폭 공통, 모바일만 상하 16(목업 161:101488 — 바 높이 73).
+      padding: EdgeInsets.symmetric(horizontal: 30, vertical: isMobile ? 16 : 7),
       child: isMobile ? _buildStacked(stats) : _buildInline(stats),
     );
   }
 
+  /// 모바일 — 세 지표가 **한 줄**에 나란히 서되 각 칸이 값(위)·라벨(아래)로
+  /// 쌓인다(목업 161:101494). 남는 폭은 칸 사이에 고르게 퍼진다.
   Widget _buildStacked(List<Widget> stats) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        for (var i = 0; i < stats.length; i++) ...[
-          if (i > 0) const SizedBox(height: 10),
-          stats[i],
-        ],
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            for (var i = 0; i < stats.length; i++) ...[
+              if (i > 0) _divider(margin: 0),
+              stats[i],
+            ],
+          ],
+        ),
         if (onApply != null) ...[
           const SizedBox(height: 12),
           InkWell(
@@ -215,9 +287,10 @@ class CrewHomeSummaryBarWeb extends StatelessWidget {
   Widget _buildInline(List<Widget> stats) {
     return Row(
         children: [
+          // 목업은 세 지표가 **왼쪽에 모여** 있다(남은 폭을 나눠 갖지 않는다).
           for (var i = 0; i < stats.length; i++) ...[
             if (i > 0) _divider(),
-            Flexible(child: stats[i]),
+            Flexible(fit: FlexFit.loose, child: stats[i]),
           ],
           if (onApply != null) ...[
             const Spacer(),
@@ -243,47 +316,89 @@ class CrewHomeSummaryBarWeb extends StatelessWidget {
       );
   }
 
-  Widget _divider() => Container(
+  /// 항목 사이 구분선 — 1×16, gray700 10%, 좌우 24(랭킹 내 랭킹 카드와 동일).
+  Widget _divider({double margin = 24}) => Container(
         width: 1,
         height: 16,
-        margin: const EdgeInsets.symmetric(horizontal: SDSSpacing.md),
-        color: SDSColor.gray200,
+        margin: EdgeInsets.symmetric(horizontal: margin),
+        color: SDSColor.gray700.withValues(alpha: 0.1),
       );
 }
 
-class _StatCell extends StatelessWidget {
+class _StatCell extends StatefulWidget {
   final String label;
   final String value;
 
   /// 주면 칸 전체가 탭 대상이 된다(`멤버(명)` → 전체 멤버 화면).
   final VoidCallback? onTap;
 
-  const _StatCell({required this.label, required this.value, this.onTap});
+  /// 모바일은 값(위) · 라벨(아래)로 쌓고 가운데 정렬한다(목업).
+  final bool stacked;
+
+  const _StatCell({
+    required this.label,
+    required this.value,
+    this.onTap,
+    this.stacked = false,
+  });
+
+  @override
+  State<_StatCell> createState() => _StatCellState();
+}
+
+class _StatCellState extends State<_StatCell> {
+  bool _hovered = false;
 
   @override
   Widget build(BuildContext context) {
-    final cell = Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Text(label, style: SDSTextStyle.regular.copyWith(fontSize: 13, color: SDSColor.gray500)),
-        const SizedBox(width: SDSSpacing.sm),
-        Flexible(
-          child: Text(
-            value,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: SDSTextStyle.bold.copyWith(fontSize: 15, color: SDSColor.gray900),
-          ),
-        ),
-      ],
+    // 누를 수 있는 칸(`멤버(명)`)만 hover에서 **밑줄**로 알린다 — 바 안이라
+    // 배경 틴트를 쓰면 gray50 위에 또 회색이 깔려 잘 안 보인다.
+    final underline =
+        widget.onTap != null && _hovered ? TextDecoration.underline : null;
+    // 랭킹 내 랭킹 카드와 동일 — 라벨 Regular 14(검정 50%), 값 Bold 17.
+    final label = Text(
+      widget.label,
+      style: SDSTextStyle.regular.copyWith(
+        fontSize: 14,
+        color: SDSColor.gray900.withValues(alpha: 0.5),
+        decoration: underline,
+        decorationColor: SDSColor.gray900.withValues(alpha: 0.5),
+      ),
     );
-    if (onTap == null) return cell;
+    final value = Text(
+      widget.value,
+      maxLines: 1,
+      overflow: TextOverflow.ellipsis,
+      style: SDSTextStyle.bold.copyWith(
+        fontSize: 17,
+        color: SDSColor.gray900,
+        decoration: underline,
+      ),
+    );
 
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(6),
-      // 숫자만 좁게 잡히지 않게 라벨+값 전체를 누를 수 있게 둔다.
-      child: Padding(padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2), child: cell),
+    final cell = widget.stacked
+        // 값 ↔ 라벨 4 (목업 — 값 21 / 라벨 16, 칸 높이 41).
+        ? Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [value, const SizedBox(height: 4), label],
+          )
+        // 가로 배치는 라벨 ↔ 값 11.
+        : Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [label, const SizedBox(width: 11), Flexible(child: value)],
+          );
+    if (widget.onTap == null) return cell;
+
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      onEnter: (_) => setState(() => _hovered = true),
+      onExit: (_) => setState(() => _hovered = false),
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: widget.onTap,
+        child: cell,
+      ),
     );
   }
 }

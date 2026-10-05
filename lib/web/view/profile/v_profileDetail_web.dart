@@ -658,10 +658,20 @@ class _ProfileSkeleton extends StatelessWidget {
     return const Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        SkeletonBox(height: 56, radius: 10),
+        // ⚠️ SkeletonBox는 흰색이고 색은 SkeletonShimmer가 입힌다 — 감싸지 않으면
+        // 흰 배경에 흰 박스라 아무것도 보이지 않는다.
+        SkeletonShimmer(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              SkeletonBox(height: 56, radius: 10),
+              SizedBox(height: SDSSpacing.lg),
+              SkeletonBox(height: 20, radius: 6),
+            ],
+          ),
+        ),
         SizedBox(height: SDSSpacing.lg),
-        SkeletonBox(height: 20, radius: 6),
-        SizedBox(height: SDSSpacing.lg),
+        // 단독으로도 쓰이는 위젯이라 자기 shimmer를 갖고 있다.
         _ProfileStatsSkeleton(),
       ],
     );
@@ -673,13 +683,15 @@ class _ProfileStatsSkeleton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        SkeletonBox(height: 64, radius: 10),
-        SizedBox(height: SDSSpacing.lg),
-        SkeletonBox(height: 240, radius: 10),
-      ],
+    return const SkeletonShimmer(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          SkeletonBox(height: 64, radius: 10),
+          SizedBox(height: SDSSpacing.lg),
+          SkeletonBox(height: 240, radius: 10),
+        ],
+      ),
     );
   }
 }

@@ -2,6 +2,7 @@ import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/core/viewmodel/vm_user.dart';
 import 'package:com.snowlive/core/model/m_resortModel.dart';
 import 'package:com.snowlive/web/routes/routes_web.dart';
+import 'package:com.snowlive/web/util/crew_visual_web.dart';
 import 'package:com.snowlive/web/util/responsive_web.dart';
 import 'package:com.snowlive/web/view/liveCrew/w_crew_image_color_picker_web.dart';
 import 'package:com.snowlive/web/view/liveCrew/w_crewcreate_image_picker_web.dart';
@@ -14,8 +15,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
-/// 목업 본문 폭(가운데 한 줄로 세우는 폼이라 좁다).
-const double kCrewCreateContentMaxWidth = 360;
+/// 목업 본문 폭(가운데 한 줄로 세우는 폼이라 좁다). PC 목업(174:90051)도 같은 358이다
+/// — 만들기 플로우는 세 폭 모두 **같은 레이아웃**을 쓴다(사용자 확정).
+const double kCrewCreateContentMaxWidth = 358;
+
+/// PC에서 `←`와 진행 버튼이 서는 줄의 폭. 목업은 콘텐츠 영역(1240) 좌우 220 안쪽
+/// = 800이다. 본문(358)보다 넓어서 버튼이 화면 구석에 붙지 않는다.
+const double kCrewCreateTopBarMaxWidth = 800;
 
 /// 인트로 일러스트(모바일 크루 온보딩과 같은 에셋).
 const String _kCrewIntroIllust = 'assets/imgs/imgs/img_livecrew_1.png';
@@ -23,8 +29,42 @@ const String _kCrewIntroIllust = 'assets/imgs/imgs/img_livecrew_1.png';
 /// 모바일 하단 고정 버튼 영역 높이(패딩 8+16 + 버튼 48).
 const double _kMobileBarHeight = 72;
 
-/// 이 높이보다 낮으면 색상 줄을 아래로 밀지 않는다(밀면 넘친다).
-const double _kMobileSpacedMinHeight = 520;
+/// 제목 ↔ 부제 (목업 10).
+const double _kTitleGap = 10;
+
+/// 입력 단계 제목 — ExtraBold 24(줄높이 1.36) + 부제 Regular 14.
+/// 부제는 목업이 **검정 40%** 라 gray500이 아니다(조금 더 진하다).
+class _StepTitle extends StatelessWidget {
+  final String title;
+  final String subtitle;
+
+  const _StepTitle({required this.title, required this.subtitle});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          title,
+          style: SDSTextStyle.extraBold.copyWith(
+            fontSize: 24,
+            color: SDSColor.gray900,
+            height: 1.36,
+          ),
+        ),
+        const SizedBox(height: _kTitleGap),
+        Text(
+          subtitle,
+          style: SDSTextStyle.regular.copyWith(
+            fontSize: 14,
+            color: SDSColor.gray900.withValues(alpha: 0.4),
+          ),
+        ),
+      ],
+    );
+  }
+}
 
 /// 크루 만들기. 한 라우트 안에서 3단계로 진행한다(목업).
 /// 0 = 소개 / 1 = 이름·베이스 스키장 / 2 = 이미지·대표 색상.
@@ -46,6 +86,10 @@ class _CrewCreateViewWebState extends State<CrewCreateViewWeb> {
   void initState() {
     super.initState();
     _vm.reset();
+    // 3단계에서 색을 고르면 **색마다 다른 마크 이미지**로 갈아끼운다 → 미리 받아 둔다.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) precacheCrewDefaultLogos(context);
+    });
   }
 
   @override
@@ -135,7 +179,10 @@ class _CrewCreateViewWebState extends State<CrewCreateViewWeb> {
                     ),
                     child: Text(
                       '확인',
-                      style: SDSTextStyle.bold.copyWith(fontSize: 15, color: SDSColor.snowliveWhite),
+                      style: SDSTextStyle.bold.copyWith(
+                        fontSize: 15,
+                        color: SDSColor.snowliveWhite,
+                      ),
                     ),
                   ),
                 ),
@@ -153,33 +200,35 @@ class _CrewCreateViewWebState extends State<CrewCreateViewWeb> {
     // 모바일 목업은 진행 버튼이 **하단 고정 전체폭**이다(상단 우측 버튼은 없다).
     final isMobile = context.screenType == WebScreenType.mobile;
 
+    // 페이지 여백은 서브 페이지 공통값(PC 40/58 · 태블릿 20/20 · 모바일 16/16).
+    // 하단만 화면별로 다르다 — 모바일은 고정 버튼 바 높이를 비운다.
+    final pagePadding = webSubPagePadding(context);
     final scrollArea = Container(
       color: SDSColor.snowliveWhite,
       padding: EdgeInsets.fromLTRB(
-        isDesktop ? SDSSpacing.xl : SDSSpacing.md,
-        // 상단은 서브 페이지 공통(PC 32 / 태블릿 16 / 모바일 20 — 홈과 동일).
-        webSubPagePadding(context).top,
-        isDesktop ? SDSSpacing.xl : SDSSpacing.md,
+        pagePadding.left,
+        pagePadding.top,
+        pagePadding.right,
         isMobile ? _kMobileBarHeight : SDSSpacing.xl,
       ),
-      child: LayoutBuilder(
-        builder: (context, constraints) => SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              _buildTopBar(isMobile: isMobile),
-              const SizedBox(height: SDSSpacing.xl),
-              Center(
-                child: ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: kCrewCreateContentMaxWidth),
-                  child: Obx(() => _buildStep(
-                        isMobile: isMobile,
-                        availableHeight: constraints.maxHeight,
-                      )),
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            _buildTopBar(isDesktop: isDesktop, isMobile: isMobile),
+            // 바 ↔ 제목: PC 40 (목업 — 아이콘 bottom 151, 제목 192) / 그 외 32
+            SizedBox(height: isDesktop ? 40 : SDSSpacing.xl),
+            Center(
+              child: ConstrainedBox(
+                // 좁은 폭에서는 **페이지 여백(태블릿 20 / 모바일 16) 안쪽을 꽉 채운다** —
+                // 358로 묶으면 태블릿에서 가운데 좁은 기둥처럼 떠 보인다(다른 화면과 다름).
+                constraints: BoxConstraints(
+                  maxWidth: isDesktop ? kCrewCreateContentMaxWidth : double.infinity,
                 ),
+                child: Obx(() => _buildStep(isMobile: isMobile)),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
@@ -191,20 +240,25 @@ class _CrewCreateViewWebState extends State<CrewCreateViewWeb> {
     return Container(
       color: SDSColor.snowliveWhite,
       child: Stack(
-      children: [
-        scrollArea,
-        Positioned(
-          left: 0,
-          right: 0,
-          bottom: 0,
-          // 흰 배경을 깔지 않으면 셸의 표면 색이 배어 나온다.
-          child: Container(
-            color: SDSColor.snowliveWhite,
-            padding: const EdgeInsets.fromLTRB(SDSSpacing.md, SDSSpacing.sm, SDSSpacing.md, SDSSpacing.md),
-            child: Obx(() => _buildPrimaryButton(fullWidth: true, isMobile: true)),
+        children: [
+          scrollArea,
+          Positioned(
+            left: 0,
+            right: 0,
+            bottom: 0,
+            // 흰 배경을 깔지 않으면 셸의 표면 색이 배어 나온다.
+            child: Container(
+              color: SDSColor.snowliveWhite,
+              padding: const EdgeInsets.fromLTRB(
+                SDSSpacing.md,
+                SDSSpacing.sm,
+                SDSSpacing.md,
+                SDSSpacing.md,
+              ),
+              child: Obx(() => _buildPrimaryButton(fullWidth: true, isMobile: true)),
+            ),
           ),
-        ),
-      ],
+        ],
       ),
     );
   }
@@ -224,27 +278,56 @@ class _CrewCreateViewWebState extends State<CrewCreateViewWeb> {
       _ => _onCreate,
     };
 
+    // 목업 comp_button — 라운드 5 · bold 16(줄높이 20).
+    // 하단 전체폭 버튼은 높이 48, **상단 우측 버튼은 목업대로 40**(좌우 패딩 16·최소 폭 88).
     return ElevatedButton(
       onPressed: _vm.isSubmitting ? null : onPressed,
-      style: ElevatedButton.styleFrom(
-        backgroundColor: SDSColor.snowliveBlue,
-        disabledBackgroundColor: SDSColor.gray300,
-        elevation: 0,
-        padding: EdgeInsets.symmetric(horizontal: fullWidth ? 0 : 28, vertical: 15),
-        minimumSize: fullWidth ? const Size(double.infinity, 48) : null,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
+      // hover는 웹 공통 채움 버튼 규칙 — **배경에 검정 10%**를 섞어 어두워진다.
+      // ⚠️ `elevation: 0`만으로는 부족하다. ElevatedButton은 hover에서 elevation을
+      // 한 단계 올려 그림자를 만들므로 모든 상태의 elevation을 0으로 못 박는다.
+      style: ButtonStyle(
+        splashFactory: NoSplash.splashFactory,
+        overlayColor: const WidgetStatePropertyAll(Colors.transparent),
+        shadowColor: const WidgetStatePropertyAll(Colors.transparent),
+        elevation: const WidgetStatePropertyAll(0),
+        animationDuration: Duration.zero,
+        backgroundColor: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.disabled)) return SDSColor.gray300;
+          if (states.contains(WidgetState.hovered)) {
+            return Color.alphaBlend(Colors.black.withValues(alpha: 0.1), SDSColor.snowliveBlue);
+          }
+          return SDSColor.snowliveBlue;
+        }),
+        padding: WidgetStatePropertyAll(
+          EdgeInsets.symmetric(horizontal: fullWidth ? 0 : 16, vertical: 10),
+        ),
+        minimumSize: WidgetStatePropertyAll(
+          fullWidth ? const Size(double.infinity, 48) : const Size(88, 40),
+        ),
+        // ⚠️ 웹 기본 compact density가 minimumSize 높이를 8 깎는다 → 표준으로 고정해야
+        // 두 버튼 모두 실제로 48이 된다(fixedSize는 폭까지 묶어서 쓰지 않는다).
+        visualDensity: VisualDensity.standard,
+        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+        shape: WidgetStatePropertyAll(
+          RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+        ),
       ),
       child: Text(
         label,
-        style: SDSTextStyle.bold.copyWith(fontSize: 15, color: SDSColor.snowliveWhite),
+        style: SDSTextStyle.bold.copyWith(
+          fontSize: 16,
+          height: 20 / 16,
+          color: SDSColor.snowliveWhite,
+        ),
       ),
     );
   }
 
   /// 목업의 상단 줄 — 좌측 `←`, 우측 진행 버튼(1단계 `다음` / 2단계 `만들기`).
   /// 소개 단계와 모바일에는 우측 버튼이 없다(하단 전체폭 버튼을 쓴다).
-  Widget _buildTopBar({required bool isMobile}) {
-    return Row(
+  Widget _buildTopBar({required bool isDesktop, required bool isMobile}) {
+    final row = Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         // 공통 헤더 표준 뒤로가기(30, hover 페이드).
         // 좌측 히트 여백만 0 — 아이콘이 콘텐츠 좌측선에 붙는다.
@@ -258,9 +341,18 @@ class _CrewCreateViewWebState extends State<CrewCreateViewWeb> {
           Obx(() => _buildPrimaryButton(fullWidth: false, isMobile: false)),
       ],
     );
+
+    // PC는 목업처럼 **폭 800 줄**을 가운데 두어, 버튼이 넓은 화면 구석까지 밀려나지 않게 한다.
+    if (!isDesktop) return row;
+    return Center(
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: kCrewCreateTopBarMaxWidth),
+        child: row,
+      ),
+    );
   }
 
-  Widget _buildStep({required bool isMobile, required double availableHeight}) {
+  Widget _buildStep({required bool isMobile}) {
     // ⚠️ Obx 빌더는 관찰 대상을 **무조건 하나 읽어야** 한다. 소개 단계는 뷰모델 값을
     // 하나도 안 쓰는데, 그대로 두면 GetX가 "improper use of a GetX"로 화면을 죽인다
     // (커뮤니티·친구 화면에서 두 번 겪었다).
@@ -272,25 +364,31 @@ class _CrewCreateViewWebState extends State<CrewCreateViewWeb> {
       case 1:
         return _buildInfo(isMobile: isMobile);
       default:
-        return _buildImageAndColor(isMobile: isMobile, availableHeight: availableHeight);
+        return _buildImageAndColor(isMobile: isMobile);
     }
   }
 
   Widget _buildIntro({required bool isMobile}) {
     return Column(
       children: [
+        // 소개 단계만 **가운데 정렬**이고 제목이 한 단계 크다(목업 comp_page_title).
         Text(
           '친구들과 함께 즐길 수 있는\n라이브 크루와 함께해요',
           textAlign: TextAlign.center,
-          style: SDSTextStyle.bold.copyWith(fontSize: 20, color: SDSColor.gray900, height: 1.4),
+          style: SDSTextStyle.bold.copyWith(fontSize: 26, color: SDSColor.gray900, height: 36 / 26),
         ),
-        const SizedBox(height: SDSSpacing.sm),
+        const SizedBox(height: _kTitleGap),
         Text(
           '라이브 크루를 통해 같은 라이딩 스타일의 친구들과\n교류하며 라이딩의 즐거움을 더 높여 보세요.',
           textAlign: TextAlign.center,
-          style: SDSTextStyle.regular.copyWith(fontSize: 13, color: SDSColor.gray500, height: 1.5),
+          style: SDSTextStyle.regular.copyWith(
+            fontSize: 14,
+            color: SDSColor.gray500,
+            height: 22 / 14,
+          ),
         ),
-        const SizedBox(height: SDSSpacing.xl),
+        // 부제 ↔ 일러스트 42 (목업 — 제목 블록 하단 패딩 30 + 12).
+        const SizedBox(height: 42),
         Image.asset(_kCrewIntroIllust, fit: BoxFit.contain),
         if (!isMobile) ...[
           const SizedBox(height: SDSSpacing.xxl),
@@ -307,15 +405,7 @@ class _CrewCreateViewWebState extends State<CrewCreateViewWeb> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Text(
-          '라이브크루 정보를 입력해 주세요',
-          style: SDSTextStyle.bold.copyWith(fontSize: 20, color: SDSColor.gray900),
-        ),
-        const SizedBox(height: 6),
-        Text(
-          '간단한 정보 입력 후 친구들과 즐거운 크루 활동을 시작해 보세요',
-          style: SDSTextStyle.regular.copyWith(fontSize: 13, color: SDSColor.gray500),
-        ),
+        _StepTitle(title: '라이브크루 정보를 입력해 주세요', subtitle: '간단한 정보 입력 후 친구들과 즐거운 크루 활동을 시작해 보세요'),
         const SizedBox(height: SDSSpacing.xl),
         WebFormTextField(
           label: '라이브크루 이름',
@@ -345,10 +435,7 @@ class _CrewCreateViewWebState extends State<CrewCreateViewWeb> {
     );
   }
 
-  Widget _buildImageAndColor({required bool isMobile, required double availableHeight}) {
-    // 색상 줄을 아래로 미는 건 화면이 충분히 높을 때만(억지로 늘리면 넘친다).
-    final spaced = isMobile && availableHeight >= _kMobileSpacedMinHeight;
-
+  Widget _buildImageAndColor({required bool isMobile}) {
     final picker = CrewImageColorPicker(
       pickedFile: _vm.logoFile,
       color: _vm.selectedColor,
@@ -356,27 +443,17 @@ class _CrewCreateViewWebState extends State<CrewCreateViewWeb> {
       onPickImage: _onPickImage,
       onRemoveImage: () => _vm.setLogoFile(null),
       onColorSelected: _vm.selectColor,
-      fillHeight: spaced,
     );
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Text(
-          '라이브크루 이미지와 대표 색상을\n등록해 주세요',
-          style: SDSTextStyle.bold.copyWith(fontSize: 20, color: SDSColor.gray900, height: 1.4),
-        ),
-        const SizedBox(height: 6),
-        Text(
-          '이미지와 대표 색상은 크루 설정에서 변경하실 수 있어요',
-          style: SDSTextStyle.regular.copyWith(fontSize: 13, color: SDSColor.gray500),
-        ),
+        _StepTitle(title: '라이브크루 이미지와 대표 색상을\n등록해 주세요', subtitle: '이미지와 대표 색상은 크루 설정에서 변경하실 수 있어요'),
         const SizedBox(height: SDSSpacing.xxl),
-        if (spaced)
-          // Spacer를 쓰려면 높이가 정해져 있어야 한다.
-          SizedBox(height: availableHeight - _kMobileBarHeight - 140, child: picker)
-        else
-          picker,
+        // 모바일도 **고정 간격**으로 그냥 흐르게 둔다. 예전에는 색상 줄을 화면
+        // 바닥(하단 버튼 바 위)으로 밀었는데, 제목 높이가 바뀌면 계산이 어긋나
+        // 색상 줄이 버튼에 잘렸다. 스크롤 영역이 바 높이만큼 비워 두므로 안 가린다.
+        picker,
       ],
     );
   }

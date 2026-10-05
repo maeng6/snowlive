@@ -22,16 +22,17 @@ import 'package:get/get.dart';
 /// 넓히면 사진이 과하게 커지고 한 줄 글자수가 늘어 읽기 흐름이 깨진다.
 const double kLiveTalkFeedWidth = 480;
 
-/// 데스크탑 우측 사이드바 폭(목업).
-const double kLiveTalkSidebarWidth = 246;
+/// 데스크탑 우측 사이드바 폭. 목업은 246이지만 웹 사이드바 공통 폭 220으로 맞춘다
+/// (중고거래·커뮤니티·랭킹·라이브크루와 동일 — 최대 폭이 화면마다 다르면 눈에 띈다).
+const double kLiveTalkSidebarWidth = 220;
 
-/// 피드 열과 사이드바 사이 간격(목업).
-const double _kSidebarGap = 40;
+/// 피드 열과 사이드바 사이 간격(목업). 크루톡 목록도 같은 값을 쓴다.
+const double kLiveTalkSidebarGap = 40;
 
 /// 데스크탑에서 "피드 + 간격 + 사이드바"를 묶은 블록 폭. 이 블록이 GNB 오른쪽
 /// 영역 가운데로 온다.
 const double kLiveTalkContentMaxWidth =
-    kLiveTalkFeedWidth + _kSidebarGap + kLiveTalkSidebarWidth;
+    kLiveTalkFeedWidth + kLiveTalkSidebarGap + kLiveTalkSidebarWidth;
 
 /// 웹 라이브톡 피드 화면.
 class LiveTalkHomeViewWeb extends StatefulWidget {
@@ -238,7 +239,7 @@ class _LiveTalkHomeViewWebState extends State<LiveTalkHomeViewWeb> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     SizedBox(width: kLiveTalkFeedWidth, child: _buildFeedColumn()),
-                    const SizedBox(width: _kSidebarGap),
+                    const SizedBox(width: kLiveTalkSidebarGap),
                     _buildDesktopSidebar(),
                   ],
                 )
@@ -363,10 +364,13 @@ class _LiveTalkHomeViewWebState extends State<LiveTalkHomeViewWeb> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          _PrimaryActionButton(label: '게시글 올리기', onTap: _onUploadLiveTalk),
+          // PC 사이드바 버튼은 bold 14(웹 사이드바 공통) — 하단 플로팅 바는 16 유지.
+          _PrimaryActionButton(
+              label: '게시글 올리기', onTap: _onUploadLiveTalk, fontSize: 14),
           // 버튼 사이 10 (피그마 80:217015/217252).
           const SizedBox(height: 10),
-          _SecondaryActionButton(label: '라이딩 카드 공유', onTap: _onShareRidingCard),
+          _SecondaryActionButton(
+              label: '라이딩 카드 공유', onTap: _onShareRidingCard, fontSize: 14),
         ],
       ),
     );
@@ -414,37 +418,54 @@ class _PrimaryActionButton extends StatelessWidget {
   final String label;
   final VoidCallback onTap;
 
-  const _PrimaryActionButton({required this.label, required this.onTap});
+  /// 사이드바에서는 14(웹 사이드바 공통), 하단 플로팅 바에서는 기본 16.
+  final double fontSize;
+
+  const _PrimaryActionButton({required this.label, required this.onTap, this.fontSize = 16});
 
   @override
-  Widget build(BuildContext context) =>
-      _FilledActionButton(label: label, background: SDSColor.snowliveBlue, onTap: onTap);
+  Widget build(BuildContext context) => _FilledActionButton(
+        label: label,
+        background: SDSColor.snowliveBlue,
+        onTap: onTap,
+        fontSize: fontSize,
+      );
 }
 
 /// 청회색 채움 버튼(라이딩 카드 공유) — 목업에서 게시글 올리기보다 약한 위계다.
 class _SecondaryActionButton extends StatelessWidget {
   final String label;
   final VoidCallback onTap;
+  final double fontSize;
 
-  const _SecondaryActionButton({required this.label, required this.onTap});
+  const _SecondaryActionButton({required this.label, required this.onTap, this.fontSize = 16});
 
   @override
-  Widget build(BuildContext context) =>
-      _FilledActionButton(label: label, background: _kLiveTalkSecondaryColor, onTap: onTap);
+  Widget build(BuildContext context) => _FilledActionButton(
+        label: label,
+        background: _kLiveTalkSecondaryColor,
+        onTap: onTap,
+        fontSize: fontSize,
+      );
 }
 
-/// 사이드바·하단바 공통 채움 버튼 — 라운드 5, bold 16
+/// 사이드바·하단바 공통 채움 버튼 — 라운드 5
 /// (피그마 comp_button 80:217015). hover는 웹 공통 규칙(검정 10% 즉시 혼합).
 /// 높이는 공용 [webActionButtonHeight](PC 44 / 태블릿·모바일 48).
+///
+/// 글자는 **하단 플로팅 바에서 bold 16, PC 사이드바에서는 bold 14** — 사이드바
+/// 버튼은 다른 화면과 함께 14로 통일했고(사용자 확정), 하단 바는 목업값을 유지한다.
 class _FilledActionButton extends StatelessWidget {
   final String label;
   final Color background;
   final VoidCallback onTap;
+  final double fontSize;
 
   const _FilledActionButton({
     required this.label,
     required this.background,
     required this.onTap,
+    this.fontSize = 16,
   });
 
   @override
@@ -476,7 +497,7 @@ class _FilledActionButton extends StatelessWidget {
         ),
         child: Text(
           label,
-          style: SDSTextStyle.bold.copyWith(fontSize: 16, color: SDSColor.snowliveWhite),
+          style: SDSTextStyle.bold.copyWith(fontSize: fontSize, color: SDSColor.snowliveWhite),
         ),
       ),
     );

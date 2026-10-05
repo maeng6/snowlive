@@ -14,6 +14,8 @@ class RankingArchiveCrewViewModelWeb extends GetxController {
   final RxList<CrewRanking_recordRoom> _items = <CrewRanking_recordRoom>[].obs;
   final Rxn<MyCrewRankingInfo_recordRoom> _myCrewRankingInfo = Rxn<MyCrewRankingInfo_recordRoom>();
   final RxBool _isLoading = false.obs;
+  /// 서버에 **실제로 보낸** 검색어. 빈 상태 문구에 쓴다(입력 중인 값이 아니라).
+  final RxString _appliedQuery = ''.obs;
   final RxInt _currentPage = 1.obs;
   final RxInt _totalPages = 1.obs;
   final RxInt _totalCount = 0.obs;
@@ -31,6 +33,8 @@ class RankingArchiveCrewViewModelWeb extends GetxController {
   List<CrewRanking_recordRoom> get items => _items;
   MyCrewRankingInfo_recordRoom? get myCrewRankingInfo => _myCrewRankingInfo.value;
   bool get isLoading => _isLoading.value;
+
+  String get appliedQuery => _appliedQuery.value;
   int get currentPage => _currentPage.value;
   int get totalPages => _totalPages.value;
   int get totalCount => _totalCount.value;
@@ -50,6 +54,7 @@ class RankingArchiveCrewViewModelWeb extends GetxController {
     _federation = federation;
     _daily = daily;
     _searchQuery = searchQuery;
+    _appliedQuery.value = searchQuery ?? '';
     _totalPages.value = 1; // gotoPage 범위체크 초기화
     await gotoPage(1);
   }

@@ -10,13 +10,56 @@ import 'package:get/get.dart';
 // 공유해 열이 어긋나지 않게 한다. 커뮤니티와 열 구성이 달라(분류·이름 별도 열,
 // 작성자 없음, 제목에 썸네일) 전용 셸을 두되, 간격·날짜/조회수 폭은
 // 커뮤니티 표와 동일값을 쓴다.
-const double kEventColGap = kCommunityColGap;
+// 열 사이 간격. 커뮤니티 표(20)와 **다르다** — 각종소식은 열이 하나 더 많아
+// (분류·이름·제목·작성일·조회수) 20에서는 빽빽해 보여 30으로 둔다(사용자 확정).
+const double kEventColGap = 30;
+
+/// 각종소식 표의 메타 열(이름·작성일·조회수) 폭. 커뮤니티 표와 같은 방식으로
+/// **그 페이지의 가장 긴 값**(헤더 글자 포함)을 재서 헤더·모든 행이 공유한다.
+class EventMetaWidths {
+  final double name;
+  final double date;
+  final double views;
+
+  const EventMetaWidths({required this.name, required this.date, required this.views});
+
+  /// 로딩 스켈레톤이 쓰는 폭(커뮤니티 표와 같은 이유로 표본을 재둔다).
+  static final EventMetaWidths skeleton = EventMetaWidths._from(
+    const ['스노우라이브'],
+    const ['2026. 10. 03'],
+    const ['1234'],
+  );
+
+  static final EventMetaWidths headerOnly = EventMetaWidths._from(const [], const [], const []);
+
+  factory EventMetaWidths._from(List<String> names, List<String> dates, List<String> views) {
+    final meta = SDSTextStyle.regular.copyWith(fontSize: 14);
+    final header = SDSTextStyle.bold.copyWith(fontSize: 14);
+    double widest(List<String> values, String headerText) {
+      var max = measureWebTextWidth(headerText, header);
+      for (final v in values) {
+        final w = measureWebTextWidth(v, meta);
+        if (w > max) max = w;
+      }
+      return max.ceilToDouble() + 2;
+    }
+
+    return EventMetaWidths(
+      name: widest(names, '이름'),
+      date: widest(dates, '작성일'),
+      views: widest(views, '조회수'),
+    );
+  }
+
+  factory EventMetaWidths.of(List<EventModel> items) => EventMetaWidths._from(
+        [for (final e in items) e.crawlAccountName ?? e.crawlAccountUsername ?? ''],
+        [for (final e in items) communityDateLabelOf(e.uploadTime)],
+        [for (final e in items) '${e.viewCount ?? 0}'],
+      );
+}
 
 // 분류 열은 고정폭 없이 내용대로(hug) — 사용자 확정. 행마다 칩 폭이 다르면
 // 이름 열 시작선이 어긋날 수 있다(감수하기로 함).
-const double kEventColName = 110; // 이름(출처 계정)
-const double kEventColDate = kCommunityColDate; // 작성일
-const double kEventColViews = kCommunityColViews; // 조회수
 
 /// 크롤링된 캡션 원문을 목록용 한 줄로 누른다.
 /// 줄바꿈이 그대로 들어가면 행 높이가 밀리고 말줄임이 안 걸린다.
@@ -35,6 +78,7 @@ void openEventLanding(EventModel event) {
 
 /// 각종소식 표 한 줄의 골격. 헤더 행과 데이터 행이 공유한다.
 Widget eventTableRowShell({
+  required EventMetaWidths widths,
   required Widget categoryCell,
   required Widget nameCell,
   required Widget titleCell,
@@ -54,13 +98,13 @@ Widget eventTableRowShell({
       const SizedBox(width: 10),
       categoryCell,
       const SizedBox(width: kEventColGap),
-      SizedBox(width: kEventColName, child: nameCell),
+      SizedBox(width: widths.name, child: nameCell),
       const SizedBox(width: kEventColGap),
       Expanded(child: titleCell),
       const SizedBox(width: kEventColGap),
-      SizedBox(width: kEventColDate, child: dateCell),
+      SizedBox(width: widths.date, child: dateCell),
       const SizedBox(width: kEventColGap),
-      SizedBox(width: kEventColViews, child: viewsCell),
+      SizedBox(width: widths.views, child: viewsCell),
     ],
   );
   return Container(
@@ -74,7 +118,9 @@ Widget eventTableRowShell({
 
 /// 각종소식 표 헤더 (태블릿·데스크탑) — 분류 | 이름 | 제목 | 작성일 | 조회수.
 class EventTableHeaderRow extends StatelessWidget {
-  const EventTableHeaderRow({super.key});
+  final EventMetaWidths widths;
+
+  const EventTableHeaderRow({super.key, required this.widths});
 
   @override
   Widget build(BuildContext context) {
@@ -84,6 +130,7 @@ class EventTableHeaderRow extends StatelessWidget {
       color: SDSColor.gray900,
     );
     return eventTableRowShell(
+      widths: widths,
       padding: const EdgeInsets.only(top: 5, bottom: 13),
       border: Border(bottom: BorderSide(color: SDSColor.gray200)),
       categoryCell: Text('분류', style: style),
@@ -97,12 +144,13 @@ class EventTableHeaderRow extends StatelessWidget {
 
 /// 각종소식 표 데이터 행 (태블릿·데스크탑).
 class EventTableRow extends StatelessWidget {
+  final EventMetaWidths widths;
   final EventModel event;
 
   /// 강조할 검색어. 비어 있으면 강조하지 않는다.
   final String query;
 
-  const EventTableRow({super.key, required this.event, required this.query});
+  const EventTableRow({super.key, required this.widths, required this.event, required this.query});
 
   @override
   Widget build(BuildContext context) {
@@ -122,6 +170,7 @@ class EventTableRow extends StatelessWidget {
         // hover 시 행 배경 — 검정 3% (커뮤니티 표 행과 동일).
         hoverColor: SDSColor.gray900.withValues(alpha: 0.03),
         child: eventTableRowShell(
+          widths: widths,
           // 행 높이 52 고정(구분선 포함) — 커뮤니티 표와 동일.
           rowHeight: 52,
           border: Border(bottom: BorderSide(color: SDSColor.gray100)),

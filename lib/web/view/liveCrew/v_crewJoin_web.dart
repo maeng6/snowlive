@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/core/model/m_crewDetail.dart';
 import 'package:com.snowlive/core/model/m_crewList.dart';
@@ -9,11 +11,11 @@ import 'package:com.snowlive/web/viewmodel/crew/vm_crewJoin_web.dart';
 import 'package:com.snowlive/web/widget/w_empty_state_web.dart';
 import 'package:com.snowlive/web/widget/w_network_image_web.dart';
 import 'package:com.snowlive/web/widget/w_skeleton_web.dart';
+import 'package:com.snowlive/web/widget/w_web_page_header_web.dart';
 import 'package:com.snowlive/web/widget/w_web_overlay_modal_web.dart';
+import 'package:com.snowlive/web/widget/w_web_profile_card_web.dart';
 import 'package:com.snowlive/web/widget/w_web_search_field_web.dart';
 import 'package:com.snowlive/web/widget/w_web_toast_web.dart';
-import 'package:com.snowlive/web/widget/w_web_image_viewer_web.dart';
-import 'package:com.snowlive/web/widget/w_web_profile_tap_web.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -63,6 +65,15 @@ class _CrewJoinViewWebState extends State<CrewJoinViewWeb> {
     super.dispose();
   }
 
+  /// 뒤로가기 — 돌아갈 화면이 없으면(URL 직접 진입) 라이브크루 홈으로.
+  void _onBack() {
+    if (Navigator.of(context).canPop()) {
+      Get.back();
+      return;
+    }
+    Get.offAllNamed(WebRoutes.liveCrew);
+  }
+
   Future<void> _openCrew(Crew crew) async {
     final crewId = crew.crewId;
     if (crewId == null) return;
@@ -80,48 +91,70 @@ class _CrewJoinViewWebState extends State<CrewJoinViewWeb> {
 
   @override
   Widget build(BuildContext context) {
-    final isDesktop = context.isDesktop;
+    // ⚠️ 페이지 여백은 **스크롤 영역 안쪽**에 둔다(웹 공통). 바깥 Container에 주면
+    // 목록이 그 여백 선에서 잘리고 스크롤바도 브라우저 끝에 안 붙는다.
+    final pagePadding = webSubPagePadding(context);
 
     return Container(
       color: SDSColor.snowliveWhite,
-      padding: EdgeInsets.fromLTRB(
-        isDesktop ? SDSSpacing.xl : SDSSpacing.md,
-        // 상단은 서브 페이지 공통(PC 32 / 태블릿 16 / 모바일 20 — 홈과 동일).
-        webSubPagePadding(context).top,
-        isDesktop ? SDSSpacing.xl : SDSSpacing.md,
-        SDSSpacing.xl,
-      ),
-      // 조건에 맞는 크루를 **전부** 그린다(전체 521개, 휘닉스 169개 — 실측).
-      // Column에 다 쌓으면 한 프레임에 수백 개를 만들게 되므로 지연 렌더한다.
-      child: Center(
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: kCrewJoinContentMaxWidth),
-          child: CustomScrollView(
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          // 본문 800 제한은 **PC에서만**. 태블릿은 폭이 800을 조금 넘는 구간
+          // (840~1023)이 있어 그대로 두면 좌우가 20보다 크게 벌어지고 본문이
+          // 800에 갇힌다 → 좁은 폭은 페이지 여백 안쪽을 꽉 채운다.
+          final side = context.isDesktop
+              ? math.max(
+                  pagePadding.left,
+                  (constraints.maxWidth - kCrewJoinContentMaxWidth) / 2,
+                )
+              : pagePadding.left;
+          // 조건에 맞는 크루를 **전부** 그린다(전체 521개, 휘닉스 169개 — 실측).
+          // Column에 다 쌓으면 한 프레임에 수백 개를 만들게 되므로 지연 렌더한다.
+          return CustomScrollView(
             slivers: [
-              SliverToBoxAdapter(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Text(
-                      _title,
-                      style: SDSTextStyle.extraBold.copyWith(fontSize: 28, color: SDSColor.gray900),
-                    ),
-                    const SizedBox(height: SDSSpacing.lg),
-                    WebSearchField(
-                      controller: _searchController,
-                      hint: '크루 검색',
-                      borderRadius: 8,
-                      // 스키장별로 들어왔으면 그 스키장 안에서 검색한다.
-                      onSubmitted: (keyword) => _vm.search(keyword, _resortId),
-                    ),
-                    const SizedBox(height: SDSSpacing.md),
-                  ],
+              SliverPadding(
+                padding: EdgeInsets.fromLTRB(side, pagePadding.top, side, 0),
+                sliver: SliverToBoxAdapter(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      // PC는 목업(174:89291)대로 **뒤로가기 없이** Bold 32 제목만 둔다
+                      // (좌측 GNB가 늘 보여 돌아갈 길이 있다).
+                      // 좁은 폭은 GNB가 접히므로 서브 페이지 공통 헤더
+                      // (뒤로가기 + 타이틀 태블릿 24 / 모바일 20)를 쓴다.
+                      if (context.isDesktop)
+                        Text(
+                          _title,
+                          style: SDSTextStyle.bold.copyWith(
+                            fontSize: webHomeTitleSize(context),
+                            color: SDSColor.gray900,
+                          ),
+                        )
+                      else
+                        WebPageHeader(title: _title, onBack: _onBack),
+                      // 타이틀 ↔ 검색창: PC 29(목업 — 타이틀 블록 pb19 + 검색 pt10) /
+                      // 좁은 폭은 제목이 작아진 만큼 20.
+                      SizedBox(height: context.isDesktop ? 29 : 20),
+                      WebSearchField(
+                        controller: _searchController,
+                        hint: '크루 검색',
+                        borderRadius: 6,
+                        // 스키장별로 들어왔으면 그 스키장 안에서 검색한다.
+                        onSubmitted: (keyword) => _vm.search(keyword, _resortId),
+                      ),
+                      // 검색창 ↔ 첫 행: PC 30(목업) / 좁은 폭 20.
+                      SizedBox(height: context.isDesktop ? 30 : 20),
+                    ],
+                  ),
                 ),
               ),
-              Obx(_buildListSliver),
+              SliverPadding(
+                padding: EdgeInsets.fromLTRB(side, 0, side, SDSSpacing.xl),
+                sliver: Obx(_buildListSliver),
+              ),
             ],
-          ),
-        ),
+          );
+        },
       ),
     );
   }
@@ -155,6 +188,8 @@ class _CrewJoinViewWebState extends State<CrewJoinViewWeb> {
   }
 }
 
+/// 검색 결과 로딩 — **실제 행과 같은 구성**(로고 48 + 이름 16 + 부제 13)으로 그린다.
+/// 한 덩어리 막대로 두면 로딩이 끝나는 순간 레이아웃이 튄다.
 class _CrewJoinSkeleton extends StatelessWidget {
   const _CrewJoinSkeleton();
 
@@ -162,11 +197,32 @@ class _CrewJoinSkeleton extends StatelessWidget {
   Widget build(BuildContext context) {
     return SkeletonShimmer(
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          for (var i = 0; i < 6; i++) ...[
-            if (i > 0) const SizedBox(height: 12),
-            const SkeletonBox(height: 44, radius: 8),
-          ],
+          for (var i = 0; i < 6; i++)
+            Padding(
+              // 실제 행과 같은 패딩(좌우 8 · 상하 8).
+              padding: const EdgeInsets.symmetric(
+                  horizontal: SDSSpacing.sm, vertical: SDSSpacing.sm),
+              child: Row(
+                children: [
+                  SkeletonBox(width: 48, height: 48, radius: crewLogoRadius(48)),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        // 크루명(16) / 간격 4 / 부제(13) — 길이는 행마다 조금씩 다르게.
+                        SkeletonLine(width: 120 + (i % 3) * 28, height: 18),
+                        const SizedBox(height: 4),
+                        SkeletonLine(width: 180 + (i % 2) * 40, height: 15),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
         ],
       ),
     );
@@ -190,7 +246,6 @@ class _CrewJoinRowState extends State<_CrewJoinRow> {
   Widget build(BuildContext context) {
     final crew = widget.crew;
     final logoUrl = crewLogoUrlOf(logoUrl: crew.crewLogoUrl, color: crew.color);
-    final accent = crewColorOf(crew.color) ?? SDSColor.gray200;
     // 목업 보조줄: `휘닉스 · 중앙대 보드 동아리`(리조트 별명 · 소개).
     final nick = crewResortNicknameOf(crew.baseResortId);
     final desc = crew.description?.trim().replaceAll('\n', ' ') ?? '';
@@ -208,22 +263,27 @@ class _CrewJoinRowState extends State<_CrewJoinRow> {
             color: _isHovered ? SDSColor.gray50 : SDSColor.snowliveWhite,
             borderRadius: BorderRadius.circular(8),
           ),
-          padding: const EdgeInsets.symmetric(horizontal: SDSSpacing.sm, vertical: 10),
+          padding: const EdgeInsets.symmetric(horizontal: SDSSpacing.sm, vertical: 8),
           child: Row(
             children: [
+              // 목업(174:89293) — 로고 48 라운드 8. 크루색 테두리는 목업에 없다.
               Container(
-                width: 44,
-                height: 44,
+                width: 48,
+                height: 48,
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all(color: accent, width: 2),
+                  // 라운드는 공용 비율(한 변의 0.2) — 기본 마크 이미지에 구워진
+                  // 모서리와 곡률을 맞춘다.
+                  borderRadius: BorderRadius.circular(crewLogoRadius(48)),
+                  // 기본 크루 마크가 흰 카드라 테두리가 없으면 흰 배경에 묻힌다
+                  // (크루 목록 행·팝업과 같은 gray100 선).
+                  border: Border.all(color: SDSColor.gray100),
                 ),
                 clipBehavior: Clip.antiAlias,
                 child: (logoUrl?.isNotEmpty ?? false)
-                    ? WebNetworkImage(url: logoUrl, width: 44, height: 44)
+                    ? WebNetworkImage(url: logoUrl, width: 48, height: 48)
                     : Container(color: SDSColor.gray100),
               ),
-              const SizedBox(width: 12),
+              const SizedBox(width: 10),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -233,15 +293,15 @@ class _CrewJoinRowState extends State<_CrewJoinRow> {
                       crew.crewName ?? '',
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: SDSTextStyle.regular.copyWith(fontSize: 15, color: SDSColor.gray900),
+                      style: SDSTextStyle.regular.copyWith(fontSize: 16, color: SDSColor.gray900),
                     ),
                     if (subtitle.isNotEmpty) ...[
-                      const SizedBox(height: 2),
+                      const SizedBox(height: 4),
                       Text(
                         subtitle,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: SDSTextStyle.regular.copyWith(fontSize: 12, color: SDSColor.gray500),
+                        style: SDSTextStyle.regular.copyWith(fontSize: 13, color: SDSColor.gray500),
                       ),
                     ],
                   ],
@@ -336,143 +396,59 @@ class _CrewJoinCardState extends State<_CrewJoinCard> {
   Widget build(BuildContext context) {
     final crew = widget.crew;
     final logoUrl = crewLogoUrlOf(logoUrl: crew.crewLogoUrl, color: crew.color);
-    final accent = crewColorOf(crew.color) ?? SDSColor.gray200;
     final memberCount = _detail?.crewMemberTotal;
-    final resort = _detail?.baseResortFullname ?? crewResortNicknameOf(crew.baseResortId);
+    // ⚠️ 상세(_detail)를 **먼저** 보면 리조트 줄이 `휘닉스` → `휘닉스파크`로 한 박자
+    // 늦게 바뀐다. 목록 응답에 이미 `base_resort_id`가 있으므로 그 자리에서 정식
+    // 이름을 만들어 쓰고, 못 찾을 때만 상세 값으로 떨어진다.
+    final resort = crewResortFullnameOf(crew.baseResortId).isNotEmpty
+        ? crewResortFullnameOf(crew.baseResortId)
+        : (_detail?.baseResortFullname ?? '');
     final desc = crew.description?.trim() ?? _detail?.description?.trim() ?? '';
-    final subtitle = [if (desc.isNotEmpty) desc.replaceAll('\n', ' '), if (resort.isNotEmpty) resort]
-        .join(' · ');
 
-    final card = Material(
-      color: SDSColor.snowliveWhite,
-      borderRadius: widget.isSheet
-          ? const BorderRadius.vertical(top: Radius.circular(20))
-          : BorderRadius.circular(16),
-      clipBehavior: Clip.antiAlias,
-      child: SizedBox(
-        width: widget.isSheet ? double.infinity : 390,
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(SDSSpacing.lg, SDSSpacing.md, SDSSpacing.lg, SDSSpacing.lg),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              if (widget.isSheet)
-                // 목업 모바일은 닫기 X 대신 드래그 핸들이다.
-                Container(
-                  width: 36,
-                  height: 4,
-                  margin: const EdgeInsets.only(bottom: SDSSpacing.md),
-                  decoration: BoxDecoration(
-                    color: SDSColor.gray200,
-                    borderRadius: BorderRadius.circular(2),
-                  ),
-                )
-              else
-                Align(
-                  alignment: Alignment.topRight,
-                  child: InkWell(
-                    onTap: widget.onClose,
-                    customBorder: const CircleBorder(),
-                    child: Padding(
-                      padding: const EdgeInsets.all(4),
-                      child: Icon(Icons.close, size: 20, color: SDSColor.gray400),
-                    ),
-                  ),
-                ),
-              // 팝업 안의 로고도 누르면 확대된다(개인 프로필 팝업과 동일).
-              WebProfileTap(
-                onTap: (logoUrl?.isNotEmpty ?? false)
-                    ? () => showWebPhotoViewer(context, url: logoUrl, title: crew.crewName ?? '')
-                    : null,
-                child: Container(
-                  width: 76,
-                  height: 76,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(14),
-                    border: Border.all(color: accent, width: 2),
-                  ),
-                  clipBehavior: Clip.antiAlias,
-                  child: (logoUrl?.isNotEmpty ?? false)
-                      ? WebNetworkImage(url: logoUrl, width: 76, height: 76)
-                      : Container(color: SDSColor.gray100),
-                ),
-              ),
-              const SizedBox(height: SDSSpacing.md),
-              Text(
-                crew.crewName ?? '',
-                textAlign: TextAlign.center,
-                style: SDSTextStyle.bold.copyWith(fontSize: 18, color: SDSColor.gray900),
-              ),
-              if (subtitle.isNotEmpty) ...[
-                const SizedBox(height: 4),
-                Text(
-                  subtitle,
-                  textAlign: TextAlign.center,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: SDSTextStyle.regular.copyWith(fontSize: 13, color: SDSColor.gray500),
-                ),
-              ],
-              if (memberCount != null) ...[
-                const SizedBox(height: SDSSpacing.sm),
-                Text(
-                  '$memberCount명',
-                  style: SDSTextStyle.bold.copyWith(fontSize: 15, color: SDSColor.gray900),
-                ),
-              ],
-              if (desc.isNotEmpty) ...[
-                const SizedBox(height: 6),
-                Text(
-                  desc,
-                  textAlign: TextAlign.center,
-                  maxLines: 3,
-                  overflow: TextOverflow.ellipsis,
-                  style: SDSTextStyle.regular.copyWith(fontSize: 12, color: SDSColor.gray400),
-                ),
-              ],
-              const SizedBox(height: SDSSpacing.lg),
-              Row(
-                children: [
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: () {
-                        widget.onClose();
-                        Get.toNamed('${WebRoutes.crewHome}?id=${crew.crewId}');
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: SDSColor.gray50,
-                        elevation: 0,
-                        padding: const EdgeInsets.symmetric(vertical: 14),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                      ),
-                      child: Text(
-                        '크루 구경하기',
-                        style: SDSTextStyle.bold.copyWith(fontSize: 14, color: SDSColor.gray700),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: SDSSpacing.sm),
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: _isApplying ? null : _apply,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: SDSColor.snowliveBlue,
-                        disabledBackgroundColor: SDSColor.gray300,
-                        elevation: 0,
-                        padding: const EdgeInsets.symmetric(vertical: 14),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                      ),
-                      child: Text(
-                        '크루 가입하기',
-                        style: SDSTextStyle.bold.copyWith(fontSize: 14, color: SDSColor.snowliveWhite),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ],
+    // 크루 미리보기 팝업은 **공용 카드**로 그린다 — 라이브크루 홈·랭킹의 크루 팝업과
+    // 같은 위젯(`showLiveCrewModal`)이라 여기만 따로 그리면 규격이 갈라진다.
+    // 다른 점은 하단 버튼이 둘이라는 것뿐.
+    final card = WebProfileCard(
+      isSheet: widget.isSheet,
+      // 시트는 닫기 X 대신 드래그 핸들을 쓴다.
+      onClose: widget.isSheet ? null : widget.onClose,
+      data: WebProfileCardData(
+        avatarUrl: logoUrl,
+        // 크루 로고는 72에 라운드 12인 사각(목업 106:19153).
+        avatarSize: 72,
+        avatarRadius: 12,
+        displayName: crew.crewName,
+        // 줄이 많아(이름·리조트·멤버수·소개) 간격을 한 단계 좁힌다.
+        compactLines: true,
+        resortName: resort.isEmpty ? null : resort,
+        extraLine: memberCount == null ? null : '$memberCount명',
+        // 멤버 수는 상세 API에서 늦게 온다 → 그 줄 자리를 미리 비워 둬야
+        // 값이 도착할 때 팝업이 커지지 않는다.
+        isExtraLineLoading: _detail == null,
+        stateMsg: desc.isEmpty ? null : desc.replaceAll('\n', ' '),
+      ),
+      footer: Row(
+        children: [
+          Expanded(
+            child: WebProfileFooterButton(
+              label: '크루 구경하기',
+              onTap: () {
+                // 팝업을 먼저 닫아야 크루홈 위에 딤이 남지 않는다.
+                widget.onClose();
+                Get.toNamed('${WebRoutes.crewHome}?id=${crew.crewId}');
+              },
+            ),
           ),
-        ),
+          const SizedBox(width: SDSSpacing.sm),
+          Expanded(
+            child: WebProfileFooterButton(
+              label: '크루 가입하기',
+              background: SDSColor.snowliveBlue,
+              foreground: SDSColor.snowliveWhite,
+              onTap: _isApplying ? null : _apply,
+            ),
+          ),
+        ],
       ),
     );
 

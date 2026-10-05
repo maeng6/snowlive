@@ -1,7 +1,7 @@
 import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/web/util/responsive_web.dart';
-import 'package:com.snowlive/web/view/community/w_community_row_web.dart' show communityTableRowShell;
-import 'package:com.snowlive/web/view/community/w_event_row_web.dart' show eventTableRowShell;
+import 'package:com.snowlive/web/view/community/w_community_row_web.dart' show communityTableRowShell, CommunityMetaWidths;
+import 'package:com.snowlive/web/view/community/w_event_row_web.dart' show eventTableRowShell, EventMetaWidths;
 import 'package:com.snowlive/web/view/liveTalk/w_livetalk_feed_item_web.dart'
     show
         kLiveTalkFeedImageRadius,
@@ -23,7 +23,10 @@ import 'package:shimmer/shimmer.dart';
 /// 내부는 [SkeletonBox]/[SkeletonLine]만 사용한다.
 
 /// 스켈레톤 색/애니메이션의 단일 출처.
-/// 값은 기존 카드 이미지 로딩(w_fleamarket_card_web.dart)에서 쓰던 조합을 그대로 승계.
+///
+/// 바탕 **gray200(#DEDEDE)** ↔ 반짝임 **gray100(#EFEFEF)**.
+/// 반짝임을 gray50(#F5F5F5)에서 한 단계 내려 흰색처럼 튀지 않게 했고, 두 색 차이도
+/// 23/255 → 17/255로 줄여 **은은하게** 흐른다.
 class SkeletonShimmer extends StatelessWidget {
   final Widget child;
 
@@ -33,7 +36,7 @@ class SkeletonShimmer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Shimmer.fromColors(
       baseColor: SDSColor.gray200,
-      highlightColor: SDSColor.gray50,
+      highlightColor: SDSColor.gray100,
       child: child,
     );
   }
@@ -162,6 +165,9 @@ class _CommunityTableRowSkeleton extends StatelessWidget {
   Widget build(BuildContext context) {
     // 실제 행과 동일 규격 — 행 높이 52 고정, 배지 20(간격 12), 제목 15, 메타 14.
     return communityTableRowShell(
+      // 데이터가 오면 실제 값으로 다시 잡히므로, 그때 열이 크게 안 움직이도록
+      // 표본 기준 폭을 쓴다. 메타 자리는 열을 꽉 채워 폭이 바뀌어도 안 넘친다.
+      widths: CommunityMetaWidths.skeleton,
       rowHeight: 52,
       border: Border(bottom: BorderSide(color: SDSColor.gray100)),
       titleCell: Row(
@@ -171,9 +177,9 @@ class _CommunityTableRowSkeleton extends StatelessWidget {
           Expanded(child: SkeletonLine(height: 15)),
         ],
       ),
-      authorCell: const SkeletonLine(width: 56, height: 14),
-      dateCell: const SkeletonLine(width: 72, height: 14),
-      viewsCell: const SkeletonLine(width: 40, height: 14),
+      authorCell: const SkeletonLine(height: 14),
+      dateCell: const SkeletonLine(height: 14),
+      viewsCell: const SkeletonLine(height: 14),
     );
   }
 }
@@ -279,10 +285,11 @@ class _EventTableRowSkeleton extends StatelessWidget {
     // 실제 행과 동일 규격 — 행 높이 52 고정, 분류 칩 20(hug), 이름 14,
     // 제목 15 + 우측 정사각 썸네일 30, 메타 14.
     return eventTableRowShell(
+      widths: EventMetaWidths.skeleton,
       rowHeight: 52,
       border: Border(bottom: BorderSide(color: SDSColor.gray100)),
       categoryCell: Row(children: const [SkeletonBox(width: 42, height: 20)]),
-      nameCell: const SkeletonLine(width: 70, height: 14),
+      nameCell: const SkeletonLine(height: 14),
       titleCell: Row(
         children: const [
           Expanded(child: SkeletonLine(height: 15)),
@@ -290,8 +297,8 @@ class _EventTableRowSkeleton extends StatelessWidget {
           SkeletonBox(width: 30, height: 30),
         ],
       ),
-      dateCell: const SkeletonLine(width: 72, height: 14),
-      viewsCell: const SkeletonLine(width: 40, height: 14),
+      dateCell: const SkeletonLine(height: 14),
+      viewsCell: const SkeletonLine(height: 14),
     );
   }
 }
@@ -368,66 +375,147 @@ class _LiveTalkFeedItemSkeleton extends StatelessWidget {
 }
 
 /// 랭킹 리스트 자리표시. 데스크탑은 실제 화면과 동일하게 2단으로 그린다.
+/// 랭킹 목록 행 규격. 실제 행과 스켈레톤이 **같은 값**을 써야 로딩 → 데이터 전환에서
+/// 목록 길이가 안 튄다.
+///
+/// 모바일은 목업(106:30699)이 더 촘촘하다 — 행 36 + 간격 14 = 피치 50, 아바타 32,
+/// 순위↔아바타 6 / 아바타↔이름 10, 이름 14 / 소속 12 / 점수 15.
+/// PC·태블릿은 사용자가 눈으로 키운 값(아바타 36, 간격 12/12, 이름 15 / 소속 13 / 점수 16).
+class RankingRowMetrics {
+  final double contentHeight;
+  final double verticalPadding;
+  final double avatar;
+  final double rankGap;
+  final double nameGap;
+  final double nameSize;
+  final double subSize;
+  final double scoreSize;
+
+  const RankingRowMetrics._({
+    required this.contentHeight,
+    required this.verticalPadding,
+    required this.avatar,
+    required this.rankGap,
+    required this.nameGap,
+    required this.nameSize,
+    required this.subSize,
+    required this.scoreSize,
+  });
+
+  /// 패딩까지 포함한 행 박스 높이(hover 박스 크기이기도 하다).
+  double get boxHeight => contentHeight + verticalPadding * 2;
+
+  static const _mobile = RankingRowMetrics._(
+    contentHeight: 36,
+    verticalPadding: 3,
+    avatar: 32,
+    rankGap: 6,
+    nameGap: 10,
+    nameSize: 14,
+    subSize: 12,
+    scoreSize: 15,
+  );
+
+  static const _wide = RankingRowMetrics._(
+    contentHeight: 38,
+    verticalPadding: 6,
+    avatar: 36,
+    rankGap: 12,
+    nameGap: 12,
+    nameSize: 15,
+    subSize: 13,
+    scoreSize: 16,
+  );
+
+  static RankingRowMetrics of(BuildContext context) =>
+      context.screenType == WebScreenType.mobile ? _mobile : _wide;
+}
+
 class RankingListSkeleton extends StatelessWidget {
   final int rowCount;
 
-  const RankingListSkeleton({super.key, this.rowCount = 10});
+  /// 개인은 원형 프로필, 크루는 라운드 8 로고.
+  final bool circleAvatar;
+
+  /// 티어 자리를 그릴지. 랭킹 홈의 **크루 랭킹만 티어가 없다**(사양).
+  final bool showTier;
+
+  /// 기록실은 이름/소속/점수가 14·12·15로 홈(15·13·16)보다 한 단계 작다.
+  final bool compactText;
+
+  const RankingListSkeleton({
+    super.key,
+    this.rowCount = 10,
+    this.circleAvatar = true,
+    this.showTier = true,
+    this.compactText = false,
+  });
 
   @override
   Widget build(BuildContext context) {
-    final isDesktop = context.isDesktop;
-    final perColumn = isDesktop ? (rowCount / 2).ceil() : rowCount;
-
-    Widget column() => Column(
-          children: List.generate(perColumn, (_) => const _RankingRowSkeleton()),
-        );
-
+    // 목록이 1열이라 스켈레톤도 한 열로 쌓는다(폭 상관없이 동일).
+    // 위쪽 여백은 두지 않는다 — 실제 목록도 0이라, 여백이 있으면 로딩 → 데이터
+    // 전환에서 목록이 그만큼 위로 올라붙는다(랭킹 홈·기록실 둘 다 해당).
     return SkeletonShimmer(
-      child: Padding(
-        padding: const EdgeInsets.only(top: 16),
-        child: isDesktop
-            ? Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(child: column()),
-                  const SizedBox(width: SDSSpacing.xl),
-                  Expanded(child: column()),
-                ],
-              )
-            : column(),
+      child: Column(
+        children: List.generate(
+          rowCount,
+          (_) => _RankingRowSkeleton(
+            circleAvatar: circleAvatar,
+            showTier: showTier,
+            compactText: compactText,
+          ),
+        ),
       ),
     );
   }
 }
 
 class _RankingRowSkeleton extends StatelessWidget {
-  const _RankingRowSkeleton();
+  final bool circleAvatar;
+  final bool showTier;
+  final bool compactText;
+
+  const _RankingRowSkeleton({
+    required this.circleAvatar,
+    required this.showTier,
+    required this.compactText,
+  });
 
   @override
   Widget build(BuildContext context) {
+    // 실제 행과 같은 규격 — [RankingRowMetrics]가 폭별 값을 들고 있다.
+    final m = RankingRowMetrics.of(context);
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 10),
-      child: Row(
-        children: [
-          const SkeletonBox(width: 20, height: 14),
-          const SizedBox(width: 14),
-          const SkeletonBox(width: 32, height: 32, isCircle: true),
-          const SizedBox(width: 10),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SkeletonLine(width: 90, height: 13),
-                const SizedBox(height: 6),
-                const SkeletonLine(width: 130, height: 11),
-              ],
+      padding: const EdgeInsets.only(bottom: 8),
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 8, vertical: m.verticalPadding),
+        height: m.boxHeight,
+        child: Row(
+          children: [
+            const SkeletonBox(width: 18, height: 14),
+            SizedBox(width: m.rankGap),
+            // 개인은 원형 프로필, 크루는 라운드 5 로고(실제 행·카드와 동일).
+            SkeletonBox(width: m.avatar, height: m.avatar, isCircle: circleAvatar, radius: 5),
+            SizedBox(width: m.nameGap),
+            Expanded(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SkeletonLine(width: 96, height: compactText ? m.nameSize - 1 : m.nameSize),
+                  const SizedBox(height: 4),
+                  SkeletonLine(width: 140, height: compactText ? m.subSize - 1 : m.subSize),
+                ],
+              ),
             ),
-          ),
-          const SizedBox(width: 10),
-          const SkeletonLine(width: 60, height: 14),
-          const SizedBox(width: 8),
-          const SkeletonBox(width: 24, height: 24, isCircle: true),
-        ],
+            const SizedBox(width: 12),
+            SkeletonLine(width: 66, height: compactText ? m.scoreSize - 1 : m.scoreSize),
+            // 티어는 자리만 비워둔다 — 셔머 박스를 두면 아이콘이 아니라
+            // 사각 썸네일이 오는 것처럼 보인다(사용자 결정).
+            if (showTier) const SizedBox(width: 8 + 36),
+          ],
+        ),
       ),
     );
   }
@@ -441,30 +529,51 @@ class MyRankingCardSkeleton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // 모바일 카드는 값/라벨을 위아래로 쌓아서 더 높다 — 자리표시 높이도 같이 맞춰야
-    // 데이터가 도착할 때 아래 리스트가 밀리지 않는다.
+    // 실제 카드([RankingMyCardShell])와 같은 규격이어야 데이터가 도착할 때 아래
+    // 목록이 밀리지 않는다.
+    // PC·태블릿: 라운드 16 / 좌우 30 · 상하 7 / 내용 40 → 높이 54.
+    // 모바일: 좌우 28 · 상하 10 / 내용 50 → 높이 70, 카드만 페이지 여백보다 4 안쪽.
     final isMobile = context.screenType == WebScreenType.mobile;
 
     return Container(
-      height: isMobile ? 84 : 72,
-      margin: const EdgeInsets.only(bottom: SDSSpacing.xl),
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+      height: isMobile ? 70 : 54,
+      // 카드 ↔ 목록 30. 카드가 숨겨질 때 여백도 같이 사라지도록 카드 안에 둔다.
+      margin: EdgeInsets.only(bottom: 30, left: isMobile ? 4 : 0, right: isMobile ? 4 : 0),
+      padding: EdgeInsets.symmetric(horizontal: isMobile ? 28 : 30, vertical: isMobile ? 10 : 7),
       decoration: BoxDecoration(
         color: SDSColor.gray50,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(16),
       ),
-      child: const SkeletonShimmer(
-        child: Row(
-          children: [
-            SkeletonLine(width: 60, height: 14),
-            Spacer(),
-            SkeletonLine(width: 80, height: 14),
-            SizedBox(width: SDSSpacing.lg),
-            SkeletonLine(width: 60, height: 14),
-            SizedBox(width: SDSSpacing.lg),
-            SkeletonBox(width: 28, height: 28, isCircle: true),
-          ],
-        ),
+      child: SkeletonShimmer(
+        child: isMobile
+            // 모바일은 값·라벨을 위아래로 쌓은 묶음 3개가 균등 배치된다.
+            ? Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: List.generate(
+                  3,
+                  (_) => Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: const [
+                      SkeletonLine(width: 56, height: 17),
+                      SizedBox(height: 2),
+                      SkeletonLine(width: 40, height: 12),
+                    ],
+                  ),
+                ),
+              )
+            : Row(
+                children: [
+                  const SkeletonLine(width: 52, height: 15),
+                  const Spacer(),
+                  const SkeletonLine(width: 96, height: 17),
+                  const SizedBox(width: 24),
+                  const SkeletonLine(width: 78, height: 17),
+                  const SizedBox(width: 20),
+                  const SkeletonLine(width: 62, height: 13),
+                  // 티어 아이콘 자리는 비워둔다(목록 행과 동일).
+                  const SizedBox(width: 8 + 40),
+                ],
+              ),
       ),
     );
   }
