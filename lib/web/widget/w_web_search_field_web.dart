@@ -15,7 +15,7 @@ class WebSearchField extends StatelessWidget {
 
   final FocusNode? focusNode;
 
-  /// 목업의 검색창은 알약이다. 사각(radius 8)이 필요한 자리도 있어 열어둔다.
+  /// 목업의 검색창은 알약이다. 사각(radius 8)이 필요한 자리도 있어 열어둔다
   final double borderRadius;
 
   const WebSearchField({
@@ -38,8 +38,8 @@ class WebSearchField extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Image.asset('assets/imgs/icons/icon_search.png', width: 16, height: 16),
-          const SizedBox(width: SDSSpacing.sm),
+          Image.asset('assets/imgs/icons/icon_search.png', width: 18, height: 18),
+          const SizedBox(width: 6),
           Expanded(
             child: TextField(
               controller: controller,

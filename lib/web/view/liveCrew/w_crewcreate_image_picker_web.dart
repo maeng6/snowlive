@@ -6,6 +6,33 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:image_picker/image_picker.dart';
 
+/// 채움 버튼 hover — 웹 공통 규칙대로 **배경에 검정을 섞어** 어두워진다.
+/// 파란 버튼은 10%, 연회색(gray50) 계열은 4%. 그림자·리플·전환 애니메이션은 없다
+/// (`elevation: 0`만 주면 ElevatedButton이 hover에서 그림자를 만든다).
+ButtonStyle _filledButtonStyle({
+  required Color background,
+  required double radius,
+  EdgeInsets? padding,
+}) {
+  final tint = background == SDSColor.snowliveBlue ? 0.1 : 0.04;
+  return ButtonStyle(
+    splashFactory: NoSplash.splashFactory,
+    overlayColor: const WidgetStatePropertyAll(Colors.transparent),
+    shadowColor: const WidgetStatePropertyAll(Colors.transparent),
+    elevation: const WidgetStatePropertyAll(0),
+    animationDuration: Duration.zero,
+    backgroundColor: WidgetStateProperty.resolveWith(
+      (states) => states.contains(WidgetState.hovered)
+          ? Color.alphaBlend(Colors.black.withValues(alpha: tint), background)
+          : background,
+    ),
+    padding: WidgetStatePropertyAll(padding ?? EdgeInsets.zero),
+    shape: WidgetStatePropertyAll(
+      RoundedRectangleBorder(borderRadius: BorderRadius.circular(radius)),
+    ),
+  );
+}
+
 /// 크루 이미지 등록 모달. 고른 파일을 돌려주고, 취소하면 null.
 ///
 /// 온보딩의 프로필 이미지 피커와 모양이 비슷하지만 흐름이 다르다 — 목업은 고른 사진을
@@ -122,11 +149,10 @@ class _SheetButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return ElevatedButton(
       onPressed: onTap,
-      style: ElevatedButton.styleFrom(
-        backgroundColor: background,
-        elevation: 0,
+      style: _filledButtonStyle(
+        background: background,
+        radius: 6,
         padding: const EdgeInsets.symmetric(vertical: 14),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
       ),
       child: Text(label, style: SDSTextStyle.bold.copyWith(fontSize: 14, color: foreground)),
     );
@@ -207,6 +233,15 @@ class _CrewImagePickerModalState extends State<_CrewImagePickerModal> {
                       onPressed: () => widget.onDone(),
                       padding: EdgeInsets.zero,
                       constraints: const BoxConstraints(minWidth: 28, minHeight: 28),
+                      // 아이콘 버튼 hover — 원형 배경 gray50(리플 없음, 웹 공통).
+                      style: ButtonStyle(
+                        splashFactory: NoSplash.splashFactory,
+                        overlayColor: WidgetStateProperty.resolveWith(
+                          (states) => states.contains(WidgetState.hovered)
+                              ? SDSColor.gray50
+                              : Colors.transparent,
+                        ),
+                      ),
                       icon: Icon(Icons.close, size: 22, color: SDSColor.gray500),
                     ),
                   ),
@@ -236,10 +271,16 @@ class _CrewImagePickerModalState extends State<_CrewImagePickerModal> {
                       clipBehavior: Clip.antiAlias,
                       child: file == null
                           ? Center(
-                              child: SvgPicture.asset(
-                                'assets/imgs/icons/icon_input_camera.svg',
-                                width: 40,
-                                height: 40,
+                              // ⚠️ colorFilter로 색을 덮지 않는다 — srcIn은 실루엣 전체를
+                              // 칠해서 안쪽 흰 부분까지 사라진다. 불투명도만 낮춘다
+                              // (라이브톡 업로드 영역과 같은 처리).
+                              child: Opacity(
+                                opacity: 0.25,
+                                child: SvgPicture.asset(
+                                  'assets/imgs/icons/icon_input_camera.svg',
+                                  width: 40,
+                                  height: 40,
+                                ),
                               ),
                             )
                           // 웹의 XFile.path는 blob URL이라 Image.network로 그린다.
@@ -253,11 +294,7 @@ class _CrewImagePickerModalState extends State<_CrewImagePickerModal> {
                       height: 44,
                       child: ElevatedButton(
                         onPressed: _pickFromDevice,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: SDSColor.gray50,
-                          elevation: 0,
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
-                        ),
+                        style: _filledButtonStyle(background: SDSColor.gray50, radius: 6),
                         child: Text(
                           '이미지 직접 선택하기',
                           style: SDSTextStyle.bold.copyWith(fontSize: 14, color: SDSColor.gray900),
@@ -272,20 +309,59 @@ class _CrewImagePickerModalState extends State<_CrewImagePickerModal> {
         ),
         const SizedBox(height: SDSSpacing.md),
         // 목업의 확정 버튼 — 카드 밖 아래에 파란 원형 체크다.
-        Material(
-          color: file == null ? SDSColor.gray300 : SDSColor.snowliveBlue,
-          shape: const CircleBorder(),
-          clipBehavior: Clip.antiAlias,
-          child: InkWell(
-            onTap: file == null ? null : () => widget.onDone(file),
-            child: SizedBox(
-              width: 48,
-              height: 48,
-              child: Icon(Icons.check, size: 24, color: SDSColor.snowliveWhite),
-            ),
-          ),
+        _ConfirmButton(
+          enabled: file != null,
+          onTap: () => widget.onDone(file),
         ),
       ],
+    );
+  }
+}
+
+/// 카드 밖 아래의 파란 원형 체크 — 고른 사진을 확정한다.
+/// hover는 채움 버튼 규칙(검정 10%), 사진이 없으면 gray300 비활성이라 반응하지 않는다.
+class _ConfirmButton extends StatefulWidget {
+  final bool enabled;
+  final VoidCallback onTap;
+
+  const _ConfirmButton({required this.enabled, required this.onTap});
+
+  @override
+  State<_ConfirmButton> createState() => _ConfirmButtonState();
+}
+
+class _ConfirmButtonState extends State<_ConfirmButton> {
+  bool _hovered = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final Color background;
+    if (!widget.enabled) {
+      background = SDSColor.gray300;
+    } else {
+      background = _hovered
+          ? Color.alphaBlend(Colors.black.withValues(alpha: 0.1), SDSColor.snowliveBlue)
+          : SDSColor.snowliveBlue;
+    }
+
+    return MouseRegion(
+      onEnter: (_) => setState(() => _hovered = true),
+      onExit: (_) => setState(() => _hovered = false),
+      child: Material(
+        color: background,
+        shape: const CircleBorder(),
+        clipBehavior: Clip.antiAlias,
+        child: InkWell(
+          onTap: widget.enabled ? widget.onTap : null,
+          hoverColor: Colors.transparent,
+          splashFactory: NoSplash.splashFactory,
+          child: const SizedBox(
+            width: 48,
+            height: 48,
+            child: Icon(Icons.check, size: 24, color: SDSColor.snowliveWhite),
+          ),
+        ),
+      ),
     );
   }
 }

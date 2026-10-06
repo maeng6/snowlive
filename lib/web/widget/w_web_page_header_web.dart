@@ -39,7 +39,9 @@ class WebPageHeader extends StatelessWidget {
       maxLines: 1,
       overflow: TextOverflow.ellipsis,
       style: SDSTextStyle.bold.copyWith(
-        fontSize: context.isDesktop ? 30 : 24,
+        // PC 30 / 태블릿 24 / 모바일 20 — 모바일은 목록 화면 타이틀(webHomeTitleSize)과
+        // 같은 20으로 맞췄다(2026-10-02 사용자 확정, 서브 페이지 전체 공통).
+        fontSize: webSubPageTitleSize(context),
         color: SDSColor.gray900,
       ),
     );
@@ -50,8 +52,10 @@ class WebPageHeader extends StatelessWidget {
         if (showBack) ...[
           WebIconButton(
             onTap: onBack,
-            // 좌측 히트 여백만 0 — 아이콘이 콘텐츠 좌측선에 붙는다.
-            padding: const EdgeInsets.fromLTRB(0, 4, 4, 4),
+            // 좌측 히트 여백은 0 — 아이콘이 콘텐츠 좌측선에 붙는다.
+            // ⚠️ 세로 여백도 0 — 4를 주면 줄 높이가 아이콘(30)+8 = 38이 되어
+            // 타이틀이 내려앉고 아래 요소가 전부 밀린다(목업 줄 높이는 텍스트 기준).
+            padding: const EdgeInsets.fromLTRB(0, 0, 4, 0),
             icon: WebBackIcon(size: isMobile ? 24 : 30),
           ),
           const SizedBox(width: 3),

@@ -242,6 +242,10 @@ class _UploadFlowState extends State<_UploadFlow> {
   /// PC·태블릿의 아래 여백은 1단계와 같은 이유로 카드 높이에서 남는 만큼이 된다.
   Widget _buildComposeStep() {
     final isMobile = _isMobile;
+    // 크루톡은 공개범위 스위치가 한 블록 더 붙는다 → **글 작성 칸을 그만큼 줄여**
+    // 시트·카드 전체 높이를 1단계(사진 고르기)와 같게 유지한다.
+    final double composeHeight = (isMobile ? 195 : 181) -
+        (_isCrewTalk ? SDSSpacing.md + _kVisibilityToggleHeight : 0);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -255,13 +259,17 @@ class _UploadFlowState extends State<_UploadFlow> {
             children: [
               LiveTalkComposeField(
                 controller: _textController,
-                height: isMobile ? 195 : 181,
+                height: composeHeight,
               ),
               if (_isCrewTalk) ...[
                 const SizedBox(height: SDSSpacing.md),
-                _VisibilityToggle(
-                  isPublic: _isPublic,
-                  onChanged: (value) => setState(() => _isPublic = value),
+                SizedBox(
+                  // 높이를 못 박아야 위에서 줄인 값과 정확히 상쇄된다.
+                  height: _kVisibilityToggleHeight,
+                  child: _VisibilityToggle(
+                    isPublic: _isPublic,
+                    onChanged: (value) => setState(() => _isPublic = value),
+                  ),
                 ),
               ],
             ],
@@ -389,6 +397,9 @@ Future<void> showLiveTalkUploadDoneDialog(BuildContext context) {
   );
 }
 
+/// 공개범위 스위치 줄 높이. 글 작성 칸을 이만큼 줄여 전체 높이를 맞춘다.
+const double _kVisibilityToggleHeight = 36;
+
 /// 크루톡 공개범위 스위치. 전체공개면 라이브크루 홈 갤러리에도 노출된다.
 class _VisibilityToggle extends StatelessWidget {
   final bool isPublic;
@@ -402,24 +413,54 @@ class _VisibilityToggle extends StatelessWidget {
       children: [
         Expanded(
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // ⚠️ 두 줄 모두 line height를 못 박는다 — Pretendard 기본 줄 높이는
+              // 더 커서 줄 높이 36(= 글 작성 칸에서 빼둔 값)을 넘겨 오버플로우가 난다.
               Text(
                 '전체공개',
-                style: SDSTextStyle.bold.copyWith(fontSize: 14, color: SDSColor.gray900),
+                style: SDSTextStyle.bold.copyWith(
+                    fontSize: 14, height: 18 / 14, color: SDSColor.gray900),
               ),
               const SizedBox(height: 2),
               Text(
                 isPublic ? '라이브크루 홈에도 사진이 보여요.' : '크루원만 볼 수 있어요.',
-                style: SDSTextStyle.regular.copyWith(fontSize: 12, color: SDSColor.gray500),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: SDSTextStyle.regular.copyWith(
+                    fontSize: 12, height: 16 / 12, color: SDSColor.gray500),
               ),
             ],
           ),
         ),
-        Switch(
-          value: isPublic,
-          onChanged: onChanged,
-          activeTrackColor: SDSColor.snowliveBlue,
+        // Material 기본 스위치(52×32 + 탭 영역)는 14 글줄 옆에서 과하게 크다 →
+        // 0.8배로 줄이고 탭 영역 여백을 걷어 오른쪽 선에 맞춘다.
+        //
+        // ⚠️ 색은 **스라블루 / 흰색 / gray200** 세 가지만 쓴다. Material 기본값은
+        // 테마 보라(primary)·테두리선·눌림 오버레이·꺼진 상태 손잡이 회색을
+        // 제멋대로 넣으므로 전부 명시해서 덮는다(상태별로 다 지정해야 한다 —
+        // 하나라도 비우면 그 상태에서 기본 테마 색이 되살아난다).
+        Transform.scale(
+          scale: 0.8,
+          alignment: Alignment.centerRight,
+          child: Switch(
+            value: isPublic,
+            onChanged: onChanged,
+            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            splashRadius: 0,
+            thumbColor: const WidgetStatePropertyAll(SDSColor.snowliveWhite),
+            trackColor: WidgetStateProperty.resolveWith(
+              (states) => states.contains(WidgetState.selected)
+                  ? SDSColor.snowliveBlue
+                  : SDSColor.gray200,
+            ),
+            // 트랙 테두리선·호버/눌림 오버레이 제거.
+            trackOutlineColor: const WidgetStatePropertyAll(Colors.transparent),
+            trackOutlineWidth: const WidgetStatePropertyAll(0),
+            overlayColor: const WidgetStatePropertyAll(Colors.transparent),
+          ),
         ),
       ],
     );

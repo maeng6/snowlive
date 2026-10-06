@@ -14,9 +14,9 @@ import 'package:com.snowlive/web/widget/w_web_sticky_sidebar_web.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-/// "목록 영역 + 우측 열" 블록 폭 = 목록 1280(웹 공통) + 간격 40 + 우측 열 240.
-/// 중고거래 홈 블록과 동일한 1560이라, 넓은 화면에서 두 화면의 타이틀
-/// 좌측 여백이 정확히 맞는다(피그마 64:112373의 246 대신 표준 240 — 사용자 결정).
+/// "목록 영역 + 우측 열" 블록 폭 = 목록 1280(웹 공통) + 간격 40 + 우측 열 220.
+/// 중고거래 홈 블록과 동일한 1540이라, 넓은 화면에서 두 화면의 타이틀
+/// 좌측 여백이 정확히 맞는다(피그마의 246 대신 웹 공통 사이드바 폭 — 사용자 결정).
 const double kCommunityContentMaxWidth = kWebDesktopListMaxWidth + 40 + kCommunitySidebarWidth;
 
 /// 사이드바(게시글 올리기 버튼)가 필터 줄과 같은 높이에서 시작하도록 내리는 값

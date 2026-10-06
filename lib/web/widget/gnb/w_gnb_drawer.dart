@@ -207,6 +207,8 @@ class _WebGnbMenuPanelState extends State<WebGnbMenuPanel>
           const SizedBox(height: 2),
           Text(
             resortName,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
             textAlign: TextAlign.center,
             style: SDSTextStyle.regular.copyWith(fontSize: 13, color: SDSColor.gray700),
           ),

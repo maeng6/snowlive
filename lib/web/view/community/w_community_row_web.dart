@@ -1,3 +1,5 @@
+import 'dart:ui' as ui;
+
 import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/core/model/m_communityList.dart';
 import 'package:com.snowlive/web/routes/routes_web.dart';
@@ -11,16 +13,74 @@ import 'package:intl/intl.dart';
 // 표 형태 목록의 열 규격(피그마 64:112373). 헤더와 데이터 행이 **같은 상수**를
 // 쓰는 것만으로는 부족해서(구조가 갈라지면 결국 어긋난다) 아래
 // communityTableRowShell 하나를 공유하게 한다. 제목만 가변폭(Expanded)이다.
-// 메타 열(작성자/작성일/조회수) 사이 간격 — 목업 12 대신 눈으로 맞춘 확정값.
+// 메타 열(작성자/작성일/조회수) 사이 간격. 각종소식 표(kEventColGap)도 같은 30이지만
+// 상수는 분리돼 있다 — 두 표의 열 구성이 달라 따로 조정할 수 있어야 한다.
 const double kCommunityColGap = 30;
+
+/// 글자 폭 실측. 열 폭을 숫자로 박으면 글꼴 메트릭에 따라 끝이 잘린다(날짜 80에서
+/// '일'이 잘렸다). 그렇다고 폭을 풀면 행마다 열 시작선이 어긋난다 → 재서 고정한다.
+double measureWebTextWidth(String text, TextStyle style) {
+  final painter = TextPainter(
+    text: TextSpan(text: text, style: style),
+    // `intl`도 TextDirection을 내보내서 이름이 겹친다 → 별칭을 쓴다.
+    textDirection: ui.TextDirection.ltr,
+  )..layout();
+  return painter.width;
+}
+
+/// 표 메타 열(작성자·작성일·조회수) 폭.
+///
+/// **그 페이지에 실제로 있는 값 중 가장 긴 것**(헤더 글자 포함)을 재서 모든 행과
+/// 헤더가 같은 폭을 쓴다 — 잘리지도, 행마다 어긋나지도 않는다.
+class CommunityMetaWidths {
+  final double author;
+  final double date;
+  final double views;
+
+  const CommunityMetaWidths({required this.author, required this.date, required this.views});
+
+  /// 로딩 스켈레톤이 쓰는 폭. 실제 데이터가 올 때 열이 크게 안 움직이도록
+  /// **대표적인 길이의 표본**으로 재둔다(닉네임 6자·날짜 전체·조회수 4자리).
+  static final CommunityMetaWidths skeleton = CommunityMetaWidths._from(
+    const ['스노우라이버'],
+    const ['2026. 10. 03'],
+    const ['1234'],
+  );
+
+  /// 헤더만 그리는 동안(첫 로딩) 쓰는 기본값 — 헤더 글자 폭만 반영한다.
+  static final CommunityMetaWidths headerOnly = CommunityMetaWidths._from(const [], const [], const []);
+
+  factory CommunityMetaWidths._from(
+      List<String> authors, List<String> dates, List<String> views) {
+    final meta = SDSTextStyle.regular.copyWith(fontSize: 14);
+    final header = SDSTextStyle.bold.copyWith(fontSize: 14);
+    double widest(List<String> values, String headerText) {
+      var max = measureWebTextWidth(headerText, header);
+      for (final v in values) {
+        final w = measureWebTextWidth(v, meta);
+        if (w > max) max = w;
+      }
+      // 반올림으로 1px 모자라 잘리는 일이 없게 살짝 올린다.
+      return max.ceilToDouble() + 2;
+    }
+
+    return CommunityMetaWidths(
+      author: widest(authors, '작성자'),
+      date: widest(dates, '작성일'),
+      views: widest(views, '조회수'),
+    );
+  }
+
+  factory CommunityMetaWidths.of(List<Community> items) => CommunityMetaWidths._from(
+        [for (final c in items) c.userInfo?.displayName ?? ''],
+        [for (final c in items) communityDateLabel(c.uploadTime)],
+        [for (final c in items) '${c.viewsCount ?? 0}'],
+      );
+}
 
 /// 제목 영역 ↔ 메타 영역(작성자부터) 간격 — 열 간격(12)보다 넓다(목업 30).
 const double kCommunityTitleMetaGap = 30;
-const double kCommunityColAuthor = 80;
-const double kCommunityColDate = 80;
 
-/// 조회수 열. 댓글수는 제목 뒤 파란 `(N)`으로 옮겼고 썸네일 열은 없앴다(목업).
-const double kCommunityColViews = 60;
 
 final DateFormat _communityDateFormat = DateFormat('yyyy. MM. dd');
 
@@ -63,6 +123,7 @@ void openCommunityDetail(Community community) {
 
 /// 표 한 줄의 골격. **헤더 행과 데이터 행이 이 함수를 공유**하므로 열이 어긋나지 않는다.
 Widget communityTableRowShell({
+  required CommunityMetaWidths widths,
   required Widget titleCell,
   required Widget authorCell,
   required Widget dateCell,
@@ -83,11 +144,13 @@ Widget communityTableRowShell({
       const SizedBox(width: 10),
       Expanded(child: titleCell),
       const SizedBox(width: kCommunityTitleMetaGap),
-      SizedBox(width: kCommunityColAuthor, child: authorCell),
+      // 폭은 숫자로 박지 않고 그 페이지의 가장 긴 값에서 재 온다([CommunityMetaWidths]) —
+      // 헤더와 모든 행이 같은 값을 받으므로 열 시작선이 어긋나지 않는다.
+      SizedBox(width: widths.author, child: authorCell),
       const SizedBox(width: kCommunityColGap),
-      SizedBox(width: kCommunityColDate, child: dateCell),
+      SizedBox(width: widths.date, child: dateCell),
       const SizedBox(width: kCommunityColGap),
-      SizedBox(width: kCommunityColViews, child: viewsCell),
+      SizedBox(width: widths.views, child: viewsCell),
     ],
   );
 
@@ -114,7 +177,9 @@ Widget communityTableRowShell({
 
 /// 표 헤더 행 (태블릿·데스크탑).
 class CommunityTableHeaderRow extends StatelessWidget {
-  const CommunityTableHeaderRow({super.key});
+  final CommunityMetaWidths widths;
+
+  const CommunityTableHeaderRow({super.key, required this.widths});
 
   @override
   Widget build(BuildContext context) {
@@ -124,6 +189,7 @@ class CommunityTableHeaderRow extends StatelessWidget {
       color: SDSColor.gray900,
     );
     return communityTableRowShell(
+      widths: widths,
       padding: const EdgeInsets.only(top: 5, bottom: 13),
       border: Border(bottom: BorderSide(color: SDSColor.gray200)),
       titleCell: Text('제목', style: style),
@@ -136,6 +202,7 @@ class CommunityTableHeaderRow extends StatelessWidget {
 
 /// 표 데이터 행 (태블릿·데스크탑).
 class CommunityTableRow extends StatelessWidget {
+  final CommunityMetaWidths widths;
   final Community community;
 
   /// 강조할 검색어. 비어 있으면 강조하지 않고 미리보기 줄도 그리지 않는다.
@@ -143,6 +210,7 @@ class CommunityTableRow extends StatelessWidget {
 
   const CommunityTableRow({
     super.key,
+    required this.widths,
     required this.community,
     required this.query,
   });
@@ -166,6 +234,7 @@ class CommunityTableRow extends StatelessWidget {
         // 각종소식과 동일). 맞는 토큰이 없어 opacity로 만든다.
         hoverColor: SDSColor.gray900.withValues(alpha: 0.03),
         child: communityTableRowShell(
+          widths: widths,
           // 행 높이 52 고정(구분선 포함, 확정값).
           rowHeight: 52,
           border: Border(bottom: BorderSide(color: SDSColor.gray100)),

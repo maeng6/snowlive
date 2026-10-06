@@ -6,7 +6,6 @@ import 'package:com.snowlive/web/view/liveCrew/w_crewhome_member_web.dart';
 import 'package:com.snowlive/web/viewmodel/crew/vm_crewDetail_web.dart';
 import 'package:com.snowlive/web/widget/w_empty_state_web.dart';
 import 'package:com.snowlive/web/widget/w_numbered_pagination_web.dart';
-import 'package:com.snowlive/web/widget/w_skeleton_web.dart';
 import 'package:com.snowlive/web/widget/w_web_page_header_web.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -60,9 +59,11 @@ class _CrewMembersViewWebState extends State<CrewMembersViewWeb> {
 
     return Container(
       color: SDSColor.snowliveWhite,
-      // 서브 페이지 공통 여백(중고거래 상세·폼 기준).
-      padding: webSubPagePadding(context),
+      // ⚠️ 페이지 여백은 **스크롤 영역 안쪽**에(웹 공통) — 바깥에 주면 스크롤바가
+      // 여백 안쪽에 생겨 브라우저 오른쪽 끝에 붙지 않는다
       child: SingleChildScrollView(
+        // 하단은 페이지네이션이 바닥에 붙지 않게 넉넉히 비운다(기본 32 → 80).
+        padding: webSubPagePadding(context, bottom: 80),
         child: Center(
           child: ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: kCrewMembersContentMaxWidth),
@@ -89,7 +90,13 @@ class _CrewMembersViewWebState extends State<CrewMembersViewWeb> {
 
     if (count == 0) {
       if (hasError) return WebErrorState(onRetry: _vm.refresh);
-      if (isLoading) return const RankingListSkeleton();
+      // 랭킹 스켈레톤은 순위 숫자 열이 있어 맞지 않는다 — 멤버 전용(열·피치 동일).
+      if (isLoading) {
+        return CrewMemberListSkeleton(
+          count: kCrewMembersPerPage,
+          columnGap: context.isDesktop ? SDSSpacing.lg : 60,
+        );
+      }
       return const WebEmptyState(message: '아직 멤버 기록이 없어요.');
     }
 
@@ -101,27 +108,35 @@ class _CrewMembersViewWebState extends State<CrewMembersViewWeb> {
       (start + kCrewMembersPerPage).clamp(0, count),
     );
 
-    final columns = context.isDesktop ? 2 : 1;
+    // 2열은 태블릿까지(목업 161:97251 — 760 안에 350 × 2, 간격 60). 모바일만 1열.
+    final columns = context.screenType == WebScreenType.mobile ? 1 : 2;
+    final double columnGap = context.isDesktop ? SDSSpacing.lg : 60;
     final perColumn = (pageItems.length / columns).ceil();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Row(
+        CrewMemberListInset(
+          rowCount: perColumn,
+          child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             for (var i = 0; i < columns; i++) ...[
-              if (i > 0) const SizedBox(width: SDSSpacing.lg),
+              if (i > 0) SizedBox(width: columnGap),
               Expanded(
                 child: Column(
                   children: [
-                    for (final member in pageItems.skip(i * perColumn).take(perColumn))
+                    for (final (index, member)
+                        in pageItems.skip(i * perColumn).take(perColumn).indexed) ...[
+                      if (index > 0) SizedBox(height: crewMemberRowGap(context)),
                       CrewMemberRowWeb(member: member, onTap: () => _onMemberTap(member)),
+                    ],
                   ],
                 ),
               ),
             ],
           ],
+          ),
         ),
         if (totalPages > 1) ...[
           const SizedBox(height: SDSSpacing.xl),

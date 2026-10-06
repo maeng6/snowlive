@@ -44,7 +44,7 @@ class _FleamarketHomeViewState extends State<FleamarketHomeView> {
                       (kFleamarketSidebarWidth - 200))
               .clamp(200.0, kFleamarketSidebarWidth);
 
-      // 목록 1280(웹 공통) + 간격 40 + 사이드바 240 = 1560.
+      // 목록 1280(웹 공통) + 간격 40 + 사이드바 220 = 1540.
       const blockConstraints = BoxConstraints(
         maxWidth: kWebDesktopListMaxWidth + kFleamarketDesktopHPad + kFleamarketSidebarWidth,
       );

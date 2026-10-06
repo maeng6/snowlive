@@ -38,6 +38,11 @@ class _CrewSettingImageViewWebState extends State<CrewSettingImageViewWeb> {
   void initState() {
     super.initState();
     _crewId = int.tryParse(Get.parameters['id'] ?? '');
+    // 색을 고르면 **색마다 다른 마크 이미지**로 갈아끼운다 → 미리 받아 둔다
+    // (크루 만들기 3단계와 같은 처리).
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) precacheCrewDefaultLogos(context);
+    });
     final id = _crewId;
     if (id != null) {
       WidgetsBinding.instance.addPostFrameCallback((_) async {

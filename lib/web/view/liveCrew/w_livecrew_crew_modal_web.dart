@@ -2,29 +2,35 @@ import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/core/model/m_crewHome.dart';
 import 'package:com.snowlive/web/routes/routes_web.dart';
 import 'package:com.snowlive/web/util/crew_visual_web.dart';
-import 'package:com.snowlive/web/widget/w_network_image_web.dart';
+import 'package:com.snowlive/web/util/responsive_web.dart';
 import 'package:com.snowlive/web/widget/w_web_overlay_modal_web.dart';
-import 'package:com.snowlive/web/widget/w_web_image_viewer_web.dart';
-import 'package:com.snowlive/web/widget/w_web_profile_tap_web.dart';
+import 'package:com.snowlive/web/widget/w_web_profile_card_web.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-/// 크루 미리보기 팝업. 캐러셀 카드와 목록 행이 같은 팝업을 쓴다.
+/// 크루 미리보기 팝업. 캐러셀·목록 행·랭킹 크루 행이 모두 같은 팝업을 쓴다.
 ///
-/// 크루홈 응답의 [CrewCard]에 이름·로고·소개·멤버 수가 모두 들어 있어
-/// **추가 조회 없이** 그린다.
+/// 카드는 **유저 프로필 팝업과 같은 공용 위젯**([WebProfileCard])이다 — 목업(106:18120)이
+/// 사실상 같은 구성이라(로고 → 이름 → 부제 → 소개 → 하단 버튼) 따로 그릴 이유가 없다.
+/// 다른 점은 아바타가 원형이 아니라 **라운드 사각 로고(72 · 라운드 12)** 라는 것뿐.
 ///
-/// ⚠️ Overlay 직삽이라 Dialog가 주던 `Material` 조상이 없다 → 카드가 직접 Material이다.
+/// 넘겨받는 [CrewCard]에 있는 값만 그린다(추가 조회 없음) — 멤버 수가 없는 호출자
+/// (랭킹·슬로프크래프트)에서는 `N명` 줄이 비는 게 정상이다.
 Future<void> showLiveCrewModal(
   BuildContext context,
   CrewCard crew, {
   Map<int, String> resortFullnames = const {},
 }) {
+  final isMobile = context.screenType == WebScreenType.mobile;
   return showWebOverlayModal<void>(
     context: context,
+    // 모바일은 하단에 붙는 시트라 좌우 여백이 없어야 한다(유저 프로필 팝업과 동일).
+    alignment: isMobile ? Alignment.bottomCenter : Alignment.center,
+    padding: isMobile ? EdgeInsets.zero : const EdgeInsets.all(SDSSpacing.lg),
     builder: (_, close) => _CrewModalCard(
       crew: crew,
       resortFullnames: resortFullnames,
+      isSheet: isMobile,
       onClose: close,
     ),
   );
@@ -33,11 +39,13 @@ Future<void> showLiveCrewModal(
 class _CrewModalCard extends StatelessWidget {
   final CrewCard crew;
   final Map<int, String> resortFullnames;
+  final bool isSheet;
   final void Function([void result]) onClose;
 
   const _CrewModalCard({
     required this.crew,
     required this.resortFullnames,
+    required this.isSheet,
     required this.onClose,
   });
 
@@ -52,109 +60,36 @@ class _CrewModalCard extends StatelessWidget {
         '';
     final memberCount = crew.memberCount;
     final description = crew.description?.trim() ?? '';
+    final crewId = crew.crewId;
 
-    final card = Material(
-      color: SDSColor.snowliveWhite,
-      borderRadius: BorderRadius.circular(16),
-      clipBehavior: Clip.antiAlias,
-      child: SizedBox(
-        width: 384,
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(SDSSpacing.lg, SDSSpacing.md, SDSSpacing.lg, SDSSpacing.lg),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Align(
-                alignment: Alignment.topRight,
-                child: InkWell(
-                  onTap: onClose,
-                  customBorder: const CircleBorder(),
-                  child: Padding(
-                    padding: const EdgeInsets.all(4),
-                    child: Icon(Icons.close, size: 20, color: SDSColor.gray400),
-                  ),
-                ),
-              ),
-              // 팝업 안의 로고도 누르면 확대된다(개인 프로필 팝업과 동일).
-              WebProfileTap(
-                onTap: (logoUrl?.isNotEmpty ?? false)
-                    ? () => showWebPhotoViewer(context, url: logoUrl, title: crew.crewName ?? '')
-                    : null,
-                child: Container(
-                  width: 76,
-                  height: 76,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(14),
-                    border: Border.all(color: SDSColor.gray100),
-                  ),
-                  clipBehavior: Clip.antiAlias,
-                  child: (logoUrl?.isNotEmpty ?? false)
-                      ? WebNetworkImage(url: logoUrl, width: 76, height: 76)
-                      : Container(color: SDSColor.gray100),
-                ),
-              ),
-              const SizedBox(height: SDSSpacing.md),
-              Text(
-                crew.crewName ?? '',
-                textAlign: TextAlign.center,
-                style: SDSTextStyle.bold.copyWith(fontSize: 18, color: SDSColor.gray900),
-              ),
-              if (subtitle.isNotEmpty) ...[
-                const SizedBox(height: 4),
-                Text(
-                  subtitle,
-                  textAlign: TextAlign.center,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: SDSTextStyle.regular.copyWith(fontSize: 13, color: SDSColor.gray500),
-                ),
-              ],
-              if (memberCount != null) ...[
-                const SizedBox(height: SDSSpacing.sm),
-                Text(
-                  '$memberCount명',
-                  style: SDSTextStyle.bold.copyWith(fontSize: 15, color: SDSColor.gray900),
-                ),
-              ],
-              if (description.isNotEmpty) ...[
-                const SizedBox(height: 6),
-                Text(
-                  description,
-                  textAlign: TextAlign.center,
-                  maxLines: 3,
-                  overflow: TextOverflow.ellipsis,
-                  style: SDSTextStyle.regular.copyWith(fontSize: 12, color: SDSColor.gray400),
-                ),
-              ],
-              const SizedBox(height: SDSSpacing.lg),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: crew.crewId == null
-                      ? null
-                      : () {
-                          onClose();
-                          Get.toNamed('${WebRoutes.crewHome}?id=${crew.crewId}');
-                        },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: SDSColor.gray50,
-                    elevation: 0,
-                    padding: const EdgeInsets.symmetric(vertical: 14),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                  ),
-                  child: Text(
-                    '크루 구경하기',
-                    style: SDSTextStyle.bold.copyWith(fontSize: 14, color: SDSColor.gray700),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
+    return WebProfileCard(
+      isSheet: isSheet,
+      // 시트는 닫기 X 대신 드래그 핸들을 쓴다.
+      onClose: isSheet ? null : onClose,
+      data: WebProfileCardData(
+        avatarUrl: logoUrl,
+        // 목업(106:19153) — 크루 로고는 72에 라운드 12인 사각이다.
+        avatarSize: 72,
+        avatarRadius: 12,
+        displayName: crew.crewName,
+        // 크루는 줄이 더 많아(이름·리조트·멤버수·소개) 간격을 한 단계 좁힌다.
+        compactLines: true,
+        resortName: subtitle.isEmpty ? null : subtitle,
+        // 멤버 수는 있는 호출자(라이브크루 홈)에서만 나온다 — 랭킹·슬로프크래프트
+        // 응답에는 필드가 없어서 이 줄이 통째로 빠진다.
+        extraLine: memberCount == null ? null : '$memberCount명',
+        stateMsg: description.isEmpty ? null : description,
+      ),
+      footer: WebProfileFooterButton(
+        label: '크루 구경하기',
+        onTap: crewId == null
+            ? null
+            : () {
+                // 팝업을 먼저 닫아야 크루홈 위에 딤이 남지 않는다.
+                onClose();
+                Get.toNamed('${WebRoutes.crewHome}?id=$crewId');
+              },
       ),
     );
-
-    // 짧은 뷰포트에서 넘치면 스크롤되게 한다.
-    return SingleChildScrollView(child: card);
   }
 }

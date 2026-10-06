@@ -1,6 +1,4 @@
 import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
-import 'package:com.snowlive/core/viewmodel/vm_user.dart';
-import 'package:com.snowlive/web/viewmodel/fleamarket/vm_fleamarketPagination_web.dart';
 import 'package:com.snowlive/web/routes/routes_web.dart';
 import 'package:com.snowlive/web/widget/w_skeleton_web.dart';
 import 'package:com.snowlive/web/view/fleamarket/v_fleamarketAlert_web.dart'
@@ -17,7 +15,8 @@ import 'package:intl/intl.dart';
 /// sticky 계산이 어긋나지 않게 **홈 레이아웃이 사이드바 바깥에서** 준다.
 const double kFleamarketSidebarTopOffset = 56;
 
-const double kFleamarketSidebarWidth = 240;
+/// 웹 사이드바 공통 폭 — 220(2026-10-03 240에서 축소, 사용자 확정).
+const double kFleamarketSidebarWidth = 220;
 final _sidebarPriceFormat = NumberFormat('###,###,###,###');
 
 /// 데스크탑 전용 우측 열: 키워드 알림 설정 + 최근 본 상품 + 찜 목록.
@@ -64,7 +63,7 @@ class FleamarketSidebarWeb extends StatelessWidget {
               ),
               child: Text(
                 '중고거래 물품 올리기',
-                style: SDSTextStyle.bold.copyWith(fontSize: 15, color: SDSColor.snowliveWhite),
+                style: SDSTextStyle.bold.copyWith(fontSize: 14, color: SDSColor.snowliveWhite),
               ),
             ),
           ),
@@ -96,13 +95,9 @@ class FleamarketSidebarWeb extends StatelessWidget {
                 foregroundColor: const WidgetStatePropertyAll(SDSColor.gray900),
               ),
               // 색은 foregroundColor가 입힌다(여기서 지정하면 상태별 색이 안 먹는다).
-              child: Text('키워드 알림 설정', style: SDSTextStyle.bold.copyWith(fontSize: 15)),
+              child: Text('키워드 알림 설정', style: SDSTextStyle.bold.copyWith(fontSize: 14)),
             ),
           ),
-          // 인기 검색어(_PopularKeywords)는 서버 집계 API가 준비되면 다시 켠다.
-          // 켤 때: 버튼 ↔ 인기 검색어 30, 섹션 간 40 (피그마 32:18013).
-          // const SizedBox(height: 30),
-          // const _PopularKeywords(),
           const SizedBox(height: 40),
           Obx(() {
             final bool isLoading = myActivityVm.isLoading.value;
@@ -130,83 +125,6 @@ class FleamarketSidebarWeb extends StatelessWidget {
             );
           }),
         ],
-      ),
-    );
-  }
-}
-
-/// 인기 검색어(피그마 32:18013) — 칩을 누르면 그 키워드로 목록을 검색한다.
-/// 서버 집계 API가 준비되면 빌드에서 다시 켠다(위 주석 참고).
-// ignore: unused_element
-class _PopularKeywords extends StatelessWidget {
-  const _PopularKeywords();
-
-  // [개발용 더미] 서버 인기 검색어 API 연동 전 임시 목록. 배포 전 확인.
-  static const List<String> _keywords = ['데크', '스노우보드', '스키', '신상품', '2324', '이월상품 할인', '나눔'];
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text('인기 검색어', style: SDSTextStyle.bold.copyWith(fontSize: 14, color: SDSColor.gray900)),
-        // 제목 ↔ 칩 12 (피그마).
-        const SizedBox(height: 12),
-        Wrap(
-          spacing: 6,
-          runSpacing: 8,
-          children: [
-            for (final keyword in _keywords)
-              _KeywordChip(
-                label: keyword,
-                onTap: () {
-                  final userId = Get.find<UserViewModel>().user.user_id;
-                  Get.find<FleamarketPaginationViewModelWeb>().loadFirstPage(
-                    userId: userId,
-                    searchQuery: keyword,
-                  );
-                },
-              ),
-          ],
-        ),
-      ],
-    );
-  }
-}
-
-/// 칩: 높이 31(패딩 10/7), Regular 14, gray50 배경, radius 6 (피그마).
-class _KeywordChip extends StatefulWidget {
-  final String label;
-  final VoidCallback onTap;
-
-  const _KeywordChip({required this.label, required this.onTap});
-
-  @override
-  State<_KeywordChip> createState() => _KeywordChipState();
-}
-
-class _KeywordChipState extends State<_KeywordChip> {
-  bool _hovered = false;
-
-  @override
-  Widget build(BuildContext context) {
-    return MouseRegion(
-      cursor: SystemMouseCursors.click,
-      onEnter: (_) => setState(() => _hovered = true),
-      onExit: (_) => setState(() => _hovered = false),
-      child: GestureDetector(
-        onTap: widget.onTap,
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
-          decoration: BoxDecoration(
-            color: _hovered ? SDSColor.gray100 : SDSColor.gray50,
-            borderRadius: BorderRadius.circular(6),
-          ),
-          child: Text(
-            widget.label,
-            style: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray900),
-          ),
-        ),
       ),
     );
   }

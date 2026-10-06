@@ -33,7 +33,11 @@ const Color _kImagePaneScrim = Color(0x73000000);
 class LiveTalkImagePane extends StatelessWidget {
   final String? url;
 
-  const LiveTalkImagePane({super.key, required this.url});
+  /// 사진을 넘겨 가며 보는 화면(크루 갤러리 뷰어)에서 켠다 — 다음 사진이 올 때까지
+  /// 이전 프레임을 들고 있어 흰 깜빡임이 없다.
+  final bool gaplessPlayback;
+
+  const LiveTalkImagePane({super.key, required this.url, this.gaplessPlayback = false});
 
   @override
   Widget build(BuildContext context) {
@@ -70,7 +74,11 @@ class LiveTalkImagePane extends StatelessWidget {
               // 블러가 화려하면 원본이 묻힌다 — 한 겹 눌러준다.
               const ColoredBox(color: _kImagePaneScrim),
             ],
-            WebNetworkImage(url: url, fit: BoxFit.contain),
+            WebNetworkImage(
+              url: url,
+              fit: BoxFit.contain,
+              gaplessPlayback: gaplessPlayback,
+            ),
           ],
         ),
       ),

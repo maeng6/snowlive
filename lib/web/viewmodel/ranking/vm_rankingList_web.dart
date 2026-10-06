@@ -23,6 +23,10 @@ class RankingListViewModelWeb extends GetxController {
   final RxList<RankingUser> _items = <RankingUser>[].obs;
   final Rxn<MyRankingInfo> _myRankingInfo = Rxn<MyRankingInfo>();
   final RxBool _isLoading = false.obs;
+  final RxBool _hasLoadedOnce = false.obs;
+  /// 서버에 **실제로 보낸** 검색어. 빈 상태 문구를 입력 중인 값이 아니라
+  /// 조회에 쓰인 값으로 쓰기 위해 따로 들고 있다(커뮤니티와 같은 방식).
+  final RxString _appliedQuery = ''.obs;
   final RxInt _currentPage = 1.obs;
   final RxInt _totalPages = 1.obs;
   final RxInt _totalCount = 0.obs;
@@ -45,6 +49,13 @@ class RankingListViewModelWeb extends GetxController {
   List<RankingUser> get items => _items;
   MyRankingInfo? get myRankingInfo => _myRankingInfo.value;
   bool get isLoading => _isLoading.value;
+
+  /// 첫 조회가 한 번이라도 끝났는지. 시즌을 파이어스토어에서 먼저 받아오는 구간에는
+  /// [isLoading]이 아직 false여서, 화면이 "데이터 없음"을 먼저 보여주는 문제가 있었다.
+  /// 화면은 이 값이 false인 동안 빈 상태 대신 스켈레톤을 그려야 한다.
+  bool get hasLoadedOnce => _hasLoadedOnce.value;
+
+  String get appliedQuery => _appliedQuery.value;
   int get currentPage => _currentPage.value;
   int get totalPages => _totalPages.value;
   int get totalCount => _totalCount.value;
@@ -61,8 +72,13 @@ class RankingListViewModelWeb extends GetxController {
   /// 진행바가 보이도록 전체를 감싼다. 안쪽 gotoPage가 한 번 더 begin/end 하지만
   /// 참조 카운트라 중첩돼도 안전하다.
   Future<void> _init() => withPageLoading(() async {
-        _fetchedSeason = await fetchCurrentRankingSeason();
-        await loadFirstPage();
+        try {
+          _fetchedSeason = await fetchCurrentRankingSeason();
+          await loadFirstPage();
+        } finally {
+          // 시즌 조회가 실패해도 스켈레톤에 갇히지 않게 여기서도 세운다.
+          _hasLoadedOnce.value = true;
+        }
       });
 
   /// 필터를 세팅하고 1페이지부터 로드. season을 명시적으로 안 넘기면
@@ -79,6 +95,11 @@ class RankingListViewModelWeb extends GetxController {
     _federation = federation;
     _daily = daily;
     _searchQuery = searchQuery;
+    _appliedQuery.value = searchQuery ?? '';
+    // 탭(누적·일간)·필터·검색이 바뀌면 조회 조건이 통째로 달라진다 — 이전 목록을
+    // 남겨두면 새 응답이 올 때까지 다른 조건의 값이 잠깐 보인다. 그래서 여기서
+    // 비워 스켈레톤이 뜨게 하고, 같은 조건의 페이지 이동(gotoPage)에서는 유지한다.
+    _items.clear();
     _totalPages.value = 1; // gotoPage 범위체크 초기화
     await gotoPage(1);
   }
@@ -93,6 +114,7 @@ class RankingListViewModelWeb extends GetxController {
       await _fetchWithRetry(page);
     } finally {
       _isLoading.value = false;
+      _hasLoadedOnce.value = true;
       endPageLoading();
     }
   }

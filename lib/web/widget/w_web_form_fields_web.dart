@@ -5,6 +5,11 @@ import 'package:com.snowlive/web/widget/w_web_overlay_modal_web.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+/// 웹 폼 입력 공통 높이 **44** = 줄 높이 20 + 상하 패딩 12.
+/// 검색창(`WebSearchField`)과 같은 값으로 맞춘 것(사용자 확정).
+const double _kFieldLineHeight = 20;
+const double _kFieldVerticalPadding = 12;
+
 /// 웹 글쓰기 폼(중고거래 물건 팔기/수정, 커뮤니티 게시글 작성) 공용 필드 위젯.
 ///
 /// [compact]는 라벨 크기만 바꾼다. 기본(false)은 중고거래 목업의 `bold 14`,
@@ -103,19 +108,31 @@ class WebFormTextField extends StatelessWidget {
       inputFormatters: inputFormatters,
       onChanged: onChanged,
       textAlignVertical: expands ? TextAlignVertical.top : null,
-      style: SDSTextStyle.regular.copyWith(fontSize: 15, color: SDSColor.gray900),
+      // ⚠️ 줄 높이를 **20으로 못 박아야** 입력 높이가 44로 떨어진다. 안 묶으면
+      // Pretendard 15의 줄 상자가 24쯤 잡혀 48이 된다(실측).
+      style: SDSTextStyle.regular
+          .copyWith(fontSize: 15, height: _kFieldLineHeight / 15, color: SDSColor.gray900),
       cursorHeight: 17, // 커서 높이 = 글자 크기 + 2(웹 공통 규칙)
-      // 피그마 62:98906 — 인풋 radius 6, 패딩 12/14(높이 46), hint 15 gray400,
-      // suffix('원') regular 14.
+      // 인풋 radius 6, hint 15 gray400, suffix('원') regular 14.
+      // 높이는 검색창(44)과 같은 **44**로 통일한다(사용자 확정)
       decoration: InputDecoration(
         hintText: hint,
-        hintStyle: SDSTextStyle.regular.copyWith(fontSize: 15, color: SDSColor.gray400),
+        hintStyle: SDSTextStyle.regular.copyWith(
+            fontSize: 15, height: _kFieldLineHeight / 15, color: SDSColor.gray400),
         counterText: '',
         suffixText: suffixText,
         suffixStyle: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray900),
+        // 높이 44를 만들려면 둘 다 필요하다
+        // ⚠️ `isDense: true` — false면 InputDecorator가 컨테이너 높이를
+        //    **최소 48(kMinInteractiveDimension)로 강제**해서 패딩을 줄여도 안 내려간다
+        // ⚠️ `visualDensity: standard` — 웹 기본(compact)은 높이에서 **8을 더 깎아**
+        //    36이 된다(드롭다운은 일반 Container라 영향이 없어 44였다).
+        isDense: true,
+        visualDensity: VisualDensity.standard,
         filled: true,
         fillColor: SDSColor.gray50,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+        contentPadding:
+            const EdgeInsets.symmetric(horizontal: 12, vertical: _kFieldVerticalPadding),
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(6), borderSide: BorderSide.none),
       ),
     );
@@ -242,7 +259,11 @@ class _WebFormDropdownFieldState<T> extends State<WebFormDropdownField<T>> {
 
   @override
   Widget build(BuildContext context) {
-    final bool isSelected = widget.value != widget.placeholder;
+    // 아직 안 고른 상태는 호출자가 placeholder를 **값으로** 넘기기도 하고
+    // 빈 문자열을 넘기기도 한다(크루 만들기) → 둘 다 placeholder를 보여준다.
+    final bool isSelected =
+        widget.value.isNotEmpty && widget.value != widget.placeholder;
+    final String displayText = isSelected ? widget.value : widget.placeholder;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -253,17 +274,19 @@ class _WebFormDropdownFieldState<T> extends State<WebFormDropdownField<T>> {
             key: _boxKey,
             borderRadius: BorderRadius.circular(6),
             onTap: _open,
-            // 피그마 62:98906 — 인풋과 동일(radius 6, 패딩 12/14), 화살표 16.
+            // 인풋과 동일(radius 6, 높이 44), 화살표 16.
             child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+              padding: const EdgeInsets.symmetric(
+                  horizontal: 12, vertical: _kFieldVerticalPadding),
               decoration: BoxDecoration(color: SDSColor.gray50, borderRadius: BorderRadius.circular(6)),
               child: Row(
                 children: [
                   Expanded(
                     child: Text(
-                      widget.value,
+                      displayText,
                       style: SDSTextStyle.regular.copyWith(
                         fontSize: 15,
+                        height: _kFieldLineHeight / 15,
                         color: isSelected ? SDSColor.gray900 : SDSColor.gray400,
                       ),
                     ),

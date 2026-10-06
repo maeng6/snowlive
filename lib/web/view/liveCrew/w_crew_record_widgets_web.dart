@@ -753,29 +753,35 @@ class CrewRecordListSkeleton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const SkeletonBox(width: 60, height: 26, radius: 6),
-        const SizedBox(height: 14),
-        const SkeletonBox(height: 20, radius: 6),
-        const SizedBox(height: SDSSpacing.md),
-        SizedBox(
-          height: kCrewRecordCardHeight,
-          // ListView는 넘치는 카드를 잘라 준다(Row로 두면 좁은 폭에서 오버플로).
-          child: ListView(
-            scrollDirection: Axis.horizontal,
-            physics: const NeverScrollableScrollPhysics(),
-            children: const [
-              SkeletonBox(width: kCrewRecordCardWidth, height: kCrewRecordCardHeight, radius: 12),
-              SizedBox(width: _kCardGap),
-              SkeletonBox(width: kCrewRecordCardWidth, height: kCrewRecordCardHeight, radius: 12),
-              SizedBox(width: _kCardGap),
-              SkeletonBox(width: kCrewRecordCardWidth, height: kCrewRecordCardHeight, radius: 12),
-            ],
+    // ⚠️ 색은 SkeletonShimmer가 입힌다 — 안 감싸면 흰 배경에 흰 박스라 안 보인다.
+    return SkeletonShimmer(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const SkeletonBox(width: 60, height: 26, radius: 6),
+          const SizedBox(height: 14),
+          const SkeletonBox(height: 20, radius: 6),
+          const SizedBox(height: SDSSpacing.md),
+          SizedBox(
+            height: kCrewRecordCardHeight,
+            // ListView는 넘치는 카드를 잘라 준다(Row로 두면 좁은 폭에서 오버플로).
+            child: ListView(
+              scrollDirection: Axis.horizontal,
+              physics: const NeverScrollableScrollPhysics(),
+              children: const [
+                SkeletonBox(
+                    width: kCrewRecordCardWidth, height: kCrewRecordCardHeight, radius: 12),
+                SizedBox(width: _kCardGap),
+                SkeletonBox(
+                    width: kCrewRecordCardWidth, height: kCrewRecordCardHeight, radius: 12),
+                SizedBox(width: _kCardGap),
+                SkeletonBox(
+                    width: kCrewRecordCardWidth, height: kCrewRecordCardHeight, radius: 12),
+              ],
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
