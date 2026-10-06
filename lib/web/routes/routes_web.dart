@@ -66,6 +66,8 @@ class WebRoutes {
   static const communityDetail = '/community-detail';
   // 상세와 같은 이유로 '/community/upload'가 아니라 최상위 경로다.
   static const communityUpload = '/community-upload';
+  // 수정도 같은 이유로 최상위 경로 + 쿼리 id: '/community-update?id=621'.
+  static const communityUpdate = '/community-update';
   static const liveTalk = '/livetalk';
   // 상세/작성과 같은 이유로 하위 경로가 아니라 최상위다(GetX 부모 매칭 사고 방지).
   static const liveTalkDetail = '/livetalk-detail';
@@ -229,6 +231,11 @@ class WebRoutes {
     GetPage(
       name: communityUpload,
       page: () => const CommunityUploadViewWeb(),
+      binding: WebCommunityUploadBinding(),
+    ),
+    GetPage(
+      name: communityUpdate,
+      page: () => const CommunityUploadViewWeb(isEdit: true),
       binding: WebCommunityUploadBinding(),
     ),
     GetPage(

@@ -22,6 +22,7 @@ const Map<String, String> kWebPageNames = {
   WebRoutes.community: '커뮤니티',
   WebRoutes.communityDetail: '커뮤니티 게시글',
   WebRoutes.communityUpload: '게시글 작성',
+  WebRoutes.communityUpdate: '게시글 수정',
   // 라이브톡
   WebRoutes.liveTalk: '라이브톡',
   WebRoutes.liveTalkDetail: '라이브톡',

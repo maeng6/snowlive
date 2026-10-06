@@ -14,6 +14,7 @@ enum WebMoreAction {
   reportPost('게시글 신고하기'),
   report('신고하기'),
   hideUser('이 회원의 모든 글 숨기기'),
+  edit('수정하기'),
   delete('삭제하기');
 
   const WebMoreAction(this.label);
@@ -132,8 +133,13 @@ Future<void> handleWebMoreAction(
   Future<bool> Function()? onDelete,
   Future<WebActionResult> Function()? onReport,
   Future<WebActionResult> Function()? onHideUser,
+  Future<void> Function()? onEdit,
 }) async {
   switch (action) {
+    case WebMoreAction.edit:
+      // 수정은 되돌릴 수 있는 이동이라 확인 없이 바로 연다.
+      await onEdit?.call();
+
     case WebMoreAction.delete:
       if (onDelete == null) return;
       final ok = await showWebConfirmDialog(

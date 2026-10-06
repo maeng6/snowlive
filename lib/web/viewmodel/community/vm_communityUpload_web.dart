@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:com.snowlive/core/api/api_community.dart';
+import 'package:com.snowlive/core/model/m_communityDetail.dart';
 import 'package:dart_quill_delta/dart_quill_delta.dart' as delta;
 import 'package:com.snowlive/web/viewmodel/community/vm_communityListPagination_web.dart';
 import 'package:com.snowlive/web/viewmodel/util/vm_imageController_web.dart';
@@ -28,13 +29,32 @@ const String kCommunityCategoryRoom = '시즌방';
 /// 커뮤니티는 게시판/이벤트 두 갈래인데 웹은 게시판만 노출한다(목록도 이 값으로 조회).
 const String _kCategoryMain = '게시판';
 
-/// 웹 커뮤니티 게시글 작성 뷰모델.
+/// 수정 화면에서 원글을 불러온 상태.
+enum CommunityEditState {
+  /// 새 글 모드(수정 아님).
+  none,
+  loading,
+  ready,
+
+  /// 글이 없거나(삭제됨) 조회 실패.
+  notFound,
+
+  /// 내 글이 아님.
+  forbidden,
+}
+
+/// 웹 커뮤니티 게시글 작성·수정 뷰모델.
 ///
 /// core의 [CommunityUploadViewModel]은 `dart:io`/`flutter_image_compress`/
 /// `File.exists`에 의존해서 **웹에서 컴파일되지 않는다**. 그래서 웹 전용으로 둔다.
+/// 수정도 같은 폼을 쓰므로(디자인이 올리기와 같다) 같은 뷰모델에 둔다.
 class CommunityUploadViewModelWeb extends GetxController {
-  final CommunityAPI _api = CommunityAPI();
-  final ImageControllerWeb _imageController = Get.put(ImageControllerWeb());
+  CommunityUploadViewModelWeb({CommunityAPI? api, ImageControllerWeb? imageController})
+      : _api = api ?? CommunityAPI(),
+        _imageController = imageController ?? Get.put(ImageControllerWeb());
+
+  final CommunityAPI _api;
+  final ImageControllerWeb _imageController;
 
   final TextEditingController titleController = TextEditingController();
   final quill.QuillController quillController = quill.QuillController.basic();
@@ -45,6 +65,16 @@ class CommunityUploadViewModelWeb extends GetxController {
   final RxString _categorySub2 = kCommunityCategorySub2Placeholder.obs;
   final RxBool _isTitleWritten = false.obs;
   final RxBool _isSubmitting = false.obs;
+
+  // ── 수정 모드 ──
+  final Rx<CommunityEditState> _editState = CommunityEditState.none.obs;
+  int? _editId;
+
+  /// 웹 폼에 없는 값은 원글 그대로 다시 보낸다(PUT이라 빠지면 지워질 수 있다).
+  String? _originalCategoryMain;
+  String? _originalSnsUrl;
+
+  CommunityEditState get editState => _editState.value;
 
   /// 본문에 삽입된 이미지: **blob URL → 원본 XFile**.
   /// 제출할 때 이 맵으로 원본을 찾아 업로드한다. Delta에 남은 blob URL에서
@@ -89,6 +119,10 @@ class CommunityUploadViewModelWeb extends GetxController {
   /// 편집 화면을 떠난 뒤에도 fenix로 뷰모델이 살아남으므로, 다음 진입에서
   /// 이전 글이 남지 않도록 명시적으로 비운다.
   void resetForm() {
+    _editState.value = CommunityEditState.none;
+    _editId = null;
+    _originalCategoryMain = null;
+    _originalSnsUrl = null;
     titleController.clear();
     quillController.document = quill.Document();
     _categorySub.value = kCommunityCategorySubPlaceholder;
@@ -103,7 +137,11 @@ class CommunityUploadViewModelWeb extends GetxController {
     final picker = ImagePicker();
     final picked = await picker.pickImage(source: ImageSource.gallery, imageQuality: 70);
     if (picked == null) return;
+    insertImage(picked);
+  }
 
+  /// 고른 사진을 커서 위치에 넣는다(업로드는 제출 때).
+  void insertImage(XFile picked) {
     _pendingImages[picked.path] = picked;
 
     final index = quillController.selection.baseOffset;
@@ -182,6 +220,113 @@ class CommunityUploadViewModelWeb extends GetxController {
     } finally {
       _isSubmitting.value = false;
     }
+  }
+
+  /// 수정할 글을 불러와 폼을 채운다. 상세 화면처럼 **URL의 id로 직접 조회**하므로
+  /// 수정 화면에서 새로고침해도 폼이 비지 않는다(조회수는 올리지 않는다).
+  Future<void> loadForEdit({required int communityId, required int userId}) async {
+    resetForm();
+    _editId = communityId;
+    _editState.value = CommunityEditState.loading;
+    try {
+      final response = await _api.fetchCommunityDetails(communityId, userId.toString());
+      if (_editId != communityId) return; // 그 사이 다른 글로 바뀜
+      if (!response.success || response.data is! Map) {
+        _editState.value = CommunityEditState.notFound;
+        return;
+      }
+      // 댓글은 필요 없고, 댓글 한 건이 깨지면 fromJson 전체가 실패하므로 떼고 넘긴다
+      // (상세 뷰모델과 같은 방어).
+      final map = Map<String, dynamic>.from(response.data as Map)..remove('comments');
+      final detail = CommunityDetailModel.fromJson(map);
+      if (detail.userId != userId) {
+        _editState.value = CommunityEditState.forbidden;
+        return;
+      }
+
+      titleController.text = detail.title ?? '';
+      _isTitleWritten.value = titleController.text.trim().isNotEmpty;
+      final sub = detail.categorySub;
+      _categorySub.value = (sub != null && kCommunityCategorySubList.contains(sub))
+          ? sub
+          : kCommunityCategorySubPlaceholder;
+      final sub2 = detail.categorySub2;
+      _categorySub2.value = (sub2 != null && kCommunityCategorySub2List.contains(sub2))
+          ? sub2
+          : kCommunityCategorySub2Placeholder;
+      // 원글 Document를 그대로 물리면 편집이 상세 화면 모델까지 바꾼다 → Delta로 복사.
+      final original = detail.description ?? quill.Document();
+      quillController.document = quill.Document.fromDelta(original.toDelta());
+      _originalCategoryMain = detail.categoryMain;
+      _originalSnsUrl = detail.snsUrl;
+      _editState.value = CommunityEditState.ready;
+    } catch (e) {
+      debugPrint('[CommunityUploadWeb] 수정 원글 조회 실패: $e');
+      if (_editId == communityId) _editState.value = CommunityEditState.notFound;
+    }
+  }
+
+  /// 수정 저장. 새로 넣은 사진만 올리고(**고유 파일명** — 기존 사진을 덮어쓰지 않게),
+  /// 본문의 blob 주소를 바꾼 뒤 한 번에 저장한다.
+  ///
+  /// 앱은 본문을 `임시내용`으로 먼저 저장한 뒤 다시 저장하는 2단계라 중간에 실패하면
+  /// 본문이 날아간다. 수정은 pk를 이미 알아서 업로드부터 하면 저장이 1회로 끝난다.
+  Future<bool> submitEdit({required int userId}) async {
+    final pk = _editId;
+    if (pk == null || _editState.value != CommunityEditState.ready) return false;
+    if (_isSubmitting.value) return false;
+    _isSubmitting.value = true;
+    try {
+      final ops = quillController.document.toDelta().toList();
+      final localImages = <String>[
+        for (final op in ops)
+          if (_localImageUrlOf(op) case final url?) url,
+      ];
+
+      var description = ops.map((op) => Map<String, dynamic>.from(op.toJson())).toList();
+      if (localImages.isNotEmpty) {
+        final files = localImages.map((url) => _pendingImages[url]!).toList();
+        final uploaded = await _imageController.uploadCommunityImages(
+          files: files,
+          pk: pk,
+          fileStamp: '${DateTime.now().millisecondsSinceEpoch}',
+        );
+        final urlMap = <String, String>{};
+        for (var i = 0; i < localImages.length; i++) {
+          if (i < uploaded.length && uploaded[i].isNotEmpty) {
+            urlMap[localImages[i]] = uploaded[i];
+          }
+        }
+        // 올리지 못한 사진이 있으면 저장하지 않는다 — blob 주소가 저장되면 다른 기기에서
+        // 못 여는 깨진 이미지가 남는다. 사용자는 그대로 다시 시도할 수 있다.
+        if (urlMap.length != localImages.length) return false;
+        description = _replaceImageUrls(ops, urlMap);
+      }
+
+      return await _update(pk, {
+        'user_id': userId.toString(),
+        'category_main': _originalCategoryMain ?? _kCategoryMain,
+        'category_sub': _categorySub.value,
+        // 새 글과 같은 규칙 — 시즌방이 아니면 '하위 카테고리' 문자열 그대로.
+        'category_sub2': _categorySub2.value,
+        'title': titleController.text.trim(),
+        if (_originalSnsUrl != null) 'sns_url': _originalSnsUrl,
+        'thumb_img_url': firstImageUrl(description) ?? '',
+        'description': jsonEncode(description),
+      });
+    } finally {
+      _isSubmitting.value = false;
+    }
+  }
+
+  /// 본문(Delta JSON) 첫 이미지 주소 — 목록 썸네일(`thumb_img_url`). 앱과 같은 규칙.
+  @visibleForTesting
+  static String? firstImageUrl(List<Map<String, dynamic>> ops) {
+    for (final op in ops) {
+      final insert = op['insert'];
+      if (insert is Map && insert['image'] is String) return insert['image'] as String;
+    }
+    return null;
   }
 
   /// 아직 업로드되지 않은 로컬 이미지(blob)면 그 URL, 아니면 null.

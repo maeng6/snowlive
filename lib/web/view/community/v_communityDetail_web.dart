@@ -2,6 +2,7 @@ import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/core/model/m_communityDetail.dart';
 import 'package:com.snowlive/core/viewmodel/vm_user.dart';
 import 'package:com.snowlive/web/routes/routes_web.dart';
+import 'package:com.snowlive/web/viewmodel/community/vm_communityListPagination_web.dart';
 import 'package:com.snowlive/web/util/responsive_web.dart';
 import 'package:com.snowlive/web/widget/w_web_more_menu_web.dart';
 import 'package:com.snowlive/web/view/community/w_community_body_web.dart';
@@ -143,7 +144,22 @@ class _CommunityDetailViewWebState extends State<CommunityDetailViewWeb> {
       onHideUser: detail?.userId == null
           ? null
           : () => _vm.blockUser(detail!.userId!),
+      onEdit: _openEdit,
     );
+  }
+
+  /// 수정 화면(올리기와 같은 폼)으로 갔다가 돌아오면 고친 내용으로 다시 받는다.
+  Future<void> _openEdit() async {
+    final id = _communityId;
+    if (id == null) return;
+    await Get.toNamed('${WebRoutes.communityUpdate}?id=$id');
+    if (!mounted) return;
+    await _vm.refresh();
+    // 제목·게시판 종류가 바뀌었을 수 있다 → 목록은 지금 페이지·필터 그대로 다시 받는다.
+    if (Get.isRegistered<CommunityListPaginationViewModelWeb>()) {
+      final list = Get.find<CommunityListPaginationViewModelWeb>();
+      await list.gotoPage(list.currentPage);
+    }
   }
 
   void _openImageViewer(List<String> urls, int index) {
@@ -405,9 +421,9 @@ class _CommunityDetailViewWebState extends State<CommunityDetailViewWeb> {
           iconSize: 26,
           // 클릭 영역 28(아이콘 26 + 패딩 1).
           hitPadding: 1,
-          // 내 글이면 삭제, 남의 글이면 신고/숨기기 (중고거래와 동일한 구성)
+          // 내 글이면 수정·삭제(앱과 같은 순서), 남의 글이면 신고/숨기기
           actions: _vm.isAuthor
-              ? const [WebMoreAction.delete]
+              ? const [WebMoreAction.edit, WebMoreAction.delete]
               : const [WebMoreAction.reportPost, WebMoreAction.hideUser],
           onSelected: _onPostMoreAction,
         ),

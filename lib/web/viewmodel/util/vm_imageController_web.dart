@@ -4,6 +4,14 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:image/image.dart' as img;
 
+/// 커뮤니티 본문 이미지의 Storage 경로.
+///
+/// 새 글은 `community/{pk}/{i}.jpg`(모바일 앱과 같은 규칙). ⚠️ 수정에서 같은 규칙을 쓰면
+/// 새 사진이 **기존 사진(0.jpg, 1.jpg…)을 덮어써서** 원래 사진이 바뀌거나 링크가 깨진다 →
+/// 수정은 [fileStamp]를 붙여 `community/{pk}/{stamp}_{i}.jpg`로 올린다.
+String communityImagePath({required int pk, required int index, String? fileStamp}) =>
+    fileStamp == null ? 'community/$pk/$index.jpg' : 'community/$pk/${fileStamp}_$index.jpg';
+
 class ImageControllerWeb extends GetxController {
   List<String> imagesUrlList = [];
 
@@ -26,14 +34,17 @@ class ImageControllerWeb extends GetxController {
 
   /// 커뮤니티 본문에 삽입된 이미지 업로드. 압축·재시도는 중고거래와 완전히 같고
   /// Storage 경로만 다르다(모바일 앱도 `community/$pk/`에 올린다).
+  ///
+  /// [fileStamp]는 **수정**에서 넘긴다 — 경로가 [communityImagePath] 참고.
   Future<List<String>> uploadCommunityImages({
     required List<XFile> files,
     required int pk,
+    String? fileStamp,
     Function(String requestType, String error)? onError,
   }) {
     return _uploadAll(
       files: files,
-      pathOf: (i) => 'community/$pk/$i.jpg',
+      pathOf: (i) => communityImagePath(pk: pk, index: i, fileStamp: fileStamp),
       errorPrefix: 'community',
       onError: onError,
     );
