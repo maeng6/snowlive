@@ -190,6 +190,9 @@ class ProfileRankBarWeb extends StatelessWidget {
   final String? tierName;
   final String? tierIconUrl;
 
+  /// 기록 없는 시즌: 점수·랭킹·티어를 '-'로 표시.
+  final bool empty;
+
   const ProfileRankBarWeb({
     super.key,
     this.leading,
@@ -197,6 +200,7 @@ class ProfileRankBarWeb extends StatelessWidget {
     required this.rank,
     required this.tierName,
     required this.tierIconUrl,
+    this.empty = false,
   });
 
   @override
@@ -204,9 +208,9 @@ class ProfileRankBarWeb extends StatelessWidget {
     final isMobile = context.screenType == WebScreenType.mobile;
 
     final cells = <Widget>[
-      _RankCell(label: '개인 점수', value: _numberFormat.format((score ?? 0).round()), isMobile: isMobile),
-      _RankCell(label: '개인 랭킹', value: _numberFormat.format(rank ?? 0), isMobile: isMobile),
-      _TierCell(name: tierName, iconUrl: tierIconUrl, isMobile: isMobile),
+      _RankCell(label: '개인 점수', value: empty ? '-' : _numberFormat.format((score ?? 0).round()), isMobile: isMobile),
+      _RankCell(label: '개인 랭킹', value: empty ? '-' : _numberFormat.format(rank ?? 0), isMobile: isMobile),
+      _TierCell(name: empty ? null : tierName, iconUrl: empty ? null : tierIconUrl, isMobile: isMobile),
     ];
 
     return Container(

@@ -290,7 +290,8 @@ class CrewHomeSummaryBarWeb extends StatelessWidget {
           // 목업은 세 지표가 **왼쪽에 모여** 있다(남은 폭을 나눠 갖지 않는다).
           for (var i = 0; i < stats.length; i++) ...[
             if (i > 0) _divider(),
-            Flexible(fit: FlexFit.loose, child: stats[i]),
+            // 각 칸은 내용 폭 그대로(숫자 안 잘림). 남는 폭은 아래 Spacer가 먹는다.
+            stats[i],
           ],
           if (onApply != null) ...[
             const Spacer(),
@@ -368,7 +369,9 @@ class _StatCellState extends State<_StatCell> {
     final value = Text(
       widget.value,
       maxLines: 1,
-      overflow: TextOverflow.ellipsis,
+      softWrap: false,
+      // 가로(인라인)에서는 숫자를 절대 줄이지 않고 전부 보여준다. 모바일 쌓임은 기존대로.
+      overflow: widget.stacked ? TextOverflow.ellipsis : TextOverflow.visible,
       style: SDSTextStyle.bold.copyWith(
         fontSize: 17,
         color: SDSColor.gray900,
@@ -386,7 +389,7 @@ class _StatCellState extends State<_StatCell> {
         // 가로 배치는 라벨 ↔ 값 11.
         : Row(
             mainAxisSize: MainAxisSize.min,
-            children: [label, const SizedBox(width: 11), Flexible(child: value)],
+            children: [label, const SizedBox(width: 11), value],
           );
     if (widget.onTap == null) return cell;
 

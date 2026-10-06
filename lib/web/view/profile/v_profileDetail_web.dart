@@ -235,8 +235,8 @@ class _ProfileDetailViewWebState extends State<ProfileDetailViewWeb> {
                 detail: detail,
                 ownerName: info.displayName,
                 ownerImageUrl: info.profileImageUrlUser,
-                // 목업: 넓은 폭에서는 파란 바 왼쪽에 `내 랭킹`.
-                leadingLabel: '내 랭킹',
+                // 넓은 폭에서는 파란 바 왼쪽에 라벨. 내 프로필이면 `내 랭킹`, 남의 프로필이면 `랭킹`.
+                leadingLabel: _vm.isMe ? '내 랭킹' : '랭킹',
               ),
             _ProfileTab.guestbook => _buildGuestbook(talkCount),
             _ProfileTab.recordRoom => _buildRecordRoom(info),
@@ -535,10 +535,6 @@ class _StatsPaneState extends State<_StatsPane> {
     final season = widget.detail.seasonRankingInfo;
     final hasRecord = season.overallTotalCount > 0 || season.countInfo.isNotEmpty;
 
-    if (!hasRecord) {
-      return const WebEmptyState(message: '아직 라이딩 기록이 없어요');
-    }
-
     final leading = widget.seasonSelectorBuilder?.call(SDSColor.snowliveWhite) ??
         (widget.leadingLabel == null
             ? null
@@ -546,6 +542,33 @@ class _StatsPaneState extends State<_StatsPane> {
                 widget.leadingLabel!,
                 style: SDSTextStyle.bold.copyWith(fontSize: 15, color: SDSColor.snowliveWhite),
               ));
+
+    if (!hasRecord) {
+      // 기록이 없어도 '데이터 있는 시즌'과 동일한 디자인(시즌선택 + 파란 랭크바)을 그대로
+      // 보여주고, 점수·랭킹·티어만 '-'로 표시한다. (시즌 전환이 계속 가능)
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          if (isMobile && widget.seasonSelectorBuilder != null) ...[
+            Align(
+              alignment: Alignment.centerLeft,
+              child: widget.seasonSelectorBuilder!(SDSColor.gray900),
+            ),
+            const SizedBox(height: 12),
+          ],
+          ProfileRankBarWeb(
+            leading: leading,
+            score: null,
+            rank: null,
+            tierName: null,
+            tierIconUrl: null,
+            empty: true,
+          ),
+          const SizedBox(height: SDSSpacing.xxl),
+          const WebEmptyState(message: '아직 라이딩 기록이 없어요'),
+        ],
+      );
+    }
 
     final daily = _selected;
 

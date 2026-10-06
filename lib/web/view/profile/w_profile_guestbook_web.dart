@@ -192,7 +192,8 @@ class _GuestbookRow extends StatelessWidget {
                 TimeStamp().getAgo(talk.uploadTime),
                 style: SDSTextStyle.regular.copyWith(fontSize: 12, color: SDSColor.gray400),
               ),
-              const Spacer(),
+              // '...' 메뉴는 맨 오른쪽이 아니라 시간 바로 오른쪽에 붙인다.
+              const SizedBox(width: 2),
               if (actions.isNotEmpty)
                 WebMoreButton(
                   actions: actions,

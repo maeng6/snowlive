@@ -52,6 +52,8 @@ class _HomeOpenChatWebState extends State<HomeOpenChatWeb>
   final ScrollController _listController = ScrollController();
 
   bool _isOpen = false;
+  // 채팅이 닫힌 상태에서 새 메시지가 오면 true → '오픈 채팅' 옆 빨간점. 열면 false.
+  bool _hasUnread = false;
   Worker? _latestWorker;
 
   /// 모바일 바텀 시트(피그마 1:19330) — 앱바까지 딤으로 덮어야 해서
@@ -77,6 +79,7 @@ class _HomeOpenChatWebState extends State<HomeOpenChatWeb>
         _scrollToBottom();
         return;
       }
+      _hasUnread = true; // 닫힌 상태에서 새 글 → 안 읽음 표시(_pushBubble가 setState).
       _pushBubble(message);
     });
   }
@@ -140,14 +143,20 @@ class _HomeOpenChatWebState extends State<HomeOpenChatWeb>
   void _toggle() {
     // 모바일은 인라인 패널 대신 바텀 시트로 펼친다(피그마 1:19330).
     if (context.screenType == WebScreenType.mobile) {
-      setState(_clearBubbles);
+      setState(() {
+        _clearBubbles();
+        _hasUnread = false;
+      });
       _vm.clearLatest();
       _openMobileSheet();
       return;
     }
     setState(() {
       _isOpen = !_isOpen;
-      if (_isOpen) _clearBubbles();
+      if (_isOpen) {
+        _clearBubbles();
+        _hasUnread = false;
+      }
     });
     if (_isOpen) {
       // 펼치면 말풍선은 역할이 끝났다.
@@ -343,12 +352,29 @@ class _HomeOpenChatWebState extends State<HomeOpenChatWeb>
                                 child: SizedBox(
                                   width: 53,
                                   height: 53,
-                                  child: Center(
-                                    child: Image.asset(
-                                      _kChatIconAsset,
-                                      width: 25,
-                                      height: 25,
-                                    ),
+                                  child: Stack(
+                                    alignment: Alignment.center,
+                                    children: [
+                                      Image.asset(
+                                        _kChatIconAsset,
+                                        width: 25,
+                                        height: 25,
+                                      ),
+                                      if (_hasUnread)
+                                        Positioned(
+                                          top: 13,
+                                          right: 13,
+                                          child: Container(
+                                            width: 8,
+                                            height: 8,
+                                            decoration: BoxDecoration(
+                                              color: SDSColor.red,
+                                              shape: BoxShape.circle,
+                                              border: Border.all(color: SDSColor.snowliveWhite, width: 1.5),
+                                            ),
+                                          ),
+                                        ),
+                                    ],
                                   ),
                                 ),
                               ),
@@ -502,6 +528,15 @@ class _HomeOpenChatWebState extends State<HomeOpenChatWeb>
                     color: SDSColor.gray900,
                   ),
                 ),
+                // 안 읽은 새 글이 있으면 '오픈 채팅' 바로 오른쪽에 빨간점(모바일 앱과 동일).
+                if (_hasUnread) ...[
+                  const SizedBox(width: 5),
+                  Container(
+                    width: 6,
+                    height: 6,
+                    decoration: const BoxDecoration(color: SDSColor.red, shape: BoxShape.circle),
+                  ),
+                ],
                 const Spacer(),
                 Icon(
                   isCollapsed

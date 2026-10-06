@@ -40,7 +40,10 @@ class LoginViewModelWeb extends GetxController {
 
   Future<void> signInWithGoogle() async {
     await _signIn(() {
-      final provider = GoogleAuthProvider()..addScope('email');
+      final provider = GoogleAuthProvider()
+        ..addScope('email')
+        // 로그아웃 후 다시 눌러도 자동 로그인되지 않고 '계정 선택' 창이 항상 뜨게 한다.
+        ..setCustomParameters({'prompt': 'select_account'});
       return FirebaseAuth.instance.signInWithPopup(provider);
     });
   }
@@ -49,7 +52,9 @@ class LoginViewModelWeb extends GetxController {
     await _signIn(() {
       final provider = OAuthProvider('apple.com')
         ..addScope('email')
-        ..addScope('name');
+        ..addScope('name')
+        // 로그아웃 후 자동 로그인되지 않고 매번 재인증(로그인) 화면을 띄우도록.
+        ..setCustomParameters({'prompt': 'login'});
       return FirebaseAuth.instance.signInWithPopup(provider);
     });
   }
@@ -65,8 +70,33 @@ class LoginViewModelWeb extends GetxController {
         return;
       }
       await _afterFirebase(fbUser);
+    } on FirebaseAuthException catch (e) {
+      // 사용자가 팝업을 닫거나 취소한 경우는 오류가 아니라 '취소' → 조용히 대기화면으로.
+      const cancelled = {'popup-closed-by-user', 'cancelled-popup-request', 'user-cancelled'};
+      if (cancelled.contains(e.code)) {
+        _errorMessage.value = '';
+        _status.value = WebLoginStatus.idle;
+        return;
+      }
+      _fail(_authErrorMessage(e));
     } catch (e) {
       _fail('로그인 실패: $e');
+    }
+  }
+
+  /// Firebase 인증 오류코드 → 사용자용 메시지.
+  String _authErrorMessage(FirebaseAuthException e) {
+    switch (e.code) {
+      case 'popup-blocked':
+        return '팝업이 차단됐어요. 브라우저에서 팝업을 허용한 뒤 다시 시도해주세요.';
+      case 'operation-not-allowed':
+        return '현재 이 로그인 방식을 사용할 수 없어요. 다른 방법으로 로그인해주세요.';
+      case 'account-exists-with-different-credential':
+        return '이미 다른 방식으로 가입된 이메일이에요. 기존 로그인 방법을 이용해주세요.';
+      case 'network-request-failed':
+        return '네트워크 오류예요. 연결 상태를 확인해주세요.';
+      default:
+        return '로그인에 실패했어요. (${e.message ?? e.code})';
     }
   }
 
