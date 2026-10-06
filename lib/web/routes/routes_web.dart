@@ -1,4 +1,5 @@
 import 'package:com.snowlive/web/routes/bindings_web.dart';
+import 'package:com.snowlive/web/view/alarm/v_alarmCenter_web.dart';
 import 'package:com.snowlive/web/view/community/v_communityDetail_web.dart';
 import 'package:com.snowlive/web/view/community/v_communityHome_web.dart';
 import 'package:com.snowlive/web/view/community/v_communityUpload_web.dart';
@@ -110,8 +111,14 @@ class WebRoutes {
   /// 개인 프로필 상세(라이딩 통계·방명록·시즌 기록실). `?id={userId}`
   static const userProfile = '/profile';
 
+  /// 프로필을 방명록 탭으로 바로 여는 `&tab=` 값(알림센터의 방명록 알림).
+  static const userProfileTabGuestbook = 'guestbook';
+
   /// 설정(친구·중고거래 알림·약관·계정).
   static const settings = '/settings';
+
+  /// 알림센터(친구 요청·방명록·크루 가입 신청·댓글·답글 알림).
+  static const alarm = '/alarm';
   static const friend = '/friend';
   static const friendSettings = '/friend-settings';
   static const friendRequests = '/friend-requests';
@@ -122,6 +129,11 @@ class WebRoutes {
       name: settings,
       page: () => const SettingsViewWeb(),
       binding: WebSettingsBinding(),
+    ),
+    GetPage(
+      name: alarm,
+      page: () => const AlarmCenterViewWeb(),
+      binding: WebAlarmBinding(),
     ),
     GetPage(
       name: home,

@@ -3,8 +3,6 @@ import 'package:com.snowlive/core/model/m_communityDetail.dart';
 import 'package:com.snowlive/core/viewmodel/vm_user.dart';
 import 'package:com.snowlive/web/routes/routes_web.dart';
 import 'package:com.snowlive/web/util/responsive_web.dart';
-import 'package:com.snowlive/web/view/fleamarket/v_fleamarketDetail_web.dart'
-    show kFleamarketDetailContentWidth;
 import 'package:com.snowlive/web/widget/w_web_more_menu_web.dart';
 import 'package:com.snowlive/web/view/community/w_community_body_web.dart';
 import 'package:com.snowlive/web/widget/w_web_comment_input_web.dart';
@@ -174,7 +172,7 @@ class _CommunityDetailViewWebState extends State<CommunityDetailViewWeb> {
             // 화면(패딩 제외)을 가득 채운다(중고거래 상세와 동일 규칙).
             constraints: BoxConstraints(
               maxWidth: isDesktop
-                  ? kFleamarketDetailContentWidth
+                  ? kWebSubPageMaxWidth
                   : double.infinity,
             ),
             child: Obx(_buildContent),

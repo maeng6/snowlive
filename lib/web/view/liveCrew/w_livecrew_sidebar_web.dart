@@ -7,10 +7,6 @@ import 'package:com.snowlive/web/util/responsive_web.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-/// 우측 열 폭 — 이 화면만 **220**(사용자 확정). 다른 화면(중고거래·커뮤니티·랭킹·
-/// 라이브톡)의 사이드바는 아직 240이다.
-const double kLiveCrewSidebarWidth = 220;
-
 /// 데스크탑 전용 우측 열: `크루 만들기` / `크루 가입하기`.
 /// **이미 크루에 속해 있으면** 버튼 대신 [myCrew] 카드를 보여준다 — 그 상태에서는
 /// 만들기도 가입하기도 할 수 없다(한 계정 한 크루).
@@ -23,7 +19,7 @@ class LiveCrewSidebarWeb extends StatelessWidget {
   Widget build(BuildContext context) {
     final crew = myCrew;
     return Container(
-      width: kLiveCrewSidebarWidth,
+      width: kWebSidebarWidth,
       // 내부 패딩 없음 — 목록과의 간격 40은 홈 Row가 담당하고, 상단은 칩 줄과
       // 같은 선에서 시작한다(목업 161:38007, 사이드바가 목록 섹션 옆에 붙는 구조).
       padding: EdgeInsets.zero,

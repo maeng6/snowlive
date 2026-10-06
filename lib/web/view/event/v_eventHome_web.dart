@@ -120,9 +120,7 @@ class _EventHomeViewWebState extends State<EventHomeViewWeb> {
           const SizedBox(height: SDSSpacing.md),
           searchBar,
           // 검색 영역 ↔ 필터 줄: 태블릿 24 / 모바일 20 (커뮤니티와 동일).
-          SizedBox(
-            height: context.screenType == WebScreenType.tablet ? 24 : 20,
-          ),
+          SizedBox(height: webTitleToFilterGap(context)),
           // 태블릿·모바일: 검색바 아래에 계정 필터를 오른쪽 정렬로 둔다.
           Align(alignment: Alignment.centerRight, child: accountFilter),
           // 필터 줄 ↔ 목록 20 (커뮤니티와 동일).
@@ -156,7 +154,7 @@ class _EventHomeViewWebState extends State<EventHomeViewWeb> {
         // 간격은 최소값(콘텐츠가 길면 이 값 그대로).
         footer: Column(
           children: [
-            SizedBox(height: isDesktop ? 120 : 80),
+            SizedBox(height: webFooterTopGap(context)),
             const HomeFooterWeb(),
           ],
         ),

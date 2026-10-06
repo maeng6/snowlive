@@ -1,6 +1,7 @@
 import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/web/routes/routes_web.dart';
 import 'package:com.snowlive/web/util/responsive_web.dart';
+import 'package:com.snowlive/web/util/web_external_links.dart';
 import 'package:com.snowlive/web/viewmodel/settings/vm_settings_web.dart';
 import 'package:com.snowlive/web/widget/w_web_more_menu_web.dart';
 import 'package:com.snowlive/web/widget/w_web_toast_web.dart';
@@ -26,12 +27,6 @@ class SettingsViewWeb extends StatefulWidget {
 class _SettingsViewWebState extends State<SettingsViewWeb> {
   /// 목업의 설정 목록 폭(좌측 정렬, 우측은 비어 있다).
   static const double _listMaxWidth = 600;
-
-  static const _terms = 'https://sites.google.com/view/snowlive-termsofservice/%ED%99%88';
-  static const _privacy =
-      'https://sites.google.com/view/134creativelabprivacypolicy/%ED%99%88';
-  static const _location =
-      'https://sites.google.com/view/134creativelablocationinfo/%ED%99%88';
 
   final SettingsViewModelWeb _vm = Get.find<SettingsViewModelWeb>();
 
@@ -96,9 +91,9 @@ class _SettingsViewWebState extends State<SettingsViewWeb> {
       _SettingsGroup(
         title: '약관',
         items: [
-          _SettingsItem(label: '이용약관', onTap: () => _openUrl(_terms)),
-          _SettingsItem(label: '개인정보 처리방침', onTap: () => _openUrl(_privacy)),
-          _SettingsItem(label: '위치 정보 이용약관', onTap: () => _openUrl(_location)),
+          _SettingsItem(label: '이용약관', onTap: () => _openUrl(kTermsOfServiceUrl)),
+          _SettingsItem(label: '개인정보 처리방침', onTap: () => _openUrl(kPrivacyPolicyUrl)),
+          _SettingsItem(label: '위치 정보 이용약관', onTap: () => _openUrl(kLocationTermsUrl)),
           _SettingsItem(label: '오픈소스 라이선스', onTap: _openLicenses),
         ],
       ),

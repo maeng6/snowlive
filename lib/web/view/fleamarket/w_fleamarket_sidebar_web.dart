@@ -15,8 +15,6 @@ import 'package:intl/intl.dart';
 /// sticky 계산이 어긋나지 않게 **홈 레이아웃이 사이드바 바깥에서** 준다.
 const double kFleamarketSidebarTopOffset = 56;
 
-/// 웹 사이드바 공통 폭 — 220(2026-10-03 240에서 축소, 사용자 확정).
-const double kFleamarketSidebarWidth = 220;
 final _sidebarPriceFormat = NumberFormat('###,###,###,###');
 
 /// 데스크탑 전용 우측 열: 키워드 알림 설정 + 최근 본 상품 + 찜 목록.
@@ -24,7 +22,7 @@ class FleamarketSidebarWeb extends StatelessWidget {
   /// 화면 폭에 따라 호출자가 줄여줄 수 있다(1024px에서 200까지).
   final double width;
 
-  const FleamarketSidebarWeb({super.key, this.width = kFleamarketSidebarWidth});
+  const FleamarketSidebarWeb({super.key, this.width = kWebSidebarWidth});
 
   @override
   Widget build(BuildContext context) {

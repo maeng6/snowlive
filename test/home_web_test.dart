@@ -2,6 +2,7 @@ import 'package:com.snowlive/core/model/m_crewHome.dart';
 import 'package:com.snowlive/core/model/m_liveTalk.dart';
 import 'package:com.snowlive/web/view/home/home_sections_web.dart';
 import 'package:com.snowlive/core/model/m_rankingListIndiv.dart';
+import 'package:com.snowlive/core/model/m_resortModel.dart';
 import 'package:com.snowlive/web/view/home/w_home_hero_web.dart';
 import 'package:com.snowlive/web/widget/w_skeleton_web.dart';
 import 'package:com.snowlive/web/view/home/w_home_sections_web.dart';
@@ -16,29 +17,40 @@ void main() {
   setUpAll(initializeDateFormatting);
 
   group('배너', () {
-    test('visible이 켜진 배너만 노출한다', () {
+    // `banner/home` 문서는 `slides` 배열(슬라이드마다 맵)이다.
+    test('visible이 켜진 슬라이드만 노출한다', () {
       final banners = homeVisibleBanners({
-        'imageUrl': ['a.png', 'b.png', 'c.png'],
-        'landingUrl': ['https://a', '', 'https://c'],
-        'visible': [true, false, true],
+        'slides': [
+          {'imageUrl': 'a.png', 'landingUrl': 'https://a', 'visible': true},
+          {'imageUrl': 'b.png', 'landingUrl': '', 'visible': false},
+          {'imageUrl': 'c.png', 'landingUrl': 'https://c', 'visible': true},
+        ],
       });
       expect(banners.map((b) => b.imageUrl), ['a.png', 'c.png']);
       expect(banners.first.landingUrl, 'https://a');
     });
 
-    test('배열 길이가 어긋나도 안전하다 (visible 없으면 숨김)', () {
+    test('visible이 없거나 사진이 없는 슬라이드는 숨긴다', () {
       final banners = homeVisibleBanners({
-        'imageUrl': ['a.png', 'b.png'],
-        'landingUrl': ['https://a'],
-        'visible': [true],
+        'slides': [
+          {'imageUrl': 'a.png'}, // visible 없음 → 숨김
+          {'imageUrl': '', 'visible': true}, // 사진 없음 → 숨김
+          {'imageUrl': 'c.png', 'visible': true, 'title': '첫 줄\\n둘째 줄'},
+          'not a map',
+        ],
       });
       expect(banners, hasLength(1));
-      expect(banners.first.landingUrl, 'https://a');
+      expect(banners.single.imageUrl, 'c.png');
+      // 콘솔에서 넣은 `\n` 문자는 실제 줄바꿈으로 바뀐다.
+      expect(banners.single.title, '첫 줄\n둘째 줄');
+      // 빈 문자열·누락은 null.
+      expect(banners.single.subtitle, isNull);
     });
 
-    test('문서가 없거나 비어 있으면 빈 목록', () {
+    test('문서가 없거나 slides가 없으면 빈 목록', () {
       expect(homeVisibleBanners(null), isEmpty);
       expect(homeVisibleBanners(const {}), isEmpty);
+      expect(homeVisibleBanners(const {'slides': 'oops'}), isEmpty);
     });
 
     test('롤링 간격은 앱과 같은 5초', () {
@@ -197,6 +209,16 @@ void main() {
       ));
     }
 
+    /// 히어로는 **첫 장 사진이 준비될 때까지** 스켈레톤을 유지한다. 테스트 환경의
+    /// 네트워크 이미지는 400으로 실패하므로, 그 실패(=준비 완료 처리)가 끝나길 기다리고
+    /// 이미지 실패 리포트는 비운다.
+    Future<void> settleFirstImage(WidgetTester tester) async {
+      await tester.pump(); // 첫 프레임 뒤 콜백 실행
+      await tester.runAsync(() => Future<void>.delayed(const Duration(milliseconds: 50)));
+      await tester.pump();
+      while (tester.takeException() != null) {}
+    }
+
     int dotCount(WidgetTester tester) => tester
         .widgetList<Container>(find.byType(Container))
         .where((c) => c.constraints?.maxWidth == 6)
@@ -204,11 +226,13 @@ void main() {
 
     testWidgets('문서를 받기 전에는 스켈레톤으로 자리를 잡는다', (tester) async {
       await pumpHero(tester, banners: const [], isLoaded: false);
+      await tester.pump();
       expect(find.byType(SkeletonBox), findsOneWidget);
     });
 
     testWidgets('운영 배너가 없으면 기본 슬라이드를 보여준다', (tester) async {
       await pumpHero(tester, banners: const [], isLoaded: true);
+      await settleFirstImage(tester);
       expect(find.byType(SkeletonBox), findsNothing);
       expect(find.textContaining('스노우라이브와 함께하는'), findsOneWidget);
       // 한 장뿐이라 인디케이터는 없다.
@@ -219,20 +243,24 @@ void main() {
       await pumpHero(
         tester,
         banners: const [
-          HomeBanner(imageUrl: 'a.png', landingUrl: 'https://a'),
-          HomeBanner(imageUrl: 'b.png', landingUrl: ''),
+          HomeBanner(imageUrl: 'https://example.com/a.png', landingUrl: 'https://a'),
+          HomeBanner(imageUrl: 'https://example.com/b.png', landingUrl: ''),
         ],
         isLoaded: true,
       );
+      await settleFirstImage(tester);
+      expect(find.byType(SkeletonBox), findsNothing);
       expect(dotCount(tester), 2);
     });
 
     testWidgets('배너가 1장이면 인디케이터가 없다', (tester) async {
       await pumpHero(
         tester,
-        banners: const [HomeBanner(imageUrl: 'a.png', landingUrl: '')],
+        banners: const [HomeBanner(imageUrl: 'https://example.com/a.png', landingUrl: '')],
         isLoaded: true,
       );
+      await settleFirstImage(tester);
+      expect(find.byType(SkeletonBox), findsNothing);
       expect(dotCount(tester), 0);
     });
   });
@@ -342,6 +370,21 @@ void main() {
               (w.bytesLoader as SvgAssetLoader).assetName == assetName,
         );
 
+    // 넓은·태블릿 분기 경계 부근 — Contact 3열이 남은 폭보다 크면 줄어들어야 한다
+    // (예전엔 Row의 비flex 자식이라 FittedBox가 무효여서 그대로 넘칠 수 있었다).
+    for (final width in <double>[661, 700, 760, 880, 920, 1024, 1440]) {
+      testWidgets('푸터 폭 $width — 넘치지 않고 Contact가 배지 왼쪽에 붙는다', (tester) async {
+        await pumpFooter(tester, width);
+        expect(tester.takeException(), isNull);
+        final contact = tester.getRect(find.text('Contact').last);
+        final appStore = tester.getRect(svgAsset('assets/imgs/logos/badge_app_store.svg'));
+        // 모바일 분기는 세로로 쌓이므로 가로 관계를 보지 않는다.
+        if ((contact.top - appStore.top).abs() < 60) {
+          expect(contact.right, lessThanOrEqualTo(appStore.left));
+        }
+      });
+    }
+
     testWidgets('GNB와 같은 로고 에셋을 쓴다', (tester) async {
       await pumpFooter(tester, 1440);
       expect(svgAsset('assets/imgs/logos/snowlive_logo_black_web.svg'), findsOneWidget);
@@ -419,13 +462,147 @@ void main() {
       expect(tester.takeException(), isNull);
     });
 
-    // ⚠️ 1024~1199 구간은 지표를 접은 카드가 **375 고정폭**이라 53px 넘친다
-    // (w_home_weather_web.dart의 `AnimatedContainer(width: _isExpanded ? total : 375)`).
-    // 그 구간의 디자인이 정해지면 skip을 풀 것.
-    testWidgets('1024에서도 날씨 바가 넘치지 않는다', (tester) async {
-      await pumpWeather(tester, 1024);
+    /// 날씨 바가 **실제로 받는 폭**을 [barWidth]로 고정해서 띄운다.
+    /// 데스크탑(≥1024)은 사이드바·패딩을 빼면 뷰포트보다 훨씬 좁은 폭을 받는다
+    /// (1024 뷰포트 → 744). 그 상황을 그대로 재현하려고 뷰포트와 바 폭을 따로 준다.
+    Future<void> pumpBar(
+      WidgetTester tester, {
+      required double viewport,
+      required double barWidth,
+      ResortModel? resort,
+      Map<String, dynamic>? weather,
+    }) async {
+      tester.view.physicalSize = Size(viewport, 900);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(tester.view.reset);
+      await tester.pumpWidget(MaterialApp(
+        home: Scaffold(
+          body: Align(
+            alignment: Alignment.topLeft,
+            child: SizedBox(
+              width: barWidth,
+              child: HomeWeatherBarWeb(
+                resort: resort ?? homeDefaultResort(null),
+                weather: weather ??
+                    const {
+                      'temp': '18',
+                      'wind': '1.3',
+                      'wet': '85',
+                      'rain': '0',
+                      'maxTemp': '23',
+                      'minTemp': '10',
+                      'pty': '0',
+                      'sky': '1',
+                    },
+                onResortSelected: (_) {},
+              ),
+            ),
+          ),
+        ),
+      ));
+    }
+
+    /// 접힌 카드(태블릿 구성)가 첫 링크를 덮지 않는지. 다른 구성이면 겹칠 수 없다.
+    void expectCardDoesNotCoverLinks(WidgetTester tester, String reason) {
+      final cards = find.byType(AnimatedContainer);
+      if (cards.evaluate().isEmpty) return;
+      final card = tester.getRect(cards.first);
+      final link = tester.getRect(find.text('네이버 날씨'));
+      expect(card.overlaps(link), isFalse, reason: '$reason — 카드 $card / 링크 $link');
+    }
+
+    // 가장 긴 리조트명 + 자리수가 가장 많은 날씨 값(최악 조건).
+    final longestResort = homeResorts.reduce(
+      (a, b) => (a.resortName ?? '').length >= (b.resortName ?? '').length ? a : b,
+    );
+    const extremeWeather = {
+      'temp': '-15',
+      'wind': '12.5',
+      'wet': '100',
+      'rain': '30',
+      'maxTemp': '-12',
+      'minTemp': '-20',
+      'pty': '0',
+      'sky': '1',
+    };
+
+    // 데스크탑(사이드바 포함) 실제 바 폭: 1024 → 744, 1056 → 776, 1200 → 920,
+    // 1280 → 1000, 1320 → 1040, 1440 → 1160. 태블릿은 뷰포트 − 40.
+    const desktopBarWidths = <double>[744, 776, 920, 1000, 1040, 1160];
+    const tabletBarWidths = <double>[728, 760, 775, 860, 983];
+
+    for (final barWidth in desktopBarWidths) {
+      testWidgets('데스크탑 바 폭 $barWidth — 넘치지 않고 카드가 링크를 덮지 않는다', (tester) async {
+        await pumpBar(tester, viewport: 1440, barWidth: barWidth);
+        expect(tester.takeException(), isNull);
+        expectCardDoesNotCoverLinks(tester, 'bar $barWidth');
+      });
+
+      testWidgets('데스크탑 바 폭 $barWidth — 가장 긴 리조트명 + 극단값에서도 안전', (tester) async {
+        await pumpBar(
+          tester,
+          viewport: 1440,
+          barWidth: barWidth,
+          resort: longestResort,
+          weather: extremeWeather,
+        );
+        expect(tester.takeException(), isNull);
+        expectCardDoesNotCoverLinks(tester, 'bar $barWidth (${longestResort.resortName})');
+      });
+    }
+
+    for (final barWidth in tabletBarWidths) {
+      testWidgets('태블릿 바 폭 $barWidth — 접힘·펼침 모두 넘치지 않는다', (tester) async {
+        await pumpBar(
+          tester,
+          viewport: 900,
+          barWidth: barWidth,
+          resort: longestResort,
+          weather: extremeWeather,
+        );
+        expect(tester.takeException(), isNull);
+        expectCardDoesNotCoverLinks(tester, 'bar $barWidth');
+
+        // 펼친 상태도 확인한다(카드가 전체폭으로 길어지며 지표 창 360이 붙는다).
+        final chip = find.byWidgetPredicate(
+          (w) => w is SizedBox && w.width == 40 && w.height == 40,
+        );
+        if (chip.evaluate().isNotEmpty) {
+          await tester.tap(chip.first);
+          await tester.pumpAndSettle();
+          expect(tester.takeException(), isNull, reason: 'bar $barWidth 펼침');
+        }
+      });
+    }
+
+    testWidgets('넓으면 PC 한 줄, 좁으면 카드+링크, 더 좁으면 세로 스택', (tester) async {
+      // 넓음 → PC 한 줄(접힘 카드가 없다).
+      // 테스트 글꼴은 숫자·영문도 1em 폭이라 실제 글꼴보다 넓게 잡힌다 → 여유 있게 1600.
+      // (실제 글꼴 기준 전환점은 브라우저 실측으로 확인한다.)
+      await pumpBar(tester, viewport: 1440, barWidth: 1600);
+      expect(find.byType(AnimatedContainer), findsNothing);
+      expect(find.text('바람'), findsOneWidget);
+
+      // 중간 → 카드 + 링크가 한 줄(링크가 카드 오른쪽).
+      await pumpBar(tester, viewport: 1440, barWidth: 1000);
+      final card = tester.getRect(find.byType(AnimatedContainer).first);
+      final link = tester.getRect(find.text('네이버 날씨'));
+      expect(link.left, greaterThanOrEqualTo(card.right));
+
+      // 아주 좁음 + 긴 이름 → 세로 스택(링크가 카드 아래).
+      await pumpBar(
+        tester,
+        viewport: 1440,
+        barWidth: 600,
+        resort: longestResort,
+        weather: extremeWeather,
+      );
+      expect(find.byType(AnimatedContainer), findsNothing);
+      final name = tester.getRect(find.text(longestResort.resortName!));
+      final stackedLink = tester.getRect(find.text('네이버 날씨'));
+      expect(stackedLink.top, greaterThan(name.bottom));
       expect(tester.takeException(), isNull);
-    }, skip: true);
+    });
 
     testWidgets('모바일은 링크 라벨이 잘리지 않는다', (tester) async {
       await pumpWeather(tester, 375);

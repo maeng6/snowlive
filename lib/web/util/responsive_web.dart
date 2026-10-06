@@ -15,6 +15,21 @@ class WebBreakpoints {
 /// 달라져서, 넓은 화면에서 타이틀 좌측 여백이 페이지마다 어긋난다.
 const double kWebDesktopListMaxWidth = 1280;
 
+/// PC 우측 사이드바 공통 폭 220(2026-10-03 240에서 축소, 사용자 확정).
+/// 중고거래·커뮤니티·랭킹·라이브톡·크루톡·라이브크루·크루홈이 모두 이 값을 쓴다 —
+/// 화면마다 다르면 넓은 화면에서 본문 최대폭과 사이드바 시작선이 어긋나 눈에 띈다.
+/// (목업 일부는 246이지만 전 화면 통일값을 쓴다.)
+const double kWebSidebarWidth = 220;
+
+/// 본문(목록·피드) ↔ 우측 사이드바 간격 40. 간격은 각 홈의 Row가 담당하고
+/// 사이드바 내부에는 좌측 패딩이 없다.
+const double kWebSidebarGap = 40;
+
+/// 서브 페이지(상세·작성 폼·크루 가입/설정/시즌 랭킹 등) 한 열 콘텐츠 최대폭 800
+/// (목업 실측 800~802). 넓히면 입력창·행만 길어지고 읽기 흐름이 나빠진다.
+/// 중고거래 상세는 이 폭을 이미지 377 + 간격 30 + 정보 393으로 나눠 쓴다.
+const double kWebSubPageMaxWidth = 800;
+
 enum WebScreenType { mobile, tablet, desktop }
 
 extension ResponsiveContext on BuildContext {
@@ -62,6 +77,31 @@ double webHomeTitleSize(BuildContext context) {
 /// PC는 사이드바에서 48이 커 보여 낮췄다(사용자 확정, 2026-09-26).
 /// 라운드·글자 크기는 화면마다 달라 각자 두고 높이만 이 함수로 맞춘다.
 double webActionButtonHeight(BuildContext context) => context.isDesktop ? 44 : 48;
+
+/// 마지막 콘텐츠 ↔ 공통 푸터(HomeFooterWeb) 간격 — PC 120 / 태블릿·모바일 80.
+/// 콘텐츠가 짧아도 이 값 그대로다(최소값).
+double webFooterTopGap(BuildContext context) => context.isDesktop ? 120 : 80;
+
+/// 작성 폼: 헤더 줄(← 제목 · 버튼) ↔ 첫 필드 — PC 40(피그마 62:98906) /
+/// 태블릿·모바일 26(피그마 62:98390). 중고거래 올리기·수정·알림 설정, 커뮤니티 글쓰기 공통.
+double webFormHeaderGap(BuildContext context) => context.isDesktop ? 40 : 26;
+
+/// 목록 화면: 타이틀·검색 영역 ↔ 탭/필터 줄 — PC 30 / 태블릿 24 / 모바일 20
+/// (중고거래 피그마 32:19273, 커뮤니티·랭킹·각종소식 공통).
+double webTitleToFilterGap(BuildContext context) {
+  switch (context.screenType) {
+    case WebScreenType.desktop:
+      return 30;
+    case WebScreenType.tablet:
+      return 24;
+    case WebScreenType.mobile:
+      return 20;
+  }
+}
+
+/// 피드(라이브톡·크루톡) 맨 아래 여백 — PC 100 / 태블릿·모바일 40.
+/// 태블릿·모바일은 하단 바 높이만큼 스크롤 여백이 이미 있어 덜 준다.
+double webFeedBottomGap(BuildContext context) => context.isDesktop ? 100 : 40;
 
 /// 홈(목록) 화면 공통 페이지 패딩 — 중고거래 홈 기준.
 /// 좌우: PC 40 / 태블릿 20 / 모바일 16. 상단: PC 58 / 태블릿 20 / **모바일 16**.

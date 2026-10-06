@@ -29,12 +29,9 @@ import 'package:get/get.dart';
 /// 본문(목록) 폭 — 라이브크루 홈과 같은 874(목업 161:86732).
 const double kCrewHomeListMaxWidth = 874;
 
-/// 본문 ↔ 사이드바 간격.
-const double kCrewHomeSidebarGap = 40;
-
 /// 블록 전체 폭 = 본문 874 + 간격 40 + 사이드바 220.
 const double kCrewHomeContentMaxWidth =
-    kCrewHomeListMaxWidth + kCrewHomeSidebarGap + kCrewHomeSidebarWidth;
+    kCrewHomeListMaxWidth + kWebSidebarGap + kWebSidebarWidth;
 
 /// 목업의 `랭킹 TOP N 멤버` — PC·태블릿은 2열 × 5행으로 10명,
 /// 모바일은 1열이라 5명만 보여준다(목업 161:101758 `랭킹 TOP 5 멤버`).
@@ -300,7 +297,7 @@ class _CrewHomeViewWebState extends State<CrewHomeViewWeb> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Expanded(child: content),
-            const SizedBox(width: kCrewHomeSidebarGap),
+            const SizedBox(width: kWebSidebarGap),
             CrewHomeSidebarWeb(
               // 내 크루가 아니면 업로드 버튼 없이 링크 카드만 보인다
               onUploadTalk: _vm.isMyCrew ? _onUploadTalk : null,
@@ -477,10 +474,10 @@ class _CrewHomeSkeleton extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Expanded(child: content),
-                const SizedBox(width: kCrewHomeSidebarGap),
+                const SizedBox(width: kWebSidebarGap),
                 // 우측 열 — 올리기 버튼(44) + 30 + 링크 카드 2장(52, 사이 8).
                 const SizedBox(
-                  width: kCrewHomeSidebarWidth,
+                  width: kWebSidebarWidth,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [

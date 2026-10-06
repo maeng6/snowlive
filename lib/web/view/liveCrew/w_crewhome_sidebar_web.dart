@@ -4,10 +4,6 @@ import 'package:com.snowlive/web/util/responsive_web.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-/// 우측 열 폭 — 웹 사이드바 공통 220(목업 246 대신 전 화면 통일값).
-/// 본문과의 간격 40은 크루홈 Row가 담당한다(내부 좌측 패딩 없음).
-const double kCrewHomeSidebarWidth = 220;
-
 /// 크루홈 우측 열 — `크루톡 올리기` + `시즌 기록실` / `일별 현황`.
 ///
 /// [onUploadTalk]이 null이면 업로드 버튼을 그리지 않는다(내 크루가 아닐 때).
@@ -20,7 +16,7 @@ class CrewHomeSidebarWeb extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: kCrewHomeSidebarWidth,
+      width: kWebSidebarWidth,
       // 헤더가 블록 전체 폭을 쓰고 사이드바는 그 아래(통계 바와 같은 줄)에서
       // 시작하므로 위쪽 오프셋이 필요 없다.
       padding: EdgeInsets.zero,

@@ -149,11 +149,11 @@ void main() {
     test('1단은 확정된 5종 순서', () {
       final chips = crewHomeChips(_home());
       expect(chips.map((c) => c.label).toList(), [
-        '스키장별',
-        '멤버 많은 순',
-        '이번 시즌 라이브온 많이 한 순',
-        '스키가 많은 크루',
-        '보드가 많은 크루',
+        '스키장별 크루',
+        '대형 크루',
+        '시즌 최다 라이브온',
+        '스키어 중심 크루',
+        '보더 중심 크루',
       ]);
     });
 
@@ -212,7 +212,10 @@ void main() {
           ),
         ),
       ));
-      await tester.pumpAndSettle();
+      // 상단 캐러셀은 16ms 주기로 자동 스크롤한다 → pumpAndSettle은 끝나지 않는다.
+      // 등장 애니메이션(스태거 600ms)이 끝날 만큼만 시간을 흘린다.
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 800));
     }
 
     for (final width in [1440.0, 800.0, 375.0]) {
@@ -253,7 +256,7 @@ void main() {
         expect(find.text(section.emptyMessage), findsOneWidget);
       });
 
-      testWidgets('칩 2단이 ${width.toInt()}폭에서 그려진다', (tester) async {
+      testWidgets('스키장 pill이 ${width.toInt()}폭에서 고른 스키장 이름으로 그려진다', (tester) async {
         final home = _home();
         final chips = crewHomeChips(home);
         final resortChips = crewHomeResortChips(home);
@@ -270,12 +273,13 @@ void main() {
           ),
         );
         expect(tester.takeException(), isNull);
-        expect(find.text('스키장별'), findsOneWidget);
+        // 2단 칩 줄 대신 드롭다운 pill — 고른 스키장 이름이 라벨 자리에 찍힌다.
         expect(find.text('휘닉스파크'), findsOneWidget);
+        expect(find.text('스키장별 크루'), findsNothing);
       });
     }
 
-    testWidgets('스키장별이 아닌 칩을 고르면 2단이 없다', (tester) async {
+    testWidgets('스키장별이 아닌 칩을 고르면 pill은 기본 라벨로 돌아간다', (tester) async {
       final home = _home();
       final chips = crewHomeChips(home);
       await pumpAt(
@@ -283,12 +287,13 @@ void main() {
         1440,
         LiveCrewFilterChipsWeb(
           chips: chips,
-          selected: chips[1], // 멤버 많은 순
+          selected: chips[1], // 대형 크루
           onSelected: (_) {},
         ),
       );
       expect(tester.takeException(), isNull);
-      expect(find.text('멤버 많은 순'), findsOneWidget);
+      expect(find.text('대형 크루'), findsOneWidget);
+      expect(find.text('스키장별 크루'), findsOneWidget);
       expect(find.text('휘닉스파크'), findsNothing);
     });
   });

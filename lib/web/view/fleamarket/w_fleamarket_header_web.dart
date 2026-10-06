@@ -201,7 +201,6 @@ class _FleamarketHeaderWebState extends State<FleamarketHeaderWeb> {
   Widget build(BuildContext context) {
     // 커뮤니티와 같은 기준(데스크탑)에서 검색창이 타이틀 오른쪽 같은 줄에 놓인다.
     final isWide = context.isDesktop;
-    final isTablet = context.screenType == WebScreenType.tablet;
     // 타이틀은 홈 공통 크기(PC 32 / 태블릿 24 / 모바일 20).
     final titleText = Text('중고거래',
         style: SDSTextStyle.extraBold.copyWith(
@@ -227,7 +226,7 @@ class _FleamarketHeaderWebState extends State<FleamarketHeaderWeb> {
           _buildSearchBar(),
         ],
         // 타이틀줄 ↔ 탭줄: PC 30 (피그마) / 태블릿 24 / 모바일 20 (피그마 32:19273)
-        SizedBox(height: isWide ? 30 : (isTablet ? 24 : 20)),
+        SizedBox(height: webTitleToFilterGap(context)),
         _buildTabsAndFilters(),
       ],
     );

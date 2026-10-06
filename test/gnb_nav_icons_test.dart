@@ -24,10 +24,10 @@ void main() {
     for (final item in kGnbSecondaryItems) {
       expect(item.isPlaceholder, isFalse, reason: item.label);
     }
-    expect(kGnbSecondaryItems.map((i) => i.label), ['친구', '설정']);
+    expect(kGnbSecondaryItems.map((i) => i.label), ['친구', '알림', '설정']);
   });
 
-  test('2차 메뉴(친구·설정)는 아이콘이 없다 — 텍스트만', () {
+  test('2차 메뉴(친구·알림·설정)는 아이콘이 없다 — 텍스트만', () {
     for (final item in kGnbSecondaryItems) {
       expect(item.assetIconSvgOn, isNull, reason: item.label);
       expect(item.assetIconSvgOff, isNull, reason: item.label);

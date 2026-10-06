@@ -7,6 +7,7 @@ import 'package:com.snowlive/web/viewmodel/fleamarket/vm_fleamarketMyActivity_we
 import 'package:com.snowlive/web/viewmodel/home/vm_home_web.dart';
 import 'package:com.snowlive/web/viewmodel/home/vm_openChat_web.dart';
 import 'package:com.snowlive/web/viewmodel/settings/vm_settings_web.dart';
+import 'package:com.snowlive/web/viewmodel/alarm/vm_alarmCenter_web.dart';
 import 'package:com.snowlive/web/viewmodel/fleamarket/vm_fleamarketPagination_web.dart';
 import 'package:com.snowlive/web/viewmodel/fleamarket/vm_fleamarketUpload_web.dart';
 import 'package:com.snowlive/web/viewmodel/fleamarket/vm_fleamarketUpdate_web.dart';
@@ -135,6 +136,14 @@ class WebSettingsBinding extends Bindings {
   @override
   void dependencies() {
     Get.lazyPut(() => SettingsViewModelWeb(), fenix: true);
+  }
+}
+
+/// 알림센터 라우트용 바인딩.
+class WebAlarmBinding extends Bindings {
+  @override
+  void dependencies() {
+    Get.lazyPut(() => AlarmCenterViewModelWeb(), fenix: true);
   }
 }
 

@@ -10,10 +10,6 @@ import 'package:com.snowlive/web/widget/w_web_page_header_web.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-/// 작성 폼 최대 폭(목업). 목록/상세(1136)보다 좁다 — 한 줄에 한 필드씩 놓는 폼이라
-/// 넓히면 입력 박스만 길어지고 읽기 흐름이 나빠진다.
-const double kCommunityFormMaxWidth = 800;
-
 /// 웹 커뮤니티 게시글 작성 화면.
 ///
 /// 목업 기준 폭별 차이:
@@ -101,14 +97,14 @@ class _CommunityUploadViewWebState extends State<CommunityUploadViewWeb> {
             // PC만 800 고정 중앙 — 태블릿·모바일은 제한 없이 화면(패딩 제외)을
             // 가득 채운다(중고거래 올리기와 동일 규칙).
             constraints: BoxConstraints(
-              maxWidth: isDesktop ? kCommunityFormMaxWidth : double.infinity,
+              maxWidth: isDesktop ? kWebSubPageMaxWidth : double.infinity,
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 _buildTitleRow(context),
                 // 헤더 줄 ↔ 폼 PC 40 / 태블릿·모바일 26 (중고거래 올리기와 동일).
-                SizedBox(height: isDesktop ? 40 : 26),
+                SizedBox(height: webFormHeaderGap(context)),
                 _buildForm(context),
               ],
             ),

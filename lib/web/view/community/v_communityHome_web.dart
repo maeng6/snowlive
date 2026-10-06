@@ -17,7 +17,7 @@ import 'package:get/get.dart';
 /// "목록 영역 + 우측 열" 블록 폭 = 목록 1280(웹 공통) + 간격 40 + 우측 열 220.
 /// 중고거래 홈 블록과 동일한 1540이라, 넓은 화면에서 두 화면의 타이틀
 /// 좌측 여백이 정확히 맞는다(피그마의 246 대신 웹 공통 사이드바 폭 — 사용자 결정).
-const double kCommunityContentMaxWidth = kWebDesktopListMaxWidth + 40 + kCommunitySidebarWidth;
+const double kCommunityContentMaxWidth = kWebDesktopListMaxWidth + 40 + kWebSidebarWidth;
 
 /// 사이드바(게시글 올리기 버튼)가 필터 줄과 같은 높이에서 시작하도록 내리는 값
 /// (피그마 64:112373 — 타이틀 40 + 타이틀↔필터 줄 19).
@@ -141,7 +141,7 @@ class _CommunityHomeViewWebState extends State<CommunityHomeViewWeb> {
         ],
         // 타이틀·검색 영역 ↔ 필터 줄: PC 30 / 태블릿 24 / 모바일 20
         // (중고거래 홈 타이틀줄↔탭줄과 동일 규칙).
-        SizedBox(height: isDesktop ? 30 : (context.screenType == WebScreenType.tablet ? 24 : 20)),
+        SizedBox(height: webTitleToFilterGap(context)),
         CommunityFilterRowWeb(
           tab: _tab,
           sort: _sort,
@@ -202,7 +202,7 @@ class _CommunityHomeViewWebState extends State<CommunityHomeViewWeb> {
       // 홈과 동일한 푸터 — 1560 블록 밖, 콘텐츠 영역 폭(푸터 정책).
       footer: Column(
         children: [
-          SizedBox(height: isDesktop ? 120 : 80),
+          SizedBox(height: webFooterTopGap(context)),
           const HomeFooterWeb(),
         ],
       ),

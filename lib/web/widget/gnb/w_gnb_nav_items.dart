@@ -1,6 +1,7 @@
 import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/core/viewmodel/vm_user.dart';
 import 'package:com.snowlive/web/routes/routes_web.dart';
+import 'package:com.snowlive/web/viewmodel/alarm/vm_alarmCenter_web.dart';
 import 'package:com.snowlive/web/viewmodel/fleamarket/vm_fleamarketPagination_web.dart';
 import 'package:com.snowlive/web/widget/gnb/w_gnb_current_route_web.dart';
 import 'package:flutter/material.dart';
@@ -26,6 +27,9 @@ class GnbNavItemData {
   /// 탭 자체가 비활성화된다(다른 항목은 화면이 없어도 "준비 중" 안내는 뜬다).
   final bool isPlaceholder;
 
+  /// 라벨 옆에 안 읽은 알림 빨간 점([GnbAlarmDot])을 붙인다(`알림` 항목).
+  final bool showsAlarmDot;
+
   const GnbNavItemData({
     required this.label,
     this.routePrefix,
@@ -35,6 +39,7 @@ class GnbNavItemData {
     this.assetIconSvgOn,
     this.assetIconSvgOff,
     this.isPlaceholder = false,
+    this.showsAlarmDot = false,
   });
 }
 
@@ -97,10 +102,11 @@ const List<GnbNavItemData> kGnbPrimaryItems = [
   ),
 ];
 
-/// 2차 그룹: 친구 / 설정.
+/// 2차 그룹: 친구 / 알림 / 설정(목업 순서). 사이드바·드로어가 같은 목록을 쓴다.
 /// 목업대로 **아이콘 없이 텍스트만** 쓴다(1차 그룹만 아이콘을 갖는다).
 const List<GnbNavItemData> kGnbSecondaryItems = [
   GnbNavItemData(label: '친구', routePrefix: WebRoutes.friend),
+  GnbNavItemData(label: '알림', routePrefix: WebRoutes.alarm, showsAlarmDot: true),
   GnbNavItemData(label: '설정', routePrefix: WebRoutes.settings),
 ];
 
@@ -193,15 +199,23 @@ class GnbNavRow extends StatelessWidget {
                       duration: const Duration(milliseconds: 150),
                       child: Padding(
                         padding: EdgeInsets.only(left: icon != null ? 6 : 0),
-                        child: Text(
-                          item.label,
-                          maxLines: 1,
-                          softWrap: false,
-                          overflow: TextOverflow.clip,
-                          style: (active ? SDSTextStyle.bold : SDSTextStyle.bold).copyWith(
-                            fontSize: 14,
-                            color: fg,
-                          ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Flexible(
+                              child: Text(
+                                item.label,
+                                maxLines: 1,
+                                softWrap: false,
+                                overflow: TextOverflow.clip,
+                                style: (active ? SDSTextStyle.bold : SDSTextStyle.bold).copyWith(
+                                  fontSize: 14,
+                                  color: fg,
+                                ),
+                              ),
+                            ),
+                            if (item.showsAlarmDot) const GnbAlarmDot(),
+                          ],
                         ),
                       ),
                     ),
@@ -239,5 +253,52 @@ class GnbNavRow extends StatelessWidget {
     final materialIcon = item.materialIcon;
     if (materialIcon == null) return null;
     return Icon(materialIcon, size: 20, color: fg);
+  }
+}
+
+/// `알림` 라벨 옆 빨간 점 — 안 읽은 알림이 있을 때만(Firestore `notificationCenter.total`).
+///
+/// 로그인 전에는 그리지 않는다. 내 user_id가 바뀌면(로그인·로그아웃) 구독을 다시 건다.
+class GnbAlarmDot extends StatefulWidget {
+  const GnbAlarmDot({super.key});
+
+  @override
+  State<GnbAlarmDot> createState() => _GnbAlarmDotState();
+}
+
+class _GnbAlarmDotState extends State<GnbAlarmDot> {
+  int? _uid;
+  Stream<bool>? _stream;
+
+  Stream<bool>? _streamFor(int? uid) {
+    if (uid != _uid) {
+      _uid = uid;
+      _stream = uid == null ? null : AlarmBadgeWeb.unreadStream(uid);
+    }
+    return _stream;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (!Get.isRegistered<UserViewModel>()) return const SizedBox.shrink();
+    return Obx(() {
+      final stream = _streamFor(Get.find<UserViewModel>().user.user_id as int?);
+      if (stream == null) return const SizedBox.shrink();
+      return StreamBuilder<bool>(
+        stream: stream,
+        builder: (context, snap) {
+          if (snap.data != true) return const SizedBox.shrink();
+          return Padding(
+            padding: const EdgeInsets.only(left: 4),
+            child: Container(
+              key: const ValueKey('gnb-alarm-dot'),
+              width: 6,
+              height: 6,
+              decoration: const BoxDecoration(color: SDSColor.red, shape: BoxShape.circle),
+            ),
+          );
+        },
+      );
+    });
   }
 }

@@ -10,11 +10,45 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+// ── 레이아웃 치수 (위젯과 필요폭 계산이 **같은 값**을 보게 한 곳에 둔다) ──
+// PC 한 줄
+const double _kDesktopCardPadH = 40; // 카드 좌우 패딩
+const double _kDesktopGapToLinks = 40; // 카드 ↔ 링크
+const double _kDesktopDividerGapL = 30; // 기온 ↔ 구분선
+const double _kDesktopDividerGapR = 40; // 구분선 ↔ 지표
+const double _kDesktopLeftMinGap = 24; // 리조트 ↔ 기온 (spaceBetween 최소)
+const int _kDesktopLeftFlex = 13; // 좌(리조트·기온) : 우(지표) = 13 : 12
+const int _kDesktopRightFlex = 12;
+// 태블릿(카드 + 링크)
+const double _kTabletCardMaxWidth = 375; // 접힌 카드 기본 폭(피그마)
+const double _kTabletCardPadL = 30;
+const double _kTabletCardPadR = 9; // 칩 터치영역(40) 안의 여백 11을 감안한 보정
+const double _kTabletGapToLinks = 16; // 접힌 카드 ↔ 링크 최소 간격
+const double _kTabletMinSpacer = 16; // 리조트 ↔ 기온 최소 간격
+const double _kMetricsWindowWidth = 360; // 펼쳤을 때 지표 창
+const double _kChipGap = 3;
+const double _kChipSize = 40; // `+` 칩 터치 영역
+// 공통
+const double _kDividerWidth = 1;
+const double _kMetricsMinGap = 8; // 지표 4개 사이 최소 간격(spaceBetween)
+const double _kLinksRightPad = 20;
+const double _kLinkPadH = SDSSpacing.sm;
+const double _kLinkIconSize = 30;
+const double _kLinkDividerGap = SDSSpacing.md; // 링크 ↔ 구분선
+const double _kResortArrowGap = 4;
+const double _kResortNameSize = 16; // 리조트명(PC·태블릿)
+
 /// 홈 날씨 바 — 리조트 선택 + 현재 날씨 + 네이버날씨/웹캠/슬로프현황/셔틀버스 링크.
 ///
 /// 폭에 따라 구성이 갈린다(목업).
-///  - 데스크탑: 한 줄에 `리조트 | 기온 | 바람·습도·강수·최저/최고 | 링크 4개`
-///  - 태블릿·모바일: 지표 4개를 접고 `+` 칩으로 펼친다. 모바일은 링크 줄이 아래로 내려간다.
+///  - PC 한 줄: `리조트 | 기온 | 바람·습도·강수·최저/최고 | 링크 4개`
+///  - 카드 + 링크: 지표 4개를 접고 `+` 칩으로 펼친다(태블릿 목업).
+///  - 세로 스택: 카드 아래 링크 줄, 지표는 카드 안에서 펼친다(모바일 목업).
+///
+/// ⚠️ 구성은 **이 위젯이 받은 폭**으로 고른다(뷰포트 폭이 아니다). 데스크탑(≥1024)부터
+/// 좌측 사이드바가 붙어 실제 폭이 1024에서 오히려 239px 줄어들기 때문에, 뷰포트 기준으로
+/// 고르면 1024~1056에서 카드가 링크를 덮고, 1200~1300에서 PC 한 줄이 넘쳤다(2026-10 실측).
+/// 각 구성이 실제로 들어가는 최소폭을 [_WeatherBarFit]이 글자 폭을 재서 계산한다.
 class HomeWeatherBarWeb extends StatefulWidget {
   final ResortModel? resort;
   final Map<String, dynamic> weather;
@@ -35,10 +69,24 @@ class _HomeWeatherBarWebState extends State<HomeWeatherBarWeb> {
   /// 태블릿·모바일에서 `+`로 펼친 상태.
   bool _isExpanded = false;
 
-  /// 지표 4개(바람·습도·강수·최저/최고)를 한 줄에 펼치려면 이 폭은 있어야 한다.
-  /// 1024(데스크탑 진입폭)에서는 사이드바를 빼면 자리가 없어 넘쳤다(실측) →
-  /// 그 아래는 태블릿처럼 `+`로 접는다.
-  static const double _metricsMinWidth = 1200;
+  @override
+  void initState() {
+    super.initState();
+    // 웹은 글꼴(Pretendard)이 비동기로 들어온다. 그 전에 잰 글자 폭은 대체 글꼴 기준이라
+    // 구성 선택이 틀릴 수 있는데, 폭(constraints)이 그대로면 LayoutBuilder가 다시 돌지
+    // 않는다 → 글꼴이 바뀌었다는 신호를 받으면 다시 그린다.
+    PaintingBinding.instance.systemFonts.addListener(_onFontsChanged);
+  }
+
+  @override
+  void dispose() {
+    PaintingBinding.instance.systemFonts.removeListener(_onFontsChanged);
+    super.dispose();
+  }
+
+  void _onFontsChanged() {
+    if (mounted) setState(() {});
+  }
 
   /// 날씨·시간대별 카드 배경색(WeatherModel 규칙, 앱과 동일).
   Color get _weatherBg =>
@@ -64,49 +112,68 @@ class _HomeWeatherBarWebState extends State<HomeWeatherBarWeb> {
 
   @override
   Widget build(BuildContext context) {
-    final screenType = context.screenType;
-    final isMobile = screenType == WebScreenType.mobile;
-    final isDesktop = screenType == WebScreenType.desktop &&
-        MediaQuery.sizeOf(context).width >= _metricsMinWidth;
+    // 모바일은 폭과 상관없이 목업의 세로 스택.
+    if (context.screenType == WebScreenType.mobile) return _buildStacked();
 
-    // 모바일: 앱 리조트홈과 동일한 다이내믹 카드(날씨·시간대별 배경/텍스트 색,
-    // 지표는 카드 내부에서 펼침) + 아래 링크 줄.
-    if (isMobile) {
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          _buildMobileCard(),
-          const SizedBox(height: SDSSpacing.md),
-          _HomeWeatherLinks(resort: widget.resort),
-        ],
-      );
-    }
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final double width = constraints.maxWidth;
+        final fit = _WeatherBarFit.measure(
+          context,
+          resortName: widget.resort?.resortName ?? '스키장 선택',
+          weather: widget.weather,
+        );
+        if (width >= fit.desktopRowMinWidth) return _buildDesktop();
+        if (width >= fit.tabletRowMinWidth) {
+          // 접힌 카드는 피그마 375가 기본이지만, 내용(긴 리조트명 등)이 더 필요하면 그만큼
+          // 늘리고, 링크와 겹치지 않는 폭을 넘지는 않는다. tabletRowMinWidth가 이미
+          // "내용 최소폭 + 간격 + 링크"를 보장하므로 아래 범위는 항상 비어 있지 않다.
+          final available = width - fit.linksWidth - _kTabletGapToLinks;
+          final wanted = fit.collapsedCardMinWidth > _kTabletCardMaxWidth
+              ? fit.collapsedCardMinWidth
+              : _kTabletCardMaxWidth;
+          return _buildTabletRow(
+            total: width,
+            collapsedWidth: wanted < available ? wanted : available,
+          );
+        }
+        // 두 줄 구성이 다 안 들어가면 모바일처럼 쌓는다(접힌 카드가 링크를 덮지 않게).
+        return _buildStacked();
+      },
+    );
+  }
 
-    if (isDesktop) {
-      final Color fg = _weatherFg;
-      return Row(
-        children: [
-          Flexible(
-            child: Container(
-              decoration: BoxDecoration(
-                // 날씨·시간대별 다이내믹 배경(모바일과 동일 규칙).
-                color: _weatherBg,
-                borderRadius: BorderRadius.circular(12),
-              ),
-              padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 18),
-              child: _buildDesktopRow(fg),
+  /// 카드 아래 링크 줄(모바일 목업). 좁은 데스크탑·태블릿 폭의 대체 구성으로도 쓴다.
+  Widget _buildStacked() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        _buildMobileCard(),
+        const SizedBox(height: SDSSpacing.md),
+        _HomeWeatherLinks(resort: widget.resort, fillWidth: true),
+      ],
+    );
+  }
+
+  Widget _buildDesktop() {
+    final Color fg = _weatherFg;
+    return Row(
+      children: [
+        Flexible(
+          child: Container(
+            decoration: BoxDecoration(
+              // 날씨·시간대별 다이내믹 배경(모바일과 동일 규칙).
+              color: _weatherBg,
+              borderRadius: BorderRadius.circular(12),
             ),
+            padding: const EdgeInsets.symmetric(horizontal: _kDesktopCardPadH, vertical: 18),
+            child: _buildDesktopRow(fg),
           ),
-          // 날씨 카드와 링크 영역 사이 간격 40
-          const SizedBox(width: 40),
-          _HomeWeatherLinks(resort: widget.resort),
-        ],
-      );
-    }
-
-    // 태블릿: 카드(375x86) + 우측 링크 한 줄. `+`를 누르면 카드가 우측으로
-    // 길어지며(전체 폭) 지표가 인라인으로 펼쳐지고, 링크는 우측으로 밀려난다.
-    return _buildTabletRow();
+        ),
+        const SizedBox(width: _kDesktopGapToLinks),
+        _HomeWeatherLinks(resort: widget.resort),
+      ],
+    );
   }
 
   /// 모바일 카드 — 앱(v_resortHome)과 동일한 디자인.
@@ -197,10 +264,11 @@ class _HomeWeatherBarWebState extends State<HomeWeatherBarWeb> {
     );
   }
 
-  Widget _buildTabletRow() {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final double total = constraints.maxWidth;
+  /// 카드 + 링크. `+`를 누르면 카드가 [total]까지 길어지며 지표가 인라인으로 펼쳐지고,
+  /// 링크는 우측으로 밀려난다. 접힌 카드 폭은 [collapsedWidth](링크와 겹치지 않는 폭).
+  Widget _buildTabletRow({required double total, required double collapsedWidth}) {
+    return Builder(
+      builder: (context) {
         return SizedBox(
           height: 86,
           child: ClipRect(
@@ -226,7 +294,7 @@ class _HomeWeatherBarWebState extends State<HomeWeatherBarWeb> {
                 AnimatedContainer(
                   duration: const Duration(milliseconds: 300),
                   curve: Curves.easeInOut,
-                  width: _isExpanded ? total : 375,
+                  width: _isExpanded ? total : collapsedWidth,
                   height: 86,
                   clipBehavior: Clip.hardEdge,
                   decoration: BoxDecoration(
@@ -235,7 +303,7 @@ class _HomeWeatherBarWebState extends State<HomeWeatherBarWeb> {
                     borderRadius: BorderRadius.circular(16),
                   ),
                   // 우측은 터치 영역(40) 안의 여백 11을 감안해 9로 보정(시각상 20).
-                  padding: const EdgeInsets.only(left: 30, right: 9),
+                  padding: const EdgeInsets.only(left: _kTabletCardPadL, right: _kTabletCardPadR),
                   child: Row(
                     children: [
                       _buildResortBlock(textColor: _weatherFg),
@@ -247,18 +315,18 @@ class _HomeWeatherBarWebState extends State<HomeWeatherBarWeb> {
                       AnimatedContainer(
                         duration: const Duration(milliseconds: 300),
                         curve: Curves.easeInOut,
-                        width: _isExpanded ? 360 : 0,
+                        width: _isExpanded ? _kMetricsWindowWidth : 0,
                         clipBehavior: Clip.hardEdge,
                         decoration: const BoxDecoration(),
                         child: OverflowBox(
-                          minWidth: 360,
-                          maxWidth: 360,
+                          minWidth: _kMetricsWindowWidth,
+                          maxWidth: _kMetricsWindowWidth,
                           alignment: Alignment.centerLeft,
                           child: AnimatedOpacity(
                             opacity: _isExpanded ? 1 : 0,
                             duration: const Duration(milliseconds: 250),
                             child: SizedBox(
-                              width: 360,
+                              width: _kMetricsWindowWidth,
                               child: Row(
                                 children: [
                                   const SizedBox(width: 30),
@@ -273,7 +341,7 @@ class _HomeWeatherBarWebState extends State<HomeWeatherBarWeb> {
                           ),
                         ),
                       ),
-                      const SizedBox(width: 3),
+                      const SizedBox(width: _kChipGap),
                       _PlusChip(
                         isExpanded: _isExpanded,
                         onTap: () => setState(() => _isExpanded = !_isExpanded),
@@ -296,7 +364,7 @@ class _HomeWeatherBarWebState extends State<HomeWeatherBarWeb> {
     return Row(
       children: [
         Expanded(
-          flex: 13, // 5.2 : 4.8 비율(= 13 : 12)
+          flex: _kDesktopLeftFlex, // 5.2 : 4.8 비율(= 13 : 12)
           child: Row(
             // 리조트(좌) ↔ 기온·날씨 아이콘(우) 양끝 정렬
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -307,17 +375,19 @@ class _HomeWeatherBarWebState extends State<HomeWeatherBarWeb> {
           ),
         ),
         // 구분선 좌 30 / 우 40 간격
-        const SizedBox(width: 30),
+        const SizedBox(width: _kDesktopDividerGapL),
         _divider(fg),
-        const SizedBox(width: 40),
-        Expanded(flex: 12, child: _buildMetrics(textColor: fg)),
+        const SizedBox(width: _kDesktopDividerGapR),
+        Expanded(flex: _kDesktopRightFlex, child: _buildMetrics(textColor: fg)),
       ],
     );
   }
 
   Widget _buildResortBlock({
     Color? textColor,
-    double nameSize = 18,
+    // 화면에 실제로 보이던 값(16)을 기본값으로 둔다. 예전엔 드롭다운이 이 인자를
+    // 무시하고 16을 하드코딩해서, 기본값 18은 한 번도 적용된 적이 없었다.
+    double nameSize = _kResortNameSize,
     double dateSize = 14,
     double arrowSize = 20,
   }) {
@@ -419,7 +489,7 @@ class _ResortDropdown extends StatefulWidget {
     required this.label,
     required this.onSelected,
     this.color = SDSColor.gray900,
-    this.fontSize = 18,
+    this.fontSize = _kResortNameSize,
     this.arrowSize = 20,
   });
 
@@ -464,9 +534,9 @@ class _ResortDropdownState extends State<_ResortDropdown> {
               Text(
                 widget.label,
                 style: SDSTextStyle.bold
-                    .copyWith(fontSize: 16, color: widget.color),
+                    .copyWith(fontSize: widget.fontSize, color: widget.color),
               ),
-              const SizedBox(width: 4),
+              const SizedBox(width: _kResortArrowGap),
               Icon(Icons.keyboard_arrow_down, size: widget.arrowSize, color: widget.color),
             ],
           ),
@@ -656,32 +726,43 @@ class _Metric extends StatelessWidget {
 class _HomeWeatherLinks extends StatelessWidget {
   final ResortModel? resort;
 
-  const _HomeWeatherLinks({required this.resort});
+  /// 카드 아래 전체폭 한 줄일 때(세로 스택) — 네 칸을 균등 분할한다(라벨이 잘리지 않게).
+  /// 뷰포트가 아니라 **배치**로 정한다: 좁은 데스크탑 폭에서도 세로 스택이면 이 모양이다.
+  final bool fillWidth;
+
+  const _HomeWeatherLinks({required this.resort, this.fillWidth = false});
+
+  /// 링크 줄 텍스트 스타일(필요폭 계산과 공유).
+  static TextStyle labelStyle({required bool compact}) => SDSTextStyle.regular.copyWith(
+        fontSize: compact ? 12 : 11,
+        color: compact ? SDSColor.gray800 : SDSColor.gray700,
+      );
+
+  static const List<String> labels = ['네이버 날씨', '실시간 웹캠', '슬로프 현황', '셔틀버스'];
 
   @override
   Widget build(BuildContext context) {
-    // 모바일은 카드 아래 전체폭 한 줄이라 네 칸을 균등 분할한다(라벨이 잘리지 않게).
-    final isMobile = context.screenType == WebScreenType.mobile;
+    final isMobile = fillWidth;
 
     final links = <({String label, String asset, String? url})>[
-      (label: '네이버 날씨', asset: 'assets/imgs/icons/icon_home_naver.png', url: resort?.naverUrl),
-      (label: '실시간 웹캠', asset: 'assets/imgs/icons/icon_home_livecam.png', url: resort?.webcamUrl),
-      (label: '슬로프 현황', asset: 'assets/imgs/icons/icon_home_slope.png', url: resort?.slopeUrl),
-      (label: '셔틀버스', asset: 'assets/imgs/icons/icon_home_bus.png', url: resort?.busUrl),
+      (label: labels[0], asset: 'assets/imgs/icons/icon_home_naver.png', url: resort?.naverUrl),
+      (label: labels[1], asset: 'assets/imgs/icons/icon_home_livecam.png', url: resort?.webcamUrl),
+      (label: labels[2], asset: 'assets/imgs/icons/icon_home_slope.png', url: resort?.slopeUrl),
+      (label: labels[3], asset: 'assets/imgs/icons/icon_home_bus.png', url: resort?.busUrl),
     ];
 
     return Padding(
       // 링크 영역 전체의 우측 여백 20.
-      padding: EdgeInsets.only(right: isMobile ? 0 : 20),
+      padding: EdgeInsets.only(right: isMobile ? 0 : _kLinksRightPad),
       child: Row(
         mainAxisSize: isMobile ? MainAxisSize.max : MainAxisSize.min,
         children: [
           for (var i = 0; i < links.length; i++) ...[
             // 항목-구분선 사이 간격 16 (피그마 기준). 모바일은 구분선 미노출.
             if (i > 0 && !isMobile) ...[
-              const SizedBox(width: SDSSpacing.md),
-              Container(width: 1, height: 28, color: SDSColor.gray100),
-              const SizedBox(width: SDSSpacing.md),
+              const SizedBox(width: _kLinkDividerGap),
+              Container(width: _kDividerWidth, height: 28, color: SDSColor.gray100),
+              const SizedBox(width: _kLinkDividerGap),
             ],
             Expanded(
               flex: isMobile ? 1 : 0,
@@ -770,7 +851,7 @@ class _QuickLinkState extends State<_QuickLink> {
         },
         child: Padding(
           // 데스크탑은 구분선 좌우 16 간격을 Row에서 주므로 내부 패딩은 줄인다
-          padding: EdgeInsets.symmetric(horizontal: isCompact ? 4 : SDSSpacing.sm),
+          padding: EdgeInsets.symmetric(horizontal: isCompact ? 4 : _kLinkPadH),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -784,8 +865,8 @@ class _QuickLinkState extends State<_QuickLink> {
                 curve: Curves.easeOut,
                 child: Image.asset(
                   asset,
-                  width: isCompact ? 32 : 30,
-                  height: isCompact ? 32 : 30,
+                  width: isCompact ? 32 : _kLinkIconSize,
+                  height: isCompact ? 32 : _kLinkIconSize,
                   errorBuilder: (_, __, ___) =>
                       SizedBox.square(dimension: isCompact ? 32 : 30),
                 ),
@@ -795,15 +876,129 @@ class _QuickLinkState extends State<_QuickLink> {
                 label,
                 maxLines: 1,
                 textAlign: TextAlign.center,
-                style: SDSTextStyle.regular.copyWith(
-                  fontSize: isCompact ? 12 : 11,
-                  color: isCompact ? SDSColor.gray800 : SDSColor.gray700,
-                ),
+                style: _HomeWeatherLinks.labelStyle(compact: isCompact),
               ),
             ],
           ),
         ),
       ),
+    );
+  }
+}
+
+/// 날씨 바의 각 구성이 **넘치지 않고 들어가는 최소폭**.
+///
+/// 위젯 트리와 같은 상수(`_kDesktop*` / `_kTablet*` / `_kLink*`)와 같은 글자 스타일로
+/// 글자 폭을 직접 잰다. 리조트명·기온·지표 값은 바뀌므로 매번 다시 잰다(값 몇 개라 가볍다).
+class _WeatherBarFit {
+  /// PC 한 줄 구성 최소폭.
+  final double desktopRowMinWidth;
+
+  /// 카드 + 링크 구성 최소폭(접힘·펼침 둘 다 들어가야 한다).
+  final double tabletRowMinWidth;
+
+  /// 우측 링크 줄 폭.
+  final double linksWidth;
+
+  /// 접힌 카드가 내용을 담는 데 필요한 최소폭(패딩 포함).
+  final double collapsedCardMinWidth;
+
+  const _WeatherBarFit({
+    required this.desktopRowMinWidth,
+    required this.tabletRowMinWidth,
+    required this.linksWidth,
+    required this.collapsedCardMinWidth,
+  });
+
+  static _WeatherBarFit measure(
+    BuildContext context, {
+    required String resortName,
+    required Map<String, dynamic> weather,
+  }) {
+    final textScaler = MediaQuery.textScalerOf(context);
+    double w(String text, TextStyle style) {
+      final painter = TextPainter(
+        text: TextSpan(text: text, style: style),
+        maxLines: 1,
+        textDirection: TextDirection.ltr,
+        textScaler: textScaler,
+      )..layout();
+      final width = painter.width;
+      painter.dispose();
+      return width;
+    }
+
+    // ── 링크 줄 ──
+    final linkStyle = _HomeWeatherLinks.labelStyle(compact: false);
+    var linksWidth = _kLinksRightPad;
+    for (var i = 0; i < _HomeWeatherLinks.labels.length; i++) {
+      final label = w(_HomeWeatherLinks.labels[i], linkStyle);
+      linksWidth += _kLinkPadH * 2 + (label > _kLinkIconSize ? label : _kLinkIconSize);
+      if (i > 0) linksWidth += _kLinkDividerGap * 2 + _kDividerWidth;
+    }
+
+    // ── 리조트 블록(이름 + ▼ / 날짜) ──
+    final nameWidth = w(resortName, SDSTextStyle.bold.copyWith(fontSize: _kResortNameSize));
+    final dateWidth = w(homeWeatherDateLabel(DateTime.now()),
+        SDSTextStyle.regular.copyWith(fontSize: 14));
+    final nameRow = nameWidth + _kResortArrowGap + 20; // ▼ 20
+    final resortBlock = nameRow > dateWidth ? nameRow : dateWidth;
+
+    // ── 기온 블록(숫자 + ° + 아이콘) ──
+    final tempBlock = w(homeTempLabel(weather['temp']), GoogleFonts.bebasNeue(fontSize: 36, height: 1.0)) +
+        2 +
+        w('°', GoogleFonts.bebasNeue(fontSize: 28, height: 1.0)) +
+        SDSSpacing.xs +
+        40;
+
+    // ── 지표 4개 ──
+    double metric(String label, String value, String unit) {
+      final labelWidth = w(label, SDSTextStyle.regular.copyWith(fontSize: 11));
+      double valueWidth = 0;
+      final parts = value.split('/');
+      for (var i = 0; i < parts.length; i++) {
+        if (i > 0) valueWidth += 2 + w('/', GoogleFonts.bebasNeue(fontSize: 16, height: 1.0)) + 2;
+        valueWidth += w(parts[i].trim(), GoogleFonts.bebasNeue(fontSize: 24, height: 1.0));
+      }
+      if (unit.isNotEmpty) {
+        valueWidth += 3 + w(unit, GoogleFonts.bebasNeue(fontSize: 14, height: 1.0));
+      }
+      return labelWidth > valueWidth ? labelWidth : valueWidth;
+    }
+
+    final metrics = metric('바람', '${weather['wind'] ?? '-'}', 'M/S') +
+        metric('습도', '${weather['wet'] ?? '-'}', '%') +
+        metric('강수', '${weather['rain'] ?? '0'}', 'MM') +
+        metric('최저/최고', '${homeTempLabel(weather['minTemp'])} / ${homeTempLabel(weather['maxTemp'])}', '') +
+        _kMetricsMinGap * 3;
+
+    // ── PC 한 줄 ──
+    // 좌·우 Expanded가 13 : 12로 나눠 가지므로, 각자 자기 내용이 들어가는 만큼의
+    // 유연폭이 필요하다 → 둘 중 큰 쪽이 기준.
+    const totalFlex = _kDesktopLeftFlex + _kDesktopRightFlex;
+    final leftNeed = resortBlock + _kDesktopLeftMinGap + tempBlock;
+    final flexForLeft = leftNeed * totalFlex / _kDesktopLeftFlex;
+    final flexForRight = metrics * totalFlex / _kDesktopRightFlex;
+    final flexible = flexForLeft > flexForRight ? flexForLeft : flexForRight;
+    final desktopCard = flexible +
+        _kDesktopDividerGapL +
+        _kDividerWidth +
+        _kDesktopDividerGapR +
+        _kDesktopCardPadH * 2;
+    final desktopRowMinWidth = desktopCard + _kDesktopGapToLinks + linksWidth;
+
+    // ── 카드 + 링크 ──
+    final cardContent = resortBlock + _kTabletMinSpacer + tempBlock + _kChipGap + _kChipSize;
+    final collapsedCardMin = _kTabletCardPadL + cardContent + _kTabletCardPadR;
+    final expandedCardMin = collapsedCardMin + _kMetricsWindowWidth;
+    final collapsedRow = collapsedCardMin + _kTabletGapToLinks + linksWidth;
+    final tabletRowMinWidth = collapsedRow > expandedCardMin ? collapsedRow : expandedCardMin;
+
+    return _WeatherBarFit(
+      desktopRowMinWidth: desktopRowMinWidth,
+      tabletRowMinWidth: tabletRowMinWidth,
+      linksWidth: linksWidth,
+      collapsedCardMinWidth: collapsedCardMin,
     );
   }
 }

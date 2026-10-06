@@ -1,8 +1,6 @@
 import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/core/viewmodel/vm_user.dart';
 import 'package:com.snowlive/web/util/responsive_web.dart';
-import 'package:com.snowlive/web/view/fleamarket/v_fleamarketDetail_web.dart'
-    show kFleamarketDetailContentWidth;
 import 'package:com.snowlive/web/widget/w_web_icon_button_web.dart';
 import 'package:com.snowlive/web/view/fleamarket/w_fleamarket_form_fields_web.dart';
 import 'package:com.snowlive/web/viewmodel/fleamarket/vm_fleamarketPagination_web.dart';
@@ -122,7 +120,7 @@ class FleamarketUploadViewWeb extends StatelessWidget {
           // 제한 없이 화면(패딩 제외)을 가득 채운다(상세와 동일 규칙).
           constraints: BoxConstraints(
             maxWidth: isDesktop
-                ? kFleamarketDetailContentWidth
+                ? kWebSubPageMaxWidth
                 : double.infinity,
           ),
           child: Column(
@@ -153,7 +151,7 @@ class FleamarketUploadViewWeb extends StatelessWidget {
               ),
               // 헤더 줄 ↔ 폼 PC 40(피그마 62:98906) / 태블릿·모바일 26
               // (피그마 62:98390 — 버튼 줄 하단 110 → 첫 라벨 136).
-              SizedBox(height: isDesktop ? 40 : 26),
+              SizedBox(height: webFormHeaderGap(context)),
               _buildForm(context, vm),
             ],
           ),

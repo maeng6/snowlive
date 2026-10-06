@@ -5,9 +5,6 @@ import 'package:com.snowlive/web/widget/w_web_page_header_web.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-/// 목업 실측 800(설정 폼·목록이 한 열로 눕는다).
-const double kCrewSettingContentMaxWidth = 800;
-
 /// 모바일 하단 고정 버튼 영역 높이(패딩 8+16 + 버튼 48).
 const double _kMobileBarHeight = 72;
 
@@ -63,7 +60,7 @@ class CrewSettingScaffoldWeb extends StatelessWidget {
       child: SingleChildScrollView(
         child: Center(
           child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: kCrewSettingContentMaxWidth),
+            constraints: const BoxConstraints(maxWidth: kWebSubPageMaxWidth),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [

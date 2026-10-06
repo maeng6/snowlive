@@ -67,6 +67,8 @@ class _ProfileDetailViewWebState extends State<ProfileDetailViewWeb> {
   void initState() {
     super.initState();
     _userId = int.tryParse(Get.parameters['id'] ?? '');
+    // 알림센터의 `방명록` 알림은 `&tab=guestbook`으로 들어와 방명록 탭을 바로 연다.
+    if (Get.parameters['tab'] == WebRoutes.userProfileTabGuestbook) _tab = _ProfileTab.guestbook;
     final id = _userId;
     if (id == null) return;
 

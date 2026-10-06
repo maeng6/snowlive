@@ -143,10 +143,7 @@ class _RankingArchiveViewWebState extends State<RankingArchiveViewWeb> {
                   _buildSearchBar(),
                 ],
                 // 타이틀·검색 영역 ↔ 필터 줄: PC 30 / 태블릿 24 / 모바일 20 (목록 공통).
-                SizedBox(
-                    height: isWide
-                        ? 30
-                        : (context.screenType == WebScreenType.tablet ? 24 : 20)),
+                SizedBox(height: webTitleToFilterGap(context)),
                 _buildTabAndFilterRow(),
                 // 필터 줄 ↔ 아래 20 (커뮤니티·각종소식 확정값).
                 const SizedBox(height: 20),
@@ -162,7 +159,7 @@ class _RankingArchiveViewWebState extends State<RankingArchiveViewWeb> {
           children: [
             const SizedBox(height: SDSSpacing.lg),
             _buildPagination(),
-            SizedBox(height: context.isDesktop ? 120 : 80),
+            SizedBox(height: webFooterTopGap(context)),
             const HomeFooterWeb(),
           ],
         ),

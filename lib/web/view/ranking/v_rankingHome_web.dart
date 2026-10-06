@@ -33,12 +33,9 @@ import 'package:get/get.dart';
 /// 않게 폭을 묶는다.
 const double kRankingListMaxWidth = 700;
 
-/// 목록 ↔ 사이드바 간격. 중고거래·커뮤니티 홈과 동일.
-const double kRankingSidebarGap = 40;
-
 /// 목록 + 간격 + 우측 사이드바를 합친 데스크탑 블록 폭.
 const double kRankingContentMaxWidth =
-    kRankingListMaxWidth + kRankingSidebarGap + kRankingSidebarWidth;
+    kRankingListMaxWidth + kWebSidebarGap + kWebSidebarWidth;
 
 /// 랭킹 리조트 픽커 표시 순서(총 스키장 랭킹 enum) → 실제 backend resort_id.
 /// 4(에덴밸리/한솔)가 빠져서 4 다음이 6으로 건너뛴다(모바일과 동일한 매핑).
@@ -276,7 +273,7 @@ class _RankingHomeViewWebState extends State<RankingHomeViewWeb> {
           _buildSearchBar(),
         ],
         // 타이틀·검색 영역 ↔ 필터 줄: PC 30 / 태블릿 24 / 모바일 20 (홈 목록 공통).
-        SizedBox(height: isDesktop ? 30 : (context.screenType == WebScreenType.tablet ? 24 : 20)),
+        SizedBox(height: webTitleToFilterGap(context)),
         _buildTabRow(),
         // 탭·필터 줄 ↔ 누적/일간 16 (랭킹 목업 — 커뮤니티의 '필터↔목록 20'과는
         // 아래에 오는 요소가 달라서 별도 값으로 둔다).
@@ -307,7 +304,7 @@ class _RankingHomeViewWebState extends State<RankingHomeViewWeb> {
                     children: [
                       Expanded(child: content),
                       // 목록 ↔ 사이드바 간격 40 (중고거래 홈과 동일).
-                      const SizedBox(width: kRankingSidebarGap),
+                      const SizedBox(width: kWebSidebarGap),
                       const RankingSidebarWeb(),
                     ],
                   )
@@ -330,12 +327,12 @@ class _RankingHomeViewWebState extends State<RankingHomeViewWeb> {
                   children: [
                     Expanded(child: _buildPagination()),
                     if (isDesktop)
-                      const SizedBox(width: kRankingSidebarGap + kRankingSidebarWidth),
+                      const SizedBox(width: kWebSidebarGap + kWebSidebarWidth),
                   ],
                 ),
               ),
             ),
-            SizedBox(height: isDesktop ? 120 : 80),
+            SizedBox(height: webFooterTopGap(context)),
             const HomeFooterWeb(),
           ],
         ),
@@ -878,13 +875,8 @@ class _RankingHomeViewWebState extends State<RankingHomeViewWeb> {
         }
       }
 
-
       /// 내 랭킹/내 크루 랭킹 카드의 공통 껍데기.
       ///
-
-
-
-
 
       /// 누적/일간 밑줄 탭. 비활성 쪽에도 같은 자리에 연한 선을 깔아 밑줄이 끊기지 않게 한다.
       class _SegmentTab extends StatefulWidget {

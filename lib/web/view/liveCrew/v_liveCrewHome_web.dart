@@ -27,9 +27,6 @@ import 'package:com.snowlive/web/widget/w_web_more_menu_web.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-/// 목록 ↔ 사이드바 간격. 중고거래·커뮤니티·랭킹 홈과 동일.
-const double kLiveCrewSidebarGap = 40;
-
 /// 크루 목록 열 폭(목업 161:38007 — 240..1114).
 const double kLiveCrewListMaxWidth = 874;
 
@@ -37,7 +34,7 @@ const double kLiveCrewListMaxWidth = 874;
 /// (이전에는 `1440 − GNB 240 − 좌우 32×2`로 역산했는데, GNB는 실제로 200이고
 /// 화면폭 역산식은 쓰지 않기로 한 규칙도 어긋났다.)
 const double kLiveCrewContentMaxWidth =
-    kLiveCrewListMaxWidth + kLiveCrewSidebarGap + kLiveCrewSidebarWidth;
+    kLiveCrewListMaxWidth + kWebSidebarGap + kWebSidebarWidth;
 
 /// 라이브크루 홈.
 ///
@@ -204,7 +201,7 @@ class _LiveCrewHomeViewWebState extends State<LiveCrewHomeViewWeb> {
         // 홈·목록 화면과 동일한 푸터 — 끝 여백 PC 120 / 그 외 80.
         footer: Column(
           children: [
-            SizedBox(height: isDesktop ? 120 : 80),
+            SizedBox(height: webFooterTopGap(context)),
             const HomeFooterWeb(),
           ],
         ),
@@ -282,7 +279,7 @@ class _LiveCrewHomeViewWebState extends State<LiveCrewHomeViewWeb> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Expanded(child: child),
-        const SizedBox(width: kLiveCrewSidebarGap),
+        const SizedBox(width: kWebSidebarGap),
         LiveCrewSidebarWeb(myCrew: _myCrew),
       ],
     );

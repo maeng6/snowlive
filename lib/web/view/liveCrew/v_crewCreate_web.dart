@@ -19,10 +19,6 @@ import 'package:get/get.dart';
 /// — 만들기 플로우는 세 폭 모두 **같은 레이아웃**을 쓴다(사용자 확정).
 const double kCrewCreateContentMaxWidth = 358;
 
-/// PC에서 `←`와 진행 버튼이 서는 줄의 폭. 목업은 콘텐츠 영역(1240) 좌우 220 안쪽
-/// = 800이다. 본문(358)보다 넓어서 버튼이 화면 구석에 붙지 않는다.
-const double kCrewCreateTopBarMaxWidth = 800;
-
 /// 인트로 일러스트(모바일 크루 온보딩과 같은 에셋).
 const String _kCrewIntroIllust = 'assets/imgs/imgs/img_livecrew_1.png';
 
@@ -346,7 +342,9 @@ class _CrewCreateViewWebState extends State<CrewCreateViewWeb> {
     if (!isDesktop) return row;
     return Center(
       child: ConstrainedBox(
-        constraints: const BoxConstraints(maxWidth: kCrewCreateTopBarMaxWidth),
+        // PC에서 `←`와 진행 버튼이 서는 줄의 폭 — 목업은 콘텐츠 영역(1240) 좌우 220 안쪽
+        // = 800. 본문(358)보다 넓어서 버튼이 화면 구석에 붙지 않는다.
+        constraints: const BoxConstraints(maxWidth: kWebSubPageMaxWidth),
         child: row,
       ),
     );

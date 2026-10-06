@@ -175,8 +175,14 @@ class _CrewTalksViewWebState extends State<CrewTalksViewWeb> {
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SizedBox(width: kCrewTalksFeedWidth, child: _buildFeedColumn()),
-                    const SizedBox(width: kLiveTalkSidebarGap),
+                    // 라이브톡 홈과 같은 이유로 고정 폭 대신 최대 480(좁으면 줄어든다).
+                    Flexible(
+                      child: ConstrainedBox(
+                        constraints: const BoxConstraints(maxWidth: kCrewTalksFeedWidth),
+                        child: _buildFeedColumn(),
+                      ),
+                    ),
+                    const SizedBox(width: kWebSidebarGap),
                     if (canUpload) _buildDesktopSidebar(),
                   ],
                 )
@@ -233,7 +239,7 @@ class _CrewTalksViewWebState extends State<CrewTalksViewWeb> {
         ],
         // 마지막 글 아래 여백 — 목록 끝이 화면 바닥에 딱 붙지 않게 한다. 하단 바가
         // 있는 좁은 폭은 이미 바 높이만큼 잡아둬서 덜 준다(라이브톡과 같은 값).
-        SizedBox(height: context.isDesktop ? 100 : 40),
+        SizedBox(height: webFeedBottomGap(context)),
       ],
     );
   }
@@ -241,7 +247,7 @@ class _CrewTalksViewWebState extends State<CrewTalksViewWeb> {
   /// 스크롤을 내리면 버튼이 화면 상단 30에 멈춰 따라붙는다(공용 WebStickySidebar).
   Widget _buildDesktopSidebar() {
     return SizedBox(
-      width: kLiveTalkSidebarWidth,
+      width: kWebSidebarWidth,
       child: WebStickySidebar(
         controller: _scrollController,
         naturalTop:

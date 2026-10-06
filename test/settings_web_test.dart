@@ -1,6 +1,7 @@
 import 'package:com.snowlive/core/viewmodel/vm_user.dart';
 import 'package:com.snowlive/web/view/settings/v_settings_web.dart';
 import 'package:com.snowlive/web/viewmodel/settings/vm_settings_web.dart';
+import 'package:com.snowlive/web/widget/w_web_back_icon_web.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get/get.dart';
@@ -60,21 +61,23 @@ void main() {
   });
 
   testWidgets('데스크탑은 뒤로가기가 없고 태블릿·모바일에는 있다', (tester) async {
+    // 헤더는 서브 페이지 공통 WebPageHeader(뒤로가기 = WebBackIcon).
     await pumpSettings(tester, 1440);
-    expect(find.byIcon(Icons.arrow_back), findsNothing);
+    expect(find.byType(WebBackIcon), findsNothing);
 
     await pumpSettings(tester, 900);
-    expect(find.byIcon(Icons.arrow_back), findsOneWidget);
+    expect(find.byType(WebBackIcon), findsOneWidget);
 
     await pumpSettings(tester, 375);
-    expect(find.byIcon(Icons.arrow_back), findsOneWidget);
+    expect(find.byType(WebBackIcon), findsOneWidget);
   });
 
   testWidgets('목록은 좌측 정렬 고정폭이다 (넓은 화면에서 늘어나지 않는다)', (tester) async {
     await pumpSettings(tester, 1440);
     final row = tester.getRect(find.text('친구 추가 요청'));
-    // 좌측 여백(24) 근처에서 시작하고, 우측은 화면 끝까지 가지 않는다.
-    expect(row.left, lessThan(40));
+    // 서브 페이지 공통 좌측 여백(webSubPagePadding 데스크탑 40)에서 시작하고,
+    // 우측은 화면 끝까지 가지 않는다.
+    expect(row.left, 40);
     expect(tester.getRect(find.byIcon(Icons.chevron_right).first).right, lessThan(700));
   });
 

@@ -1,3 +1,4 @@
+import 'package:com.snowlive/web/util/responsive_web.dart';
 import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/core/model/m_crewMemberRankingList.dart';
 import 'package:com.snowlive/web/routes/routes_web.dart';
@@ -10,9 +11,6 @@ import 'package:com.snowlive/web/widget/w_numbered_pagination_web.dart';
 import 'package:com.snowlive/web/widget/w_skeleton_web.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
-/// 크루원 시즌 랭킹. `#/livecrew-season-ranking?id=334&season=2526`
-const double kCrewSeasonRankingMaxWidth = 800;
 
 /// 한 페이지에 보여줄 인원(목업 번호식 페이지네이션).
 const int kCrewSeasonRankingPerPage = 30;
@@ -65,7 +63,7 @@ class _CrewSeasonRankingViewWebState extends State<CrewSeasonRankingViewWeb> {
   Widget build(BuildContext context) {
     return CrewRecordScaffoldWeb(
       title: '크루원 시즌 랭킹',
-      maxWidth: kCrewSeasonRankingMaxWidth,
+      maxWidth: kWebSubPageMaxWidth,
       fallbackRoute: '${WebRoutes.crewRecordRoom}?id=$_crewId',
       child: Obx(_buildBody),
     );

@@ -2,6 +2,10 @@
 ///
 /// 약관 URL은 모바일 뷰모델(`lib/mobile/viewmodel/auth/vm_tos.dart`)에만 하드코딩돼
 /// 있었고 스토어 링크는 코드에 아예 없었다. 여러 화면에서 쓰이므로 한곳에 모은다.
+///
+/// ⚠️ 화면마다 따로 적지 말 것 — 푸터가 스토어 URL을 직접 적었다가 **둘 다 404**로
+/// 나간 적이 있다(앱 ID `id1602642173`, 패키지 `com.snowlive.snowlive`로 잘못 적힘).
+/// 정답은 앱과 같은 `id6444235991` / `com.snowlive`.
 library;
 
 const String kTermsOfServiceUrl =
@@ -9,6 +13,9 @@ const String kTermsOfServiceUrl =
 
 const String kPrivacyPolicyUrl =
     'https://sites.google.com/view/134creativelabprivacypolicy/%ED%99%88';
+
+const String kLocationTermsUrl =
+    'https://sites.google.com/view/134creativelablocationinfo/%ED%99%88';
 
 const String kAppStoreUrlAndroid =
     'https://play.google.com/store/apps/details?id=com.snowlive';

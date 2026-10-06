@@ -19,9 +19,6 @@ import 'package:com.snowlive/web/widget/w_web_toast_web.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-/// 목업 실측 800(검색창과 결과 행이 넓게 눕는다).
-const double kCrewJoinContentMaxWidth = 800;
-
 /// 크루 가입하기 — 크루를 검색해 가입 신청한다. `#/livecrew-join`
 ///
 /// `?resort=13`을 붙이면 그 스키장의 크루 **전체**를 보는 화면으로 쓴다
@@ -105,7 +102,7 @@ class _CrewJoinViewWebState extends State<CrewJoinViewWeb> {
           final side = context.isDesktop
               ? math.max(
                   pagePadding.left,
-                  (constraints.maxWidth - kCrewJoinContentMaxWidth) / 2,
+                  (constraints.maxWidth - kWebSubPageMaxWidth) / 2,
                 )
               : pagePadding.left;
           // 조건에 맞는 크루를 **전부** 그린다(전체 521개, 휘닉스 169개 — 실측).

@@ -7,6 +7,7 @@ import 'package:com.snowlive/core/model/m_rankingListIndiv.dart';
 import 'package:com.snowlive/web/routes/routes_web.dart';
 import 'package:com.snowlive/web/util/crew_visual_web.dart';
 import 'package:com.snowlive/web/util/responsive_web.dart';
+import 'package:com.snowlive/web/util/web_external_links.dart';
 import 'package:com.snowlive/web/view/home/home_sections_web.dart';
 import 'package:com.snowlive/web/widget/w_empty_state_web.dart';
 import 'package:com.snowlive/web/widget/w_network_image_web.dart';
@@ -1426,13 +1427,6 @@ class _Dots extends StatelessWidget {
 class HomeFooterWeb extends StatelessWidget {
   const HomeFooterWeb({super.key});
 
-  static const _appStore = 'https://apps.apple.com/kr/app/id1602642173';
-  static const _playStore =
-      'https://play.google.com/store/apps/details?id=com.snowlive.snowlive';
-  static const _privacy =
-      'https://sites.google.com/view/134creativelabprivacypolicy/%ED%99%88';
-  static const _terms = 'https://sites.google.com/view/snowlive-termsofservice/%ED%99%88';
-
   /// 목업의 Contact 3열. 채널 링크가 아직 없어서 문구만 두고 링크는 붙이지 않는다.
   static const _columns = [
     ['Instagram', 'Kakao', 'X', 'TikTok'],
@@ -1486,8 +1480,15 @@ class HomeFooterWeb extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _logo(),
-            const Spacer(),
-            _contactColumns(gap: 40),
+            // Spacer + Contact 대신 Expanded 안에서 우측 정렬한다. Row의 비flex 자식은
+            // 폭 제한이 없어서 _contactColumns의 FittedBox(scaleDown)가 아무 일도 못 했다
+            // (넘치면 그대로 오버플로). 여기서는 남은 폭을 받아 필요할 때만 줄어든다.
+            Expanded(
+              child: Align(
+                alignment: Alignment.topRight,
+                child: _contactColumns(gap: 40),
+              ),
+            ),
             // Contact ↔ 배지 간격 50 (피그마 기준).
             const SizedBox(width: 50),
             _storeBadgesColumn(),
@@ -1501,8 +1502,13 @@ class HomeFooterWeb extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _logo(),
-          const Spacer(),
-          _contactColumns(),
+          // 태블릿 분기와 같은 이유로 Expanded + 우측 정렬(넘치면 FittedBox가 줄인다).
+          Expanded(
+            child: Align(
+              alignment: Alignment.topRight,
+              child: _contactColumns(),
+            ),
+          ),
           // Contact ↔ 배지 간격 70 (피그마 기준).
           const SizedBox(width: 70),
           _storeBadges(),
@@ -1588,10 +1594,10 @@ class HomeFooterWeb extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          _StoreBadge(kind: _StoreKind.appStore, url: _appStore),
+          _StoreBadge(kind: _StoreKind.appStore, url: kAppStoreUrlIos),
           // 배지 간격 10 (피그마 기준).
           SizedBox(width: 10),
-          _StoreBadge(kind: _StoreKind.googlePlay, url: _playStore),
+          _StoreBadge(kind: _StoreKind.googlePlay, url: kAppStoreUrlAndroid),
         ],
       ),
     );
@@ -1603,9 +1609,9 @@ class HomeFooterWeb extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.end,
       mainAxisSize: MainAxisSize.min,
       children: [
-        _StoreBadge(kind: _StoreKind.appStore, url: _appStore),
+        _StoreBadge(kind: _StoreKind.appStore, url: kAppStoreUrlIos),
         SizedBox(height: 10),
-        _StoreBadge(kind: _StoreKind.googlePlay, url: _playStore),
+        _StoreBadge(kind: _StoreKind.googlePlay, url: kAppStoreUrlAndroid),
       ],
     );
   }
@@ -1622,9 +1628,9 @@ class HomeFooterWeb extends StatelessWidget {
     final links = Row(
       mainAxisSize: MainAxisSize.min,
       children: const [
-        _FooterLink(label: 'Privacy Policy', url: _privacy),
+        _FooterLink(label: 'Privacy Policy', url: kPrivacyPolicyUrl),
         SizedBox(width: 30),
-        _FooterLink(label: 'Terms of Use', url: _terms),
+        _FooterLink(label: 'Terms of Use', url: kTermsOfServiceUrl),
       ],
     );
 
@@ -1635,7 +1641,16 @@ class HomeFooterWeb extends StatelessWidget {
         children: [copyright, const SizedBox(height: SDSSpacing.md), links],
       );
     }
-    return Row(children: [copyright, const Spacer(), links]);
+    // 카피라이트는 Expanded로 남은 폭 안에 둔다(좁으면 줄바꿈). Spacer 사이에 두면
+    // 글이 길거나 폭이 좁을 때 그대로 가로로 넘친다.
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Expanded(child: copyright),
+        const SizedBox(width: SDSSpacing.md),
+        links,
+      ],
+    );
   }
 }
 

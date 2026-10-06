@@ -15,10 +15,6 @@ import 'package:com.snowlive/web/widget/w_web_page_header_web.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-/// 목업 실측 802. 커뮤니티 작성 폼(800)과 같은 급의 좁은 폼 폭이다 —
-/// 넓히면 입력창만 길어지고 칩이 한 줄에 너무 많이 늘어선다.
-const double kFleamarketAlertContentMaxWidth = 800;
-
 /// 키워드 알림 설정 진입 공통 처리(PC 사이드바·태블릿/모바일 하단바 공용).
 /// 미로그인 확정 상태면 페이지에 들어가지 않고 로그인 유도 팝업을 띄운다 —
 /// PC·태블릿·모바일 모두 동일. 자동로그인 확인 중(checking)이면 일단
@@ -191,7 +187,7 @@ class _FleamarketAlertViewWebState extends State<FleamarketAlertViewWeb> {
           // 가득 채운다(올리기·수정·상세와 동일 규칙).
           constraints: BoxConstraints(
             maxWidth: isDesktop
-                ? kFleamarketAlertContentMaxWidth
+                ? kWebSubPageMaxWidth
                 : double.infinity,
           ),
           child: Column(
@@ -200,7 +196,7 @@ class _FleamarketAlertViewWebState extends State<FleamarketAlertViewWeb> {
               _buildTitleRow(isMobile),
               // 타이틀 ↔ 탭 PC 40(피그마 64:105620) / 태블릿·모바일 26
               // (올리기 헤더↔폼과 동일 규칙).
-              SizedBox(height: isDesktop ? 40 : 26),
+              SizedBox(height: webFormHeaderGap(context)),
               if (_isGuest) _buildGuestBody() else ..._buildBody(),
             ],
           ),

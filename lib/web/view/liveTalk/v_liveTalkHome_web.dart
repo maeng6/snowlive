@@ -22,17 +22,10 @@ import 'package:get/get.dart';
 /// 넓히면 사진이 과하게 커지고 한 줄 글자수가 늘어 읽기 흐름이 깨진다.
 const double kLiveTalkFeedWidth = 480;
 
-/// 데스크탑 우측 사이드바 폭. 목업은 246이지만 웹 사이드바 공통 폭 220으로 맞춘다
-/// (중고거래·커뮤니티·랭킹·라이브크루와 동일 — 최대 폭이 화면마다 다르면 눈에 띈다).
-const double kLiveTalkSidebarWidth = 220;
-
-/// 피드 열과 사이드바 사이 간격(목업). 크루톡 목록도 같은 값을 쓴다.
-const double kLiveTalkSidebarGap = 40;
-
 /// 데스크탑에서 "피드 + 간격 + 사이드바"를 묶은 블록 폭. 이 블록이 GNB 오른쪽
 /// 영역 가운데로 온다.
 const double kLiveTalkContentMaxWidth =
-    kLiveTalkFeedWidth + kLiveTalkSidebarGap + kLiveTalkSidebarWidth;
+    kLiveTalkFeedWidth + kWebSidebarGap + kWebSidebarWidth;
 
 /// 웹 라이브톡 피드 화면.
 class LiveTalkHomeViewWeb extends StatefulWidget {
@@ -238,8 +231,16 @@ class _LiveTalkHomeViewWebState extends State<LiveTalkHomeViewWeb> {
               ? Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SizedBox(width: kLiveTalkFeedWidth, child: _buildFeedColumn()),
-                    const SizedBox(width: kLiveTalkSidebarGap),
+                    // 피드는 480이 기본이되, 1024처럼 사이드바를 뺀 폭이 740에 못 미치면
+                    // 피드가 줄어든다. 고정 폭이면 1024에서 여유가 4px뿐이라 사이드바·
+                    // 패딩이 조금만 바뀌어도 바로 넘친다.
+                    Flexible(
+                      child: ConstrainedBox(
+                        constraints: const BoxConstraints(maxWidth: kLiveTalkFeedWidth),
+                        child: _buildFeedColumn(),
+                      ),
+                    ),
+                    const SizedBox(width: kWebSidebarGap),
                     _buildDesktopSidebar(),
                   ],
                 )
@@ -348,7 +349,7 @@ class _LiveTalkHomeViewWebState extends State<LiveTalkHomeViewWeb> {
               // 붙지 않게 한다. 하단 바가 있는 태블릿·모바일은 이미 바 높이만큼
               // 스크롤 여백을 잡아둬서 그만큼 덜 준다(마지막 글이 페이드에 묻히지
               // 않을 정도만).
-              SizedBox(height: context.isDesktop ? 100 : 40),
+              SizedBox(height: webFeedBottomGap(context)),
             ],
           );
         }),
@@ -377,7 +378,7 @@ class _LiveTalkHomeViewWebState extends State<LiveTalkHomeViewWeb> {
 
     // 스크롤을 내리면 버튼이 화면 상단 30에 멈춰 따라붙는다(공용 WebStickySidebar).
     return SizedBox(
-      width: kLiveTalkSidebarWidth,
+      width: kWebSidebarWidth,
       child: WebStickySidebar(
         controller: _scrollController,
         naturalTop: webHomePagePadding(context).top + _kSidebarTopOffset,

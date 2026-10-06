@@ -115,7 +115,9 @@ void main() {
       _record('2026-01-15', timeInfo: [0, 0, 0, 0, 0, 0, 0, 0, 0], members: 0),
     ];
 
-    Future<void> pumpAt(WidgetTester tester, double width, Widget child) async {
+    /// [settle]=false — 스켈레톤은 SkeletonShimmer가 무한 반복이라 settle되지 않는다.
+    Future<void> pumpAt(WidgetTester tester, double width, Widget child,
+        {bool settle = true}) async {
       tester.view.physicalSize = Size(width, 1400);
       tester.view.devicePixelRatio = 1.0;
       addTearDown(tester.view.reset);
@@ -126,7 +128,11 @@ void main() {
           ),
         ),
       ));
-      await tester.pumpAndSettle();
+      if (settle) {
+        await tester.pumpAndSettle();
+      } else {
+        await tester.pump(const Duration(milliseconds: 300));
+      }
     }
 
     Widget monthList() => CrewRecordMonthList(
@@ -155,7 +161,7 @@ void main() {
 
     for (final width in [1440.0, 800.0, 375.0]) {
       testWidgets('로딩 스켈레톤이 ${width.toInt()}폭에서 카드 크기로 그려진다', (tester) async {
-        await pumpAt(tester, width, const CrewRecordListSkeleton());
+        await pumpAt(tester, width, const CrewRecordListSkeleton(), settle: false);
         expect(tester.takeException(), isNull);
         // 실제 카드와 같은 크기여야 로딩 중임이 눈에 보인다. 가로 목록이라 화면에
         // 들어가는 만큼만 만들어진다(1440=3장, 800=2장, 375=1장).

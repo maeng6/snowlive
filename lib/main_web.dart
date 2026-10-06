@@ -2,6 +2,7 @@ import 'package:com.snowlive/firebase_options.dart';
 import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/core/viewmodel/vm_user.dart';
 import 'package:com.snowlive/web/routes/routes_web.dart';
+import 'package:com.snowlive/web/util/web_page_title.dart';
 import 'package:com.snowlive/web/viewmodel/auth/vm_authcheck_web.dart';
 import 'package:com.snowlive/web/widget/gnb/w_gnb_current_route_web.dart';
 import 'package:com.snowlive/web/widget/w_top_loading_bar_web.dart';
@@ -34,7 +35,8 @@ class SnowliveWebApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
-      title: '스노우라이브 - 중고거래',
+      // 앱 전역 제목은 브랜드만 — 화면별 탭 제목은 아래 builder의 Title이 덮어쓴다.
+      title: kWebBrandTitle,
       getPages: WebRoutes.pages,
       initialRoute: WebRoutes.home,
       // 웹에서 좌우 슬라이드 전환은 "모바일 앱을 그대로 옮긴" 느낌의 가장 큰 원인이다.
@@ -113,6 +115,14 @@ class SnowliveWebApp extends StatelessWidget {
         ),
       ),
       builder: (context, child) {
+        // WebAppShell(GNB)이 라우트 Navigator를 감싸는 구조라, GNB까지 덮는
+        // 진짜 풀스크린 오버레이(이미지 뷰어 등)는 라우트 Navigator보다 상위에
+        // 있는 이 Overlay를 통해서만 열 수 있다 (Overlay.of(rootOverlay: true)로 접근).
+        final shell = Overlay(
+          initialEntries: [
+            OverlayEntry(builder: (_) => WebAppShell(child: child!)),
+          ],
+        );
         // [Flutter 웹 프레임워크 버그 우회] 브라우저 창이 포커스를 받을 때
         // 기본 ReadingOrderTraversalPolicy가 포커스 가능한 위젯들을 rect(크기)로
         // 정렬하다가, 아직 레이아웃 안 된 위젯의 size를 읽어 "RenderBox was not laid out"
@@ -123,13 +133,15 @@ class SnowliveWebApp extends StatelessWidget {
           policy: WidgetOrderTraversalPolicy(),
           child: MediaQuery(
             data: MediaQuery.of(context).copyWith(textScaler: TextScaler.linear(1.0)),
-            // WebAppShell(GNB)이 라우트 Navigator를 감싸는 구조라, GNB까지 덮는
-            // 진짜 풀스크린 오버레이(이미지 뷰어 등)는 라우트 Navigator보다 상위에
-            // 있는 이 Overlay를 통해서만 열 수 있다 (Overlay.of(rootOverlay: true)로 접근).
-            child: Overlay(
-              initialEntries: [
-                OverlayEntry(builder: (_) => WebAppShell(child: child!)),
-              ],
+            // 브라우저 탭 제목을 화면별로(`중고거래 | 스노우라이브`). 라우트 신호를 따라가고,
+            // 위의 앱 전역 Title보다 아래에 있어 앱이 다시 빌드돼도 이 값이 마지막에 남는다.
+            // shell은 밖에서 한 번 만든 인스턴스라 제목이 바뀌어도 셸은 다시 빌드되지 않는다.
+            child: Obx(
+              () => Title(
+                title: webPageTitle(currentRouteWeb.value),
+                color: SDSColor.snowliveBlue,
+                child: shell,
+              ),
             ),
           ),
         );

@@ -28,9 +28,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-/// 상세 콘텐츠 폭(피그마 46:12903) — 이미지 377 + 간격 30 + 정보 393.
-const double kFleamarketDetailContentWidth = 800;
-
 /// 대표 이미지 한 변(피그마 46:12903).
 const double kFleamarketDetailPhotoSize = 377;
 
@@ -156,7 +153,7 @@ class _FleamarketDetailViewState extends State<FleamarketDetailView> {
                   // 화면(패딩 제외)을 가득 채운다.
                   constraints: BoxConstraints(
                     maxWidth: isDesktop
-                        ? kFleamarketDetailContentWidth
+                        ? kWebSubPageMaxWidth
                         : double.infinity,
                   ),
                   child: Column(
@@ -234,7 +231,7 @@ class _FleamarketDetailViewState extends State<FleamarketDetailView> {
           // 홈과 동일한 푸터 — 800 제한 밖, 콘텐츠 영역 폭. 간격은 최소값.
           footer: Column(
             children: [
-              SizedBox(height: isDesktop ? 120 : 80),
+              SizedBox(height: webFooterTopGap(context)),
               const HomeFooterWeb(),
             ],
           ),

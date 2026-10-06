@@ -18,7 +18,7 @@ import 'package:get/get.dart';
 ///    계정 그룹(마이페이지/멤버십 업그레이드/로그아웃).
 ///  - 비로그인: 하단 고정 로그인/회원가입 버튼.
 ///  - 메뉴 구성은 피그마와 달리 **사이드바와 동일하게 전부** 노출한다.
-///  - 알림·멤버십 업그레이드는 화면이 아직 없어 "준비 중" 스낵바만 띄운다.
+///  - 멤버십 업그레이드는 화면이 아직 없어 "준비 중" 스낵바만 띄운다.
 ///  - 앱 다운로드 배너는 보류.
 class WebGnbMenuPanel extends StatefulWidget {
   /// 항목 탭 등으로 메뉴를 닫아야 할 때 호출한다(셸이 패널을 내린다).
@@ -32,9 +32,6 @@ class WebGnbMenuPanel extends StatefulWidget {
 
 class _WebGnbMenuPanelState extends State<WebGnbMenuPanel>
     with SingleTickerProviderStateMixin {
-  /// 패널 전용 알림 항목 — routePrefix가 없어 누르면 "준비 중" 스낵바가 뜬다.
-  static const GnbNavItemData _kAlarmItem = GnbNavItemData(label: '알림');
-
   /// **세 그룹**(아이콘 메뉴 / 친구·알림·설정 / 계정)으로 나눠 부드럽게
   /// 페이드인한다. 그룹당 350ms + 살짝(8px) 위로 올라오며 등장,
   /// 그룹 간 120ms 지연으로 자연스럽게 겹친다.
@@ -125,12 +122,9 @@ class _WebGnbMenuPanelState extends State<WebGnbMenuPanel>
                 padding: const EdgeInsets.symmetric(vertical: 12),
                 child: Divider(color: SDSColor.gray100, height: 1),
               ),
-              // 친구 / 알림(준비 중) / 설정.
-              GnbNavRow(
-                  item: kGnbSecondaryItems.first, onNavigate: widget.onClose),
-              const GnbNavRow(item: _kAlarmItem),
-              GnbNavRow(
-                  item: kGnbSecondaryItems.last, onNavigate: widget.onClose),
+              // 친구 / 알림 / 설정 — 사이드바와 같은 목록.
+              for (final item in kGnbSecondaryItems)
+                GnbNavRow(item: item, onNavigate: widget.onClose),
             ],
           ),
           if (isLoggedIn)

@@ -2,10 +2,6 @@ import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/web/util/responsive_web.dart';
 import 'package:flutter/material.dart';
 
-/// 우측 열 폭 — 웹 사이드바 공통 220(중고거래·랭킹·라이브톡과 동일).
-/// 목록과의 간격 40은 홈 Row가 담당한다.
-const double kCommunitySidebarWidth = 220;
-
 /// 데스크탑 전용 우측 열. 목업(64:112373)은 `게시글 올리기` 버튼 + 배너 3개인데,
 /// 배너는 운영 이미지가 아직 없어 추후 작업이다(버튼만 둔다).
 /// (태블릿·모바일에서는 이 열을 접고 하단 플로팅 바를 쓴다)
@@ -17,7 +13,7 @@ class CommunitySidebarWeb extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: kCommunitySidebarWidth,
+      width: kWebSidebarWidth,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [CommunityWritePostButton(onTap: onWritePost)],

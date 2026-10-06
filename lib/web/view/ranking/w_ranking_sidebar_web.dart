@@ -5,10 +5,6 @@ import 'package:com.snowlive/web/view/ranking/w_ranking_tier_guide_web.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-/// 우측 열 폭 — 웹 사이드바 공통 220.
-/// 목록과의 간격 40은 홈 Row가 담당한다(내부 left 패딩 없음).
-const double kRankingSidebarWidth = 220;
-
 /// 데스크탑 전용 우측 열: "랭킹 기록실"/"랭킹 등급표 안내" 진입 카드.
 ///
 /// 태블릿 이하에서는 이 열을 접는 대신 탭 줄 오른쪽의 텍스트 링크로 노출한다
@@ -20,7 +16,7 @@ class RankingSidebarWeb extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: kRankingSidebarWidth,
+      width: kWebSidebarWidth,
       // 타이틀 줄(28px) + 아래 여백만큼 내려서 첫 카드가 탭/필터 줄과 나란히 오게 한다.
       padding: const EdgeInsets.only(top: 52),
       child: Column(
