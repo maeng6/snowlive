@@ -32,6 +32,7 @@ import 'package:com.snowlive/web/view/liveCrew/v_crewMembers_web.dart';
 import 'package:com.snowlive/web/view/liveCrew/v_crewTalks_web.dart';
 import 'package:com.snowlive/web/view/liveCrew/v_liveCrewHome_web.dart';
 import 'package:com.snowlive/web/view/profile/v_profileDetail_web.dart';
+import 'package:com.snowlive/web/view/profile/v_profileEdit_web.dart';
 import 'package:com.snowlive/web/view/ranking/v_ridingCards_web.dart';
 import 'package:com.snowlive/web/view/ranking/v_slopeCraft_web.dart';
 import 'package:com.snowlive/web/view/liveTalk/v_liveTalkDetail_web.dart';
@@ -112,6 +113,9 @@ class WebRoutes {
 
   /// 개인 프로필 상세(라이딩 통계·방명록·시즌 기록실). `?id={userId}`
   static const userProfile = '/profile';
+
+  /// 내 프로필 편집. `/profile/edit`로 두면 GetX가 부모 `/profile`로 매칭한다 → 형제 최상위.
+  static const profileEdit = '/profile-edit';
 
   /// 프로필을 방명록 탭으로 바로 여는 `&tab=` 값(알림센터의 방명록 알림).
   static const userProfileTabGuestbook = 'guestbook';
@@ -317,6 +321,11 @@ class WebRoutes {
       name: userProfile,
       page: () => const ProfileDetailViewWeb(),
       binding: WebProfileBinding(),
+    ),
+    GetPage(
+      name: profileEdit,
+      page: () => const ProfileEditViewWeb(),
+      binding: WebProfileEditBinding(),
     ),
     GetPage(
       name: crewRecordRoom,

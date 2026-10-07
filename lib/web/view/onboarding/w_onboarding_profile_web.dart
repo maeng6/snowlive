@@ -2,6 +2,7 @@ import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/core/model/m_resortModel.dart';
 import 'package:com.snowlive/web/view/onboarding/w_onboarding_profile_image_picker_web.dart';
 import 'package:com.snowlive/web/viewmodel/auth/vm_onboarding_web.dart';
+import 'package:com.snowlive/web/widget/w_network_image_web.dart';
 import 'package:com.snowlive/web/widget/w_web_form_fields_web.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -33,7 +34,7 @@ class OnboardingProfileStepWeb extends StatelessWidget {
       children: [
         const SizedBox(height: SDSSpacing.md),
         Center(
-          child: Obx(() => _ProfileCircle(
+          child: Obx(() => ProfileImageCircleWeb(
                 image: vm.profileImage,
                 onPick: () => _pickImage(context),
                 onRemove: () => vm.setProfileImage(null),
@@ -112,17 +113,27 @@ class OnboardingProfileStepWeb extends StatelessWidget {
   }
 }
 
-/// 프로필 원형. 비어 있으면 기본 이미지 + 파란 `+`, 고르면 미리보기 + 검정 `X`.
-class _ProfileCircle extends StatelessWidget {
+/// 프로필 원형. 비어 있으면 기본 이미지 + 파란 `+`, 사진이 있으면 미리보기 + 검정 `X`.
+/// 온보딩(새로 고른 사진만)과 프로필 편집(지금 쓰는 사진 [imageUrl]도)이 같이 쓴다.
+/// 새로 고른 [image]가 있으면 그게 우선이다.
+class ProfileImageCircleWeb extends StatelessWidget {
   final XFile? image;
+  final String? imageUrl;
   final VoidCallback onPick;
   final VoidCallback onRemove;
 
-  const _ProfileCircle({required this.image, required this.onPick, required this.onRemove});
+  const ProfileImageCircleWeb({
+    super.key,
+    required this.image,
+    this.imageUrl,
+    required this.onPick,
+    required this.onRemove,
+  });
 
   @override
   Widget build(BuildContext context) {
-    final hasImage = image != null;
+    final url = imageUrl?.trim() ?? '';
+    final hasImage = image != null || url.isNotEmpty;
 
     return SizedBox(
       width: _kProfileCircleSize + 4,
@@ -135,11 +146,13 @@ class _ProfileCircle extends StatelessWidget {
               child: SizedBox(
                 width: _kProfileCircleSize,
                 height: _kProfileCircleSize,
-                child: hasImage
+                child: image != null
                     // 웹에서 XFile.path는 blob URL이다. dart:io FileImage는 못 쓴다.
                     ? Image.network(image!.path, fit: BoxFit.cover)
-                    : Image.asset('assets/imgs/profile/img_profile_default_circle.png',
-                        fit: BoxFit.cover),
+                    : url.isNotEmpty
+                        ? WebNetworkImage(url: url, fit: BoxFit.cover)
+                        : Image.asset('assets/imgs/profile/img_profile_default_circle.png',
+                            fit: BoxFit.cover),
               ),
             ),
           ),

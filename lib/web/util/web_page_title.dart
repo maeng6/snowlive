@@ -51,6 +51,7 @@ const Map<String, String> kWebPageNames = {
   WebRoutes.crewSeasonRanking: '크루원 시즌 랭킹',
   // 프로필 · 친구 · 알림 · 설정
   WebRoutes.userProfile: '프로필',
+  WebRoutes.profileEdit: '프로필 편집',
   WebRoutes.friend: '친구',
   WebRoutes.friendSettings: '친구 설정',
   WebRoutes.friendRequests: '친구 요청 관리',

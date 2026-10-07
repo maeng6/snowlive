@@ -207,7 +207,11 @@ class _ProfileDetailViewWebState extends State<ProfileDetailViewWeb> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        ProfileHeaderWeb(info: info, action: _buildHeaderAction()),
+        ProfileHeaderWeb(
+          info: info,
+          action: _buildHeaderAction(),
+          mobileAction: _buildMobileHeaderAction(),
+        ),
         const SizedBox(height: SDSSpacing.lg),
         Align(
           alignment: Alignment.centerLeft,
@@ -252,12 +256,26 @@ class _ProfileDetailViewWebState extends State<ProfileDetailViewWeb> {
         _ProfileTab.recordRoom => '시즌 기록실',
       };
 
+  /// 내 프로필 편집 화면으로 갔다가 돌아오면 바뀐 정보로 다시 받는다.
+  Future<void> _openEdit() async {
+    await Get.toNamed(WebRoutes.profileEdit);
+    if (mounted) await _vm.reload();
+  }
+
+  /// 모바일은 오른쪽 자리가 없다 — 내 프로필의 `프로필 편집`만 헤더 아래에 둔다
+  /// (친구 추가는 모바일 목업에 없다 — 프로필 팝업에 이미 있다).
+  Widget? _buildMobileHeaderAction() {
+    if (context.screenType != WebScreenType.mobile) return null;
+    if (_authVm.status == WebAuthStatus.checking || !_vm.isMe) return null;
+    return _HeaderPill(label: '프로필 편집', onTap: _openEdit);
+  }
+
   Widget? _buildHeaderAction() {
-    // 모바일 목업에는 버튼이 없다(프로필 팝업에 이미 있다).
+    // 모바일은 [_buildMobileHeaderAction]이 맡는다.
     if (context.screenType == WebScreenType.mobile) return null;
     // 자동로그인 확인 중에는 판단할 근거가 없다 → 잘못된 버튼을 띄우지 않는다.
     if (_authVm.status == WebAuthStatus.checking) return null;
-    if (_vm.isMe) return null;
+    if (_vm.isMe) return _HeaderPill(label: '프로필 편집', onTap: _openEdit);
     // 비로그인 방문자에게도 버튼을 보여주고, 누르면 로그인 화면으로 보낸다.
     if (!_vm.isLoggedIn) {
       return _HeaderPill(

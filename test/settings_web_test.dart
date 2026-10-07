@@ -26,7 +26,7 @@ void main() {
     await tester.pump();
   }
 
-  testWidgets('그룹 4개와 줄 10개가 목업 순서대로 있다', (tester) async {
+  testWidgets('그룹 4개와 줄 9개가 목업 순서대로 있다 (멤버십은 기획 전이라 숨김)', (tester) async {
     await pumpSettings(tester, 1440);
 
     for (final group in ['친구', '중고거래', '약관', '계정']) {
@@ -40,7 +40,6 @@ void main() {
       '개인정보 처리방침',
       '위치 정보 이용약관',
       '오픈소스 라이선스',
-      '멤버십 관리',
       '로그아웃',
       '회원탈퇴',
     ];
@@ -54,10 +53,11 @@ void main() {
     final friend = tester.getRect(find.text('친구 추가 요청')).top;
     final flea = tester.getRect(find.text('키워드/카테고리 알림 설정')).top;
     final terms = tester.getRect(find.text('이용약관')).top;
-    final account = tester.getRect(find.text('멤버십 관리')).top;
+    final account = tester.getRect(find.text('로그아웃')).top;
     expect(friend, lessThan(flea));
     expect(flea, lessThan(terms));
     expect(terms, lessThan(account));
+    expect(find.text('멤버십 관리'), findsNothing);
   });
 
   testWidgets('데스크탑은 뒤로가기가 없고 태블릿·모바일에는 있다', (tester) async {

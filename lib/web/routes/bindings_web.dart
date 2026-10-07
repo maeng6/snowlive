@@ -8,6 +8,7 @@ import 'package:com.snowlive/web/viewmodel/home/vm_home_web.dart';
 import 'package:com.snowlive/web/viewmodel/home/vm_openChat_web.dart';
 import 'package:com.snowlive/web/viewmodel/settings/vm_settings_web.dart';
 import 'package:com.snowlive/web/viewmodel/alarm/vm_alarmCenter_web.dart';
+import 'package:com.snowlive/web/viewmodel/profile/vm_profileEdit_web.dart';
 import 'package:com.snowlive/web/viewmodel/fleamarket/vm_fleamarketPagination_web.dart';
 import 'package:com.snowlive/web/viewmodel/fleamarket/vm_fleamarketUpload_web.dart';
 import 'package:com.snowlive/web/viewmodel/fleamarket/vm_fleamarketUpdate_web.dart';
@@ -136,6 +137,15 @@ class WebSettingsBinding extends Bindings {
   @override
   void dependencies() {
     Get.lazyPut(() => SettingsViewModelWeb(), fenix: true);
+  }
+}
+
+/// 내 프로필 편집 라우트용 바인딩. 들어올 때마다 새로 불러오므로 fenix로 두지 않는다
+/// (떠나면 입력 중이던 값과 함께 정리된다).
+class WebProfileEditBinding extends Bindings {
+  @override
+  void dependencies() {
+    Get.lazyPut(() => ProfileEditViewModelWeb());
   }
 }
 

@@ -25,10 +25,14 @@ const int kProfileTopSlopeCount = 7;
 class ProfileHeaderWeb extends StatelessWidget {
   final FriendUserInfo? info;
 
-  /// 오른쪽(모바일은 없음) 액션. null이면 그리지 않는다(내 프로필·비로그인).
+  /// 오른쪽(모바일은 없음) 액션. null이면 그리지 않는다.
   final Widget? action;
 
-  const ProfileHeaderWeb({super.key, required this.info, this.action});
+  /// 모바일 전용 액션 — 오른쪽 자리가 없어서 상태메시지 아래 가운데에 둔다
+  /// (내 프로필의 `프로필 편집`. 앱도 정보 아래에 `프로필 수정` 버튼이 있다).
+  final Widget? mobileAction;
+
+  const ProfileHeaderWeb({super.key, required this.info, this.action, this.mobileAction});
 
   /// 목업 `휘닉스파크 · 올두맹`. 프로필 팝업과 같은 순서(리조트 · 크루)를 쓴다.
   String get _affiliation {
@@ -79,6 +83,10 @@ class ProfileHeaderWeb extends StatelessWidget {
               overflow: TextOverflow.ellipsis,
               style: SDSTextStyle.regular.copyWith(fontSize: 13, color: SDSColor.gray400),
             ),
+          ],
+          if (mobileAction != null) ...[
+            const SizedBox(height: 12),
+            mobileAction!,
           ],
         ],
       );

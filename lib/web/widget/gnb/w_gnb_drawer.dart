@@ -6,6 +6,7 @@ import 'package:com.snowlive/web/util/responsive_web.dart';
 import 'package:com.snowlive/web/viewmodel/auth/vm_authcheck_web.dart';
 import 'package:com.snowlive/web/widget/gnb/w_gnb_nav_items.dart';
 import 'package:com.snowlive/web/widget/w_web_avatar_web.dart';
+import 'package:com.snowlive/web/util/web_features.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -135,7 +136,8 @@ class _WebGnbMenuPanelState extends State<WebGnbMenuPanel>
                   padding: const EdgeInsets.symmetric(vertical: 12),
                   child: Divider(color: SDSColor.gray100, height: 1),
                 ),
-                // 계정 그룹: 마이페이지 / 멤버십 업그레이드(준비 중) / 로그아웃.
+                // 계정 그룹: 마이페이지 / 멤버십 업그레이드(기획 전이라 숨김 —
+                // kWebMembershipEnabled) / 로그아웃.
                 _AccountRow(
                   label: '마이페이지',
                   onTap: () {
@@ -143,11 +145,12 @@ class _WebGnbMenuPanelState extends State<WebGnbMenuPanel>
                     Get.toNamed('${WebRoutes.userProfile}?id=${user.user_id}');
                   },
                 ),
-                _AccountRow(
-                  label: '멤버십 업그레이드',
-                  onTap: () =>
-                      Get.snackbar('준비 중입니다', '멤버십 업그레이드는 아직 준비 중이에요.'),
-                ),
+                if (kWebMembershipEnabled)
+                  _AccountRow(
+                    label: '멤버십 업그레이드',
+                    onTap: () =>
+                        Get.snackbar('준비 중입니다', '멤버십 업그레이드는 아직 준비 중이에요.'),
+                  ),
                 _AccountRow(
                   label: '로그아웃',
                   onTap: _signOut,

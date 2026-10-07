@@ -6,6 +6,7 @@ import 'package:com.snowlive/web/viewmodel/settings/vm_settings_web.dart';
 import 'package:com.snowlive/web/widget/w_web_more_menu_web.dart';
 import 'package:com.snowlive/web/widget/w_web_toast_web.dart';
 import 'package:com.snowlive/web/widget/w_web_page_header_web.dart';
+import 'package:com.snowlive/web/util/web_features.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -100,7 +101,8 @@ class _SettingsViewWebState extends State<SettingsViewWeb> {
       _SettingsGroup(
         title: '계정',
         items: [
-          _SettingsItem(label: '멤버십 관리', onTap: _onMembership),
+          // 기획 전이라 숨긴다(kWebMembershipEnabled).
+          if (kWebMembershipEnabled) _SettingsItem(label: '멤버십 관리', onTap: _onMembership),
           _SettingsItem(label: '로그아웃', onTap: _onSignOut),
           _SettingsItem(label: '회원탈퇴', onTap: _onWithdraw),
         ],

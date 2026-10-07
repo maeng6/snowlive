@@ -5,6 +5,7 @@ import 'package:com.snowlive/web/util/responsive_web.dart';
 import 'package:com.snowlive/web/viewmodel/auth/vm_authcheck_web.dart';
 import 'package:com.snowlive/web/widget/w_web_filter_menu_web.dart';
 import 'package:com.snowlive/web/widget/w_web_overlay_modal_web.dart';
+import 'package:com.snowlive/web/util/web_features.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -151,7 +152,11 @@ class GnbProfileMenuButtonState extends State<GnbProfileMenuButton> {
       link: _link,
       builder: (_, close, anchorWidth) => WebFilterDropdownPanel<_ProfileMenuAction>(
         title: null,
-        values: _ProfileMenuAction.values,
+        // 멤버십은 기획 전이라 숨긴다(kWebMembershipEnabled).
+        values: [
+          for (final action in _ProfileMenuAction.values)
+            if (kWebMembershipEnabled || action != _ProfileMenuAction.membership) action,
+        ],
         labelOf: labelOf,
         onPick: close,
         minWidth: anchorWidth,
