@@ -78,7 +78,8 @@ class _FleamarketCardWebState extends State<FleamarketCardWeb> {
                         ),
                         child: photos.isNotEmpty
                             ? WebNetworkImage(
-                                url: photos.first.urlFleaPhoto,
+                                // 목록은 축소 썸네일(없으면 원본으로 폴백).
+                                url: photos.first.listUrl,
                                 fit: BoxFit.cover,
                                 fallback: Image.asset(
                                   kFleamarketDefaultImage,

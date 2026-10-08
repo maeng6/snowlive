@@ -1,6 +1,7 @@
 import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/core/model/m_event.dart';
 import 'package:com.snowlive/web/view/community/w_community_row_web.dart';
+import 'package:com.snowlive/web/view/community/w_event_preview_dialog_web.dart';
 import 'package:com.snowlive/web/viewmodel/event/vm_eventListPagination_web.dart';
 import 'package:com.snowlive/web/widget/w_highlighted_text_web.dart';
 import 'package:flutter/material.dart';
@@ -68,12 +69,14 @@ String eventTitleLine(EventModel event) {
   return raw.replaceAll(RegExp(r'\s+'), ' ').trim();
 }
 
-/// 이벤트 항목을 눌렀을 때: 조회수를 올리고 랜딩 URL로 외부 이동한다.
+/// 이벤트 항목을 눌렀을 때: 조회수를 올리고 **사이트 내 미리보기 다이얼로그**를 연다.
 ///
-/// 이벤트는 상세 화면이 없다(크롤링 데이터) → 행을 누르면 원본으로 보낸다.
-/// 조회수 증가·URL 검증(http/https만)·게스트 처리는 모두 뷰모델이 맡는다.
-void openEventLanding(EventModel event) {
-  Get.find<EventListPaginationViewModelWeb>().openEvent(event);
+/// 원본은 인스타그램이라 iframe 임베드가 막혀(프레임 차단) 다이얼로그에 원본을
+/// 그대로 띄울 수 없다 → 크롤해둔 데이터로 미리보기를 보여주고, 원할 때만
+/// 다이얼로그 안의 "원본 보기"로 새 탭 이동한다(사이트 이탈 최소화).
+void openEventPreview(BuildContext context, EventModel event) {
+  Get.find<EventListPaginationViewModelWeb>().countView(event);
+  showEventPreviewDialog(context: context, event: event);
 }
 
 /// 각종소식 표 한 줄의 골격. 헤더 행과 데이터 행이 공유한다.
@@ -166,7 +169,7 @@ class EventTableRow extends StatelessWidget {
     return Material(
       type: MaterialType.transparency,
       child: InkWell(
-        onTap: () => openEventLanding(event),
+        onTap: () => openEventPreview(context, event),
         // hover 시 행 배경 — 검정 3% (커뮤니티 표 행과 동일).
         hoverColor: SDSColor.gray900.withValues(alpha: 0.03),
         child: eventTableRowShell(
@@ -233,7 +236,7 @@ class EventCardRow extends StatelessWidget {
     );
 
     return InkWell(
-      onTap: () => openEventLanding(event),
+      onTap: () => openEventPreview(context, event),
       child: Container(
         decoration: BoxDecoration(
           border: Border(bottom: BorderSide(color: SDSColor.gray100)),

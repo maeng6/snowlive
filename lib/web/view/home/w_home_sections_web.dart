@@ -1153,7 +1153,8 @@ class _FleamarketMiniCardState extends State<_FleamarketMiniCard> with _TapFeedb
 
   @override
   Widget build(BuildContext context) {
-    final photo = (item.photos?.isNotEmpty ?? false) ? item.photos!.first.urlFleaPhoto : null;
+    // 목록은 축소 썸네일 우선(없으면 원본으로 폴백).
+    final photo = (item.photos?.isNotEmpty ?? false) ? item.photos!.first.listUrl : null;
 
     return MouseRegion(
       cursor: SystemMouseCursors.click,

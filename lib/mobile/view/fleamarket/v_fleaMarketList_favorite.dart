@@ -556,7 +556,7 @@ class FleaMarketListView_favorite extends StatelessWidget {
                                                   children: [
                                                     if (data.photos!.length != 0)
                                                       ExtendedImage.network(
-                                                        data.photos!.first.urlFleaPhoto!,
+                                                        data.photos!.first.listUrl!,
                                                         cache: true,
                                                         shape: BoxShape.rectangle,
                                                         borderRadius: BorderRadius.circular(8),

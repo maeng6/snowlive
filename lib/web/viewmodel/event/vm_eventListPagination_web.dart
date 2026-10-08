@@ -193,16 +193,17 @@ class EventListPaginationViewModelWeb extends GetxController {
     return [for (int i = start; i <= end; i++) i];
   }
 
-  /// 제목/행 클릭 시: 조회수를 올리고 `landing_url`로 외부 이동한다.
-  /// 조회수 증가는 이동을 막지 않도록 기다리지 않는다(실패해도 이동은 한다).
-  /// 로그인 유저만 서버가 카운트하므로(user_id 필수) 게스트는 이동만 한다.
-  Future<void> openEvent(EventModel event) async {
-    // 비로그인(게스트)도 조회수는 올라간다 → userId가 null이어도 호출한다.
+  /// 미리보기 다이얼로그를 열 때 조회수를 올린다(기존 "행 탭 = 조회"와 동일).
+  /// 이동을 막지 않도록 기다리지 않는다(실패해도 미리보기는 열린다).
+  /// 비로그인(게스트)도 조회수는 올라간다 → userId가 null이어도 호출한다.
+  void countView(EventModel event) {
     if (event.eventId != null) {
       unawaited(_incrementViewCount(event.eventId!, _currentUserId()));
     }
-    await _launchLanding(event.landingUrl);
   }
+
+  /// 원본(인스타그램) `landing_url`을 새 탭으로 연다(미리보기 다이얼로그의 원본 보기).
+  Future<void> openLanding(EventModel event) => _launchLanding(event.landingUrl);
 
   /// 현재 로그인 유저 id. 게스트(미로그인)면 null.
   int? _currentUserId() {

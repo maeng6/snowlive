@@ -84,6 +84,22 @@ class _LiveTalkHomeViewWebState extends State<LiveTalkHomeViewWeb> {
     if (mounted) setState(() => _warmingFirstImages = false);
   }
 
+  void _resetToTop() {
+    if (_scrollController.hasClients && _scrollController.offset != 0) {
+      _scrollController.jumpTo(0);
+    }
+  }
+
+  /// 당겨서 새로고침 — 첫 페이지를 다시 받고 **최상단으로 정렬**한다
+  /// (overscroll settle·인디케이터 되감김으로 화면이 아래로 튀지 않게 초기 위치 유지).
+  Future<void> _handlePullRefresh() async {
+    await _loadFirstPage();
+    if (!mounted) return;
+    WidgetsBinding.instance.addPostFrameCallback((_) => _resetToTop());
+    await Future.delayed(const Duration(milliseconds: 350));
+    if (mounted) _resetToTop();
+  }
+
   Future<void> _precacheFirstImages() async {
     final urls = _vm.items
         .map((item) => item.imageUrl)
@@ -226,7 +242,9 @@ class _LiveTalkHomeViewWebState extends State<LiveTalkHomeViewWeb> {
     // 여백은 스크롤 영역 안쪽(웹 공통 규칙 — 바깥에 두면 스크롤바가 브라우저
     // 우측 끝에 안 붙는다).
     final scrollArea = RefreshIndicator(
-      onRefresh: _loadFirstPage, // 당겨서 새로고침
+      onRefresh: _handlePullRefresh, // 당겨서 새로고침
+      color: SDSColor.snowliveBlue, // 스피너 색상(기본 보라색 대체)
+      backgroundColor: SDSColor.snowliveWhite, // 원형 배경 흰색
       child: SingleChildScrollView(
       controller: _scrollController,
       physics: const AlwaysScrollableScrollPhysics(),

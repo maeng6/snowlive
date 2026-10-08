@@ -119,12 +119,20 @@ class Photo {
   int? displayOrder;
   String? urlFleaPhoto;
 
-  Photo({this.displayOrder, this.urlFleaPhoto});
+  /// 목록 카드용 축소본(서버 생성). 없으면 [urlFleaPhoto]로 폴백한다.
+  String? urlFleaThumb;
+
+  Photo({this.displayOrder, this.urlFleaPhoto, this.urlFleaThumb});
 
   Photo.fromJson(Map<String, dynamic> json) {
     displayOrder = json['display_order'];
     urlFleaPhoto = json['url_flea_photo'];
+    urlFleaThumb = json['url_flea_thumb'];
   }
+
+  /// 목록에서 쓸 URL — 썸네일 우선, 없으면 원본.
+  String? get listUrl =>
+      (urlFleaThumb != null && urlFleaThumb!.isNotEmpty) ? urlFleaThumb : urlFleaPhoto;
 }
 
 

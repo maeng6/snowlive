@@ -437,7 +437,7 @@ class FleaMarketListView_search extends StatelessWidget {
                                         children: [
                                           if (data.photos?.isNotEmpty == true)
                                             ExtendedImage.network(
-                                              data.photos!.first.urlFleaPhoto!,
+                                              data.photos!.first.listUrl!,
                                               cache: true,
                                               shape: BoxShape.rectangle,
                                               borderRadius: BorderRadius.circular(8),
