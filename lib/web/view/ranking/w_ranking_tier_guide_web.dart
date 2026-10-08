@@ -22,14 +22,44 @@ Future<void> showRankingTierGuide(BuildContext context) {
   );
 }
 
-class _TierGuideCard extends StatelessWidget {
+class _TierGuideCard extends StatefulWidget {
   final bool isSheet;
   final VoidCallback onClose;
 
   const _TierGuideCard({required this.isSheet, required this.onClose});
 
   @override
+  State<_TierGuideCard> createState() => _TierGuideCardState();
+}
+
+class _TierGuideCardState extends State<_TierGuideCard> {
+  /// 아래로 끌어내린 거리(시트 전용). 0 위로는 안 올라간다.
+  double _dragDy = 0;
+
+  void _onDragUpdate(DragUpdateDetails d) {
+    setState(() => _dragDy = (_dragDy + d.delta.dy).clamp(0.0, 10000.0));
+  }
+
+  void _onDragEnd(DragEndDetails d) {
+    final v = d.velocity.pixelsPerSecond.dy;
+    // 충분히 내렸거나(100px) 아래로 튕기면(700px/s) 닫는다. 아니면 제자리로.
+    if (_dragDy > 100 || v > 700) {
+      widget.onClose();
+    } else {
+      setState(() => _dragDy = 0);
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final card = _buildCard(context);
+    if (!widget.isSheet) return card; // 데스크탑 중앙 카드 — 드래그 없음.
+    // 하단 시트: 끌어내린 만큼 따라 내려간다.
+    return Transform.translate(offset: Offset(0, _dragDy), child: card);
+  }
+
+  Widget _buildCard(BuildContext context) {
+    final isSheet = widget.isSheet;
     return Material(
       // 목업(106:20209) — 카드 390 / 라운드 16, 상하 40, 등급표 폭 300(좌우 45).
       color: SDSColor.snowliveWhite,
@@ -50,14 +80,25 @@ class _TierGuideCard extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     if (isSheet)
-                      // 시트는 닫기 X 대신 드래그 핸들(다른 웹 시트와 동일).
-                      Container(
-                        width: 36,
-                        height: 4,
-                        margin: const EdgeInsets.only(top: SDSSpacing.md, bottom: SDSSpacing.lg),
-                        decoration: BoxDecoration(
-                          color: SDSColor.gray200,
-                          borderRadius: BorderRadius.circular(2),
+                      // 시트는 닫기 X 대신 드래그 핸들 — 이 상단을 아래로 끌면 닫힌다.
+                      GestureDetector(
+                        behavior: HitTestBehavior.opaque,
+                        onVerticalDragUpdate: _onDragUpdate,
+                        onVerticalDragEnd: _onDragEnd,
+                        child: Container(
+                          // 핸들만이 아니라 상단 띠 전체를 잡기 쉽게 넉넉히 둔다.
+                          width: double.infinity,
+                          color: Colors.transparent,
+                          padding: const EdgeInsets.only(top: SDSSpacing.md, bottom: SDSSpacing.lg),
+                          alignment: Alignment.center,
+                          child: Container(
+                            width: 36,
+                            height: 4,
+                            decoration: BoxDecoration(
+                              color: SDSColor.gray200,
+                              borderRadius: BorderRadius.circular(2),
+                            ),
+                          ),
                         ),
                       )
                     else
@@ -93,7 +134,7 @@ class _TierGuideCard extends StatelessWidget {
                   child: Opacity(
                     opacity: 0.5,
                     child: InkWell(
-                      onTap: onClose,
+                      onTap: widget.onClose,
                       customBorder: const CircleBorder(),
                       child: Icon(Icons.close, size: 26, color: SDSColor.gray900),
                     ),
