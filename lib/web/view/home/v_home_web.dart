@@ -28,13 +28,15 @@ class _HomeViewWebState extends State<HomeViewWeb> {
   final ScrollController _scrollController = ScrollController();
 
   /// 오픈 채팅을 아이콘으로 줄일지(스크롤 여부).
-  bool _isScrolled = false;
+  // 스크롤 중 setState로 홈 전체를 재빌드하면 버벅인다 → 오픈채팅만 반응하도록
+  // ValueNotifier로 들고, 그 부분만 ValueListenableBuilder로 다시 그린다.
+  final ValueNotifier<bool> _isScrolled = ValueNotifier<bool>(false);
 
   /// 푸터가 뷰포트에 들어오면 오픈 채팅을 푸터 위 20px까지 밀어 올린다.
   final GlobalKey _stackKey = GlobalKey();
   final GlobalKey _footerKey = GlobalKey();
   final GlobalKey _chatKey = GlobalKey();
-  double _chatBottomPush = 0;
+  final ValueNotifier<double> _chatBottomPush = ValueNotifier<double>(0);
 
   Worker? _authWorker;
 
@@ -55,13 +57,15 @@ class _HomeViewWebState extends State<HomeViewWeb> {
     _scrollController
       ..removeListener(_onScroll)
       ..dispose();
+    _isScrolled.dispose();
+    _chatBottomPush.dispose();
     super.dispose();
   }
 
   void _onScroll() {
     final isScrolled = _scrollController.offset > kHomeChatCollapseOffset;
-    if (isScrolled != _isScrolled) {
-      setState(() => _isScrolled = isScrolled);
+    if (isScrolled != _isScrolled.value) {
+      _isScrolled.value = isScrolled; // 오픈채팅만 반응(홈 전체 재빌드 안 함)
     }
     _updateChatBottomPush();
   }
@@ -81,8 +85,8 @@ class _HomeViewWebState extends State<HomeViewWeb> {
     final double maxPush = stackBox.size.height - chatHeight - 20;
     if (push > maxPush) push = maxPush;
     final double next = push > 0 ? push : 0;
-    if ((next - _chatBottomPush).abs() > 0.5) {
-      setState(() => _chatBottomPush = next);
+    if ((next - _chatBottomPush.value).abs() > 0.5) {
+      _chatBottomPush.value = next; // 오픈채팅 위치만 갱신(홈 전체 재빌드 안 함)
     }
   }
 
@@ -195,17 +199,34 @@ class _HomeViewWebState extends State<HomeViewWeb> {
         ),
         // 오픈 채팅은 스크롤과 무관하게 우측 하단에 떠 있는다.
         // 스크롤 끝에서는 푸터 위 20px에서 멈춘다(_chatBottomPush).
-        Positioned(
-          right: horizontal,
-          bottom: horizontal > _chatBottomPush ? horizontal : _chatBottomPush,
-          left: isMobile ? horizontal : null,
-          child: Align(
-            alignment: Alignment.bottomRight,
-            child: SizedBox(
-              key: _chatKey,
-              width: isMobile ? double.infinity : kHomeChatWidth,
-              child: HomeOpenChatWeb(isScrolled: _isScrolled),
-            ),
+        // ⚠️ Positioned.fill + ValueListenableBuilder로 감싸, 스크롤 시 **이 부분만**
+        // 다시 그린다(홈 전체 재빌드 방지 = 스크롤 버벅임 해결). 빈 영역은 포인터를
+        // 가로채지 않아 뒤 스크롤은 그대로 동작한다.
+        Positioned.fill(
+          child: ValueListenableBuilder<double>(
+            valueListenable: _chatBottomPush,
+            builder: (context, push, _) {
+              final bottom = horizontal > push ? horizontal : push;
+              return Padding(
+                padding: EdgeInsets.only(
+                  right: horizontal,
+                  bottom: bottom,
+                  left: isMobile ? horizontal : 0,
+                ),
+                child: Align(
+                  alignment: Alignment.bottomRight,
+                  child: SizedBox(
+                    key: _chatKey,
+                    width: isMobile ? double.infinity : kHomeChatWidth,
+                    child: ValueListenableBuilder<bool>(
+                      valueListenable: _isScrolled,
+                      builder: (context, scrolled, _) =>
+                          HomeOpenChatWeb(isScrolled: scrolled),
+                    ),
+                  ),
+                ),
+              );
+            },
           ),
         ),
       ],

@@ -2,6 +2,7 @@ import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/core/model/m_communityDetail.dart';
 import 'package:com.snowlive/core/viewmodel/vm_user.dart';
 import 'package:com.snowlive/web/routes/routes_web.dart';
+import 'package:com.snowlive/web/util/web_share_url.dart';
 import 'package:com.snowlive/web/viewmodel/community/vm_communityListPagination_web.dart';
 import 'package:com.snowlive/web/util/responsive_web.dart';
 import 'package:com.snowlive/web/widget/w_web_more_menu_web.dart';
@@ -118,8 +119,8 @@ class _CommunityDetailViewWebState extends State<CommunityDetailViewWeb> {
     final id = _communityId;
     if (id == null) return;
     // 웹은 해시 URL 전략이라 '#'을 포함해야 같은 화면으로 다시 들어온다.
-    final url =
-        '${Uri.base.removeFragment()}#${WebRoutes.communityDetail}?id=$id';
+    // 호스트는 항상 배포 도메인(snowlive.kr)으로 고정한다(QA url 노출 방지).
+    final url = canonicalHashUrl('${WebRoutes.communityDetail}?id=$id');
     Clipboard.setData(ClipboardData(text: url));
     Get.snackbar('링크 복사 완료', '게시글 주소가 복사되었어요.');
   }

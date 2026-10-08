@@ -1,5 +1,6 @@
 import 'package:com.snowlive/core/api/api_fleamarket.dart';
 import 'package:com.snowlive/core/api/api_user.dart';
+import 'package:com.snowlive/web/util/web_share_url.dart';
 import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/core/model/m_fleamarketDetail.dart';
 import 'package:com.snowlive/core/viewmodel/fleamarket/vm_fleamarketDetail.dart';
@@ -81,11 +82,12 @@ class FleamarketDetailSellerRowWeb extends StatelessWidget {
         // 아이콘 버튼 사이 간격 8.
         if (!isOwner) const SizedBox(width: 8),
         // 공유 — 상세 URL에 id가 실려 있어(딥링크 지원) 현재 주소가 곧 공유 링크다.
+        // 호스트는 항상 배포 도메인(snowlive.kr)으로 고정한다(QA url 노출 방지).
         // 소유자에게도 노출한다(자기 글 공유).
         WebIconButton(
           onTap: () async {
             await Clipboard.setData(
-                ClipboardData(text: Uri.base.toString()));
+                ClipboardData(text: canonicalShareUrl()));
             if (context.mounted) {
               showWebToast(context, '링크가 복사되었어요');
             }

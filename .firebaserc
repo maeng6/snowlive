@@ -1,0 +1,18 @@
+{
+  "projects": {
+    "default": "snowlive-cf446"
+  },
+  "targets": {
+    "snowlive-cf446": {
+      "hosting": {
+        "qa": [
+          "snowlive-web-qa"
+        ],
+        "prod": [
+          "snowlive-cf446"
+        ]
+      }
+    }
+  },
+  "etags": {}
+}

@@ -81,6 +81,13 @@ class _WebNetworkImageState extends State<WebNetworkImage> {
     final width = widget.width;
     final height = widget.height;
 
+    // 디코드/래스터 크기 상한. 작은 셀에 원본(수천 px) 사진을 그대로 디코드하면
+    // CanvasKit 스크롤이 버벅인다 → 표시 크기 × DPR(최대 2배)로 가로만 지정해
+    // 비율을 보존하며 디코드 비용을 낮춘다. 가변 높이 사진은 1200으로 상한.
+    final double dpr =
+        (MediaQuery.maybeOf(context)?.devicePixelRatio ?? 1.0).clamp(1.0, 2.0);
+    final int cacheW = ((width ?? 1200) * dpr).round().clamp(1, 2400);
+
     Widget content;
     if (widget.url == null || widget.url!.isEmpty) {
       content = _fallback();
@@ -90,6 +97,7 @@ class _WebNetworkImageState extends State<WebNetworkImage> {
         width: width,
         height: height,
         fit: widget.fit,
+        cacheWidth: cacheW,
         gaplessPlayback: widget.gaplessPlayback,
         // Firebase Storage가 Access-Control-Allow-Origin을 주지 않아서, 캔버스에
         // 그리려고 바이트를 받아오는 기본 경로가 CORS로 막힌다 → 이 옵션이 없으면
