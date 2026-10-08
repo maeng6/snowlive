@@ -25,17 +25,22 @@ class WebStickyFooterScroll extends StatelessWidget {
   /// 간격 SizedBox + 푸터 블록. 간격·폭 정책이 화면마다 달라 페이지가 구성한다.
   final Widget footer;
 
+  /// 주면 **당겨서 새로고침**이 붙는다(모바일 터치/데스크탑 드래그). 콘텐츠가 짧아도
+  /// 당길 수 있게 overscroll 물리를 켠다. 완료될 때까지 스피너가 돈다.
+  final Future<void> Function()? onRefresh;
+
   const WebStickyFooterScroll({
     super.key,
     this.padding = EdgeInsets.zero,
     this.controller,
     required this.content,
     required this.footer,
+    this.onRefresh,
   });
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
+    final body = LayoutBuilder(
       builder: (context, constraints) {
         final minHeight = constraints.hasBoundedHeight
             ? math.max(0.0, constraints.maxHeight - padding.vertical)
@@ -43,6 +48,8 @@ class WebStickyFooterScroll extends StatelessWidget {
         return SingleChildScrollView(
           controller: controller,
           padding: padding,
+          // 당겨서 새로고침이 붙으면 짧은 페이지에서도 overscroll 되게 한다.
+          physics: onRefresh != null ? const AlwaysScrollableScrollPhysics() : null,
           child: ConstrainedBox(
             constraints: BoxConstraints(minHeight: minHeight),
             child: Column(
@@ -54,5 +61,8 @@ class WebStickyFooterScroll extends StatelessWidget {
         );
       },
     );
+    final refresh = onRefresh;
+    if (refresh == null) return body;
+    return RefreshIndicator(onRefresh: refresh, child: body);
   }
 }

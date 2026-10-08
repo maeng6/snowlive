@@ -69,8 +69,8 @@ class _CommunityHomeViewWebState extends State<CommunityHomeViewWeb> {
     super.dispose();
   }
 
-  void _reload() {
-    _vm.loadFirstPage(
+  Future<void> _reload() {
+    return _vm.loadFirstPage(
       userId: _userVm.user.user_id,
       tab: _tab,
       scope: _scope,
@@ -168,6 +168,7 @@ class _CommunityHomeViewWebState extends State<CommunityHomeViewWeb> {
     // 지나가도록 바 높이만큼 하단 여백을 확보한다.
     final Widget scroll = WebStickyFooterScroll(
       controller: _scrollController,
+      onRefresh: _reload, // 당겨서 새로고침
       padding: webHomePagePadding(
         context,
         bottom: isDesktop ? SDSSpacing.xl : kWebFloatingBottomBarHeight + SDSSpacing.md,

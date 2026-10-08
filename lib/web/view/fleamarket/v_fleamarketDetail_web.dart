@@ -139,6 +139,7 @@ class _FleamarketDetailViewState extends State<FleamarketDetailView> {
         color: SDSColor.snowliveWhite,
         // 콘텐츠가 짧으면 푸터가 뷰포트 하단에 붙는다(공통 골격).
         child: WebStickyFooterScroll(
+          onRefresh: _load, // 당겨서 새로고침
           // 여백은 스크롤뷰 **안쪽** — 바깥에 두면 스크롤바가 브라우저 우측 끝이
           // 아니라 콘텐츠 안쪽에 뜬다(목록과 동일 규칙)
           // 좌우: PC 40(웹 공통) / 태블릿 20 / 모바일 16.

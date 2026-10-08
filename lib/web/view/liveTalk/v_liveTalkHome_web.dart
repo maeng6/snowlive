@@ -225,8 +225,11 @@ class _LiveTalkHomeViewWebState extends State<LiveTalkHomeViewWeb> {
     // 없고, 닿더라도 다음 페이지 로딩과 겹친다 — 사용자 결정).
     // 여백은 스크롤 영역 안쪽(웹 공통 규칙 — 바깥에 두면 스크롤바가 브라우저
     // 우측 끝에 안 붙는다).
-    final scrollArea = SingleChildScrollView(
+    final scrollArea = RefreshIndicator(
+      onRefresh: _loadFirstPage, // 당겨서 새로고침
+      child: SingleChildScrollView(
       controller: _scrollController,
+      physics: const AlwaysScrollableScrollPhysics(),
       // 홈 공통 여백(중고거래 홈 기준) — 태블릿·모바일은 콘텐츠가 하단
       // 플로팅 바 뒤로 지나가도록 바 높이만큼 하단 여백을 확보한다.
       padding: webHomePagePadding(
@@ -261,6 +264,7 @@ class _LiveTalkHomeViewWebState extends State<LiveTalkHomeViewWeb> {
                 )
               : _buildFeedColumn(),
         ),
+      ),
       ),
     );
 

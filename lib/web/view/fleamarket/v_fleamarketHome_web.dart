@@ -5,9 +5,11 @@ import 'package:com.snowlive/web/view/fleamarket/w_fleamarket_grid_web.dart';
 import 'package:com.snowlive/web/view/fleamarket/w_fleamarket_header_web.dart';
 import 'package:com.snowlive/web/view/fleamarket/w_fleamarket_sidebar_web.dart';
 import 'package:com.snowlive/web/view/home/w_home_sections_web.dart' show HomeFooterWeb;
+import 'package:com.snowlive/web/viewmodel/fleamarket/vm_fleamarketPagination_web.dart';
 import 'package:com.snowlive/web/widget/w_web_sticky_footer_scroll_web.dart';
 import 'package:com.snowlive/web/widget/w_web_sticky_sidebar_web.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 /// PC 콘텐츠 좌우 여백 — 디자인 가이드 확정값(웹 공통 40).
 const double kFleamarketDesktopHPad = 40;
@@ -23,6 +25,12 @@ class FleamarketHomeView extends StatefulWidget {
 class _FleamarketHomeViewState extends State<FleamarketHomeView> {
   /// 사이드바를 스크롤에 맞춰 상단에 붙이려면 페이지 스크롤을 직접 잡아야 한다.
   final ScrollController _scrollController = ScrollController();
+
+  /// 당겨서 새로고침 — 현재 필터/페이지를 다시 받는다.
+  Future<void> _refresh() =>
+      Get.find<FleamarketPaginationViewModelWeb>().gotoPage(
+        Get.find<FleamarketPaginationViewModelWeb>().currentPage,
+      );
 
   @override
   void dispose() {
@@ -56,6 +64,7 @@ class _FleamarketHomeViewState extends State<FleamarketHomeView> {
         // 우측 끝이 아니라 콘텐츠 안쪽(40px 들어온 자리)에 뜬다.
         child: WebStickyFooterScroll(
           controller: _scrollController,
+          onRefresh: _refresh, // 당겨서 새로고침
           padding: webHomePagePadding(context),
           content: Center(
             child: ConstrainedBox(
@@ -102,6 +111,7 @@ class _FleamarketHomeViewState extends State<FleamarketHomeView> {
       child: Stack(
         children: [
           WebStickyFooterScroll(
+            onRefresh: _refresh, // 당겨서 새로고침
             // 여백은 전부 스크롤 영역 **안쪽**에 둔다 — 상단은 바깥에 두면
             // 스크롤된 콘텐츠가 상단바 아래가 아니라 여백 경계에서 잘려 보이고,
             // 좌우는 바깥에 두면 스크롤바가 브라우저 우측 끝이 아니라 콘텐츠

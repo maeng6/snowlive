@@ -102,6 +102,17 @@ class HomeViewModelWeb extends GetxController {
     selectResort(homeDefaultResort(favorite));
   }
 
+  /// 당겨서 새로고침 — 날씨·오늘 랭킹·크루·플리마켓을 다시 받는다(배너는 스트림이라 자동).
+  Future<void> refreshAll() async {
+    final r = _resort.value;
+    await Future.wait([
+      if (r != null) _fetchWeather(r),
+      loadTodayRanking(),
+      loadCrewCards(),
+      loadFleamarket(),
+    ]);
+  }
+
   // ── 배너: **웹 전용 문서**를 구독한다(운영에서 값을 바꾸면 새로고침 없이 반영).
   //     앱이 쓰는 `banner/home`과 분리돼 있어 서로 영향이 없다. ──
   void _listenBanner() {

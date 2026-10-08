@@ -110,6 +110,8 @@ class _HomeViewWebState extends State<HomeViewWeb> {
           // 래퍼 패딩 대신 content/footer 각자의 Padding으로 나눠 든다.
           child: WebStickyFooterScroll(
             controller: _scrollController,
+            onRefresh: _vm.refreshAll, // 당겨서 새로고침
+
             content: Center(
               child: ConstrainedBox(
                 constraints: const BoxConstraints(maxWidth: kHomeMaxContentWidth),

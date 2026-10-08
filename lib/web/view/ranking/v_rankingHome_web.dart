@@ -292,6 +292,7 @@ class _RankingHomeViewWebState extends State<RankingHomeViewWeb> {
     return Container(
       color: SDSColor.snowliveWhite,
       child: WebStickyFooterScroll(
+        onRefresh: _reloadAndWarm, // 당겨서 새로고침
         // 홈 공통 여백(중고거래 홈 기준).
         padding: webHomePagePadding(context),
         content: Center(

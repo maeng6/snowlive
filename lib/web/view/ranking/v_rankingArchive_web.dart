@@ -94,14 +94,14 @@ class _RankingArchiveViewWebState extends State<RankingArchiveViewWeb> {
   int? get _resortId => _selectedResort == RankingFilter_resort.total ? null : kRankingResortIds[_selectedResort];
   String? get _federation => _selectedFed == RankingFilter_fed.initial ? null : _selectedFed.english;
 
-  void _reload() {
+  Future<void> _reload() {
     final season = _selectedSeason.dbSeason;
     final q = _searchQuery.value.trim();
     final sq = q.isEmpty ? null : q;
     if (_tab == _ArchiveTab.individual) {
-      _vm.loadFirstPage(season: season, resortId: _resortId, federation: _federation, searchQuery: sq);
+      return _vm.loadFirstPage(season: season, resortId: _resortId, federation: _federation, searchQuery: sq);
     } else {
-      _crewVm.loadFirstPage(season: season, resortId: _resortId, federation: _federation, searchQuery: sq);
+      return _crewVm.loadFirstPage(season: season, resortId: _resortId, federation: _federation, searchQuery: sq);
     }
   }
 
@@ -115,6 +115,7 @@ class _RankingArchiveViewWebState extends State<RankingArchiveViewWeb> {
     return Container(
       color: SDSColor.snowliveWhite,
       child: WebStickyFooterScroll(
+        onRefresh: _reload, // 당겨서 새로고침
         // 서브 페이지 공통 여백(중고거래 상세·폼 기준).
         padding: webSubPagePadding(context),
         content: Center(

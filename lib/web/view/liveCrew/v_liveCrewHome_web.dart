@@ -183,6 +183,7 @@ class _LiveCrewHomeViewWebState extends State<LiveCrewHomeViewWeb> {
     final isDesktop = context.isDesktop;
 
     final scroll = WebStickyFooterScroll(
+        onRefresh: _vm.refresh, // 당겨서 새로고침
         // 홈 공통 여백(중고거래 홈 기준). 좁은 폭에서는 하단 플로팅 바 뒤로
         // 콘텐츠가 지나가므로 바 높이만큼 더 비운다(중고거래·커뮤니티와 동일).
         padding: webHomePagePadding(

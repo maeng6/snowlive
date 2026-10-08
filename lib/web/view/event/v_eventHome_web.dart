@@ -50,7 +50,7 @@ class _EventHomeViewWebState extends State<EventHomeViewWeb> {
     super.dispose();
   }
 
-  void _reload() => _vm.loadFirstPage(query: _searchController.text);
+  Future<void> _reload() => _vm.loadFirstPage(query: _searchController.text);
 
   void _onAccountSelected(EventAccountFilter account) {
     if (account.id == _account.id) return;
@@ -143,6 +143,7 @@ class _EventHomeViewWebState extends State<EventHomeViewWeb> {
       color: SDSColor.snowliveWhite,
       // 콘텐츠가 짧으면 푸터가 뷰포트 하단에 붙는다(공통 골격).
       child: WebStickyFooterScroll(
+        onRefresh: _reload, // 당겨서 새로고침
         padding: webHomePagePadding(context),
         content: Center(
           child: ConstrainedBox(
