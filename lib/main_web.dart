@@ -87,6 +87,12 @@ class SnowliveWebApp extends StatelessWidget {
       locale: const Locale('ko', 'KR'),
       theme: ThemeData(
         primaryColor: SDSColor.snowliveBlue,
+        // 머티리얼3 스피너는 colorScheme.primary(기본 보라)를 쓴다 — 로딩
+        // 인디케이터(CircularProgressIndicator)·RefreshIndicator 기본색을
+        // 전역에서 스라블루로 고정한다(명시 color를 준 곳은 그대로 유지).
+        progressIndicatorTheme: const ProgressIndicatorThemeData(
+          color: SDSColor.snowliveBlue,
+        ),
         // 머티리얼3 기본 서피스 틴트(연보라)를 쓰지 않고 흰 배경으로 고정한다.
         scaffoldBackgroundColor: SDSColor.snowliveWhite,
         fontFamily: 'Pretendard',

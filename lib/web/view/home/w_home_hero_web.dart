@@ -187,7 +187,9 @@ class _HomeHeroWebState extends State<HomeHeroWeb> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
       _revealWhenFirstImageReady(isMobile);
-      _precacheAround(isMobile);
+      // 첫 장이 뜨기 전에는 **다음 장 프리캐시를 미룬다** — 첫 페인트가 다음 장
+      // 다운로드와 대역폭을 다투지 않게(첫 화면을 먼저 빠르게 보여준다).
+      if (_firstImageReady) _precacheAround(isMobile);
     });
 
     // 문서 + **첫 장 사진**이 준비될 때까지 스켈레톤으로 자리만 잡는다
