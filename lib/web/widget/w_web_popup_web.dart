@@ -164,6 +164,185 @@ Future<bool> showWebConfirmDialog({
   return result ?? false;
 }
 
+/// 크루 가입 신청 — 신청 메시지를 입력받는 다이얼로그(앱과 동일한 UX).
+/// 반환: `null`=취소 / 문자열=신청(빈 문자열이면 서버 전송 시 기본 문구로 대체).
+Future<String?> showWebCrewApplyDialog({
+  required BuildContext context,
+  required String crewName,
+  String defaultMessage = '안녕하세요. 크루 가입 신청합니다.',
+}) async {
+  final controller = TextEditingController(text: defaultMessage);
+  try {
+    return await showWebOverlayModal<String?>(
+      context: context,
+      builder: (_, close) => Material(
+        color: SDSColor.snowliveWhite,
+        borderRadius: BorderRadius.circular(16),
+        clipBehavior: Clip.antiAlias,
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: kWebPopupWidth),
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(24, 30, 24, 24),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Text(
+                  crewName.isEmpty ? '가입 신청하기' : '$crewName에\n가입 신청하기',
+                  textAlign: TextAlign.center,
+                  style: SDSTextStyle.bold.copyWith(fontSize: 16, height: 24 / 16, color: SDSColor.gray900),
+                ),
+                const SizedBox(height: 16),
+                Container(
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFF6F6F6),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                  child: TextField(
+                    controller: controller,
+                    autofocus: true,
+                    minLines: 3,
+                    maxLines: 5,
+                    maxLength: 200,
+                    style: SDSTextStyle.regular.copyWith(fontSize: 14, height: 1.4, color: SDSColor.gray900),
+                    decoration: InputDecoration(
+                      isDense: true,
+                      border: InputBorder.none,
+                      counterText: '',
+                      hintText: '크루장에게 전할 신청 메시지를 입력하세요',
+                      hintStyle: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray400),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                Row(
+                  children: [
+                    Expanded(
+                      child: TextButton(
+                        onPressed: () => close(null),
+                        style: _noSplashStyle(),
+                        child: _HoverFade(
+                          child: Text('취소',
+                              style: SDSTextStyle.bold.copyWith(fontSize: 17, color: SDSColor.gray500)),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: TextButton(
+                        onPressed: () => close(controller.text.trim()),
+                        style: _noSplashStyle(),
+                        child: _HoverFade(
+                          child: Text('신청하기',
+                              style: SDSTextStyle.bold.copyWith(fontSize: 17, color: SDSColor.snowliveBlue)),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  } finally {
+    controller.dispose();
+  }
+}
+
+/// 본문 텍스트 수정 다이얼로그(라이브톡 글 수정 등). 입력창에 [initialText]를 채워
+/// 보여주고, `저장`을 누르면 다듬은 문자열을, `취소`/배경 탭이면 `null`을 돌려준다.
+Future<String?> showWebEditTextDialog({
+  required BuildContext context,
+  required String title,
+  required String initialText,
+  String hint = '',
+  String confirmLabel = '저장',
+  int maxLength = 500,
+}) async {
+  final controller = TextEditingController(text: initialText);
+  try {
+    return await showWebOverlayModal<String?>(
+      context: context,
+      builder: (_, close) => Material(
+        color: SDSColor.snowliveWhite,
+        borderRadius: BorderRadius.circular(16),
+        clipBehavior: Clip.antiAlias,
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: kWebPopupWidth),
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(24, 30, 24, 24),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Text(
+                  title,
+                  textAlign: TextAlign.center,
+                  style: SDSTextStyle.bold.copyWith(fontSize: 16, height: 24 / 16, color: SDSColor.gray900),
+                ),
+                const SizedBox(height: 16),
+                Container(
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFF6F6F6),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                  child: TextField(
+                    controller: controller,
+                    autofocus: true,
+                    minLines: 3,
+                    maxLines: 6,
+                    maxLength: maxLength,
+                    style: SDSTextStyle.regular.copyWith(fontSize: 14, height: 1.4, color: SDSColor.gray900),
+                    decoration: InputDecoration(
+                      isDense: true,
+                      border: InputBorder.none,
+                      counterText: '',
+                      hintText: hint,
+                      hintStyle: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray400),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                Row(
+                  children: [
+                    Expanded(
+                      child: TextButton(
+                        onPressed: () => close(null),
+                        style: _noSplashStyle(),
+                        child: _HoverFade(
+                          child: Text('취소',
+                              style: SDSTextStyle.bold.copyWith(fontSize: 17, color: SDSColor.gray500)),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: TextButton(
+                        onPressed: () => close(controller.text.trim()),
+                        style: _noSplashStyle(),
+                        child: _HoverFade(
+                          child: Text(confirmLabel,
+                              style: SDSTextStyle.bold.copyWith(fontSize: 17, color: SDSColor.snowliveBlue)),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  } finally {
+    controller.dispose();
+  }
+}
+
 /// 웹 공용 팝업 — **박스 버튼 타입**(피그마 32:27568).
 /// 파란 채움 주 버튼(240×48, 라운드 5) 아래에 선택적 텍스트 부 버튼이 세로로 온다.
 /// 주 버튼 탭 → true, 그 외(부 버튼/배경 탭) → false.

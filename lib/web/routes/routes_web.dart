@@ -22,6 +22,7 @@ import 'package:com.snowlive/web/view/liveCrew/v_crewSeasonRanking_web.dart';
 import 'package:com.snowlive/web/view/liveCrew/v_crewHome_web.dart';
 import 'package:com.snowlive/web/view/liveCrew/v_crewApplications_web.dart';
 import 'package:com.snowlive/web/view/liveCrew/v_crewJoin_web.dart';
+import 'package:com.snowlive/web/view/liveCrew/v_crewMyApplications_web.dart';
 import 'package:com.snowlive/web/view/liveCrew/v_crewMemberAdmin_web.dart';
 import 'package:com.snowlive/web/view/liveCrew/v_crewPermissions_web.dart';
 import 'package:com.snowlive/web/view/liveCrew/v_crewSettingDesc_web.dart';
@@ -98,6 +99,7 @@ class WebRoutes {
   static const crewTalks = '/livecrew-talks';
   static const crewCreate = '/livecrew-create';
   static const crewJoin = '/livecrew-join';
+  static const crewMyApplications = '/livecrew-my-applications';
   // 크루 설정 묶음. 하위 경로로 두면 GetX가 부모로 매칭하므로 형제 최상위 + 쿼리 id.
   static const crewSetting = '/livecrew-setting';
   static const crewSettingDesc = '/livecrew-desc';
@@ -285,6 +287,12 @@ class WebRoutes {
     GetPage(
       name: crewJoin,
       page: () => const CrewJoinViewWeb(),
+      binding: WebCrewJoinBinding(),
+    ),
+    GetPage(
+      name: crewMyApplications,
+      page: () => const CrewMyApplicationsViewWeb(),
+      // 가입하기 VM(CrewJoinViewModelWeb)에 내 신청 목록·취소가 들어 있어 그대로 쓴다.
       binding: WebCrewJoinBinding(),
     ),
     GetPage(

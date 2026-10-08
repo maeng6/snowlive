@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:com.snowlive/core/api/api_crew.dart';
 import 'package:com.snowlive/core/model/m_crewDetail.dart';
+import 'package:com.snowlive/core/model/m_crewMemberList.dart';
 import 'package:com.snowlive/core/model/m_crewMemberRankingList.dart';
 import 'package:com.snowlive/core/viewmodel/vm_user.dart';
 import 'package:com.snowlive/web/util/ranking_season_web.dart';
@@ -30,6 +31,10 @@ class CrewDetailViewModelWeb extends GetxController {
   final Rxn<CrewDetailInfo> _info = Rxn<CrewDetailInfo>();
   final Rxn<SeasonRankingInfo> _season = Rxn<SeasonRankingInfo>();
   final RxList<CrewRanking> _members = <CrewRanking>[].obs;
+  // 멤버 전체 목록(앱 `/crew/{id}/members/`). 랭킹(_members)과 분리한다 —
+  // 멤버 화면은 기록 유무와 상관없이 **전원**을 보여준다(앱과 동일). 랭킹은
+  // 기록 있는 크루원만 보여주므로 여기에 섞지 않는다.
+  final RxList<CrewMember> _fullMembers = <CrewMember>[].obs;
   final RxBool _isLoading = false.obs;
   final RxBool _hasError = false.obs;
   final RxBool _isSubmitting = false.obs;
@@ -47,6 +52,7 @@ class CrewDetailViewModelWeb extends GetxController {
   CrewDetailInfo? get info => _info.value;
   SeasonRankingInfo? get season => _season.value;
   List<CrewRanking> get members => _members;
+  List<CrewMember> get fullMembers => _fullMembers;
   bool get isLoading => _isLoading.value;
   bool get hasError => _hasError.value;
   bool get isSubmitting => _isSubmitting.value;
@@ -82,6 +88,7 @@ class CrewDetailViewModelWeb extends GetxController {
       _visitorTotal.value = parsed.crewDetailInfo?.visitorTotal;
       _logVisit(crewId); // 진입당 1회 방문 집계(비차단)
       await _loadMembers(crewId: crewId, season: season);
+      await _loadFullMembers(crewId);
     } catch (e) {
       debugPrint('[CrewDetail] 조회 예외: $e');
       _hasError.value = true;
@@ -135,6 +142,24 @@ class CrewDetailViewModelWeb extends GetxController {
     } catch (e) {
       debugPrint('[CrewDetail] 멤버 랭킹 예외: $e');
       _members.clear();
+    }
+  }
+
+  /// 크루 전체 멤버(역할 포함). 앱과 같은 `/crew/{id}/members/`를 쓴다 —
+  /// 이번 시즌 기록이 없는 멤버도 **모두** 포함된다(멤버 화면 전용).
+  Future<void> _loadFullMembers(int crewId) async {
+    try {
+      final res = await _api.listCrewMembers(crewId);
+      if (!res.success) {
+        debugPrint('[CrewDetail] 멤버 목록 실패: ${res.error}');
+        _fullMembers.clear();
+        return;
+      }
+      final parsed = CrewMemberListResponse.fromJson(res.data as Map<String, dynamic>);
+      _fullMembers.assignAll(parsed.crewMembers ?? []);
+    } catch (e) {
+      debugPrint('[CrewDetail] 멤버 목록 예외: $e');
+      _fullMembers.clear();
     }
   }
 

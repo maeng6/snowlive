@@ -23,6 +23,7 @@ class LiveTalkDetailViewModelWeb extends GetxController {
   int? _userId;
 
   LiveTalk? get detail => _detail.value;
+  int? get livetalkId => _livetalkId;
   bool get isLoading => _isLoading.value;
   bool get hasError => _hasError.value;
   bool get isSubmitting => _isSubmitting.value;
@@ -195,5 +196,17 @@ class LiveTalkDetailViewModelWeb extends GetxController {
       debugPrint('[LiveTalkDetail] 삭제 예외: $e');
       return false;
     }
+  }
+
+  /// 내 글 수정(본문만). 성공하면 상세가 자동 재조회된다(_write).
+  Future<bool> updatePost({required String description}) {
+    final id = _livetalkId;
+    final userId = _userId;
+    if (id == null || userId == null) return Future.value(false);
+    return _write(() => _api.update({
+          'livetalk_id': id,
+          'user_id': userId,
+          'description': description,
+        }));
   }
 }

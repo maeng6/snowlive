@@ -7,6 +7,7 @@ import 'package:com.snowlive/web/routes/routes_web.dart';
 import 'package:com.snowlive/web/view/fleamarket/w_fleamarket_form_fields_web.dart';
 import 'package:com.snowlive/web/viewmodel/fleamarket/vm_fleamarketUpdate_web.dart';
 import 'package:com.snowlive/web/widget/w_web_overlay_modal_web.dart';
+import 'package:com.snowlive/web/widget/w_web_popup_web.dart' show showWebConfirmDialog;
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -60,8 +61,41 @@ class FleamarketDetailOwnerActionsWeb extends StatelessWidget {
             child: Text('끌어올리기', style: SDSTextStyle.bold.copyWith(fontSize: 14, color: SDSColor.gray900)),
           ),
         ],
+        const SizedBox(height: SDSSpacing.sm),
+        OutlinedButton(
+          onPressed: () => _confirmDelete(context, detailVm, userVm),
+          style: OutlinedButton.styleFrom(
+            side: BorderSide(color: SDSColor.gray200),
+            padding: const EdgeInsets.symmetric(vertical: 12),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+          ),
+          child: Text('삭제하기', style: SDSTextStyle.bold.copyWith(fontSize: 14, color: SDSColor.red)),
+        ),
       ],
     );
+  }
+
+  /// 내 게시글 삭제 — 확인 후 삭제하고, 목록을 새로 받도록 플리마켓 홈으로 보낸다.
+  Future<void> _confirmDelete(
+    BuildContext context,
+    FleamarketDetailViewModel detailVm,
+    UserViewModel userVm,
+  ) async {
+    final fleaId = detail.fleaId;
+    final userId = userVm.user.user_id;
+    if (fleaId == null || userId == null) return;
+    final ok = await showWebConfirmDialog(
+      context: context,
+      title: '게시글을 삭제하시겠어요?',
+      message: '삭제한 게시글은 복구할 수 없어요.',
+      confirmLabel: '삭제',
+      isDestructive: true,
+    );
+    if (!ok) return;
+    await detailVm.deleteFleamarket(fleamarketId: fleaId, userId: userId);
+    // 삭제 후 목록을 새로 받도록 홈을 다시 띄운다(core가 성공 시 pop도 하지만,
+    // 목록 갱신을 보장하기 위해 홈을 새로 연다).
+    Get.offAllNamed(WebRoutes.fleamarketList);
   }
 
   Future<void> _editPost(FleamarketDetailModel detail) async {

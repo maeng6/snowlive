@@ -16,6 +16,7 @@ import 'package:com.snowlive/web/widget/w_web_overlay_modal_web.dart';
 import 'package:com.snowlive/web/widget/w_web_profile_card_web.dart';
 import 'package:com.snowlive/web/widget/w_web_search_field_web.dart';
 import 'package:com.snowlive/web/widget/w_web_toast_web.dart';
+import 'package:com.snowlive/web/widget/w_web_popup_web.dart' show showWebCrewApplyDialog;
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -71,6 +72,9 @@ class _CrewJoinViewWebState extends State<CrewJoinViewWeb> {
     Get.offAllNamed(WebRoutes.liveCrew);
   }
 
+  /// 내가 가입 신청한 크루(승인 전) 목록으로.
+  void _goMyApplications() => Get.toNamed(WebRoutes.crewMyApplications);
+
   Future<void> _openCrew(Crew crew) async {
     final crewId = crew.crewId;
     if (crewId == null) return;
@@ -120,15 +124,29 @@ class _CrewJoinViewWebState extends State<CrewJoinViewWeb> {
                       // 좁은 폭은 GNB가 접히므로 서브 페이지 공통 헤더
                       // (뒤로가기 + 타이틀 태블릿 24 / 모바일 20)를 쓴다.
                       if (context.isDesktop)
-                        Text(
-                          _title,
-                          style: SDSTextStyle.bold.copyWith(
-                            fontSize: webHomeTitleSize(context),
-                            color: SDSColor.gray900,
-                          ),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Text(
+                                _title,
+                                style: SDSTextStyle.bold.copyWith(
+                                  fontSize: webHomeTitleSize(context),
+                                  color: SDSColor.gray900,
+                                ),
+                              ),
+                            ),
+                            // 로그인했을 때만 내 신청 내역으로 가는 입구를 둔다(앱의 가입 플로우와 동일).
+                            if (_vm.isLoggedIn) _MyApplicationsLink(onTap: _goMyApplications),
+                          ],
                         )
                       else
-                        WebPageHeader(title: _title, onBack: _onBack),
+                        WebPageHeader(
+                          title: _title,
+                          onBack: _onBack,
+                          actions: [
+                            if (_vm.isLoggedIn) _MyApplicationsLink(onTap: _goMyApplications),
+                          ],
+                        ),
                       // 타이틀 ↔ 검색창: PC 29(목업 — 타이틀 블록 pb19 + 검색 pt10) /
                       // 좁은 폭은 제목이 작아진 만큼 20.
                       SizedBox(height: context.isDesktop ? 29 : 20),
@@ -371,10 +389,17 @@ class _CrewJoinCardState extends State<_CrewJoinCard> {
   Future<void> _apply() async {
     final crewId = widget.crew.crewId;
     if (crewId == null) return;
+    // 앱처럼 신청 메시지 입력창을 먼저 띄운다(취소면 중단).
+    final title = await showWebCrewApplyDialog(
+      context: context,
+      crewName: _detail?.crewName ?? widget.crew.crewName ?? '',
+    );
+    if (title == null || !mounted) return;
     setState(() => _isApplying = true);
     final result = await widget.vm.apply(
       crewId: crewId,
       crewLeaderUserId: _detail?.crewLeaderUserId ?? widget.crew.crewLeaderUserId,
+      title: title,
     );
     if (!mounted) return;
     setState(() => _isApplying = false);
@@ -451,5 +476,45 @@ class _CrewJoinCardState extends State<_CrewJoinCard> {
 
     // 짧은 뷰포트에서 넘치면 스크롤되게 한다.
     return SingleChildScrollView(child: card);
+  }
+}
+
+/// `신청 내역` 입구 — 가입하기 페이지 헤더 우측에 붙는 텍스트 링크(hover 페이드).
+class _MyApplicationsLink extends StatefulWidget {
+  final VoidCallback onTap;
+
+  const _MyApplicationsLink({required this.onTap});
+
+  @override
+  State<_MyApplicationsLink> createState() => _MyApplicationsLinkState();
+}
+
+class _MyApplicationsLinkState extends State<_MyApplicationsLink> {
+  bool _hovered = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      onEnter: (_) => setState(() => _hovered = true),
+      onExit: (_) => setState(() => _hovered = false),
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: widget.onTap,
+        child: Opacity(
+          opacity: _hovered ? 0.6 : 1.0,
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                '신청 내역',
+                style: SDSTextStyle.bold.copyWith(fontSize: 14, color: SDSColor.gray600),
+              ),
+              const Icon(Icons.chevron_right, size: 18, color: SDSColor.gray600),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }

@@ -1,6 +1,9 @@
 import 'package:com.snowlive/web/routes/routes_web.dart';
 import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
+import 'package:com.snowlive/core/model/m_crewMemberList.dart';
 import 'package:com.snowlive/core/model/m_crewMemberRankingList.dart';
+import 'package:com.snowlive/web/view/liveCrew/w_crew_setting_widgets_web.dart';
+import 'package:com.snowlive/web/viewmodel/crew/vm_crewSetting_web.dart';
 import 'package:com.snowlive/web/util/responsive_web.dart';
 import 'package:com.snowlive/web/viewmodel/friend/vm_friend_web.dart';
 import 'package:com.snowlive/web/widget/w_network_image_web.dart';
@@ -243,6 +246,87 @@ class _CrewMemberRowWebState extends State<CrewMemberRowWeb> {
   }
 }
 
+/// 멤버 **전체 목록**용 한 줄 — 아바타 + 이름 + 소속 스키장 + 역할 배지.
+/// 랭킹이 아니라 전원 목록(앱 `/crew/{id}/members/`)이라 **점수·티어를 두지 않는다**
+/// (앱 멤버 화면과 같은 의미). 규격(행 높이·아바타·이름 크기)은 랭킹 행과 공유한다.
+class CrewMemberProfileRowWeb extends StatefulWidget {
+  final CrewMember member;
+  final VoidCallback onTap;
+
+  const CrewMemberProfileRowWeb({super.key, required this.member, required this.onTap});
+
+  @override
+  State<CrewMemberProfileRowWeb> createState() => _CrewMemberProfileRowWebState();
+}
+
+class _CrewMemberProfileRowWebState extends State<CrewMemberProfileRowWeb> {
+  bool _isHovered = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final info = widget.member.userInfo;
+    final role = widget.member.status ?? kCrewRoleMember;
+    final resort = info?.favoriteResortNickname?.trim() ?? '';
+    final m = RankingRowMetrics.of(context);
+
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      onEnter: (_) => setState(() => _isHovered = true),
+      onExit: (_) => setState(() => _isHovered = false),
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: widget.onTap,
+        child: Container(
+          decoration: BoxDecoration(
+            color: _isHovered ? SDSColor.gray50 : SDSColor.snowliveWhite,
+            borderRadius: BorderRadius.circular(8),
+          ),
+          height: m.boxHeight,
+          padding: EdgeInsets.symmetric(
+            horizontal: kCrewMemberRowInset,
+            vertical: m.verticalPadding,
+          ),
+          child: Row(
+            children: [
+              WebAvatar(url: info?.profileImageUrlUser, size: m.avatar),
+              SizedBox(width: m.nameGap),
+              Expanded(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      info?.displayName ?? '',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: SDSTextStyle.regular.copyWith(
+                          fontSize: m.nameSize, height: 20 / 15, color: SDSColor.gray900),
+                    ),
+                    if (resort.isNotEmpty)
+                      Text(
+                        resort,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: SDSTextStyle.regular.copyWith(
+                            fontSize: m.subSize, height: 17 / 13, color: SDSColor.gray500),
+                      ),
+                  ],
+                ),
+              ),
+              // 크루원은 배지를 생략한다(목업: 크루장/운영진만 강조).
+              if (role == kCrewRoleLeader || role == kCrewRoleManager) ...[
+                const SizedBox(width: SDSSpacing.sm),
+                CrewRoleBadge(role: role),
+              ],
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 /// 멤버를 탭했을 때 뜨는 프로필 팝업.
 ///
 /// 친구 화면·랭킹과 **같은 [WebProfileCard]** 를 쓴다. 멤버 랭킹 응답에는 소속이 없어서
@@ -253,13 +337,38 @@ Future<void> showCrewMemberProfileModal(
   required String? crewName,
   required String? resortName,
 }) {
+  return showCrewMemberProfileModalRaw(
+    context,
+    userId: member.userId,
+    avatarUrl: member.profileImageUrlUser,
+    displayName: member.displayName,
+    stateMsg: member.stateMsg,
+    crewName: crewName,
+    resortName: resortName,
+  );
+}
+
+/// 멤버 프로필 팝업(원시 필드판). 멤버 전체 목록은 랭킹(`CrewRanking`)이 아니라
+/// 멤버 응답(`CrewMember`)을 쓰므로, 두 곳이 같은 카드를 띄울 수 있게 필드로 받는다.
+Future<void> showCrewMemberProfileModalRaw(
+  BuildContext context, {
+  required int? userId,
+  required String? avatarUrl,
+  required String? displayName,
+  required String? stateMsg,
+  required String? crewName,
+  required String? resortName,
+}) {
   final isMobile = context.screenType == WebScreenType.mobile;
   return showWebOverlayModal<void>(
     context: context,
     alignment: isMobile ? Alignment.bottomCenter : Alignment.center,
     padding: isMobile ? EdgeInsets.zero : const EdgeInsets.all(SDSSpacing.lg),
     builder: (_, close) => _CrewMemberProfileCard(
-      member: member,
+      userId: userId,
+      avatarUrl: avatarUrl,
+      displayName: displayName,
+      stateMsg: stateMsg,
       crewName: crewName,
       resortName: resortName,
       isSheet: isMobile,
@@ -269,14 +378,20 @@ Future<void> showCrewMemberProfileModal(
 }
 
 class _CrewMemberProfileCard extends StatefulWidget {
-  final CrewRanking member;
+  final int? userId;
+  final String? avatarUrl;
+  final String? displayName;
+  final String? stateMsg;
   final String? crewName;
   final String? resortName;
   final bool isSheet;
   final void Function([void result]) onClose;
 
   const _CrewMemberProfileCard({
-    required this.member,
+    required this.userId,
+    required this.avatarUrl,
+    required this.displayName,
+    required this.stateMsg,
     required this.crewName,
     required this.resortName,
     required this.isSheet,
@@ -302,7 +417,7 @@ class _CrewMemberProfileCardState extends State<_CrewMemberProfileCard> {
   }
 
   Future<void> _loadRelation() async {
-    final targetId = widget.member.userId;
+    final targetId = widget.userId;
     if (targetId == null) {
       if (mounted) setState(() => _areWeFriend = false);
       return;
@@ -314,7 +429,7 @@ class _CrewMemberProfileCardState extends State<_CrewMemberProfileCard> {
   }
 
   Future<void> _sendRequest() async {
-    final targetId = widget.member.userId;
+    final targetId = widget.userId;
     if (targetId == null) return;
     final friendVm = Get.find<FriendViewModelWeb>();
     if (!friendVm.isLoggedIn) {
@@ -340,7 +455,7 @@ class _CrewMemberProfileCardState extends State<_CrewMemberProfileCard> {
   Widget? _buildAction() {
     final friendVm = Get.find<FriendViewModelWeb>();
     // 크루원 목록에는 내 행도 있다 → 나를 열었으면 버튼을 그리지 않는다.
-    if (friendVm.myUserId != null && friendVm.myUserId == widget.member.userId) return null;
+    if (friendVm.myUserId != null && friendVm.myUserId == widget.userId) return null;
     if (_requestSent) return const WebProfileStateBadge(label: '요청 보냄');
     if (_areWeFriend == true) {
       return const WebProfileStateBadge(label: '친구', isPositive: true);
@@ -354,27 +469,25 @@ class _CrewMemberProfileCardState extends State<_CrewMemberProfileCard> {
 
   @override
   Widget build(BuildContext context) {
-    final member = widget.member;
-
     return WebProfileCard(
       data: WebProfileCardData(
-        userId: member.userId,
-        avatarUrl: member.profileImageUrlUser,
-        displayName: member.displayName,
+        userId: widget.userId,
+        avatarUrl: widget.avatarUrl,
+        displayName: widget.displayName,
         resortName: widget.resortName,
         crewName: widget.crewName,
-        stateMsg: member.stateMsg,
+        stateMsg: widget.stateMsg,
       ),
       isSheet: widget.isSheet,
       onClose: widget.isSheet ? null : widget.onClose,
       action: _buildAction(),
       footer: WebProfileFooterButton(
         label: '프로필 보러가기',
-        onTap: member.userId == null
+        onTap: widget.userId == null
             ? null
             : () {
                 widget.onClose();
-                Get.toNamed('${WebRoutes.userProfile}?id=${member.userId}');
+                Get.toNamed('${WebRoutes.userProfile}?id=${widget.userId}');
               },
       ),
     );

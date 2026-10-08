@@ -1,5 +1,5 @@
 import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
-import 'package:com.snowlive/core/model/m_crewMemberRankingList.dart';
+import 'package:com.snowlive/core/model/m_crewMemberList.dart';
 import 'package:com.snowlive/web/routes/routes_web.dart';
 import 'package:com.snowlive/web/util/responsive_web.dart';
 import 'package:com.snowlive/web/view/liveCrew/w_crewhome_member_web.dart';
@@ -17,7 +17,8 @@ const int kCrewMembersPerPage = 48;
 
 /// 크루 멤버 전체 목록. `#/livecrew-members?id=334`
 ///
-/// 서버 멤버 랭킹 API에는 페이지네이션이 없다(전체를 한 번에 준다) →
+/// 앱과 같은 멤버 API(`/crew/{id}/members/`)를 쓴다 — 이번 시즌 기록이 없는
+/// 멤버도 **전원** 보여준다(랭킹이 아니다). 서버가 전체를 한 번에 주므로
 /// **클라이언트에서 잘라** 목업의 번호식 페이지네이션을 만든다.
 class CrewMembersViewWeb extends StatefulWidget {
   const CrewMembersViewWeb({super.key});
@@ -83,7 +84,7 @@ class _CrewMembersViewWebState extends State<CrewMembersViewWeb> {
   }
 
   Widget _buildList() {
-    final members = _vm.members;
+    final members = _vm.fullMembers;
     final isLoading = _vm.isLoading;
     final hasError = _vm.hasError;
     final count = members.length;
@@ -97,7 +98,7 @@ class _CrewMembersViewWebState extends State<CrewMembersViewWeb> {
           columnGap: context.isDesktop ? SDSSpacing.lg : 60,
         );
       }
-      return const WebEmptyState(message: '아직 멤버 기록이 없어요.');
+      return const WebEmptyState(message: '가입된 멤버가 없습니다');
     }
 
     final totalPages = (count / kCrewMembersPerPage).ceil();
@@ -129,7 +130,7 @@ class _CrewMembersViewWebState extends State<CrewMembersViewWeb> {
                     for (final (index, member)
                         in pageItems.skip(i * perColumn).take(perColumn).indexed) ...[
                       if (index > 0) SizedBox(height: crewMemberRowGap(context)),
-                      CrewMemberRowWeb(member: member, onTap: () => _onMemberTap(member)),
+                      CrewMemberProfileRowWeb(member: member, onTap: () => _onMemberTap(member)),
                     ],
                   ],
                 ),
@@ -163,12 +164,19 @@ class _CrewMembersViewWebState extends State<CrewMembersViewWeb> {
     return [for (var i = 0; i < span; i++) start + i];
   }
 
-  void _onMemberTap(CrewRanking member) {
-    showCrewMemberProfileModal(
+  void _onMemberTap(CrewMember member) {
+    final info = member.userInfo;
+    showCrewMemberProfileModalRaw(
       context,
-      member: member,
+      userId: info?.userId,
+      avatarUrl: info?.profileImageUrlUser,
+      displayName: info?.displayName,
+      stateMsg: null,
       crewName: _vm.info?.crewName,
-      resortName: _vm.info?.baseResortFullname ?? _vm.info?.baseResortNickname,
+      // 멤버 본인의 소속 스키장을 우선 쓰고, 없으면 지금 보는 크루의 리조트로 채운다.
+      resortName: info?.favoriteResortNickname ??
+          _vm.info?.baseResortFullname ??
+          _vm.info?.baseResortNickname,
     );
   }
 }

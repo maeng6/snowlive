@@ -37,11 +37,13 @@ class CrewHomeHeaderWeb extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final logoUrl = crewLogoUrlOf(logoUrl: info.crewLogoUrl, color: info.color);
-    final desc = info.description?.trim().replaceAll('\n', ' ') ?? '';
+    final leader = info.crewLeaderDisplayName?.trim() ?? '';
     final resort = info.baseResortFullname?.trim().isNotEmpty ?? false
         ? info.baseResortFullname!
         : (info.baseResortNickname ?? '');
-    final subtitle = [if (desc.isNotEmpty) desc, if (resort.isNotEmpty) resort].join(' · ');
+    // 크루명 아래 줄 = `크루장닉네임 · 스키장`(앱 v_crewHome.dart:267과 같은 구성).
+    // 스키장명 왼쪽에 크루장 닉네임을 둔다.
+    final subtitle = [if (leader.isNotEmpty) leader, if (resort.isNotEmpty) resort].join(' · ');
 
     // 로고 PC 64 / 태블릿 56 / 모바일 36 (목업 161:94357 · 161:102334).
     final double logoSize = switch (context.screenType) {
@@ -177,6 +179,104 @@ class _HeaderIconButton extends StatelessWidget {
       padding: EdgeInsets.fromLTRB(4, 4, flushRight ? 0 : 4, 4),
       // 목업(161:87215)·앱 모두 26.
       icon: Image.asset(asset, width: 26, height: 26, color: tint),
+    );
+  }
+}
+
+/// 크루 소개글 블록 — 앱 크루홈(`v_crewHome.dart:301~`)처럼 통계 바 아래에 따로 둔다.
+/// 한 줄을 넘으면 +/- 아이콘으로 펼치고 접는다(앱과 같은 에셋). 소개가 비면 아무것도
+/// 그리지 않는다(상위에서 비었을 때 넣지 않으니 안전장치 겸용).
+class CrewHomeDescriptionWeb extends StatefulWidget {
+  final String? description;
+
+  const CrewHomeDescriptionWeb({super.key, required this.description});
+
+  @override
+  State<CrewHomeDescriptionWeb> createState() => _CrewHomeDescriptionWebState();
+}
+
+class _CrewHomeDescriptionWebState extends State<CrewHomeDescriptionWeb> {
+  bool _expanded = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final text = widget.description?.trim() ?? '';
+    if (text.isEmpty) return const SizedBox.shrink();
+
+    final textStyle = SDSTextStyle.regular
+        .copyWith(fontSize: 14, height: 22 / 14, color: SDSColor.gray700);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        // 상단 구분선(앱과 같은 위치) — 요약 바 구분선과 같은 gray700 10%.
+        Container(height: 1, color: SDSColor.gray700.withValues(alpha: 0.1)),
+        const SizedBox(height: 14),
+        LayoutBuilder(
+          builder: (context, constraints) {
+            // 토글 아이콘(20) + 간격(8) 자리를 빼고 한 줄에 들어가는지 잰다(앱과 같은 방식).
+            final painter = TextPainter(
+              text: TextSpan(text: text, style: textStyle),
+              maxLines: 1,
+              // intl이 같은 이름의 TextDirection을 내보내 충돌하므로 컨텍스트에서 가져온다.
+              textDirection: Directionality.of(context),
+            )..layout(maxWidth: (constraints.maxWidth - 28).clamp(0, constraints.maxWidth));
+            final overflowing = painter.didExceedMaxLines;
+
+            return Row(
+              crossAxisAlignment:
+                  _expanded ? CrossAxisAlignment.start : CrossAxisAlignment.center,
+              children: [
+                Expanded(
+                  child: Text(
+                    text,
+                    style: textStyle,
+                    maxLines: _expanded ? null : 1,
+                    overflow:
+                        _expanded ? TextOverflow.clip : TextOverflow.ellipsis,
+                  ),
+                ),
+                if (overflowing) ...[
+                  const SizedBox(width: 8),
+                  _CrewIntroToggle(
+                    expanded: _expanded,
+                    onTap: () => setState(() => _expanded = !_expanded),
+                  ),
+                ],
+              ],
+            );
+          },
+        ),
+      ],
+    );
+  }
+}
+
+/// 소개글 펼침/접힘 토글 — 앱과 같은 원형 +/- 에셋(20).
+class _CrewIntroToggle extends StatelessWidget {
+  final bool expanded;
+  final VoidCallback onTap;
+
+  const _CrewIntroToggle({required this.expanded, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      child: GestureDetector(
+        onTap: onTap,
+        behavior: HitTestBehavior.opaque,
+        child: Padding(
+          padding: const EdgeInsets.all(2),
+          child: Image.asset(
+            expanded
+                ? 'assets/imgs/icons/icon_minus_round.png'
+                : 'assets/imgs/icons/icon_plus_round.png',
+            width: 20,
+            height: 20,
+          ),
+        ),
+      ),
     );
   }
 }

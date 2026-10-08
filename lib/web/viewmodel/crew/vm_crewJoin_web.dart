@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:com.snowlive/core/api/api_crew.dart';
+import 'package:com.snowlive/core/model/m_crewApplyList.dart';
 import 'package:com.snowlive/core/model/m_crewDetail.dart';
 import 'package:com.snowlive/core/model/m_crewList.dart';
 import 'package:com.snowlive/core/viewmodel/vm_user.dart';
@@ -39,12 +40,23 @@ class CrewJoinViewModelWeb extends GetxController {
   final RxString _keyword = ''.obs;
   final RxnInt _resortId = RxnInt();
 
+  // 내가 가입 신청한 크루(승인 전) 목록. 가입한 크루가 없을 때 신청 내역을 보고
+  // 취소할 수 있게 한다(앱 `가입 신청한 크루` 화면과 동일).
+  final RxList<CrewApply> _myApplications = <CrewApply>[].obs;
+  final RxBool _isLoadingApplications = false.obs;
+  final RxBool _hasApplicationsError = false.obs;
+
   List<Crew> get crews => _crews;
   int? get resortId => _resortId.value;
   bool get isLoading => _isLoading.value;
   bool get hasError => _hasError.value;
   bool get isSubmitting => _isSubmitting.value;
   String get keyword => _keyword.value;
+
+  List<CrewApply> get myApplications => _myApplications;
+  bool get isLoadingApplications => _isLoadingApplications.value;
+  bool get hasApplicationsError => _hasApplicationsError.value;
+  bool get isLoggedIn => _userVM.user.user_id != null;
 
   /// 크루 목록 조회.
   ///
@@ -76,6 +88,57 @@ class CrewJoinViewModelWeb extends GetxController {
       _crews.clear();
     } finally {
       _isLoading.value = false;
+    }
+  }
+
+  /// 내가 가입 신청한 크루 목록(`/crew-member/apply/?user_id=`). 승인 전 신청만 온다.
+  Future<void> loadMyApplications() async {
+    final userId = _userVM.user.user_id;
+    if (userId == null) {
+      _myApplications.clear();
+      return;
+    }
+    _isLoadingApplications.value = true;
+    _hasApplicationsError.value = false;
+    try {
+      final res = await _api.listCrewApplicationsUser(userId);
+      if (!res.success) {
+        debugPrint('[CrewJoin] 내 신청 목록 실패: ${res.error}');
+        _hasApplicationsError.value = true;
+        _myApplications.clear();
+        return;
+      }
+      final parsed = CrewApplyListResponse.fromJson(res.data as List<dynamic>);
+      _myApplications.assignAll(parsed.crewApplyList ?? []);
+    } catch (e) {
+      debugPrint('[CrewJoin] 내 신청 목록 예외: $e');
+      _hasApplicationsError.value = true;
+      _myApplications.clear();
+    } finally {
+      _isLoadingApplications.value = false;
+    }
+  }
+
+  /// 신청 취소(`/crew-member/delete-apply/`). 내가 신청자이자 요청자다.
+  /// 성공하면 목록에서 그 크루를 즉시 뺀다.
+  Future<({bool ok, String? message})> cancelApplication(int crewId) async {
+    final userId = _userVM.user.user_id;
+    if (userId == null) return (ok: false, message: '로그인이 필요합니다.');
+    try {
+      final res = await _api.deleteCrewApplication({
+        'applicant_user_id': userId,
+        'crew_id': crewId,
+        'user_id': userId,
+      });
+      if (!res.success) {
+        debugPrint('[CrewJoin] 신청 취소 실패: ${res.error}');
+        return (ok: false, message: null);
+      }
+      _myApplications.removeWhere((a) => a.crewId == crewId);
+      return (ok: true, message: null);
+    } catch (e) {
+      debugPrint('[CrewJoin] 신청 취소 예외: $e');
+      return (ok: false, message: null);
     }
   }
 
@@ -111,7 +174,10 @@ class CrewJoinViewModelWeb extends GetxController {
         body: json.encode({
           'crew_id': crewId.toString(),
           'applicant_user_id': userId.toString(),
-          'title': title,
+          // title은 서버 필수값(null 불가). 신청 메시지가 비어 있으면 기본 문구로 보낸다.
+          'title': (title != null && title.trim().isNotEmpty)
+              ? title.trim()
+              : '안녕하세요. 크루 가입 신청합니다.',
         }),
       );
       if (response.statusCode == 201) {

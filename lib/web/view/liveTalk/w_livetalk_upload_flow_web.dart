@@ -74,9 +74,15 @@ class _UploadFlowState extends State<_UploadFlow> {
 
   LiveTalkUploadViewModelWeb get _vm => widget.vm;
 
+  void _onComposeChanged() {
+    // 이미지 없이 글만 올릴 때, 글 입력에 따라 업로드 버튼 활성/비활성이 바뀐다.
+    if (mounted) setState(() {});
+  }
+
   @override
   void initState() {
     super.initState();
+    _textController.addListener(_onComposeChanged);
     // 모달이 열려 있는 동안만 문서 드롭을 가로챈다. 이걸 안 하면 브라우저가
     // 드롭된 이미지를 새 탭에서 열어버린다.
     _drop = WebFileDrop.attach(
@@ -159,9 +165,12 @@ class _UploadFlowState extends State<_UploadFlow> {
     if (_vm.isSubmitting) return null;
     if (isStep0) {
       // 사진이 없으면 진행 버튼이 비활성이다(목업의 회색 `›`).
+      // 대신 아래 '이미지 없이 글만 올리기'로 텍스트만 올릴 수 있다.
       return _vm.hasPickedImage ? () => setState(() => _step = 1) : null;
     }
-    return _submit;
+    // 2단계(업로드): 이미지가 있거나 글이 있으면 올릴 수 있다(둘 다 없으면 비활성).
+    final canSubmit = _vm.hasPickedImage || _textController.text.trim().isNotEmpty;
+    return canSubmit ? _submit : null;
   }
 
   /// 사진 칸 → 간격 → (모바일만 안내 문구) → 버튼
@@ -234,6 +243,11 @@ class _UploadFlowState extends State<_UploadFlow> {
               ],
             ),
           ),
+        // 이미지 없이 글만 올리고 싶을 때 — 2단계(글 작성)로 바로 넘어간다.
+        const SizedBox(height: 14),
+        Center(
+          child: _SkipImageLink(onTap: () => setState(() => _step = 1)),
+        ),
         if (isMobile) const SizedBox(height: 10),
       ],
     );
@@ -250,8 +264,11 @@ class _UploadFlowState extends State<_UploadFlow> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Center(child: _ImageThumb(vm: _vm, size: isMobile ? 120 : 100)),
-        SizedBox(height: isMobile ? 20 : 30),
+        // 이미지 없이 글만 올릴 때는 썸네일 자리를 비운다.
+        if (_vm.hasPickedImage) ...[
+          Center(child: _ImageThumb(vm: _vm, size: isMobile ? 120 : 100)),
+          SizedBox(height: isMobile ? 20 : 30),
+        ],
         Padding(
           // 모바일 시트는 좌우 여백을 요소마다 따로 든다(글 작성 블록 16).
           padding: EdgeInsets.symmetric(horizontal: isMobile ? SDSSpacing.md : 0),
@@ -439,6 +456,45 @@ class _VisibilityToggle extends StatelessWidget {
         // 크기·색 규칙은 공용 WebSwitch에 있다.
         WebSwitch(value: isPublic, onChanged: onChanged),
       ],
+    );
+  }
+}
+
+/// `이미지 없이 글만 올리기` — 1단계에서 2단계(글 작성)로 바로 넘어가는 텍스트 링크.
+class _SkipImageLink extends StatefulWidget {
+  final VoidCallback onTap;
+
+  const _SkipImageLink({required this.onTap});
+
+  @override
+  State<_SkipImageLink> createState() => _SkipImageLinkState();
+}
+
+class _SkipImageLinkState extends State<_SkipImageLink> {
+  bool _hovered = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      onEnter: (_) => setState(() => _hovered = true),
+      onExit: (_) => setState(() => _hovered = false),
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: widget.onTap,
+        child: Opacity(
+          opacity: _hovered ? 0.6 : 1.0,
+          child: Text(
+            '이미지 없이 글만 올리기',
+            style: SDSTextStyle.bold.copyWith(
+              fontSize: 14,
+              color: SDSColor.gray500,
+              decoration: TextDecoration.underline,
+              decorationColor: SDSColor.gray500,
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

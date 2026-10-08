@@ -193,7 +193,6 @@ class _FleamarketDetailCommentsWebState extends State<FleamarketDetailCommentsWe
     }
     final isAuthor = comment.userId != null && comment.userId == widget.detail.userId;
     final isMine = comment.userId != null && comment.userId == _userVm.user.user_id;
-    final isMyPost = widget.detail.userId != null && widget.detail.userId == _userVm.user.user_id;
     final time = comment.uploadTime != null ? GetDatetime().getAgoString(comment.uploadTime!) : '';
     final repliesCount = comment.replies?.length ?? 0;
     final isExpanded = _expandedCommentId == comment.commentId;
@@ -222,7 +221,8 @@ class _FleamarketDetailCommentsWebState extends State<FleamarketDetailCommentsWe
                   requestReply: isExpanded || repliesCount == 0,
                 ),
         moreButton: _buildMoreButton(
-          canDelete: isMine || isMyPost,
+          // 남이 쓴 댓글은 삭제 불가(판매자여도) → 신고만. 내 댓글만 삭제.
+          canDelete: isMine,
           onDelete: () async {
             final userId = _userVm.user.user_id!;
             await _commentDetailVm.deleteComment(
@@ -408,7 +408,6 @@ class _FleamarketDetailCommentsWebState extends State<FleamarketDetailCommentsWe
     }
     final isAuthor = reply.userId != null && reply.userId == widget.detail.userId;
     final isMine = reply.userId != null && reply.userId == _userVm.user.user_id;
-    final isMyPost = widget.detail.userId != null && widget.detail.userId == _userVm.user.user_id;
     final time = reply.uploadTime != null ? GetDatetime().getAgoString(reply.uploadTime!) : '';
     return Padding(
       padding: const EdgeInsets.only(bottom: 20),
@@ -421,7 +420,8 @@ class _FleamarketDetailCommentsWebState extends State<FleamarketDetailCommentsWe
         content: reply.content ?? '',
         // 답글 구조는 1단계(댓글→답글)라 답글에는 답글 달기가 없다.
         moreButton: _buildMoreButton(
-          canDelete: isMine || isMyPost,
+          // 남이 쓴 답글은 삭제 불가(판매자여도) → 신고만. 내 답글만 삭제.
+          canDelete: isMine,
           onDelete: () async {
             final userId = _userVm.user.user_id!;
             await _commentDetailVm.deleteFleamarketReply(

@@ -15,6 +15,7 @@ import 'package:com.snowlive/web/widget/w_web_floating_bottombar_web.dart';
 import 'package:com.snowlive/web/widget/w_web_sticky_sidebar_web.dart';
 import 'package:com.snowlive/web/widget/w_skeleton_web.dart';
 import 'package:com.snowlive/web/widget/w_web_more_menu_web.dart';
+import 'package:com.snowlive/web/widget/w_web_popup_web.dart' show showWebEditTextDialog;
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -178,6 +179,20 @@ class _LiveTalkHomeViewWebState extends State<LiveTalkHomeViewWeb> {
     handleWebMoreAction(
       context,
       action: action,
+      onEdit: () async {
+        final text = await showWebEditTextDialog(
+          context: context,
+          title: '글 수정',
+          initialText: item.description ?? '',
+          hint: '내용을 입력하세요',
+        );
+        if (text == null || item.livetalkId == null) return;
+        final ok = await _vm.updateDescription(
+          livetalkId: item.livetalkId!,
+          description: text,
+        );
+        if (!ok) Get.snackbar('오류', '수정에 실패했어요.');
+      },
       onDelete: () async {
         final response = await LiveTalkAPI().delete({
           'livetalk_id': item.livetalkId,
@@ -322,7 +337,7 @@ class _LiveTalkHomeViewWebState extends State<LiveTalkHomeViewWeb> {
                   onTapComment: () => _openDetail(items[i]),
                   onTapLike: () => _onTapLike(items[i]),
                   moreActions: _isMine(items[i])
-                      ? const [WebMoreAction.delete]
+                      ? const [WebMoreAction.edit, WebMoreAction.delete]
                       : const [WebMoreAction.reportPost, WebMoreAction.hideUser],
                   onMoreAction: (action) => _onMoreAction(items[i], action),
                 ),

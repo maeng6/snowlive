@@ -88,11 +88,29 @@ class _CrewApplicationsViewWebState extends State<CrewApplicationsViewWeb> {
       title: '가입 신청 목록',
       showBack: true,
       fallbackRoute: '${WebRoutes.crewSetting}?id=$_crewId',
-      child: CrewSettingGuard(
-        isLoggedIn: _userVm.user.user_id != null,
-        canOpen: _vm.canManageApplications,
-        child: Obx(_buildList),
-      ),
+      // ⚠️ 권한(canManageApplications)은 멤버 목록이 와야 판정된다. 알림에서 곧바로
+      // 들어오면 아직 로드 전이라 내 역할을 몰라 '권한 없음'으로 보였다 — 가드를
+      // Obx로 감싸 로드가 끝난 뒤 다시 판정하고, 로드 중에는 '권한 없음'을 띄우지
+      // 않고 로딩 자리만 둔다(깜빡임·오판 방지).
+      child: Obx(() {
+        final loading = _vm.isLoading;
+        final canOpen = _vm.canManageApplications;
+        if (_userVm.user.user_id == null) {
+          return const CrewSettingGuard(
+            isLoggedIn: false,
+            canOpen: false,
+            child: SizedBox.shrink(),
+          );
+        }
+        // 이 크루 데이터가 아직 안 왔거나(다른 크루/최초 진입) 로딩 중이면 판정 보류.
+        final notReady = _vm.crewId != _crewId || loading;
+        if (notReady && !canOpen) return const SizedBox(height: 120);
+        return CrewSettingGuard(
+          isLoggedIn: true,
+          canOpen: canOpen,
+          child: _buildList(),
+        );
+      }),
     );
   }
 

@@ -1,5 +1,6 @@
 import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/core/model/m_crewDetail.dart';
+import 'package:com.snowlive/core/viewmodel/vm_user.dart';
 import 'package:com.snowlive/web/util/crew_visual_web.dart';
 import 'package:com.snowlive/web/widget/w_network_image_web.dart';
 import 'package:com.snowlive/web/routes/routes_web.dart';
@@ -200,7 +201,51 @@ class LiveCrewCtaButtons extends StatelessWidget {
             ),
           ),
         ),
+        // 로그인했을 때만 내 신청 내역 입구를 둔다(가입한 크루가 없을 때 신청·취소 확인용).
+        if (Get.find<UserViewModel>().user.user_id != null) ...[
+          const SizedBox(height: SDSSpacing.sm),
+          _MyApplicationsSidebarLink(),
+        ],
       ],
+    );
+  }
+}
+
+/// `가입 신청한 크루` 입구 — 사이드바 CTA 아래 가운데 텍스트 링크(hover 페이드).
+class _MyApplicationsSidebarLink extends StatefulWidget {
+  @override
+  State<_MyApplicationsSidebarLink> createState() => _MyApplicationsSidebarLinkState();
+}
+
+class _MyApplicationsSidebarLinkState extends State<_MyApplicationsSidebarLink> {
+  bool _hovered = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      onEnter: (_) => setState(() => _hovered = true),
+      onExit: (_) => setState(() => _hovered = false),
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: () => Get.toNamed(WebRoutes.crewMyApplications),
+        child: Opacity(
+          opacity: _hovered ? 0.6 : 1.0,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 6),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  '가입 신청한 크루',
+                  style: SDSTextStyle.bold.copyWith(fontSize: 13, color: SDSColor.gray600),
+                ),
+                const Icon(Icons.chevron_right, size: 16, color: SDSColor.gray600),
+              ],
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

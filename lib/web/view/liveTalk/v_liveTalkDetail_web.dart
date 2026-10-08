@@ -5,6 +5,8 @@ import 'package:com.snowlive/web/routes/routes_web.dart';
 import 'package:com.snowlive/web/view/liveTalk/w_livetalk_comment_list_web.dart';
 import 'package:com.snowlive/web/view/liveTalk/w_livetalk_detail_body_web.dart';
 import 'package:com.snowlive/web/viewmodel/liveTalk/vm_liveTalkDetail_web.dart';
+import 'package:com.snowlive/web/viewmodel/liveTalk/vm_liveTalk_web.dart';
+import 'package:com.snowlive/web/widget/w_web_popup_web.dart' show showWebEditTextDialog;
 import 'package:com.snowlive/web/widget/w_empty_state_web.dart';
 import 'package:com.snowlive/web/widget/w_web_comment_input_web.dart';
 import 'package:com.snowlive/web/widget/w_web_image_viewer_web.dart';
@@ -242,10 +244,37 @@ class _LiveTalkDetailViewWebState extends State<LiveTalkDetailViewWeb> {
     handleWebMoreAction(
       context,
       action: action,
+      onEdit: () async {
+        final text = await showWebEditTextDialog(
+          context: context,
+          title: '글 수정',
+          initialText: _vm.detail?.description ?? '',
+          hint: '내용을 입력하세요',
+        );
+        if (text == null) return;
+        final ok = await _vm.updatePost(description: text);
+        if (!ok) {
+          Get.snackbar('오류', '수정에 실패했어요.');
+          return;
+        }
+        // 목록도 반영되게 그 글만 다시 받는다(상세는 updatePost가 재조회).
+        if (_vm.livetalkId != null &&
+            Get.isRegistered<LiveTalkListPaginationViewModelWeb>()) {
+          await Get.find<LiveTalkListPaginationViewModelWeb>().reloadItem(_vm.livetalkId!);
+        }
+      },
       onDelete: () async {
+        final deletedId = _vm.livetalkId;
         final ok = await _vm.deletePost();
-        // 지운 글의 상세에 남아 있을 이유가 없다.
-        if (ok && mounted) Get.back();
+        if (ok) {
+          // 목록에 돌아갔을 때 지워진 글이 그대로 남지 않게 미리 뺀다.
+          if (deletedId != null &&
+              Get.isRegistered<LiveTalkListPaginationViewModelWeb>()) {
+            Get.find<LiveTalkListPaginationViewModelWeb>().removeItem(deletedId);
+          }
+          // 지운 글의 상세에 남아 있을 이유가 없다.
+          if (mounted) Get.back();
+        }
         return ok;
       },
       onReport: _vm.reportPost,

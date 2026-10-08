@@ -6,6 +6,8 @@ import 'package:com.snowlive/web/util/responsive_web.dart';
 import 'package:com.snowlive/web/view/liveTalk/w_livetalk_comment_list_web.dart';
 import 'package:com.snowlive/web/view/liveTalk/w_livetalk_detail_body_web.dart';
 import 'package:com.snowlive/web/viewmodel/liveTalk/vm_liveTalkDetail_web.dart';
+import 'package:com.snowlive/web/viewmodel/liveTalk/vm_liveTalk_web.dart';
+import 'package:com.snowlive/web/widget/w_web_popup_web.dart' show showWebEditTextDialog;
 import 'package:com.snowlive/web/widget/w_web_comment_input_web.dart';
 import 'package:com.snowlive/web/widget/w_web_icon_button_web.dart';
 import 'package:com.snowlive/web/widget/w_web_image_viewer_web.dart'
@@ -532,9 +534,36 @@ class _LiveTalkDetailCardState extends State<_LiveTalkDetailCard> {
     handleWebMoreAction(
       context,
       action: action,
+      onEdit: () async {
+        final text = await showWebEditTextDialog(
+          context: context,
+          title: '글 수정',
+          initialText: _vm.detail?.description ?? '',
+          hint: '내용을 입력하세요',
+        );
+        if (text == null) return;
+        final ok = await _vm.updatePost(description: text);
+        if (!ok) {
+          Get.snackbar('오류', '수정에 실패했어요.');
+          return;
+        }
+        // 상세는 updatePost가 재조회한다. 목록도 반영되게 그 글만 다시 받는다.
+        _changed = true;
+        if (_vm.livetalkId != null &&
+            Get.isRegistered<LiveTalkListPaginationViewModelWeb>()) {
+          await Get.find<LiveTalkListPaginationViewModelWeb>().reloadItem(_vm.livetalkId!);
+        }
+        if (mounted) setState(() {});
+      },
       onDelete: () async {
+        final deletedId = _vm.livetalkId;
         final ok = await _vm.deletePost();
         if (ok) {
+          // 지워진 글은 reloadItem으로 못 지우므로 목록에서 직접 뺀다.
+          if (deletedId != null &&
+              Get.isRegistered<LiveTalkListPaginationViewModelWeb>()) {
+            Get.find<LiveTalkListPaginationViewModelWeb>().removeItem(deletedId);
+          }
           _changed = true;
           _close();
         }

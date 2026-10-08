@@ -21,6 +21,7 @@ import 'package:com.snowlive/web/widget/w_web_icon_button_web.dart';
 import 'package:com.snowlive/web/widget/w_web_section_link_button_web.dart';
 import 'package:com.snowlive/web/widget/w_skeleton_web.dart';
 import 'package:com.snowlive/web/widget/w_web_more_menu_web.dart';
+import 'package:com.snowlive/web/widget/w_web_popup_web.dart' show showWebCrewApplyDialog;
 import 'package:com.snowlive/web/widget/w_web_toast_web.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -131,14 +132,11 @@ class _CrewHomeViewWebState extends State<CrewHomeViewWeb> {
       return;
     }
     final crewName = _vm.info?.crewName ?? '';
-    final ok = await showWebConfirmDialog(
-      context: context,
-      title: '$crewName에\n가입 신청하시겠어요?',
-      confirmLabel: '신청하기',
-    );
-    if (!ok || !mounted) return;
+    // 앱처럼 신청 메시지 입력창을 띄운다(취소면 중단).
+    final title = await showWebCrewApplyDialog(context: context, crewName: crewName);
+    if (title == null || !mounted) return;
 
-    final result = await _vm.applyForCrew();
+    final result = await _vm.applyForCrew(title: title);
     if (!mounted) return;
     showWebToast(
       context,
@@ -235,6 +233,11 @@ class _CrewHomeViewWebState extends State<CrewHomeViewWeb> {
           onApply: _vm.isMyCrew ? null : _onApply,
           onMembersTap: () => Get.toNamed('${WebRoutes.crewMembers}?id=$_crewId'),
         ),
+        // 크루 소개글(있을 때만) — 앱처럼 통계 바 아래 별도 블록으로 둔다.
+        if (info.description?.trim().isNotEmpty ?? false) ...[
+          SizedBox(height: context.screenType == WebScreenType.mobile ? 16 : 20),
+          CrewHomeDescriptionWeb(description: info.description),
+        ],
         // 통계 바 ↔ 라이딩 통계 (PC·태블릿 40 / 모바일 32 — 목업).
         SizedBox(height: context.screenType == WebScreenType.mobile ? 32 : 40),
         CrewHomeRidingStatsWeb(

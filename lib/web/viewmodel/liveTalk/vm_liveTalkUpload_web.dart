@@ -139,11 +139,19 @@ class LiveTalkUploadViewModelWeb extends GetxController {
     bool? secret,
   }) async {
     final file = _pickedImage.value;
-    if (file == null) return false;
-    return _submit(userId: userId, description: description, crewId: crewId, secret: secret, upload: () async {
-      final urls = await _imageController.uploadLiveTalkImages(files: [file], userId: userId);
-      return urls.isNotEmpty && urls.first.isNotEmpty ? urls.first : null;
-    });
+    // 이미지가 없으면 텍스트만 올린다(upload=null). 서버도 description만 있으면 허용.
+    return _submit(
+      userId: userId,
+      description: description,
+      crewId: crewId,
+      secret: secret,
+      upload: file == null
+          ? null
+          : () async {
+              final urls = await _imageController.uploadLiveTalkImages(files: [file], userId: userId);
+              return urls.isNotEmpty && urls.first.isNotEmpty ? urls.first : null;
+            },
+    );
   }
 
   /// 라이딩 카드 글 등록 — 카드 위젯을 PNG로 캡처해서 올린다.
@@ -164,23 +172,31 @@ class LiveTalkUploadViewModelWeb extends GetxController {
   Future<bool> _submit({
     required int userId,
     required String description,
-    required Future<String?> Function() upload,
+    Future<String?> Function()? upload, // null이면 이미지 없이 텍스트만 올린다
     int? crewId,
     bool? secret,
   }) async {
     assert(crewId == null || secret != null, 'crewId가 있으면 secret을 지정해야 한다');
+    // 이미지도 글도 없으면 서버가 막는다 — UI에서 먼저 막지만 방어적으로 한 번 더 본다.
+    if (upload == null && description.trim().isEmpty) {
+      debugPrint('[LiveTalkUpload] 이미지도 글도 없음');
+      return false;
+    }
     if (_isSubmitting.value) return false;
     _isSubmitting.value = true;
     try {
-      final imageUrl = await upload();
-      if (imageUrl == null) {
-        debugPrint('[LiveTalkUpload] 이미지 업로드 실패');
-        return false;
+      String? imageUrl;
+      if (upload != null) {
+        imageUrl = await upload();
+        if (imageUrl == null) {
+          debugPrint('[LiveTalkUpload] 이미지 업로드 실패');
+          return false;
+        }
       }
       final response = await _api.create({
         'user_id': userId,
         'description': description,
-        'image_url': imageUrl,
+        if (imageUrl != null && imageUrl.isNotEmpty) 'image_url': imageUrl,
         if (crewId != null) 'crew_id': crewId,
         if (crewId != null) 'secret': secret,
       });

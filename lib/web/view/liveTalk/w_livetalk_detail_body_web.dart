@@ -168,7 +168,7 @@ class LiveTalkPostHeader extends StatelessWidget {
                 hitPadding: 1,
                 iconColor: SDSColor.gray500,
                 actions: isAuthor
-                    ? const [WebMoreAction.delete]
+                    ? const [WebMoreAction.edit, WebMoreAction.delete]
                     : const [WebMoreAction.reportPost, WebMoreAction.hideUser],
                 onSelected: onMoreAction,
               ),

@@ -203,6 +203,41 @@ class LiveTalkListPaginationViewModelWeb extends GetxController {
     }
   }
 
+  /// 내 글 본문 수정 → 성공하면 그 글만 다시 받아 목록에 반영한다.
+  Future<bool> updateDescription({
+    required int livetalkId,
+    required String description,
+  }) async {
+    final userId = _userId;
+    if (userId == null) return false;
+    try {
+      final response = await _api.update({
+        'livetalk_id': livetalkId,
+        'user_id': userId,
+        'description': description,
+      });
+      if (!response.success) {
+        print('[LiveTalk] 수정 실패: ${response.error}');
+        return false;
+      }
+      await reloadItem(livetalkId);
+      return true;
+    } catch (e) {
+      print('[LiveTalk] 수정 예외: $e');
+      return false;
+    }
+  }
+
+  /// 글이 삭제됐을 때 목록에서 즉시 뺀다. 지워진 글은 [reloadItem]으로는 못 지운다
+  /// (상세 조회가 실패하면 그냥 두기 때문) → 삭제 성공 시 호출자가 이걸 부른다.
+  void removeItem(int livetalkId) {
+    final before = _items.length;
+    _items.removeWhere((e) => e.livetalkId == livetalkId);
+    if (_items.length < before && _totalCount.value > 0) {
+      _totalCount.value = _totalCount.value - 1;
+    }
+  }
+
   Future<void> loadNext() =>
       hasNext ? gotoPage(_currentPage.value + 1) : Future.value();
   Future<void> loadPrevious() =>
