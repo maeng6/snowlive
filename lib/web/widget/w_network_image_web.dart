@@ -78,15 +78,27 @@ class _WebNetworkImageState extends State<WebNetworkImage> {
 
   @override
   Widget build(BuildContext context) {
+    // 디코드 폭을 **실제 표시 폭**으로 잡으려면 레이아웃 제약이 필요하다.
+    return LayoutBuilder(
+      builder: (context, constraints) => _build(context, constraints),
+    );
+  }
+
+  Widget _build(BuildContext context, BoxConstraints constraints) {
     final width = widget.width;
     final height = widget.height;
 
     // 디코드/래스터 크기 상한. 작은 셀에 원본(수천 px) 사진을 그대로 디코드하면
-    // CanvasKit 스크롤이 버벅인다 → 표시 크기 × DPR(최대 2배)로 가로만 지정해
-    // 비율을 보존하며 디코드 비용을 낮춘다. 가변 높이 사진은 1200으로 상한.
+    // CanvasKit 스크롤이 버벅인다 → **실제 표시 폭** × DPR(최대 2배)로 가로만 지정해
+    // 비율을 보존하며 디코드 비용을 낮춘다. prop width가 없으면 레이아웃 폭을,
+    // 그것도 모르면 1200을 쓴다.
     final double dpr =
         (MediaQuery.maybeOf(context)?.devicePixelRatio ?? 1.0).clamp(1.0, 2.0);
-    final int cacheW = ((width ?? 1200) * dpr).round().clamp(1, 2400);
+    final double basisW = width ??
+        (constraints.maxWidth.isFinite && constraints.maxWidth > 0
+            ? constraints.maxWidth
+            : 1200);
+    final int cacheW = (basisW * dpr).round().clamp(1, 2400);
 
     Widget content;
     if (widget.url == null || widget.url!.isEmpty) {
@@ -160,14 +172,17 @@ class _WebNetworkImageState extends State<WebNetworkImage> {
       }
     }
 
-    if (widget.isCircle) return ClipOval(child: content);
+    // 각 이미지를 자기 레이어로 격리해, 스크롤 중 주변까지 다시 래스터되지 않게 한다.
+    if (widget.isCircle) return RepaintBoundary(child: ClipOval(child: content));
     if (widget.borderRadius > 0) {
-      return ClipRRect(
-        borderRadius: BorderRadius.circular(widget.borderRadius),
-        child: content,
+      return RepaintBoundary(
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(widget.borderRadius),
+          child: content,
+        ),
       );
     }
-    return content;
+    return RepaintBoundary(child: content);
   }
 
   Widget _fallback() {
