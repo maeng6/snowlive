@@ -94,7 +94,12 @@ class _WebNetworkImageState extends State<WebNetworkImage> {
     // 그것도 모르면 1200을 쓴다.
     final double dpr =
         (MediaQuery.maybeOf(context)?.devicePixelRatio ?? 1.0).clamp(1.0, 2.0);
-    final double basisW = width ??
+    // prop width가 double.infinity일 수 있다(피드 사진은 width: double.infinity로
+    // 부모 폭을 꽉 채운다) → 유한 양수일 때만 쓰고, 아니면 실제 레이아웃 폭을 쓴다.
+    // (무한대를 그대로 쓰면 (infinity).round()에서 예외가 나 이미지가 안 뜬다.)
+    final double? propW =
+        (width != null && width.isFinite && width > 0) ? width : null;
+    final double basisW = propW ??
         (constraints.maxWidth.isFinite && constraints.maxWidth > 0
             ? constraints.maxWidth
             : 1200);
