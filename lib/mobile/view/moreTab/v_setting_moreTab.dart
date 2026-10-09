@@ -2,6 +2,7 @@
 import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/mobile/routes/routes.dart';
 import 'package:com.snowlive/mobile/view/moreTab/v_licenseListPage.dart';
+import 'package:com.snowlive/mobile/view/friend/v_ridingTrackPage.dart';
 import 'package:com.snowlive/mobile/view/v_webPage.dart';
 import 'package:com.snowlive/mobile/viewmodel/auth/vm_authcheck.dart';
 import 'package:com.snowlive/mobile/viewmodel/auth/vm_login.dart';
@@ -117,6 +118,28 @@ class Setting_moreTabView extends StatelessWidget {
                   },
                   title: Text(
                     '오픈소스라이선스',
+                    style: SDSTextStyle.bold.copyWith(
+                        fontSize: 15,
+                        color: SDSColor.gray900),
+                  ),
+                  trailing: Image.asset(
+                    'assets/imgs/icons/icon_arrow_g.png',
+                    height: 24,
+                    width: 24,
+                  ),
+                ),
+                // [임시/테스트] 라이딩 궤적 — 폴리곤 궤적 확인 + 로그 전송
+                ListTile(
+                  contentPadding: EdgeInsets.symmetric(horizontal: 16),
+                  minVerticalPadding: 20,
+                  onTap: () {
+                    final uid = Get.find<UserViewModel>().user.user_id;
+                    if (uid is int) {
+                      Get.to(() => RidingTrackPage(userId: uid));
+                    }
+                  },
+                  title: Text(
+                    '라이딩 궤적',
                     style: SDSTextStyle.bold.copyWith(
                         fontSize: 15,
                         color: SDSColor.gray900),

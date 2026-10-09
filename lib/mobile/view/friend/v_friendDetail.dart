@@ -997,33 +997,6 @@ class _FriendDetailViewState extends State<FriendDetailView> {
                                                                           ),)
                                                                     ),
                                                                   ),
-                                                                  SizedBox(width: 8),
-                                                                  // 라이딩 궤적(테스트): 폴리곤 궤적 링크 리스트를 브라우저로 연다.
-                                                                  GestureDetector(
-                                                                    onTap: () {
-                                                                      HapticFeedback.lightImpact();
-                                                                      final uid = _friendDetailViewModel.friendDetailModel.friendUserInfo.userId;
-                                                                      if (uid != null) {
-                                                                        launchUrl(
-                                                                          Uri.parse('https://snowlive-api-c617725e2b78.herokuapp.com/api/ranking/riding-track/?user_id=$uid'),
-                                                                          mode: LaunchMode.externalApplication,
-                                                                        );
-                                                                      }
-                                                                    },
-                                                                    child: Container(
-                                                                      decoration: BoxDecoration(
-                                                                        color: SDSColor.snowliveWhite,
-                                                                        borderRadius: BorderRadius.circular(30.0),
-                                                                        border: Border.all(color: SDSColor.gray200),
-                                                                      ),
-                                                                      padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                                                                      height: 36,
-                                                                      child: Text('라이딩 궤적',
-                                                                        style: SDSTextStyle.bold.copyWith(
-                                                                            fontSize: 13, color: SDSColor.gray900),
-                                                                      ),
-                                                                    ),
-                                                                  ),
                                                                 ],
                                                               ),
                                                               if(_friendDetailViewModel.friendDetailModel.friendUserInfo.userId

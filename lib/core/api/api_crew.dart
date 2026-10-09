@@ -1,8 +1,20 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:com.snowlive/core/api/ApiResponse.dart';
+import 'package:com.snowlive/core/viewmodel/vm_user.dart';
+import 'package:get/get.dart';
 
 class CrewAPI {
+  // 크루원 전용 리포트 API는 로그인 유저 검증(백엔드 멤버십 체크)에 쓸 user_id가 필요하다.
+  static String _currentUserId() {
+    try {
+      final uid = Get.find<UserViewModel>().user.user_id;
+      return uid == null ? '' : uid.toString();
+    } catch (_) {
+      return '';
+    }
+  }
+
   // baseUrl 설정
   static const baseUrl = 'https://snowlive-api-c617725e2b78.herokuapp.com/api/crew';
 
@@ -245,6 +257,7 @@ class CrewAPI {
     final uri = Uri.parse('$baseUrl/crew-daily-report/recordroom/').replace(queryParameters: {
       'crew_id': crewId.toString(),
       'selected_season': selected_season,
+      'user_id': _currentUserId(), // 백엔드 크루원 검증용
     });
 
     final response = await http.get(uri);
@@ -261,6 +274,7 @@ class CrewAPI {
     final uri = Uri.parse('$baseUrl/crew-daily-report/').replace(queryParameters: {
       'crew_id': crewId.toString(),
       'year': year,
+      'user_id': _currentUserId(), // 백엔드 크루원 검증용
     });
 
     final response = await http.get(uri);

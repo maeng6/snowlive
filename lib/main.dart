@@ -1,5 +1,7 @@
+import 'dart:async';
 import 'dart:io';
 import 'package:com.snowlive/firebase_options.dart';
+import 'package:com.snowlive/mobile/util/ride_log_recorder.dart';
 import 'package:com.snowlive/core/util/pushNoitification.dart';
 import 'package:com.snowlive/core/viewmodel/friend/vm_friendDetail.dart';
 import 'package:com.snowlive/mobile/viewmodel/auth/vm_authcheck.dart';
@@ -63,8 +65,19 @@ void _handleMessage(RemoteMessage message) {
   });
 }
 
-void main() async {
+void main() {
+  // [임시] 라이브온 이후 모든 로그를 파일로 남기려고 앱 전체를 Zone으로 감싼다.
+  // ZoneSpecification.print 후킹으로 모든 print/debugPrint가 RideLogRecorder로 전달된다.
+  runZonedGuarded<Future<void>>(() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // [임시] Flutter 프레임워크 에러도 로그 파일에 남긴다.
+  final prevOnError = FlutterError.onError;
+  FlutterError.onError = (details) {
+    RideLogRecorder.instance
+        .log('FLUTTER ERROR: ${details.exceptionAsString()}\n${details.stack}');
+    prevOnError?.call(details);
+  };
 
   // 🛡️ 메모리 누수 방지: 이미지 캐시 크기 제한
   // - maximumSize: 최대 30개 이미지
@@ -109,6 +122,15 @@ void main() async {
   setupInteractedMessage();
 
   runApp(MyApp());
+  }, (error, stack) {
+    // [임시] Zone에서 못 잡힌 비동기 에러도 로그에 남긴다.
+    RideLogRecorder.instance.log('UNCAUGHT: $error\n$stack');
+  }, zoneSpecification: ZoneSpecification(
+    print: (self, parent, zone, line) {
+      RideLogRecorder.instance.log(line);
+      parent.print(zone, line); // 콘솔 출력도 그대로 유지
+    },
+  ));
 }
 
 class MyApp extends StatefulWidget {

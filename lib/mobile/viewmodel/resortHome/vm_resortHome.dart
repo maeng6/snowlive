@@ -20,6 +20,7 @@ import 'package:com.snowlive/mobile/native/live_activity_service.dart';
 import 'package:com.snowlive/core/util/util_1.dart';
 import 'package:com.snowlive/mobile/viewmodel/ranking/vm_snowball.dart';
 import 'package:com.snowlive/mobile/viewmodel/resortHome/vm_liveOnAlarm.dart';
+import 'package:com.snowlive/mobile/util/ride_log_recorder.dart';
 import 'package:com.snowlive/mobile/viewmodel/vm_splashController.dart';
 import 'package:com.snowlive/core/viewmodel/vm_user.dart';
 import 'package:com.snowlive/core/widget/w_fullScreenDialog.dart';
@@ -840,6 +841,8 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
   }
 
   Future<void> startLiveLocationService({required user_id, bool isRestart = false}) async {
+    // [임시] 어드민에 로그 수집 대상으로 등록된 유저면 라이브온 로그 기록 시작.
+    RideLogRecorder.instance.maybeStartForUser(user_id);
     try {
       // 🛡️ GPS 조작 감지 플래그 초기화
       _isMockDetectedLiveOffTriggered = false;
@@ -1159,7 +1162,7 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
                 await _reloadAreaDataIfNeeded(user_id, position.latitude, position.longitude);
 
                 // 🟦 폴리곤 라이딩(신 방식) 판별 — 자기 게이팅(write_polygon)
-                _polygonRiding?.onPosition(position.latitude, position.longitude, at: position.timestamp);
+                _polygonRiding?.onPosition(position.latitude, position.longitude, at: position.timestamp, alt: position.altitude);
 
                 // 현재 위치에서 영역 체크 (보간 제거)
                 List<Map<String, dynamic>> passPointInfos = checkPositionInAreas(
@@ -1720,7 +1723,7 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
           await _reloadAreaDataIfNeeded(user_id, position.latitude, position.longitude);
 
           // 🟦 폴리곤 라이딩(신 방식) 판별 — 자기 게이팅(write_polygon)
-          _polygonRiding?.onPosition(position.latitude, position.longitude, at: position.timestamp);
+          _polygonRiding?.onPosition(position.latitude, position.longitude, at: position.timestamp, alt: position.altitude);
 
           // 현재 위치에서 영역 체크 (보간 제거)
           List<Map<String, dynamic>> passPointInfos = checkPositionInAreas(
@@ -2381,7 +2384,24 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
       if (uid == null) return;
       _polygonRiding ??= PolygonRidingController(uid)
         ..onLog = ((m) => print('[POLY] $m'))
-        ..onCommitted = ((ev, resp) => print('[POLY] 커밋 ${ev.name} → ${resp?['inserted_count']}'));
+        ..onCommitted = ((ev, resp) {
+          // 폴리곤 커밋 결과를 세션(현재) 라이딩 횟수·라이브 액티비티에 반영.
+          // (레거시 respawn 핸들러와 동일 계약: inserted_count / latest_slope_fullname)
+          try {
+            final inserted = int.tryParse('${resp?['inserted_count'] ?? 0}') ?? 0;
+            if (inserted > 0) {
+              _sessionRideCount += inserted;
+              _lastRideAt = DateTime.now();
+            }
+            final name = resp?['latest_slope_fullname'] as String?;
+            if (name != null && name.isNotEmpty) _lastSlopeName = name;
+            print('[POLY] 커밋 ${ev.name} → inserted=$inserted, session=$_sessionRideCount');
+            // 서버 dailyTotalCount 갱신 후 라이브 액티비티 반영(백그라운드 가드는 _updateLiveActivity 내부)
+            fetchResortHome(uid).then((_) => _updateLiveActivity());
+          } catch (e) {
+            print('[POLY] onCommitted 처리 실패: $e');
+          }
+        });
       _polygonRiding!.configureFromCheckWb(data);
     } catch (e) {
       print('[POLY] configure 실패: $e');
@@ -2481,6 +2501,11 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
     } finally {
       // 🔥 liveOff 완료 후 플래그 리셋 (성공/실패 모두)
       _isLiveOffInProgress = false;
+      // [임시] 사용자 종료(showSummary=true)일 때만 로그 파일 마감 + 공유 안내.
+      // 내부 재시작/백그라운드 자동종료(showSummary=false)는 세션 유지.
+      if (showSummary) {
+        await RideLogRecorder.instance.stop();
+      }
     }
   }
 

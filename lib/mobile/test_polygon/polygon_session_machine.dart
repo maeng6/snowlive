@@ -13,8 +13,10 @@ class CommitEvent {
   final double exitProgress;  // 탄 구간 끝 진행률 0~1 (=max_progress)
   final DateTime startedAt;   // 세션 시작(소급) 시각
   final double avgSpeedKmh;   // 평균 속도(km/h)
+  final double maxSpeedKmh;   // 최고 순간속도(km/h, 세그먼트 기반)
   final double coverageRatio; // 진행률(bin 비율) 0~1
   final List<GeoPt> track;    // 세션 궤적(유료 저장·서버 전송용)
+  final Map<String, dynamic>? samples; // per-point 샘플 {t,lat,lng,alt,spd}
   CommitEvent(
     this.slopeId,
     this.name,
@@ -26,8 +28,10 @@ class CommitEvent {
     this.exitProgress = 1,
     DateTime? startedAt,
     this.avgSpeedKmh = 0,
+    this.maxSpeedKmh = 0,
     this.coverageRatio = 0,
     List<GeoPt>? track,
+    this.samples,
   })  : startedAt = startedAt ?? at,
         track = track ?? const [];
 }
@@ -48,6 +52,8 @@ class _Cand {
   bool active = true;
   double lastPr;              // 직전 진행률 (연속 역행 판정용)
   double retreatM = 0;        // 연속 역행 누적(m) — 전진 시 0으로 리셋
+  final List<DateTime> trackT = [];   // track[i] 시각 (per-point 샘플용)
+  final List<double?> trackAlt = [];  // track[i] 고도(m, 없으면 null)
 
   _Cand(this.s, this.entryProgress, this.startedAt, this.lastInsideAt, this.lastInsidePt)
       : maxProgress = entryProgress,
@@ -106,13 +112,16 @@ class PolygonSessionMachine {
           .map((c) => '${c.s.name}(pr ${(c.maxProgress).toStringAsFixed(2)}, cov ${(c.covRatio * 100).toStringAsFixed(0)}%)')
           .join(' + ');
 
-  void onPoint(GeoPt p, DateTime t) {
+  void onPoint(GeoPt p, DateTime t, {double? alt}) {
+    // [임시/디버그] 포인트별 상세 로그용 — 이 점에서 '폴리곤 안'에 든 슬로프 수집
+    final List<String> insNames = [];
     for (final s in slopes) {
       if (!s.hasPolygon) continue;
       final ins = s.inBbox(p) && s.contains(p);
       final double pr = ins ? s.progress(p) : -1.0;
       inside[s.slopeId] = ins;
       progress[s.slopeId] = pr;
+      if (ins) insNames.add('${s.name}:${pr.toStringAsFixed(2)}');
 
       final c = _active[s.slopeId];
       if (c == null) {
@@ -127,6 +136,8 @@ class PolygonSessionMachine {
             cand.maxProgress = pr;
             cand.addBin(pr);
             cand.track.add(p);
+            cand.trackT.add(t);
+            cand.trackAlt.add(alt);
             _active[s.slopeId] = cand;
             _cluster.add(cand);
             _log('▶ 세션시작 ${s.name} (진입 pr=${last.toStringAsFixed(2)})');
@@ -139,6 +150,8 @@ class PolygonSessionMachine {
         // 활성 세션
         if (ins && pr >= 0) {
           c.track.add(p);
+          c.trackT.add(t);
+          c.trackAlt.add(alt);
           c.lastInsideAt = t;
           c.lastInsidePt = p;
           c.outside = 0;
@@ -164,6 +177,9 @@ class PolygonSessionMachine {
         }
       }
     }
+    // [임시/디버그] 포인트별 상세 로그: 좌표 + 이 점에서 안에 든 슬로프(진행률) + 활성세션 상태
+    _log('· (${p.lat.toStringAsFixed(6)},${p.lng.toStringAsFixed(6)}) '
+        'in=[${insNames.join(', ')}] act=[$activeSummary]');
     // 그룹이 모두 종료되면 확정 판정
     if (_active.isEmpty && _cluster.isNotEmpty && _cluster.every((c) => !c.active)) {
       _finalizeGroup();
@@ -184,6 +200,9 @@ class PolygonSessionMachine {
     c.reason = reason;
     _active.remove(c.s.slopeId);
     _entryStreak[c.s.slopeId] = 0;
+    // [임시/디버그] 세션 종료 시점·사유 로그(폴리곤이탈/연속후퇴/세션종료)
+    _log('◂ 세션종료 ${c.s.name} ($reason) maxPr=${c.maxProgress.toStringAsFixed(2)} '
+        'cov=${c.coverageM.toStringAsFixed(0)}m 점=${c.track.length}');
   }
 
   // o 세션이 c를 시간상 완전히 감쌈(먼저 시작·늦게 끝남, 동일구간 제외)
@@ -233,20 +252,56 @@ class PolygonSessionMachine {
       if (prev == null || covr > prev.covRatio) best[c.s.slopeId] = c;
     }
     for (final c in best.values) {
-      double dist = 0;
-      for (int i = 1; i < c.track.length; i++) {
-        dist += metersBetween(c.track[i - 1], c.track[i]);
+      final n = c.track.length;
+      // 누적 경로거리(m)
+      final cum = List<double>.filled(n, 0.0);
+      for (int i = 1; i < n; i++) {
+        cum[i] = cum[i - 1] + metersBetween(c.track[i - 1], c.track[i]);
       }
+      final dist = n > 0 ? cum[n - 1] : 0.0;
       final secs = c.endedAt!.difference(c.startedAt).inMilliseconds / 1000.0;
       final avgSpeed = secs > 0 ? (dist / secs) * 3.6 : 0.0; // m/s→km/h
+
+      // 노이즈 없는 속도: 각 점을 중심으로 ±3초 창의 (경로거리/시간)으로 평활화.
+      // 단일 GPS 튐이 섞여도 창 평균이라 스파이크가 사라진다. 상한 120km/h.
+      const winMs = 3000;
+      final spd = List<double>.filled(n, 0.0);
+      for (int i = 0; i < n; i++) {
+        int j = i, k = i;
+        while (j > 0 && c.trackT[i].difference(c.trackT[j]).inMilliseconds < winMs) j--;
+        while (k < n - 1 && c.trackT[k].difference(c.trackT[i]).inMilliseconds < winMs) k++;
+        final dt = c.trackT[k].difference(c.trackT[j]).inMilliseconds / 1000.0;
+        double v = dt > 0 ? (cum[k] - cum[j]) / dt * 3.6 : 0.0;
+        if (v < 0) v = 0.0;
+        if (v > 120) v = 120.0;
+        spd[i] = v;
+      }
+      final maxSpeed = spd.isEmpty ? 0.0 : spd.reduce(math.max);
+
+      // per-point 샘플(JSON) — 시간오프셋(ms)·좌표·고도·평활속도(km/h)
+      final t0 = c.startedAt;
+      final sT = <int>[];
+      final sLat = <double>[], sLng = <double>[], sSpd = <double>[];
+      final sAlt = <double?>[];
+      for (int i = 0; i < n; i++) {
+        sT.add(c.trackT[i].difference(t0).inMilliseconds);
+        sLat.add(double.parse(c.track[i].lat.toStringAsFixed(6)));
+        sLng.add(double.parse(c.track[i].lng.toStringAsFixed(6)));
+        sAlt.add(c.trackAlt[i] == null ? null : double.parse(c.trackAlt[i]!.toStringAsFixed(1)));
+        sSpd.add(double.parse(spd[i].toStringAsFixed(1)));
+      }
+      final samples = {'t': sT, 'lat': sLat, 'lng': sLng, 'alt': sAlt, 'spd': sSpd};
+
       final ev = CommitEvent(
         c.s.slopeId, c.s.name, c.coverageM, dist, c.track.length, c.endedAt!,
         entryProgress: c.entryProgress,
         exitProgress: c.maxProgress,
         startedAt: c.startedAt,
         avgSpeedKmh: avgSpeed,
+        maxSpeedKmh: maxSpeed,
         coverageRatio: c.covRatio,
         track: List<GeoPt>.from(c.track),
+        samples: samples,
       );
       commits.add(ev);
       onCommit?.call(ev);

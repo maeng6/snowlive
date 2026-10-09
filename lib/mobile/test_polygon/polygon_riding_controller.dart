@@ -60,9 +60,10 @@ class PolygonRidingController {
   }
 
   /// 위치 스트림에서 매 좌표 호출 (writePolygon일 때만 판별)
-  void onPosition(double lat, double lng, {DateTime? at}) {
+  /// alt: GPS 고도(m, 있으면 per-point 샘플에 저장)
+  void onPosition(double lat, double lng, {DateTime? at, double? alt}) {
     if (!writePolygon) return;
-    _machine?.onPoint(GeoPt(lat, lng), at ?? DateTime.now());
+    _machine?.onPoint(GeoPt(lat, lng), at ?? DateTime.now(), alt: alt);
   }
 
   /// 현재 라이딩 중인 슬로프 id (없으면 null) — live position is_riding/slope_id용
@@ -88,10 +89,12 @@ class PolygonRidingController {
       'entry_progress': ev.entryProgress,
       'exit_progress': ev.exitProgress,
       'avg_speed': ev.avgSpeedKmh,
+      'max_speed': ev.maxSpeedKmh,
       'coverage': ev.coverageRatio,
       'started_at': ev.startedAt.toUtc().toIso8601String(),
       'ended_at': ev.at.toUtc().toIso8601String(),
       'track': ev.track.map((p) => [p.lng, p.lat]).toList(),
+      if (ev.samples != null) 'samples': ev.samples,
     };
     try {
       final res = await _api.commitRide({
