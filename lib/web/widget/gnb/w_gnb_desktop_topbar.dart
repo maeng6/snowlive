@@ -1,6 +1,7 @@
 import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/core/viewmodel/vm_user.dart';
 import 'package:com.snowlive/web/routes/routes_web.dart';
+import 'package:com.snowlive/web/widget/gnb/w_gnb_nav_items.dart' show openGnbSection;
 import 'package:com.snowlive/web/util/responsive_web.dart';
 import 'package:com.snowlive/web/viewmodel/auth/vm_authcheck_web.dart';
 import 'package:com.snowlive/web/widget/w_web_filter_menu_web.dart';
@@ -41,7 +42,8 @@ class WebGnbDesktopTopBar extends StatelessWidget {
           MouseRegion(
             cursor: SystemMouseCursors.click,
             child: GestureDetector(
-              onTap: () => Get.toNamed(WebRoutes.home),
+              // 홈이 아니면 홈으로, 홈이면 맨 위로 + 새로고침(사이드바 `홈`과 같다).
+              onTap: () => openGnbSection(WebRoutes.home),
               child: SvgPicture.asset(
                 'assets/imgs/logos/snowlive_logo_black_web.svg',
                 height: 22,

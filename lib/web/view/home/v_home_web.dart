@@ -39,6 +39,7 @@ class _HomeViewWebState extends State<HomeViewWeb> {
   final ValueNotifier<double> _chatBottomPush = ValueNotifier<double>(0);
 
   Worker? _authWorker;
+  Worker? _scrollTopWorker;
 
   @override
   void initState() {
@@ -49,11 +50,21 @@ class _HomeViewWebState extends State<HomeViewWeb> {
       _vm.syncResortWithUser();
       _vm.loadTodayRanking();
     });
+    // 로고·사이드바 `홈`을 다시 누르면 맨 위로(새로고침은 뷰모델이 한다).
+    _scrollTopWorker = ever(_vm.scrollToTopTick, (_) {
+      if (!_scrollController.hasClients) return;
+      _scrollController.animateTo(
+        0,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeOutCubic,
+      );
+    });
   }
 
   @override
   void dispose() {
     _authWorker?.dispose();
+    _scrollTopWorker?.dispose();
     _scrollController
       ..removeListener(_onScroll)
       ..dispose();

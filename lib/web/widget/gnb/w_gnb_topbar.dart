@@ -1,6 +1,7 @@
 import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/core/viewmodel/vm_user.dart';
 import 'package:com.snowlive/web/routes/routes_web.dart';
+import 'package:com.snowlive/web/widget/gnb/w_gnb_nav_items.dart' show openGnbSection;
 import 'package:com.snowlive/web/util/responsive_web.dart';
 import 'package:com.snowlive/web/viewmodel/auth/vm_authcheck_web.dart';
 import 'package:com.snowlive/web/widget/gnb/w_gnb_desktop_topbar.dart';
@@ -49,13 +50,14 @@ class WebGnbTopbar extends StatelessWidget implements PreferredSizeWidget {
       ),
       child: Row(
         children: [
-          // 로고 탭 → 홈 이동(데스크탑과 동일). 메뉴가 열려 있으면 닫는다.
+          // 로고 탭 → 홈 이동, 이미 홈이면 맨 위로 + 새로고침(데스크탑과 동일).
+          // 메뉴가 열려 있으면 닫는다.
           MouseRegion(
             cursor: SystemMouseCursors.click,
             child: GestureDetector(
               onTap: () {
                 onLogoTap?.call();
-                Get.toNamed(WebRoutes.home);
+                openGnbSection(WebRoutes.home);
               },
               child: SvgPicture.asset(
                 'assets/imgs/logos/snowlive_logo_black_web.svg',

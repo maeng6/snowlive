@@ -1425,17 +1425,18 @@ class _Dots extends StatelessWidget {
 
 // ─────────────────────────────── 푸터 ───────────────────────────────
 
-/// 홈 하단 푸터 — 로고 / Contact 3열 / 스토어 배지 / 저작권·약관.
+/// 홈 하단 푸터 — 로고 / Contact / 스토어 배지 / 저작권·약관.
 ///
-/// 목업: 로고는 좌측, Contact 3열과 스토어 배지는 **우측에 모여** 있다.
+/// 목업: 로고는 좌측, Contact와 스토어 배지는 **우측에 모여** 있다.
+/// Contact는 목업의 3열(X·TikTok 포함, 2·3열은 반복) 대신 실제 운영 채널인
+/// 인스타그램 · 카카오 채널 한 열만 둔다(사용자 확정 2026-10-11).
 class HomeFooterWeb extends StatelessWidget {
   const HomeFooterWeb({super.key});
 
-  /// 목업의 Contact 3열. 채널 링크가 아직 없어서 문구만 두고 링크는 붙이지 않는다.
-  static const _columns = [
-    ['Instagram', 'Kakao', 'X', 'TikTok'],
-    ['Instagram', 'Kakao'],
-    ['Instagram', 'Kakao'],
+  /// Contact 항목 — 앱과 같은 채널 주소로 새 탭에서 연다.
+  static const _contacts = [
+    (label: 'Instagram', url: kInstagramUrl),
+    (label: 'Kakao', url: kKakaoChannelUrl),
   ];
 
   /// 이 폭이 안 되면 배지를 세로 스택으로(태블릿형), 그마저 안 되면 모바일형으로.
@@ -1557,21 +1558,10 @@ class HomeFooterWeb extends StatelessWidget {
     );
   }
 
-  Widget _contactColumnsRow(double gap) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        for (var i = 0; i < _columns.length; i++) ...[
-          // 열 사이 간격: PC 70 / 태블릿 40 / 모바일 60 (피그마 기준).
-          if (i > 0) SizedBox(width: gap),
-          _contactColumn(_columns[i]),
-        ],
-      ],
-    );
-  }
+  // 열이 하나가 되면서 [gap](열 사이 간격)은 쓰이지 않는다 — 열을 다시 늘리면 쓴다.
+  Widget _contactColumnsRow(double gap) => _contactColumn(_contacts);
 
-  Widget _contactColumn(List<String> labels) {
+  Widget _contactColumn(List<({String label, String url})> contacts) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
@@ -1582,9 +1572,9 @@ class HomeFooterWeb extends StatelessWidget {
           'Contact',
           style: SDSTextStyle.bold.copyWith(fontSize: 14, color: SDSColor.gray900),
         ),
-        for (final label in labels) ...[
+        for (final contact in contacts) ...[
           const SizedBox(height: 8),
-          _ContactLink(label: label),
+          _ContactLink(label: contact.label, url: contact.url),
         ],
       ],
     );
@@ -1658,11 +1648,12 @@ class HomeFooterWeb extends StatelessWidget {
   }
 }
 
-/// Contact 항목. 목업처럼 올리면 밑줄이 생긴다(채널 URL은 아직 없어 이동은 하지 않는다).
+/// Contact 항목. 목업처럼 올리면 밑줄이 생기고, 누르면 채널을 새 탭으로 연다.
 class _ContactLink extends StatefulWidget {
   final String label;
+  final String url;
 
-  const _ContactLink({required this.label});
+  const _ContactLink({required this.label, required this.url});
 
   @override
   State<_ContactLink> createState() => _ContactLinkState();
@@ -1677,12 +1668,16 @@ class _ContactLinkState extends State<_ContactLink> {
       cursor: SystemMouseCursors.click,
       onEnter: (_) => setState(() => _isHovered = true),
       onExit: (_) => setState(() => _isHovered = false),
-      child: Text(
-        widget.label,
-        style: SDSTextStyle.regular.copyWith(
-          fontSize: 14,
-          color: SDSColor.gray900,
-          decoration: _isHovered ? TextDecoration.underline : null,
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: () => launchUrl(Uri.parse(widget.url), mode: LaunchMode.externalApplication),
+        child: Text(
+          widget.label,
+          style: SDSTextStyle.regular.copyWith(
+            fontSize: 14,
+            color: SDSColor.gray900,
+            decoration: _isHovered ? TextDecoration.underline : null,
+          ),
         ),
       ),
     );

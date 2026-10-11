@@ -19,10 +19,18 @@ void main() {
     expect(kLocationTermsUrl, contains('134creativelablocationinfo'));
   });
 
+  test('푸터 Contact 채널은 앱과 같은 공식 계정(없는 snowlive.134 아님)', () {
+    expect(kInstagramUrl, 'https://www.instagram.com/snowlive_official/');
+    expect(kInstagramUrl, isNot(contains('snowlive.134')));
+    expect(kKakaoChannelUrl, contains('pf.kakao.com/_LxnDdG'));
+  });
+
   test('웹 코드 어디에도 약관·스토어 URL을 직접 적지 않는다', () {
     const patterns = [
       'apps.apple.com',
       'play.google.com/store',
+      'instagram.com',
+      'pf.kakao.com',
       'snowlive-termsofservice',
       '134creativelabprivacypolicy',
       '134creativelablocationinfo',

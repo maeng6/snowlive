@@ -103,6 +103,15 @@ class HomeViewModelWeb extends GetxController {
   }
 
   /// 당겨서 새로고침 — 날씨·오늘 랭킹·크루·플리마켓을 다시 받는다(배너는 스트림이라 자동).
+  /// 홈에서 로고·사이드바 `홈`을 다시 눌렀을 때 — 화면이 맨 위로 올라가고([scrollToTopTick]을
+  /// 홈 화면이 구독한다) 섹션 데이터를 다시 받는다. 배너는 실시간 구독이라 그대로 둔다.
+  final RxInt scrollToTopTick = 0.obs;
+
+  Future<void> refreshFromGnb() {
+    scrollToTopTick.value++;
+    return refreshAll();
+  }
+
   Future<void> refreshAll() async {
     final r = _resort.value;
     await Future.wait([

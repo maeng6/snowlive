@@ -390,13 +390,17 @@ void main() {
       expect(svgAsset('assets/imgs/logos/snowlive_logo_black_web.svg'), findsOneWidget);
     });
 
-    testWidgets('Contact 3열 + 채널 문구', (tester) async {
+    testWidgets('Contact는 인스타그램 · 카카오 한 열만(X · TikTok · 반복 열 없음)', (tester) async {
       await pumpFooter(tester, 1440);
-      expect(find.text('Contact'), findsNWidgets(3));
-      expect(find.text('Instagram'), findsNWidgets(3));
-      expect(find.text('Kakao'), findsNWidgets(3));
-      expect(find.text('X'), findsOneWidget);
-      expect(find.text('TikTok'), findsOneWidget);
+      expect(find.text('Contact'), findsOneWidget);
+      expect(find.text('Instagram'), findsOneWidget);
+      expect(find.text('Kakao'), findsOneWidget);
+      expect(find.text('X'), findsNothing);
+      expect(find.text('TikTok'), findsNothing);
+      // 둘 다 누를 수 있다(새 탭으로 채널 열기).
+      for (final label in ['Instagram', 'Kakao']) {
+        expect(find.ancestor(of: find.text(label), matching: find.byType(GestureDetector)), findsWidgets);
+      }
     });
 
     testWidgets('공식 스토어 배지 2개가 가로로 나란히, 로고보다 오른쪽', (tester) async {

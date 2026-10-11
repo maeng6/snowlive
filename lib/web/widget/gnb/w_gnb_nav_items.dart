@@ -3,6 +3,7 @@ import 'package:com.snowlive/core/viewmodel/vm_user.dart';
 import 'package:com.snowlive/web/routes/routes_web.dart';
 import 'package:com.snowlive/web/viewmodel/alarm/vm_alarmCenter_web.dart';
 import 'package:com.snowlive/web/viewmodel/fleamarket/vm_fleamarketPagination_web.dart';
+import 'package:com.snowlive/web/viewmodel/home/vm_home_web.dart';
 import 'package:com.snowlive/web/widget/gnb/w_gnb_current_route_web.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -129,6 +130,28 @@ void _reloadSectionList(String prefix) {
   }
 }
 
+/// GNB에서 섹션으로 갈 때의 공통 동작 — 사이드바·드로어 메뉴와 상단바 로고가 같이 쓴다.
+///
+/// 이미 그 섹션 안(목록/상세 등)에 있으면 **메인 화면으로 되돌리며 새로고침**한다
+/// (라우트를 새로 만들어 스크롤도 맨 위로). ⚠️ 같은 라우트로 `Get.toNamed`하면 GetX가
+/// 중복 이동을 막아서 **아무 반응이 없다** — 홈에서 로고를 눌러도 안 움직이던 원인.
+void openGnbSection(String prefix) {
+  // 홈은 하위 화면이 없어서 라우트를 다시 만들 이유가 없다 — 다시 만들면 홈 뷰모델이
+  // 지워졌다 두 번 새로 생겨 데이터를 **두 번** 받는다(실측). 맨 위로 올리고 한 번만 다시 받는다.
+  if (prefix == WebRoutes.home &&
+      Get.currentRoute.startsWith(WebRoutes.home) &&
+      Get.isRegistered<HomeViewModelWeb>()) {
+    Get.find<HomeViewModelWeb>().refreshFromGnb();
+    return;
+  }
+  if (Get.currentRoute.startsWith(prefix)) {
+    Get.offAllNamed(prefix);
+    _reloadSectionList(prefix);
+  } else {
+    Get.toNamed(prefix);
+  }
+}
+
 /// 사이드바/드로어가 공유하는 항목 1개 행. 라우트가 있으면 이동하고,
 /// 아직 화면이 없는 항목은 "준비 중" 스낵바만 띄운다. placeholder는 완전히 비활성.
 class GnbNavRow extends StatelessWidget {
@@ -161,13 +184,7 @@ class GnbNavRow extends StatelessWidget {
                     onNavigate?.call();
                     return;
                   }
-                  if (Get.currentRoute.startsWith(prefix)) {
-                    // 이미 이 섹션 안(목록/상세 등)에 있으면 → 메인 목록으로 되돌리며 새로고침.
-                    Get.offAllNamed(prefix);
-                    _reloadSectionList(prefix);
-                  } else {
-                    Get.toNamed(prefix);
-                  }
+                  openGnbSection(prefix);
                   onNavigate?.call();
                 },
           borderRadius: BorderRadius.circular(6),

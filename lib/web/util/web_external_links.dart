@@ -23,6 +23,14 @@ const String kAppStoreUrlAndroid =
 const String kAppStoreUrlIos =
     'https://apps.apple.com/kr/app/%EC%8A%A4%EB%85%B8%EC%9A%B0%EB%9D%BC%EC%9D%B4%EB%B8%8C/id6444235991';
 
+/// 공식 인스타그램(앱 리조트홈 `스노우라이브 소식은 인스타그램에서!` 배너와 같은 계정).
+/// ⚠️ 앱 `스노우라이브 소개` 화면의 `instagram.com/snowlive.134`는 **없는 계정**이다
+/// (2026-10-11 확인: "Profile을 이용할 수 없습니다") — 그 주소를 쓰지 말 것.
+const String kInstagramUrl = 'https://www.instagram.com/snowlive_official/';
+
+/// 카카오톡 채널 1:1 채팅(앱 `스노우라이브 소개 > 카카오 채널`과 같은 링크).
+const String kKakaoChannelUrl = 'https://pf.kakao.com/_LxnDdG/chat';
+
 /// 가입 완료 모달에 띄울 QR 목록.
 ///
 /// QR 하나에는 URL 하나만 들어가고, **QR을 스캔하는 기기는 화면을 띄운 기기와 다르다**
