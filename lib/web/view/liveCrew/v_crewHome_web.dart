@@ -331,7 +331,9 @@ class _CrewHomeViewWebState extends State<CrewHomeViewWeb> {
             const Spacer(),
             WebSectionLinkButton(
               label: '전체 멤버',
-              onTap: () => Get.toNamed('${WebRoutes.crewMembers}?id=$_crewId'),
+              // '랭킹 TOP N 멤버' 섹션의 전체보기 → 크루원 '랭킹' 전체 리스트로.
+              // (멤버 명부 페이지 crewMembers가 아니라 crewSeasonRanking)
+              onTap: () => Get.toNamed('${WebRoutes.crewSeasonRanking}?id=$_crewId'),
             ),
           ],
         ),
