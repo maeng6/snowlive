@@ -475,6 +475,9 @@ class _FilledPill extends StatelessWidget {
   }
 }
 
+/// 라이브톡 글 최대 길이(앱과 같다).
+const int kLiveTalkMaxLength = 1000;
+
 /// 두 플로우가 공유하는 `글 작성하기` 입력 영역(피그마 80:219847).
 /// 라벨 bold 14 ↔ 12 ↔ 입력 칸 181(내부 여백 16).
 class LiveTalkComposeField extends StatefulWidget {
@@ -516,48 +519,80 @@ class _LiveTalkComposeFieldState extends State<LiveTalkComposeField> {
         const SizedBox(height: 12),
         SizedBox(
           height: widget.height,
-          child: Scrollbar(
-            controller: _scrollController,
-            // ⚠️ TextField 안쪽 자동 스크롤바를 끈다 — 안 끄면 칸 가장자리(위
-            // Scrollbar)와 여백 안쪽에 스크롤바가 두 줄로 보인다.
-            child: ScrollConfiguration(
-              behavior: const _NoScrollbarBehavior(),
-              child: TextField(
-                controller: widget.controller,
-                scrollController: _scrollController,
-                maxLines: null,
-                expands: true,
-                textAlignVertical: TextAlignVertical.top,
-                maxLength: 1000,
-                style: SDSTextStyle.regular.copyWith(
-                  fontSize: 15,
-                  color: SDSColor.gray900,
-                  height: 22 / 15,
-                ),
-                cursorHeight: 16,
-                decoration: InputDecoration(
-                  hintText: '라이브톡 글을 남겨주세요.',
-                  // 목업 #949494 = gray500.
-                  hintStyle: SDSTextStyle.regular.copyWith(
-                    fontSize: 15,
-                    color: SDSColor.gray500,
-                    height: 22 / 15,
-                  ),
-                  counterText: '',
-                  filled: true,
-                  // 목업 #F6F6F6 ↔ 토큰 gray50(#F5F5F5) — 1 차이라 토큰을 쓴다.
-                  fillColor: SDSColor.gray50,
-                  contentPadding: const EdgeInsets.all(SDSSpacing.md),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(6),
-                    borderSide: BorderSide.none,
+          child: Stack(
+            children: [
+              Positioned.fill(child: _buildField()),
+              // 글자 수 — 1000자 제한이 보이지 않아 넘기면 입력이 그냥 멈췄다.
+              // 칸 오른쪽 아래에 얹고, 글이 겹치지 않게 아래 여백을 그만큼 둔다.
+              Positioned(
+                right: 12,
+                bottom: 8,
+                child: IgnorePointer(
+                  child: ValueListenableBuilder<TextEditingValue>(
+                    valueListenable: widget.controller,
+                    builder: (context, value, _) {
+                      final count = value.text.characters.length;
+                      return Text(
+                        '$count / $kLiveTalkMaxLength',
+                        style: SDSTextStyle.regular.copyWith(
+                          fontSize: 12,
+                          height: 16 / 12,
+                          color: count >= kLiveTalkMaxLength ? SDSColor.red : SDSColor.gray400,
+                        ),
+                      );
+                    },
                   ),
                 ),
               ),
-            ),
+            ],
           ),
         ),
       ],
+    );
+  }
+
+  Widget _buildField() {
+    return Scrollbar(
+      controller: _scrollController,
+      // ⚠️ TextField 안쪽 자동 스크롤바를 끈다 — 안 끄면 칸 가장자리(위
+      // Scrollbar)와 여백 안쪽에 스크롤바가 두 줄로 보인다.
+      child: ScrollConfiguration(
+        behavior: const _NoScrollbarBehavior(),
+        child: TextField(
+          controller: widget.controller,
+          scrollController: _scrollController,
+          maxLines: null,
+          expands: true,
+          textAlignVertical: TextAlignVertical.top,
+          maxLength: kLiveTalkMaxLength,
+          style: SDSTextStyle.regular.copyWith(
+            fontSize: 15,
+            color: SDSColor.gray900,
+            height: 22 / 15,
+          ),
+          cursorHeight: 16,
+          decoration: InputDecoration(
+            hintText: '라이브톡 글을 남겨주세요.',
+            // 목업 #949494 = gray500.
+            hintStyle: SDSTextStyle.regular.copyWith(
+              fontSize: 15,
+              color: SDSColor.gray500,
+              height: 22 / 15,
+            ),
+            counterText: '',
+            filled: true,
+            // 목업 #F6F6F6 ↔ 토큰 gray50(#F5F5F5) — 1 차이라 토큰을 쓴다.
+            fillColor: SDSColor.gray50,
+            // 아래는 글자 수 자리(16 + 줄 16 + 여백 8)만큼 더 둔다.
+            contentPadding:
+              const EdgeInsets.fromLTRB(SDSSpacing.md, SDSSpacing.md, SDSSpacing.md, 32),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(6),
+              borderSide: BorderSide.none,
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

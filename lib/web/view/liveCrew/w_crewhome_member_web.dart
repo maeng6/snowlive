@@ -72,6 +72,9 @@ class CrewMemberListSkeleton extends StatelessWidget {
   /// 전체 행 수(열로 나눠 담는다).
   final int count;
 
+  /// 순위 칸([CrewMemberRankedRowWeb])이 있는 목록이면 그 자리도 잡는다(크루홈 TOP 10).
+  final bool showRank;
+
   /// 열 사이 간격 — 크루홈 48 / 멤버 화면은 폭별 값.
   final double columnGap;
 
@@ -79,6 +82,7 @@ class CrewMemberListSkeleton extends StatelessWidget {
     super.key,
     required this.count,
     required this.columnGap,
+    this.showRank = false,
   });
 
   @override
@@ -100,7 +104,18 @@ class CrewMemberListSkeleton extends StatelessWidget {
                   children: [
                     for (var i = 0; i < perColumn; i++) ...[
                       if (i > 0) SizedBox(height: gap),
-                      const _CrewMemberRowSkeleton(),
+                      if (showRank)
+                        const Row(
+                          children: [
+                            SizedBox(
+                              width: kCrewMemberRankWidth,
+                              child: Center(child: SkeletonBox(width: 12, height: 14)),
+                            ),
+                            Expanded(child: _CrewMemberRowSkeleton()),
+                          ],
+                        )
+                      else
+                        const _CrewMemberRowSkeleton(),
                     ],
                   ],
                 ),
@@ -146,6 +161,45 @@ class _CrewMemberRowSkeleton extends StatelessWidget {
           const SkeletonBox(width: 36, height: 36, radius: 8),
         ],
       ),
+    );
+  }
+}
+
+/// 순위 칸 폭(크루원 시즌 랭킹 · 크루홈 TOP 10 공용).
+const double kCrewMemberRankWidth = 28;
+
+/// 순위 숫자 + 멤버 한 줄. 크루홈 `랭킹 TOP 10 멤버`와 `크루원 시즌 랭킹`이 같이 쓴다.
+///
+/// 서버 `overall_rank`는 **전체 랭킹** 순위라 크루 안 순위로는 맞지 않는다 →
+/// 호출하는 쪽이 목록 순서로 [rank]를 매긴다(앱과 동일).
+class CrewMemberRankedRowWeb extends StatelessWidget {
+  final int rank;
+  final CrewRanking member;
+  final VoidCallback onTap;
+
+  const CrewMemberRankedRowWeb({
+    super.key,
+    required this.rank,
+    required this.member,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        SizedBox(
+          width: kCrewMemberRankWidth,
+          child: Text(
+            '$rank',
+            textAlign: TextAlign.center,
+            maxLines: 1,
+            style: SDSTextStyle.bold.copyWith(fontSize: 14, color: SDSColor.gray900),
+          ),
+        ),
+        // 아바타·닉네임·상태메시지·점수·티어는 멤버 목록과 같은 줄을 쓴다.
+        Expanded(child: CrewMemberRowWeb(member: member, onTap: onTap)),
+      ],
     );
   }
 }
@@ -296,12 +350,26 @@ class _CrewMemberProfileRowWebState extends State<CrewMemberProfileRowWeb> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Text(
-                      info?.displayName ?? '',
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: SDSTextStyle.regular.copyWith(
-                          fontSize: m.nameSize, height: 20 / 15, color: SDSColor.gray900),
+                    // 역할 배지는 닉네임 **바로 오른쪽**(사용자 확정). 닉네임이 길면
+                    // 닉네임만 말줄임되고 배지는 항상 보인다. 크루원은 배지를 생략한다
+                    // (목업: 크루장/운영진만 강조).
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Flexible(
+                          child: Text(
+                            info?.displayName ?? '',
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: SDSTextStyle.regular.copyWith(
+                                fontSize: m.nameSize, height: 20 / 15, color: SDSColor.gray900),
+                          ),
+                        ),
+                        if (role == kCrewRoleLeader || role == kCrewRoleManager) ...[
+                          const SizedBox(width: 6),
+                          CrewRoleBadge(role: role, compact: true),
+                        ],
+                      ],
                     ),
                     if (resort.isNotEmpty)
                       Text(
@@ -314,11 +382,6 @@ class _CrewMemberProfileRowWebState extends State<CrewMemberProfileRowWeb> {
                   ],
                 ),
               ),
-              // 크루원은 배지를 생략한다(목업: 크루장/운영진만 강조).
-              if (role == kCrewRoleLeader || role == kCrewRoleManager) ...[
-                const SizedBox(width: SDSSpacing.sm),
-                CrewRoleBadge(role: role),
-              ],
             ],
           ),
         ),

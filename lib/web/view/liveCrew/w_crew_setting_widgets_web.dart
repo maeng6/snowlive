@@ -33,7 +33,11 @@ class CrewSettingSection extends StatelessWidget {
 class CrewRoleBadge extends StatelessWidget {
   final String role;
 
-  const CrewRoleBadge({super.key, required this.role});
+  /// 닉네임 줄 안에 붙일 때(멤버 화면). 줄높이를 못 박아 배지 높이를 18로 고정한다 —
+  /// 행 높이가 고정이라 배지가 닉네임 줄(20)보다 크면 행이 넘친다.
+  final bool compact;
+
+  const CrewRoleBadge({super.key, required this.role, this.compact = false});
 
   @override
   Widget build(BuildContext context) {
@@ -52,11 +56,15 @@ class CrewRoleBadge extends StatelessWidget {
     }
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+      padding: EdgeInsets.symmetric(horizontal: compact ? 6 : 8, vertical: compact ? 2 : 3),
       decoration: BoxDecoration(color: background, borderRadius: BorderRadius.circular(4)),
       child: Text(
         role.isEmpty ? kCrewRoleMember : role,
-        style: SDSTextStyle.bold.copyWith(fontSize: 11, color: foreground),
+        style: SDSTextStyle.bold.copyWith(
+          fontSize: 11,
+          height: compact ? 14 / 11 : null,
+          color: foreground,
+        ),
       ),
     );
   }

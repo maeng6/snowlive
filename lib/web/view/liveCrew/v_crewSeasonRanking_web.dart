@@ -116,7 +116,7 @@ class _CrewSeasonRankingViewWebState extends State<CrewSeasonRankingViewWeb> {
         ),
         const SizedBox(height: SDSSpacing.md),
         for (var i = 0; i < pageItems.length; i++)
-          _RankingRow(
+          CrewMemberRankedRowWeb(
             // 서버 `overall_rank`는 전체 랭킹 순위라 크루 안에서는 맞지 않는다 →
             // 목록 순서로 번호를 붙인다(앱과 동일).
             rank: start + i + 1,
@@ -144,33 +144,6 @@ class _CrewSeasonRankingViewWebState extends State<CrewSeasonRankingViewWeb> {
       member: member,
       crewName: _vm.info?.crewName,
       resortName: _vm.info?.baseResortFullname ?? _vm.info?.baseResortNickname,
-    );
-  }
-}
-
-class _RankingRow extends StatelessWidget {
-  final int rank;
-  final CrewRanking member;
-  final VoidCallback onTap;
-
-  const _RankingRow({required this.rank, required this.member, required this.onTap});
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        SizedBox(
-          width: 28,
-          child: Text(
-            '$rank',
-            textAlign: TextAlign.center,
-            maxLines: 1,
-            style: SDSTextStyle.bold.copyWith(fontSize: 14, color: SDSColor.gray900),
-          ),
-        ),
-        // 아바타·닉네임·상태메시지·점수·티어는 크루홈·멤버 목록과 같은 줄을 쓴다.
-        Expanded(child: CrewMemberRowWeb(member: member, onTap: onTap)),
-      ],
     );
   }
 }

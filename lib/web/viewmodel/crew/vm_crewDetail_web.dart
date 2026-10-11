@@ -7,6 +7,7 @@ import 'package:com.snowlive/core/model/m_crewMemberList.dart';
 import 'package:com.snowlive/core/model/m_crewMemberRankingList.dart';
 import 'package:com.snowlive/core/viewmodel/vm_user.dart';
 import 'package:com.snowlive/web/util/ranking_season_web.dart';
+import 'package:com.snowlive/web/viewmodel/crew/vm_crewSetting_web.dart' show crewCanManageApplications;
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
@@ -65,6 +66,25 @@ class CrewDetailViewModelWeb extends GetxController {
     final my = _userVM.user.crew_id;
     return my != null && _crewId != null && my == _crewId;
   }
+
+  /// 이 크루에서 내 역할(전체 멤버 목록의 `status`). 크루원이 아니면 빈 문자열.
+  String get myRole {
+    final id = _userVM.user.user_id;
+    if (id == null) return '';
+    for (final member in _fullMembers) {
+      if (member.userInfo?.userId == id) return member.status ?? '';
+    }
+    return '';
+  }
+
+  /// 가입 신청을 볼 수 있는지 — 크루홈 알림 종을 이 사람에게만 보인다(앱과 같다).
+  /// 권한 값을 모르면 닫는다(웹 관례 — 크루 설정 VM과 같다).
+  bool get canManageApplications =>
+      isMyCrew &&
+      crewCanManageApplications(
+        role: myRole,
+        permissionJoin: _info.value?.permissionJoin ?? false,
+      );
 
   Future<void> load(int crewId) async {
     _crewId = crewId;

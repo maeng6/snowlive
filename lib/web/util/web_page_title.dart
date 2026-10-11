@@ -39,6 +39,7 @@ const Map<String, String> kWebPageNames = {
   WebRoutes.crewTalks: '크루톡',
   WebRoutes.crewCreate: '라이브크루 만들기',
   WebRoutes.crewJoin: '크루 가입하기',
+  WebRoutes.crewMyApplications: '가입 신청한 크루',
   WebRoutes.crewSetting: '크루 설정',
   WebRoutes.crewSettingDesc: '크루 소개글 작성/변경',
   WebRoutes.crewSettingNotice: '공지사항 작성',

@@ -4,6 +4,7 @@ import 'package:com.snowlive/core/viewmodel/vm_user.dart';
 import 'package:com.snowlive/web/routes/routes_web.dart';
 import 'package:com.snowlive/web/util/responsive_web.dart';
 import 'package:com.snowlive/web/view/liveCrew/w_crew_setting_scaffold_web.dart';
+import 'package:com.snowlive/web/viewmodel/alarm/vm_alarmCenter_web.dart' show AlarmBadgeWeb;
 import 'package:com.snowlive/web/viewmodel/crew/vm_crewSetting_web.dart';
 import 'package:com.snowlive/web/widget/w_empty_state_web.dart';
 import 'package:com.snowlive/web/widget/w_web_avatar_web.dart';
@@ -35,10 +36,20 @@ class _CrewApplicationsViewWebState extends State<CrewApplicationsViewWeb> {
     _crewId = int.tryParse(Get.parameters['id'] ?? '');
     final id = _crewId;
     if (id != null) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (mounted && _vm.crewId != id) _vm.load(id);
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        if (!mounted) return;
+        if (_vm.crewId != id) await _vm.load(id);
+        if (mounted) _clearCrewAlarm();
       });
     }
+  }
+
+  /// 신청 목록을 봤으니 크루홈 종의 `N`을 끈다(앱은 종을 누를 때 끈다 — 웹은 설정 ·
+  /// 알림센터로 들어와도 꺼지게 화면 진입 기준). 권한 판정이 끝난 뒤에만.
+  void _clearCrewAlarm() {
+    final userId = _userVm.user.user_id;
+    if (userId == null || !_vm.canManageApplications) return;
+    AlarmBadgeWeb.clearCrew(userId);
   }
 
   void _toast(String message) {

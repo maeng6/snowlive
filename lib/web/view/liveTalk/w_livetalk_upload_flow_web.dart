@@ -87,9 +87,9 @@ class _UploadFlowState extends State<_UploadFlow> {
     // 드롭된 이미지를 새 탭에서 열어버린다.
     _drop = WebFileDrop.attach(
       onFiles: (files) {
+        // 지금 단계에 그대로 머문다 — 1단계면 미리보기, 글 작성 단계면 `사진 추가`
+        // 칸이 썸네일로 바뀐다(쓰던 글이 그대로 남는다).
         _vm.setPickedImage(files.first);
-        // 사진이 들어왔으니 바로 다음 단계로 갈 수 있게 첫 단계로 맞춰둔다.
-        if (mounted && _step != 0) setState(() => _step = 0);
       },
       onDragChanged: (dragging) {
         if (mounted && dragging != _isDragging) {
@@ -133,7 +133,9 @@ class _UploadFlowState extends State<_UploadFlow> {
         // 2단계는 문구 자체가 없는 게 목업이라 위치를 본문이 정한다.
         subtitle: _isMobile
             ? null
-            : (isStep0 ? _pickSubtitle(context) : '글 내용을 입력하세요.'),
+            : (isStep0
+                ? _pickSubtitle(context)
+                : (_vm.hasPickedImage ? '글 내용을 입력하세요.' : '사진 없이 글만 올려요.')),
         onClose: widget.onClose,
         onBack: isStep0 ? null : () => setState(() => _step = 0),
         onNext: _nextAction(isStep0),
@@ -142,11 +144,7 @@ class _UploadFlowState extends State<_UploadFlow> {
         // 두 단계가 같은 높이라 다음/이전을 눌러도 카드가 흔들리지 않는다.
         // 본문 아래 여백은 이 높이에서 **남는 만큼**이 자동으로 된다
         // (PC 1단계 40·2단계 30 / 태블릿 1단계 25 — 전부 목업값과 일치).
-        minHeight: switch (context.screenType) {
-          WebScreenType.desktop => kLiveTalkModalHeight,
-          WebScreenType.tablet => kLiveTalkModalHeightTablet,
-          WebScreenType.mobile => kLiveTalkSheetHeightMobile,
-        },
+        minHeight: _uploadModalHeight(context),
         // 모바일 시트는 요소마다 좌우 여백이 다르다(버튼 20 / 글 작성 16 /
         // 안내 20) — 본문이 직접 든다.
         mobileBodyPadding: EdgeInsets.zero,
@@ -154,6 +152,22 @@ class _UploadFlowState extends State<_UploadFlow> {
       );
     });
   }
+
+  /// 카드(시트) 높이. 목업 높이에 `글만 올리기` 줄이 들어갈 자리를 더한다 —
+  /// 목업엔 이 줄이 없어서, 목업 높이 그대로 두면 줄이 카드 아래 끝에 붙어 버렸다.
+  /// 두 단계가 같은 높이를 쓰고, 글 작성 칸이 늘어난 만큼을 받는다([_composeExtra]).
+  double _uploadModalHeight(BuildContext context) => switch (context.screenType) {
+        WebScreenType.desktop => kLiveTalkModalHeight + _kTextOnlyExtraDesktop,
+        WebScreenType.tablet => kLiveTalkModalHeightTablet + _kTextOnlyExtraTablet,
+        WebScreenType.mobile => kLiveTalkSheetHeightMobile + _kTextOnlyExtraMobile,
+      };
+
+  /// 카드가 목업보다 커진 만큼 2단계 글 작성 칸을 키운다(두 단계 높이를 같게).
+  double get _composeExtra => switch (context.screenType) {
+        WebScreenType.desktop => _kTextOnlyExtraDesktop,
+        WebScreenType.tablet => _kTextOnlyExtraTablet,
+        WebScreenType.mobile => _kTextOnlyExtraMobile,
+      };
 
   /// PC·태블릿은 같은 드래그 안내(목업 80:217253 / 80:228872), 모바일만 앨범/촬영 안내.
   String _pickSubtitle(BuildContext context) =>
@@ -186,8 +200,9 @@ class _UploadFlowState extends State<_UploadFlow> {
         Center(child: _ImagePreviewBox(vm: _vm, isDragging: _isDragging)),
         SizedBox(
           height: switch (context.screenType) {
-            WebScreenType.desktop => 42,
-            WebScreenType.tablet => 50,
+            // 목업 42 / 50에서 줄였다 — 아래 `글만 올리기` 줄이 들어갈 자리.
+            WebScreenType.desktop => _kPickGap,
+            WebScreenType.tablet => _kPickGap,
             // 모바일은 사진 칸 아래에 안내 문구가 먼저 온다.
             WebScreenType.mobile => 16,
           },
@@ -205,7 +220,7 @@ class _UploadFlowState extends State<_UploadFlow> {
               ),
             ),
           ),
-          const SizedBox(height: 34),
+          const SizedBox(height: 24),
         ],
         if (context.isDesktop)
           Center(
@@ -243,10 +258,16 @@ class _UploadFlowState extends State<_UploadFlow> {
               ],
             ),
           ),
-        // 이미지 없이 글만 올리고 싶을 때 — 2단계(글 작성)로 바로 넘어간다.
-        const SizedBox(height: 14),
+        // 사진 없이 글만 올리고 싶을 때 — 2단계(글 작성)로 바로 넘어간다.
+        // 고른 사진이 있으면 빼고 넘어간다(이 버튼의 뜻이 `사진 없이`라서).
+        const SizedBox(height: _kTextOnlyGap),
         Center(
-          child: _SkipImageLink(onTap: () => setState(() => _step = 1)),
+          child: _TextOnlyEntry(
+            onTap: () {
+              _vm.clearPickedImage();
+              setState(() => _step = 1);
+            },
+          ),
         ),
         if (isMobile) const SizedBox(height: 10),
       ],
@@ -259,16 +280,22 @@ class _UploadFlowState extends State<_UploadFlow> {
     final isMobile = _isMobile;
     // 크루톡은 공개범위 스위치가 한 블록 더 붙는다 → **글 작성 칸을 그만큼 줄여**
     // 시트·카드 전체 높이를 1단계(사진 고르기)와 같게 유지한다.
-    final double composeHeight = (isMobile ? 195 : 181) -
+    final double composeHeight = (isMobile ? 195 : 181) +
+        _composeExtra -
         (_isCrewTalk ? SDSSpacing.md + _kVisibilityToggleHeight : 0);
+    final double slot = isMobile ? 120 : 100;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        // 이미지 없이 글만 올릴 때는 썸네일 자리를 비운다.
-        if (_vm.hasPickedImage) ...[
-          Center(child: _ImageThumb(vm: _vm, size: isMobile ? 120 : 100)),
-          SizedBox(height: isMobile ? 20 : 30),
-        ],
+        // 썸네일 자리는 늘 같은 크기로 둔다 — 사진이 있으면 썸네일(✕로 빼기),
+        // 없으면 `사진 추가` 칸. 그래서 글만 올릴 때도 카드 아래가 비지 않고,
+        // 쓰던 글을 두고 사진을 넣었다 뺐다 할 수 있다(드래그앤드롭도 된다).
+        Center(
+          child: _vm.hasPickedImage
+              ? _ImageThumb(vm: _vm, size: slot, onRemove: _vm.clearPickedImage)
+              : _AddPhotoSlot(size: slot, isDragging: _isDragging, onTap: () => _vm.pickImage()),
+        ),
+        SizedBox(height: isMobile ? 20 : 30),
         Padding(
           // 모바일 시트는 좌우 여백을 요소마다 따로 든다(글 작성 블록 16).
           padding: EdgeInsets.symmetric(horizontal: isMobile ? SDSSpacing.md : 0),
@@ -298,6 +325,22 @@ class _UploadFlowState extends State<_UploadFlow> {
     );
   }
 }
+
+/// 1단계 사진 칸 ↔ 버튼(PC·태블릿). 목업 42/50에서 줄여 `글만 올리기` 줄 자리를 만든다.
+const double _kPickGap = 30;
+
+/// 선택 버튼 ↔ `글만 올리기` 줄.
+const double _kTextOnlyGap = 8;
+
+/// `글만 올리기` 줄 높이.
+const double _kTextOnlyHeight = 40;
+
+/// 카드가 목업보다 커지는 양 = 줄(간격 포함) − 줄인 사진 칸 아래 간격.
+/// PC 48 − 12 = 36 / 태블릿 48 − 20 = 28. 모바일은 시트 높이를 내용이 정해서 1단계 실측
+/// (487 = 목업 455 + 32)에 맞춘다 — 2단계가 이보다 낮으면 단계를 넘길 때 시트가 들썩인다.
+const double _kTextOnlyExtraDesktop = _kTextOnlyGap + _kTextOnlyHeight - (42 - _kPickGap);
+const double _kTextOnlyExtraTablet = _kTextOnlyGap + _kTextOnlyHeight - (50 - _kPickGap);
+const double _kTextOnlyExtraMobile = 32;
 
 /// 1단계 사진 칸 한 변(PC·태블릿 목업 240). 카드 390 안에서 좌우 75씩 남는다.
 const double kLiveTalkPickBoxSize = 240;
@@ -353,20 +396,120 @@ class _ImagePreviewBox extends StatelessWidget {
   }
 }
 
-/// 2단계의 작은 썸네일. PC·태블릿 100 / 모바일 120(목업).
+/// 2단계의 작은 썸네일. PC·태블릿 100 / 모바일 120(목업). 우상단 ✕로 사진을 뺀다
+/// (= 글만 올리기로 전환, 쓰던 글은 그대로).
 class _ImageThumb extends StatelessWidget {
   final LiveTalkUploadViewModelWeb vm;
   final double size;
+  final VoidCallback onRemove;
 
-  const _ImageThumb({required this.vm, required this.size});
+  const _ImageThumb({required this.vm, required this.size, required this.onRemove});
 
   @override
   Widget build(BuildContext context) {
     final file = vm.pickedImage;
-    if (file == null) return SizedBox(height: size);
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(4),
-      child: Image.network(file.path, width: size, height: size, fit: BoxFit.cover),
+    if (file == null) return SizedBox(width: size, height: size);
+    return SizedBox(
+      width: size,
+      height: size,
+      child: Stack(
+        children: [
+          Positioned.fill(
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(4),
+              child: Image.network(file.path, fit: BoxFit.cover),
+            ),
+          ),
+          Positioned(
+            top: 4,
+            right: 4,
+            child: Tooltip(
+              message: '사진 빼기',
+              child: MouseRegion(
+                cursor: SystemMouseCursors.click,
+                child: GestureDetector(
+                  onTap: onRemove,
+                  child: Container(
+                    key: const ValueKey('livetalk-remove-photo'),
+                    width: 22,
+                    height: 22,
+                    decoration: BoxDecoration(
+                      color: SDSColor.snowliveBlack.withValues(alpha: 0.6),
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Icon(Icons.close, size: 14, color: SDSColor.snowliveWhite),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// 2단계에서 사진이 없을 때 썸네일 자리에 두는 `사진 추가` 칸. 누르면 사진을 고르고,
+/// 파일을 끌고 오면 1단계 사진 칸처럼 파랗게 켜진다.
+class _AddPhotoSlot extends StatefulWidget {
+  final double size;
+  final bool isDragging;
+  final VoidCallback onTap;
+
+  const _AddPhotoSlot({required this.size, required this.isDragging, required this.onTap});
+
+  @override
+  State<_AddPhotoSlot> createState() => _AddPhotoSlotState();
+}
+
+class _AddPhotoSlotState extends State<_AddPhotoSlot> {
+  bool _hovered = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final active = widget.isDragging;
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      onEnter: (_) => setState(() => _hovered = true),
+      onExit: (_) => setState(() => _hovered = false),
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: widget.onTap,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 150),
+          width: widget.size,
+          height: widget.size,
+          decoration: BoxDecoration(
+            color: active
+                ? SDSColor.blue50
+                : (_hovered ? SDSColor.gray100 : SDSColor.gray50),
+            borderRadius: BorderRadius.circular(4),
+            border: Border.all(
+              color: active ? SDSColor.snowliveBlue : SDSColor.gray200,
+              width: active ? 2 : 1,
+            ),
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.add_photo_alternate_outlined,
+                size: 26,
+                color: active ? SDSColor.snowliveBlue : SDSColor.gray400,
+              ),
+              const SizedBox(height: 4),
+              Text(
+                '사진 추가',
+                style: SDSTextStyle.regular.copyWith(
+                  fontSize: 12,
+                  height: 16 / 12,
+                  color: active ? SDSColor.snowliveBlue : SDSColor.gray500,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
@@ -460,17 +603,21 @@ class _VisibilityToggle extends StatelessWidget {
   }
 }
 
-/// `이미지 없이 글만 올리기` — 1단계에서 2단계(글 작성)로 바로 넘어가는 텍스트 링크.
-class _SkipImageLink extends StatefulWidget {
+/// `사진 없이 글만 올리기 ›` — 1단계에서 2단계(글 작성)로 바로 가는 보조 버튼.
+///
+/// 예전엔 밑줄 회색 링크라 눈에 잘 안 띄고 카드 아래 끝에 붙어 있었다. 라벨 + `›`로
+/// "글 쓰는 쪽으로 넘어간다"는 걸 보이고, hover하면 알약 배경이 깔린다.
+/// 메인 동작(사진 고르기)보다 한 단계 약하게 — 채움 없는 텍스트 버튼이다.
+class _TextOnlyEntry extends StatefulWidget {
   final VoidCallback onTap;
 
-  const _SkipImageLink({required this.onTap});
+  const _TextOnlyEntry({required this.onTap});
 
   @override
-  State<_SkipImageLink> createState() => _SkipImageLinkState();
+  State<_TextOnlyEntry> createState() => _TextOnlyEntryState();
 }
 
-class _SkipImageLinkState extends State<_SkipImageLink> {
+class _TextOnlyEntryState extends State<_TextOnlyEntry> {
   bool _hovered = false;
 
   @override
@@ -482,16 +629,28 @@ class _SkipImageLinkState extends State<_SkipImageLink> {
       child: GestureDetector(
         behavior: HitTestBehavior.opaque,
         onTap: widget.onTap,
-        child: Opacity(
-          opacity: _hovered ? 0.6 : 1.0,
-          child: Text(
-            '이미지 없이 글만 올리기',
-            style: SDSTextStyle.bold.copyWith(
-              fontSize: 14,
-              color: SDSColor.gray500,
-              decoration: TextDecoration.underline,
-              decorationColor: SDSColor.gray500,
-            ),
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 150),
+          height: _kTextOnlyHeight,
+          padding: const EdgeInsets.symmetric(horizontal: 14),
+          decoration: BoxDecoration(
+            color: _hovered ? SDSColor.gray50 : Colors.transparent,
+            borderRadius: BorderRadius.circular(_kTextOnlyHeight / 2),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                '사진 없이 글만 올리기',
+                style: SDSTextStyle.bold.copyWith(
+                  fontSize: 14,
+                  height: 18 / 14,
+                  color: SDSColor.gray700,
+                ),
+              ),
+              const SizedBox(width: 2),
+              const Icon(Icons.chevron_right, size: 18, color: SDSColor.gray500),
+            ],
           ),
         ),
       ),

@@ -13,6 +13,11 @@ import 'package:image_picker/image_picker.dart';
 /// 서버가 쓰는 역할 문자열. 숫자 코드가 아니라 **한글**이다(실측).
 const String kCrewRoleLeader = '크루장';
 const String kCrewRoleManager = '운영진';
+
+/// 가입 신청을 보고 승인·거절할 수 있는지 — 크루장, 또는 `가입 신청 허가 권한`이 켜진 운영진.
+/// 크루 설정(가입 신청 목록)과 크루홈 알림 종이 같은 규칙을 쓴다(앱 `v_crewMain.dart:58`과 같다).
+bool crewCanManageApplications({required String role, required bool permissionJoin}) =>
+    role == kCrewRoleLeader || (role == kCrewRoleManager && permissionJoin);
 const String kCrewRoleMember = '크루원';
 
 /// 소개글·공지 글자수 제한.
@@ -86,7 +91,8 @@ class CrewSettingViewModelWeb extends GetxController {
 
   bool get canEditDescription => isLeader || (isManager && permissionDesc);
   bool get canEditNotice => isLeader || (isManager && permissionNotice);
-  bool get canManageApplications => isLeader || (isManager && permissionJoin);
+  bool get canManageApplications =>
+      crewCanManageApplications(role: myRole, permissionJoin: permissionJoin);
 
   /// 이미지·컬러, 크루원 관리, 운영진 권한은 크루장 전용이다.
   bool get canManageCrew => isLeader;

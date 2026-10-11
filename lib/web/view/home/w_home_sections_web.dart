@@ -1041,7 +1041,10 @@ class _HomeFleamarketWebState extends State<HomeFleamarketWeb>
   Widget build(BuildContext context) {
     final screenType = context.screenType;
     final perPage = _perPage(screenType);
-    final pages = homeCarouselPages(widget.items, perPage);
+    final pages = homeCarouselPages(
+      widget.items.take(perPage * kHomeFleamarketMaxPages).toList(),
+      perPage,
+    );
     final page = pages.isEmpty ? const <Fleamarket>[] : pages[_page.clamp(0, pages.length - 1)];
 
     return Column(

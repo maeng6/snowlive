@@ -72,6 +72,9 @@ class LiveTalkUploadViewModelWeb extends GetxController {
   /// 드래그앤드롭으로 받은 파일을 그대로 쓴다(브라우저가 만든 blob URL).
   void setPickedImage(XFile file) => _pickedImage.value = file;
 
+  /// 고른 사진을 뺀다 — 글 작성 단계에서 `사진 빼기`(글만 올리기로 전환).
+  void clearPickedImage() => _pickedImage.value = null;
+
   /// 오늘의 라이딩 카드를 불러온다.
   ///
   /// ⚠️ `ranking/riding-record-card/`(리조트홈 요약 카드)가 아니라 **모바일 앱과

@@ -78,7 +78,14 @@ class _WebNetworkImageState extends State<WebNetworkImage> {
 
   @override
   Widget build(BuildContext context) {
-    // 디코드 폭을 **실제 표시 폭**으로 잡으려면 레이아웃 제약이 필요하다.
+    // 폭이 정해져 있으면(아바타·로고 등) 그 폭으로 디코드하므로 레이아웃 제약이 필요 없다 →
+    // LayoutBuilder를 거치지 않는다. ⚠️ LayoutBuilder는 intrinsic 측정을 지원하지 않아서
+    // IntrinsicHeight/Width 안(홈 `오늘의 랭킹` 카드 등)에 들어가면 레이아웃 예외가 난다.
+    final propW = widget.width;
+    if (propW != null && propW.isFinite && propW > 0) {
+      return _build(context, const BoxConstraints());
+    }
+    // 폭이 없으면 디코드 폭을 **실제 표시 폭**으로 잡기 위해 레이아웃 제약이 필요하다.
     return LayoutBuilder(
       builder: (context, constraints) => _build(context, constraints),
     );

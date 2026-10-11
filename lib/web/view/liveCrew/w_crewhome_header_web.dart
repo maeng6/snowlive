@@ -7,6 +7,7 @@ import 'package:com.snowlive/web/widget/w_network_image_web.dart';
 import 'package:com.snowlive/web/widget/w_web_icon_button_web.dart';
 import 'package:com.snowlive/web/widget/w_web_image_viewer_web.dart';
 import 'package:com.snowlive/web/widget/w_web_profile_tap_web.dart';
+import 'package:com.snowlive/web/viewmodel/alarm/vm_alarmCenter_web.dart' show AlarmBadgeWeb;
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -20,6 +21,16 @@ class CrewHomeHeaderWeb extends StatelessWidget {
   /// 설정 톱니를 그릴지. 앱과 같이 **내 크루일 때만** 보여준다.
   final bool showSettings;
 
+  /// 가입 신청 알림 종을 그릴지 — 앱과 같이 크루장, 또는 가입 신청 허가 권한이 있는
+  /// 운영진에게만(`CrewDetailViewModelWeb.canManageApplications`).
+  final bool showAlarm;
+
+  /// 종의 `N` 배지를 구독할 내 user_id(Firestore `notificationCenter.crew`).
+  final int? alarmUserId;
+
+  /// 종을 눌렀을 때(가입 신청 목록으로).
+  final VoidCallback? onAlarmTap;
+
   /// 방문자수(오늘/전체). null이면 `-`로 표시(아직 집계 전).
   final int? visitorToday;
   final int? visitorTotal;
@@ -28,6 +39,9 @@ class CrewHomeHeaderWeb extends StatelessWidget {
     super.key,
     required this.info,
     this.showSettings = false,
+    this.showAlarm = false,
+    this.alarmUserId,
+    this.onAlarmTap,
     this.visitorToday,
     this.visitorTotal,
   });
@@ -126,19 +140,18 @@ class CrewHomeHeaderWeb extends StatelessWidget {
             ),
           ),
         ],
-        const SizedBox(width: SDSSpacing.md),
-        _HeaderIconButton(
-          // 앱과 같은 에셋(v_crewMain.dart:72) — 알림은 틴트 없이 그대로 쓴다.
-          asset: 'assets/imgs/icons/icon_alarm_resortHome.png',
-          // 크루 알림 화면은 목업이 없어 다음 작업이다.
-          onTap: () => Get.snackbar('알림', '크루 알림은 준비 중이에요.'),
-          // 설정이 없으면 이게 마지막 아이콘이다.
-          flushRight: !showSettings,
-        ),
+        if (showAlarm || showSettings) const SizedBox(width: SDSSpacing.md),
+        if (showAlarm)
+          _CrewAlarmButton(
+            userId: alarmUserId,
+            onTap: onAlarmTap ?? () {},
+            // 설정이 없으면 이게 마지막 아이콘이다.
+            flushRight: !showSettings,
+          ),
         if (showSettings) ...[
           // 아이콘 **사이 12**(목업 — 묶음 64 = 26 + 12 + 26). 각 버튼이 히트 여백
           // 4씩을 갖고 있으므로 여기서는 4만 준다(4+4+4 = 12).
-          const SizedBox(width: 4),
+          if (showAlarm) const SizedBox(width: 4),
           _HeaderIconButton(
             // 앱과 같은 에셋(v_fleaMarketMain.dart:99) — 설정은 gray900으로 틴트한다.
             asset: 'assets/imgs/icons/icon_header_setting.png',
@@ -179,6 +192,80 @@ class _HeaderIconButton extends StatelessWidget {
       padding: EdgeInsets.fromLTRB(4, 4, flushRight ? 0 : 4, 4),
       // 목업(161:87215)·앱 모두 26.
       icon: Image.asset(asset, width: 26, height: 26, color: tint),
+    );
+  }
+}
+
+/// 가입 신청 알림 종 — 새 신청이 있으면 오른쪽 위에 빨간 `N`(앱 `v_crewMain.dart:104`과 같은 모양).
+class _CrewAlarmButton extends StatefulWidget {
+  final int? userId;
+  final VoidCallback onTap;
+  final bool flushRight;
+
+  const _CrewAlarmButton({required this.userId, required this.onTap, required this.flushRight});
+
+  @override
+  State<_CrewAlarmButton> createState() => _CrewAlarmButtonState();
+}
+
+class _CrewAlarmButtonState extends State<_CrewAlarmButton> {
+  int? _uid;
+  Stream<bool>? _stream;
+
+  /// 리빌드마다 구독을 새로 걸지 않게 user_id별로 한 번만 만든다.
+  Stream<bool>? get _crewStream {
+    if (widget.userId != _uid) {
+      _uid = widget.userId;
+      _stream = _uid == null ? null : AlarmBadgeWeb.crewStream(_uid!);
+    }
+    return _stream;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final button = _HeaderIconButton(
+      // 앱과 같은 에셋(v_crewMain.dart:72) — 알림은 틴트 없이 그대로 쓴다.
+      asset: 'assets/imgs/icons/icon_alarm_resortHome.png',
+      onTap: widget.onTap,
+      flushRight: widget.flushRight,
+    );
+    final stream = _crewStream;
+    if (stream == null) return button;
+    return StreamBuilder<bool>(
+      stream: stream,
+      builder: (context, snap) {
+        if (snap.data != true) return button;
+        return Stack(
+          clipBehavior: Clip.none,
+          children: [
+            button,
+            Positioned(
+              top: -4,
+              right: widget.flushRight ? -8 : -4,
+              child: IgnorePointer(
+                child: Container(
+                  key: const ValueKey('crew-alarm-new'),
+                  width: 18,
+                  height: 18,
+                  alignment: Alignment.center,
+                  decoration: const BoxDecoration(
+                    color: Color(0xFFD6382B),
+                    shape: BoxShape.circle,
+                  ),
+                  child: Text(
+                    'N',
+                    style: SDSTextStyle.extraBold.copyWith(
+                      fontSize: 10,
+                      height: 1,
+                      color: SDSColor.snowliveWhite,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 }

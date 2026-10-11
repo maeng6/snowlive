@@ -77,43 +77,61 @@ AlarmTapTarget alarmTapTarget(
   }
 }
 
-/// 사이드바·드로어의 `알림` 빨간 점.
+/// 앱과 같은 알림 표시 플래그 — Firestore `notificationCenter`의 내 문서(`uid` 필드).
 ///
-/// 앱과 같은 소스 — Firestore `notificationCenter`의 내 문서(`uid` 필드)의 `total`.
-/// 친구 요청·크루 가입 신청 등을 보낸 쪽이 상대 문서를 `total: true`로 켜고,
-/// 알림 화면에 들어오면 끈다.
+/// - `total`: 사이드바·드로어 `알림` 빨간 점. 알림 화면에 들어오면 끈다.
+/// - `crew`: 크루홈 종의 `N`. 가입 신청 목록을 보면 끈다.
+///
+/// 친구 요청·크루 가입 신청 등을 보낸 쪽이 상대 문서의 플래그를 켠다.
 class AlarmBadgeWeb {
   static const String _collection = 'notificationCenter';
 
+  /// 알림센터 전체(사이드바 `알림` 빨간 점).
+  static const String _fieldTotal = 'total';
+
+  /// 크루 가입 신청(크루홈 종의 `N` 배지). 신청한 쪽이 크루장 문서를 켠다.
+  static const String _fieldCrew = 'crew';
+
   /// 안 읽은 알림이 있는지. Firestore를 못 쓰는 환경(테스트 등)에서는 항상 false.
-  static Stream<bool> unreadStream(int uid) {
+  static Stream<bool> unreadStream(int uid) => _flagStream(uid, _fieldTotal);
+
+  /// 새 크루 가입 신청이 있는지(앱 `v_crewMain.dart`의 `crew` 필드).
+  static Stream<bool> crewStream(int uid) => _flagStream(uid, _fieldCrew);
+
+  /// 사이드바 점을 끈다.
+  static Future<void> clear(int uid) => _clearFlag(uid, _fieldTotal);
+
+  /// 크루홈 종의 `N`을 끈다(가입 신청 목록을 보면).
+  static Future<void> clearCrew(int uid) => _clearFlag(uid, _fieldCrew);
+
+  static Stream<bool> _flagStream(int uid, String field) {
     try {
       return FirebaseFirestore.instance
           .collection(_collection)
           .where('uid', isEqualTo: uid)
           .snapshots()
-          .map((snap) => snap.docs.isNotEmpty && snap.docs.first.data()['total'] == true)
-          .handleError((Object e) => debugPrint('[AlarmBadge] 구독 실패: $e'));
+          .map((snap) => snap.docs.isNotEmpty && snap.docs.first.data()[field] == true)
+          .handleError((Object e) => debugPrint('[AlarmBadge] $field 구독 실패: $e'));
     } catch (e) {
-      debugPrint('[AlarmBadge] 구독 실패: $e');
+      debugPrint('[AlarmBadge] $field 구독 실패: $e');
       return Stream<bool>.value(false);
     }
   }
 
-  /// 점을 끈다. 문서가 없으면 만든다(앱 `updateNotification`과 같다).
-  static Future<void> clear(int uid) async {
+  /// 문서가 없으면 만든다(앱 `updateNotification`과 같다).
+  static Future<void> _clearFlag(int uid, String field) async {
     try {
       final col = FirebaseFirestore.instance.collection(_collection);
       final snap = await col.where('uid', isEqualTo: uid).get();
       if (snap.docs.isNotEmpty) {
-        if (snap.docs.first.data()['total'] == true) {
-          await snap.docs.first.reference.update({'total': false});
+        if (snap.docs.first.data()[field] == true) {
+          await snap.docs.first.reference.update({field: false});
         }
       } else {
         await col.add({'uid': uid, 'total': false, 'friend': false, 'crew': false});
       }
     } catch (e) {
-      debugPrint('[AlarmBadge] 끄기 실패: $e');
+      debugPrint('[AlarmBadge] $field 끄기 실패: $e');
     }
   }
 }

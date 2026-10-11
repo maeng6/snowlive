@@ -218,6 +218,10 @@ class _CrewHomeViewWebState extends State<CrewHomeViewWeb> {
     final header = CrewHomeHeaderWeb(
       info: info,
       showSettings: _vm.isMyCrew,
+      // 가입 신청을 볼 수 있는 사람(크루장 · 허가 권한 있는 운영진)에게만 종(앱과 같다).
+      showAlarm: _vm.canManageApplications,
+      alarmUserId: _userVm.user.user_id,
+      onAlarmTap: () => Get.toNamed('${WebRoutes.crewApplications}?id=$_crewId'),
       visitorToday: _vm.visitorToday,
       visitorTotal: _vm.visitorTotal,
     );
@@ -355,7 +359,12 @@ class _CrewHomeViewWebState extends State<CrewHomeViewWeb> {
                       for (final (index, member)
                           in top.skip(i * perColumn).take(perColumn).indexed) ...[
                         if (index > 0) SizedBox(height: crewMemberRowGap(context)),
-                        CrewMemberRowWeb(member: member, onTap: () => _onMemberTap(member)),
+                        CrewMemberRankedRowWeb(
+                          // 1열이 1~5위, 2열이 6~10위(열 순서대로 채운다).
+                          rank: i * perColumn + index + 1,
+                          member: member,
+                          onTap: () => _onMemberTap(member),
+                        ),
                       ],
                     ],
                   ),
@@ -450,6 +459,7 @@ class _CrewHomeSkeleton extends StatelessWidget {
         CrewMemberListSkeleton(
           count: crewHomeTopMemberCount(context),
           columnGap: 48,
+          showRank: true,
         ),
         const SizedBox(height: 48),
         const _SectionTitleSkeleton(buttonWidth: 73),

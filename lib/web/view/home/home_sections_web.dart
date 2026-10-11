@@ -257,6 +257,11 @@ List<HomeCrewCard> homeCrewCards(CrewHomeModel? home) {
 
 // ───────────────────────────────── 캐러셀 ─────────────────────────────────
 
+/// 홈 중고거래 캐러셀 최대 페이지 수. 첫 페이지 API는 30개를 주는데 다 넣으면 점이
+/// PC 5 · 태블릿 8 · 모바일 15개가 된다 → 폭과 상관없이 3페이지(PC 18 · 태블릿 12 ·
+/// 모바일 6개)까지만, 더 보려면 `더보기`(사용자 확정 2026-10-11).
+const int kHomeFleamarketMaxPages = 3;
+
 /// 목록을 [size]개씩 끊어 캐러셀 페이지로 만든다(목업의 `‹ ›` 한 번에 한 페이지).
 List<List<T>> homeCarouselPages<T>(List<T> items, int size) {
   if (items.isEmpty || size <= 0) return const [];
