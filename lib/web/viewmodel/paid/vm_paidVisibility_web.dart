@@ -8,6 +8,9 @@ import 'package:get/get.dart';
 /// 어드민에서 paid_features_live를 켜면 전체 유저 true.
 class PaidVisibilityControllerWeb extends GetxController {
   final RxBool showPaid = false.obs;
+  // 웹 GNB 메뉴 온오프 맵 {route_prefix: bool}. 키 없으면 노출(true).
+  final RxMap<String, bool> menus = <String, bool>{}.obs;
+  final RxBool todayRanking = true.obs; // 웹 홈 '오늘의 랭킹' 섹션
   final SeasonPassAPI _api = SeasonPassAPI();
 
   @override
@@ -37,14 +40,31 @@ class PaidVisibilityControllerWeb extends GetxController {
       final res = await _api.fetchVisibility(userId: uid);
       if (res.success && res.data is Map) {
         showPaid.value = res.data['show_paid'] == true;
+        final m = res.data['menus'];
+        if (m is Map) {
+          menus.assignAll(m.map((k, v) => MapEntry('$k', v == true)));
+        }
+        if (res.data['today_ranking'] != null) {
+          todayRanking.value = res.data['today_ranking'] == true;
+        }
       }
     } catch (_) {
-      // 조회 실패 시 노출하지 않음(보수적).
+      // 조회 실패 시 유료는 숨김(보수적), 랭킹은 기본 노출 유지.
     }
   }
 
-  /// 전역 접근 헬퍼. 미등록 환경(테스트 등)에선 false로 간주.
-  static bool get isVisible => Get.isRegistered<PaidVisibilityControllerWeb>()
-      ? Get.find<PaidVisibilityControllerWeb>().showPaid.value
-      : false;
+  static PaidVisibilityControllerWeb? get _c =>
+      Get.isRegistered<PaidVisibilityControllerWeb>()
+          ? Get.find<PaidVisibilityControllerWeb>()
+          : null;
+
+  /// 유료기능 진입점 노출 여부. 미등록 환경(테스트 등)에선 false.
+  static bool get isVisible => _c?.showPaid.value ?? false;
+
+  /// 웹 GNB 메뉴(route prefix) 노출 여부. 맵에 키가 없으면 기본 노출(true).
+  static bool menuVisible(String? routePrefix) =>
+      routePrefix == null ? true : (_c?.menus[routePrefix] ?? true);
+
+  /// 웹 홈 '오늘의 랭킹' 섹션 노출 여부. 기본 노출(true).
+  static bool get todayRankingVisible => _c?.todayRanking.value ?? true;
 }

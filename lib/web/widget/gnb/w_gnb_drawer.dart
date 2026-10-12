@@ -113,8 +113,16 @@ class _WebGnbMenuPanelState extends State<WebGnbMenuPanel>
                 _buildProfileBlock(user),
                 const SizedBox(height: 24),
               ],
-              for (final item in kGnbPrimaryItems)
-                GnbNavRow(item: item, onNavigate: widget.onClose),
+              // 각 메뉴는 어드민 '메뉴 설정' 토글로 끄면 숨김(테스트 대상은 노출).
+              Obx(() => Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      for (final item in kGnbPrimaryItems)
+                        if (PaidVisibilityControllerWeb.menuVisible(
+                            item.routePrefix))
+                          GnbNavRow(item: item, onNavigate: widget.onClose),
+                    ],
+                  )),
             ],
           ),
           Column(

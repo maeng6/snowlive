@@ -7,13 +7,14 @@ import 'package:com.snowlive/web/view/home/w_home_sections_web.dart';
 import 'package:com.snowlive/web/view/home/w_home_weather_web.dart';
 import 'package:com.snowlive/web/viewmodel/auth/vm_authcheck_web.dart';
 import 'package:com.snowlive/web/viewmodel/home/vm_home_web.dart';
+import 'package:com.snowlive/web/viewmodel/paid/vm_paidVisibility_web.dart';
 import 'package:com.snowlive/web/widget/w_web_sticky_footer_scroll_web.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 /// 웹 홈.
 ///
-/// 섹션 순서는 목업 그대로다 — 배너 / 날씨 / 오늘의 랭킹 / 우리 크루는요 / 중고거래 / 푸터.
+/// 섹션 순서 — 배너 / 날씨 / 오늘의 랭킹 / 중고거래 / 커뮤니티 / 우리 크루는요 / 푸터.
 /// 우측 하단 오픈 채팅은 스크롤에 따라 바 ↔ 아이콘으로 바뀐다.
 class HomeViewWeb extends StatefulWidget {
   const HomeViewWeb({super.key});
@@ -169,12 +170,31 @@ class _HomeViewWebState extends State<HomeViewWeb> {
                           ),
                           // 날씨 ↔ 오늘의 랭킹 간격 30.
                           SizedBox(height: 30),
+                          // 순서: 오늘의 랭킹 → 중고거래 → 커뮤니티 → 우리 크루는요.
+                          // 오늘의 랭킹은 어드민 토글(비시즌 등)로 끄면 숨김(테스트 대상은 노출).
                           Obx(
-                            () => HomeTodayRankingWeb(
-                              today: _vm.today,
-                              indiv: _vm.todayIndiv,
-                              crew: _vm.todayCrew,
-                              isLoading: _vm.isRankingLoading,
+                            () => PaidVisibilityControllerWeb.todayRankingVisible
+                                ? Column(
+                                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                                    children: [
+                                      HomeTodayRankingWeb(
+                                        today: _vm.today,
+                                        indiv: _vm.todayIndiv,
+                                        crew: _vm.todayCrew,
+                                        isLoading: _vm.isRankingLoading,
+                                      ),
+                                      SizedBox(
+                                          height: isMobile
+                                              ? SDSSpacing.xl
+                                              : SDSSpacing.xxl),
+                                    ],
+                                  )
+                                : const SizedBox.shrink(),
+                          ),
+                          Obx(
+                            () => HomeFleamarketWeb(
+                              items: _vm.fleamarket,
+                              isLoading: _vm.isFleamarketLoading,
                             ),
                           ),
                           SizedBox(height: isMobile ? SDSSpacing.xl : SDSSpacing.xxl),
@@ -189,13 +209,6 @@ class _HomeViewWebState extends State<HomeViewWeb> {
                             () => HomeCrewCardsWeb(
                               cards: _vm.crewCards,
                               isLoading: _vm.isCrewLoading,
-                            ),
-                          ),
-                          SizedBox(height: isMobile ? SDSSpacing.xl : SDSSpacing.xxl),
-                          Obx(
-                            () => HomeFleamarketWeb(
-                              items: _vm.fleamarket,
-                              isLoading: _vm.isFleamarketLoading,
                             ),
                           ),
                         ],

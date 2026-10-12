@@ -38,11 +38,19 @@ class WebGnbSidebar extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              for (final item in kGnbPrimaryItems)
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 12),
-                  child: GnbNavRow(item: item, collapsed: collapsed),
-                ),
+              // 각 메뉴는 어드민 '메뉴 설정' 토글로 끄면 숨김(테스트 대상은 노출).
+              Obx(() => Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      for (final item in kGnbPrimaryItems)
+                        if (PaidVisibilityControllerWeb.menuVisible(
+                            item.routePrefix))
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 12),
+                            child: GnbNavRow(item: item, collapsed: collapsed),
+                          ),
+                    ],
+                  )),
               if (!collapsed) ...[
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 16),
