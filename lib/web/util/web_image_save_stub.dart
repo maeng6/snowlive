@@ -6,3 +6,20 @@ bool saveWebPng({required Uint8List bytes, required String filename}) => false;
 
 /// 웹이 아닌 타깃용 스텁. 실제 구현은 [web_image_save_web.dart].
 Future<bool> shareWebPng({required Uint8List bytes, required String filename}) async => false;
+
+/// 웹이 아닌 타깃용 스텁. 실제 구현은 [web_image_save_web.dart].
+enum WebImageSaveResult { shared, downloaded, cancelled, needsUserTap, failed }
+
+bool get isAppleMobileWeb => false;
+
+Future<WebImageSaveResult> saveWebPngToDevice({
+  required Uint8List bytes,
+  required String filename,
+}) async =>
+    WebImageSaveResult.failed;
+
+Future<WebImageSaveResult> shareWebPngNow({
+  required Uint8List bytes,
+  required String filename,
+}) async =>
+    WebImageSaveResult.failed;

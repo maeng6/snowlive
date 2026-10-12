@@ -38,6 +38,21 @@ class WebNetworkImage extends StatefulWidget {
   /// 잘려버린다.
   final double? placeholderAspectRatio;
 
+  /// **반투명 가장자리가 있는 PNG 아이콘을 크게 줄여** 그릴 때 true(티어 배지 —
+  /// 원본 1280px를 28~36으로).
+  ///
+  /// ⚠️ 아이폰 Safari에서 깨져 보이던 원인(2026-10-12, iOS 18.5 시뮬레이터에서 재현·확인):
+  /// Safari엔 브라우저 ImageDecoder가 없어서, `cacheWidth`를 주면 Flutter 엔진이 원본을
+  /// 캔버스에 그려 줄인 뒤(ImageBitmap) 쓰는데 이 경로가 **알파를 잘못 다뤄**(premultiplied로
+  /// 오인) 은은한 글로우 같은 반투명 픽셀이 밝고 각진 테두리로 나왔다. 크롬은 디코더 경로라
+  /// 데스크탑(창을 줄여도)에서는 안 보였다.
+  ///
+  /// true면 디코드 크기를 지정하지 않아 그 경로를 타지 않고(원본 그대로 `<img>`에서 텍스처로),
+  /// 축소는 GPU가 밉맵으로 부드럽게 한다([FilterQuality.medium]) — 실측으로 기준 이미지와
+  /// 같게 나온다. 대신 아이콘 한 종류당 원본 크기만큼(1280² ≈ 6.5MB) 메모리를 쓰니,
+  /// 종류가 몇 안 되는 아이콘에만 쓴다(사진·프로필에는 쓰지 말 것).
+  final bool smoothDownscale;
+
   const WebNetworkImage({
     super.key,
     required this.url,
@@ -50,6 +65,7 @@ class WebNetworkImage extends StatefulWidget {
     this.gaplessPlayback = false,
     this.showPlaceholder = true,
     this.placeholderAspectRatio,
+    this.smoothDownscale = false,
   });
 
   @override
@@ -121,7 +137,9 @@ class _WebNetworkImageState extends State<WebNetworkImage> {
         width: width,
         height: height,
         fit: widget.fit,
-        cacheWidth: cacheW,
+        // smoothDownscale이면 디코드 크기를 주지 않는다(Safari 알파 문제 — 위 주석).
+        cacheWidth: widget.smoothDownscale ? null : cacheW,
+        filterQuality: widget.smoothDownscale ? FilterQuality.medium : FilterQuality.low,
         gaplessPlayback: widget.gaplessPlayback,
         // Firebase Storage가 Access-Control-Allow-Origin을 주지 않아서, 캔버스에
         // 그리려고 바이트를 받아오는 기본 경로가 CORS로 막힌다 → 이 옵션이 없으면

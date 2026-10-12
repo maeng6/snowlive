@@ -300,7 +300,14 @@ class _TierCell extends StatelessWidget {
     );
     final icon = (iconUrl ?? '').isEmpty
         ? const SizedBox.shrink()
-        : WebNetworkImage(url: iconUrl, width: 28, height: 28, fit: BoxFit.contain);
+        : WebNetworkImage(
+            url: iconUrl,
+            width: 28,
+            height: 28,
+            fit: BoxFit.contain,
+            showPlaceholder: false,
+            smoothDownscale: true,
+          );
 
     if (isMobile) {
       return Column(children: [icon, const SizedBox(height: 2), label]);

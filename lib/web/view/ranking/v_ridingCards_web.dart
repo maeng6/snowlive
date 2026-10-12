@@ -255,14 +255,12 @@ class _RidingCardsViewWebState extends State<RidingCardsViewWeb> {
             _SaveButton(
               label: '이미지 저장',
               isPrimary: false,
-              onTap: () async {
-                final ok = await saveRidingCardPng(
-                  boundaryKey: _seasonCardKey,
-                  filename: ridingCardSeasonFileName(_season.dbSeason),
-                );
-                if (!mounted) return;
-                _toast(ok ? '이미지를 저장했어요.' : '이미지 저장에 실패했어요.');
-              },
+              onTap: () => saveRidingCardWithFeedback(
+                context,
+                boundaryKey: _seasonCardKey,
+                filename: ridingCardSeasonFileName(_season.dbSeason),
+                toast: _toast,
+              ),
             ),
           ],
         ),

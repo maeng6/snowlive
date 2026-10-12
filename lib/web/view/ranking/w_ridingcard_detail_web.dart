@@ -70,19 +70,20 @@ class _RidingCardDetailState extends State<_RidingCardDetail> {
   Future<void> _save() async {
     if (_isSaving) return;
     setState(() => _isSaving = true);
-    final ok = await saveRidingCardPng(
+    await saveRidingCardWithFeedback(
+      context,
       boundaryKey: _boundaryKey,
       filename: ridingCardFileName(widget.card.date),
+      toast: (message) => showWebToast(
+        context,
+        message,
+        alignment: context.screenType == WebScreenType.mobile
+            ? Alignment.bottomCenter
+            : Alignment.topCenter,
+      ),
     );
     if (!mounted) return;
     setState(() => _isSaving = false);
-    showWebToast(
-      context,
-      ok ? '이미지를 저장했어요.' : '이미지 저장에 실패했어요.',
-      alignment: context.screenType == WebScreenType.mobile
-          ? Alignment.bottomCenter
-          : Alignment.topCenter,
-    );
   }
 
   @override

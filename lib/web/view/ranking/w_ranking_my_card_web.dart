@@ -148,7 +148,7 @@ class RankingTierBadge extends StatelessWidget {
     final hasIcon = iconUrl?.isNotEmpty ?? false;
     // 티어 PNG에 파란 글로우가 이미 들어 있어서(목업과 동일) 그림자를 따로 넣지 않는다.
     Widget icon(double size) =>
-        WebNetworkImage(url: iconUrl, width: size, height: size, fit: BoxFit.contain, showPlaceholder: false);
+        WebNetworkImage(url: iconUrl, width: size, height: size, fit: BoxFit.contain, showPlaceholder: false, smoothDownscale: true);
     final nameText = Text(
       name,
       maxLines: 1,

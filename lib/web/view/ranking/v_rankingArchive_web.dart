@@ -573,7 +573,7 @@ class _RankingArchiveViewWebState extends State<RankingArchiveViewWeb> {
               ),
               if (!_isResortScoped && (user.overallTierIconUrl?.isNotEmpty ?? false)) ...[
                 const SizedBox(width: 8),
-                WebNetworkImage(url: user.overallTierIconUrl, width: 36, height: 36, fit: BoxFit.contain, showPlaceholder: false),
+                WebNetworkImage(url: user.overallTierIconUrl, width: 36, height: 36, fit: BoxFit.contain, showPlaceholder: false, smoothDownscale: true),
               ],
               ],
             ),
@@ -646,7 +646,7 @@ class _RankingArchiveViewWebState extends State<RankingArchiveViewWeb> {
                 ),
                 if (hasTierIcon) ...[
                   const SizedBox(width: 8),
-                  WebNetworkImage(url: crew.overallTierIconUrl, width: 36, height: 36, fit: BoxFit.contain, showPlaceholder: false),
+                  WebNetworkImage(url: crew.overallTierIconUrl, width: 36, height: 36, fit: BoxFit.contain, showPlaceholder: false, smoothDownscale: true),
                 ],
               ],
             ),

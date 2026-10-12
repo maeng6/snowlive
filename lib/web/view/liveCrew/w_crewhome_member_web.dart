@@ -290,6 +290,7 @@ class _CrewMemberRowWebState extends State<CrewMemberRowWeb> {
                   height: 36,
                   fit: BoxFit.contain,
                   showPlaceholder: false,
+                  smoothDownscale: true,
                 ),
               ],
             ],
