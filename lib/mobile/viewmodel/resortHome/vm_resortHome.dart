@@ -1165,10 +1165,12 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
                 // 🟦 폴리곤 라이딩(신 방식) 판별 — 자기 게이팅(write_polygon)
                 _polygonRiding?.onPosition(position.latitude, position.longitude, at: position.timestamp, alt: position.altitude);
 
-                // 🟢 유료 실시간 위치 공유: 유료+상호수락이면 5/10초 주기로 좌표 publish(서버 게이트).
-                if (user_id is int) {
+                // 🟢 유료 실시간 위치 공유: **라이딩(하강 세션) 중에만** 5초 주기로 publish.
+                // 세션이 아니면(리프트·대기 등) 전송하지 않아 친구 지도에서 사라진다.
+                if (user_id is int && _polygonRiding?.isRiding == true) {
                   LivePublishService.instance.onPosition(
-                      user_id, position.latitude, position.longitude);
+                      user_id, position.latitude, position.longitude,
+                      slopeId: _polygonRiding?.currentSlopeId, isRiding: true);
                 }
 
                 // 현재 위치에서 영역 체크 (보간 제거)
