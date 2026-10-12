@@ -2,6 +2,7 @@ import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/core/viewmodel/vm_user.dart';
 import 'package:com.snowlive/web/routes/routes_web.dart';
 import 'package:com.snowlive/web/widget/gnb/w_gnb_nav_items.dart' show openGnbSection;
+import 'package:com.snowlive/web/view/friend/w_friend_live_popup_web.dart';
 import 'package:com.snowlive/web/util/responsive_web.dart';
 import 'package:com.snowlive/web/viewmodel/auth/vm_authcheck_web.dart';
 import 'package:com.snowlive/web/widget/w_web_filter_menu_web.dart';
@@ -53,9 +54,9 @@ class WebGnbDesktopTopBar extends StatelessWidget {
             ),
           ),
           const Spacer(),
-          // 친구 바로가기(허브: 목록 + 실시간 위치). 프로필/로그인 영역 왼쪽.
+          // 친구 아이콘 — 앱처럼 '라이브중인 친구' 그리드 + 위치정보 팝업.
           IconButton(
-            onPressed: () => openGnbSection(WebRoutes.friend),
+            onPressed: () => showFriendLivePopupWeb(context),
             tooltip: '친구',
             splashColor: Colors.transparent,
             highlightColor: Colors.transparent,

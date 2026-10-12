@@ -2,6 +2,7 @@ import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/core/viewmodel/vm_user.dart';
 import 'package:com.snowlive/web/routes/routes_web.dart';
 import 'package:com.snowlive/web/widget/gnb/w_gnb_nav_items.dart' show openGnbSection;
+import 'package:com.snowlive/web/view/friend/w_friend_live_popup_web.dart';
 import 'package:com.snowlive/web/util/responsive_web.dart';
 import 'package:com.snowlive/web/viewmodel/auth/vm_authcheck_web.dart';
 import 'package:com.snowlive/web/widget/gnb/w_gnb_desktop_topbar.dart';
@@ -84,12 +85,12 @@ class WebGnbTopbar extends StatelessWidget implements PreferredSizeWidget {
                 ),
               );
             }),
-          // 햄버거 왼쪽 친구 바로가기(앱의 리조트홈 친구 아이콘과 동일 역할).
-          // 친구 허브(목록 + 실시간 위치)로 이동한다.
+          // 햄버거 왼쪽 친구 아이콘(앱 리조트홈 친구 아이콘과 동일 역할).
+          // 앱처럼 '라이브중인 친구' 그리드 + 위치정보 팝업을 띄운다.
           IconButton(
             onPressed: () {
               onLogoTap?.call();
-              openGnbSection(WebRoutes.friend);
+              showFriendLivePopupWeb(context);
             },
             tooltip: '친구',
             splashColor: Colors.transparent,
