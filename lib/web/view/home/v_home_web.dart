@@ -179,6 +179,13 @@ class _HomeViewWebState extends State<HomeViewWeb> {
                           ),
                           SizedBox(height: isMobile ? SDSSpacing.xl : SDSSpacing.xxl),
                           Obx(
+                            () => HomeCommunityWeb(
+                              posts: _vm.community,
+                              isLoading: _vm.isCommunityLoading,
+                            ),
+                          ),
+                          SizedBox(height: isMobile ? SDSSpacing.xl : SDSSpacing.xxl),
+                          Obx(
                             () => HomeCrewCardsWeb(
                               cards: _vm.crewCards,
                               isLoading: _vm.isCrewLoading,

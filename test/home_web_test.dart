@@ -1,5 +1,7 @@
+import 'package:com.snowlive/core/model/m_communityList.dart';
 import 'package:com.snowlive/core/model/m_crewHome.dart';
 import 'package:com.snowlive/core/model/m_liveTalk.dart';
+import 'package:com.snowlive/web/view/community/w_community_row_web.dart' show CommunityCategoryChip;
 import 'package:com.snowlive/web/view/home/home_sections_web.dart';
 import 'package:com.snowlive/core/model/m_rankingListIndiv.dart';
 import 'package:com.snowlive/core/model/m_resortModel.dart';
@@ -347,6 +349,126 @@ void main() {
       final title = tester.getRect(find.text('오늘의 랭킹'));
       final firstRow = tester.getRect(find.text('라이더0'));
       expect(firstRow.top, greaterThan(title.bottom));
+    });
+  });
+
+  group('커뮤니티', () {
+    final now = DateTime.now();
+    Community post(int i, {String sub = '잡담', String? sub2, int comments = 0, String? title}) =>
+        Community.fromJson({
+          'community_id': i,
+          'category_main': '게시판',
+          'category_sub': sub,
+          'category_sub2': sub2 ?? '하위 카테고리',
+          'title': title ?? '글 $i',
+          'upload_time': now.subtract(Duration(hours: i + 1)).toIso8601String(),
+          'views_count': 50 + i,
+          'comment_count': comments,
+          'user_info': {'user_id': i, 'display_name': '작성자$i'},
+        });
+
+    test('메타 줄 — 닉네임 · n시간 전 · 조회', () {
+      expect(homeCommunityMeta(post(2), now: now), '작성자2 · 3시간 전 · 조회 52');
+      // 시간 파싱 실패 · 닉네임 없음이어도 깨지지 않는다.
+      final broken = Community.fromJson({
+        'title': 'x',
+        'upload_time': 'not-a-date',
+        'views_count': 1234,
+        'user_info': <String, dynamic>{},
+      });
+      expect(homeCommunityMeta(broken, now: now), '조회 1,234');
+    });
+
+    test('표기는 앱과 같은 단계(방금 전 → 분 → 시간 → 일 → 개월 → 년)', () {
+      String ago(Duration d) => homeTimeAgo(now.subtract(d).toIso8601String(), now: now);
+      expect(ago(const Duration(seconds: 10)), '방금 전');
+      expect(ago(const Duration(minutes: 5)), '5분 전');
+      expect(ago(const Duration(days: 3)), '3일 전');
+      expect(ago(const Duration(days: 65)), '2개월 전');
+      expect(ago(const Duration(days: 800)), '2년 전');
+      expect(homeTimeAgo(null), '');
+    });
+
+    test('깨진 글은 건너뛰고 나머지는 살린다', () {
+      final parsed = homeParseCommunity([
+        {'title': '정상', 'user_info': <String, dynamic>{}},
+        {'title': '깨짐', 'description': '이건 JSON이 아님', 'user_info': <String, dynamic>{}},
+        'oops',
+      ]);
+      expect(parsed.map((c) => c.title), ['정상']);
+      expect(homeParseCommunity(null), isEmpty);
+    });
+
+    Future<void> pumpCommunity(WidgetTester tester, double width, Widget child) async {
+      tester.view.physicalSize = Size(width, 1200);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(tester.view.reset);
+      await tester.pumpWidget(MaterialApp(
+        home: Scaffold(
+          body: SingleChildScrollView(child: Padding(padding: const EdgeInsets.all(16), child: child)),
+        ),
+      ));
+      await tester.pump();
+    }
+
+    final posts = [
+      post(0, comments: 2),
+      post(1, sub: '시즌방', sub2: '방 구해요'),
+      post(2, sub: '단톡방·동호회', title: '아주 긴 제목 ' * 20),
+      post(3),
+      post(4),
+      post(5),
+    ];
+
+    for (final (width, expected) in [(1440.0, 6), (800.0, 6), (375.0, 4)]) {
+      testWidgets('${width.toInt()}: 최신글 $expected개, 넘침 없음', (tester) async {
+        await pumpCommunity(tester, width, HomeCommunityWeb(posts: posts, isLoading: false));
+        expect(tester.takeException(), isNull);
+        expect(find.text('커뮤니티'), findsOneWidget);
+        expect(find.text('더보기'), findsOneWidget);
+        for (var i = 0; i < 6; i++) {
+          if (i == 2) continue; // 긴 제목
+          expect(find.text('글 $i'), i < expected ? findsOneWidget : findsNothing);
+        }
+        if (width >= 768) {
+          // 2열: 1열에 1~3, 2열에 4~6 — 1번째와 4번째가 같은 줄.
+          expect(tester.getTopLeft(find.text('글 0')).dy, closeTo(tester.getTopLeft(find.text('글 3')).dy, 0.5));
+          expect(tester.getTopLeft(find.text('글 3')).dx, greaterThan(tester.getTopLeft(find.text('글 0')).dx));
+        } else {
+          expect(tester.getTopLeft(find.text('글 3')).dy, greaterThan(tester.getTopLeft(find.text('글 1')).dy));
+        }
+      });
+    }
+
+    testWidgets('글이 적으면 섹션 높이도 그만큼만(빈 칸 없음)', (tester) async {
+      await pumpCommunity(tester, 1440, HomeCommunityWeb(posts: posts.take(2).toList(), isLoading: false));
+      expect(tester.takeException(), isNull);
+      final full = tester.getSize(find.byType(HomeCommunityWeb)).height;
+      await pumpCommunity(tester, 1440, HomeCommunityWeb(posts: posts, isLoading: false));
+      expect(tester.getSize(find.byType(HomeCommunityWeb)).height, greaterThan(full));
+      // 제목 글자가 섹션 제목과 같은 세로선(행 패딩만큼 바깥으로 뺐다).
+      // 칩 **상자**의 왼쪽(안쪽 글자는 칩 패딩 4만큼 더 들어가 있다).
+      expect(tester.getTopLeft(find.byType(CommunityCategoryChip).first).dx,
+          closeTo(tester.getTopLeft(find.text('커뮤니티')).dx, 1));
+    });
+
+    testWidgets('칩 · 하위 칩 · 댓글 수 · 메타 줄', (tester) async {
+      await pumpCommunity(tester, 1440, HomeCommunityWeb(posts: posts, isLoading: false));
+      expect(find.text('잡담'), findsWidgets);
+      expect(find.text('시즌방'), findsOneWidget);
+      expect(find.text('방 구해요'), findsOneWidget); // 시즌방만 하위 칩
+      expect(find.text('하위 카테고리'), findsNothing);
+      expect(find.text('(2)'), findsOneWidget);
+      expect(find.textContaining('작성자0 · '), findsOneWidget);
+      expect(find.textContaining('조회 50'), findsOneWidget);
+    });
+
+    testWidgets('로딩 중엔 스켈레톤, 비면 안내', (tester) async {
+      await pumpCommunity(tester, 1440, const HomeCommunityWeb(posts: [], isLoading: true));
+      expect(find.byType(SkeletonBox), findsWidgets);
+      await pumpCommunity(tester, 1440, const HomeCommunityWeb(posts: [], isLoading: false));
+      await tester.pump(const Duration(seconds: 1));
+      expect(find.text('아직 올라온 글이 없어요'), findsOneWidget);
     });
   });
 

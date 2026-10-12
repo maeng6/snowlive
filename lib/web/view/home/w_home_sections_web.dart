@@ -1,6 +1,8 @@
 import 'dart:async';
+import 'dart:math' as math;
 
 import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
+import 'package:com.snowlive/core/model/m_communityList.dart';
 import 'package:com.snowlive/core/model/m_fleamarket.dart';
 import 'package:com.snowlive/core/model/m_rankingListCrew.dart';
 import 'package:com.snowlive/core/model/m_rankingListIndiv.dart';
@@ -8,6 +10,8 @@ import 'package:com.snowlive/web/routes/routes_web.dart';
 import 'package:com.snowlive/web/util/crew_visual_web.dart';
 import 'package:com.snowlive/web/util/responsive_web.dart';
 import 'package:com.snowlive/web/util/web_external_links.dart';
+import 'package:com.snowlive/web/view/community/w_community_row_web.dart'
+    show CommunityTitleLine, openCommunityDetail;
 import 'package:com.snowlive/web/view/home/home_sections_web.dart';
 import 'package:com.snowlive/web/widget/w_empty_state_web.dart';
 import 'package:com.snowlive/web/widget/w_network_image_web.dart';
@@ -672,6 +676,211 @@ class _CrewLogo extends StatelessWidget {
       child: hasImage
           ? WebNetworkImage(url: logoUrl, width: size, height: size)
           : const SizedBox.shrink(),
+    );
+  }
+}
+
+// ──────────────────────────────── 커뮤니티 ────────────────────────────────
+
+/// 커뮤니티 글 한 줄 높이(제목 줄 + 메타 줄 + 상하 여백). 스켈레톤도 같은 높이를 쓴다.
+const double _kCommunityRowHeight = 68;
+
+/// 2열 사이 간격 — 크루홈 `랭킹 TOP 10 멤버` 2열과 같은 48.
+const double _kCommunityColumnGap = 48;
+
+/// 홈 `커뮤니티` — 게시판 최신글.
+///
+/// 목업이 없어 홈 섹션 규칙(제목 + 검정 `더보기`)과 커뮤니티 목록 화면의 행 부품
+/// (`[칩] 제목 [🖼] (N)` = [CommunityTitleLine])을 그대로 조합했다. 실데이터가 대부분
+/// 글 위주라(사진 있는 글 약 1/3) 카드형 대신 **선으로 나뉜 목록**이다. 바로 위
+/// `오늘의 랭킹`이 회색 패널이라 패널로 또 감싸지 않는다.
+///
+/// PC·태블릿 2열 × 3행(1열에 최신 1~3, 2열에 4~6 — 크루홈 TOP 10과 같은 열 순서) /
+/// 모바일 1열 × 4개.
+class HomeCommunityWeb extends StatelessWidget {
+  final List<Community> posts;
+  final bool isLoading;
+
+  const HomeCommunityWeb({super.key, required this.posts, required this.isLoading});
+
+  @override
+  Widget build(BuildContext context) {
+    final isMobile = context.screenType == WebScreenType.mobile;
+    final count = homeCommunityCount(isMobile: isMobile);
+    final columns = isMobile ? 1 : 2;
+    final perColumn = (count / columns).ceil();
+    final items = posts.take(count).toList();
+
+    final Widget body;
+    if (isLoading && items.isEmpty) {
+      body = SkeletonShimmer(
+        child: _columns(
+          columns: columns,
+          perColumn: perColumn,
+          build: (_) => const _HomeCommunityRowSkeleton(),
+          length: count,
+        ),
+      );
+    } else if (items.isEmpty) {
+      body = const WebEmptyState(message: '아직 올라온 글이 없어요');
+    } else {
+      body = _columns(
+        columns: columns,
+        perColumn: perColumn,
+        build: (i) => _HomeCommunityRow(post: items[i]),
+        length: items.length,
+      );
+    }
+
+    // 글 목록은 행의 좌우 패딩(8)만큼 **바깥으로 빼서** 글자가 제목 `커뮤니티`와 같은
+    // 세로선에 서게 한다(hover 배경만 여백 쪽으로 넘어간다 — 크루홈 멤버 목록과 같은 처리).
+    // ⚠️ OverflowBox는 높이를 못 박아야 한다(스크롤 안이라 세로가 무한).
+    final Widget alignedBody = items.isEmpty && !isLoading
+        ? body
+        : SizedBox(
+            // 1열이 먼저 차므로 높이 = 1열의 실제 행 수(글이 적을 때 빈 칸이 남지 않게).
+            height: (items.isEmpty ? perColumn : math.min(perColumn, items.length)) *
+                _kCommunityRowHeight,
+            child: LayoutBuilder(
+              builder: (context, constraints) => OverflowBox(
+                minWidth: 0,
+                maxWidth: constraints.maxWidth + SDSSpacing.sm * 2,
+                child: body,
+              ),
+            ),
+          );
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        _HomeSectionHeader(
+          title: '커뮤니티',
+          trailing: _MoreButton(onTap: () => Get.toNamed(WebRoutes.community)),
+        ),
+        // 헤더 ↔ 본문 16 — 크루·중고거래 캐러셀과 같다.
+        const SizedBox(height: 16),
+        alignedBody,
+      ],
+    );
+  }
+
+  /// [length]개를 열 순서로 채운다(1열이 먼저 찬다).
+  Widget _columns({
+    required int columns,
+    required int perColumn,
+    required int length,
+    required Widget Function(int index) build,
+  }) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        for (var c = 0; c < columns; c++) ...[
+          if (c > 0) const SizedBox(width: _kCommunityColumnGap),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                for (var i = c * perColumn; i < (c + 1) * perColumn && i < length; i++) build(i),
+              ],
+            ),
+          ),
+        ],
+      ],
+    );
+  }
+}
+
+/// 글 한 줄 — 1줄 `[칩] 제목 [🖼] (N)`(커뮤니티 목록과 같은 부품), 2줄 `닉네임 · 3시간 전 · 조회 52`.
+/// 아래 구분선 gray100(커뮤니티 표와 같은 선), hover는 gray50 배경, 누르면 게시글 상세.
+class _HomeCommunityRow extends StatefulWidget {
+  final Community post;
+
+  const _HomeCommunityRow({required this.post});
+
+  @override
+  State<_HomeCommunityRow> createState() => _HomeCommunityRowState();
+}
+
+class _HomeCommunityRowState extends State<_HomeCommunityRow> {
+  bool _hovered = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final meta = homeCommunityMeta(widget.post);
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      onEnter: (_) => setState(() => _hovered = true),
+      onExit: (_) => setState(() => _hovered = false),
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: () => openCommunityDetail(widget.post),
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 120),
+          height: _kCommunityRowHeight,
+          padding: const EdgeInsets.symmetric(horizontal: SDSSpacing.sm),
+          // hover 배경은 행 패딩까지(목록을 바깥으로 뺀 만큼 여백 쪽으로) 깔리고,
+          // 구분선은 안쪽 콘텐츠 폭에만 그어 페이지 여백선 밖으로 나가지 않게 한다.
+          color: _hovered ? SDSColor.gray50 : SDSColor.snowliveWhite,
+          child: DecoratedBox(
+            decoration: const BoxDecoration(
+              border: Border(bottom: BorderSide(color: SDSColor.gray100)),
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                CommunityTitleLine(community: widget.post, query: ''),
+                if (meta.isNotEmpty) ...[
+                  const SizedBox(height: 4),
+                  Text(
+                    meta,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: SDSTextStyle.regular.copyWith(
+                      fontSize: 13,
+                      height: 17 / 13,
+                      color: SDSColor.gray500,
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _HomeCommunityRowSkeleton extends StatelessWidget {
+  const _HomeCommunityRowSkeleton();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: _kCommunityRowHeight,
+      padding: const EdgeInsets.symmetric(horizontal: SDSSpacing.sm),
+      child: const DecoratedBox(
+        decoration: BoxDecoration(
+          border: Border(bottom: BorderSide(color: SDSColor.gray100)),
+        ),
+        child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              SkeletonBox(width: 36, height: 20, radius: 2),
+              SizedBox(width: 12),
+              Expanded(child: SkeletonBox(height: 15)),
+              SizedBox(width: 48),
+            ],
+          ),
+            SizedBox(height: 6),
+            SkeletonBox(width: 150, height: 12),
+          ],
+        ),
+      ),
     );
   }
 }

@@ -165,13 +165,22 @@ Future<bool> showWebConfirmDialog({
 }
 
 /// 크루 가입 신청 — 신청 메시지를 입력받는 다이얼로그(앱과 동일한 UX).
-/// 반환: `null`=취소 / 문자열=신청(빈 문자열이면 서버 전송 시 기본 문구로 대체).
+/// 반환: `null`=취소 / 문자열=신청 메시지.
+///
+/// [defaultMessage]는 입력칸에 **글자로 채우지 않고 힌트(회색)**로 보여준다 — 채워두면
+/// 진짜 글자색이라 써야 하는 내용처럼 보이고, 지우고 써야 했다. 아무것도 안 쓰고 신청하면
+/// 이 문구를 대신 돌려준다(서버 `title`은 빈 값 불가 — 크루홈·크루 찾기 두 경로 모두 안전).
 Future<String?> showWebCrewApplyDialog({
   required BuildContext context,
   required String crewName,
   String defaultMessage = '안녕하세요. 크루 가입 신청합니다.',
 }) async {
-  final controller = TextEditingController(text: defaultMessage);
+  final controller = TextEditingController();
+  String submitted() {
+    final text = controller.text.trim();
+    return text.isEmpty ? defaultMessage : text;
+  }
+
   try {
     return await showWebOverlayModal<String?>(
       context: context,
@@ -210,8 +219,9 @@ Future<String?> showWebCrewApplyDialog({
                       isDense: true,
                       border: InputBorder.none,
                       counterText: '',
-                      hintText: '크루장에게 전할 신청 메시지를 입력하세요',
-                      hintStyle: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray400),
+                      hintText: defaultMessage,
+                      // 웹 입력칸 공통 힌트색(gray400) · 본문과 같은 줄높이.
+                      hintStyle: SDSTextStyle.regular.copyWith(fontSize: 14, height: 1.4, color: SDSColor.gray400),
                     ),
                   ),
                 ),
@@ -231,7 +241,7 @@ Future<String?> showWebCrewApplyDialog({
                     const SizedBox(width: 10),
                     Expanded(
                       child: TextButton(
-                        onPressed: () => close(controller.text.trim()),
+                        onPressed: () => close(submitted()),
                         style: _noSplashStyle(),
                         child: _HoverFade(
                           child: Text('신청하기',

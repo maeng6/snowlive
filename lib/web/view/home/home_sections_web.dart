@@ -1,3 +1,4 @@
+import 'package:com.snowlive/core/model/m_communityList.dart';
 import 'package:com.snowlive/core/model/m_crewHome.dart';
 import 'package:com.snowlive/core/model/m_liveTalk.dart';
 import 'package:com.snowlive/core/model/m_resortModel.dart';
@@ -148,6 +149,57 @@ ResortModel homeDefaultResort(int? favoriteResortId) {
     if (resort.resortNickname == '휘닉스') return resort;
   }
   return homeResorts.first;
+}
+
+// ──────────────────────────────── 커뮤니티 ────────────────────────────────
+
+/// 홈 커뮤니티 섹션에 받아 두는 최신글 수(PC·태블릿 2열 × 3행).
+const int kHomeCommunityFetchCount = 6;
+
+/// 폭별로 보여줄 글 수 — PC·태블릿 6(2열 × 3행) / 모바일 4(1열).
+int homeCommunityCount({required bool isMobile}) => isMobile ? 4 : kHomeCommunityFetchCount;
+
+/// 목록 응답을 **한 건씩** 파싱한다. `Community.fromJson`은 항목별 방어가 없어서
+/// 글 한 건이 깨지면 섹션 전체가 비었다(커뮤니티 목록 화면과 같은 방어).
+List<Community> homeParseCommunity(Object? rawResults) {
+  if (rawResults is! List) return const [];
+  final parsed = <Community>[];
+  for (final item in rawResults) {
+    if (item is! Map<String, dynamic>) continue;
+    try {
+      parsed.add(Community.fromJson(item));
+    } catch (_) {
+      // 깨진 글은 건너뛴다.
+    }
+  }
+  return parsed;
+}
+
+/// 작성 시각을 `방금 전 / n분 전 / n시간 전 / n일 전 / n개월 전 / n년 전`으로.
+/// 앱(`TimeStamp.getAgo`)과 같은 표기 — 그 유틸은 Firebase를 물고 있어 홈 데이터
+/// 규칙 파일(순수 Dart)에서는 쓰지 않고 같은 규칙을 둔다. 파싱 실패면 빈 문자열.
+String homeTimeAgo(String? uploadTime, {DateTime? now}) {
+  final parsed = uploadTime == null ? null : DateTime.tryParse(uploadTime);
+  if (parsed == null) return '';
+  final diff = (now ?? DateTime.now()).difference(parsed.toLocal());
+  if (diff.inDays >= 365) return '${diff.inDays ~/ 365}년 전';
+  if (diff.inDays >= 30) return '${diff.inDays ~/ 30}개월 전';
+  if (diff.inDays >= 1) return '${diff.inDays}일 전';
+  if (diff.inHours >= 1) return '${diff.inHours}시간 전';
+  if (diff.inMinutes >= 1) return '${diff.inMinutes}분 전';
+  return '방금 전';
+}
+
+/// 글 아래 메타 줄 — `닉네임 · 3시간 전 · 조회 52`. 빠진 값은 건너뛴다.
+String homeCommunityMeta(Community community, {DateTime? now}) {
+  final name = community.userInfo?.displayName?.trim() ?? '';
+  final ago = homeTimeAgo(community.uploadTime, now: now);
+  final views = community.viewsCount;
+  return [
+    if (name.isNotEmpty) name,
+    if (ago.isNotEmpty) ago,
+    if (views != null) '조회 ${NumberFormat('#,###').format(views)}',
+  ].join(' · ');
 }
 
 // ─────────────────────────────── 우리 크루는요 ───────────────────────────────

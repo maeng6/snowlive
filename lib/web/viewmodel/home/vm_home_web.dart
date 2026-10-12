@@ -2,8 +2,10 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:com.snowlive/core/api/ApiResponse.dart';
+import 'package:com.snowlive/core/api/api_community.dart';
 import 'package:com.snowlive/core/api/api_fleamarket.dart';
 import 'package:com.snowlive/core/api/api_ranking.dart';
+import 'package:com.snowlive/core/model/m_communityList.dart';
 import 'package:com.snowlive/core/model/m_crewHome.dart';
 import 'package:com.snowlive/core/model/m_fleamarket.dart';
 import 'package:com.snowlive/core/model/m_rankingListCrew.dart';
@@ -18,13 +20,14 @@ import 'package:get/get.dart';
 /// 웹 홈 화면의 데이터.
 ///
 /// 섹션별 소스가 전부 다르다 — 배너는 Firestore(`banner/homeHeroWeb`), 날씨는 기상청 API +
-/// 정적 리조트 목록(nx/ny·링크), 오늘의 랭킹은 랭킹 API의 `daily=true`, 우리 크루는요는
-/// 크루홈 집계의 공개 크루톡, 중고거래는 중고거래 목록 첫 페이지다.
+/// 정적 리조트 목록(nx/ny·링크), 오늘의 랭킹은 랭킹 API의 `daily=true`, 커뮤니티는 게시판
+/// 최신글, 우리 크루는요는 크루홈 집계의 공개 크루톡, 중고거래는 중고거래 목록 첫 페이지다.
 ///
 /// 섹션 하나가 실패해도 나머지는 그려야 하므로 로딩·에러 상태를 **섹션별로** 둔다.
 class HomeViewModelWeb extends GetxController {
   final RankingAPI _rankingAPI = RankingAPI();
   final FleamarketAPI _fleamarketAPI = FleamarketAPI();
+  final CommunityAPI _communityAPI = CommunityAPI();
 
   UserViewModel get _userVM => Get.find<UserViewModel>();
 
@@ -61,6 +64,13 @@ class HomeViewModelWeb extends GetxController {
   List<CrewRanking> get todayCrew => List<CrewRanking>.from(_todayCrew);
   bool get isRankingLoading => _isRankingLoading.value;
 
+  // ── 커뮤니티(게시판 최신글) ──
+  final RxList<Community> _community = <Community>[].obs;
+  final RxBool _isCommunityLoading = false.obs;
+
+  List<Community> get community => List<Community>.from(_community);
+  bool get isCommunityLoading => _isCommunityLoading.value;
+
   // ── 우리 크루는요 ──
   final RxBool _isCrewLoading = false.obs;
   bool get isCrewLoading => _isCrewLoading.value;
@@ -84,6 +94,7 @@ class HomeViewModelWeb extends GetxController {
     _listenBanner();
     selectResort(homeDefaultResort(_userVM.user.favorite_resort));
     loadTodayRanking();
+    loadCommunity();
     loadCrewCards();
     loadFleamarket();
   }
@@ -117,6 +128,7 @@ class HomeViewModelWeb extends GetxController {
     await Future.wait([
       if (r != null) _fetchWeather(r),
       loadTodayRanking(),
+      loadCommunity(),
       loadCrewCards(),
       loadFleamarket(),
     ]);
@@ -200,6 +212,29 @@ class HomeViewModelWeb extends GetxController {
       // 랭킹만 비고 나머지 섹션은 그대로 둔다.
     } finally {
       _isRankingLoading(false);
+    }
+  }
+
+  // ── 커뮤니티(게시판 최신글) ──
+  Future<void> loadCommunity() async {
+    _isCommunityLoading(true);
+    try {
+      final ApiResponse res = await _communityAPI.fetchCommunityList(
+        // 커뮤니티는 게시판/이벤트 두 갈래인데 웹은 게시판만 쓴다(목록 화면과 같다).
+        categoryMain: '게시판',
+        // 로그인했으면 보내야 차단한 유저 글이 빠진다. 게스트는 아예 빼야 한다
+        // (`"null"` 문자열이 가면 서버가 파싱에 실패한다).
+        userId: _userVM.user.user_id?.toString(),
+        page: 1,
+      );
+      if (res.success && res.data is Map<String, dynamic>) {
+        final posts = homeParseCommunity((res.data as Map<String, dynamic>)['results']);
+        _community.value = posts.take(kHomeCommunityFetchCount).toList();
+      }
+    } catch (_) {
+      // 커뮤니티만 비고 나머지 섹션은 그대로 둔다.
+    } finally {
+      _isCommunityLoading(false);
     }
   }
 

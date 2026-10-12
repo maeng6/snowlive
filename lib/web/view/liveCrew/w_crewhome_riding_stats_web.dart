@@ -143,7 +143,13 @@ class _CrewHomeRidingStatsWebState extends State<CrewHomeRidingStatsWeb> {
           )
         else
           // 카드 사이 20 (목업 161:101702 — 카드 310, 다음 카드 330).
-          Column(children: [left, const SizedBox(height: 20), right]),
+          // ⚠️ stretch 필수 — 기본(center)이면 카드가 **내용 폭**으로 줄어든다. 기록이 있으면
+          // 슬로프 막대가 폭을 다 써서 티가 안 났지만, 0회일 때는 안내 문구 폭만큼 좁아져
+          // 가운데로 몰렸다(실측, 2026-10-12 QA).
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [left, const SizedBox(height: 20), right],
+          ),
       ],
     );
   }
