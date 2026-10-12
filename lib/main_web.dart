@@ -4,6 +4,7 @@ import 'package:com.snowlive/core/viewmodel/vm_user.dart';
 import 'package:com.snowlive/web/routes/routes_web.dart';
 import 'package:com.snowlive/web/util/web_page_title.dart';
 import 'package:com.snowlive/web/viewmodel/auth/vm_authcheck_web.dart';
+import 'package:com.snowlive/web/viewmodel/paid/vm_paidVisibility_web.dart';
 import 'package:com.snowlive/web/widget/gnb/w_gnb_current_route_web.dart';
 import 'package:com.snowlive/web/widget/w_top_loading_bar_web.dart';
 import 'package:com.snowlive/web/widget/gnb/w_web_shell.dart';
@@ -24,12 +25,14 @@ void main() async {
   // 게스트 우선 설계: initialRoute는 그대로 두고, 백그라운드에서 조용히
   // 기존 Firebase 세션 여부만 확인해 GNB의 로그인 상태 표시에 반영한다.
   Get.put(AuthCheckViewModelWeb(), permanent: true);
+  // 유료기능 진입점 노출 여부(어드민 출시 토글 OR 테스트대상) — GNB·친구 화면이 구독.
+  Get.put(PaidVisibilityControllerWeb(), permanent: true);
 
   runApp(const SnowliveWebApp());
 }
 
 class SnowliveWebApp extends StatelessWidget {
-  const SnowliveWebApp({Key? key}) : super(key: key);
+  const SnowliveWebApp({super.key});
 
   @override
   Widget build(BuildContext context) {

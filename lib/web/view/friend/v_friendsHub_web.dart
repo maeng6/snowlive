@@ -1,7 +1,9 @@
 import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/web/view/friend/v_friendHome_web.dart';
 import 'package:com.snowlive/web/view/location/v_liveMap_web.dart';
+import 'package:com.snowlive/web/viewmodel/paid/vm_paidVisibility_web.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 /// 웹 친구 허브 — 앱처럼 `친구 목록`과 `실시간 위치`를 한 곳에서 탭으로 본다.
 /// (상단바의 친구 아이콘·GNB `친구` 메뉴가 모두 이 화면으로 온다.)
@@ -11,6 +13,16 @@ class FriendsHubViewWeb extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // 유료기능 출시 전(테스트 대상 외)에는 '실시간 위치' 탭 없이 친구 목록만 보인다.
+    return Obx(() {
+      if (!PaidVisibilityControllerWeb.isVisible) {
+        return const FriendHomeViewWeb();
+      }
+      return _buildTabbed();
+    });
+  }
+
+  Widget _buildTabbed() {
     return DefaultTabController(
       length: 2,
       child: Container(

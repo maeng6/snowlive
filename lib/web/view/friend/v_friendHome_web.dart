@@ -10,6 +10,7 @@ import 'package:com.snowlive/web/view/friend/w_friend_profile_modal_web.dart';
 import 'package:com.snowlive/web/view/friend/w_friend_row_web.dart';
 import 'package:com.snowlive/web/viewmodel/auth/vm_authcheck_web.dart';
 import 'package:com.snowlive/web/viewmodel/friend/vm_friend_web.dart';
+import 'package:com.snowlive/web/viewmodel/paid/vm_paidVisibility_web.dart';
 import 'package:com.snowlive/web/widget/w_empty_state_web.dart';
 import 'package:com.snowlive/web/widget/w_web_filter_menu_web.dart';
 import 'package:com.snowlive/web/widget/w_web_more_menu_web.dart';
@@ -436,6 +437,8 @@ class _FriendHomeViewWebState extends State<FriendHomeViewWeb> {
                 ? null
                 : _FriendMoreButton(
                     isPaid: _isPaid,
+                    // 유료기능 출시 전(테스트 외)엔 위치공유 신청 항목 자체를 숨김.
+                    showShareLocation: PaidVisibilityControllerWeb.isVisible,
                     onSelected: (action) => _onMoreAction(friend, action),
                   ),
           ),
@@ -455,7 +458,14 @@ class _FriendMoreButton extends StatefulWidget {
   /// 위치공유 신청은 유료 전용. false면 그 항목만 회색 비활성으로 표시한다.
   final bool isPaid;
 
-  const _FriendMoreButton({required this.onSelected, this.isPaid = false});
+  /// 위치공유 신청 항목을 메뉴에 노출할지(출시 전엔 테스트 대상만 true).
+  final bool showShareLocation;
+
+  const _FriendMoreButton({
+    required this.onSelected,
+    this.isPaid = false,
+    this.showShareLocation = false,
+  });
 
   @override
   State<_FriendMoreButton> createState() => _FriendMoreButtonState();
@@ -466,10 +476,15 @@ class _FriendMoreButtonState extends State<_FriendMoreButton> {
   final LayerLink _link = LayerLink();
 
   Future<void> _open() async {
+    final values = widget.showShareLocation
+        ? _FriendMoreAction.values
+        : _FriendMoreAction.values
+            .where((v) => v != _FriendMoreAction.shareLocation)
+            .toList();
     final picked = await showWebFilterMenu<_FriendMoreAction>(
       context: context,
       link: _link,
-      values: _FriendMoreAction.values,
+      values: values,
       labelOf: (v) => v.label,
       // 위치공유 신청은 시즌권 보유자만 활성(미소지자는 회색 비활성).
       enabledOf: (v) =>

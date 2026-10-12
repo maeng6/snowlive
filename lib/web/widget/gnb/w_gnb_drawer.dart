@@ -5,6 +5,7 @@ import 'package:com.snowlive/web/routes/routes_web.dart';
 import 'package:com.snowlive/web/util/responsive_web.dart';
 import 'package:com.snowlive/web/viewmodel/auth/vm_authcheck_web.dart';
 import 'package:com.snowlive/web/widget/gnb/w_gnb_nav_items.dart';
+import 'package:com.snowlive/web/viewmodel/paid/vm_paidVisibility_web.dart';
 import 'package:com.snowlive/web/widget/w_web_avatar_web.dart';
 import 'package:com.snowlive/web/util/web_features.dart';
 import 'package:flutter/material.dart';
@@ -124,8 +125,16 @@ class _WebGnbMenuPanelState extends State<WebGnbMenuPanel>
                 child: Divider(color: SDSColor.gray100, height: 1),
               ),
               // 친구 / 알림 / 설정 — 사이드바와 같은 목록.
-              for (final item in kGnbSecondaryItems)
-                GnbNavRow(item: item, onNavigate: widget.onClose),
+              // 유료기능 출시 전에는 '시즌권' 메뉴를 테스트 대상에게만 노출.
+              Obx(() => Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      for (final item in kGnbSecondaryItems)
+                        if (item.routePrefix != WebRoutes.seasonPass ||
+                            PaidVisibilityControllerWeb.isVisible)
+                          GnbNavRow(item: item, onNavigate: widget.onClose),
+                    ],
+                  )),
             ],
           ),
           if (isLoggedIn)

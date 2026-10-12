@@ -4,6 +4,7 @@ import 'package:com.snowlive/web/routes/routes_web.dart';
 import 'package:com.snowlive/web/view/friend/w_friend_page_scaffold_web.dart';
 import 'package:com.snowlive/web/viewmodel/auth/vm_authcheck_web.dart';
 import 'package:com.snowlive/web/viewmodel/friend/vm_friend_web.dart';
+import 'package:com.snowlive/web/viewmodel/paid/vm_paidVisibility_web.dart';
 import 'package:com.snowlive/web/widget/w_empty_state_web.dart';
 import 'package:com.snowlive/web/widget/w_web_settings_row_web.dart';
 import 'package:flutter/material.dart';
@@ -59,11 +60,21 @@ class _FriendSettingsViewWebState extends State<FriendSettingsViewWeb> {
           : Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                WebSettingsRow(
-                  label: '실시간 위치 공유',
-                  onTap: () => Get.toNamed(WebRoutes.friendLocationShare),
-                ),
-                Divider(color: SDSColor.gray100, height: 1, thickness: 1),
+                // 유료기능 출시 전에는 테스트 대상에게만 노출.
+                Obx(() => PaidVisibilityControllerWeb.isVisible
+                    ? Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          WebSettingsRow(
+                            label: '실시간 위치 공유',
+                            onTap: () =>
+                                Get.toNamed(WebRoutes.friendLocationShare),
+                          ),
+                          Divider(
+                              color: SDSColor.gray100, height: 1, thickness: 1),
+                        ],
+                      )
+                    : const SizedBox.shrink()),
                 Obx(() => WebSettingsRow(
                       label: '친구 요청 관리',
                       badgeCount: _listVm.friendsRequestList.length,

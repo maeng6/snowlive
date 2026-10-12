@@ -1,5 +1,7 @@
 import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/web/widget/gnb/w_gnb_nav_items.dart';
+import 'package:com.snowlive/web/routes/routes_web.dart';
+import 'package:com.snowlive/web/viewmodel/paid/vm_paidVisibility_web.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -46,11 +48,20 @@ class WebGnbSidebar extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   child: Divider(color: SDSColor.gray100, height: 1),
                 ),
-                for (final item in kGnbSecondaryItems)
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 12),
-                    child: GnbNavRow(item: item),
-                  ),
+                // 유료기능 출시 전에는 '시즌권' 메뉴를 테스트 대상에게만 노출.
+                Obx(() => Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        for (final item in kGnbSecondaryItems)
+                          if (item.routePrefix != WebRoutes.seasonPass ||
+                              PaidVisibilityControllerWeb.isVisible)
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 12),
+                              child: GnbNavRow(item: item),
+                            ),
+                      ],
+                    )),
               ],
               const Spacer(),
               // 접기/펼치기 토글 버튼(원형, 1px 보더).

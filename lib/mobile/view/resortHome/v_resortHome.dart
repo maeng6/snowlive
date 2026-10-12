@@ -37,6 +37,7 @@ import 'package:extended_image/extended_image.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:com.snowlive/mobile/view/location/v_liveMapPage.dart' show LiveMapPanel;
+import 'package:com.snowlive/core/api/api_seasonPass.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
@@ -74,6 +75,8 @@ class _ResortHomeViewState extends State<ResortHomeView> with
   //TODO: Dependency Injection**************************************************
   ResortHomeViewModel _resortHomeViewModel = Get.find<ResortHomeViewModel>();
   UserViewModel _userViewModel = Get.find<UserViewModel>();
+  // 실시간위치 탭 노출 여부(어드민 출시 토글 OR 테스트대상). 친구 시트 열 때 갱신.
+  bool _showPaidLive = false;
   FriendDetailViewModel _friendDetailViewModel = Get.find<FriendDetailViewModel>();
   FriendListViewModel _friendListViewModel = Get.find<FriendListViewModel>();
   GenderCategoryViewModel _genderCategoryViewModel = Get.find<GenderCategoryViewModel>();
@@ -87,6 +90,21 @@ class _ResortHomeViewState extends State<ResortHomeView> with
   RidingCardViewModel _ridingCardViewModel = Get.find<RidingCardViewModel>();
 
   //TODO: Dependency Injection**************************************************
+
+  /// 실시간위치 탭 노출 여부 조회(season/visibility: 출시 토글 OR 테스트대상).
+  Future<void> _fetchPaidLiveVisible() async {
+    final uid = _userViewModel.user.user_id;
+    if (uid is! int) {
+      _showPaidLive = false;
+      return;
+    }
+    try {
+      final res = await SeasonPassAPI().fetchVisibility(userId: uid);
+      _showPaidLive = res.success && res.data is Map && res.data['show_paid'] == true;
+    } catch (_) {
+      _showPaidLive = false;
+    }
+  }
 
   @override
   void initState() {
@@ -835,6 +853,7 @@ class _ResortHomeViewState extends State<ResortHomeView> with
                       onPressed: () async{
                         CustomFullScreenDialog.showDialog();
                         await _resortHomeViewModel.fetchBestFriendList(user_id: _userViewModel.user.user_id);
+                        await _fetchPaidLiveVisible(); // 실시간위치 탭 노출 여부(출시 토글 OR 테스트대상)
                         CustomFullScreenDialog.cancelDialog();
                         showModalBottomSheet(
                           context: context,
@@ -857,7 +876,7 @@ class _ResortHomeViewState extends State<ResortHomeView> with
                           expand: false,
                           builder: (context, scrollController) {
                             return DefaultTabController(
-                              length: 2,
+                              length: _showPaidLive ? 2 : 1,
                               child: Column(
                                 children: [
                                   const SizedBox(height: 12),
@@ -871,18 +890,20 @@ class _ResortHomeViewState extends State<ResortHomeView> with
                                       ),
                                     ),
                                   ),
-                                  TabBar(
-                                    labelColor: SDSColor.gray900,
-                                    unselectedLabelColor: SDSColor.gray500,
-                                    indicatorColor: SDSColor.snowliveBlue,
-                                    indicatorSize: TabBarIndicatorSize.label,
-                                    labelStyle: SDSTextStyle.bold.copyWith(fontSize: 15),
-                                    unselectedLabelStyle: SDSTextStyle.bold.copyWith(fontSize: 15),
-                                    tabs: const [
-                                      Tab(text: '라이브중인 친구'),
-                                      Tab(text: '실시간 위치'),
-                                    ],
-                                  ),
+                                  // 실시간위치 탭은 출시 토글 ON 또는 테스트 대상일 때만.
+                                  if (_showPaidLive)
+                                    TabBar(
+                                      labelColor: SDSColor.gray900,
+                                      unselectedLabelColor: SDSColor.gray500,
+                                      indicatorColor: SDSColor.snowliveBlue,
+                                      indicatorSize: TabBarIndicatorSize.label,
+                                      labelStyle: SDSTextStyle.bold.copyWith(fontSize: 15),
+                                      unselectedLabelStyle: SDSTextStyle.bold.copyWith(fontSize: 15),
+                                      tabs: const [
+                                        Tab(text: '라이브중인 친구'),
+                                        Tab(text: '실시간 위치'),
+                                      ],
+                                    ),
                                   Expanded(
                                     child: TabBarView(
                                       children: [
@@ -1164,7 +1185,7 @@ class _ResortHomeViewState extends State<ResortHomeView> with
                                 ),
                               ],
                             ),
-                                        const LiveMapPanel(),
+                                        if (_showPaidLive) const LiveMapPanel(),
                                       ],
                                     ),
                                   ),
