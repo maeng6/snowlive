@@ -1,6 +1,8 @@
 import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
+import 'package:com.snowlive/core/api/api_locationShare.dart';
 import 'package:com.snowlive/core/model/m_bestFriendListModel.dart';
 import 'package:com.snowlive/core/viewmodel/friend/vm_friendList.dart';
+import 'package:com.snowlive/core/viewmodel/vm_user.dart';
 import 'package:com.snowlive/web/routes/routes_web.dart';
 import 'package:com.snowlive/web/util/responsive_web.dart';
 import 'package:com.snowlive/web/view/friend/w_friend_page_scaffold_web.dart';
@@ -23,6 +25,7 @@ const String _kFriendEmptyIcon = 'assets/imgs/icons/icon_no_member.png';
 
 /// 친구 목록 행의 `···` 메뉴 항목.
 enum _FriendMoreAction {
+  shareLocation('위치공유 신청'),
   block('친구 차단하기'),
   remove('친구 삭제하기');
 
@@ -46,6 +49,18 @@ class _FriendHomeViewWebState extends State<FriendHomeViewWeb> {
   final FriendViewModelWeb _vm = Get.find<FriendViewModelWeb>();
   final FriendListViewModel _listVm = Get.find<FriendListViewModel>();
   final AuthCheckViewModelWeb _authVm = Get.find<AuthCheckViewModelWeb>();
+  final UserViewModel _userVm = Get.find<UserViewModel>();
+  final LocationShareAPI _locationApi = LocationShareAPI();
+
+  /// 위치공유 신청은 유료(시즌권) 전용 → 미소지자는 메뉴에서 회색 비활성.
+  bool _isPaid = false;
+
+  /// 내 user_id. 친구 목록에 내가 섞여 와도 나에겐 ···(삭제/차단)을 띄우지 않기 위함.
+  int? get _myUserId {
+    final id = _userVm.user?.user_id;
+    if (id is int) return id;
+    return int.tryParse('$id');
+  }
 
   final TextEditingController _searchController = TextEditingController();
 
@@ -55,14 +70,29 @@ class _FriendHomeViewWebState extends State<FriendHomeViewWeb> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) => _vm.refreshAll());
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _vm.refreshAll();
+      _loadPaid();
+    });
     // 자동로그인이 늦게 확정되면 최초 조회가 user_id 없이 조용히 실패해 빈 화면이 남는다.
     // 로그인 후 돌아온 경우에도 걸리므로 재조회와 함께 setState로 본문을 바꿔준다.
     _authWorker = ever<WebAuthStatus>(_authVm.statusRx, (status) {
       if (status != WebAuthStatus.authenticated) return;
       _vm.refreshAll();
+      _loadPaid();
       if (mounted) setState(() {});
     });
+  }
+
+  /// 시즌권 보유 여부 조회(위치공유 메뉴 활성/비활성 판단용).
+  Future<void> _loadPaid() async {
+    final uid = _myUserId;
+    if (uid == null) return;
+    final res = await _locationApi.list(userId: uid);
+    if (!mounted) return;
+    if (res.success && res.data is Map) {
+      setState(() => _isPaid = res.data['is_paid'] == true);
+    }
   }
 
   @override
@@ -218,6 +248,29 @@ class _FriendHomeViewWebState extends State<FriendHomeViewWeb> {
   Future<void> _onMoreAction(FriendListModel friend, _FriendMoreAction action) async {
     final info = friend.friendInfo;
     final name = info.displayName;
+
+    if (action == _FriendMoreAction.shareLocation) {
+      final uid = _myUserId;
+      final fid = info.userId;
+      if (uid == null || fid == null) {
+        _toast('로그인이 필요해요.');
+        return;
+      }
+      final res =
+          await LocationShareAPI().request(userId: uid, friendUserId: fid);
+      if (!mounted) return;
+      if (res.success) {
+        final st = (res.data is Map) ? res.data['status'] : null;
+        _toast(st == 'ACCEPTED'
+            ? '서로 수락되어 위치공유가 시작됐어요.'
+            : '$name님에게 위치공유를 신청했어요.');
+      } else {
+        _toast(res.data is Map && res.data['message'] != null
+            ? '${res.data['message']}'
+            : '위치공유 신청에 실패했어요.');
+      }
+      return;
+    }
 
     if (action == _FriendMoreAction.remove) {
       final ok = await showWebConfirmDialog(
@@ -378,9 +431,13 @@ class _FriendHomeViewWebState extends State<FriendHomeViewWeb> {
                 initialAreWeFriend: true,
               );
             },
-            trailing: _FriendMoreButton(
-              onSelected: (action) => _onMoreAction(friend, action),
-            ),
+            // 내 자신 행에는 ···(삭제/차단)을 띄우지 않는다 — 나를 삭제·차단할 수 없다.
+            trailing: friend.friendInfo.userId == _myUserId
+                ? null
+                : _FriendMoreButton(
+                    isPaid: _isPaid,
+                    onSelected: (action) => _onMoreAction(friend, action),
+                  ),
           ),
       ],
     );
@@ -395,7 +452,10 @@ class _FriendHomeViewWebState extends State<FriendHomeViewWeb> {
 class _FriendMoreButton extends StatefulWidget {
   final ValueChanged<_FriendMoreAction> onSelected;
 
-  const _FriendMoreButton({required this.onSelected});
+  /// 위치공유 신청은 유료 전용. false면 그 항목만 회색 비활성으로 표시한다.
+  final bool isPaid;
+
+  const _FriendMoreButton({required this.onSelected, this.isPaid = false});
 
   @override
   State<_FriendMoreButton> createState() => _FriendMoreButtonState();
@@ -411,6 +471,9 @@ class _FriendMoreButtonState extends State<_FriendMoreButton> {
       link: _link,
       values: _FriendMoreAction.values,
       labelOf: (v) => v.label,
+      // 위치공유 신청은 시즌권 보유자만 활성(미소지자는 회색 비활성).
+      enabledOf: (v) =>
+          v == _FriendMoreAction.shareLocation ? widget.isPaid : true,
       centerSheetOnTablet: true,
     );
     if (picked != null) widget.onSelected(picked);

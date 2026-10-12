@@ -35,6 +35,8 @@ import 'package:com.snowlive/core/viewmodel/ranking/vm_ridingCard.dart';
 import 'package:com.snowlive/web/viewmodel/ranking/vm_slopeCraft_web.dart';
 import 'package:com.snowlive/core/viewmodel/friend/vm_friendList.dart';
 import 'package:com.snowlive/web/viewmodel/friend/vm_friend_web.dart';
+import 'package:com.snowlive/web/viewmodel/seasonpass/vm_seasonPass_web.dart';
+import 'package:com.snowlive/web/viewmodel/location/vm_liveMap_web.dart';
 import 'package:com.snowlive/web/viewmodel/auth/vm_login_web.dart';
 import 'package:com.snowlive/web/viewmodel/auth/vm_authcheck_web.dart';
 import 'package:com.snowlive/web/viewmodel/auth/vm_onboarding_web.dart';
@@ -226,7 +228,7 @@ class WebFleamarketUpdateBinding extends Bindings {
   }
 }
 
-/// 친구 라우트 4개(목록·설정·요청 관리·차단 관리) 공용 바인딩.
+/// 친구 라우트 공용 바인딩(허브·설정·요청 관리·차단 관리).
 class WebFriendBinding extends Bindings {
   @override
   void dependencies() {
@@ -234,6 +236,24 @@ class WebFriendBinding extends Bindings {
     // 이걸 Get.find 하므로 **함께** 등록해야 URL 직접 진입 시 죽지 않는다.
     Get.lazyPut(() => FriendListViewModel(), fenix: true);
     Get.lazyPut(() => FriendViewModelWeb(), fenix: true);
+    // 친구 허브의 '실시간 위치' 탭이 쓴다(앱처럼 목록+위치를 한 화면에서 본다).
+    Get.lazyPut(() => LiveMapViewModelWeb(), fenix: true);
+  }
+}
+
+/// 시즌권(유료화) 라우트 공용 바인딩 — 홈·성공·실패.
+class WebSeasonPassBinding extends Bindings {
+  @override
+  void dependencies() {
+    Get.lazyPut(() => SeasonPassViewModelWeb(), fenix: true);
+  }
+}
+
+/// 실시간 위치 지도 바인딩.
+class WebLiveMapBinding extends Bindings {
+  @override
+  void dependencies() {
+    Get.lazyPut(() => LiveMapViewModelWeb(), fenix: true);
   }
 }
 

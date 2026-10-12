@@ -2,7 +2,7 @@
 import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/mobile/routes/routes.dart';
 import 'package:com.snowlive/mobile/view/moreTab/v_licenseListPage.dart';
-import 'package:com.snowlive/mobile/view/friend/v_ridingTrackPage.dart';
+import 'package:com.snowlive/mobile/util/ride_log_recorder.dart';
 import 'package:com.snowlive/mobile/view/v_webPage.dart';
 import 'package:com.snowlive/mobile/viewmodel/auth/vm_authcheck.dart';
 import 'package:com.snowlive/mobile/viewmodel/auth/vm_login.dart';
@@ -128,21 +128,28 @@ class Setting_moreTabView extends StatelessWidget {
                     width: 24,
                   ),
                 ),
-                // [임시/테스트] 라이딩 궤적 — 폴리곤 궤적 확인 + 로그 전송
+                // (라이딩 궤적·친구 실시간 위치 메뉴 제거: 친구 바텀시트 탭으로 이동)
+                // [개발자] 로그 전송 — 어드민 로그수집 대상 계정만 실제 전송(온디바이스 롤링 로그).
                 ListTile(
                   contentPadding: EdgeInsets.symmetric(horizontal: 16),
                   minVerticalPadding: 20,
-                  onTap: () {
-                    final uid = Get.find<UserViewModel>().user.user_id;
-                    if (uid is int) {
-                      Get.to(() => RidingTrackPage(userId: uid));
+                  onTap: () async {
+                    final user = Get.find<UserViewModel>().user;
+                    final uid = user.user_id;
+                    if (uid is! int) return;
+                    final isTarget = await RideLogRecorder.instance.isLogTarget(uid);
+                    if (!isTarget) {
+                      Get.snackbar('로그 전송', '로그 수집 대상 계정이 아닙니다.');
+                      return;
                     }
+                    final ok = await RideLogRecorder.instance.uploadLatest(
+                        userId: uid, displayName: user.display_name ?? '');
+                    Get.snackbar('로그 전송', ok ? '전송 완료' : '전송 실패(로그 없음 또는 네트워크 오류)');
                   },
                   title: Text(
-                    '라이딩 궤적',
+                    '로그 전송',
                     style: SDSTextStyle.bold.copyWith(
-                        fontSize: 15,
-                        color: SDSColor.gray900),
+                        fontSize: 15, color: SDSColor.gray900),
                   ),
                   trailing: Image.asset(
                     'assets/imgs/icons/icon_arrow_g.png',

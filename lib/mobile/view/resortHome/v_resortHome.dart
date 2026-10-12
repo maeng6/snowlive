@@ -36,6 +36,7 @@ import 'package:com.snowlive/core/model/m_dailyRidingCard.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
+import 'package:com.snowlive/mobile/view/location/v_liveMapPage.dart' show LiveMapPanel;
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
@@ -855,7 +856,37 @@ class _ResortHomeViewState extends State<ResortHomeView> with
                           maxChildSize: 0.88,
                           expand: false,
                           builder: (context, scrollController) {
-                            return Stack(
+                            return DefaultTabController(
+                              length: 2,
+                              child: Column(
+                                children: [
+                                  const SizedBox(height: 12),
+                                  Center(
+                                    child: Container(
+                                      height: 4,
+                                      width: 36,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(10),
+                                        color: SDSColor.gray200,
+                                      ),
+                                    ),
+                                  ),
+                                  TabBar(
+                                    labelColor: SDSColor.gray900,
+                                    unselectedLabelColor: SDSColor.gray500,
+                                    indicatorColor: SDSColor.snowliveBlue,
+                                    indicatorSize: TabBarIndicatorSize.label,
+                                    labelStyle: SDSTextStyle.bold.copyWith(fontSize: 15),
+                                    unselectedLabelStyle: SDSTextStyle.bold.copyWith(fontSize: 15),
+                                    tabs: const [
+                                      Tab(text: '라이브중인 친구'),
+                                      Tab(text: '실시간 위치'),
+                                    ],
+                                  ),
+                                  Expanded(
+                                    child: TabBarView(
+                                      children: [
+                            Stack(
                               children: [
                                 Container(
                                     decoration: BoxDecoration(
@@ -866,28 +897,16 @@ class _ResortHomeViewState extends State<ResortHomeView> with
                                     child: Obx(()=>Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
-                                        Center(
-                                          child: Padding(
-                                            padding: const EdgeInsets.only(bottom: 20),
-                                            child: Container(
-                                              height: 4,
-                                              width: 36,
-                                              decoration: BoxDecoration(
-                                                borderRadius: BorderRadius.circular(10),
-                                                color: SDSColor.gray200,
-                                              ),
-                                            ),
-                                          ),
-                                        ),
                                         Stack(
                                           children: [
                                             Container(
                                               width: _size.width,
                                               height: 32,
-                                              child: Center(
+                                              child: Align(
+                                                alignment: Alignment.centerLeft,
                                                 child: Text(
                                                   '라이브중인 친구',
-                                                  style: SDSTextStyle.bold.copyWith(fontSize: 16, color: SDSColor.gray900),
+                                                  style: SDSTextStyle.bold.copyWith(fontSize: 15, color: SDSColor.gray700),
                                                 ),
                                               ),
                                             ),
@@ -1144,6 +1163,13 @@ class _ResortHomeViewState extends State<ResortHomeView> with
                                 ),
                                 ),
                               ],
+                            ),
+                                        const LiveMapPanel(),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
                             );
                           },
                         ));

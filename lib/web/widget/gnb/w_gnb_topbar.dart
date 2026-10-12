@@ -84,6 +84,25 @@ class WebGnbTopbar extends StatelessWidget implements PreferredSizeWidget {
                 ),
               );
             }),
+          // 햄버거 왼쪽 친구 바로가기(앱의 리조트홈 친구 아이콘과 동일 역할).
+          // 친구 허브(목록 + 실시간 위치)로 이동한다.
+          IconButton(
+            onPressed: () {
+              onLogoTap?.call();
+              openGnbSection(WebRoutes.friend);
+            },
+            tooltip: '친구',
+            splashColor: Colors.transparent,
+            highlightColor: Colors.transparent,
+            hoverColor: Colors.transparent,
+            focusColor: Colors.transparent,
+            style: const ButtonStyle(
+              overlayColor: WidgetStatePropertyAll(Colors.transparent),
+              splashFactory: NoSplash.splashFactory,
+            ),
+            icon: Image.asset('assets/imgs/icons/icon_friend_resortHome.png',
+                width: 26, height: 26),
+          ),
           IconButton(
             onPressed: onMenuTap,
             // 탭 시 파란 리플(테마 기본색)이 비치지 않게 효과를 전부 끈다.

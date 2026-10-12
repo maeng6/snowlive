@@ -37,28 +37,31 @@ class RideLogRecorder {
 
   int? get sessionUserId => _sessionUserId;
 
-  /// 라이브온 시 호출. 어드민 등록 대상이면 기록 시작.
+  /// 라이브온 시 호출. **전원 상시 기록**(온디바이스 롤링, 캡 3일/20MB).
+  /// 전송은 어드민 등록자만 설정의 "로그 전송" 메뉴로(uploadLatest).
   Future<void> maybeStartForUser(dynamic userId) async {
     final uid = (userId is int) ? userId : int.tryParse('$userId');
     if (uid == null) return;
     _sessionUserId = uid;
     try {
-      final isTarget = await _isLogTarget(uid);
-      if (isTarget) {
-        await start();
-        log('[RideLog] 수집 대상 — 기록 시작 (user_id=$uid)');
-      }
+      await start();
+      log('[RideLog] 기록 시작 (user_id=$uid)');
     } catch (e) {
-      debugPrint('[RideLog] 대상 확인 실패: $e');
+      debugPrint('[RideLog] start 실패: $e');
     }
   }
 
-  Future<bool> _isLogTarget(int uid) async {
-    final uri = Uri.parse('${RankingAPI.baseUrl}/debug/is-log-target/?user_id=$uid');
-    final resp = await http.get(uri).timeout(const Duration(seconds: 8));
-    if (resp.statusCode != 200) return false;
-    final data = jsonDecode(resp.body) as Map<String, dynamic>;
-    return data['is_target'] == true;
+  /// 어드민 로그수집 대상 여부(설정의 "로그 전송" 메뉴 노출 판정용).
+  Future<bool> isLogTarget(int uid) async {
+    try {
+      final uri = Uri.parse('${RankingAPI.baseUrl}/debug/is-log-target/?user_id=$uid');
+      final resp = await http.get(uri).timeout(const Duration(seconds: 8));
+      if (resp.statusCode != 200) return false;
+      final data = jsonDecode(resp.body) as Map<String, dynamic>;
+      return data['is_target'] == true;
+    } catch (_) {
+      return false;
+    }
   }
 
   Future<void> start() async {
@@ -67,6 +70,7 @@ class RideLogRecorder {
     _sessionStart = DateTime.now();
     try {
       final dir = await getApplicationDocumentsDirectory();
+      await _pruneOldLogs(dir); // 온디바이스 롤링 캡(3일/20MB) 유지
       final t = _sessionStart!;
       final name =
           'ridelog_${t.year}${_2(t.month)}${_2(t.day)}_${_2(t.hour)}${_2(t.minute)}${_2(t.second)}.txt';
@@ -146,6 +150,47 @@ class RideLogRecorder {
       debugPrint('[RideLog] 업로드 실패: $e');
       return false;
     }
+  }
+
+  /// 온디바이스 롤링 캡: 3일 지난 로그 삭제 + 총합 20MB 초과 시 오래된 것부터 삭제.
+  Future<void> _pruneOldLogs(Directory dir) async {
+    try {
+      const maxAge = Duration(days: 3);
+      const maxBytes = 20 * 1024 * 1024;
+      final now = DateTime.now();
+      var files = dir
+          .listSync()
+          .whereType<File>()
+          .where((f) => f.path.contains('ridelog_') && f.path.endsWith('.txt'))
+          .toList();
+      // 1) 오래된 것(3일 초과) 삭제
+      for (final f in files.toList()) {
+        try {
+          if (now.difference(f.statSync().modified) > maxAge) {
+            f.deleteSync();
+            files.remove(f);
+          }
+        } catch (_) {}
+      }
+      // 2) 총 용량 20MB 초과 시 오래된 것부터 삭제
+      files.sort((a, b) =>
+          a.statSync().modified.compareTo(b.statSync().modified));
+      int total = 0;
+      for (final f in files) {
+        try {
+          total += f.lengthSync();
+        } catch (_) {}
+      }
+      int i = 0;
+      while (total > maxBytes && i < files.length) {
+        try {
+          final len = files[i].lengthSync();
+          files[i].deleteSync();
+          total -= len;
+        } catch (_) {}
+        i++;
+      }
+    } catch (_) {}
   }
 
   static String _2(int n) => n.toString().padLeft(2, '0');

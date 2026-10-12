@@ -59,6 +59,11 @@ class _FriendSettingsViewWebState extends State<FriendSettingsViewWeb> {
           : Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
+                WebSettingsRow(
+                  label: '실시간 위치 공유',
+                  onTap: () => Get.toNamed(WebRoutes.friendLocationShare),
+                ),
+                Divider(color: SDSColor.gray100, height: 1, thickness: 1),
                 Obx(() => WebSettingsRow(
                       label: '친구 요청 관리',
                       badgeCount: _listVm.friendsRequestList.length,

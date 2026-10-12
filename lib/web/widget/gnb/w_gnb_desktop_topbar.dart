@@ -53,6 +53,22 @@ class WebGnbDesktopTopBar extends StatelessWidget {
             ),
           ),
           const Spacer(),
+          // 친구 바로가기(허브: 목록 + 실시간 위치). 프로필/로그인 영역 왼쪽.
+          IconButton(
+            onPressed: () => openGnbSection(WebRoutes.friend),
+            tooltip: '친구',
+            splashColor: Colors.transparent,
+            highlightColor: Colors.transparent,
+            hoverColor: Colors.transparent,
+            focusColor: Colors.transparent,
+            style: const ButtonStyle(
+              overlayColor: WidgetStatePropertyAll(Colors.transparent),
+              splashFactory: NoSplash.splashFactory,
+            ),
+            icon: Image.asset('assets/imgs/icons/icon_friend_resortHome.png',
+                width: 26, height: 26),
+          ),
+          const SizedBox(width: 4),
           Obx(() {
             final user = userVM.user;
             final bool isLoggedIn = user != null && user.user_id != null;

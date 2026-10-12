@@ -18,6 +18,10 @@ Future<T?> showWebFilterMenu<T>({
   required List<T> values,
   required String Function(T value) labelOf,
 
+  /// 항목 활성 여부. null이면 전부 활성(기존 호출자 회귀 없음).
+  /// false면 회색 비활성으로 그리고 탭해도 선택되지 않는다.
+  bool Function(T value)? enabledOf,
+
   /// 회색 헤더 문구. null이면 헤더를 그리지 않는다.
   String? title,
 
@@ -43,6 +47,7 @@ Future<T?> showWebFilterMenu<T>({
         title: title,
         values: values,
         labelOf: labelOf,
+        enabledOf: enabledOf,
         onPick: close,
         minWidth: anchorWidth,
       ),
@@ -53,6 +58,7 @@ Future<T?> showWebFilterMenu<T>({
     context: context,
     values: values,
     labelOf: labelOf,
+    enabledOf: enabledOf,
     title: title,
     showTitle: showTitleInSheet,
     centerOnTablet: centerSheetOnTablet,
@@ -65,6 +71,7 @@ Future<T?> showWebFilterSheet<T>({
   required BuildContext context,
   required List<T> values,
   required String Function(T value) labelOf,
+  bool Function(T value)? enabledOf,
   String? title,
   bool showTitle = false,
   bool centerOnTablet = false,
@@ -135,6 +142,7 @@ Future<T?> showWebFilterSheet<T>({
                   _FilterSheetRow(
                     label: labelOf(values[i]),
                     alignStart: alignItemsStart,
+                    enabled: enabledOf?.call(values[i]) ?? true,
                     onTap: () => close(values[i]),
                   ),
                 ],
@@ -152,12 +160,14 @@ Future<T?> showWebFilterSheet<T>({
 class _FilterSheetRow extends StatefulWidget {
   final String label;
   final bool alignStart;
+  final bool enabled;
   final VoidCallback onTap;
 
   const _FilterSheetRow({
     required this.label,
     required this.alignStart,
     required this.onTap,
+    this.enabled = true,
   });
 
   @override
@@ -169,6 +179,22 @@ class _FilterSheetRowState extends State<_FilterSheetRow> {
 
   @override
   Widget build(BuildContext context) {
+    // 비활성: 회색(gray300) + 클릭 불가(탭 무시, 커서 기본).
+    if (!widget.enabled) {
+      return Container(
+        height: 44,
+        alignment:
+            widget.alignStart ? Alignment.centerLeft : Alignment.center,
+        color: Colors.transparent,
+        child: Text(
+          widget.label,
+          style: SDSTextStyle.bold.copyWith(
+            fontSize: 16,
+            color: SDSColor.gray300,
+          ),
+        ),
+      );
+    }
     return MouseRegion(
       cursor: SystemMouseCursors.click,
       onEnter: (_) => setState(() => _hovered = true),
@@ -203,6 +229,7 @@ class WebFilterDropdownPanel<T> extends StatelessWidget {
   final String? title;
   final List<T> values;
   final String Function(T value) labelOf;
+  final bool Function(T value)? enabledOf;
   final void Function(T value) onPick;
 
   /// 최소한 앵커 폭만큼은 확보하고, 항목 라벨이 길면 그만큼 넓어진다.
@@ -215,6 +242,7 @@ class WebFilterDropdownPanel<T> extends StatelessWidget {
     required this.labelOf,
     required this.onPick,
     required this.minWidth,
+    this.enabledOf,
   });
 
   @override
@@ -277,6 +305,7 @@ class WebFilterDropdownPanel<T> extends StatelessWidget {
                       if (i > 0) const SizedBox(height: 6),
                       _WebFilterMenuItem(
                         label: labelOf(values[i]),
+                        enabled: enabledOf?.call(values[i]) ?? true,
                         onTap: () => onPick(values[i]),
                       ),
                     ],
@@ -294,9 +323,14 @@ class WebFilterDropdownPanel<T> extends StatelessWidget {
 /// 데스크탑 드롭다운 항목 한 줄. hover 시 텍스트 투명도 80%.
 class _WebFilterMenuItem extends StatefulWidget {
   final String label;
+  final bool enabled;
   final VoidCallback onTap;
 
-  const _WebFilterMenuItem({required this.label, required this.onTap});
+  const _WebFilterMenuItem({
+    required this.label,
+    required this.onTap,
+    this.enabled = true,
+  });
 
   @override
   State<_WebFilterMenuItem> createState() => _WebFilterMenuItemState();
@@ -307,6 +341,20 @@ class _WebFilterMenuItemState extends State<_WebFilterMenuItem> {
 
   @override
   Widget build(BuildContext context) {
+    // 비활성: 회색(gray300) + 클릭 불가.
+    if (!widget.enabled) {
+      return Container(
+        height: 28,
+        alignment: Alignment.centerLeft,
+        child: Text(
+          widget.label,
+          style: SDSTextStyle.bold.copyWith(
+            fontSize: 14,
+            color: SDSColor.gray300,
+          ),
+        ),
+      );
+    }
     return MouseRegion(
       cursor: SystemMouseCursors.click,
       onEnter: (_) => setState(() => _hovered = true),

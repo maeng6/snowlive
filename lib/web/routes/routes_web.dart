@@ -6,7 +6,8 @@ import 'package:com.snowlive/web/view/community/v_communityUpload_web.dart';
 import 'package:com.snowlive/web/view/event/v_eventHome_web.dart';
 import 'package:com.snowlive/web/view/fleamarket/v_fleamarketAlert_web.dart';
 import 'package:com.snowlive/web/view/friend/v_friendBlockList_web.dart';
-import 'package:com.snowlive/web/view/friend/v_friendHome_web.dart';
+import 'package:com.snowlive/web/view/friend/v_friendsHub_web.dart';
+import 'package:com.snowlive/web/view/friend/v_friendLocationShare_web.dart';
 import 'package:com.snowlive/web/view/friend/v_friendRequests_web.dart';
 import 'package:com.snowlive/web/view/friend/v_friendSettings_web.dart';
 import 'package:com.snowlive/web/view/fleamarket/v_fleamarketDetail_web.dart';
@@ -42,6 +43,11 @@ import 'package:com.snowlive/web/view/login/v_login_web.dart';
 import 'package:com.snowlive/web/view/onboarding/v_onboarding_web.dart';
 import 'package:com.snowlive/web/view/ranking/v_rankingArchive_web.dart';
 import 'package:com.snowlive/web/view/ranking/v_rankingHome_web.dart';
+import 'package:com.snowlive/web/view/seasonpass/v_seasonPassHome_web.dart';
+import 'package:com.snowlive/web/view/seasonpass/v_seasonPassResult_web.dart';
+import 'package:com.snowlive/web/view/seasonpass/v_rideDetail_web.dart';
+import 'package:com.snowlive/web/view/seasonpass/v_rideListWeb.dart';
+import 'package:com.snowlive/web/view/location/v_liveMap_web.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -131,6 +137,18 @@ class WebRoutes {
   static const friendSettings = '/friend-settings';
   static const friendRequests = '/friend-requests';
   static const friendBlockList = '/friend-blocklist';
+  static const friendLocationShare = '/friend-location-share';
+  // 시즌권(유료화). 결제 리다이렉트 복귀 경로는 토스 successUrl/failUrl과 일치해야 한다
+  // (toss_payment_web.dart에서 '$origin/#/season-pass-success' 사용).
+  static const seasonPass = '/season-pass';
+  static const seasonPassSuccess = '/season-pass-success';
+  static const seasonPassFail = '/season-pass-fail';
+  // 내 라이딩 궤적 목록.
+  static const rideList = '/ride-list';
+  // 유료 궤적 상세. id는 쿼리로: '/ride-detail?id=123'.
+  static const rideDetail = '/ride-detail';
+  // 친구 실시간 위치 지도(유료).
+  static const liveMap = '/live-map';
 
   static final pages = [
     GetPage(
@@ -190,7 +208,7 @@ class WebRoutes {
     ),
     GetPage(
       name: friend,
-      page: () => const FriendHomeViewWeb(),
+      page: () => const FriendsHubViewWeb(),
       binding: WebFriendBinding(),
     ),
     GetPage(
@@ -207,6 +225,39 @@ class WebRoutes {
       name: friendBlockList,
       page: () => const FriendBlockListViewWeb(),
       binding: WebFriendBinding(),
+    ),
+    GetPage(
+      name: friendLocationShare,
+      page: () => const FriendLocationShareViewWeb(),
+      binding: WebFriendBinding(),
+    ),
+    GetPage(
+      name: seasonPass,
+      page: () => const SeasonPassHomeViewWeb(),
+      binding: WebSeasonPassBinding(),
+    ),
+    GetPage(
+      name: seasonPassSuccess,
+      page: () => const SeasonPassSuccessViewWeb(),
+      binding: WebSeasonPassBinding(),
+    ),
+    GetPage(
+      name: seasonPassFail,
+      page: () => const SeasonPassFailViewWeb(),
+      binding: WebSeasonPassBinding(),
+    ),
+    GetPage(
+      name: rideList,
+      page: () => const RideListViewWeb(),
+    ),
+    GetPage(
+      name: rideDetail,
+      page: () => const RideDetailViewWeb(),
+    ),
+    GetPage(
+      name: liveMap,
+      page: () => const LiveMapViewWeb(),
+      binding: WebLiveMapBinding(),
     ),
     GetPage(
       name: event,

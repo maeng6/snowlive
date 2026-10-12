@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:com.snowlive/core/service/live_publish_service.dart';
 import 'package:com.snowlive/core/api/ApiResponse.dart';
 import 'package:com.snowlive/core/api/api_friend.dart';
 import 'package:com.snowlive/core/api/api_ranking.dart';
@@ -1163,6 +1164,12 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
 
                 // 🟦 폴리곤 라이딩(신 방식) 판별 — 자기 게이팅(write_polygon)
                 _polygonRiding?.onPosition(position.latitude, position.longitude, at: position.timestamp, alt: position.altitude);
+
+                // 🟢 유료 실시간 위치 공유: 유료+상호수락이면 5/10초 주기로 좌표 publish(서버 게이트).
+                if (user_id is int) {
+                  LivePublishService.instance.onPosition(
+                      user_id, position.latitude, position.longitude);
+                }
 
                 // 현재 위치에서 영역 체크 (보간 제거)
                 List<Map<String, dynamic>> passPointInfos = checkPositionInAreas(

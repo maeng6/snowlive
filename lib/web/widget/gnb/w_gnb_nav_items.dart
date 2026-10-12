@@ -106,6 +106,7 @@ const List<GnbNavItemData> kGnbPrimaryItems = [
 /// 2차 그룹: 친구 / 알림 / 설정(목업 순서). 사이드바·드로어가 같은 목록을 쓴다.
 /// 목업대로 **아이콘 없이 텍스트만** 쓴다(1차 그룹만 아이콘을 갖는다).
 const List<GnbNavItemData> kGnbSecondaryItems = [
+  GnbNavItemData(label: '시즌권', routePrefix: WebRoutes.seasonPass),
   GnbNavItemData(label: '친구', routePrefix: WebRoutes.friend),
   GnbNavItemData(label: '알림', routePrefix: WebRoutes.alarm, showsAlarmDot: true),
   GnbNavItemData(label: '설정', routePrefix: WebRoutes.settings),
