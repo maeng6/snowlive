@@ -68,10 +68,8 @@ class _CrewHomeViewWebState extends State<CrewHomeViewWeb> {
     }
   }
 
-  /// 크루톡 목록. **크루별 조회 API가 아직 없어서 항상 빈 목록이다**
-  /// (`/livetalk/list/`가 crew_id를 무시하고 전체를 준다 — 실측).
-  /// 서버가 필터를 열어주면 이 getter만 뷰모델 값으로 바꾸면 된다.
-  List<LiveTalk> get _talks => const [];
+  /// 이 크루의 크루톡 목록(뷰모델이 `/livetalk/list/`에 crew_id 전달해 조회).
+  List<LiveTalk> get _talks => _vm.crewTalks;
 
   SeasonRankingInfo? get _season => _vm.season;
 
@@ -204,6 +202,7 @@ class _CrewHomeViewWebState extends State<CrewHomeViewWeb> {
     final isLoading = _vm.isLoading;
     final hasError = _vm.hasError;
     final members = _memberList;
+    final talks = _talks; // Obx 구독 보장(분기 전에 읽어둔다)
 
     if (_crewId == null) {
       return const WebEmptyState(message: '크루 정보를 찾을 수 없어요.');
@@ -255,7 +254,7 @@ class _CrewHomeViewWebState extends State<CrewHomeViewWeb> {
         _buildMemberSection(members),
         const SizedBox(height: 48),
         CrewHomeTalkSectionWeb(
-          talks: _talks,
+          talks: talks,
           mode: _talkMode,
           onModeChanged: (mode) => setState(() => _talkMode = mode),
           onTalkTap: _onTalkTap,

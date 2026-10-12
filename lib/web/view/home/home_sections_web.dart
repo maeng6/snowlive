@@ -209,6 +209,8 @@ String homeCommunityMeta(Community community, {DateTime? now}) {
 /// 소스는 크루홈 집계의 공개 크루톡(`crew_talks`)이다. 크루톡에는 제목 필드가 없어서
 /// **본문 첫 줄을 제목**으로, 나머지를 설명으로 쓴다(목업의 두 줄 구성).
 class HomeCrewCard {
+  /// 이 카드가 보여주는 크루톡(라이브톡) id — 탭하면 라이브톡 상세로 이동.
+  final int? talkId;
   final int? crewId;
   final String crewName;
   final String? crewLogoUrl;
@@ -223,6 +225,7 @@ class HomeCrewCard {
   final bool isNew;
 
   const HomeCrewCard({
+    required this.talkId,
     required this.crewId,
     required this.crewName,
     required this.crewLogoUrl,
@@ -294,6 +297,7 @@ List<HomeCrewCard> homeCrewCards(CrewHomeModel? home) {
     final title = homeCrewCardTitle(talk.description);
     if (title.isEmpty) continue;
     cards.add(HomeCrewCard(
+      talkId: talk.livetalkId,
       crewId: crewId,
       crewName: crew?.crewName ?? '',
       crewLogoUrl: crew?.crewLogoUrl,

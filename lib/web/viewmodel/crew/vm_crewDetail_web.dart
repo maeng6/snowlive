@@ -2,7 +2,9 @@ import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:com.snowlive/core/api/api_crew.dart';
+import 'package:com.snowlive/core/api/api_liveTalk.dart';
 import 'package:com.snowlive/core/model/m_crewDetail.dart';
+import 'package:com.snowlive/core/model/m_liveTalk.dart';
 import 'package:com.snowlive/core/model/m_crewMemberList.dart';
 import 'package:com.snowlive/core/model/m_crewMemberRankingList.dart';
 import 'package:com.snowlive/core/viewmodel/vm_user.dart';
@@ -22,6 +24,7 @@ import 'package:http/http.dart' as http;
 /// 안내 문구는 띄우지 않는다 — 결과만 돌려주고 화면이 토스트/다이얼로그를 띄운다.
 class CrewDetailViewModelWeb extends GetxController {
   final CrewAPI _api = CrewAPI();
+  final LiveTalkAPI _talkApi = LiveTalkAPI();
 
   /// 다른 API 클래스들과 같은 상수(코어에 공유 상수가 없어 그 관례를 따른다).
   static const String _crewBaseUrl =
@@ -36,6 +39,8 @@ class CrewDetailViewModelWeb extends GetxController {
   // 멤버 화면은 기록 유무와 상관없이 **전원**을 보여준다(앱과 동일). 랭킹은
   // 기록 있는 크루원만 보여주므로 여기에 섞지 않는다.
   final RxList<CrewMember> _fullMembers = <CrewMember>[].obs;
+  // 이 크루의 크루톡(크루홈 톡 탭). 서버 `/livetalk/list/`에 crew_id 전달.
+  final RxList<LiveTalk> _crewTalks = <LiveTalk>[].obs;
   final RxBool _isLoading = false.obs;
   final RxBool _hasError = false.obs;
   final RxBool _isSubmitting = false.obs;
@@ -54,6 +59,7 @@ class CrewDetailViewModelWeb extends GetxController {
   SeasonRankingInfo? get season => _season.value;
   List<CrewRanking> get members => _members;
   List<CrewMember> get fullMembers => _fullMembers;
+  List<LiveTalk> get crewTalks => _crewTalks;
   bool get isLoading => _isLoading.value;
   bool get hasError => _hasError.value;
   bool get isSubmitting => _isSubmitting.value;
@@ -109,6 +115,7 @@ class CrewDetailViewModelWeb extends GetxController {
       _logVisit(crewId); // 진입당 1회 방문 집계(비차단)
       await _loadMembers(crewId: crewId, season: season);
       await _loadFullMembers(crewId);
+      await _loadCrewTalks(crewId);
     } catch (e) {
       debugPrint('[CrewDetail] 조회 예외: $e');
       _hasError.value = true;
@@ -180,6 +187,26 @@ class CrewDetailViewModelWeb extends GetxController {
     } catch (e) {
       debugPrint('[CrewDetail] 멤버 목록 예외: $e');
       _fullMembers.clear();
+    }
+  }
+
+  /// 이 크루의 크루톡 목록(최신순). 비공개 글은 서버가 크루원에게만 내려준다.
+  Future<void> _loadCrewTalks(int crewId) async {
+    try {
+      final res = await _talkApi.fetchList({
+        'user_id': _userVM.user.user_id,
+        'crew_id': crewId,
+      });
+      if (!res.success) {
+        _crewTalks.clear();
+        return;
+      }
+      final parsed =
+          LiveTalkListResponse.fromJson(res.data as Map<String, dynamic>);
+      _crewTalks.assignAll(parsed.results ?? []);
+    } catch (e) {
+      debugPrint('[CrewDetail] 크루톡 조회 예외: $e');
+      _crewTalks.clear();
     }
   }
 

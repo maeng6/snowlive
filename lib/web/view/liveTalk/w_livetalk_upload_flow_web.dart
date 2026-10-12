@@ -120,7 +120,7 @@ class _UploadFlowState extends State<_UploadFlow> {
     }
     widget.onClose(true);
     // 목업: 업로드가 끝나면 완료 알럿을 띄운다.
-    await showLiveTalkUploadDoneDialog(context);
+    await showLiveTalkUploadDoneDialog(context, isCrewTalk: _isCrewTalk);
   }
 
   @override
@@ -305,6 +305,9 @@ class _UploadFlowState extends State<_UploadFlow> {
               LiveTalkComposeField(
                 controller: _textController,
                 height: composeHeight,
+                hintText: _isCrewTalk
+                    ? '크루톡 글을 남겨주세요.'
+                    : '라이브톡 글을 남겨주세요.',
               ),
               if (_isCrewTalk) ...[
                 const SizedBox(height: SDSSpacing.md),
@@ -514,8 +517,9 @@ class _AddPhotoSlotState extends State<_AddPhotoSlot> {
   }
 }
 
-/// 업로드 완료 알럿(목업: `라이브톡 업로드 완료됐어요` + `확인`).
-Future<void> showLiveTalkUploadDoneDialog(BuildContext context) {
+/// 업로드 완료 알럿(목업: `라이브톡 업로드 완료됐어요` + `확인`). 크루톡이면 문구만 바꾼다.
+Future<void> showLiveTalkUploadDoneDialog(BuildContext context,
+    {bool isCrewTalk = false}) {
   return showWebOverlayModal<void>(
     context: context,
     barrierDismissible: false,
@@ -533,7 +537,7 @@ Future<void> showLiveTalkUploadDoneDialog(BuildContext context) {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Text(
-              '라이브톡 업로드 완료됐어요',
+              isCrewTalk ? '크루톡 업로드가 완료됐어요' : '라이브톡 업로드 완료됐어요',
               textAlign: TextAlign.center,
               style: SDSTextStyle.bold.copyWith(fontSize: 16, color: SDSColor.gray900),
             ),
@@ -587,7 +591,7 @@ class _VisibilityToggle extends StatelessWidget {
               ),
               const SizedBox(height: 2),
               Text(
-                isPublic ? '라이브크루 홈에도 사진이 보여요.' : '크루원만 볼 수 있어요.',
+                isPublic ? '라이브톡에도 글이 노출돼요.' : '크루원만 볼 수 있어요.',
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: SDSTextStyle.regular.copyWith(

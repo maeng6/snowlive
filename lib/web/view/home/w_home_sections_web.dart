@@ -1067,17 +1067,22 @@ class _CrewTalkCardState extends State<_CrewTalkCard> with _TapFeedback {
     final crewColor = crewColorOf(card.crewColor);
     final logoUrl = crewLogoUrlOf(logoUrl: card.crewLogoUrl, color: card.crewColor);
 
+    // 크루톡 카드 → 라이브톡 상세(해당 글). talkId 없으면(예외) 크루홈으로 폴백.
+    final int? openTalkId = card.talkId;
+    final bool tappable = openTalkId != null || card.crewId != null;
     return MouseRegion(
-      cursor: card.crewId == null ? SystemMouseCursors.basic : SystemMouseCursors.click,
+      cursor: tappable ? SystemMouseCursors.click : SystemMouseCursors.basic,
       onEnter: (_) => setState(() => _hovered = true),
       onExit: (_) => setState(() => _hovered = false),
       child: GestureDetector(
         onTapDown: (_) => pressDown(),
         onTapUp: (_) => pressUpDelayed(),
         onTapCancel: pressCancel,
-        onTap: card.crewId == null
+        onTap: !tappable
             ? null
-            : () => Get.toNamed('${WebRoutes.crewHome}?id=${card.crewId}'),
+            : () => Get.toNamed(openTalkId != null
+                ? '${WebRoutes.liveTalkDetail}?id=$openTalkId'
+                : '${WebRoutes.crewHome}?id=${card.crewId}'),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

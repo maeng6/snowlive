@@ -486,7 +486,15 @@ class LiveTalkComposeField extends StatefulWidget {
   /// 입력칸 높이. PC·태블릿 181 / 모바일 195(목업).
   final double height;
 
-  const LiveTalkComposeField({super.key, required this.controller, this.height = 181});
+  /// 본문 힌트. 크루톡은 '크루톡 글을 남겨주세요.'를 넘겨 쓴다.
+  final String hintText;
+
+  const LiveTalkComposeField({
+    super.key,
+    required this.controller,
+    this.height = 181,
+    this.hintText = '라이브톡 글을 남겨주세요.',
+  });
 
   @override
   State<LiveTalkComposeField> createState() => _LiveTalkComposeFieldState();
@@ -572,7 +580,7 @@ class _LiveTalkComposeFieldState extends State<LiveTalkComposeField> {
           ),
           cursorHeight: 16,
           decoration: InputDecoration(
-            hintText: '라이브톡 글을 남겨주세요.',
+            hintText: widget.hintText,
             // 목업 #949494 = gray500.
             hintStyle: SDSTextStyle.regular.copyWith(
               fontSize: 15,
