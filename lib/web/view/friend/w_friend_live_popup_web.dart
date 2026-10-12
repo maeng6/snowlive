@@ -162,7 +162,8 @@ class _FriendLivePopupState extends State<_FriendLivePopup> {
       child: GestureDetector(
         behavior: HitTestBehavior.opaque,
         onTap: () async {
-          widget.close();
+          // 라이브 팝업은 닫지 않고, 프로필 다이얼로그를 그 위에 스택으로 띄운다.
+          // (프로필 X를 눌러도 라이브중인 친구 팝업은 그대로 남는다.)
           await showFriendProfileModal(
             context,
             friendUserId: info.userId,
