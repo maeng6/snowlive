@@ -31,10 +31,9 @@ class PaidVisibilityControllerWeb extends GetxController {
   }
 
   Future<void> refresh() async {
-    final uid = _uid;
+    final uid = _uid; // 게스트면 null — 메뉴 토글은 그래도 반영돼야 하므로 그대로 조회.
     if (uid == null) {
-      showPaid.value = false;
-      return;
+      showPaid.value = false; // 유료 진입점은 비로그인 숨김(기존 정책)
     }
     try {
       final res = await _api.fetchVisibility(userId: uid);

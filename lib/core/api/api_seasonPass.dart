@@ -8,10 +8,12 @@ class SeasonPassAPI {
   static const String baseUrl =
       'https://snowlive-api-c617725e2b78.herokuapp.com/api/payment/season';
 
-  /// 유료기능 진입점 노출 여부(어드민 출시 토글 OR 테스트대상). 경량.
-  Future<ApiResponse> fetchVisibility({required int userId}) async {
-    final uri = Uri.parse('$baseUrl/visibility/')
-        .replace(queryParameters: {'user_id': userId.toString()});
+  /// 노출 토글 묶음(show_paid/menus/today_ranking). 경량.
+  /// userId null(게스트)이면 토글값만 반영(테스트 예외 없음).
+  Future<ApiResponse> fetchVisibility({int? userId}) async {
+    final uri = Uri.parse('$baseUrl/visibility/').replace(
+        queryParameters:
+            userId != null ? {'user_id': userId.toString()} : null);
     final response = await http.get(uri);
     if (response.statusCode == 200) {
       return ApiResponse.success(json.decode(utf8.decode(response.bodyBytes)));
