@@ -894,7 +894,14 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
         _startHeartbeatTimer();
         _startLogFlushTimer();
 
-        await startBackgroundLocationService(user_id: user_id);
+        // 🟡 백그라운드 위치(Transistorsoft)는 **iOS에서만** 실행한다.
+        // Android는 위치 타입 포그라운드 서비스(LiveActivityService) + geolocator 스트림이
+        // 화면 꺼짐까지 커버하는 것을 로그·실측으로 확인 → 유료 Android 라이선스 불필요.
+        // (iOS는 무료이고 백그라운드 제약이 더 커서 검증된 플러그인을 그대로 유지한다.)
+        // 2단계에서 Android 빌드의 Transistorsoft gradle 모듈·라이선스까지 제거 예정.
+        if (Platform.isIOS) {
+          await startBackgroundLocationService(user_id: user_id);
+        }
         // 자동 라이브온 다이얼로그는 뷰에서 로딩 다이얼로그 닫힌 후 호출
       } else {
         print('포그라운드 서비스 실패로 백그라운드 실행 중단');
@@ -1187,14 +1194,21 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
                       slopeId: _polygonRiding?.currentSlopeId, isRiding: true);
                 }
 
-                // 현재 위치에서 영역 체크 (보간 제거)
-                List<Map<String, dynamic>> passPointInfos = checkPositionInAreas(
-                  position,
-                  _slope_info,
-                  _snowball_info,
-                  _reset_point,
-                  _respawn_point,
-                );
+                // 현재 위치에서 영역 체크 (보간 제거).
+                // 구방식(레거시) 판별은 write_legacy가 켜져 있을 때만 수행한다.
+                // write_legacy=off(폴리곤 단독)면 레거시 respawn/checkpoint API 호출과
+                // fg_respawn/fg_checkpoint 로그가 불필요하게 나가므로 통째로 건너뛴다.
+                // (백엔드는 이미 write_legacy=off면 레거시 기록을 건너뛰지만, 호출·로그 자체를 막는다.)
+                List<Map<String, dynamic>> passPointInfos =
+                    (_polygonRiding?.writeLegacy ?? true)
+                        ? checkPositionInAreas(
+                            position,
+                            _slope_info,
+                            _snowball_info,
+                            _reset_point,
+                            _respawn_point,
+                          )
+                        : <Map<String, dynamic>>[];
 
                 // 🔍 디버깅: 영역 데이터가 비어있으면 경고
                 if (_slope_info.isEmpty && _respawn_point.isEmpty) {
@@ -1748,14 +1762,19 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
           // 🟦 폴리곤 라이딩(신 방식) 판별 — 자기 게이팅(write_polygon)
           _polygonRiding?.onPosition(position.latitude, position.longitude, at: position.timestamp, alt: position.altitude);
 
-          // 현재 위치에서 영역 체크 (보간 제거)
-          List<Map<String, dynamic>> passPointInfos = checkPositionInAreas(
-            position,
-            _slope_info,
-            _snowball_info,
-            _reset_point,
-            _respawn_point,
-          );
+          // 현재 위치에서 영역 체크 (보간 제거).
+          // 구방식(레거시) 판별은 write_legacy가 켜져 있을 때만 수행한다
+          // (포그라운드와 동일 정책 — write_legacy=off면 레거시 호출·로그를 막는다).
+          List<Map<String, dynamic>> passPointInfos =
+              (_polygonRiding?.writeLegacy ?? true)
+                  ? checkPositionInAreas(
+                      position,
+                      _slope_info,
+                      _snowball_info,
+                      _reset_point,
+                      _respawn_point,
+                    )
+                  : <Map<String, dynamic>>[];
 
           // 병렬 처리를 위한 Future 리스트
           List<Future<void>> futures = [];
