@@ -34,6 +34,38 @@
     // The value below is injected by flutter build, do not touch.
     var serviceWorkerVersion = null;
   </script>
+  <script>
+    // 한 손가락 가로 스와이프 → 브라우저 뒤로/앞으로.
+    // Flutter 웹은 캔버스가 터치 이벤트를 가로채 네이티브 엣지 스와이프가 막힌다.
+    // 그래서 한 손가락 터치 제스처를 캡처 단계에서 관찰만 하고(passive=true라
+    // Flutter의 세로 스크롤·캐러셀은 그대로 동작), 끝날 때 가로 이동이 분명하면
+    // history.back()/forward()를 부른다.
+    //  - 오른쪽으로 스와이프(→) = 뒤로
+    //  - 왼쪽으로 스와이프(←)  = 앞으로
+    (function () {
+      var sx = 0, sy = 0, tracking = false;
+      var THRESHOLD = 70; // 분명한 스와이프로 볼 최소 가로 이동(px)
+      window.addEventListener('touchstart', function (e) {
+        // 두 손가락 이상(핀치·확대)은 무시하고 한 손가락만 추적한다.
+        if (e.touches.length !== 1) { tracking = false; return; }
+        tracking = true;
+        sx = e.touches[0].clientX;
+        sy = e.touches[0].clientY;
+      }, { passive: true, capture: true });
+      window.addEventListener('touchend', function (e) {
+        if (!tracking) return;
+        tracking = false;
+        var t = e.changedTouches && e.changedTouches[0];
+        if (!t) return;
+        var dx = t.clientX - sx;
+        var dy = t.clientY - sy;
+        // 가로가 세로보다 분명히 커야 스와이프로 본다(세로 스크롤 오작동 방지).
+        if (Math.abs(dx) < THRESHOLD || Math.abs(dx) < Math.abs(dy) * 1.5) return;
+        if (dx > 0) window.history.back();     // 오른쪽 → 뒤로
+        else window.history.forward();         // 왼쪽 → 앞으로
+      }, { passive: true, capture: true });
+    })();
+  </script>
   <!-- 토스페이먼츠 결제 SDK (시즌권 결제) -->
   <script src="https://js.tosspayments.com/v1/payment"></script>
   <!-- This script adds the flutter initialization JS code -->

@@ -283,25 +283,33 @@ class _CrewMemberRowWebState extends State<CrewMemberRowWeb> {
                 style: SDSTextStyle.regular
                     .copyWith(fontSize: m.scoreSize, color: SDSColor.gray900),
               ),
-              if (member.tierIconUrl?.isNotEmpty ?? false) ...[
-                const SizedBox(width: 8),
-                MouseRegion(
-                  cursor: SystemMouseCursors.click,
-                  child: GestureDetector(
-                    behavior: HitTestBehavior.opaque,
-                    onTap: () =>
-                        showWebTierImageViewer(context, url: member.tierIconUrl),
-                    child: WebNetworkImage(
-                      url: member.tierIconUrl,
+              const SizedBox(width: 8),
+              // 점수가 있으면 티어 아이콘, 없으면(점수 없음) '-'.
+              (member.tierIconUrl?.isNotEmpty ?? false)
+                  ? MouseRegion(
+                      cursor: SystemMouseCursors.click,
+                      child: GestureDetector(
+                        behavior: HitTestBehavior.opaque,
+                        onTap: () =>
+                            showWebTierImageViewer(context, url: member.tierIconUrl),
+                        child: WebNetworkImage(
+                          url: member.tierIconUrl,
+                          width: 36,
+                          height: 36,
+                          fit: BoxFit.contain,
+                          showPlaceholder: false,
+                          smoothDownscale: true,
+                        ),
+                      ),
+                    )
+                  : const SizedBox(
                       width: 36,
                       height: 36,
-                      fit: BoxFit.contain,
-                      showPlaceholder: false,
-                      smoothDownscale: true,
+                      child: Center(
+                        child: Text('-',
+                            style: TextStyle(fontSize: 16, color: SDSColor.gray400)),
+                      ),
                     ),
-                  ),
-                ),
-              ],
             ],
           ),
         ),

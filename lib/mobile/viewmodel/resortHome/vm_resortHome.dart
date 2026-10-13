@@ -487,6 +487,12 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
     'bg_mock_detected',
     'dev_options_mock_detected',
     'dev_options_mock_detected_at_start',
+    // 🟦 폴리곤(신 방식) 에러 — 로깅 상태와 무관하게 항상 기록(디버깅 중요).
+    'poly_commit_failed',
+    'poly_commit_error',
+    'poly_onpoint_error',
+    'poly_flush_error',
+    'poly_config_error',
   };
 
   /// 서버로 라이브온 로그 전송 (버퍼에 추가 후 1분마다 일괄 전송)
@@ -530,6 +536,17 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
 
     _logBuffer.add(logEntry);
     print('📝 로그 버퍼에 추가: $requestType (버퍼 크기: ${_logBuffer.length})');
+
+    // 🛡️ GPS 조작/에러성 로그가 발생하면 기기 라이딩 로그도 서버로 올린다
+    //    (로그 수집 대상 등록 여부와 무관 — 문제 세션을 바로 확보). 스로틀은 레코더가 처리.
+    //    단, 리조트 밖에서 라이브온을 누른 경우(liveOn_fail_not_in_resort)는 분석 가치가
+    //    없으므로 업로드하지 않는다.
+    if (requestType != 'liveOn_fail_not_in_resort' &&
+        (requestType.contains('mock') ||
+            requestType.contains('error') ||
+            requestType.contains('fail'))) {
+      RideLogRecorder.instance.uploadOnEvent(requestType);
+    }
 
     // 직전 로그 타입 저장
     _lastLogRequestType = requestType;
@@ -626,15 +643,8 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
 
     _heartbeatTimer = Timer.periodic(const Duration(seconds: 60), (timer) async {
       if (_currentLiveUserId != null) {
-        // 🛡️ 개발자옵션 Mock Location 앱 설정 주기적 체크 (60초마다)
-        if (Platform.isAndroid) {
-          final mockEnabled = await isMockLocationEnabled();
-          if (mockEnabled) {
-            print('🚨 [Mock] heartbeat에서 개발자옵션 Mock Location 앱 감지!');
-            _handleMockLocationDetected('dev_options_mock_detected');
-            return;
-          }
-        }
+        // 🛡️ GPS 조작은 "개발자 옵션 켜짐"으로 막지 않는다 — 실제 위치 조작은
+        //    포그라운드/백그라운드 위치 스트림의 isMocked 검사에서 즉시 처리된다.
 
         final currentLat = _latitude.value;
         final currentLon = _longitude.value;
@@ -869,32 +879,10 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
         }
       }
 
-      // 🛡️ Android: 개발자옵션 Mock Location 앱 설정 확인 (시작 시 차단)
-      if (Platform.isAndroid) {
-        final mockEnabled = await isMockLocationEnabled();
-        if (mockEnabled) {
-          print('🚨 [Mock] 개발자옵션 Mock Location 앱 감지 - 라이브 시작 차단');
-          // 로그 전송
-          try {
-            await _rankingAPI.createErrorLog({
-              'user_id': user_id,
-              'request_type': 'dev_options_mock_detected_at_start',
-              'error': 'Mock location app enabled in developer options - live start blocked',
-              'created_at': DateTime.now().toUtc().toIso8601String(),
-            });
-          } catch (e) {
-            print('❌ [Mock] 로그 전송 실패: $e');
-          }
-          // 팝업 표시 (설정 버튼 클릭 시 개발자 옵션으로 이동)
-          await showSettingsPopup(
-            title: 'GPS 조작 앱 감지',
-            message: '개발자 옵션에서 가상 위치 앱을\n비활성화해주세요.',
-            action: () => openDeveloperOptions(),
-          );
-          _currentLiveUserId = null;
-          return;
-        }
-      }
+      // 🛡️ GPS 조작 차단은 "개발자 옵션 켜짐"만으로 막지 않는다. 실제로 위치가
+      //    조작(mock)된 경우에만 차단한다 — 시작 시점 검사는 실제 위치를 받는
+      //    startForegroundLocationService(currentPosition.isMocked)에서, 세션 중에는
+      //    포그라운드/백그라운드 위치 스트림의 isMocked 검사에서 처리한다.
 
       // 포그라운드 서비스 실행 및 성공 여부 확인
       bool foregroundSuccess = await startForegroundLocationService(user_id: user_id);
@@ -1029,6 +1017,32 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
 
       // 현재 위치 가져오기
       Position currentPosition = await Geolocator.getCurrentPosition();
+
+      // 🛡️ 실제 GPS 조작(위치가 mock)일 때만 라이브 시작을 차단한다.
+      //    개발자 옵션이 켜져 있어도 실제 조작이 없으면 허용한다(완화).
+      if (Platform.isAndroid && currentPosition.isMocked) {
+        print('🚨 [Mock] 시작 위치가 조작됨(isMocked) - 라이브 시작 차단');
+        try {
+          await _rankingAPI.createErrorLog({
+            'user_id': user_id,
+            'request_type': 'dev_options_mock_detected_at_start',
+            'error': 'Mocked location detected at live start - blocked',
+            'created_at': DateTime.now().toUtc().toIso8601String(),
+          });
+        } catch (e) {
+          print('❌ [Mock] 로그 전송 실패: $e');
+        }
+        // 기기 라이딩 로그도 서버로 올린다(대상 등록 무관).
+        RideLogRecorder.instance.uploadOnEvent('dev_options_mock_detected_at_start');
+        await showSettingsPopup(
+          title: 'GPS 조작 앱 감지',
+          message: '가상 위치(Mock) 앱이 동작 중이에요.\n가상 위치 앱을 비활성화해주세요.',
+          action: () => openDeveloperOptions(),
+        );
+        _currentLiveUserId = null;
+        return false;
+      }
+
       _latitude.value = currentPosition.latitude;
       _longitude.value = currentPosition.longitude;
 
@@ -2270,21 +2284,19 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
     );
     _flushLogBuffer();
 
+    // 사용자에게 왜 라이브가 꺼졌는지 안내(조용히 종료되지 않게).
+    try {
+      Get.snackbar(
+        'GPS 조작 감지',
+        '가상 위치(Mock)가 감지되어 라이브가 종료되었어요.',
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    } catch (_) {
+      // 백그라운드 등 오버레이가 없을 때는 무시한다.
+    }
+
     // liveOff 호출 (요약 다이얼로그 미표시)
     await liveOff({"user_id": userId}, userId, showSummary: false);
-  }
-
-  /// 🛡️ Android 개발자옵션 Mock Location 앱 설정 확인 (MethodChannel)
-  Future<bool> isMockLocationEnabled() async {
-    if (!Platform.isAndroid) return false;
-    try {
-      const channel = MethodChannel('detect_battery_saver');
-      final result = await channel.invokeMethod('isMockLocationEnabled');
-      return result == true;
-    } catch (e) {
-      print('⚠️ [Mock] 개발자옵션 확인 오류: $e');
-      return false;
-    }
   }
 
   /// 🛡️ Android 개발자옵션 설정 화면 열기 (MethodChannel)
@@ -2393,6 +2405,14 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
       if (uid == null) return;
       _polygonRiding ??= PolygonRidingController(uid)
         ..onLog = ((m) => print('[POLY] $m'))
+        // 폴리곤(신 방식) 에러 → 서버 에러로그 + 기기 로그 업로드(어드민 에러 리스트에 적재).
+        ..onError = ((rt, msg) => _sendLiveLog(
+              userId: uid,
+              requestType: rt,
+              error: msg,
+              lat: _latitude.value,
+              lon: _longitude.value,
+            ))
         ..onCommitted = ((ev, resp) {
           // 폴리곤 커밋 결과를 세션(현재) 라이딩 횟수·라이브 액티비티에 반영.
           // (레거시 respawn 핸들러와 동일 계약: inserted_count / latest_slope_fullname)
@@ -2414,6 +2434,17 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
       _polygonRiding!.configureFromCheckWb(data);
     } catch (e) {
       print('[POLY] configure 실패: $e');
+      // 폴리곤 초기화 실패도 서버 로그 + 기기 로그 업로드로 남긴다(신 방식 디버깅).
+      final uid = userId is int ? userId : int.tryParse('$userId');
+      if (uid != null) {
+        _sendLiveLog(
+          userId: uid,
+          requestType: 'poly_config_error',
+          error: 'configureFromCheckWb exception: $e',
+          lat: _latitude.value,
+          lon: _longitude.value,
+        );
+      }
     }
   }
 

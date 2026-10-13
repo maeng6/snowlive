@@ -165,6 +165,7 @@ class _HomeViewWebState extends State<HomeViewWeb> {
                             () => HomeWeatherBarWeb(
                               resort: _vm.resort,
                               weather: _vm.weather,
+                              isLoading: _vm.isWeatherLoading,
                               onResortSelected: _vm.selectResort,
                             ),
                           ),

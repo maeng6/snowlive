@@ -164,7 +164,8 @@ class RankingTierBadge extends StatelessWidget {
           ),
         );
     final nameText = Text(
-      name,
+      // 점수가 없어 티어가 비면 공란 대신 '-'를 보여준다.
+      name.isEmpty ? '-' : name,
       maxLines: 1,
       overflow: TextOverflow.ellipsis,
       textAlign: TextAlign.center,

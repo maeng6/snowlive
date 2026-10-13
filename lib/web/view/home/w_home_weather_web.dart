@@ -8,6 +8,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:lottie/lottie.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 // ── 레이아웃 치수 (위젯과 필요폭 계산이 **같은 값**을 보게 한 곳에 둔다) ──
@@ -52,12 +53,17 @@ const double _kResortNameSize = 16; // 리조트명(PC·태블릿)
 class HomeWeatherBarWeb extends StatefulWidget {
   final ResortModel? resort;
   final Map<String, dynamic> weather;
+
+  /// 날씨 데이터 로딩 중 여부. true면 앱과 동일하게 카드를 회색으로 두고
+  /// 기온 자리에 스노우라이브 커스텀 인디케이터(Lottie)를 돌린다.
+  final bool isLoading;
   final ValueChanged<ResortModel> onResortSelected;
 
   const HomeWeatherBarWeb({
     super.key,
     required this.resort,
     required this.weather,
+    this.isLoading = false,
     required this.onResortSelected,
   });
 
@@ -88,8 +94,21 @@ class _HomeWeatherBarWebState extends State<HomeWeatherBarWeb> {
     if (mounted) setState(() {});
   }
 
-  /// 날씨·시간대별 카드 배경색(WeatherModel 규칙, 앱과 동일).
+  /// 로딩 중 카드 배경(앱과 동일하게 회색). 흰색 Lottie가 보이도록 중간 회색.
+  Color? get _loadingBg => widget.isLoading ? SDSColor.gray400 : null;
+
+  /// 기온 자리 로딩 인디케이터(앱과 동일한 흰색 스노우라이브 커스텀 Lottie).
+  Widget get _loadingIndicator => SizedBox(
+        width: 56,
+        height: 40,
+        child: Center(
+          child: Lottie.asset('assets/json/loadings_wht_final.json', width: 50, height: 40),
+        ),
+      );
+
+  /// 날씨·시간대별 카드 배경색(WeatherModel 규칙, 앱과 동일). 로딩 중엔 회색.
   Color get _weatherBg =>
+      _loadingBg ??
       WeatherModel().getWeatherColor(
         '${widget.weather['pty'] ?? '0'}',
         '${widget.weather['sky'] ?? '1'}',
@@ -183,7 +202,9 @@ class _HomeWeatherBarWebState extends State<HomeWeatherBarWeb> {
     final String pty = '${weather['pty'] ?? '0'}';
     final String sky = '${weather['sky'] ?? '1'}';
     final weatherModel = WeatherModel();
-    final Color bg = weatherModel.getWeatherColor(pty, sky) ?? const Color(0xFFDCEAFF);
+    final Color bg = widget.isLoading
+        ? SDSColor.gray400
+        : (weatherModel.getWeatherColor(pty, sky) ?? const Color(0xFFDCEAFF));
     final Color fg = weatherModel.getWeatherTextColor(pty, sky) ?? SDSColor.gray900;
     final icon = homeWeatherIconAsset(pty: pty, sky: sky, now: DateTime.now());
 
@@ -208,17 +229,22 @@ class _HomeWeatherBarWebState extends State<HomeWeatherBarWeb> {
                 ),
               ),
               // 피그마 가이드: 날씨 아이콘(40) → 기온(Bebas 40) → °(32) → 펼침 버튼.
-              Image.asset(icon, width: 40, height: 40),
-              const SizedBox(width: 8),
-              Text(
-                homeTempLabel(weather['temp']),
-                style: GoogleFonts.bebasNeue(fontSize: 36, color: fg, height: 1.0),
-              ),
-              const SizedBox(width: 2),
-              Text(
-                '°',
-                style: GoogleFonts.bebasNeue(fontSize: 28, color: fg, height: 1.0),
-              ),
+              // 로딩 중엔 아이콘·기온 대신 커스텀 인디케이터(앱과 동일).
+              if (widget.isLoading)
+                _loadingIndicator
+              else ...[
+                Image.asset(icon, width: 40, height: 40),
+                const SizedBox(width: 8),
+                Text(
+                  homeTempLabel(weather['temp']),
+                  style: GoogleFonts.bebasNeue(fontSize: 36, color: fg, height: 1.0),
+                ),
+                const SizedBox(width: 2),
+                Text(
+                  '°',
+                  style: GoogleFonts.bebasNeue(fontSize: 28, color: fg, height: 1.0),
+                ),
+              ],
               const SizedBox(width: 4),
               // 펼침 버튼 — 웹 형태(원형 칩 18 + 두께 1.5)에 색만 배경 대응:
               // 원 = 텍스트색 20%, 아이콘 = 텍스트색.
@@ -418,6 +444,8 @@ class _HomeWeatherBarWebState extends State<HomeWeatherBarWeb> {
   }
 
   Widget _buildTemp({Color? textColor}) {
+    // 로딩 중엔 아이콘·기온 대신 커스텀 인디케이터(앱과 동일).
+    if (widget.isLoading) return _loadingIndicator;
     final weather = widget.weather;
     final Color color = textColor ?? SDSColor.gray900;
     final icon = homeWeatherIconAsset(

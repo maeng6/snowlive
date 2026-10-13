@@ -418,6 +418,7 @@ class _CommunityUploadViewWebState extends State<CommunityUploadViewWeb> {
         // 라벨은 표준 regular 14(compact 아님), 필드 간 30 — 중고거래 폼과 동일.
         WebFormTextField(
           label: '제목',
+          isRequired: true,
           controller: _vm.titleController,
           hint: '글 제목을 입력해 주세요. (최대 50자 이내)',
           maxLength: 50,
@@ -428,6 +429,7 @@ class _CommunityUploadViewWebState extends State<CommunityUploadViewWeb> {
           final main = WebFormDropdownField<String>(
             anchoredOnTablet: true,
             label: '게시판 종류',
+            isRequired: true,
             value: _vm.categorySub,
             placeholder: kCommunityCategorySubPlaceholder,
             values: kCommunityCategorySubList,
@@ -441,6 +443,7 @@ class _CommunityUploadViewWebState extends State<CommunityUploadViewWeb> {
             right: WebFormDropdownField<String>(
               anchoredOnTablet: true,
               label: '상세 종류',
+              isRequired: true,
               value: _vm.categorySub2,
               placeholder: kCommunityCategorySub2Placeholder,
               values: kCommunityCategorySub2List,

@@ -1,6 +1,6 @@
 import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
-import 'package:com.snowlive/web/routes/routes_web.dart';
 import 'package:com.snowlive/web/view/fleamarket/v_fleamarketAlert_web.dart' show openFleamarketAlert;
+import 'package:com.snowlive/web/view/fleamarket/v_fleamarketUpload_web.dart' show openFleamarketUpload;
 import 'package:com.snowlive/web/widget/w_web_floating_bottombar_web.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -36,7 +36,8 @@ class FleamarketBottomBarWeb extends StatelessWidget {
               label: '중고거래 물품 올리기',
               background: SDSColor.snowliveBlue,
               foreground: SDSColor.snowliveWhite,
-              onTap: () => Get.toNamed(WebRoutes.fleamarketUpload),
+              // 미로그인이면 페이지 대신 로그인 유도 팝업(공통 처리).
+              onTap: () => openFleamarketUpload(context),
             ),
           ),
         ],

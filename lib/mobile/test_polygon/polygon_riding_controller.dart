@@ -28,6 +28,10 @@ class PolygonRidingController {
   /// 서버 커밋 완료 콜백 (CommitEvent, commit-ride 응답 data 또는 null)
   void Function(CommitEvent ev, Map<String, dynamic>? resp)? onCommitted;
 
+  /// 폴리곤 에러 보고 콜백 (requestType, message). 신 방식(폴리곤) 디버깅을 위해
+  /// 커밋 실패/예외·세션머신 예외를 서버 에러로그·기기 로그 업로드로 연결한다.
+  void Function(String requestType, String message)? onError;
+
   PolygonRidingController(this.userId);
 
   bool get ready => _machine != null;
@@ -63,7 +67,11 @@ class PolygonRidingController {
   /// alt: GPS 고도(m, 있으면 per-point 샘플에 저장)
   void onPosition(double lat, double lng, {DateTime? at, double? alt}) {
     if (!writePolygon) return;
-    _machine?.onPoint(GeoPt(lat, lng), at ?? DateTime.now(), alt: alt);
+    try {
+      _machine?.onPoint(GeoPt(lat, lng), at ?? DateTime.now(), alt: alt);
+    } catch (e) {
+      onError?.call('poly_onpoint_error', 'onPoint exception: $e');
+    }
   }
 
   /// 현재 라이딩 중인 슬로프 id (없으면 null) — live position is_riding/slope_id용
@@ -79,7 +87,13 @@ class PolygonRidingController {
   bool get isRiding => (_machine?.activeSummary ?? 'IDLE') != 'IDLE';
 
   /// 세션 종료(라이브오프/리조트 이탈) 시 남은 활성 세션 정산 → 커밋 트리거
-  void flush() => _machine?.flush(DateTime.now());
+  void flush() {
+    try {
+      _machine?.flush(DateTime.now());
+    } catch (e) {
+      onError?.call('poly_flush_error', 'flush exception: $e');
+    }
+  }
 
   Future<void> _handleCommit(CommitEvent ev) async {
     if (!writePolygon) return;
@@ -101,11 +115,17 @@ class PolygonRidingController {
         'user_id': userId,
         'sessions': [session],
       });
+      if (!res.success) {
+        onError?.call('poly_commit_failed',
+            'commit-ride failed (slope=${ev.slopeId}, dist=${ev.distanceM.toStringAsFixed(0)}m)');
+      }
       final data = res.success ? (res.data as Map<String, dynamic>?) : null;
       onCommitted?.call(ev, data);
       onLog?.call('☁ commit-ride ${ev.name} (${ev.distanceM.toStringAsFixed(0)}m) '
           '→ ${data?['inserted_count'] ?? '실패'}');
     } catch (e) {
+      onError?.call('poly_commit_error',
+          'commit-ride exception (slope=${ev.slopeId}): $e');
       onLog?.call('commit-ride 예외: $e');
     }
   }

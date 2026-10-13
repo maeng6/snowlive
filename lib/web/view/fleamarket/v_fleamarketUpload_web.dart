@@ -1,7 +1,10 @@
 import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/core/viewmodel/vm_user.dart';
+import 'package:com.snowlive/web/routes/routes_web.dart';
 import 'package:com.snowlive/web/util/responsive_web.dart';
+import 'package:com.snowlive/web/viewmodel/auth/vm_authcheck_web.dart';
 import 'package:com.snowlive/web/widget/w_web_icon_button_web.dart';
+import 'package:com.snowlive/web/widget/w_web_more_menu_web.dart' show showWebConfirmDialog;
 import 'package:com.snowlive/web/view/fleamarket/w_fleamarket_form_fields_web.dart';
 import 'package:com.snowlive/web/viewmodel/fleamarket/vm_fleamarketPagination_web.dart';
 import 'package:com.snowlive/web/viewmodel/fleamarket/vm_fleamarketUpdate_web.dart';
@@ -11,6 +14,25 @@ import 'package:com.snowlive/web/widget/w_web_floating_bottombar_web.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+
+/// 중고거래 글 올리기 진입 — 게스트면 로그인 안내 다이얼로그, 로그인 상태면 작성
+/// 화면으로 보낸다(키워드 알림 openFleamarketAlert와 동일한 패턴). 자동로그인
+/// 확인 중(checking)이면 일단 들여보내고 화면 쪽 가드가 늦은 확정을 처리한다.
+Future<void> openFleamarketUpload(BuildContext context) async {
+  final bool isGuest =
+      Get.find<AuthCheckViewModelWeb>().status == WebAuthStatus.unauthenticated;
+  if (!isGuest) {
+    Get.toNamed(WebRoutes.fleamarketUpload);
+    return;
+  }
+  final bool goLogin = await showWebConfirmDialog(
+    context: context,
+    title: '로그인이 필요해요',
+    message: '중고거래 글은 로그인 후 올릴 수 있어요.',
+    confirmLabel: '로그인하기',
+  );
+  if (goLogin) Get.toNamed(WebRoutes.login);
+}
 
 /// 중고거래 새 글 올리기 화면.
 class FleamarketUploadViewWeb extends StatelessWidget {
@@ -332,6 +354,7 @@ class FleamarketUploadViewWeb extends StatelessWidget {
       children: [
         WebFormTextField(
           label: '제목',
+          isRequired: true,
           controller: vm.textEditingController_title,
           hint: '글 제목을 입력해 주세요. (최대 50자 이내)',
           maxLength: 50,
@@ -341,6 +364,7 @@ class FleamarketUploadViewWeb extends StatelessWidget {
         const SizedBox(height: 30),
         WebFormTextField(
           label: '제품명',
+          isRequired: true,
           controller: vm.textEditingController_productName,
           hint: '제품명을 입력해 주세요. (최대 20자 이내)',
           maxLength: 20,
@@ -353,6 +377,7 @@ class FleamarketUploadViewWeb extends StatelessWidget {
             left: WebFormDropdownField<String>(
               anchoredOnTablet: true,
               label: '전체 카테고리',
+              isRequired: true,
               value: vm.selectedCategoryMain,
               placeholder: kFleamarketCategoryMainPlaceholder,
               values: kFleamarketCategoryMainList,
@@ -365,6 +390,7 @@ class FleamarketUploadViewWeb extends StatelessWidget {
             right: WebFormDropdownField<String>(
               anchoredOnTablet: true,
               label: '상세 카테고리',
+              isRequired: true,
               value: vm.selectedCategorySub,
               placeholder: kFleamarketCategorySubPlaceholder,
               // Obx 안이라 전체 카테고리가 바뀌면 이 목록도 다시 계산된다.
@@ -388,6 +414,7 @@ class FleamarketUploadViewWeb extends StatelessWidget {
         const SizedBox(height: 30),
         WebFormTextField(
           label: '가격',
+          isRequired: true,
           controller: vm.itemPriceTextEditingController,
           hint: '금액을 입력해 주세요.',
           suffixText: '원',
@@ -416,6 +443,7 @@ class FleamarketUploadViewWeb extends StatelessWidget {
             left: WebFormDropdownField<String>(
               anchoredOnTablet: true,
               label: '희망 거래 방법',
+              isRequired: true,
               value: vm.selectedTradeMethod,
               placeholder: kFleamarketTradeMethodPlaceholder,
               values: kFleamarketTradeMethodList,
@@ -425,6 +453,7 @@ class FleamarketUploadViewWeb extends StatelessWidget {
             right: WebFormDropdownField<String>(
               anchoredOnTablet: true,
               label: '거래 희망 장소',
+              isRequired: true,
               value: vm.selectedTradeSpot,
               placeholder: kFleamarketTradeSpotPlaceholder,
               values: kFleamarketTradeSpotList,
@@ -446,6 +475,7 @@ class FleamarketUploadViewWeb extends StatelessWidget {
         const SizedBox(height: 30),
         WebFormTextField(
           label: '상세 설명',
+          isRequired: true,
           controller: vm.textEditingController_desc,
           hint:
               '상품에 대한 상세 설명을 작성해 주세요. (최대 1,000자 이내)\n\n부적절한 단어나 문장이 포함되는 경우 사전 고지없이 게시글 삭제가 될 수 있습니다.',
