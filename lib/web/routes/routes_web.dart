@@ -190,6 +190,10 @@ class WebRoutes {
       name: fleamarketDetail,
       page: () => const FleamarketDetailView(),
       binding: WebFleamarketDetailBinding(),
+      // 상세→추천상세(같은 라우트) 꼬리물기가 있어 id가 달라도 push/replace가
+      // 막히지 않게 한다(기본 true면 "같은 라우트"로 보고 차단됨). 공용
+      // pushWebRoute가 상세→상세는 교체(스택 1개 유지)로 처리한다.
+      preventDuplicates: false,
     ),
     GetPage(
       name: fleamarketUpload,
@@ -380,6 +384,11 @@ class WebRoutes {
       name: userProfile,
       page: () => const ProfileDetailViewWeb(),
       binding: WebProfileBinding(),
+      // 프로필은 전부 같은 `/profile` 라우트(유저는 `?id=`만 다름)라, 기본
+      // preventDuplicates(true)면 프로필→다른 프로필 이동이 "같은 라우트"로 막혀
+      // 스택이 안 쌓이고 화면도 안 바뀐다. false로 둬야 타인→타인 프로필도 push돼
+      // 스택이 쌓이고 뒤로가기로 직전 화면까지 되돌아갈 수 있다.
+      preventDuplicates: false,
     ),
     GetPage(
       name: profileEdit,

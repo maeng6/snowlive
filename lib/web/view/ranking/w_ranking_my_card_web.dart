@@ -1,6 +1,7 @@
 import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/web/widget/w_network_image_web.dart';
 import 'package:flutter/material.dart';
+import 'package:com.snowlive/web/widget/w_web_image_viewer_web.dart';
 
 /// 랭킹 홈·기록실이 함께 쓰는 "내 랭킹 / 크루 랭킹" 카드.
 ///
@@ -147,10 +148,24 @@ class RankingTierBadge extends StatelessWidget {
   Widget build(BuildContext context) {
     final hasIcon = iconUrl?.isNotEmpty ?? false;
     // 티어 PNG에 파란 글로우가 이미 들어 있어서(목업과 동일) 그림자를 따로 넣지 않는다.
-    Widget icon(double size) =>
-        WebNetworkImage(url: iconUrl, width: size, height: size, fit: BoxFit.contain, showPlaceholder: false, smoothDownscale: true);
+    // 탭하면 앱처럼 확대(공용 포토 뷰어).
+    Widget icon(double size) => MouseRegion(
+          cursor: SystemMouseCursors.click,
+          child: GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: () => showWebTierImageViewer(context, url: iconUrl),
+            child: WebNetworkImage(
+                url: iconUrl,
+                width: size,
+                height: size,
+                fit: BoxFit.contain,
+                showPlaceholder: false,
+                smoothDownscale: true),
+          ),
+        );
     final nameText = Text(
-      name,
+      // 점수가 없어 티어가 비면 공란 대신 '-'를 보여준다.
+      name.isEmpty ? '-' : name,
       maxLines: 1,
       overflow: TextOverflow.ellipsis,
       textAlign: TextAlign.center,

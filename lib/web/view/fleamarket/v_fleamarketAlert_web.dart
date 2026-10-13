@@ -10,22 +10,39 @@ import 'package:com.snowlive/web/widget/w_web_delete_chip_web.dart';
 import 'package:com.snowlive/web/widget/w_web_floating_bottombar_web.dart';
 import 'package:com.snowlive/web/widget/w_web_more_menu_web.dart' show showWebConfirmDialog;
 import 'package:com.snowlive/web/widget/w_web_filter_menu_web.dart';
+import 'package:com.snowlive/web/widget/w_web_overlay_modal_web.dart';
 import 'package:com.snowlive/web/widget/w_web_text_tabs_web.dart';
 import 'package:com.snowlive/web/widget/w_web_page_header_web.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+/// 앱 설치 안내 다이얼로그를 "다시 보지 않기"로 끈 적 있는지 저장하는 키.
+const String _kFleamarketAlertDialogDismissedKey =
+    'fleamarket_alert_app_dialog_dismissed';
 
 /// 키워드 알림 설정 진입 공통 처리(PC 사이드바·태블릿/모바일 하단바 공용).
 /// 미로그인 확정 상태면 페이지에 들어가지 않고 로그인 유도 팝업을 띄운다 —
 /// PC·태블릿·모바일 모두 동일. 자동로그인 확인 중(checking)이면 일단
 /// 들여보낸다(페이지의 auth 워커가 늦은 확정을 처리한다).
 Future<void> openFleamarketAlert(BuildContext context) async {
+  // 웹에선 알림을 받을 수 없으므로(앱 필요) 진입 시 안내 다이얼로그를 띄운다.
+  // "다시 보지 않기"를 누른 적 있으면 생략한다.
+  final prefs = await SharedPreferences.getInstance();
+  final bool dismissed =
+      prefs.getBool(_kFleamarketAlertDialogDismissedKey) ?? false;
+  if (!dismissed && context.mounted) {
+    await _showFleamarketAlertInfoDialog(context);
+  }
+
   final bool isGuest =
       Get.find<AuthCheckViewModelWeb>().status == WebAuthStatus.unauthenticated;
   if (!isGuest) {
     Get.toNamed(WebRoutes.fleamarketAlert);
     return;
   }
+  if (!context.mounted) return;
   final bool goLogin = await showWebConfirmDialog(
     context: context,
     title: '로그인이 필요해요',
@@ -33,6 +50,102 @@ Future<void> openFleamarketAlert(BuildContext context) async {
     confirmLabel: '로그인하기',
   );
   if (goLogin) Get.toNamed(WebRoutes.login);
+}
+
+/// 키워드 알림 앱 설치 안내 다이얼로그.
+/// 본문 + "앱 다운로드"(새 창으로 app.snowlive.kr) + "다시 보지 않기" 체크.
+Future<void> _showFleamarketAlertInfoDialog(BuildContext context) async {
+  bool dontShowAgain = false;
+  await showWebOverlayModal<void>(
+    context: context,
+    alignment: Alignment.center,
+    builder: (_, close) => StatefulBuilder(
+      builder: (ctx, setLocal) => Material(
+        color: SDSColor.snowliveWhite,
+        borderRadius: BorderRadius.circular(16),
+        clipBehavior: Clip.antiAlias,
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 360),
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(24, 24, 24, 16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Row(
+                  children: [
+                    Text('키워드 알림',
+                        style: SDSTextStyle.bold
+                            .copyWith(fontSize: 16, color: SDSColor.gray900)),
+                    const Spacer(),
+                    GestureDetector(
+                      onTap: close,
+                      child: Icon(Icons.close, size: 20, color: SDSColor.gray500),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: SDSSpacing.md),
+                Text(
+                  '알림은 앱이 설치되어있어야 받을 수 있어요.',
+                  style: SDSTextStyle.regular
+                      .copyWith(fontSize: 14, height: 20 / 14, color: SDSColor.gray700),
+                ),
+                const SizedBox(height: 20),
+                SizedBox(
+                  height: 48,
+                  child: ElevatedButton(
+                    onPressed: () => launchUrl(
+                      Uri.parse('https://app.snowlive.kr'),
+                      mode: LaunchMode.externalApplication,
+                      webOnlyWindowName: '_self',
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: SDSColor.snowliveBlue,
+                      elevation: 0,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8)),
+                    ),
+                    child: Text('앱 다운로드',
+                        style: SDSTextStyle.bold
+                            .copyWith(fontSize: 15, color: SDSColor.snowliveWhite)),
+                  ),
+                ),
+                const SizedBox(height: 12),
+                // 다시 보지 않기(앱과 동일한 체크 에셋).
+                InkWell(
+                  onTap: () => setLocal(() => dontShowAgain = !dontShowAgain),
+                  borderRadius: BorderRadius.circular(4),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 4),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Image.asset(
+                          dontShowAgain
+                              ? 'assets/imgs/icons/icon_check_filled.png'
+                              : 'assets/imgs/icons/icon_check_unfilled.png',
+                          width: 20,
+                          height: 20,
+                        ),
+                        const SizedBox(width: 6),
+                        Text('다시 보지 않기',
+                            style: SDSTextStyle.regular
+                                .copyWith(fontSize: 13, color: SDSColor.gray500)),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    ),
+  );
+  if (dontShowAgain) {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(_kFleamarketAlertDialogDismissedKey, true);
+  }
 }
 
 /// 상위 카테고리에 따른 하위 카테고리 목록.

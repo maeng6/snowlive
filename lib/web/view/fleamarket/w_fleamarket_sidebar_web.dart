@@ -1,8 +1,11 @@
 import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/web/routes/routes_web.dart';
+import 'package:com.snowlive/web/util/web_profile_nav_web.dart';
 import 'package:com.snowlive/web/widget/w_skeleton_web.dart';
 import 'package:com.snowlive/web/view/fleamarket/v_fleamarketAlert_web.dart'
     show openFleamarketAlert;
+import 'package:com.snowlive/web/view/fleamarket/v_fleamarketUpload_web.dart'
+    show openFleamarketUpload;
 import 'package:com.snowlive/web/view/fleamarket/w_fleamarket_card_web.dart';
 import 'package:com.snowlive/web/viewmodel/fleamarket/vm_fleamarketMyActivity_web.dart';
 import 'package:com.snowlive/web/util/responsive_web.dart';
@@ -41,7 +44,8 @@ class FleamarketSidebarWeb extends StatelessWidget {
           SizedBox(
             height: buttonHeight,
             child: ElevatedButton(
-              onPressed: () => Get.toNamed(WebRoutes.fleamarketUpload),
+              // 미로그인이면 페이지 대신 로그인 유도 팝업(공통 처리).
+              onPressed: () => openFleamarketUpload(context),
               style: ButtonStyle(
                 // hover 색 전환을 애니메이션 없이 즉시 적용.
                 animationDuration: Duration.zero,
@@ -152,8 +156,7 @@ class _ActivityRowState extends State<_ActivityRow> {
       onExit: (_) => setState(() => _hovered = false),
       child: GestureDetector(
         behavior: HitTestBehavior.opaque,
-        onTap: () =>
-            Get.toNamed(WebRoutes.fleamarketDetail, parameters: {'id': '${widget.item.fleaId}'}),
+        onTap: () => pushWebRoute('${WebRoutes.fleamarketDetail}?id=${widget.item.fleaId}'),
         child: Row(
           children: [
             // 썸네일 48, radius 6 (피그마).

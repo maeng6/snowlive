@@ -1,4 +1,4 @@
-import 'package:com.snowlive/web/routes/routes_web.dart';
+import 'package:com.snowlive/web/util/web_profile_nav_web.dart';
 import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/core/model/m_crewMemberList.dart';
 import 'package:com.snowlive/core/model/m_crewMemberRankingList.dart';
@@ -7,6 +7,7 @@ import 'package:com.snowlive/web/viewmodel/crew/vm_crewSetting_web.dart';
 import 'package:com.snowlive/web/util/responsive_web.dart';
 import 'package:com.snowlive/web/viewmodel/friend/vm_friend_web.dart';
 import 'package:com.snowlive/web/widget/w_network_image_web.dart';
+import 'package:com.snowlive/web/widget/w_web_image_viewer_web.dart';
 import 'package:com.snowlive/web/widget/w_web_avatar_web.dart';
 import 'package:com.snowlive/web/widget/w_web_overlay_modal_web.dart';
 import 'package:com.snowlive/web/widget/w_web_profile_card_web.dart';
@@ -282,17 +283,33 @@ class _CrewMemberRowWebState extends State<CrewMemberRowWeb> {
                 style: SDSTextStyle.regular
                     .copyWith(fontSize: m.scoreSize, color: SDSColor.gray900),
               ),
-              if (member.tierIconUrl?.isNotEmpty ?? false) ...[
-                const SizedBox(width: 8),
-                WebNetworkImage(
-                  url: member.tierIconUrl,
-                  width: 36,
-                  height: 36,
-                  fit: BoxFit.contain,
-                  showPlaceholder: false,
-                  smoothDownscale: true,
-                ),
-              ],
+              const SizedBox(width: 8),
+              // 점수가 있으면 티어 아이콘, 없으면(점수 없음) '-'.
+              (member.tierIconUrl?.isNotEmpty ?? false)
+                  ? MouseRegion(
+                      cursor: SystemMouseCursors.click,
+                      child: GestureDetector(
+                        behavior: HitTestBehavior.opaque,
+                        onTap: () =>
+                            showWebTierImageViewer(context, url: member.tierIconUrl),
+                        child: WebNetworkImage(
+                          url: member.tierIconUrl,
+                          width: 36,
+                          height: 36,
+                          fit: BoxFit.contain,
+                          showPlaceholder: false,
+                          smoothDownscale: true,
+                        ),
+                      ),
+                    )
+                  : const SizedBox(
+                      width: 36,
+                      height: 36,
+                      child: Center(
+                        child: Text('-',
+                            style: TextStyle(fontSize: 16, color: SDSColor.gray400)),
+                      ),
+                    ),
             ],
           ),
         ),
@@ -551,7 +568,7 @@ class _CrewMemberProfileCardState extends State<_CrewMemberProfileCard> {
             ? null
             : () {
                 widget.onClose();
-                Get.toNamed('${WebRoutes.userProfile}?id=${widget.userId}');
+                pushWebProfileRoute(widget.userId!);
               },
       ),
     );

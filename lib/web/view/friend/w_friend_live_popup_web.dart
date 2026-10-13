@@ -94,7 +94,8 @@ class _FriendLivePopupState extends State<_FriendLivePopup> {
                 child: ElevatedButton(
                   onPressed: () {
                     widget.close();
-                    Get.toNamed(WebRoutes.friend);
+                    // 비로그인이면 로그인 화면으로, 로그인 상태면 친구 관리로.
+                    Get.toNamed(_uid == null ? WebRoutes.login : WebRoutes.friend);
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: SDSColor.gray100,
@@ -102,7 +103,7 @@ class _FriendLivePopupState extends State<_FriendLivePopup> {
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8)),
                   ),
-                  child: Text('친구 관리 바로가기',
+                  child: Text(_uid == null ? '로그인' : '친구 관리 바로가기',
                       style: SDSTextStyle.bold
                           .copyWith(fontSize: 15, color: SDSColor.gray700)),
                 ),

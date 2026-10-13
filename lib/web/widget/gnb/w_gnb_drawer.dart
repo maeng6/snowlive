@@ -159,7 +159,10 @@ class _WebGnbMenuPanelState extends State<WebGnbMenuPanel>
                   label: '마이페이지',
                   onTap: () {
                     widget.onClose();
-                    Get.toNamed('${WebRoutes.userProfile}?id=${user.user_id}');
+                    // 메뉴바 "마이페이지"는 탭 전환 성격(루트) — 스택을 리셋해
+                    // 내 프로필을 루트로 연다. 그래서 프로필에 뒤로가기가 뜨지 않는다
+                    // (타인 프로필을 탭해 들어온 경우와 구분).
+                    Get.offAllNamed('${WebRoutes.userProfile}?id=${user.user_id}');
                   },
                 ),
                 if (kWebMembershipEnabled)

@@ -97,13 +97,17 @@ class _CrewHomeViewWebState extends State<CrewHomeViewWeb> {
     // 라이브톡과 같은 분기 — 모바일만 별도 화면, 그 외는 사진+댓글 오버레이(목업).
     if (context.screenType == WebScreenType.mobile) {
       await Get.toNamed('${WebRoutes.liveTalkDetail}?id=$id');
+      // 상세에서 삭제/변경됐을 수 있으니 목록을 다시 불러온다.
+      if (mounted) await _vm.refresh();
       return;
     }
-    await showLiveTalkDetailOverlay(
+    final changed = await showLiveTalkDetailOverlay(
       context: context,
       livetalkId: id,
       userId: _userVm.user.user_id,
     );
+    // 삭제/좋아요/댓글 등으로 바뀌면 크루톡 목록 갱신.
+    if (changed && mounted) await _vm.refresh();
   }
 
   void _onMemberTap(CrewRanking member) {

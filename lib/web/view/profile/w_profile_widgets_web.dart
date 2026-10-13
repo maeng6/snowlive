@@ -300,13 +300,21 @@ class _TierCell extends StatelessWidget {
     );
     final icon = (iconUrl ?? '').isEmpty
         ? const SizedBox.shrink()
-        : WebNetworkImage(
-            url: iconUrl,
-            width: 28,
-            height: 28,
-            fit: BoxFit.contain,
-            showPlaceholder: false,
-            smoothDownscale: true,
+        : MouseRegion(
+            cursor: SystemMouseCursors.click,
+            child: GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: () =>
+                  showWebTierImageViewer(context, url: iconUrl),
+              child: WebNetworkImage(
+                url: iconUrl,
+                width: 28,
+                height: 28,
+                fit: BoxFit.contain,
+                showPlaceholder: false,
+                smoothDownscale: true,
+              ),
+            ),
           );
 
     if (isMobile) {

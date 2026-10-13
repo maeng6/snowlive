@@ -1,5 +1,5 @@
 import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
-import 'package:com.snowlive/web/routes/routes_web.dart';
+import 'package:com.snowlive/web/util/web_profile_nav_web.dart';
 import 'package:com.snowlive/core/model/m_rankingListIndiv.dart';
 import 'package:com.snowlive/web/util/responsive_web.dart';
 import 'package:com.snowlive/web/viewmodel/friend/vm_friend_web.dart';
@@ -139,7 +139,7 @@ class _RankingProfileCardState extends State<_RankingProfileCard> {
             : () {
                 // 팝업을 먼저 닫아야 프로필 화면 위에 딤이 남지 않는다.
                 widget.onClose();
-                Get.toNamed('${WebRoutes.userProfile}?id=${user.userId}');
+                pushWebProfileRoute(user.userId!);
               },
       ),
     );

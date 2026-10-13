@@ -98,15 +98,17 @@ class _SettingsViewWebState extends State<SettingsViewWeb> {
           _SettingsItem(label: '오픈소스 라이선스', onTap: _openLicenses),
         ],
       ),
-      _SettingsGroup(
-        title: '계정',
-        items: [
-          // 기획 전이라 숨긴다(kWebMembershipEnabled).
-          if (kWebMembershipEnabled) _SettingsItem(label: '멤버십 관리', onTap: _onMembership),
-          _SettingsItem(label: '로그아웃', onTap: _onSignOut),
-          _SettingsItem(label: '회원탈퇴', onTap: _onWithdraw),
-        ],
-      ),
+      // 비로그인 상태에서는 계정 메뉴(로그아웃·회원탈퇴) 자체를 숨긴다.
+      if (_vm.isLoggedIn)
+        _SettingsGroup(
+          title: '계정',
+          items: [
+            // 기획 전이라 숨긴다(kWebMembershipEnabled).
+            if (kWebMembershipEnabled) _SettingsItem(label: '멤버십 관리', onTap: _onMembership),
+            _SettingsItem(label: '로그아웃', onTap: _onSignOut),
+            _SettingsItem(label: '회원탈퇴', onTap: _onWithdraw),
+          ],
+        ),
     ];
   }
 

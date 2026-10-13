@@ -14,6 +14,8 @@ import 'package:com.snowlive/web/viewmodel/auth/vm_authcheck_web.dart';
 import 'package:com.snowlive/web/viewmodel/friend/vm_friend_web.dart';
 import 'package:com.snowlive/web/viewmodel/friend/vm_profileDetail_web.dart';
 import 'package:com.snowlive/web/widget/w_empty_state_web.dart';
+import 'package:com.snowlive/web/widget/w_web_back_icon_web.dart';
+import 'package:com.snowlive/web/widget/w_web_icon_button_web.dart';
 import 'package:com.snowlive/web/widget/w_web_filter_menu_web.dart';
 import 'package:com.snowlive/web/widget/w_skeleton_web.dart';
 import 'package:com.snowlive/web/widget/w_web_more_menu_web.dart';
@@ -204,9 +206,27 @@ class _ProfileDetailViewWebState extends State<ProfileDetailViewWeb> {
 
     final info = detail.friendUserInfo;
 
+    // 탭해서 들어온 프로필(커뮤니티 작성자·댓글·랭킹·크루멤버 등)은 스택 위에
+    // push돼 있으므로 뒤로가기로 직전 화면에 돌아간다. 메뉴바 마이페이지/헤더
+    // 프로필 사진으로 들어온 경우는 루트 전환(offAllNamed)이라 pop할 게 없어
+    // 버튼이 뜨지 않는다. 즉 canPop 여부로 자연스럽게 분기된다.
+    final bool canGoBack = Navigator.of(context).canPop();
+    final bool isMobile = context.screenType == WebScreenType.mobile;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
+        if (canGoBack) ...[
+          Align(
+            alignment: Alignment.centerLeft,
+            child: WebIconButton(
+              onTap: () => Get.back(),
+              padding: const EdgeInsets.fromLTRB(0, 0, 4, 0),
+              icon: WebBackIcon(size: isMobile ? 24 : 30),
+            ),
+          ),
+          const SizedBox(height: SDSSpacing.sm),
+        ],
         ProfileHeaderWeb(
           info: info,
           action: _buildHeaderAction(),
@@ -336,7 +356,18 @@ class _ProfileDetailViewWebState extends State<ProfileDetailViewWeb> {
       controller: _guestbookController,
       isSubmitting: isSubmitting,
       onSubmit: canWrite ? _submitGuestbook : null,
-      onLockedTap: () {
+      onLockedTap: () async {
+        // 비로그인 → 커뮤니티·중고거래와 동일한 로그인 유도 다이얼로그.
+        if (!_vm.isLoggedIn) {
+          final goLogin = await showWebConfirmDialog(
+            context: context,
+            title: '로그인이 필요해요',
+            message: '방명록은 로그인 후 남길 수 있어요.',
+            confirmLabel: '로그인하기',
+          );
+          if (goLogin) Get.toNamed(WebRoutes.login);
+          return;
+        }
         final message = _guestbookLockedMessage();
         if (message != null) _toast(message);
       },

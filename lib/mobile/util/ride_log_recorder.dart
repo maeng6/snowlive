@@ -11,7 +11,8 @@ import 'package:path_provider/path_provider.dart';
 ///
 /// - 어드민에 **로그 수집 대상**으로 등록된 user만, 라이브온 시 로그를 기기 파일에 기록한다.
 /// - main()의 Zone print 후킹으로 모든 print/debugPrint/에러가 [log]로 전달된다.
-/// - 라이브오프 후 "라이딩 궤적" 페이지의 "로그 전송" 버튼이 [uploadLatest]로 서버에 올린다.
+/// - 어드민 등록 대상이면 **라이브오프 시 자동 업로드**된다([stop]→[_autoUploadIfTarget]).
+///   수동으로도 "라이딩 궤적" 페이지의 "로그 전송" 버튼([uploadLatest])으로 올릴 수 있다.
 /// - 상한 없음(세션 전체 로그 그대로 전송).
 ///
 /// ⚠️ 테스트가 끝나면 통째로 제거할 임시 코드.
@@ -110,7 +111,8 @@ class RideLogRecorder {
     } catch (_) {}
   }
 
-  /// 라이브오프 시 호출. 파일을 닫는다(공유/업로드는 궤적 페이지 버튼에서).
+  /// 라이브오프 시 호출. 파일을 닫는다. 어드민 로그수집 **대상으로 등록된 유저면
+  /// 세션 종료 시 자동으로 서버에 업로드**한다(유저가 "로그 전송"을 누르지 않아도 됨).
   Future<void> stop() async {
     if (!_enabled) return;
     _enabled = false;
@@ -123,6 +125,43 @@ class RideLogRecorder {
       await sink?.flush();
       await sink?.close();
     } catch (_) {}
+    // 어드민 등록 대상이면 세션 종료 시 자동 업로드(네트워크 호출은 라이브오프를
+    // 막지 않게 백그라운드로). 대상이 아니면 is-log-target 조회만 하고 끝난다.
+    final uid = _sessionUserId;
+    if (uid != null) unawaited(_autoUploadIfTarget(uid));
+  }
+
+  /// 어드민 로그수집 대상이면 직전 세션 로그를 자동 업로드한다.
+  Future<void> _autoUploadIfTarget(int uid) async {
+    try {
+      if (!await isLogTarget(uid)) return;
+      final ok = await uploadLatest(userId: uid);
+      debugPrint('[RideLog] 자동 업로드 ${ok ? '성공' : '실패'} (user_id=$uid)');
+    } catch (e) {
+      debugPrint('[RideLog] 자동 업로드 오류: $e');
+    }
+  }
+
+  DateTime? _lastEventUploadAt;
+
+  /// GPS 조작/에러 등 **이상 상황**에서 현재(또는 직전) 세션 로그를 서버로 즉시
+  /// 올린다 — **대상 등록 여부와 무관**. 같은 세션에서 에러가 연달아 나도 과도하게
+  /// 전송하지 않도록 최소 15초 간격으로 스로틀한다.
+  Future<void> uploadOnEvent(String reason) async {
+    final uid = _sessionUserId;
+    if (uid == null) return;
+    final now = DateTime.now();
+    if (_lastEventUploadAt != null &&
+        now.difference(_lastEventUploadAt!) < const Duration(seconds: 15)) {
+      return;
+    }
+    _lastEventUploadAt = now;
+    try {
+      final ok = await uploadLatest(userId: uid);
+      debugPrint('[RideLog] 이벤트 업로드($reason) ${ok ? '성공' : '실패'} (user_id=$uid)');
+    } catch (e) {
+      debugPrint('[RideLog] 이벤트 업로드 오류: $e');
+    }
   }
 
   /// 직전(또는 현재) 세션 로그를 서버로 업로드. 성공 시 true.

@@ -10,9 +10,29 @@ import 'package:com.snowlive/web/widget/w_skeleton_web.dart';
 import 'package:com.snowlive/web/widget/w_web_floating_bottombar_web.dart';
 import 'package:com.snowlive/web/widget/w_web_form_fields_web.dart';
 import 'package:com.snowlive/web/widget/w_web_quill_editor_web.dart';
+import 'package:com.snowlive/web/widget/w_web_more_menu_web.dart' show showWebConfirmDialog;
 import 'package:com.snowlive/web/widget/w_web_page_header_web.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
+/// 커뮤니티 글 올리기 진입 — 게스트면 로그인 안내 다이얼로그, 로그인 상태면 작성
+/// 화면으로 보낸다(중고거래 openFleamarketUpload와 동일한 패턴). 자동로그인 확인
+/// 중(checking)이면 일단 들여보내고 화면 쪽 가드가 늦은 확정을 처리한다.
+Future<void> openCommunityUpload(BuildContext context) async {
+  final bool isGuest =
+      Get.find<AuthCheckViewModelWeb>().status == WebAuthStatus.unauthenticated;
+  if (!isGuest) {
+    Get.toNamed(WebRoutes.communityUpload);
+    return;
+  }
+  final bool goLogin = await showWebConfirmDialog(
+    context: context,
+    title: '로그인이 필요해요',
+    message: '게시글은 로그인 후 올릴 수 있어요.',
+    confirmLabel: '로그인하기',
+  );
+  if (goLogin) Get.toNamed(WebRoutes.login);
+}
 
 /// 웹 커뮤니티 게시글 작성·수정 화면.
 ///
@@ -268,19 +288,6 @@ class _CommunityUploadViewWebState extends State<CommunityUploadViewWeb> {
       final isSubmitting = _vm.isSubmitting;
       return Row(
         children: [
-          // 수정에는 임시저장이 없다 — 저장 버튼이 전체폭.
-          if (!_isEdit) ...[
-            SizedBox(
-              width: 100,
-              child: WebBottomBarButton(
-                label: '임시저장',
-                background: SDSColor.snowliveWhite,
-                foreground: SDSColor.gray900,
-                onTap: isSubmitting ? null : _onTempSave,
-              ),
-            ),
-            const SizedBox(width: 10),
-          ],
           Expanded(
             child: WebBottomBarButton(
               label: _submitLabel,
@@ -314,11 +321,6 @@ class _CommunityUploadViewWebState extends State<CommunityUploadViewWeb> {
       onBack: _isEdit ? _goBackToDetail : () => Get.back(),
       actions: [
         if (isDesktop) ...[
-          if (!_isEdit) ...[
-            _TempSaveButton(onTap: _onTempSave),
-            // 버튼 사이 10 (중고거래 헤더와 동일).
-            const SizedBox(width: 10),
-          ],
           Obx(
             () => _showActions
                 ? _SubmitButton(
@@ -348,12 +350,7 @@ class _CommunityUploadViewWebState extends State<CommunityUploadViewWeb> {
       ),
       child: Row(
         children: [
-          // 하단바의 임시저장은 100 고정(중고거래 하단바와 동일). 수정에는 없다.
-          if (!_isEdit) ...[
-            SizedBox(width: 100, child: _TempSaveButton(onTap: _onTempSave)),
-            const SizedBox(width: SDSSpacing.sm),
-          ],
-          // 목업: 작성완료가 남은 폭을 전부 차지한다.
+          // 작성완료가 하단바 전체 폭을 차지한다(임시저장 제거).
           Expanded(
             child: Obx(
               () => _SubmitButton(
@@ -409,7 +406,6 @@ class _CommunityUploadViewWebState extends State<CommunityUploadViewWeb> {
     });
   }
 
-  void _onTempSave() => Get.snackbar('알림', '임시저장 기능은 준비 중이에요.');
 
   Widget _buildForm(BuildContext context) {
     return Column(
@@ -418,6 +414,7 @@ class _CommunityUploadViewWebState extends State<CommunityUploadViewWeb> {
         // 라벨은 표준 regular 14(compact 아님), 필드 간 30 — 중고거래 폼과 동일.
         WebFormTextField(
           label: '제목',
+          isRequired: true,
           controller: _vm.titleController,
           hint: '글 제목을 입력해 주세요. (최대 50자 이내)',
           maxLength: 50,
@@ -428,6 +425,7 @@ class _CommunityUploadViewWebState extends State<CommunityUploadViewWeb> {
           final main = WebFormDropdownField<String>(
             anchoredOnTablet: true,
             label: '게시판 종류',
+            isRequired: true,
             value: _vm.categorySub,
             placeholder: kCommunityCategorySubPlaceholder,
             values: kCommunityCategorySubList,
@@ -441,6 +439,7 @@ class _CommunityUploadViewWebState extends State<CommunityUploadViewWeb> {
             right: WebFormDropdownField<String>(
               anchoredOnTablet: true,
               label: '상세 종류',
+              isRequired: true,
               value: _vm.categorySub2,
               placeholder: kCommunityCategorySub2Placeholder,
               values: kCommunityCategorySub2List,
@@ -462,38 +461,6 @@ class _CommunityUploadViewWebState extends State<CommunityUploadViewWeb> {
           onPickImage: _vm.pickAndInsertImage,
         ),
       ],
-    );
-  }
-}
-
-/// 목업의 임시저장 — 테두리 없는 텍스트 버튼(세 폭 공통).
-class _TempSaveButton extends StatelessWidget {
-  final VoidCallback onTap;
-
-  const _TempSaveButton({required this.onTap});
-
-  @override
-  Widget build(BuildContext context) {
-    // 중고거래 헤더 버튼 규격 — 높이 40 고정(visualDensity에 눌리지 않게
-    // SizedBox + minimumSize 병행), 패딩 16, 라운드 5, bold 16.
-    return SizedBox(
-      height: 40,
-      child: TextButton(
-        onPressed: onTap,
-        style: TextButton.styleFrom(
-          minimumSize: const Size(0, 40),
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-        ),
-        child: Text(
-          '임시저장',
-          style: SDSTextStyle.bold.copyWith(
-            fontSize: 16,
-            color: SDSColor.gray900,
-          ),
-        ),
-      ),
     );
   }
 }

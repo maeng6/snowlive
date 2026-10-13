@@ -119,13 +119,35 @@ class _LiveCrewHomeViewWebState extends State<LiveCrewHomeViewWeb> {
     // 라이브톡 홈의 분기를 그대로 따른다 — 모바일만 별도 화면, 그 외는 오버레이.
     if (context.screenType == WebScreenType.mobile) {
       await Get.toNamed('${WebRoutes.liveTalkDetail}?id=$id');
+      // 상세에서 삭제됐을 수 있으니 돌아오면 갤러리를 새로고침한다.
+      if (mounted) await _vm.refresh();
       return;
     }
-    await showLiveTalkDetailOverlay(
+    // 오버레이는 목록 변경 여부(true=좋아요/댓글/삭제)를 반환한다 — 변경 시 새로고침.
+    final changed = await showLiveTalkDetailOverlay(
       context: context,
       livetalkId: id,
       userId: _userVm.user.user_id,
     );
+    if (changed && mounted) await _vm.refresh();
+  }
+
+  /// 비로그인이면 커뮤니티·중고거래와 동일한 로그인 유도 다이얼로그를 띄우고,
+  /// 로그인 상태면 [route]로 이동한다(크루 만들기/가입하기 공통).
+  Future<void> _gateCrewAction(String route) async {
+    final isGuest = Get.find<AuthCheckViewModelWeb>().status ==
+        WebAuthStatus.unauthenticated;
+    if (!isGuest) {
+      Get.toNamed(route);
+      return;
+    }
+    final goLogin = await showWebConfirmDialog(
+      context: context,
+      title: '로그인이 필요해요',
+      message: '크루는 로그인 후 이용할 수 있어요.',
+      confirmLabel: '로그인하기',
+    );
+    if (goLogin) Get.toNamed(WebRoutes.login);
   }
 
   Future<void> _onPhotoMoreAction(LiveTalk talk, WebMoreAction action) async {
@@ -240,7 +262,7 @@ class _LiveCrewHomeViewWebState extends State<LiveCrewHomeViewWeb> {
                                   label: '크루 가입하기',
                                   background: SDSColor.gray100,
                                   foreground: SDSColor.gray900,
-                                  onTap: () => Get.toNamed(WebRoutes.crewJoin),
+                                  onTap: () => _gateCrewAction(WebRoutes.crewJoin),
                                 ),
                               ),
                               const SizedBox(width: 10),
@@ -249,7 +271,7 @@ class _LiveCrewHomeViewWebState extends State<LiveCrewHomeViewWeb> {
                                   label: '크루 만들기',
                                   background: SDSColor.snowliveBlue,
                                   foreground: SDSColor.snowliveWhite,
-                                  onTap: () => Get.toNamed(WebRoutes.crewCreate),
+                                  onTap: () => _gateCrewAction(WebRoutes.crewCreate),
                                 ),
                               ),
                             ],

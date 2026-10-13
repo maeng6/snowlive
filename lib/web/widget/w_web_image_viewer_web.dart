@@ -26,6 +26,7 @@ Future<void> showWebImageViewer({
   required List<String> imageUrls,
   required int initialIndex,
   ValueChanged<int>? onIndexChanged,
+  bool smoothDownscale = false,
 }) {
   if (imageUrls.isEmpty) return Future.value();
 
@@ -49,6 +50,7 @@ Future<void> showWebImageViewer({
         initialIndex: initialIndex.clamp(0, imageUrls.length - 1),
         onIndexChanged: onIndexChanged,
         onClose: close,
+        smoothDownscale: smoothDownscale,
       ),
     ),
   );
@@ -59,10 +61,15 @@ Future<void> showWebImageViewer({
 /// 프로필 사진·크루 로고 한 장을 확대해서 본다(앱과 동일).
 ///
 /// 사진이 한 장이면 뷰어가 썸네일·화살표를 자동으로 감추고 `✕`만 남긴다.
+///
+/// [smoothDownscale]은 **반투명 테두리 PNG 아이콘(티어 배지 등)** 을 확대해 볼 때
+/// 켠다 — cacheWidth 경로(저품질·Safari 알파 깨짐)를 피하고 원본을 GPU 밉맵으로
+/// 부드럽게 그려(FilterQuality.medium) 앱처럼 깔끔하게 나온다. 일반 사진은 끈다.
 Future<void> showWebPhotoViewer(
   BuildContext context, {
   required String? url,
   String title = '',
+  bool smoothDownscale = false,
 }) {
   if (url == null || url.isEmpty) return Future.value();
   return showWebImageViewer(
@@ -70,7 +77,119 @@ Future<void> showWebPhotoViewer(
     title: title,
     imageUrls: [url],
     initialIndex: 0,
+    smoothDownscale: smoothDownscale,
   );
+}
+
+/// 티어 배지 확대 — **앱과 동일한 동작**(모바일 `v_rankingList_Indi.dart`의 showDialog).
+/// 85% 검정 딤 위에 배지를 원본 비율 그대로(`화면폭-72`, 웹은 과대해지지 않게 360 상한)
+/// 띄우고, 아무 데나 탭하면 닫힌다. 줌 컨트롤·썸네일·정사각 무대가 없어서(일반
+/// 라이트박스와 달리) 작은 배지를 억지로 키우며 깨지지 않는다. 반투명 PNG라
+/// [WebNetworkImage.smoothDownscale]로 밉맵 렌더(FilterQuality.medium)해 깔끔하게 나온다.
+Future<void> showWebTierImageViewer(
+  BuildContext context, {
+  required String? url,
+}) {
+  if (url == null || url.isEmpty) return Future.value();
+
+  final overlay = Overlay.of(context, rootOverlay: true);
+  final completer = Completer<void>();
+  late final OverlayEntry entry;
+  var isClosed = false;
+
+  void close() {
+    if (isClosed) return;
+    isClosed = true;
+    entry.remove();
+    completer.complete();
+  }
+
+  entry = OverlayEntry(
+    builder: (ctx) {
+      final double viewW = MediaQuery.of(ctx).size.width;
+      final double imgW = math.min(viewW - 72, 360).toDouble();
+      // 탭뿐 아니라 ESC로도 닫는다(딤 처리된 확대 뷰 공통 규칙).
+      // autofocus는 페이지에 이미 포커스가 있으면 동작하지 않아서(ESC 미작동),
+      // 명시적으로 포커스를 요청하는 _TierEscFocus를 쓴다.
+      return Positioned.fill(
+        child: _TierEscFocus(
+          onEscape: close,
+          child: Stack(
+            children: [
+              Positioned.fill(
+                child: GestureDetector(
+                  onTap: close,
+                  child: const ColoredBox(color: kWebImageViewerBackdropColor),
+                ),
+              ),
+              Center(
+                child: GestureDetector(
+                  onTap: close,
+                  child: SizedBox(
+                    width: imgW,
+                    child: WebNetworkImage(
+                      url: url,
+                      width: imgW,
+                      fit: BoxFit.contain,
+                      showPlaceholder: false,
+                      smoothDownscale: true,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    },
+  );
+  overlay.insert(entry);
+  return completer.future;
+}
+
+/// 티어 확대 뷰에 ESC 닫기를 입힌다. 루트 Overlay에 꽂히는 엔트리라 키 이벤트를
+/// 받으려면 포커스가 있어야 하는데, autofocus는 페이지에 포커스가 이미 있으면
+/// 동작하지 않아서(= ESC가 안 먹힘) 마운트 직후 **명시적으로** 포커스를 요청한다.
+class _TierEscFocus extends StatefulWidget {
+  final VoidCallback onEscape;
+  final Widget child;
+
+  const _TierEscFocus({required this.onEscape, required this.child});
+
+  @override
+  State<_TierEscFocus> createState() => _TierEscFocusState();
+}
+
+class _TierEscFocusState extends State<_TierEscFocus> {
+  final FocusNode _node = FocusNode(debugLabel: 'tierEsc');
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) _node.requestFocus();
+    });
+  }
+
+  @override
+  void dispose() {
+    _node.dispose();
+    super.dispose();
+  }
+
+  KeyEventResult _onKey(FocusNode node, KeyEvent event) {
+    if (event is KeyDownEvent &&
+        event.logicalKey == LogicalKeyboardKey.escape) {
+      widget.onEscape();
+      return KeyEventResult.handled;
+    }
+    return KeyEventResult.ignored;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Focus(focusNode: _node, onKeyEvent: _onKey, child: widget.child);
+  }
 }
 
 class _WebImageViewer extends StatefulWidget {
@@ -80,12 +199,17 @@ class _WebImageViewer extends StatefulWidget {
   final ValueChanged<int>? onIndexChanged;
   final VoidCallback onClose;
 
+  /// 반투명 PNG 아이콘(티어 배지)을 깔끔하게 확대하기 위한 플래그. 메인 이미지에
+  /// 그대로 전달한다.
+  final bool smoothDownscale;
+
   const _WebImageViewer({
     required this.title,
     required this.imageUrls,
     required this.initialIndex,
     required this.onIndexChanged,
     required this.onClose,
+    this.smoothDownscale = false,
   });
 
   @override
@@ -142,14 +266,22 @@ class _WebImageViewerState extends State<_WebImageViewer>
     duration: const Duration(milliseconds: 200),
   );
 
+  // ESC/화살표 키를 받으려면 포커스가 필요하다. autofocus만으로는 페이지에 이미
+  // 포커스가 있을 때 동작하지 않아, 마운트 직후 명시적으로 포커스를 요청한다.
+  final FocusNode _viewerFocus = FocusNode(debugLabel: 'imageViewer');
+
   @override
   void initState() {
     super.initState();
     _index = widget.initialIndex;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) _viewerFocus.requestFocus();
+    });
   }
 
   @override
   void dispose() {
+    _viewerFocus.dispose();
     _snapBackCtrl.dispose();
     _transform.dispose();
     super.dispose();
@@ -274,6 +406,7 @@ class _WebImageViewerState extends State<_WebImageViewer>
     _scheduleMeasure();
 
     return Focus(
+      focusNode: _viewerFocus,
       autofocus: true,
       onKeyEvent: _onKey,
       child: Stack(
@@ -339,6 +472,9 @@ class _WebImageViewerState extends State<_WebImageViewer>
                                     height: _stageRect!.height,
                                     fit: BoxFit.contain,
                                     gaplessPlayback: true,
+                                    // 티어 배지 등 반투명 PNG는 원본을 밉맵으로
+                                    // 부드럽게 그려 확대 시 테두리가 깨지지 않게 한다.
+                                    smoothDownscale: widget.smoothDownscale,
                                   ),
                                 ),
                               ),

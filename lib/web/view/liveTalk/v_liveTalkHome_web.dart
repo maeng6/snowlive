@@ -145,18 +145,36 @@ class _LiveTalkHomeViewWebState extends State<LiveTalkHomeViewWeb> {
   Future<void> _onUploadLiveTalk() async {
     final userId = _userVm.user.user_id;
     if (userId == null) {
-      Get.snackbar('알림', '로그인이 필요합니다.');
+      // 비로그인 → 커뮤니티·중고거래와 동일한 로그인 유도 다이얼로그.
+      final goLogin = await showWebConfirmDialog(
+        context: context,
+        title: '로그인이 필요해요',
+        message: '게시글은 로그인 후 올릴 수 있어요.',
+        confirmLabel: '로그인하기',
+      );
+      if (goLogin) Get.toNamed(WebRoutes.login);
       return;
     }
     final done = await showLiveTalkUploadFlow(context: context, userId: userId);
     if (done) await _vm.gotoPage(1);
   }
 
-  /// 로그인하지 않아도 열린다 — 기록이 없으면 "앱 다운로드" 안내 상태가 뜬다(목업).
   Future<void> _onShareRidingCard() async {
+    final userId = _userVm.user.user_id;
+    if (userId == null) {
+      // 비로그인 → 게시글 올리기와 동일한 로그인 유도 다이얼로그.
+      final goLogin = await showWebConfirmDialog(
+        context: context,
+        title: '로그인이 필요해요',
+        message: '라이딩 카드는 로그인 후 공유할 수 있어요.',
+        confirmLabel: '로그인하기',
+      );
+      if (goLogin) Get.toNamed(WebRoutes.login);
+      return;
+    }
     final done = await showLiveTalkCardShareFlow(
       context: context,
-      userId: _userVm.user.user_id,
+      userId: userId,
     );
     if (done) await _vm.gotoPage(1);
   }

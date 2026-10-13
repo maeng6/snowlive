@@ -9,6 +9,7 @@ import 'package:com.snowlive/web/util/crew_visual_web.dart';
 import 'package:com.snowlive/web/util/responsive_web.dart';
 import 'package:com.snowlive/web/view/fleamarket/w_fleamarket_filter_sheet_web.dart';
 import 'package:com.snowlive/web/widget/w_web_filter_menu_web.dart';
+import 'package:com.snowlive/web/widget/w_web_image_viewer_web.dart';
 import 'package:com.snowlive/web/view/home/w_home_sections_web.dart';
 import 'package:com.snowlive/core/model/m_crewHome.dart';
 import 'package:com.snowlive/web/view/liveCrew/w_livecrew_crew_modal_web.dart';
@@ -571,9 +572,26 @@ class _RankingArchiveViewWebState extends State<RankingArchiveViewWeb> {
                   style: SDSTextStyle.regular.copyWith(fontSize: 15, color: SDSColor.gray900),
                 ),
               ),
-              if (!_isResortScoped && (user.overallTierIconUrl?.isNotEmpty ?? false)) ...[
+              if (!_isResortScoped) ...[
                 const SizedBox(width: 8),
-                WebNetworkImage(url: user.overallTierIconUrl, width: 36, height: 36, fit: BoxFit.contain, showPlaceholder: false, smoothDownscale: true),
+                // 점수가 있으면 티어 아이콘, 없으면(점수 없음) '-'.
+                (user.overallTierIconUrl?.isNotEmpty ?? false)
+                    ? MouseRegion(
+                        cursor: SystemMouseCursors.click,
+                        child: GestureDetector(
+                          behavior: HitTestBehavior.opaque,
+                          onTap: () => showWebTierImageViewer(context, url: user.overallTierIconUrl),
+                          child: WebNetworkImage(url: user.overallTierIconUrl, width: 36, height: 36, fit: BoxFit.contain, showPlaceholder: false, smoothDownscale: true),
+                        ),
+                      )
+                    : const SizedBox(
+                        width: 36,
+                        height: 36,
+                        child: Center(
+                          child: Text('-',
+                              style: TextStyle(fontSize: 16, color: SDSColor.gray400)),
+                        ),
+                      ),
               ],
               ],
             ),
@@ -644,9 +662,26 @@ class _RankingArchiveViewWebState extends State<RankingArchiveViewWeb> {
                     style: SDSTextStyle.regular.copyWith(fontSize: 15, color: SDSColor.gray900),
                   ),
                 ),
-                if (hasTierIcon) ...[
+                if (!_isResortScoped) ...[
                   const SizedBox(width: 8),
-                  WebNetworkImage(url: crew.overallTierIconUrl, width: 36, height: 36, fit: BoxFit.contain, showPlaceholder: false, smoothDownscale: true),
+                  // 점수가 있으면 티어 아이콘, 없으면(점수 없음) '-'.
+                  hasTierIcon
+                      ? MouseRegion(
+                          cursor: SystemMouseCursors.click,
+                          child: GestureDetector(
+                            behavior: HitTestBehavior.opaque,
+                            onTap: () => showWebTierImageViewer(context, url: crew.overallTierIconUrl),
+                            child: WebNetworkImage(url: crew.overallTierIconUrl, width: 36, height: 36, fit: BoxFit.contain, showPlaceholder: false, smoothDownscale: true),
+                          ),
+                        )
+                      : const SizedBox(
+                          width: 36,
+                          height: 36,
+                          child: Center(
+                            child: Text('-',
+                                style: TextStyle(fontSize: 16, color: SDSColor.gray400)),
+                          ),
+                        ),
                 ],
               ],
             ),

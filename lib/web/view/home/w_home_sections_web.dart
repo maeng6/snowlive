@@ -13,6 +13,7 @@ import 'package:com.snowlive/web/util/web_external_links.dart';
 import 'package:com.snowlive/web/view/community/w_community_row_web.dart'
     show CommunityTitleLine, openCommunityDetail;
 import 'package:com.snowlive/web/view/home/home_sections_web.dart';
+import 'package:com.snowlive/web/viewmodel/home/vm_home_web.dart';
 import 'package:com.snowlive/web/widget/w_empty_state_web.dart';
 import 'package:com.snowlive/web/widget/w_network_image_web.dart';
 import 'package:com.snowlive/web/widget/w_skeleton_web.dart';
@@ -1080,9 +1081,15 @@ class _CrewTalkCardState extends State<_CrewTalkCard> with _TapFeedback {
         onTapCancel: pressCancel,
         onTap: !tappable
             ? null
-            : () => Get.toNamed(openTalkId != null
-                ? '${WebRoutes.liveTalkDetail}?id=$openTalkId'
-                : '${WebRoutes.crewHome}?id=${card.crewId}'),
+            : () async {
+                await Get.toNamed(openTalkId != null
+                    ? '${WebRoutes.liveTalkDetail}?id=$openTalkId'
+                    : '${WebRoutes.crewHome}?id=${card.crewId}');
+                // 상세에서 크루톡이 삭제됐을 수 있으니 돌아오면 홈 크루카드를 새로고침한다.
+                if (mounted && Get.isRegistered<HomeViewModelWeb>()) {
+                  await Get.find<HomeViewModelWeb>().loadCrewCards();
+                }
+              },
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

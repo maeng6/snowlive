@@ -168,12 +168,34 @@ class _HomeHeroWebState extends State<HomeHeroWeb> {
     }
   }
 
-  Future<void> _openButtonUrl(HomeBanner slide) async {
-    final url = slide.buttonUrl ?? slide.landingUrl;
+  void _openButtonUrl(HomeBanner slide) {
+    // 어드민의 "새 탭에서 열기" 토글값을 따른다 — 켜짐=새 탭, 꺼짐=현재 탭.
+    _openExternal(
+      slide.buttonUrl ?? slide.landingUrl,
+      windowName: slide.buttonNewTab ? '_blank' : '_self',
+    );
+  }
+
+  /// 배너 이미지(버튼 외) 영역 탭 → 랜딩 URL. 어드민 토글값대로 새 탭/현재 탭.
+  void _openLandingUrl(HomeBanner slide) {
+    _openExternal(
+      slide.landingUrl,
+      windowName: slide.landingNewTab ? '_blank' : '_self',
+    );
+  }
+
+  /// 외부 URL을 연다. 웹 팝업 차단에 걸리지 않게 **클릭 콜백 안에서 동기로**
+  /// launchUrl을 부른다(async/await로 미루면 사용자 제스처 컨텍스트가 끊겨
+  /// window.open이 차단된다). [windowName]은 `_blank`(새 탭)/`_self`(현재 탭).
+  void _openExternal(String url, {required String windowName}) {
     if (url.isEmpty) return;
     final uri = Uri.tryParse(url);
     if (uri == null) return;
-    await launchUrl(uri, mode: LaunchMode.externalApplication);
+    launchUrl(
+      uri,
+      mode: LaunchMode.externalApplication,
+      webOnlyWindowName: windowName,
+    );
   }
 
   @override
@@ -213,12 +235,22 @@ class _HomeHeroWebState extends State<HomeHeroWeb> {
     final slides = _slides;
     _ensureTimer(slides.length);
 
+    // 랜딩 URL 탭은 배너 전체를 감싸는 부모가 맡는다. 버튼은 이 아래 자식이라
+    // 자기 영역 탭을 먼저 가져가고(=버튼 URL), 그 밖의 이미지 영역 탭만 여기로
+    // 떨어진다. onTap만 등록하므로 PageView 좌우 스와이프(드래그)는 그대로 된다.
+    final HomeBanner current = slides[_index.clamp(0, slides.length - 1)];
+    final bool hasLanding = current.landingUrl.isNotEmpty;
     return _frame(
       isMobile: isMobile,
       isTablet: isTablet,
-      child: Stack(
-        fit: StackFit.expand,
-        children: [
+      child: MouseRegion(
+        cursor: hasLanding ? SystemMouseCursors.click : MouseCursor.defer,
+        child: GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: hasLanding ? () => _openLandingUrl(current) : null,
+          child: Stack(
+            fit: StackFit.expand,
+            children: [
           // 좌우 스와이프 + 좌로 슬라이드 애니메이션. 이미지와 문구가 같이 넘어간다.
           PageView.builder(
             controller: _pageController,
@@ -243,6 +275,8 @@ class _HomeHeroWebState extends State<HomeHeroWeb> {
             itemBuilder: (context, page) {
               // 이미지만 좌로 슬라이드된다. 문구/버튼은 아래 고정 오버레이가
               // 별도 애니메이션(페이드+상승)으로 처리한다.
+              // 랜딩 URL 탭은 Stack 전체를 감싸는 부모 GestureDetector가 맡는다
+              // (버튼은 그 자식이라 자기 영역 탭을 확실히 가져간다).
               final slide = slides[page % slides.length];
               return _buildImage(slide, isMobile);
             },
@@ -272,7 +306,9 @@ class _HomeHeroWebState extends State<HomeHeroWeb> {
           // 로고와 인디케이터는 슬라이드와 무관하게 고정.
           _buildLogo(isMobile),
           if (slides.length > 1) _buildDots(slides.length, isMobile),
-        ],
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -487,28 +523,42 @@ class _HeroOverlayState extends State<_HeroOverlay> with TickerProviderStateMixi
                 SizedBox(height: isMobile || isTablet ? 20 : 24),
                 // 버튼: 화이트 배경 + gray100 1px 보더 + pill(40).
                 // 높이 48(PC) / 40(태블릿) / 41(모바일), 폰트 16(PC) / 14 (피그마 기준).
+                //
+                // ⚠️ ElevatedButton(onPressed)으로 열면 웹에서 버튼 클릭이 열리지
+                // 않는다 — Material(InkWell)의 탭 확정이 한 프레임 미뤄지면서
+                // 브라우저의 "사용자 제스처" 활성화가 끊겨 window.open(새 탭)이
+                // 차단된다. 그래서 랜딩 탭과 **같은 방식**(GestureDetector.onTap)으로
+                // 동기 실행한다. 디자인은 Container로 동일하게 재현.
                 _staggered(
                   2,
-                  ElevatedButton(
-                    onPressed: () => widget.onButtonTap(slide),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: SDSColor.snowliveWhite,
-                      elevation: 0,
-                      shadowColor: Colors.transparent,
-                      overlayColor: Colors.transparent,
-                      side: BorderSide(color: SDSColor.gray100),
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      minimumSize: Size(0, buttonHeight),
-                      fixedSize: Size.fromHeight(buttonHeight),
-                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
-                    ),
-                    child: Text(
-                      buttonLabel,
-                      style: SDSTextStyle.extraBold.copyWith(
-                        fontSize: buttonFontSize,
-                        color: SDSColor.gray900,
-                        height: 1.0,
+                  MouseRegion(
+                    cursor: SystemMouseCursors.click,
+                    child: GestureDetector(
+                      behavior: HitTestBehavior.opaque,
+                      onTap: () => widget.onButtonTap(slide),
+                      child: DecoratedBox(
+                        decoration: BoxDecoration(
+                          color: SDSColor.snowliveWhite,
+                          border: Border.all(color: SDSColor.gray100),
+                          borderRadius: BorderRadius.circular(40),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          child: SizedBox(
+                            height: buttonHeight,
+                            child: Center(
+                              widthFactor: 1.0,
+                              child: Text(
+                                buttonLabel,
+                                style: SDSTextStyle.extraBold.copyWith(
+                                  fontSize: buttonFontSize,
+                                  color: SDSColor.gray900,
+                                  height: 1.0,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
                       ),
                     ),
                   ),

@@ -20,6 +20,7 @@ import 'package:com.snowlive/web/view/ranking/w_ranking_tier_guide_web.dart';
 import 'package:com.snowlive/web/viewmodel/ranking/vm_rankingList_web.dart';
 import 'package:com.snowlive/web/viewmodel/ranking/vm_rankingListCrew_web.dart';
 import 'package:com.snowlive/web/widget/w_numbered_pagination_web.dart';
+import 'package:com.snowlive/web/widget/w_web_image_viewer_web.dart';
 import 'package:com.snowlive/web/widget/w_skeleton_web.dart';
 import 'package:com.snowlive/web/widget/w_web_filter_menu_web.dart';
 import 'package:com.snowlive/web/widget/w_web_text_tabs_web.dart';
@@ -750,9 +751,26 @@ class _RankingHomeViewWebState extends State<RankingHomeViewWeb> {
                   style: SDSTextStyle.regular
                       .copyWith(fontSize: m.scoreSize, color: SDSColor.gray900),
                 ),
-                if (!isResortScoped && !_daily && (user.overallTierIconUrl?.isNotEmpty ?? false)) ...[
+                if (!isResortScoped && !_daily) ...[
                   const SizedBox(width: 8),
-                  WebNetworkImage(url: user.overallTierIconUrl, width: 36, height: 36, fit: BoxFit.contain, showPlaceholder: false, smoothDownscale: true),
+                  // 점수가 있어 티어 아이콘이 있으면 아이콘, 없으면(점수 없음) '-'.
+                  (user.overallTierIconUrl?.isNotEmpty ?? false)
+                      ? MouseRegion(
+                          cursor: SystemMouseCursors.click,
+                          child: GestureDetector(
+                            behavior: HitTestBehavior.opaque,
+                            onTap: () => showWebTierImageViewer(context, url: user.overallTierIconUrl),
+                            child: WebNetworkImage(url: user.overallTierIconUrl, width: 36, height: 36, fit: BoxFit.contain, showPlaceholder: false, smoothDownscale: true),
+                          ),
+                        )
+                      : const SizedBox(
+                          width: 36,
+                          height: 36,
+                          child: Center(
+                            child: Text('-',
+                                style: TextStyle(fontSize: 16, color: SDSColor.gray400)),
+                          ),
+                        ),
                 ],
               ],
             ),
