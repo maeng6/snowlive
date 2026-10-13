@@ -96,13 +96,11 @@ class _NotificationSettingViewState extends State<NotificationSettingView> {
           children: [
             _toggleRow(
               title: '나의 라이브온 알리기',
-              description: '끄면 내가 라이브온해도 친구들에게 알림이 전송되지 않아요.',
               value: _notifyMyLiveon,
               onChanged: (v) => _update(field: 'notify_my_liveon', value: v),
             ),
             _toggleRow(
               title: '친구의 라이브온 알림 받기',
-              description: '끄면 친구들의 라이브온 알림을 받지 않아요.',
               value: _receiveFriendLiveon,
               onChanged: (v) => _update(field: 'receive_friend_liveon', value: v),
             ),
@@ -114,7 +112,6 @@ class _NotificationSettingViewState extends State<NotificationSettingView> {
 
   Widget _toggleRow({
     required String title,
-    required String description,
     required bool value,
     required ValueChanged<bool> onChanged,
   }) {
@@ -124,21 +121,10 @@ class _NotificationSettingViewState extends State<NotificationSettingView> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: SDSTextStyle.bold
-                      .copyWith(fontSize: 15, color: SDSColor.gray900),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  description,
-                  style: SDSTextStyle.regular
-                      .copyWith(fontSize: 13, color: SDSColor.gray500),
-                ),
-              ],
+            child: Text(
+              title,
+              style: SDSTextStyle.bold
+                  .copyWith(fontSize: 15, color: SDSColor.gray900),
             ),
           ),
           const SizedBox(width: 12),
