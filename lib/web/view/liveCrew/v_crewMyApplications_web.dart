@@ -3,7 +3,6 @@ import 'package:com.snowlive/core/model/m_crewApplyList.dart';
 import 'package:com.snowlive/web/routes/routes_web.dart';
 import 'package:com.snowlive/web/util/crew_visual_web.dart';
 import 'package:com.snowlive/web/util/responsive_web.dart';
-import 'package:com.snowlive/web/view/liveCrew/crew_my_applications_dummy_web.dart';
 import 'package:com.snowlive/web/view/liveCrew/w_crew_setting_scaffold_web.dart';
 import 'package:com.snowlive/web/view/liveCrew/w_crew_setting_widgets_web.dart';
 import 'package:com.snowlive/web/viewmodel/crew/vm_crewJoin_web.dart';
@@ -80,16 +79,12 @@ class _CrewMyApplicationsViewWebState extends State<CrewMyApplicationsViewWeb> {
 
   Widget _buildBody() {
     // ⚠️ 분기 전에 관찰값을 모두 읽어야 Obx 구독이 확실히 걸린다.
-    //   `ForceDummy ||`로 단락되면 Rx를 한 번도 안 읽어 "improper use of a GetX"가 난다.
     final isLoggedIn = _vm.isLoggedIn;
-    final real = _vm.myApplications.toList();
+    final applications = _vm.myApplications.toList();
     final isLoading = _vm.isLoadingApplications;
     final hasError = _vm.hasApplicationsError;
-    // ⚠️ UI 작업용 더미 — 치울 때: `real`을 그대로 쓰고 import와 로그인 우회를 지운다.
-    final applications =
-        (kCrewMyApplicationsForceDummy || real.isEmpty) ? kCrewMyApplicationsDummy : real;
 
-    if (!isLoggedIn && !kCrewMyApplicationsForceDummy) {
+    if (!isLoggedIn) {
       return const CrewSettingGuard(
         isLoggedIn: false,
         canOpen: false,

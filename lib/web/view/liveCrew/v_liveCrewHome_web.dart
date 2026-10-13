@@ -14,7 +14,6 @@ import 'package:com.snowlive/web/view/liveCrew/w_livecrew_filter_chips_web.dart'
 import 'package:com.snowlive/web/view/liveCrew/w_livecrew_gallery_web.dart';
 import 'package:com.snowlive/web/view/liveCrew/w_livecrew_list_grid_web.dart';
 import 'package:com.snowlive/web/view/liveCrew/w_livecrew_photo_viewer_web.dart';
-import 'package:com.snowlive/web/view/liveCrew/crew_my_applications_dummy_web.dart';
 import 'package:com.snowlive/web/viewmodel/crew/vm_crewJoin_web.dart';
 import 'package:com.snowlive/web/view/liveCrew/w_livecrew_sidebar_web.dart';
 import 'package:com.snowlive/web/view/liveCrew/w_livecrew_top_carousel_web.dart';
@@ -124,11 +123,6 @@ class _LiveCrewHomeViewWebState extends State<LiveCrewHomeViewWeb> {
   /// 승인 대기 중인 신청이 있는지 확인한다. 로그인 전이거나 이미 크루가 있으면
   /// 조회하지 않는다(그 상태에서는 입구 자체가 안 뜬다).
   Future<void> _syncMyApplications() async {
-    // 더미를 강제한 동안은 입구가 사라지지 않게 통과시킨다(치울 때 함께 되돌린다).
-    if (kCrewMyApplicationsForceDummy) {
-      if (!_hasApplications && mounted) setState(() => _hasApplications = true);
-      return;
-    }
     if (_userVm.user.user_id == null || _userVm.user.crew_id != null) {
       if (_hasApplications && mounted) setState(() => _hasApplications = false);
       return;
