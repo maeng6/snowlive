@@ -3,7 +3,7 @@ import 'package:com.snowlive/core/model/m_friendDetail.dart';
 import 'package:com.snowlive/web/routes/routes_web.dart';
 import 'package:com.snowlive/web/util/responsive_web.dart';
 import 'package:com.snowlive/web/view/liveCrew/w_crewhome_riding_stats_web.dart'
-    show CrewSlopeBarRow, CrewTimeCountCard, kCrewTimeBuckets;
+    show CrewRidingEmptyState, CrewSlopeBarRow, CrewTimeCountCard, kCrewTimeBuckets;
 import 'package:com.snowlive/web/widget/w_network_image_web.dart';
 import 'package:com.snowlive/web/widget/w_web_avatar_web.dart';
 import 'package:com.snowlive/web/widget/w_web_overlay_modal_web.dart';
@@ -435,8 +435,8 @@ class _SlopeCard extends StatelessWidget {
           ),
           const SizedBox(height: SDSSpacing.md),
           if (slopes.isEmpty)
-            Text('라이딩 기록이 없어요',
-                style: SDSTextStyle.regular.copyWith(fontSize: 12, color: SDSColor.gray400))
+            // 옆 시간대별 카드와 같은 빈 상태(공용) — 문구·아이콘이 한 화면에서 갈리지 않게.
+            const CrewRidingEmptyState()
           else
             for (var i = 0; i < slopes.length; i++) ...[
               if (i > 0) const SizedBox(height: SDSSpacing.sm),
@@ -527,9 +527,7 @@ Future<void> showProfileSlopesModal(
                             ),
                             const SizedBox(height: SDSSpacing.md),
                             if (slopes.isEmpty)
-                              Text('라이딩 기록이 없어요',
-                                  style: SDSTextStyle.regular
-                                      .copyWith(fontSize: 12, color: SDSColor.gray400))
+                              const CrewRidingEmptyState()
                             else
                               for (var i = 0; i < slopes.length; i++) ...[
                                 if (i > 0) const SizedBox(height: SDSSpacing.sm),

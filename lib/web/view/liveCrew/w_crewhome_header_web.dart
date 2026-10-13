@@ -4,6 +4,7 @@ import 'package:com.snowlive/web/routes/routes_web.dart';
 import 'package:com.snowlive/web/util/crew_visual_web.dart';
 import 'package:com.snowlive/web/util/responsive_web.dart';
 import 'package:com.snowlive/web/widget/w_network_image_web.dart';
+import 'package:com.snowlive/web/widget/w_web_stats_bar_web.dart';
 import 'package:com.snowlive/web/widget/w_web_icon_button_web.dart';
 import 'package:com.snowlive/web/widget/w_web_image_viewer_web.dart';
 import 'package:com.snowlive/web/widget/w_web_profile_tap_web.dart';
@@ -391,204 +392,24 @@ class CrewHomeSummaryBarWeb extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isMobile = context.screenType == WebScreenType.mobile;
-    final stats = [
-      _StatCell(
-        label: '멤버(명)',
-        value: _numberFormat.format(memberCount ?? 0),
-        onTap: onMembersTap,
-        stacked: isMobile,
-      ),
-      _StatCell(
-        label: '통합 랭킹',
-        value: _numberFormat.format(overallRank ?? 0),
-        stacked: isMobile,
-      ),
-      _StatCell(
-        label: '총 점수',
-        value: _numberFormat.format((totalScore ?? 0).round()),
-        stacked: isMobile,
-      ),
-    ];
-
-    // 랭킹 `내 랭킹 카드`(w_ranking_my_card_web.dart)와 **같은 규격**으로 맞춘다
-    // (사용자 확정) — gray50 · 라운드 16 · PC 패딩 30/7 ·
-    // 라벨 Regular 14(검정 50%) · 값 Bold 17 · 구분선 1×16 gray700 10%, 좌우 24.
-    // 크루홈 목업(161:86732)은 15/18/30/60이지만 같은 성격의 지표 바라 통일한다.
-    //
-    // 높이는 **54**로 못 박는다 — 랭킹 카드는 티어 아이콘(40)이 높이를 만들어
-    // 7+40+7 = 54가 되는데, 여기는 아이콘이 없어 그냥 두면 40으로 얇아진다.
-    return Container(
-      constraints: BoxConstraints(minHeight: isMobile ? 0 : 54),
-      alignment: isMobile ? null : Alignment.centerLeft,
-      decoration: BoxDecoration(
-        color: SDSColor.gray50,
-        borderRadius: BorderRadius.circular(16),
-      ),
-      // 좌우 30은 세 폭 공통, 모바일만 상하 16(목업 161:101488 — 바 높이 73).
-      padding: EdgeInsets.symmetric(horizontal: 30, vertical: isMobile ? 16 : 7),
-      child: isMobile ? _buildStacked(stats) : _buildInline(stats),
-    );
-  }
-
-  /// 모바일 — 세 지표가 **한 줄**에 나란히 서되 각 칸이 값(위)·라벨(아래)로
-  /// 쌓인다(목업 161:101494). 남는 폭은 칸 사이에 고르게 퍼진다.
-  Widget _buildStacked(List<Widget> stats) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            for (var i = 0; i < stats.length; i++) ...[
-              if (i > 0) _divider(margin: 0),
-              stats[i],
-            ],
-          ],
+    // 규격은 공용 지표 바(`WebStatsBar`)가 들고 있다 — 기록실 요약 바와 같은 것이다.
+    return WebStatsBar(
+      items: [
+        WebStatItem(
+          label: '멤버(명)',
+          value: _numberFormat.format(memberCount ?? 0),
+          onTap: onMembersTap,
         ),
-        if (onApply != null) ...[
-          const SizedBox(height: 12),
-          InkWell(
-            onTap: onApply,
-            borderRadius: BorderRadius.circular(6),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 4),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    '가입 신청하기',
-                    style: SDSTextStyle.bold.copyWith(fontSize: 14, color: SDSColor.gray900),
-                  ),
-                  const SizedBox(width: 2),
-                  Icon(Icons.chevron_right, size: 20, color: SDSColor.gray900),
-                ],
-              ),
-            ),
-          ),
-        ],
+        WebStatItem(label: '통합 랭킹', value: _numberFormat.format(overallRank ?? 0)),
+        WebStatItem(
+          label: '총 점수',
+          value: _numberFormat.format((totalScore ?? 0).round()),
+        ),
       ],
-    );
-  }
-
-  Widget _buildInline(List<Widget> stats) {
-    return Row(
-        children: [
-          // 목업은 세 지표가 **왼쪽에 모여** 있다(남은 폭을 나눠 갖지 않는다).
-          for (var i = 0; i < stats.length; i++) ...[
-            if (i > 0) _divider(),
-            // 각 칸은 내용 폭 그대로(숫자 안 잘림). 남는 폭은 아래 Spacer가 먹는다.
-            stats[i],
-          ],
-          if (onApply != null) ...[
-            const Spacer(),
-            InkWell(
-              onTap: onApply,
-              borderRadius: BorderRadius.circular(6),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
-                child: Row(
-                  children: [
-                    Text(
-                      '가입 신청하기',
-                      style: SDSTextStyle.bold.copyWith(fontSize: 14, color: SDSColor.gray900),
-                    ),
-                    const SizedBox(width: 2),
-                    Icon(Icons.chevron_right, size: 20, color: SDSColor.gray900),
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ],
-      );
-  }
-
-  /// 항목 사이 구분선 — 1×16, gray700 10%, 좌우 24(랭킹 내 랭킹 카드와 동일).
-  Widget _divider({double margin = 24}) => Container(
-        width: 1,
-        height: 16,
-        margin: EdgeInsets.symmetric(horizontal: margin),
-        color: SDSColor.gray700.withValues(alpha: 0.1),
-      );
-}
-
-class _StatCell extends StatefulWidget {
-  final String label;
-  final String value;
-
-  /// 주면 칸 전체가 탭 대상이 된다(`멤버(명)` → 전체 멤버 화면).
-  final VoidCallback? onTap;
-
-  /// 모바일은 값(위) · 라벨(아래)로 쌓고 가운데 정렬한다(목업).
-  final bool stacked;
-
-  const _StatCell({
-    required this.label,
-    required this.value,
-    this.onTap,
-    this.stacked = false,
-  });
-
-  @override
-  State<_StatCell> createState() => _StatCellState();
-}
-
-class _StatCellState extends State<_StatCell> {
-  bool _hovered = false;
-
-  @override
-  Widget build(BuildContext context) {
-    // 누를 수 있는 칸(`멤버(명)`)만 hover에서 **밑줄**로 알린다 — 바 안이라
-    // 배경 틴트를 쓰면 gray50 위에 또 회색이 깔려 잘 안 보인다.
-    final underline =
-        widget.onTap != null && _hovered ? TextDecoration.underline : null;
-    // 랭킹 내 랭킹 카드와 동일 — 라벨 Regular 14(검정 50%), 값 Bold 17.
-    final label = Text(
-      widget.label,
-      style: SDSTextStyle.regular.copyWith(
-        fontSize: 14,
-        color: SDSColor.gray900.withValues(alpha: 0.5),
-        decoration: underline,
-        decorationColor: SDSColor.gray900.withValues(alpha: 0.5),
-      ),
-    );
-    final value = Text(
-      widget.value,
-      maxLines: 1,
-      softWrap: false,
-      // 가로(인라인)에서는 숫자를 절대 줄이지 않고 전부 보여준다. 모바일 쌓임은 기존대로.
-      overflow: widget.stacked ? TextOverflow.ellipsis : TextOverflow.visible,
-      style: SDSTextStyle.bold.copyWith(
-        fontSize: 17,
-        color: SDSColor.gray900,
-        decoration: underline,
-      ),
-    );
-
-    final cell = widget.stacked
-        // 값 ↔ 라벨 4 (목업 — 값 21 / 라벨 16, 칸 높이 41).
-        ? Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [value, const SizedBox(height: 4), label],
-          )
-        // 가로 배치는 라벨 ↔ 값 11.
-        : Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [label, const SizedBox(width: 11), value],
-          );
-    if (widget.onTap == null) return cell;
-
-    return MouseRegion(
-      cursor: SystemMouseCursors.click,
-      onEnter: (_) => setState(() => _hovered = true),
-      onExit: (_) => setState(() => _hovered = false),
-      child: GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        onTap: widget.onTap,
-        child: cell,
-      ),
+      // 내 크루가 아닐 때만 가입 신청을 노출한다(목업).
+      trailing: onApply == null
+          ? null
+          : WebStatsBarLink(label: '가입 신청하기', onTap: onApply!),
     );
   }
 }

@@ -201,11 +201,12 @@ void main() {
         await pumpAt(
           tester,
           width,
+          // 폭별 배치는 공용 지표 바(`WebStatsBar`)가 화면 폭을 보고 정한다 →
+          // 카드는 isMobile을 더 받지 않는다.
           CrewRecordSummaryCard(
             overallRank: 1,
             totalScore: 281886.4,
             onOpenRanking: () {},
-            isMobile: width < 768,
           ),
         );
         expect(tester.takeException(), isNull);

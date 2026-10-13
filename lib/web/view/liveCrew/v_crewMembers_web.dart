@@ -19,7 +19,7 @@ const int kCrewMembersPerPage = 48;
 ///
 /// 앱과 같은 멤버 API(`/crew/{id}/members/`)를 쓴다 — 이번 시즌 기록이 없는
 /// 멤버도 **전원** 보여준다(랭킹이 아니다). 서버가 전체를 한 번에 주므로
-/// **클라이언트에서 잘라** 목업의 번호식 페이지네이션을 만든다.
+/// **클라이언트에서 잘라** 목업의 번호식 페이지네이션을 만든다
 class CrewMembersViewWeb extends StatefulWidget {
   const CrewMembersViewWeb({super.key});
 
@@ -47,7 +47,7 @@ class _CrewMembersViewWebState extends State<CrewMembersViewWeb> {
   }
 
   void _goBack() {
-    // URL 직접 진입이라 돌아갈 화면이 없으면 크루홈으로 보낸다.
+    // URL 직접 진입이라 돌아갈 화면이 없으면 크루홈으로 보낸다
     if (Navigator.of(context).canPop()) {
       Get.back();
       return;

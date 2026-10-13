@@ -1,5 +1,6 @@
 import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/web/routes/routes_web.dart';
+import 'package:com.snowlive/web/view/liveCrew/crew_record_dummy_web.dart';
 import 'package:com.snowlive/web/view/liveCrew/w_crew_record_scaffold_web.dart';
 import 'package:com.snowlive/web/view/liveCrew/w_crew_record_widgets_web.dart';
 import 'package:com.snowlive/web/viewmodel/crew/vm_crewRecord_web.dart';
@@ -49,7 +50,11 @@ class _CrewDailyRecordViewWebState extends State<CrewDailyRecordViewWeb> {
     // 분기 전에 관찰값을 모두 읽는다(Obx 구독).
     final isInitialLoading = _vm.isInitialLoading;
     final hasError = _vm.hasError;
-    final records = _vm.records.toList();
+    // ⚠️ UI 작업용 더미 — 날짜 카드 가로 스크롤·멤버 수 여러 경우를 보기 위한 것.
+    // 치울 때: `_vm.records.toList()`로 되돌리고 import를 지운다.
+    final records = (kCrewRecordForceDummy || _vm.records.isEmpty)
+        ? kCrewRecordsDummy
+        : _vm.records.toList();
     final year = _vm.year;
     final info = _vm.info;
 

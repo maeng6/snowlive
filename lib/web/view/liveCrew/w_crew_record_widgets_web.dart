@@ -7,7 +7,10 @@ import 'package:com.snowlive/web/view/liveCrew/w_crewhome_member_web.dart';
 // 시간대 눈금 라벨은 크루홈 통계와 같은 상수를 쓴다(서버 `time_info` 순서).
 import 'package:com.snowlive/web/view/liveCrew/w_crewhome_riding_stats_web.dart'
     show kCrewTimeBuckets;
+import 'package:com.snowlive/web/view/liveCrew/w_crew_record_scaffold_web.dart';
+import 'package:com.snowlive/web/widget/w_web_edge_fade_web.dart';
 import 'package:com.snowlive/web/widget/w_skeleton_web.dart';
+import 'package:com.snowlive/web/widget/w_web_stats_bar_web.dart';
 import 'package:com.snowlive/web/widget/w_web_avatar_web.dart';
 import 'package:com.snowlive/web/widget/w_web_overlay_modal_web.dart';
 import 'package:flutter/material.dart';
@@ -16,9 +19,9 @@ import 'package:intl/intl.dart';
 final _numberFormat = NumberFormat('###,###,###,###');
 
 /// 목업 실측 카드 폭·높이. 카드는 항상 펼쳐진 채 **가로로 나열**된다(아코디언 아님).
-const double kCrewRecordCardWidth = 340;
+const double kCrewRecordCardWidth = 342;
 const double kCrewRecordCardHeight = 462;
-const double _kCardGap = 16;
+const double _kCardGap = 12;
 
 /// 카드에 얼굴을 보여줄 최대 인원. 나머지는 `+ N 멤버`로 접는다(목업).
 const int kCrewRecordFaceCount = 4;
@@ -51,26 +54,34 @@ class CrewRecordDayCard extends StatelessWidget {
       width: kCrewRecordCardWidth,
       height: kCrewRecordCardHeight,
       decoration: BoxDecoration(color: SDSColor.gray50, borderRadius: BorderRadius.circular(12)),
-      padding: const EdgeInsets.all(20),
+      // 목업(196:19627) — 패딩 16, 내용 폭 310.
+      padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Row(
-            children: [
-              Text(
-                crewRecordDayLabel(date),
-                style: SDSTextStyle.bold.copyWith(fontSize: 15, color: SDSColor.gray900),
-              ),
-              if (isToday) ...[
-                const SizedBox(width: 8),
+          // 날짜 줄 — 글줄 14, `오늘`과 간격 8(목업 — 날짜 44, 배지 x=52).
+          SizedBox(
+            height: 14,
+            child: Row(
+              children: [
                 Text(
-                  '오늘',
-                  style: SDSTextStyle.regular.copyWith(fontSize: 13, color: SDSColor.gray400),
+                  crewRecordDayLabel(date),
+                  style: SDSTextStyle.bold
+                      .copyWith(fontSize: 12, height: 14 / 12, color: SDSColor.gray900),
                 ),
+                if (isToday) ...[
+                  const SizedBox(width: 8),
+                  Text(
+                    '오늘',
+                    style: SDSTextStyle.regular
+                        .copyWith(fontSize: 12, height: 14 / 12, color: SDSColor.gray400),
+                  ),
+                ],
               ],
-            ],
+            ),
           ),
-          const SizedBox(height: SDSSpacing.md),
+          // 날짜 줄 ↔ 점수 블록 24 (목업 — 날짜 y=20, 점수 y=58).
+          const SizedBox(height: 24),
           Row(
             children: [
               Expanded(
@@ -79,10 +90,11 @@ class CrewRecordDayCard extends StatelessWidget {
                   label: '총 점수',
                 ),
               ),
-              Container(width: 1, height: 44, color: SDSColor.gray200),
+              // 세로선 1×43, 두 칸 사이 가운데(목업 — x=154.5, 칸 폭 138.5씩).
+              Container(width: 1, height: 43, color: SDSColor.gray200),
               Expanded(
                 child: Padding(
-                  padding: const EdgeInsets.only(left: SDSSpacing.md),
+                  padding: const EdgeInsets.only(left: 17),
                   child: _MetricCell(
                     value: _numberFormat.format(record.totalCount ?? 0),
                     label: '라이딩 횟수',
@@ -91,7 +103,8 @@ class CrewRecordDayCard extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: SDSSpacing.md),
+          // 점수 블록 ↔ 멤버 줄 20 (목업 — 점수 끝 109, 멤버 129).
+          const SizedBox(height: 20),
           CrewRecordMemberStack(
             members: members,
             onTap: members.isEmpty
@@ -104,14 +117,17 @@ class CrewRecordDayCard extends StatelessWidget {
                     resortName: resortName,
                   ),
           ),
-          const SizedBox(height: SDSSpacing.md),
-          Container(height: 1, color: SDSColor.gray200),
-          const SizedBox(height: SDSSpacing.md),
+          // 멤버 줄 ↔ 구분선 30 (목업 — 멤버 끝 153, 선 183), 선 ↔ 제목 31.
+          const SizedBox(height: 30),
+          Container(height: 1, color: SDSColor.gray100),
+          const SizedBox(height: 31),
           Text(
             '시간대별 라이딩 횟수',
-            style: SDSTextStyle.regular.copyWith(fontSize: 12, color: SDSColor.gray500),
+            style: SDSTextStyle.regular
+                .copyWith(fontSize: 13, height: 16 / 13, color: SDSColor.gray500),
           ),
-          const SizedBox(height: 12),
+          // 제목 ↔ 차트 18 (목업 — 제목 y=214(16), 차트 y=248).
+          const SizedBox(height: 18),
           Expanded(child: CrewRecordTimeChart(counts: crewRecordTimeCounts(record))),
         ],
       ),
@@ -131,18 +147,21 @@ class _MetricCell extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
+        // 목업(196:19631) — 값 줄 33(ExtraBold 24) / 라벨 14, 블록 51.
         Text(
           value,
           maxLines: 1,
           softWrap: false,
           overflow: TextOverflow.ellipsis,
-          style: SDSTextStyle.extraBold.copyWith(fontSize: 26, color: SDSColor.gray900),
+          style: SDSTextStyle.extraBold
+              .copyWith(fontSize: 24, height: 33 / 24, color: SDSColor.gray900),
         ),
-        const SizedBox(height: 2),
+        const SizedBox(height: 4),
         Text(
           label,
           maxLines: 1,
-          style: SDSTextStyle.regular.copyWith(fontSize: 12, color: SDSColor.gray500),
+          style: SDSTextStyle.regular
+              .copyWith(fontSize: 12, height: 14 / 12, color: SDSColor.gray500),
         ),
       ],
     );
@@ -173,20 +192,18 @@ class CrewRecordMemberStack extends StatelessWidget {
       borderRadius: BorderRadius.circular(20),
       child: Row(
         children: [
-          // 얼굴을 겹쳐 놓는다(목업). 겹치는 폭만큼 전체 너비를 줄여야 한다.
+          // 얼굴을 겹쳐 놓는다(목업 196:19670 — 24 아바타, 피치 20 → 4 겹침).
+          // 겹치는 폭만큼 전체 너비를 줄여야 한다.
           SizedBox(
-            width: 28 + (faces.length - 1) * 20,
-            height: 28,
+            width: 24 + (faces.length - 1) * 20,
+            height: 24,
             child: Stack(
               children: [
                 for (var i = 0; i < faces.length; i++)
                   Positioned(
                     left: i * 20,
                     child: Container(
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        border: Border.all(color: SDSColor.snowliveWhite, width: 2),
-                      ),
+                      decoration: const BoxDecoration(shape: BoxShape.circle),
                       child: WebAvatar(url: faces[i].profileImageUrlUser, size: 24),
                     ),
                   ),
@@ -199,7 +216,9 @@ class CrewRecordMemberStack extends StatelessWidget {
               rest > 0 ? '+ $rest 멤버' : '${members.length} 멤버',
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: SDSTextStyle.regular.copyWith(fontSize: 13, color: SDSColor.gray600),
+              // 목업 — 글줄 14(Regular 12), 아바타 묶음과 간격 8.
+              style: SDSTextStyle.regular
+                  .copyWith(fontSize: 12, height: 14 / 12, color: SDSColor.gray600),
             ),
           ),
         ],
@@ -260,10 +279,13 @@ class _TimeBar extends StatelessWidget {
         if (count > 0)
           isTop
               ? Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
+                  // 목업(196:19649) — 배지 24×20, 라운드 20.
+                  constraints: const BoxConstraints(minWidth: 24, minHeight: 20),
+                  alignment: Alignment.center,
+                  padding: const EdgeInsets.symmetric(horizontal: 6),
                   decoration: BoxDecoration(
                     color: SDSColor.gray900,
-                    borderRadius: BorderRadius.circular(50),
+                    borderRadius: BorderRadius.circular(20),
                   ),
                   child: Text(
                     _numberFormat.format(count),
@@ -279,8 +301,8 @@ class _TimeBar extends StatelessWidget {
                   style: SDSTextStyle.bold.copyWith(fontSize: 11, color: SDSColor.gray900),
                 )
         else
-          const SizedBox(height: 18),
-        const SizedBox(height: 4),
+          const SizedBox(height: 20),
+        const SizedBox(height: 3),
         // 남은 높이를 다 쓰되 비율만큼만 채운다. Flexible + FractionallySizedBox 조합이라
         // LayoutBuilder(고유 높이 질문에 답할 수 없어 예전에 화면을 깨뜨렸다)가 필요 없다.
         Flexible(
@@ -288,7 +310,8 @@ class _TimeBar extends StatelessWidget {
             heightFactor: count > 0 ? (ratio < 0.04 ? 0.04 : ratio) : 0.0,
             alignment: Alignment.bottomCenter,
             child: Container(
-              width: 14,
+              // 목업(196:19640) — 카드 안 막대는 16(크루홈 큰 차트는 14).
+              width: 16,
               decoration: BoxDecoration(
                 color: isTop ? SDSColor.snowliveBlue : SDSColor.gray200,
                 borderRadius: const BorderRadius.vertical(top: Radius.circular(3)),
@@ -296,19 +319,22 @@ class _TimeBar extends StatelessWidget {
             ),
           ),
         ),
-        const SizedBox(height: 6),
-        // 목업은 슬롯이 좁아 라벨을 `00 -` / `08` 두 줄로 쓴다.
+        // 막대 ↔ 라벨 8 (목업 — 막대 끝 406, 라벨 414).
+        const SizedBox(height: 8),
+        // 목업은 슬롯이 좁아 라벨을 `00 -` / `08` 두 줄로 쓴다(두 줄 합 26).
         Text(
           '${parts.first} -',
           maxLines: 1,
           softWrap: false,
-          style: SDSTextStyle.regular.copyWith(fontSize: 10, color: SDSColor.gray400),
+          style: SDSTextStyle.regular
+              .copyWith(fontSize: 11, height: 13 / 11, color: SDSColor.gray400),
         ),
         Text(
           parts.last,
           maxLines: 1,
           softWrap: false,
-          style: SDSTextStyle.regular.copyWith(fontSize: 10, color: SDSColor.gray400),
+          style: SDSTextStyle.regular
+              .copyWith(fontSize: 11, height: 13 / 11, color: SDSColor.gray400),
         ),
       ],
     );
@@ -491,22 +517,27 @@ class _CrewRecordMonthSectionState extends State<CrewRecordMonthSection> {
       children: [
         Text(
           widget.month.title,
-          style: SDSTextStyle.extraBold.copyWith(fontSize: 20, color: SDSColor.gray900),
+          // 목업(174:60479) 월 제목 줄 높이 33 → ExtraBold 24.
+          style: SDSTextStyle.extraBold.copyWith(fontSize: 24, color: SDSColor.gray900),
         ),
+        // 월 제목 ↔ 일자 줄 12 (목업 — 제목 33, 일자 줄 윗선 45).
         const SizedBox(height: 12),
         CrewRecordDayNumberRow(
           month: widget.month,
           activeDays: activeDays,
           onSelectDay: _scrollToDay,
         ),
-        const SizedBox(height: SDSSpacing.md),
+        // 일자 줄 ↔ 카드 12 (목업 — 일자 줄 끝 838, 카드 850).
+        const SizedBox(height: 12),
         SizedBox(
           height: kCrewRecordCardHeight,
-          // 마우스로 끌어서도 넘길 수 있게 한다(웹 기본값은 휠만 허용).
-          child: WebHorizontalDragScroll(
+          child: CrewRecordRailBleed(
             child: ListView.separated(
               controller: _controller,
               scrollDirection: Axis.horizontal,
+              // 양 끝 패딩 = bleed. 정지 상태의 첫 카드는 콘텐츠 좌측선에, 끝까지
+              // 스크롤하면 마지막 카드 오른쪽이 콘텐츠 우측선에 선다.
+              padding: EdgeInsets.symmetric(horizontal: CrewRecordBleed.of(context)),
               // 카드가 많아(한 달 30장) 화면 밖은 그리지 않게 builder로 만든다.
               itemCount: entries.length,
               separatorBuilder: (_, __) => const SizedBox(width: _kCardGap),
@@ -520,8 +551,42 @@ class _CrewRecordMonthSectionState extends State<CrewRecordMonthSection> {
             ),
           ),
         ),
-        const SizedBox(height: SDSSpacing.xl),
+        // 월 섹션 사이 50 (목업 — 월 블록 피치 605, 블록 내용 555).
+        const SizedBox(height: 50),
       ],
+    );
+  }
+}
+
+/// 가로 레일을 **화면 좌우 끝까지** 넓혀 주는 래퍼.
+///
+/// `OverflowBox`로 콘텐츠 폭 바깥으로 `bleed`만큼 비져나가게 하고, 끝에서 카드가 흐릿하게
+/// 사라지도록 흰 그라데이션을 덮는다. **안쪽 패딩은 자식(ListView)이 직접 든다** —
+/// 그래야 스크롤 원점이 콘텐츠 좌측선과 맞는다([CrewRecordMonthSection] 참고).
+///
+/// 마우스 드래그 스크롤([WebHorizontalDragScroll])도 여기서 걸어 준다(웹 기본은 휠만 허용).
+class CrewRecordRailBleed extends StatelessWidget {
+  final Widget child;
+
+  const CrewRecordRailBleed({super.key, required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    final double bleed = CrewRecordBleed.of(context);
+
+    return LayoutBuilder(
+      builder: (context, constraints) => OverflowBox(
+        alignment: Alignment.center,
+        minWidth: 0,
+        maxWidth: constraints.maxWidth + bleed * 2,
+        child: WebEdgeFade(
+          // 페이드는 **여백 구간 안**에서만 번지게 폭을 묶는다 — 정지 상태의 첫 카드가
+          // 희게 빠지지 않는다. 캡이 없으면 넓은 화면에서 그라데이션이 400px를 넘어
+          // 카드가 반투명 유령처럼 보인다.
+          fadeWidth: bleed.clamp(0.0, 64.0),
+          child: WebHorizontalDragScroll(child: child),
+        ),
+      ),
     );
   }
 }
@@ -562,7 +627,13 @@ class CrewRecordDayNumberRow extends StatelessWidget {
   }
 }
 
-class _DayNumber extends StatelessWidget {
+/// 일자 줄 숫자 한 칸. 기록이 있는 날만 누를 수 있고, hover에서 **페이지네이션과 같은
+/// 원형**이 깔린다(`w_numbered_pagination_web.dart`의 32 원과 같은 모양 언어).
+///
+/// 원이 숫자마다 같은 크기로 보이려면 칸이 **정사각**이어야 해서, 목업의 글자폭 기준 피치
+/// (한 자리 24 / 두 자리 33)가 아니라 **30 원 + 간격 4 = 피치 34**로 고르게 선다.
+/// 줄 높이 36은 목업 그대로 유지한다(원을 그 안에 세로 가운데로 둔다).
+class _DayNumber extends StatefulWidget {
   final int day;
   final bool isActive;
   final VoidCallback? onTap;
@@ -570,19 +641,59 @@ class _DayNumber extends StatelessWidget {
   const _DayNumber({required this.day, required this.isActive, required this.onTap});
 
   @override
+  State<_DayNumber> createState() => _DayNumberState();
+}
+
+class _DayNumberState extends State<_DayNumber> {
+  bool _hovered = false;
+
+  /// hover 원 지름. 페이지네이션(32)보다 2 작게 — 일자 줄은 글자가 15로 더 작다.
+  static const double _circle = 30;
+
+  @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(6),
+    // 기록 있는 날과 없는 날은 **색으로만** 구분한다(둘 다 Regular — 사용자 확정).
+    final number = Text(
+      '${widget.day}',
+      style: SDSTextStyle.regular.copyWith(
+        fontSize: 15,
+        height: 19 / 15,
+        color: widget.isActive ? SDSColor.gray900 : SDSColor.gray300,
+      ),
+    );
+
+    final cell = SizedBox(
+      // 줄 높이 36 = 글줄 19 + 상하 8.5 (목업 174:60481). 칸 사이 4.
+      height: 36,
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-        child: Text(
-          '$day',
-          style: (isActive ? SDSTextStyle.bold : SDSTextStyle.regular).copyWith(
-            fontSize: 15,
-            color: isActive ? SDSColor.gray900 : SDSColor.gray300,
+        padding: const EdgeInsets.symmetric(horizontal: 2),
+        child: Center(
+          child: Container(
+            width: _circle,
+            height: _circle,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              // 웹 공통 hover 틴트 — 원형 gray50(아이콘 버튼과 같은 규칙).
+              color: _hovered ? SDSColor.gray50 : Colors.transparent,
+              shape: BoxShape.circle,
+            ),
+            child: number,
           ),
         ),
+      ),
+    );
+
+    // 기록이 없는 날은 갈 카드가 없어 hover도 주지 않는다.
+    if (widget.onTap == null) return cell;
+
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      onEnter: (_) => setState(() => _hovered = true),
+      onExit: (_) => setState(() => _hovered = false),
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: widget.onTap,
+        child: cell,
       ),
     );
   }
@@ -627,121 +738,35 @@ class CrewRecordMonthList extends StatelessWidget {
 }
 
 /// 기록실 상단 요약 — `시즌 통합 랭킹` / `시즌 총 점수` + `크루원 시즌 랭킹` 진입.
+/// 규격은 크루홈 통계 바와 **같은 공용 지표 바**(`WebStatsBar`)를 쓴다(목업 174:60434).
 ///
-/// 모바일 목업에는 랭킹 진입점이 없지만 그러면 그 화면이 고립되므로 카드 아래
-/// 전체폭 버튼으로 둔다.
+/// 모바일 목업에는 랭킹 진입점이 없지만 그러면 그 화면이 고립되므로 바 아래에 둔다.
 class CrewRecordSummaryCard extends StatelessWidget {
   final int? overallRank;
   final double? totalScore;
   final VoidCallback onOpenRanking;
-  final bool isMobile;
 
   const CrewRecordSummaryCard({
     super.key,
     required this.overallRank,
     required this.totalScore,
     required this.onOpenRanking,
-    required this.isMobile,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(color: SDSColor.gray50, borderRadius: BorderRadius.circular(10)),
-      padding: EdgeInsets.symmetric(
-        horizontal: isMobile ? SDSSpacing.md : SDSSpacing.lg,
-        vertical: 18,
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Row(
-            children: [
-              Flexible(
-                child: _SummaryCell(
-                  label: '시즌 통합 랭킹',
-                  value: _numberFormat.format(overallRank ?? 0),
-                ),
-              ),
-              Container(
-                width: 1,
-                height: 32,
-                margin: const EdgeInsets.symmetric(horizontal: SDSSpacing.md),
-                color: SDSColor.gray200,
-              ),
-              Flexible(
-                child: _SummaryCell(
-                  label: '시즌 총 점수',
-                  value: _numberFormat.format((totalScore ?? 0).round()),
-                ),
-              ),
-              if (!isMobile) ...[const Spacer(), _RankingLink(onTap: onOpenRanking)],
-            ],
-          ),
-          if (isMobile) ...[
-            const SizedBox(height: 14),
-            _RankingLink(onTap: onOpenRanking, centered: true),
-          ],
-        ],
-      ),
-    );
-  }
-}
-
-class _SummaryCell extends StatelessWidget {
-  final String label;
-  final String value;
-
-  const _SummaryCell({required this.label, required this.value});
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Text(
-          label,
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-          style: SDSTextStyle.regular.copyWith(fontSize: 12, color: SDSColor.gray500),
+    return WebStatsBar(
+      items: [
+        WebStatItem(
+          label: '시즌 통합 랭킹',
+          value: _numberFormat.format(overallRank ?? 0),
         ),
-        const SizedBox(height: 4),
-        Text(
-          value,
-          maxLines: 1,
-          style: SDSTextStyle.extraBold.copyWith(fontSize: 20, color: SDSColor.gray900),
+        WebStatItem(
+          label: '시즌 총 점수',
+          value: _numberFormat.format((totalScore ?? 0).round()),
         ),
       ],
-    );
-  }
-}
-
-class _RankingLink extends StatelessWidget {
-  final VoidCallback onTap;
-  final bool centered;
-
-  const _RankingLink({required this.onTap, this.centered = false});
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(6),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
-        child: Row(
-          mainAxisAlignment: centered ? MainAxisAlignment.center : MainAxisAlignment.start,
-          children: [
-            Text(
-              '크루원 시즌 랭킹',
-              style: SDSTextStyle.bold.copyWith(fontSize: 14, color: SDSColor.gray900),
-            ),
-            const SizedBox(width: 2),
-            Icon(Icons.chevron_right, size: 20, color: SDSColor.gray900),
-          ],
-        ),
-      ),
+      trailing: WebStatsBarLink(label: '크루원 시즌 랭킹', onTap: onOpenRanking),
     );
   }
 }
@@ -758,26 +783,31 @@ class CrewRecordListSkeleton extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const SkeletonBox(width: 60, height: 26, radius: 6),
-          const SizedBox(height: 14),
-          const SkeletonBox(height: 20, radius: 6),
-          const SizedBox(height: SDSSpacing.md),
+          // 실제 월 섹션과 같은 자리 — 제목 33 · 12 · 일자 줄 36 · 12.
+          const SkeletonBox(width: 60, height: 33, radius: 6),
+          const SizedBox(height: 12),
+          const SkeletonBox(height: 36, radius: 6),
+          const SizedBox(height: 12),
           SizedBox(
             height: kCrewRecordCardHeight,
-            // ListView는 넘치는 카드를 잘라 준다(Row로 두면 좁은 폭에서 오버플로).
-            child: ListView(
-              scrollDirection: Axis.horizontal,
-              physics: const NeverScrollableScrollPhysics(),
-              children: const [
-                SkeletonBox(
-                    width: kCrewRecordCardWidth, height: kCrewRecordCardHeight, radius: 12),
-                SizedBox(width: _kCardGap),
-                SkeletonBox(
-                    width: kCrewRecordCardWidth, height: kCrewRecordCardHeight, radius: 12),
-                SizedBox(width: _kCardGap),
-                SkeletonBox(
-                    width: kCrewRecordCardWidth, height: kCrewRecordCardHeight, radius: 12),
-              ],
+            // 실제 레일과 같이 화면 끝까지 넓힌다 — 로딩 중 좁았다가 데이터가 오면
+            // 넓어지는 튐을 막는다. 넓어진 폭을 채우려면 자리도 더 필요하다(3 → 5장).
+            child: CrewRecordRailBleed(
+              child: ListView(
+                scrollDirection: Axis.horizontal,
+                physics: const NeverScrollableScrollPhysics(),
+                padding:
+                    EdgeInsets.symmetric(horizontal: CrewRecordBleed.of(context)),
+                children: [
+                  for (var i = 0; i < 5; i++) ...[
+                    if (i > 0) const SizedBox(width: _kCardGap),
+                    const SkeletonBox(
+                        width: kCrewRecordCardWidth,
+                        height: kCrewRecordCardHeight,
+                        radius: 12),
+                  ],
+                ],
+              ),
             ),
           ),
         ],

@@ -8,6 +8,13 @@ import 'package:com.snowlive/web/widget/w_web_overlay_modal_web.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+/// 두 통계 카드의 **최소 높이**(목업 161:86785/86813 — 좌·우 모두 310).
+///
+/// 슬로프 카드는 내용(슬로프 수)에 따라 높이가 달라지는데, 적으면 시간대별 기록
+/// 카드보다 짧아져 나란히 선 두 카드의 아랫선이 어긋난다 → 둘 다 이 값을 바닥으로
+/// 깔아 **적어도 같은 높이**가 되게 한다(사용자 확정). 슬로프가 많으면 그만큼 늘어난다.
+const double kCrewRidingCardHeight = 310;
+
 /// 차트 막대 두께 — 가로(슬로프별)·세로(시간대별) 모두 14로 통일(사용자 확정).
 const double _kBarThickness = 14;
 
@@ -57,12 +64,16 @@ class CrewHomeRidingStatsWeb extends StatefulWidget {
   /// 서버 색 문자열. 로고가 비어 있으면 이 색의 기본 `LIVE CREW` 마크를 쓴다.
   final String? crewColor;
 
+  /// 섹션 제목 — 크루홈은 `크루 라이딩 통계`, 기록실은 `시즌 라이딩 통계`(목업).
+  final String sectionTitle;
+
   const CrewHomeRidingStatsWeb({
     super.key,
     required this.season,
     required this.crewName,
     this.crewLogoUrl,
     this.crewColor,
+    this.sectionTitle = '크루 라이딩 통계',
   });
 
   @override
@@ -96,7 +107,7 @@ class _CrewHomeRidingStatsWebState extends State<CrewHomeRidingStatsWeb> {
         Row(
           children: [
             Text(
-              '크루 라이딩 통계',
+              widget.sectionTitle,
               style: SDSTextStyle.bold.copyWith(fontSize: 16, color: SDSColor.gray900),
             ),
             const Spacer(),
@@ -126,20 +137,25 @@ class _CrewHomeRidingStatsWebState extends State<CrewHomeRidingStatsWeb> {
         // 제목줄 ↔ 카드 12 (목업 — 제목줄 36, 카드 48).
         const SizedBox(height: 12),
         if (context.screenType != WebScreenType.mobile)
-          // 두 카드는 **각자 제 높이**를 쓴다. 예전에는 IntrinsicHeight + stretch로
-          // 높이를 맞췄는데, 슬로프가 많은 크루에서는 왼쪽이 길어진 만큼 오른쪽
-          // 시간대별 카드까지 늘어나 차트 아래가 텅 비었다.
-          // (stretch를 쓰려면 IntrinsicHeight가 꼭 필요했다 — 부모가 스크롤뷰라
-          //  높이 제약이 무한이라서. 이제 둘 다 필요 없다.)
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // PC 목업(161:86785/86813) — 좌 423 : 우 430, 사이 21.
-              // 태블릿 목업(161:93667)은 370 : 370, 사이 20 — 1:1로 나눈다.
-              Expanded(flex: isDesktop ? 423 : 1, child: left),
-              SizedBox(width: isDesktop ? 21 : 20),
-              Expanded(flex: isDesktop ? 430 : 1, child: right),
-            ],
+          // 두 카드는 **같은 높이**로 선다(사용자 확정) — 내용이 긴 쪽에 짧은 쪽이
+          // 맞춰진다. 슬로프 목록이 상위 N개로 잘려 있어(kCrewTopSlopeCount) 한쪽이
+          // 크게 길어질 일이 없다.
+          //
+          // ⚠️ `stretch`는 부모가 스크롤뷰(높이 무한)라 `IntrinsicHeight`가 꼭 필요하다.
+          // 시간대별 차트의 `LayoutBuilder`는 고유 높이 질문에 답할 수 없는데, 그 위
+          // `SizedBox(height: chartHeight)`가 질문을 먼저 받아 막아 준다(그 SizedBox를
+          // 걷어내면 화면이 통째로 깨진다 — CrewTimeCountCard 주석 참고).
+          IntrinsicHeight(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                // PC 목업(161:86785/86813) — 좌 423 : 우 430, 사이 21.
+                // 태블릿 목업(161:93667)은 370 : 370, 사이 20 — 1:1로 나눈다.
+                Expanded(flex: isDesktop ? 423 : 1, child: left),
+                SizedBox(width: isDesktop ? 21 : 20),
+                Expanded(flex: isDesktop ? 430 : 1, child: right),
+              ],
+            ),
           )
         else
           // 카드 사이 20 (목업 161:101702 — 카드 310, 다음 카드 330).
@@ -170,41 +186,87 @@ class _SlopeCountCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    final isEmpty = counts.isEmpty;
+    final header = Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text('총 라이딩 횟수',
+            style: SDSTextStyle.regular.copyWith(fontSize: 13, color: SDSColor.gray500)),
+        const SizedBox(height: 2),
+        Text(
+          '${_numberFormat.format(totalSlopeCount ?? 0)}회',
+          style: SDSTextStyle.bold.copyWith(fontSize: 24, color: SDSColor.gray900),
+        ),
+      ],
+    );
+
+    final card = Container(
       // 목업 — 카드 라운드 16, 패딩 24, 제목 13 / 값 Bold 24(제목↔값 2).
       decoration: BoxDecoration(color: SDSColor.blue50, borderRadius: BorderRadius.circular(16)),
       padding: const EdgeInsets.all(20),
+      child: isEmpty
+          // 빈 상태는 헤더 **아래**가 아니라 카드 전체 기준 가운데에 둔다 —
+          // 그래야 시간대별 기록 카드의 빈 상태와 같은 높이에 선다(헤더 줄 수가
+          // 서로 다르므로, 헤더 아래에 쌓으면 두 카드의 위치가 어긋난다).
+          ? Stack(children: [header, const CrewRidingEmptyState()])
+          : Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                header,
+                // 값 ↔ 막대 목록 24 (목업 — 값 끝 70, 목록 94).
+                const SizedBox(height: SDSSpacing.lg),
+                for (var i = 0; i < counts.length; i++) ...[
+                  // 행 피치 28 = 막대 14 + 간격 14 (목업 161:86789).
+                  if (i > 0) const SizedBox(height: 14),
+                  CrewSlopeBarRow(
+                    label: counts[i].slope ?? '',
+                    count: counts[i].count ?? 0,
+                    maxCount: maxCount,
+                    // 1등 슬로프만 진한 파랑 + 검정 배지(목업).
+                    isTop: i == 0,
+                  ),
+                ],
+              ],
+            ),
+    );
+    // 내용이 적어도 시간대별 기록 카드보다 짧아지지 않게 바닥을 깐다.
+    return ConstrainedBox(
+      constraints: const BoxConstraints(minHeight: kCrewRidingCardHeight),
+      child: card,
+    );
+  }
+}
+
+/// 라이딩 기록이 없을 때 — **앱과 같은 구성**(`v_crewHome.dart`):
+/// `img_resoreHome_nodata` 72 + 문구 Regular 14 gray600, 가운데 정렬.
+/// 웹 공용 빈 상태(`WebEmptyState`)는 `icon_nodata`를 쓰는데, 크루 라이딩 통계는
+/// 앱과 같은 화면이라 앱 에셋·문구를 그대로 맞춘다(사용자 확정).
+class CrewRidingEmptyState extends StatelessWidget {
+  const CrewRidingEmptyState({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    // 자리 높이는 **부모가 정한다**(두 카드가 같은 높이로 서야 한다) — 여기서
+    // 패딩을 들면 카드 높이가 내용에 따라 달라진다.
+    // `Positioned.fill`을 쓰지 않아도 Stack 안에서 느슨한 제약을 다 쓰도록
+    // `widthFactor`/`heightFactor` 없는 Center를 그대로 둔다.
+    return Center(
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text('총 라이딩 횟수',
-              style: SDSTextStyle.regular.copyWith(fontSize: 13, color: SDSColor.gray500)),
-          const SizedBox(height: 2),
-          Text(
-            '${_numberFormat.format(totalSlopeCount ?? 0)}회',
-            style: SDSTextStyle.bold.copyWith(fontSize: 24, color: SDSColor.gray900),
-          ),
-          // 값 ↔ 막대 목록 24 (목업 — 값 끝 70, 목록 94).
-          const SizedBox(height: SDSSpacing.lg),
-          if (counts.isEmpty)
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Image.asset(
+              'assets/imgs/imgs/img_resoreHome_nodata.png',
+              width: 72,
+              height: 72,
+              fit: BoxFit.cover,
+            ),
             Text(
-              '이번 시즌 라이딩 기록이 없어요.',
-              style: SDSTextStyle.regular.copyWith(fontSize: 12, color: SDSColor.gray400),
-            )
-          else
-            for (var i = 0; i < counts.length; i++) ...[
-              // 행 피치 28 = 막대 14 + 간격 14 (목업 161:86789).
-              if (i > 0) const SizedBox(height: 14),
-              CrewSlopeBarRow(
-                label: counts[i].slope ?? '',
-                count: counts[i].count ?? 0,
-                maxCount: maxCount,
-                // 1등 슬로프만 진한 파랑 + 검정 배지(목업).
-                isTop: i == 0,
-              ),
-            ],
-        ],
-      ),
+              '라이딩 기록이 없어요',
+              style: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray600),
+            ),
+          ],
+        ),
     );
   }
 }
@@ -321,21 +383,30 @@ class CrewTimeCountCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final max = timeCounts.fold<int>(0, (a, b) => b > a ? b : a);
+    // 전부 0이면 막대가 없는 빈 눈금만 남는다 → 앱처럼 빈 상태를 보여준다
+    // (앱은 두 차트가 토글이라 하나의 nodata가 둘을 함께 덮는다).
+    final isEmpty = max == 0;
 
-    return Container(
+    final titleText = Text(title,
+        style: filled
+            // 카드 제목은 좌측 카드와 같은 Regular 13.
+            ? SDSTextStyle.regular.copyWith(fontSize: 13, color: SDSColor.gray500)
+            : SDSTextStyle.bold.copyWith(fontSize: 13, color: SDSColor.gray900));
+
+    final card = Container(
       // 카드 라운드는 좌측 카드와 같은 16(목업).
       decoration: filled
           ? BoxDecoration(color: SDSColor.blue50, borderRadius: BorderRadius.circular(16))
           : null,
       padding: filled ? const EdgeInsets.all(20) : EdgeInsets.zero,
-      child: Column(
+      child: isEmpty
+          // 슬로프 카드와 같은 처리 — 빈 상태는 제목 아래가 아니라 카드 전체
+          // 기준 가운데에 겹쳐 둔다(두 카드의 문구가 같은 높이에 선다).
+          ? Stack(children: [titleText, const CrewRidingEmptyState()])
+          : Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(title,
-              style: filled
-                  // 카드 제목은 좌측 카드와 같은 Regular 13.
-                  ? SDSTextStyle.regular.copyWith(fontSize: 13, color: SDSColor.gray500)
-                  : SDSTextStyle.bold.copyWith(fontSize: 13, color: SDSColor.gray900)),
+          titleText,
           // 제목 ↔ 차트 20 (목업 — 제목 끝 38, 차트 58).
           const SizedBox(height: 20),
           SizedBox(
@@ -379,7 +450,14 @@ class CrewTimeCountCard extends StatelessWidget {
             ),
           ),
         ],
-      ),
+            ),
+    );
+    // 채움 카드(크루홈·모달)는 슬로프 카드와 같은 최소 높이를 쓴다 —
+    // 일별 기록처럼 테두리 없이 섹션 안에 들어가는 쓰임은 그대로 둔다.
+    if (!filled) return card;
+    return ConstrainedBox(
+      constraints: const BoxConstraints(minHeight: kCrewRidingCardHeight),
+      child: card,
     );
   }
 }
@@ -486,35 +564,50 @@ class _RidingStatsModal extends StatelessWidget {
     final max = crewMaxSlopeCount(counts);
     final timeCounts = crewTimeCounts(season);
 
-    final slopeList = Container(
+    final isEmpty = counts.isEmpty;
+    final slopeHeader = Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text('총 라이딩 횟수',
+            style: SDSTextStyle.regular.copyWith(fontSize: 12, color: SDSColor.gray500)),
+        const SizedBox(height: 2),
+        Text(
+          '${_numberFormat.format(season?.totalSlopeCount ?? 0)}회',
+          style: SDSTextStyle.bold.copyWith(fontSize: 20, color: SDSColor.gray900),
+        ),
+      ],
+    );
+
+    final slopeCard = Container(
       decoration: BoxDecoration(color: SDSColor.blue50, borderRadius: BorderRadius.circular(10)),
       padding: const EdgeInsets.all(SDSSpacing.lg),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text('총 라이딩 횟수',
-              style: SDSTextStyle.regular.copyWith(fontSize: 12, color: SDSColor.gray500)),
-          const SizedBox(height: 2),
-          Text(
-            '${_numberFormat.format(season?.totalSlopeCount ?? 0)}회',
-            style: SDSTextStyle.bold.copyWith(fontSize: 20, color: SDSColor.gray900),
-          ),
-          const SizedBox(height: SDSSpacing.md),
-          if (counts.isEmpty)
-            Text('이번 시즌 라이딩 기록이 없어요.',
-                style: SDSTextStyle.regular.copyWith(fontSize: 12, color: SDSColor.gray400))
-          else
-            for (var i = 0; i < counts.length; i++) ...[
-              if (i > 0) const SizedBox(height: SDSSpacing.sm),
-              CrewSlopeBarRow(
-                label: counts[i].slope ?? '',
-                count: counts[i].count ?? 0,
-                maxCount: max,
-                isTop: i == 0,
-              ),
-            ],
-        ],
-      ),
+      child: isEmpty
+          // 크루홈 카드와 같은 처리 — 빈 상태는 제목 아래가 아니라 카드 전체
+          // 기준 가운데에 겹쳐 둔다(시간대별 카드의 문구와 같은 높이에 선다).
+          ? Stack(children: [slopeHeader, const CrewRidingEmptyState()])
+          : Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                slopeHeader,
+                const SizedBox(height: SDSSpacing.md),
+                for (var i = 0; i < counts.length; i++) ...[
+                  if (i > 0) const SizedBox(height: SDSSpacing.sm),
+                  CrewSlopeBarRow(
+                    label: counts[i].slope ?? '',
+                    count: counts[i].count ?? 0,
+                    maxCount: max,
+                    isTop: i == 0,
+                  ),
+                ],
+              ],
+            ),
+    );
+    // 슬로프가 많으면 그만큼 길어지고, 적거나 없어도 시간대별 카드보다 짧아지지
+    // 않는다 — 두 카드가 나란히 서는 PC에서 아랫선이 맞는다.
+    final slopeList = ConstrainedBox(
+      constraints: const BoxConstraints(minHeight: kCrewRidingCardHeight),
+      child: slopeCard,
     );
 
     return Row(

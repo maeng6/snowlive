@@ -331,7 +331,8 @@ void main() {
       );
       expect(tester.takeException(), isNull);
       expect(find.text('0회'), findsOneWidget);
-      expect(find.text('라이딩 기록이 없어요'), findsOneWidget);
+      // 슬로프·시간대별 **두 카드가 각자** 빈 상태를 보여준다(크루홈과 같은 처리).
+      expect(find.text('라이딩 기록이 없어요'), findsNWidgets(2));
     });
   });
 }
