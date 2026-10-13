@@ -20,6 +20,8 @@ class UserModel {
   bool? is_superuser;
   bool? is_staff;
   DateTime? date_joined;
+  bool? notify_my_liveon;       // 나의 라이브온 알리기
+  bool? receive_friend_liveon;  // 친구의 라이브온 알림 받기
 
   UserModel({
     this.user_id,
@@ -42,6 +44,8 @@ class UserModel {
     this.is_superuser,
     this.is_staff,
     this.date_joined,
+    this.notify_my_liveon,
+    this.receive_friend_liveon,
   });
 
   UserModel.fromJson(Map<String, dynamic> json) {
@@ -65,6 +69,9 @@ class UserModel {
     is_superuser = json['is_superuser'];
     is_staff = json['is_staff'];
     date_joined = DateTime.parse(json['date_joined']);
+    // 과거 캐시 응답 호환: 값이 없으면 기본 ON(true).
+    notify_my_liveon = json['notify_my_liveon'] ?? true;
+    receive_friend_liveon = json['receive_friend_liveon'] ?? true;
   }
 
 }

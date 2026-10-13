@@ -2,6 +2,7 @@
 import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/mobile/routes/routes.dart';
 import 'package:com.snowlive/mobile/view/moreTab/v_licenseListPage.dart';
+import 'package:com.snowlive/mobile/view/moreTab/v_notificationSetting_moreTab.dart';
 import 'package:com.snowlive/mobile/util/ride_log_recorder.dart';
 import 'package:com.snowlive/mobile/view/v_webPage.dart';
 import 'package:com.snowlive/mobile/viewmodel/auth/vm_authcheck.dart';
@@ -47,6 +48,24 @@ class Setting_moreTabView extends StatelessWidget {
             ListView(
               shrinkWrap: true,
               children: [
+                ListTile(
+                  contentPadding: EdgeInsets.symmetric(horizontal: 16),
+                  minVerticalPadding: 20,
+                  onTap: () {
+                    Get.to(() => const NotificationSettingView());
+                  },
+                  title: Text(
+                    '알림',
+                    style: SDSTextStyle.bold.copyWith(
+                        fontSize: 15,
+                        color: SDSColor.gray900),
+                  ),
+                  trailing: Image.asset(
+                    'assets/imgs/icons/icon_arrow_g.png',
+                    height: 24,
+                    width: 24,
+                  ),
+                ),
                 ListTile(
                   contentPadding: EdgeInsets.symmetric(horizontal: 16),
                   minVerticalPadding: 20,
