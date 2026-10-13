@@ -2,6 +2,7 @@ import 'package:com.snowlive/core/api/ApiResponse.dart';
 import 'package:com.snowlive/core/api/api_user.dart';
 import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/core/viewmodel/vm_user.dart';
+import 'package:com.snowlive/core/widget/w_fullScreenDialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -32,15 +33,16 @@ class _NotificationSettingViewState extends State<NotificationSettingView> {
     _receiveFriendLiveon = _userViewModel.user.receive_friend_liveon ?? true;
   }
 
-  /// 토글을 낙관적으로 반영하고 서버에 저장한다. 실패하면 되돌린다.
+  /// 해당 필드 하나만 서버에 저장한다. 저장 동안 로딩 다이얼로그를 띄우고,
+  /// 성공하면 서버값으로 재동기화, 실패하면 이전 값으로 되돌린다.
   Future<void> _update({required String field, required bool value}) async {
     if (_saving) return;
     final int? userId = _userViewModel.user.user_id;
     if (userId == null) return;
 
-    // 낙관적 업데이트
+    _saving = true;
+    // 누른 토글 하나만 낙관적으로 반영한다(나머지는 건드리지 않는다).
     setState(() {
-      _saving = true;
       if (field == 'notify_my_liveon') {
         _notifyMyLiveon = value;
       } else {
@@ -48,24 +50,35 @@ class _NotificationSettingViewState extends State<NotificationSettingView> {
       }
     });
 
+    CustomFullScreenDialog.showDialog();
     final ApiResponse response =
         await UserAPI().updateUserInfo({'user_id': userId, field: value});
 
     if (response.success) {
-      // 사용자 모델 동기화(다른 화면과 일관)
+      // 서버를 단일 진실원으로 삼아 두 값 모두 재동기화.
       await _userViewModel.updateUserModel_api(userId);
+      if (mounted) {
+        setState(() {
+          _notifyMyLiveon = _userViewModel.user.notify_my_liveon ?? true;
+          _receiveFriendLiveon = _userViewModel.user.receive_friend_liveon ?? true;
+        });
+      }
     } else {
-      // 실패 시 롤백
-      setState(() {
-        if (field == 'notify_my_liveon') {
-          _notifyMyLiveon = !value;
-        } else {
-          _receiveFriendLiveon = !value;
-        }
-      });
+      // 실패 시 누른 토글만 롤백.
+      if (mounted) {
+        setState(() {
+          if (field == 'notify_my_liveon') {
+            _notifyMyLiveon = !value;
+          } else {
+            _receiveFriendLiveon = !value;
+          }
+        });
+      }
       Get.snackbar('알림', '설정 저장에 실패했어요. 잠시 후 다시 시도해주세요.');
     }
-    if (mounted) setState(() => _saving = false);
+
+    CustomFullScreenDialog.cancelDialog();
+    _saving = false;
   }
 
   @override
@@ -128,16 +141,18 @@ class _NotificationSettingViewState extends State<NotificationSettingView> {
             ),
           ),
           const SizedBox(width: 12),
+          // 켜짐: 파란 트랙 + 흰 노브 / 꺼짐: 회색 트랙 + 흰 노브 (일관된 깔끔한 스타일).
           Switch(
             value: value,
-            onChanged: _saving ? null : onChanged,
-            activeColor: SDSColor.snowliveWhite,
-            activeTrackColor: SDSColor.snowliveBlue,
-            inactiveTrackColor: SDSColor.gray100,
-            inactiveThumbColor: SDSColor.snowliveBlue,
-            trackOutlineWidth:
-                MaterialStateProperty.resolveWith<double?>((states) => 0),
+            onChanged: onChanged,
+            thumbColor: MaterialStateProperty.all(SDSColor.snowliveWhite),
+            trackColor: MaterialStateProperty.resolveWith<Color?>(
+              (states) => states.contains(MaterialState.selected)
+                  ? SDSColor.snowliveBlue
+                  : SDSColor.gray300,
+            ),
             trackOutlineColor: MaterialStateProperty.all(Colors.transparent),
+            trackOutlineWidth: MaterialStateProperty.all(0),
           ),
         ],
       ),
