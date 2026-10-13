@@ -108,31 +108,44 @@ Future<void> showWebTierImageViewer(
     builder: (ctx) {
       final double viewW = MediaQuery.of(ctx).size.width;
       final double imgW = math.min(viewW - 72, 360).toDouble();
+      // 탭뿐 아니라 ESC로도 닫는다(딤 처리된 확대 뷰 공통 규칙). 입력이 없어
+      // autofocus로 포커스를 잡아도 안전하다.
       return Positioned.fill(
-        child: Stack(
-          children: [
-            Positioned.fill(
-              child: GestureDetector(
-                onTap: close,
-                child: const ColoredBox(color: kWebImageViewerBackdropColor),
+        child: Focus(
+          autofocus: true,
+          onKeyEvent: (node, event) {
+            if (event is KeyDownEvent &&
+                event.logicalKey == LogicalKeyboardKey.escape) {
+              close();
+              return KeyEventResult.handled;
+            }
+            return KeyEventResult.ignored;
+          },
+          child: Stack(
+            children: [
+              Positioned.fill(
+                child: GestureDetector(
+                  onTap: close,
+                  child: const ColoredBox(color: kWebImageViewerBackdropColor),
+                ),
               ),
-            ),
-            Center(
-              child: GestureDetector(
-                onTap: close,
-                child: SizedBox(
-                  width: imgW,
-                  child: WebNetworkImage(
-                    url: url,
+              Center(
+                child: GestureDetector(
+                  onTap: close,
+                  child: SizedBox(
                     width: imgW,
-                    fit: BoxFit.contain,
-                    showPlaceholder: false,
-                    smoothDownscale: true,
+                    child: WebNetworkImage(
+                      url: url,
+                      width: imgW,
+                      fit: BoxFit.contain,
+                      showPlaceholder: false,
+                      smoothDownscale: true,
+                    ),
                   ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       );
     },

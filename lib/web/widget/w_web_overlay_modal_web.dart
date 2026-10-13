@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 /// 웹 팝업(모달/시트/알럿) 공통 호스트.
 ///
@@ -41,20 +42,86 @@ Future<T?> showWebOverlayModal<T>({
   }
 
   entry = OverlayEntry(
-    builder: (entryContext) => _ModalOpenTransition(
-      barrierColor: barrierColor ?? Colors.black.withOpacity(0.5),
-      alignment: alignment,
-      padding: padding,
-      onBarrierTap: barrierDismissible ? close : null,
-      child: GestureDetector(
-        // 팝업 본체 탭이 배경으로 전파돼 닫히는 걸 막는다.
-        onTap: () {},
-        child: builder(entryContext, close),
+    // ESC로 닫기 — 배경 탭으로 닫히는 팝업은 ESC로도 닫는다(공통). 내부에
+    // autofocus 입력이 있으면 그쪽 포커스를 양보하고, 없으면 우리가 포커스를
+    // 잡아 ESC 키를 받는다(_OverlayEscHandler).
+    builder: (entryContext) => _OverlayEscHandler(
+      enabled: barrierDismissible,
+      onEscape: close,
+      child: _ModalOpenTransition(
+        barrierColor: barrierColor ?? Colors.black.withOpacity(0.5),
+        alignment: alignment,
+        padding: padding,
+        onBarrierTap: barrierDismissible ? close : null,
+        child: GestureDetector(
+          // 팝업 본체 탭이 배경으로 전파돼 닫히는 걸 막는다.
+          onTap: () {},
+          child: builder(entryContext, close),
+        ),
       ),
     ),
   );
   overlay.insert(entry);
   return completer.future;
+}
+
+/// 루트 Overlay에 꽂히는 팝업/드롭다운에 ESC 키 닫기를 입힌다.
+///
+/// 이 엔트리들은 ModalRoute가 아니라 Overlay에 직접 꽂혀서, 키 이벤트를 받으려면
+/// 포커스가 있어야 한다. 다만 편집 다이얼로그처럼 내부에 autofocus 입력이 있으면
+/// 그 포커스를 뺏으면 안 되므로, **오버레이 안에 아무 포커스도 없을 때만** 우리가
+/// 포커스를 잡는다. 입력이 포커스를 가진 경우에도 ESC는 조상인 이 Focus로
+/// 버블링되므로 닫기는 똑같이 동작한다.
+class _OverlayEscHandler extends StatefulWidget {
+  final bool enabled;
+  final VoidCallback onEscape;
+  final Widget child;
+
+  const _OverlayEscHandler({
+    required this.enabled,
+    required this.onEscape,
+    required this.child,
+  });
+
+  @override
+  State<_OverlayEscHandler> createState() => _OverlayEscHandlerState();
+}
+
+class _OverlayEscHandlerState extends State<_OverlayEscHandler> {
+  final FocusNode _node = FocusNode(debugLabel: 'overlayEsc');
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      final primary = FocusManager.instance.primaryFocus;
+      final focusInsideOverlay = primary != null &&
+          (primary == _node || _node.descendants.contains(primary));
+      if (!focusInsideOverlay) _node.requestFocus();
+    });
+  }
+
+  @override
+  void dispose() {
+    _node.dispose();
+    super.dispose();
+  }
+
+  KeyEventResult _onKey(FocusNode node, KeyEvent event) {
+    if (widget.enabled &&
+        event is KeyDownEvent &&
+        event.logicalKey == LogicalKeyboardKey.escape) {
+      widget.onEscape();
+      return KeyEventResult.handled;
+    }
+    return KeyEventResult.ignored;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Focus(focusNode: _node, onKeyEvent: _onKey, child: widget.child);
+  }
 }
 
 /// 딤 모달/시트 열림 애니메이션. OverlayEntry는 라우트 전환이 없어서 팝업이 툭
@@ -176,7 +243,11 @@ Future<T?> showWebAnchoredDropdown<T>({
   }
 
   entry = OverlayEntry(
-    builder: (entryContext) => Stack(
+    // 바깥 탭으로 닫히는 드롭다운은 ESC로도 닫는다(공통).
+    builder: (entryContext) => _OverlayEscHandler(
+      enabled: true,
+      onEscape: close,
+      child: Stack(
       children: [
         // 딤은 없지만 바깥 탭은 받아야 하므로 투명 히트 영역을 전면에 깐다.
         Positioned.fill(
@@ -205,6 +276,7 @@ Future<T?> showWebAnchoredDropdown<T>({
           ),
         ),
       ],
+      ),
     ),
   );
   overlay.insert(entry);

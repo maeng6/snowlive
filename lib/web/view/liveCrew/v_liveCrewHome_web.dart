@@ -132,6 +132,24 @@ class _LiveCrewHomeViewWebState extends State<LiveCrewHomeViewWeb> {
     if (changed && mounted) await _vm.refresh();
   }
 
+  /// 비로그인이면 커뮤니티·중고거래와 동일한 로그인 유도 다이얼로그를 띄우고,
+  /// 로그인 상태면 [route]로 이동한다(크루 만들기/가입하기 공통).
+  Future<void> _gateCrewAction(String route) async {
+    final isGuest = Get.find<AuthCheckViewModelWeb>().status ==
+        WebAuthStatus.unauthenticated;
+    if (!isGuest) {
+      Get.toNamed(route);
+      return;
+    }
+    final goLogin = await showWebConfirmDialog(
+      context: context,
+      title: '로그인이 필요해요',
+      message: '크루는 로그인 후 이용할 수 있어요.',
+      confirmLabel: '로그인하기',
+    );
+    if (goLogin) Get.toNamed(WebRoutes.login);
+  }
+
   Future<void> _onPhotoMoreAction(LiveTalk talk, WebMoreAction action) async {
     final myUserId = _userVm.user.user_id;
     if (myUserId == null) {
@@ -244,7 +262,7 @@ class _LiveCrewHomeViewWebState extends State<LiveCrewHomeViewWeb> {
                                   label: '크루 가입하기',
                                   background: SDSColor.gray100,
                                   foreground: SDSColor.gray900,
-                                  onTap: () => Get.toNamed(WebRoutes.crewJoin),
+                                  onTap: () => _gateCrewAction(WebRoutes.crewJoin),
                                 ),
                               ),
                               const SizedBox(width: 10),
@@ -253,7 +271,7 @@ class _LiveCrewHomeViewWebState extends State<LiveCrewHomeViewWeb> {
                                   label: '크루 만들기',
                                   background: SDSColor.snowliveBlue,
                                   foreground: SDSColor.snowliveWhite,
-                                  onTap: () => Get.toNamed(WebRoutes.crewCreate),
+                                  onTap: () => _gateCrewAction(WebRoutes.crewCreate),
                                 ),
                               ),
                             ],

@@ -356,7 +356,18 @@ class _ProfileDetailViewWebState extends State<ProfileDetailViewWeb> {
       controller: _guestbookController,
       isSubmitting: isSubmitting,
       onSubmit: canWrite ? _submitGuestbook : null,
-      onLockedTap: () {
+      onLockedTap: () async {
+        // 비로그인 → 커뮤니티·중고거래와 동일한 로그인 유도 다이얼로그.
+        if (!_vm.isLoggedIn) {
+          final goLogin = await showWebConfirmDialog(
+            context: context,
+            title: '로그인이 필요해요',
+            message: '방명록은 로그인 후 남길 수 있어요.',
+            confirmLabel: '로그인하기',
+          );
+          if (goLogin) Get.toNamed(WebRoutes.login);
+          return;
+        }
         final message = _guestbookLockedMessage();
         if (message != null) _toast(message);
       },
