@@ -183,7 +183,10 @@ class GnbProfileMenuButtonState extends State<GnbProfileMenuButton> {
     );
     switch (selected) {
       case _ProfileMenuAction.myPage:
-        Get.toNamed('${WebRoutes.userProfile}?id=${widget.userId}');
+        // 헤더 프로필 사진 → "마이페이지"는 탭 전환 성격(루트) — 스택을 리셋해
+        // 내 프로필을 루트로 연다(프로필에 뒤로가기가 뜨지 않는다). 타인 프로필을
+        // 탭해 들어온 경우만 스택이 쌓여 뒤로가기로 직전 화면에 돌아간다.
+        Get.offAllNamed('${WebRoutes.userProfile}?id=${widget.userId}');
       case _ProfileMenuAction.membership:
         // 화면이 아직 없어 준비 중 안내만 띄운다(드로어와 동일).
         Get.snackbar('준비 중입니다', '멤버십 업그레이드는 아직 준비 중이에요.');

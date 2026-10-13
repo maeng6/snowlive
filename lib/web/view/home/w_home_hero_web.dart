@@ -7,7 +7,6 @@ import 'package:com.snowlive/web/util/responsive_web.dart';
 import 'package:com.snowlive/web/view/home/home_sections_web.dart';
 import 'package:com.snowlive/web/widget/w_network_image_web.dart';
 import 'package:com.snowlive/web/widget/w_skeleton_web.dart';
-import 'package:flutter/foundation.dart' show defaultTargetPlatform, TargetPlatform;
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -170,34 +169,32 @@ class _HomeHeroWebState extends State<HomeHeroWeb> {
   }
 
   void _openButtonUrl(HomeBanner slide) {
-    _openExternal(slide.buttonUrl ?? slide.landingUrl);
+    // 어드민의 "새 탭에서 열기" 토글값을 따른다 — 켜짐=새 탭, 꺼짐=현재 탭.
+    _openExternal(
+      slide.buttonUrl ?? slide.landingUrl,
+      windowName: slide.buttonNewTab ? '_blank' : '_self',
+    );
   }
 
-  /// 배너 이미지 클릭 → 랜딩 URL을 새 탭으로 연다(버튼 없는 배너에서만 호출).
+  /// 배너 이미지(버튼 외) 영역 탭 → 랜딩 URL. 어드민 토글값대로 새 탭/현재 탭.
   void _openLandingUrl(HomeBanner slide) {
-    _openExternal(slide.landingUrl);
+    _openExternal(
+      slide.landingUrl,
+      windowName: slide.landingNewTab ? '_blank' : '_self',
+    );
   }
 
   /// 외부 URL을 연다. 웹 팝업 차단에 걸리지 않게 **클릭 콜백 안에서 동기로**
   /// launchUrl을 부른다(async/await로 미루면 사용자 제스처 컨텍스트가 끊겨
-  /// window.open이 차단된다).
-  ///
-  /// 탭 선택:
-  /// - 데스크톱: 새 탭(`_blank`) — 사이트를 떠나지 않는다.
-  /// - 모바일 브라우저: 현재 탭(`_self`) — 앱 다운로드 링크(app.snowlive.kr)처럼
-  ///   **열리자마자 스토어로 리다이렉트**하는 페이지는, 새 탭(백그라운드)에서
-  ///   외부 이동이 모바일 브라우저에 차단돼 "안 열리는" 것처럼 보인다. 현재 탭으로
-  ///   이동하면 리다이렉트가 포그라운드에서 일어나 스토어가 정상적으로 열린다.
-  void _openExternal(String url) {
+  /// window.open이 차단된다). [windowName]은 `_blank`(새 탭)/`_self`(현재 탭).
+  void _openExternal(String url, {required String windowName}) {
     if (url.isEmpty) return;
     final uri = Uri.tryParse(url);
     if (uri == null) return;
-    final bool isMobileBrowser = defaultTargetPlatform == TargetPlatform.iOS ||
-        defaultTargetPlatform == TargetPlatform.android;
     launchUrl(
       uri,
       mode: LaunchMode.externalApplication,
-      webOnlyWindowName: isMobileBrowser ? '_self' : '_blank',
+      webOnlyWindowName: windowName,
     );
   }
 

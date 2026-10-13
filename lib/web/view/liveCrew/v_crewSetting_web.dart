@@ -99,6 +99,8 @@ class _CrewSettingViewWebState extends State<CrewSettingViewWeb> {
     return CrewSettingScaffoldWeb(
       title: '크루 설정',
       fallbackRoute: WebRoutes.liveCrew,
+      // 크루홈에서 push로 들어오는 화면이라 뒤로가기를 띄운다(하위 설정 화면들과 통일).
+      showBack: true,
       child: Obx(_buildBody),
     );
   }

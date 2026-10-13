@@ -4,6 +4,7 @@ import 'package:com.snowlive/core/model/m_fleamarket.dart';
 import 'package:com.snowlive/core/viewmodel/fleamarket/vm_fleamarketDetail.dart';
 import 'package:com.snowlive/core/viewmodel/vm_user.dart';
 import 'package:com.snowlive/web/routes/routes_web.dart';
+import 'package:com.snowlive/web/util/web_profile_nav_web.dart';
 import 'package:com.snowlive/web/util/responsive_web.dart';
 import 'package:com.snowlive/web/view/fleamarket/w_fleamarket_card_web.dart';
 import 'package:com.snowlive/web/view/fleamarket/w_fleamarket_grid_web.dart' show kFleamarketCardTextBlockHeight;
@@ -94,7 +95,8 @@ class _FleamarketDetailRecommendWebState extends State<FleamarketDetailRecommend
                       showStats: false,
                       onTap: () {
                         detailVm.fetchFleamarketDetailFromList(fleamarketResponse: data);
-                        Get.offNamed(WebRoutes.fleamarketDetail, parameters: {'id': '${data.fleaId}'});
+                        // 공용 정책: 상세→상세는 교체(스택 1개 유지), 그 외는 push.
+                        pushWebRoute('${WebRoutes.fleamarketDetail}?id=${data.fleaId}');
                         // 비로그인(게스트)도 조회수는 올라간다 → userId 없이도 호출.
                         if (data.fleaId != null) {
                           detailVm.addViewerFleamarket(fleamarketId: data.fleaId!, userId: userVm.user.user_id);

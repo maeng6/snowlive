@@ -1,5 +1,6 @@
 import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/web/routes/routes_web.dart';
+import 'package:com.snowlive/web/util/web_profile_nav_web.dart';
 import 'package:com.snowlive/web/widget/w_skeleton_web.dart';
 import 'package:com.snowlive/web/view/fleamarket/v_fleamarketAlert_web.dart'
     show openFleamarketAlert;
@@ -152,8 +153,7 @@ class _ActivityRowState extends State<_ActivityRow> {
       onExit: (_) => setState(() => _hovered = false),
       child: GestureDetector(
         behavior: HitTestBehavior.opaque,
-        onTap: () =>
-            Get.toNamed(WebRoutes.fleamarketDetail, parameters: {'id': '${widget.item.fleaId}'}),
+        onTap: () => pushWebRoute('${WebRoutes.fleamarketDetail}?id=${widget.item.fleaId}'),
         child: Row(
           children: [
             // 썸네일 48, radius 6 (피그마).

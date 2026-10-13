@@ -4,6 +4,8 @@ import 'package:com.snowlive/core/model/m_rideDetail.dart';
 import 'package:com.snowlive/core/viewmodel/vm_user.dart';
 import 'package:com.snowlive/core/widget/ride/w_ride_detail_view.dart';
 import 'package:com.snowlive/web/routes/routes_web.dart';
+import 'package:com.snowlive/web/widget/w_web_back_icon_web.dart';
+import 'package:com.snowlive/web/widget/w_web_icon_button_web.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -57,7 +59,25 @@ class _RideDetailViewWebState extends State<RideDetailViewWeb> {
         child: Center(
           child: ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 560),
-            child: _body(),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // 목록에서 push로 들어온 상세이므로 뒤로가기로 목록에 복귀한다.
+                if (Navigator.of(context).canPop()) ...[
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: WebIconButton(
+                      onTap: Get.back,
+                      padding: const EdgeInsets.fromLTRB(0, 0, 4, 0),
+                      icon: const WebBackIcon(size: 24),
+                    ),
+                  ),
+                  const SizedBox(height: SDSSpacing.sm),
+                ],
+                _body(),
+              ],
+            ),
           ),
         ),
       ),

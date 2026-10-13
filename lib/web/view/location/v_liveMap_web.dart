@@ -1,6 +1,8 @@
 import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/web/routes/routes_web.dart';
 import 'package:com.snowlive/web/viewmodel/location/vm_liveMap_web.dart';
+import 'package:com.snowlive/web/widget/w_web_back_icon_web.dart';
+import 'package:com.snowlive/web/widget/w_web_icon_button_web.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -21,6 +23,18 @@ class LiveMapViewWeb extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
+                // push로 진입했으면(시즌권 홈 바로가기 등) 뒤로가기로 복귀한다.
+                if (Navigator.of(context).canPop()) ...[
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: WebIconButton(
+                      onTap: Get.back,
+                      padding: const EdgeInsets.fromLTRB(0, 0, 4, 0),
+                      icon: const WebBackIcon(size: 24),
+                    ),
+                  ),
+                  const SizedBox(height: SDSSpacing.sm),
+                ],
                 Text('친구 실시간 위치',
                     style: SDSTextStyle.extraBold
                         .copyWith(fontSize: 22, color: SDSColor.gray900)),

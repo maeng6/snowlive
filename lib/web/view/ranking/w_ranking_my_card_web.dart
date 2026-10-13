@@ -153,7 +153,7 @@ class RankingTierBadge extends StatelessWidget {
           cursor: SystemMouseCursors.click,
           child: GestureDetector(
             behavior: HitTestBehavior.opaque,
-            onTap: () => showWebPhotoViewer(context, url: iconUrl, title: name),
+            onTap: () => showWebTierImageViewer(context, url: iconUrl),
             child: WebNetworkImage(
                 url: iconUrl,
                 width: size,

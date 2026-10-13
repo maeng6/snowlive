@@ -33,6 +33,11 @@ class HomeBanner {
   /// 버튼 클릭 시 새 탭으로 열 URL. 없으면 [landingUrl]로 폴백한다.
   final String? buttonUrl;
 
+  /// 링크를 새 탭(`_blank`)에서 열지. false면 현재 탭(`_self`). 어드민 토글값이며
+  /// 값이 없으면 기존 동작(새 탭)으로 본다.
+  final bool landingNewTab;
+  final bool buttonNewTab;
+
   const HomeBanner({
     required this.imageUrl,
     required this.landingUrl,
@@ -41,6 +46,8 @@ class HomeBanner {
     this.subtitle,
     this.buttonLabel,
     this.buttonUrl,
+    this.landingNewTab = true,
+    this.buttonNewTab = true,
   });
 }
 
@@ -88,6 +95,9 @@ List<HomeBanner> homeVisibleBanners(Map<String, dynamic>? data) {
       subtitle: stringOf(slide, 'subtitle')?.replaceAll(r'\n', '\n'),
       buttonLabel: stringOf(slide, 'buttonLabel'),
       buttonUrl: stringOf(slide, 'buttonUrl'),
+      // 값이 없으면(구버전 문서) 기존 동작인 새 탭으로 본다.
+      landingNewTab: slide['landingNewTab'] != false,
+      buttonNewTab: slide['buttonNewTab'] != false,
     ));
   }
   return result;

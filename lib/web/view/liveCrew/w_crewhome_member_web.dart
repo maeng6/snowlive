@@ -1,4 +1,4 @@
-import 'package:com.snowlive/web/routes/routes_web.dart';
+import 'package:com.snowlive/web/util/web_profile_nav_web.dart';
 import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/core/model/m_crewMemberList.dart';
 import 'package:com.snowlive/core/model/m_crewMemberRankingList.dart';
@@ -290,7 +290,7 @@ class _CrewMemberRowWebState extends State<CrewMemberRowWeb> {
                   child: GestureDetector(
                     behavior: HitTestBehavior.opaque,
                     onTap: () =>
-                        showWebPhotoViewer(context, url: member.tierIconUrl),
+                        showWebTierImageViewer(context, url: member.tierIconUrl),
                     child: WebNetworkImage(
                       url: member.tierIconUrl,
                       width: 36,
@@ -560,7 +560,7 @@ class _CrewMemberProfileCardState extends State<_CrewMemberProfileCard> {
             ? null
             : () {
                 widget.onClose();
-                Get.toNamed('${WebRoutes.userProfile}?id=${widget.userId}');
+                pushWebProfileRoute(widget.userId!);
               },
       ),
     );

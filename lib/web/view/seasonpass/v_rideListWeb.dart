@@ -2,6 +2,8 @@ import 'package:com.snowlive/core/api/api_rideDetail.dart';
 import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/core/viewmodel/vm_user.dart';
 import 'package:com.snowlive/web/routes/routes_web.dart';
+import 'package:com.snowlive/web/widget/w_web_back_icon_web.dart';
+import 'package:com.snowlive/web/widget/w_web_icon_button_web.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -55,6 +57,18 @@ class _RideListViewWebState extends State<RideListViewWeb> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
+                // 시즌권 홈 바로가기 등에서 push로 들어오면 뒤로가기로 복귀.
+                if (Navigator.of(context).canPop()) ...[
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: WebIconButton(
+                      onTap: Get.back,
+                      padding: const EdgeInsets.fromLTRB(0, 0, 4, 0),
+                      icon: const WebBackIcon(size: 24),
+                    ),
+                  ),
+                  const SizedBox(height: SDSSpacing.sm),
+                ],
                 Text('라이딩 궤적',
                     style: SDSTextStyle.extraBold
                         .copyWith(fontSize: 22, color: SDSColor.gray900)),

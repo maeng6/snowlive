@@ -1,4 +1,4 @@
-import 'package:com.snowlive/web/routes/routes_web.dart';
+import 'package:com.snowlive/web/util/web_profile_nav_web.dart';
 import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/core/model/m_friendDetail.dart';
 import 'package:com.snowlive/web/util/responsive_web.dart';
@@ -129,7 +129,7 @@ class _FriendProfileSheetState extends State<_FriendProfileSheet> {
         onTap: () {
           // 팝업을 먼저 닫는다(요청을 보냈으면 호출자가 목록을 갱신하도록 결과도 넘긴다).
           widget.onClose(_requestSent);
-          Get.toNamed('${WebRoutes.userProfile}?id=${widget.friendUserId}');
+          pushWebProfileRoute(widget.friendUserId);
         },
       ),
     );
