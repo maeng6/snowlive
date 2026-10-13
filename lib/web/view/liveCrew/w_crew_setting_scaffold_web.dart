@@ -21,6 +21,13 @@ class CrewSettingScaffoldWeb extends StatelessWidget {
   final String? actionLabel;
   final VoidCallback? onAction;
 
+  /// 저장 중이면 버튼 라벨 **앞에 스피너**를 끼운다(커뮤니티 글쓰기와 같은 처리).
+  /// 라벨을 스피너로 바꾸지 않는 이유는 버튼 폭이 튀기 때문이다.
+  ///
+  /// ⚠️ 이 화면들의 `build`는 `Obx` 안이 아니라서 **bool로 받으면 다시 안 그려진다**
+  /// → Rx를 그대로 받아 **버튼만** 구독한다(커뮤니티도 버튼만 Obx로 감쌌다).
+  final RxBool? submitting;
+
   /// 뒤로 갈 화면이 없을 때(URL 직접 진입) 갈 곳.
   final String fallbackRoute;
 
@@ -34,6 +41,7 @@ class CrewSettingScaffoldWeb extends StatelessWidget {
     required this.fallbackRoute,
     this.actionLabel,
     this.onAction,
+    this.submitting,
     this.showBack = false,
   });
 
@@ -52,15 +60,22 @@ class CrewSettingScaffoldWeb extends StatelessWidget {
 
     final scrollArea = Container(
       color: SDSColor.snowliveWhite,
-      // 서브 페이지 공통 여백(중고거래 상세·폼 기준) + 모바일 하단바 확보.
-      padding: webSubPagePadding(
-        context,
-        bottom: isMobile && hasAction ? _kMobileBarHeight : SDSSpacing.xl,
-      ),
       child: SingleChildScrollView(
+        // ⚠️ 페이지 여백은 **스크롤 영역 안쪽**에 둔다(웹 공통) — 바깥 Container에
+        // 주면 스크롤바가 여백 안쪽에 생겨 브라우저 오른쪽 끝에 붙지 않는다.
+        // 서브 페이지 공통 여백(중고거래 상세·폼 기준) + 모바일 하단바 확보.
+        padding: webSubPagePadding(
+          context,
+          bottom: isMobile && hasAction ? _kMobileBarHeight : SDSSpacing.xl,
+        ),
         child: Center(
           child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: kWebSubPageMaxWidth),
+            // 블록 폭 제한은 **PC만** — 태블릿·모바일은 좌우 여백(20/16)만 두고 꽉
+            // 채운다(웹 공통). 상한을 그대로 두면 폭이 넓은 태블릿에서 가운데 정렬
+            // 때문에 여백이 20보다 넓어진다(기록 스캐폴드와 같은 처리).
+            constraints: BoxConstraints(
+              maxWidth: context.isDesktop ? kWebSubPageMaxWidth : double.infinity,
+            ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
@@ -73,7 +88,8 @@ class CrewSettingScaffoldWeb extends StatelessWidget {
                     if (hasAction && !isMobile) _buildActionButton(fullWidth: false),
                   ],
                 ),
-                const SizedBox(height: SDSSpacing.xl),
+                // 헤더 ↔ 본문 42 (목업 174:86001 — 타이틀 끝 151, 목록 193).
+                const SizedBox(height: 42),
                 child,
               ],
             ),
@@ -107,22 +123,61 @@ class CrewSettingScaffoldWeb extends StatelessWidget {
     );
   }
 
+  /// 진행 버튼 — **커뮤니티 글쓰기·중고거래 올리기와 같은 규격**(그쪽에서 확정한 값).
+  /// 헤더(PC·태블릿): 높이 40 · 좌우 16 · 라운드 5 · Bold 16.
+  /// 하단 바(모바일): 높이 48 · 전체폭 · 라운드 6 · Bold 15.
+  /// 비활성은 **gray200 배경 + 흰 글자**(gray300이 아니다 — 중고거래 `판매하기` 기준).
   Widget _buildActionButton({required bool fullWidth}) {
-    return ElevatedButton(
+    final rx = submitting;
+    if (rx == null) return _actionButton(fullWidth: fullWidth, isSubmitting: false);
+    return Obx(() => _actionButton(fullWidth: fullWidth, isSubmitting: rx.value));
+  }
+
+  Widget _actionButton({required bool fullWidth, required bool isSubmitting}) {
+    final button = ElevatedButton(
       onPressed: onAction,
       style: ElevatedButton.styleFrom(
         backgroundColor: SDSColor.snowliveBlue,
-        disabledBackgroundColor: SDSColor.gray300,
+        disabledBackgroundColor: SDSColor.gray200,
         elevation: 0,
-        padding: EdgeInsets.symmetric(horizontal: fullWidth ? 0 : 24, vertical: 13),
-        minimumSize: fullWidth ? const Size(double.infinity, 48) : null,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
+        shadowColor: Colors.transparent,
+        overlayColor: Colors.transparent,
+        minimumSize:
+            fullWidth ? const Size(double.infinity, 48) : const Size(0, 40),
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(fullWidth ? 6 : 5),
+        ),
       ),
-      child: Text(
-        actionLabel!,
-        style: SDSTextStyle.bold.copyWith(fontSize: 15, color: SDSColor.snowliveWhite),
+      // 라벨을 스피너로 "교체"하면 버튼 폭이 튀므로, 라벨은 두고 앞에 끼워 넣는다.
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (isSubmitting) ...[
+            const SizedBox(
+              width: 14,
+              height: 14,
+              child: CircularProgressIndicator(
+                strokeWidth: 2,
+                valueColor: AlwaysStoppedAnimation<Color>(SDSColor.snowliveWhite),
+              ),
+            ),
+            const SizedBox(width: SDSSpacing.sm),
+          ],
+          Text(
+            actionLabel!,
+            // 비활성도 흰 글자(gray200 배경) — 중고거래 판매하기와 동일.
+            style: SDSTextStyle.bold.copyWith(
+              fontSize: fullWidth ? 15 : 16,
+              color: SDSColor.snowliveWhite,
+            ),
+          ),
+        ],
       ),
     );
+    // visualDensity(웹 기본 compact)가 minimumSize 높이를 깎으므로 강제한다.
+    return SizedBox(height: fullWidth ? 48 : 40, child: button);
   }
 }
 

@@ -52,7 +52,14 @@ class WebStatsBar extends StatelessWidget {
 
   /// 모바일 — 세 지표가 한 줄에 나란히 서되 각 칸이 값(위)·라벨(아래)로 쌓인다.
   /// 남는 폭은 칸 사이에 고르게 퍼진다.
+  ///
+  /// **두 칸일 때**(기록실)는 반반으로 나눠 구분선이 정확히 가운데 오고 각 칸의
+  /// 글자도 제 칸 중앙 쪽으로 들어온다 — `spaceBetween`만 쓰면 글자가 바 양쪽
+  /// 끝에 붙어 가장자리로 쏠려 보인다. 가운데로 완전히 몰리지도 않게 남는 여백의
+  /// 30%만큼 바깥으로 밀어 둔다(랭킹 `내 랭킹 카드`와 같은 처리).
   Widget _buildStacked(List<Widget> cells) {
+    final bool splitHalves = cells.length <= 2;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -61,7 +68,15 @@ class WebStatsBar extends StatelessWidget {
           children: [
             for (var i = 0; i < cells.length; i++) ...[
               if (i > 0) _divider(margin: 0),
-              cells[i],
+              if (splitHalves)
+                Expanded(
+                  child: Align(
+                    alignment: Alignment(i == 0 ? -0.3 : 0.3, 0),
+                    child: cells[i],
+                  ),
+                )
+              else
+                cells[i],
             ],
           ],
         ),
@@ -190,7 +205,16 @@ class WebStatsBarLink extends StatefulWidget {
   final String label;
   final VoidCallback onTap;
 
-  const WebStatsBarLink({super.key, required this.label, required this.onTap});
+  /// 글자 크기. 기본 16(지표 바 안). 기록실처럼 **다른 줄에 붙을 때**는 그 줄의
+  /// 글자와 맞춘다(시즌 탭과 같은 15).
+  final double fontSize;
+
+  const WebStatsBarLink({
+    super.key,
+    required this.label,
+    required this.onTap,
+    this.fontSize = 16,
+  });
 
   @override
   State<WebStatsBarLink> createState() => _WebStatsBarLinkState();
@@ -216,7 +240,7 @@ class _WebStatsBarLinkState extends State<WebStatsBarLink> {
               Text(
                 widget.label,
                 style: SDSTextStyle.bold.copyWith(
-                  fontSize: 16,
+                  fontSize: widget.fontSize,
                   color: SDSColor.gray900,
                   decoration: _hovered ? TextDecoration.underline : TextDecoration.none,
                 ),

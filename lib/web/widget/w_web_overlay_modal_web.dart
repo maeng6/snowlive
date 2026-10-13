@@ -45,18 +45,23 @@ Future<T?> showWebOverlayModal<T>({
     // ESC로 닫기 — 배경 탭으로 닫히는 팝업은 ESC로도 닫는다(공통). 내부에
     // autofocus 입력이 있으면 그쪽 포커스를 양보하고, 없으면 우리가 포커스를
     // 잡아 ESC 키를 받는다(_OverlayEscHandler).
-    builder: (entryContext) => _OverlayEscHandler(
-      enabled: barrierDismissible,
-      onEscape: close,
-      child: _ModalOpenTransition(
-        barrierColor: barrierColor ?? Colors.black.withOpacity(0.5),
-        alignment: alignment,
-        padding: padding,
-        onBarrierTap: barrierDismissible ? close : null,
-        child: GestureDetector(
-          // 팝업 본체 탭이 배경으로 전파돼 닫히는 걸 막는다.
-          onTap: () {},
-          child: builder(entryContext, close),
+    // ⚠️ `Positioned.fill`은 **Overlay(Stack)의 직접 자식**이어야 한다 — 사이에 다른
+    // 위젯(ESC 래퍼 등)을 끼우면 "Incorrect use of ParentDataWidget" 오류가 난다.
+    // 그래서 ESC 래퍼를 Positioned **안쪽**에 둔다(기능은 어느 쪽이든 같다).
+    builder: (entryContext) => Positioned.fill(
+      child: _OverlayEscHandler(
+        enabled: barrierDismissible,
+        onEscape: close,
+        child: _ModalOpenTransition(
+          barrierColor: barrierColor ?? Colors.black.withOpacity(0.5),
+          alignment: alignment,
+          padding: padding,
+          onBarrierTap: barrierDismissible ? close : null,
+          child: GestureDetector(
+            // 팝업 본체 탭이 배경으로 전파돼 닫히는 걸 막는다.
+            onTap: () {},
+            child: builder(entryContext, close),
+          ),
         ),
       ),
     ),
@@ -168,10 +173,11 @@ class _ModalOpenTransitionState extends State<_ModalOpenTransition>
   Widget build(BuildContext context) {
     final bool fromBottom = widget.alignment == Alignment.bottomCenter;
 
-    return Positioned.fill(
-      child: GestureDetector(
-        onTap: widget.onBarrierTap,
-        child: AnimatedBuilder(
+    // 자리 잡기(Positioned.fill)는 **호출부가** 한다 — 여기서 들면 Stack 직접 자식이
+    // 아니게 되어 ParentDataWidget 오류가 난다(위 주석 참고).
+    return GestureDetector(
+      onTap: widget.onBarrierTap,
+      child: AnimatedBuilder(
           animation: _t,
           builder: (context, child) {
             final double t = _t.value;
@@ -192,8 +198,7 @@ class _ModalOpenTransitionState extends State<_ModalOpenTransition>
               ),
             );
           },
-          child: widget.child,
-        ),
+        child: widget.child,
       ),
     );
   }

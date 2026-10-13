@@ -268,8 +268,11 @@ class WebFilterDropdownPanel<T> extends StatelessWidget {
         type: MaterialType.transparency,
         child: ConstrainedBox(
           constraints: BoxConstraints(
-            // 앵커가 아무리 좁아도 최소 180은 확보한다(피그마 기준).
-            minWidth: minWidth < 180 ? 180 : minWidth,
+            // 앵커가 아무리 좁아도 최소 180은 확보하고(피그마 기준), 앵커가 아주
+            // 넓어도(크루원 관리처럼 **행 전체**가 앵커일 때) 280을 넘기지 않는다.
+            // ⚠️ clamp가 없으면 minWidth > maxWidth가 되어 "BoxConstraints has
+            // non-normalized width constraints"로 패널이 아예 안 뜬다(실측).
+            minWidth: minWidth.clamp(180.0, 280.0),
             maxWidth: 280,
             // 항목이 많아도 짧은 뷰포트에서는 스크롤된다.
             maxHeight: MediaQuery.sizeOf(context).height * 0.6,

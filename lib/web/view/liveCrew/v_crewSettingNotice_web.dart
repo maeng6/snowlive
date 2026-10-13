@@ -4,6 +4,7 @@ import 'package:com.snowlive/core/viewmodel/vm_user.dart';
 import 'package:com.snowlive/web/routes/routes_web.dart';
 import 'package:com.snowlive/web/util/responsive_web.dart';
 import 'package:com.snowlive/web/view/liveCrew/w_crew_setting_scaffold_web.dart';
+import 'package:com.snowlive/web/view/liveCrew/w_crew_setting_widgets_web.dart';
 import 'package:com.snowlive/web/viewmodel/crew/vm_crewSetting_web.dart';
 import 'package:com.snowlive/web/widget/w_empty_state_web.dart';
 import 'package:com.snowlive/web/widget/w_web_filter_menu_web.dart';
@@ -130,6 +131,7 @@ class _CrewSettingNoticeViewWebState extends State<CrewSettingNoticeViewWeb> {
       fallbackRoute: '${WebRoutes.crewSetting}?id=$_crewId',
       actionLabel: _editing == null ? '완료' : '수정 완료',
       onAction: _onSubmit,
+      submitting: _vm.submittingRx,
       child: CrewSettingGuard(
         isLoggedIn: _userVm.user.user_id != null,
         canOpen: _vm.canEditNotice,
@@ -181,9 +183,14 @@ class _CrewSettingNoticeViewWebState extends State<CrewSettingNoticeViewWeb> {
   }
 
   Widget _buildList() {
-    final notices = _vm.notices;
+    // ⚠️ 분기 전에 관찰값을 모두 읽어야 Obx 구독이 확실히 걸린다.
+    final notices = _vm.notices.toList();
+    final isLoading = _vm.isLoading;
     final count = notices.length;
     if (count == 0) {
+      // 첫 조회 전에도 자리표시를 보여준다 — 없으면 `공지사항이 없습니다`가
+      // 먼저 번쩍이고 공지가 도착하면서 목록으로 바뀐다.
+      if (isLoading) return const CrewNoticeListSkeleton();
       return const WebEmptyState(message: '공지사항이 없습니다.');
     }
 

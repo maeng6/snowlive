@@ -81,6 +81,7 @@ class _CrewPermissionsViewWebState extends State<CrewPermissionsViewWeb> {
       fallbackRoute: '${WebRoutes.crewSetting}?id=$_crewId',
       actionLabel: '저장하기',
       onAction: _onSave,
+      submitting: _vm.submittingRx,
       child: CrewSettingGuard(
         isLoggedIn: _userVm.user.user_id != null,
         canOpen: _vm.canManageCrew,
@@ -88,6 +89,9 @@ class _CrewPermissionsViewWebState extends State<CrewPermissionsViewWeb> {
           // 서버 값을 읽어야 하므로 구독을 걸고, 아직 안 채웠으면 여기서 채운다.
           final info = _vm.info;
           if (info != null) _prefill();
+          // 값이 오기 전에 토글을 그리면 **전부 OFF**로 보이고, 그 사이에 눌러도
+          // `_prefill`이 서버 값으로 덮어써 버린다 → 자리표시만 보여준다.
+          if (info == null) return const CrewPermissionsSkeleton();
 
           return Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -107,6 +111,7 @@ class _CrewPermissionsViewWebState extends State<CrewPermissionsViewWeb> {
                 title: '공지사항 추가 권한',
                 value: _notice ?? false,
                 onChanged: (v) => setState(() => _notice = v),
+                isLast: true,
               ),
             ],
           );
@@ -120,9 +125,12 @@ class _CrewPermissionsViewWebState extends State<CrewPermissionsViewWeb> {
     String? description,
     required bool value,
     required ValueChanged<bool> onChanged,
+    bool isLast = false,
   }) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: SDSSpacing.lg),
+      // 간격은 **줄 사이에만** 둔다 — 마지막 줄에도 주면 페이지 하단 여백이
+      // 32 + 24 = 56이 되어 다른 설정 화면보다 멀어진다.
+      padding: EdgeInsets.only(bottom: isLast ? 0 : SDSSpacing.lg),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

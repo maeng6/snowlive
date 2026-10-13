@@ -11,6 +11,7 @@ import 'package:com.snowlive/web/view/liveTalk/w_livetalk_feed_item_web.dart';
 import 'package:com.snowlive/web/view/liveTalk/w_livetalk_upload_flow_web.dart';
 import 'package:com.snowlive/web/viewmodel/crew/vm_crewDetail_web.dart';
 import 'package:com.snowlive/web/view/liveTalk/v_liveTalkHome_web.dart';
+import 'package:com.snowlive/web/widget/w_skeleton_web.dart';
 import 'package:com.snowlive/web/widget/w_web_floating_bottombar_web.dart';
 import 'package:com.snowlive/web/widget/w_web_sticky_sidebar_web.dart';
 import 'package:com.snowlive/web/widget/w_empty_state_web.dart';
@@ -222,8 +223,13 @@ class _CrewTalksViewWebState extends State<CrewTalksViewWeb> {
   }
 
   Widget _buildFeedColumn() {
+    // ⚠️ 분기 전에 관찰값을 모두 읽어야 Obx 구독이 확실히 걸린다.
     final talks = _talks;
+    final isLoading = _vm.isLoading;
     if (talks.isEmpty) {
+      // 첫 조회 전에도 피드 자리표시를 보여준다 — 없으면 `아직 크루톡이 없어요`가
+      // 먼저 번쩍인다. 라이브톡 목록과 **같은** 자리표시를 쓴다(피드 규격이 같다).
+      if (isLoading) return const LiveTalkFeedSkeleton();
       return const WebEmptyState(message: '아직 크루톡이 없어요');
     }
     return Column(

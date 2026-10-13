@@ -192,7 +192,8 @@ void main() {
       await tester.tap(find.text('+ 1 멤버'));
       await tester.pumpAndSettle();
       expect(tester.takeException(), isNull);
-      expect(find.text('라이딩 멤버 5명'), findsOneWidget);
+      // 목업(196:22989)대로 타이틀에 `명`을 붙이지 않는다.
+      expect(find.text('라이딩 멤버 5'), findsOneWidget);
       expect(find.text('멤버0'), findsOneWidget);
     });
 
@@ -202,17 +203,13 @@ void main() {
           tester,
           width,
           // 폭별 배치는 공용 지표 바(`WebStatsBar`)가 화면 폭을 보고 정한다 →
-          // 카드는 isMobile을 더 받지 않는다.
-          CrewRecordSummaryCard(
-            overallRank: 1,
-            totalScore: 281886.4,
-            onOpenRanking: () {},
-          ),
+          // 카드는 isMobile을 더 받지 않는다. 랭킹 진입은 타이틀 줄로 옮겨서
+          // 이 카드에는 없다.
+          CrewRecordSummaryCard(overallRank: 1, totalScore: 281886.4),
         );
         expect(tester.takeException(), isNull);
         // 목업대로 천단위 구분을 넣는다(앱은 구분 없이 찍는다).
         expect(find.text('281,886'), findsOneWidget);
-        expect(find.text('크루원 시즌 랭킹'), findsOneWidget);
       });
     }
   });

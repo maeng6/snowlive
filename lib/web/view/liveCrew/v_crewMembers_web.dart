@@ -63,7 +63,7 @@ class _CrewMembersViewWebState extends State<CrewMembersViewWeb> {
       // ⚠️ 페이지 여백은 **스크롤 영역 안쪽**에(웹 공통) — 바깥에 주면 스크롤바가
       // 여백 안쪽에 생겨 브라우저 오른쪽 끝에 붙지 않는다
       child: SingleChildScrollView(
-        // 하단은 페이지네이션이 바닥에 붙지 않게 넉넉히 비운다(기본 32 → 80).
+        // 하단은 페이지네이션이 바닥에 붙지 않게 넉넉히 비운다(기본 32 → 80)
         padding: webSubPagePadding(context, bottom: 80),
         child: Center(
           child: ConstrainedBox(
@@ -71,7 +71,7 @@ class _CrewMembersViewWebState extends State<CrewMembersViewWeb> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // 서브 페이지 공통 헤더(뒤로 30 + 12 + bold 30).
+                // 서브 페이지 공통 헤더(뒤로 30 + 12 + bold 30)
                 WebPageHeader(title: '멤버', onBack: _goBack),
                 const SizedBox(height: SDSSpacing.xl),
                 Obx(_buildList),

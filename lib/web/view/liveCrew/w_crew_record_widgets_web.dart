@@ -7,12 +7,13 @@ import 'package:com.snowlive/web/view/liveCrew/w_crewhome_member_web.dart';
 // 시간대 눈금 라벨은 크루홈 통계와 같은 상수를 쓴다(서버 `time_info` 순서).
 import 'package:com.snowlive/web/view/liveCrew/w_crewhome_riding_stats_web.dart'
     show kCrewTimeBuckets;
-import 'package:com.snowlive/web/view/liveCrew/w_crew_record_scaffold_web.dart';
 import 'package:com.snowlive/web/widget/w_web_edge_fade_web.dart';
 import 'package:com.snowlive/web/widget/w_skeleton_web.dart';
 import 'package:com.snowlive/web/widget/w_web_stats_bar_web.dart';
 import 'package:com.snowlive/web/widget/w_web_avatar_web.dart';
+import 'package:com.snowlive/web/widget/w_web_icon_button_web.dart';
 import 'package:com.snowlive/web/widget/w_web_overlay_modal_web.dart';
+import 'package:com.snowlive/web/util/responsive_web.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -37,6 +38,13 @@ class CrewRecordDayCard extends StatelessWidget {
   final String? crewName;
   final String? resortName;
 
+  /// 카드 폭. null이면 공용 342(가로 레일). 모바일 아코디언은 화면 폭을 꽉 쓴다.
+  final double? width;
+
+  /// 모바일 아코디언에서 **접고 펴는 꺾쇠**를 머리줄 오른쪽에 둔다.
+  /// null이면 꺾쇠를 그리지 않는다(가로 레일은 늘 펼친 상태).
+  final VoidCallback? onToggle;
+
   const CrewRecordDayCard({
     super.key,
     required this.record,
@@ -44,6 +52,8 @@ class CrewRecordDayCard extends StatelessWidget {
     required this.isToday,
     required this.crewName,
     required this.resortName,
+    this.width,
+    this.onToggle,
   });
 
   @override
@@ -51,11 +61,15 @@ class CrewRecordDayCard extends StatelessWidget {
     final members = record.todayMemberInfo ?? const <TodayMemberInfo>[];
 
     return Container(
-      width: kCrewRecordCardWidth,
+      width: width ?? kCrewRecordCardWidth,
       height: kCrewRecordCardHeight,
       decoration: BoxDecoration(color: SDSColor.gray50, borderRadius: BorderRadius.circular(12)),
-      // 목업(196:19627) — 패딩 16, 내용 폭 310.
-      padding: const EdgeInsets.all(16),
+      // 목업(196:19627) — 좌우 16(내용 폭 310), 위 20.
+      // ⚠️ 위 패딩은 **접힌 줄과 같은 20**이어야 한다 — 다르면 접었다 펼 때 날짜
+      // 글자가 위아래로 튄다. 목업도 두 상태 모두 날짜가 카드 위에서 20이다
+      // (펼침 196:19667 y=20 / 접힘 174:71531 카드 top+20).
+      // 20 + 날짜 14 + 간격 24 = 58 → 점수 블록 위치도 목업과 맞는다.
+      padding: const EdgeInsets.fromLTRB(16, 20, 16, 20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -76,6 +90,10 @@ class CrewRecordDayCard extends StatelessWidget {
                     style: SDSTextStyle.regular
                         .copyWith(fontSize: 12, height: 14 / 12, color: SDSColor.gray400),
                   ),
+                ],
+                if (onToggle != null) ...[
+                  const Spacer(),
+                  _CardChevron(isOpen: true, onTap: onToggle!),
                 ],
               ],
             ),
@@ -130,6 +148,87 @@ class CrewRecordDayCard extends StatelessWidget {
           const SizedBox(height: 18),
           Expanded(child: CrewRecordTimeChart(counts: crewRecordTimeCounts(record))),
         ],
+      ),
+    );
+  }
+}
+
+/// 모바일 아코디언에서 **접힌 날짜 한 줄**(목업 174:71491 — 342×54).
+/// 눌러서 펼친다. 머리줄 구성은 펼친 카드와 같게 맞춘다(날짜 + `오늘` + 꺾쇠).
+class CrewRecordDayRowCollapsed extends StatelessWidget {
+  final DateTime date;
+  final bool isToday;
+  final double? width;
+  final VoidCallback onTap;
+
+  const CrewRecordDayRowCollapsed({
+    super.key,
+    required this.date,
+    required this.isToday,
+    required this.onTap,
+    this.width,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: onTap,
+        child: Container(
+          width: width,
+          // 목업 — 높이 54 = 패딩 20 + 글줄 14 + 20.
+          height: 54,
+          decoration: BoxDecoration(
+            color: SDSColor.gray50,
+            borderRadius: BorderRadius.circular(12),
+          ),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+          child: Row(
+            children: [
+              Text(
+                crewRecordDayLabel(date),
+                style: SDSTextStyle.bold
+                    .copyWith(fontSize: 12, height: 14 / 12, color: SDSColor.gray900),
+              ),
+              if (isToday) ...[
+                const SizedBox(width: 8),
+                Text(
+                  '오늘',
+                  style: SDSTextStyle.regular
+                      .copyWith(fontSize: 12, height: 14 / 12, color: SDSColor.gray400),
+                ),
+              ],
+              const Spacer(),
+              _CardChevron(isOpen: false, onTap: onTap),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// 카드 접기/펴기 꺾쇠(목업 — 12×6). 펼친 상태면 위를 가리킨다
+class _CardChevron extends StatelessWidget {
+  final bool isOpen;
+  final VoidCallback onTap;
+
+  const _CardChevron({required this.isOpen, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: onTap,
+        child: Icon(
+          isOpen ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
+          size: 24,
+          color: SDSColor.gray900,
+        ),
       ),
     );
   }
@@ -194,16 +293,29 @@ class CrewRecordMemberStack extends StatelessWidget {
         children: [
           // 얼굴을 겹쳐 놓는다(목업 196:19670 — 24 아바타, 피치 20 → 4 겹침).
           // 겹치는 폭만큼 전체 너비를 줄여야 한다.
+          //
+          // 겹친 사진끼리 구분되게 **카드 배경색과 같은 테두리**를 두른다(목업) —
+          // 흰 선을 쓰면 회색 카드 위에서 흰 띠로 떠 보인다. 테두리는 바깥으로
+          // 그리므로(`strokeAlign: outside`) 사진이 깎이지 않는다.
           SizedBox(
             width: 24 + (faces.length - 1) * 20,
             height: 24,
             child: Stack(
+              // 테두리가 칸 밖으로 2px 번져도 잘리지 않게.
+              clipBehavior: Clip.none,
               children: [
                 for (var i = 0; i < faces.length; i++)
                   Positioned(
                     left: i * 20,
                     child: Container(
-                      decoration: const BoxDecoration(shape: BoxShape.circle),
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          color: SDSColor.gray50,
+                          width: 2,
+                          strokeAlign: BorderSide.strokeAlignOutside,
+                        ),
+                      ),
                       child: WebAvatar(url: faces[i].profileImageUrlUser, size: 24),
                     ),
                   ),
@@ -216,9 +328,10 @@ class CrewRecordMemberStack extends StatelessWidget {
               rest > 0 ? '+ $rest 멤버' : '${members.length} 멤버',
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              // 목업 — 글줄 14(Regular 12), 아바타 묶음과 간격 8.
-              style: SDSTextStyle.regular
-                  .copyWith(fontSize: 12, height: 14 / 12, color: SDSColor.gray600),
+              // 목업은 Regular 12인데 작아서 잘 안 보여 **Bold**로 바꿨다(사용자 확정).
+              // 글줄 14 · 검정 · 아바타 묶음과 간격 8은 목업 그대로.
+              style: SDSTextStyle.bold
+                  .copyWith(fontSize: 12, height: 14 / 12, color: SDSColor.gray900),
             ),
           ),
         ],
@@ -279,10 +392,15 @@ class _TimeBar extends StatelessWidget {
         if (count > 0)
           isTop
               ? Container(
-                  // 목업(196:19649) — 배지 24×20, 라운드 20.
-                  constraints: const BoxConstraints(minWidth: 24, minHeight: 20),
-                  alignment: Alignment.center,
-                  padding: const EdgeInsets.symmetric(horizontal: 6),
+                  // 목업대로 최소 폭 24 · 높이 20, 좌우 패딩 4.
+                  // 한 자리 숫자는 최소 폭이 만들고, 두세 자리에서만 패딩이 쓰인다.
+                  //
+                  // ⚠️ `alignment`를 주면 안 된다 — Container는 alignment가 있으면
+                  // **부모가 준 폭까지 늘어난다**. 막대 한 칸(34쯤)을 그대로 먹어서
+                  // minWidth를 줄여도 타원이 안 줄었다(실측). 세로 가운데는 alignment
+                  // 대신 **상하 패딩**으로, 가로 가운데는 `textAlign`으로 맞춘다.
+                  constraints: const BoxConstraints(minWidth: 24),
+                  padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 3),
                   decoration: BoxDecoration(
                     color: SDSColor.gray900,
                     borderRadius: BorderRadius.circular(20),
@@ -291,7 +409,9 @@ class _TimeBar extends StatelessWidget {
                     _numberFormat.format(count),
                     maxLines: 1,
                     softWrap: false,
-                    style: SDSTextStyle.bold.copyWith(fontSize: 11, color: SDSColor.snowliveWhite),
+                    textAlign: TextAlign.center,
+                    style: SDSTextStyle.bold.copyWith(
+                        fontSize: 11, height: 14 / 11, color: SDSColor.snowliveWhite),
                   ),
                 )
               : Text(
@@ -342,6 +462,15 @@ class _TimeBar extends StatelessWidget {
 }
 
 /// 하루의 라이딩 멤버 목록 팝업(카드의 아바타 스택을 누르면 열린다).
+/// 하루의 라이딩 멤버 목록 팝업(카드의 아바타 스택을 누르면 열린다).
+///
+/// 목업 196:22989 — 카드 390 · 라운드 16 · ✕ 26(우상단 16/16) ·
+/// 타이틀 Bold 16 **가운데** · 목록 좌우 30 · 행 32(피치 42) ·
+/// 아바타 32 + 간격 10 + 이름 Regular 15 / 점수 Bold 17 우측 정렬.
+/// 날짜는 목업에 없지만 어느 날인지 알아야 해서 **타이틀 아래 가운데**에 둔다(사용자 확정).
+///
+/// **모바일은 하단 시트**로 올라온다(웹 공통 — 라이브톡 올리기·필터 메뉴와 같은 처리).
+/// 좁은 화면에서 가운데 카드로 띄우면 좌우에 못 쓰는 여백만 남는다.
 Future<void> showCrewRecordMembersModal(
   BuildContext context, {
   required DateTime date,
@@ -349,56 +478,80 @@ Future<void> showCrewRecordMembersModal(
   required String? crewName,
   required String? resortName,
 }) {
+  final isMobile = context.screenType == WebScreenType.mobile;
+
   return showWebOverlayModal<void>(
     context: context,
-    builder: (_, close) => Material(
+    alignment: isMobile ? Alignment.bottomCenter : Alignment.center,
+    // 시트는 화면 폭을 꽉 쓰고 바닥에 붙는다(좌우·아래 여백 0).
+    padding: isMobile
+        ? EdgeInsets.zero
+        : const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
+    builder: (ctx, close) => Material(
       color: SDSColor.snowliveWhite,
-      borderRadius: BorderRadius.circular(16),
+      // 시트는 위쪽 모서리만 둥글다(라이브톡 시트와 같은 16).
+      borderRadius: isMobile
+          ? const BorderRadius.vertical(top: Radius.circular(16))
+          : BorderRadius.circular(16),
       clipBehavior: Clip.antiAlias,
       child: ConstrainedBox(
-        constraints: const BoxConstraints(maxWidth: 360, maxHeight: 520),
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(20, 20, 20, 12),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      '라이딩 멤버 ${members.length}명',
-                      style: SDSTextStyle.bold.copyWith(fontSize: 16, color: SDSColor.gray900),
-                    ),
-                  ),
-                  InkWell(
-                    onTap: close,
-                    customBorder: const CircleBorder(),
-                    child: Padding(
-                      padding: const EdgeInsets.all(4),
-                      child: Icon(Icons.close, size: 18, color: SDSColor.gray400),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 2),
-              Text(
-                '${date.month}월 ${crewRecordDayLabel(date)}',
-                style: SDSTextStyle.regular.copyWith(fontSize: 12, color: SDSColor.gray500),
-              ),
-              const SizedBox(height: SDSSpacing.md),
-              Flexible(
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      for (final member in members)
-                        _MemberRow(member: member, crewName: crewName, resortName: resortName),
-                    ],
-                  ),
+        constraints: BoxConstraints(
+          maxWidth: isMobile ? double.infinity : 390,
+          // 멤버가 많으면 목록만 스크롤한다(화면 80%까지).
+          maxHeight: MediaQuery.sizeOf(ctx).height * 0.8,
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            // ✕ 줄 — 26 아이콘이 우상단 16/16에 선다(줄 높이 26 → 타이틀이 42에서 시작).
+            Padding(
+              padding: const EdgeInsets.only(top: 16, right: 16),
+              child: Align(
+                alignment: Alignment.centerRight,
+                child: WebIconButton(
+                  onTap: close,
+                  padding: EdgeInsets.zero,
+                  // 팝업 닫기 공통 — 26 · gray900 50%(크루 프로필 카드·라이브톡 모달과 동일).
+                  icon: Icon(Icons.close,
+                      size: 26, color: SDSColor.gray900.withValues(alpha: 0.5)),
                 ),
               ),
-            ],
-          ),
+            ),
+            Text(
+              '라이딩 멤버 ${members.length}',
+              textAlign: TextAlign.center,
+              style: SDSTextStyle.bold
+                  .copyWith(fontSize: 16, height: 19 / 16, color: SDSColor.gray900),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              '${date.month}월 ${crewRecordDayLabel(date)}',
+              textAlign: TextAlign.center,
+              style: SDSTextStyle.regular.copyWith(fontSize: 12, color: SDSColor.gray500),
+            ),
+            // 타이틀 블록 ↔ 목록 20 (목업은 날짜 줄이 없어 30이다).
+            const SizedBox(height: 20),
+            Flexible(
+              child: SingleChildScrollView(
+                // 목록 좌우 30 · 아래 30 (목업). 모바일 시트는 페이지 여백과 같은 16,
+                // 아래는 홈 인디케이터에 닿지 않게 더 둔다.
+                padding: isMobile
+                    ? const EdgeInsets.fromLTRB(16, 0, 16, 28)
+                    : const EdgeInsets.fromLTRB(30, 0, 30, 30),
+                child: Column(
+                  children: [
+                    for (final (index, member) in members.indexed) ...[
+                      // 행 사이 14 (목업 10에서 4 넓힘 — 사용자 확정).
+                      if (index > 0) const SizedBox(height: 14),
+                      _MemberRow(
+                          member: member, crewName: crewName, resortName: resortName),
+                    ],
+                  ],
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     ),
@@ -428,24 +581,34 @@ class _MemberRow extends StatelessWidget {
         crewName: crewName,
         resortName: resortName,
       ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 6),
+      child: SizedBox(
+        // 행 높이 32 = 아바타 크기(목업).
+        height: 32,
         child: Row(
           children: [
             WebAvatar(url: member.profileImageUrlUser, size: 32),
+            // 아바타 ↔ 이름 10 (목업 — 아바타 32, 이름 x=42).
             const SizedBox(width: 10),
             Expanded(
               child: Text(
                 member.displayName ?? '',
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray900),
+                style: SDSTextStyle.regular
+                    .copyWith(fontSize: 15, height: 18 / 15, color: SDSColor.gray900),
               ),
             ),
             const SizedBox(width: SDSSpacing.sm),
-            Text(
-              '${_numberFormat.format((member.totalScore ?? 0).round())}점',
-              style: SDSTextStyle.bold.copyWith(fontSize: 14, color: SDSColor.gray900),
+            // 점수 열은 최소 72로 잡아 행끼리 오른쪽 선이 맞는다(목업 x=258~330)
+            ConstrainedBox(
+              constraints: const BoxConstraints(minWidth: 72),
+              child: Text(
+                '${_numberFormat.format((member.totalScore ?? 0).round())}점',
+                maxLines: 1,
+                textAlign: TextAlign.right,
+                style: SDSTextStyle.regular
+                    .copyWith(fontSize: 17, height: 22 / 17, color: SDSColor.gray900),
+              ),
             ),
           ],
         ),
@@ -479,6 +642,9 @@ class CrewRecordMonthSection extends StatefulWidget {
 class _CrewRecordMonthSectionState extends State<CrewRecordMonthSection> {
   final ScrollController _controller = ScrollController();
 
+  /// 마지막으로 고른 날짜. 그 숫자만 Bold로 표시한다(처음에는 없음).
+  int? _selectedDay;
+
   @override
   void dispose() {
     _controller.dispose();
@@ -499,9 +665,18 @@ class _CrewRecordMonthSectionState extends State<CrewRecordMonthSection> {
     final entries = _entries;
     final index = entries.indexWhere((e) => e.date.day == day);
     if (index < 0 || !_controller.hasClients) return;
-    final offset = index * (kCrewRecordCardWidth + _kCardGap);
+
+    setState(() => _selectedDay = day);
+
+    final position = _controller.position;
+    const double pitch = kCrewRecordCardWidth + _kCardGap;
+    // 고른 카드를 **레일 가운데**에 세운다 — 왼쪽에 붙이면 끝 그라데이션에 가린다.
+    // 양 끝 카드는 clamp에 걸려 가장자리에 서는데, 그쪽은 그라데이션도 꺼지므로
+    // 가려질 일이 없다.
+    final double target =
+        index * pitch - (position.viewportDimension - kCrewRecordCardWidth) / 2;
     _controller.animateTo(
-      offset.clamp(0, _controller.position.maxScrollExtent),
+      target.clamp(0.0, position.maxScrollExtent),
       duration: const Duration(milliseconds: 300),
       curve: Curves.easeOut,
     );
@@ -511,33 +686,42 @@ class _CrewRecordMonthSectionState extends State<CrewRecordMonthSection> {
   Widget build(BuildContext context) {
     final entries = _entries;
     final activeDays = crewRecordDaysWithRecord(widget.month);
+    final bool isMobile = context.screenType == WebScreenType.mobile;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           widget.month.title,
-          // 목업(174:60479) 월 제목 줄 높이 33 → ExtraBold 24.
-          style: SDSTextStyle.extraBold.copyWith(fontSize: 24, color: SDSColor.gray900),
+          // 월 제목 줄 높이 — PC·태블릿 33(ExtraBold 24) / 모바일 24(ExtraBold 20).
+          style: SDSTextStyle.extraBold
+              .copyWith(fontSize: isMobile ? 20 : 24, color: SDSColor.gray900),
         ),
-        // 월 제목 ↔ 일자 줄 12 (목업 — 제목 33, 일자 줄 윗선 45).
+        // 모바일은 **일자 줄이 없고** 카드가 세로 아코디언이다(목업 174:71291)
+        if (isMobile) ...[
+          // 월 제목 ↔ 첫 카드 16 (목업 — 제목 24, 카드 40).
+          const SizedBox(height: 12),
+          _buildMobileAccordion(entries),
+          // 월 섹션 사이 48 (목업 — 1월 블록 832, 12월 880).
+          const SizedBox(height: 48),
+        ] else ...[
+        // 월 제목 ↔ 일자 줄 12 (목업 — 제목 33, 일자 줄 윗선 45)
         const SizedBox(height: 12),
         CrewRecordDayNumberRow(
           month: widget.month,
           activeDays: activeDays,
+          selectedDay: _selectedDay,
           onSelectDay: _scrollToDay,
         ),
-        // 일자 줄 ↔ 카드 12 (목업 — 일자 줄 끝 838, 카드 850).
+        // 일자 줄 ↔ 카드 12 (목업 — 일자 줄 끝 838, 카드 850)
         const SizedBox(height: 12),
         SizedBox(
           height: kCrewRecordCardHeight,
-          child: CrewRecordRailBleed(
+          child: CrewRecordRail(
+            controller: _controller,
             child: ListView.separated(
               controller: _controller,
               scrollDirection: Axis.horizontal,
-              // 양 끝 패딩 = bleed. 정지 상태의 첫 카드는 콘텐츠 좌측선에, 끝까지
-              // 스크롤하면 마지막 카드 오른쪽이 콘텐츠 우측선에 선다.
-              padding: EdgeInsets.symmetric(horizontal: CrewRecordBleed.of(context)),
               // 카드가 많아(한 달 30장) 화면 밖은 그리지 않게 builder로 만든다.
               itemCount: entries.length,
               separatorBuilder: (_, __) => const SizedBox(width: _kCardGap),
@@ -553,40 +737,116 @@ class _CrewRecordMonthSectionState extends State<CrewRecordMonthSection> {
         ),
         // 월 섹션 사이 50 (목업 — 월 블록 피치 605, 블록 내용 555).
         const SizedBox(height: 50),
+        ],
+      ],
+    );
+  }
+
+  /// 모바일 — 날짜 카드를 **세로로 쌓고 한 장만 펼친다**(목업 174:71291).
+  /// 가로 레일은 좁은 폭에서 한 장도 제대로 안 보여서 구성을 바꿘다.
+  Widget _buildMobileAccordion(
+      List<({CrewRidingRecord record, DateTime date})> entries) {
+    // 아직 고른 게 없으면 **맨 앞(가장 최근)** 날짜를 펼쳐 둔다.
+    final int openDay = _selectedDay ?? (entries.isEmpty ? -1 : entries.first.date.day);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        for (final (index, entry) in entries.indexed) ...[
+          // 카드 사이 12 (목업 — 접힌 카드 54, 다음 카드 66).
+          if (index > 0) const SizedBox(height: 8),
+          if (entry.date.day == openDay)
+            CrewRecordDayCard(
+              record: entry.record,
+              date: entry.date,
+              isToday: crewRecordIsToday(entry.date, widget.today),
+              crewName: widget.crewName,
+              resortName: widget.resortName,
+              // 화면 폭을 꽉 쓴다(공용 342 대신).
+              width: double.infinity,
+              onToggle: () => setState(() => _selectedDay = -1),
+            )
+          else
+            CrewRecordDayRowCollapsed(
+              date: entry.date,
+              isToday: crewRecordIsToday(entry.date, widget.today),
+              width: double.infinity,
+              onTap: () => setState(() => _selectedDay = entry.date.day),
+            ),
+        ],
       ],
     );
   }
 }
 
-/// 가로 레일을 **화면 좌우 끝까지** 넓혀 주는 래퍼.
+/// 가로 레일 공통 래퍼 — 끝에서 카드가 **흐릿하게 사라지게** 하고 마우스 드래그
+/// 스크롤을 걸어 준다(웹 기본은 휠만 허용)
 ///
-/// `OverflowBox`로 콘텐츠 폭 바깥으로 `bleed`만큼 비져나가게 하고, 끝에서 카드가 흐릿하게
-/// 사라지도록 흰 그라데이션을 덮는다. **안쪽 패딩은 자식(ListView)이 직접 든다** —
-/// 그래야 스크롤 원점이 콘텐츠 좌측선과 맞는다([CrewRecordMonthSection] 참고).
-///
-/// 마우스 드래그 스크롤([WebHorizontalDragScroll])도 여기서 걸어 준다(웹 기본은 휠만 허용).
-class CrewRecordRailBleed extends StatelessWidget {
+/// 레일은 콘텐츠 폭 안에 머문다(사용자 확정 — 한때 화면 끝까지 흘렸다가 되돌렸다).
+/// 그래서 그라데이션은 **그쪽에 더 볼 게 있을 때만** 켠다 — 늘 켜 두면 목록 처음에
+/// 첫 카드 왼쪽이, 끝에서 마지막 카드 오른쪽이 괜히 희게 빠진다.
+class CrewRecordRail extends StatefulWidget {
   final Widget child;
 
-  const CrewRecordRailBleed({super.key, required this.child});
+  /// 레일의 스크롤 컨트롤러. 주면 양 끝 그라데이션이 스크롤 위치를 따라 켜진다.
+  /// 없으면(스켈레톤 등) 오른쪽만 켠다 — 자리가 넘친다는 뜻만 준다.
+  final ScrollController? controller;
+
+  const CrewRecordRail({super.key, required this.child, this.controller});
+
+  @override
+  State<CrewRecordRail> createState() => _CrewRecordRailState();
+}
+
+class _CrewRecordRailState extends State<CrewRecordRail> {
+  bool _showStart = false;
+  bool _showEnd = true;
+
+  @override
+  void initState() {
+    super.initState();
+    widget.controller?.addListener(_sync);
+    // 첫 프레임 뒤에야 스크롤 범위를 알 수 있다(카드 수가 적으면 끝 그라데이션도 꺼야 한다).
+    WidgetsBinding.instance.addPostFrameCallback((_) => _sync());
+  }
+
+  @override
+  void didUpdateWidget(covariant CrewRecordRail oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.controller != widget.controller) {
+      oldWidget.controller?.removeListener(_sync);
+      widget.controller?.addListener(_sync);
+      _sync();
+    }
+  }
+
+  @override
+  void dispose() {
+    widget.controller?.removeListener(_sync);
+    super.dispose();
+  }
+
+  void _sync() {
+    final controller = widget.controller;
+    if (!mounted || controller == null || !controller.hasClients) return;
+    final position = controller.position;
+    // 1px 여유 — 끝에 딱 붙었을 때 반올림 오차로 그라데이션이 깜빡이지 않게.
+    final bool start = position.pixels > 1;
+    final bool end = position.pixels < position.maxScrollExtent - 1;
+    if (start != _showStart || end != _showEnd) {
+      setState(() {
+        _showStart = start;
+        _showEnd = end;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    final double bleed = CrewRecordBleed.of(context);
-
-    return LayoutBuilder(
-      builder: (context, constraints) => OverflowBox(
-        alignment: Alignment.center,
-        minWidth: 0,
-        maxWidth: constraints.maxWidth + bleed * 2,
-        child: WebEdgeFade(
-          // 페이드는 **여백 구간 안**에서만 번지게 폭을 묶는다 — 정지 상태의 첫 카드가
-          // 희게 빠지지 않는다. 캡이 없으면 넓은 화면에서 그라데이션이 400px를 넘어
-          // 카드가 반투명 유령처럼 보인다.
-          fadeWidth: bleed.clamp(0.0, 64.0),
-          child: WebHorizontalDragScroll(child: child),
-        ),
-      ),
+    return WebEdgeFade(
+      showStart: _showStart,
+      showEnd: _showEnd,
+      child: WebHorizontalDragScroll(child: widget.child),
     );
   }
 }
@@ -597,31 +857,41 @@ class CrewRecordDayNumberRow extends StatelessWidget {
   final Set<int> activeDays;
   final ValueChanged<int> onSelectDay;
 
+  /// 고른 날짜. 그 숫자만 Bold로 표시한다(없으면 전부 Regular).
+  final int? selectedDay;
+
   const CrewRecordDayNumberRow({
     super.key,
     required this.month,
     required this.activeDays,
     required this.onSelectDay,
+    this.selectedDay,
   });
 
   @override
   Widget build(BuildContext context) {
     final days = crewRecordDaysInMonth(month.year, month.month);
+    final numbers = [
+      for (var day = 1; day <= days; day++)
+        _DayNumber(
+          day: day,
+          isActive: activeDays.contains(day),
+          isSelected: day == selectedDay,
+          // 기록이 없는 날은 갈 카드가 없다.
+          onTap: activeDays.contains(day) ? () => onSelectDay(day) : null,
+        ),
+    ];
+
+    // 좁은 폭은 **줄바꿈**한다(목업 174:66609 — 25개 + 5개 두 줄).
+    // 한 줄로 밀어 넣으면 가로 스크롤이 하나 더 생겨 카드 레일과 헷갈린다.
+    if (!context.isDesktop) {
+      return Wrap(children: numbers);
+    }
 
     return WebHorizontalDragScroll(
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
-        child: Row(
-          children: [
-            for (var day = 1; day <= days; day++)
-              _DayNumber(
-                day: day,
-                isActive: activeDays.contains(day),
-                // 기록이 없는 날은 갈 카드가 없다.
-                onTap: activeDays.contains(day) ? () => onSelectDay(day) : null,
-              ),
-          ],
-        ),
+        child: Row(children: numbers),
       ),
     );
   }
@@ -636,9 +906,18 @@ class CrewRecordDayNumberRow extends StatelessWidget {
 class _DayNumber extends StatefulWidget {
   final int day;
   final bool isActive;
+
+  /// 고른 날짜면 Bold. 기록 유무(색)와는 별개 축이다.
+  final bool isSelected;
+
   final VoidCallback? onTap;
 
-  const _DayNumber({required this.day, required this.isActive, required this.onTap});
+  const _DayNumber({
+    required this.day,
+    required this.isActive,
+    required this.isSelected,
+    required this.onTap,
+  });
 
   @override
   State<_DayNumber> createState() => _DayNumberState();
@@ -652,34 +931,33 @@ class _DayNumberState extends State<_DayNumber> {
 
   @override
   Widget build(BuildContext context) {
-    // 기록 있는 날과 없는 날은 **색으로만** 구분한다(둘 다 Regular — 사용자 확정).
+    // 기록 있는 날과 없는 날은 **색으로만** 구분한다(사용자 확정).
+    // 굵기는 **고른 날짜**를 알리는 데만 쓴다.
     final number = Text(
       '${widget.day}',
-      style: SDSTextStyle.regular.copyWith(
+      style: (widget.isSelected ? SDSTextStyle.bold : SDSTextStyle.regular).copyWith(
         fontSize: 15,
         height: 19 / 15,
         color: widget.isActive ? SDSColor.gray900 : SDSColor.gray300,
       ),
     );
 
-    final cell = SizedBox(
-      // 줄 높이 36 = 글줄 19 + 상하 8.5 (목업 174:60481). 칸 사이 4.
-      height: 36,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 2),
-        child: Center(
-          child: Container(
-            width: _circle,
-            height: _circle,
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-              // 웹 공통 hover 틴트 — 원형 gray50(아이콘 버튼과 같은 규칙).
-              color: _hovered ? SDSColor.gray50 : Colors.transparent,
-              shape: BoxShape.circle,
-            ),
-            child: number,
-          ),
+    // ⚠️ `Center`로 감싸면 안 된다 — 느슨한 제약에서 **가용 폭을 다 먹어** 한 줄에
+    // 하나씩만 들어간다(줄바꿈 레이아웃에서 날짜가 세로로 쌓였다). 칸 크기를
+    // 원(30) + 패딩으로 직접 만든다 → 34 × 36.
+    final cell = Padding(
+      // 줄 높이 36 = 원 30 + 상하 3. 칸 사이 4 = 좌우 2씩.
+      padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 3),
+      child: Container(
+        width: _circle,
+        height: _circle,
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          // 웹 공통 hover 틴트 — 원형 gray50(아이콘 버튼과 같은 규칙).
+          color: _hovered ? SDSColor.gray50 : Colors.transparent,
+          shape: BoxShape.circle,
         ),
+        child: number,
       ),
     );
 
@@ -737,20 +1015,18 @@ class CrewRecordMonthList extends StatelessWidget {
   }
 }
 
-/// 기록실 상단 요약 — `시즌 통합 랭킹` / `시즌 총 점수` + `크루원 시즌 랭킹` 진입.
+/// 기록실 상단 요약 — `시즌 통합 랭킹` / `시즌 총 점수`.
 /// 규격은 크루홈 통계 바와 **같은 공용 지표 바**(`WebStatsBar`)를 쓴다(목업 174:60434).
 ///
-/// 모바일 목업에는 랭킹 진입점이 없지만 그러면 그 화면이 고립되므로 바 아래에 둔다.
+/// `크루원 시즌 랭킹` 진입은 **타이틀 줄 오른쪽 끝**에 있다(스캐폴드 `headerActions`).
 class CrewRecordSummaryCard extends StatelessWidget {
   final int? overallRank;
   final double? totalScore;
-  final VoidCallback onOpenRanking;
 
   const CrewRecordSummaryCard({
     super.key,
     required this.overallRank,
     required this.totalScore,
-    required this.onOpenRanking,
   });
 
   @override
@@ -766,7 +1042,6 @@ class CrewRecordSummaryCard extends StatelessWidget {
           value: _numberFormat.format((totalScore ?? 0).round()),
         ),
       ],
-      trailing: WebStatsBarLink(label: '크루원 시즌 랭킹', onTap: onOpenRanking),
     );
   }
 }
@@ -790,16 +1065,13 @@ class CrewRecordListSkeleton extends StatelessWidget {
           const SizedBox(height: 12),
           SizedBox(
             height: kCrewRecordCardHeight,
-            // 실제 레일과 같이 화면 끝까지 넓힌다 — 로딩 중 좁았다가 데이터가 오면
-            // 넓어지는 튐을 막는다. 넓어진 폭을 채우려면 자리도 더 필요하다(3 → 5장).
-            child: CrewRecordRailBleed(
+            // 실제 레일과 같은 래퍼를 써서 로딩 중/후 모양이 같게 한다.
+            child: CrewRecordRail(
               child: ListView(
                 scrollDirection: Axis.horizontal,
                 physics: const NeverScrollableScrollPhysics(),
-                padding:
-                    EdgeInsets.symmetric(horizontal: CrewRecordBleed.of(context)),
                 children: [
-                  for (var i = 0; i < 5; i++) ...[
+                  for (var i = 0; i < 3; i++) ...[
                     if (i > 0) const SizedBox(width: _kCardGap),
                     const SkeletonBox(
                         width: kCrewRecordCardWidth,

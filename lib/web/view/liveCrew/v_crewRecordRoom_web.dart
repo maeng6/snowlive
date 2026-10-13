@@ -4,13 +4,14 @@ import 'package:com.snowlive/web/routes/routes_web.dart';
 import 'package:com.snowlive/web/util/responsive_web.dart';
 import 'package:com.snowlive/web/view/liveCrew/crew_record_sections_web.dart';
 import 'package:com.snowlive/web/view/liveCrew/v_crewHome_web.dart' show kCrewHomeListMaxWidth;
-import 'package:com.snowlive/web/view/liveCrew/crew_record_dummy_web.dart';
 import 'package:com.snowlive/web/view/liveCrew/w_crew_record_scaffold_web.dart';
 import 'package:com.snowlive/web/view/liveCrew/w_crew_record_widgets_web.dart';
 import 'package:com.snowlive/web/view/liveCrew/w_crewhome_riding_stats_web.dart';
 import 'package:com.snowlive/web/viewmodel/crew/vm_crewRecord_web.dart';
 import 'package:com.snowlive/web/widget/w_empty_state_web.dart';
 import 'package:com.snowlive/web/widget/w_skeleton_web.dart';
+import 'package:com.snowlive/web/widget/w_web_filter_menu_web.dart';
+import 'package:com.snowlive/web/widget/w_web_stats_bar_web.dart';
 import 'package:com.snowlive/web/widget/w_web_text_tabs_web.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -46,10 +47,25 @@ class _CrewRecordRoomViewWebState extends State<CrewRecordRoomViewWeb> {
     }
   }
 
+  /// `25/26시즌` → `25/26 시즌` (랭킹 기록실 관례).
+  String _seasonLabel(RankingFilter_season s) =>
+      '${s.korean.replaceAll('시즌', '')} 시즌';
+
   @override
   Widget build(BuildContext context) {
     return CrewRecordScaffoldWeb(
       title: '시즌 기록실',
+      // 랭킹 진입은 **타이틀 줄 오른쪽 끝**에 둔다(사용자 확정) — 요약 바 안에
+      // 두면 모바일에서 바 아래로 내려가 흐름이 끊긴다.
+      headerActions: [
+        WebStatsBarLink(
+          label: '크루원 시즌 랭킹',
+          // 바로 아래 시즌 탭·드롭다운 글자와 같은 15(사용자 확정).
+          fontSize: 15,
+          onTap: () => Get.toNamed(
+              '${WebRoutes.crewSeasonRanking}?id=$_crewId&season=${_vm.season}'),
+        ),
+      ],
       // 목업(174:59963) 콘텐츠 폭 874 — 크루홈 본문과 같아서 라이딩 통계 카드가
       // 두 화면에서 같은 크기로 보인다.
       maxWidth: kCrewHomeListMaxWidth,
@@ -62,16 +78,12 @@ class _CrewRecordRoomViewWebState extends State<CrewRecordRoomViewWeb> {
     // ⚠️ 분기 전에 관찰값을 모두 읽어야 Obx 구독이 확실히 걸린다(뒤로 미루면 놓친다).
     final isInitialLoading = _vm.isInitialLoading;
     final hasError = _vm.hasError;
-    // ⚠️ UI 작업용 더미 — 날짜 카드 가로 스크롤·멤버 수 여러 경우를 보기 위한 것.
-    // 치울 때: `_vm.records.toList()`로 되돌리고 import를 지운다.
-    final records = (kCrewRecordForceDummy || _vm.records.isEmpty)
-        ? kCrewRecordsDummy
-        : _vm.records.toList();
-    final stats = (kCrewRecordForceDummy || _vm.stats == null)
-        ? kCrewRecordStatsDummy
-        : _vm.stats;
+    final records = _vm.records.toList();
+    final stats = _vm.stats;
     final info = _vm.info;
     final season = _vm.season;
+    final selectedSeason = crewRecordSeasons()
+        .firstWhere((s) => s.dbSeason == season, orElse: () => crewRecordSeasons().first);
 
     if (_crewId == null) {
       return const WebEmptyState(message: '크루 정보를 찾을 수 없어요.');
@@ -84,44 +96,51 @@ class _CrewRecordRoomViewWebState extends State<CrewRecordRoomViewWeb> {
         // ('25/26시즌' → '25/26 시즌').
         Align(
           alignment: Alignment.centerLeft,
-          // 목업(174:60828) — 글줄 19(15px), 1×15 세로선, 좌우 간격 10.
+          // PC·태블릿은 텍스트 탭(목업 174:60828 — 글줄 19, 1×15 세로선, 간격 10),
+          // **모바일은 드롭다운**(목업 174:73678 — 세 시즌을 한 줄에 못 넣는다).
           child: SizedBox(
             height: 36,
             child: Align(
               alignment: Alignment.centerLeft,
-              child: WebTextTabs<RankingFilter_season>(
-                values: crewRecordSeasons(),
-                selected: crewRecordSeasons().firstWhere(
-                    (s) => s.dbSeason == season,
-                    orElse: () => crewRecordSeasons().first),
-                labelOf: (s) => '${s.korean.replaceAll('시즌', '')} 시즌',
-                onSelected: (s) => _vm.setSeason(s.dbSeason),
-                lineDivider: true,
-                dividerGap: 10,
-              ),
+              child: context.screenType == WebScreenType.mobile
+                  ? WebDropdownTextButton<RankingFilter_season>(
+                      label: _seasonLabel(selectedSeason),
+                      values: crewRecordSeasons(),
+                      labelOf: _seasonLabel,
+                      onSelected: (s) => _vm.setSeason(s.dbSeason),
+                      title: '시즌',
+                      // 꺾쇠는 공용 기본 18보다 크게 — 목업의 11×5 벡터에 맞추면 22쯤이다.
+                      // 공용 기본값은 커뮤니티·중고거래가 같이 쓰므로 호출부에서만 키운다.
+                      iconSize: 22,
+                    )
+                  : WebTextTabs<RankingFilter_season>(
+                      values: crewRecordSeasons(),
+                      selected: selectedSeason,
+                      labelOf: _seasonLabel,
+                      onSelected: (s) => _vm.setSeason(s.dbSeason),
+                      lineDivider: true,
+                      dividerGap: 10,
+                    ),
             ),
           ),
         ),
-        // 시즌 탭 ↔ 요약 바 40 (목업 — 탭 줄 끝 218, 바 259).
-        const SizedBox(height: 40),
+        // 시즌 탭 ↔ 요약 바 — PC 40(목업 174:60434) / 태블릿·모바일 22(174:65716).
+        SizedBox(height: context.isDesktop ? 40 : 16),
         // 첫 프레임(로드 시작 전)에도 0점 요약이 번쩍이지 않게 스켈레톤을 보여준다.
-        // ⚠️ 더미를 강제한 동안은 서버 info를 기다리지 않는다(치울 때 함께 되돌린다).
-        if (info == null && !kCrewRecordForceDummy)
+        if (info == null)
           hasError ? WebErrorState(onRetry: _vm.refreshSeason) : const _RecordRoomSkeleton()
         else ...[
           CrewRecordSummaryCard(
             overallRank: stats?.overallRank,
             totalScore: stats?.overallTotalScore,
-            onOpenRanking: () => Get.toNamed(
-                '${WebRoutes.crewSeasonRanking}?id=$_crewId&season=$season'),
           ),
           // 요약 바 ↔ 섹션 제목 40 (목업 — 바 끝 319, 제목 359).
           const SizedBox(height: 40),
           CrewHomeRidingStatsWeb(
             season: stats,
-            crewName: info?.crewName ?? '',
-            crewLogoUrl: info?.crewLogoUrl,
-            crewColor: info?.color,
+            crewName: info.crewName ?? '',
+            crewLogoUrl: info.crewLogoUrl,
+            crewColor: info.color,
             sectionTitle: '시즌 라이딩 통계',
           ),
           // 라이딩 통계 ↔ 첫 월 섹션 40 (목업 — 카드 끝 717, 월 제목 757).
@@ -136,8 +155,8 @@ class _CrewRecordRoomViewWebState extends State<CrewRecordRoomViewWeb> {
               // 시즌을 바꾸면 펼침 상태를 새로 시작한다.
               key: ValueKey('season-$season'),
               records: records,
-              crewName: info?.crewName,
-              resortName: info?.baseResortFullname ?? info?.baseResortNickname,
+              crewName: info.crewName,
+              resortName: info.baseResortFullname ?? info.baseResortNickname,
             ),
         ],
       ],

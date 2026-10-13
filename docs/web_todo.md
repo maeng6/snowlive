@@ -125,6 +125,47 @@ API가 열리면 라이브톡과 같은 뷰모델 패턴(`LiveTalkListPagination
 
 ---
 
+## 7. 테스트 — 깨진 20건 (2026-10-13 기준)
+
+`flutter test` 결과 **20건이 실패**합니다. 전부 최근 머지된 작업에서 온 것이고, 화면 디자인
+작업과는 별개입니다. 같은 원인끼리 묶으면 네 덩어리입니다.
+
+### 7-1. 이미지 뷰어 — 11건 (`web_image_viewer_test.dart`, `web_profile_tap_test.dart`)
+
+```
+Looking up a deactivated widget's ancestor is unsafe.
+(finalizing the widget tree)
+```
+
+뷰어가 닫힐 때 `dispose()` 안에서 조상 위젯을 찾고 있습니다. 해법은 정해져 있습니다 —
+참조를 `didChangeDependencies()`에서 미리 잡아 두거나, `ScrollController(keepScrollOffset: false)`
+처럼 조상 조회 자체를 끊는 것(라이브크루 캐러셀에서 같은 증상을 그렇게 고쳤습니다).
+
+실제 화면에서도 **사진 뷰어를 닫을 때마다 콘솔 에러**가 납니다.
+
+### 7-2. 커뮤니티 글쓰기 — 3건 (`community_update_web_test.dart`)
+
+`게시글 작성` · 임시저장 · 작성 완료 문구를 못 찾습니다. 화면 구성이 바뀐 것으로 보이며,
+테스트를 새 구성에 맞추거나 화면을 되돌려야 합니다.
+
+### 7-3. 메뉴·설정 숨김 항목 — 4건
+
+`gnb_nav_icons_test.dart` · `alarm_center_web_test.dart` · `profile_edit_web_test.dart` ·
+`settings_web_test.dart`. 멤버십 업그레이드를 기획 전이라 숨기기로 했는데, 메뉴/설정의
+실제 구성과 테스트 기대값이 어긋나 있습니다(4번 항목과 연결됨).
+
+### 7-4. 나머지 2건
+
+`livecrew_alarm_rank_web_test.dart`(홈 중고거래 페이지 점 개수),
+`web_page_title_test.dart`(새 라우트에 화면명 누락 — 라우트가 추가되면 걸리는 가드).
+
+**참고** — 2026-10-13에 팝업 오류 하나를 고쳐 **40건 → 20건**이 됐습니다.
+`showWebOverlayModal`의 `Positioned.fill`이 ESC 래퍼 아래로 들어가 `Stack` 직접 자식이
+아니게 돼서(`Incorrect use of ParentDataWidget`) 팝업·바텀시트를 여는 테스트가 전부 걸려
+있었습니다. 동작은 멀쩡했고 콘솔 에러만 났습니다.
+
+---
+
 ## 참고 — 최근 정리된 것
 
 2026-10-06 (min)

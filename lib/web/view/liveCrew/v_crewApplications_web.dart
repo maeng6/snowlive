@@ -4,6 +4,7 @@ import 'package:com.snowlive/core/viewmodel/vm_user.dart';
 import 'package:com.snowlive/web/routes/routes_web.dart';
 import 'package:com.snowlive/web/util/responsive_web.dart';
 import 'package:com.snowlive/web/view/liveCrew/w_crew_setting_scaffold_web.dart';
+import 'package:com.snowlive/web/view/liveCrew/w_crew_setting_widgets_web.dart';
 import 'package:com.snowlive/web/viewmodel/alarm/vm_alarmCenter_web.dart' show AlarmBadgeWeb;
 import 'package:com.snowlive/web/viewmodel/crew/vm_crewSetting_web.dart';
 import 'package:com.snowlive/web/widget/w_empty_state_web.dart';
@@ -15,6 +16,10 @@ import 'package:get/get.dart';
 
 /// 신청 메시지를 안 쓴 사람에게 대신 보여주는 문구(앱과 동일).
 const String _kDefaultApplyTitle = '안녕하세요. 크루 가입 신청합니다.';
+
+/// `수락하기` 배경(목업 174:86103) — 팔레트의 blue50(#ECF3FD)보다 진한 연파랑이라
+/// 목업 값을 그대로 쓴다.
+const Color _kApproveBackground = Color(0xFFD4E5FF);
 
 /// 가입 신청 목록. `#/livecrew-applications?id=334`
 class CrewApplicationsViewWeb extends StatefulWidget {
@@ -114,8 +119,10 @@ class _CrewApplicationsViewWebState extends State<CrewApplicationsViewWeb> {
           );
         }
         // 이 크루 데이터가 아직 안 왔거나(다른 크루/최초 진입) 로딩 중이면 판정 보류.
+        // 권한을 모르는 동안은 목록 자리표시를 보여준다 — 빈 자리만 두면 화면이
+        // 한 박자 비어 보이고, 권한이 없는 사람에게도 잠깐 목록 모양만 스친다.
         final notReady = _vm.crewId != _crewId || loading;
-        if (notReady && !canOpen) return const SizedBox(height: 120);
+        if (notReady && !canOpen) return const CrewApplicationsSkeleton();
         return CrewSettingGuard(
           isLoggedIn: true,
           canOpen: canOpen,
@@ -126,26 +133,29 @@ class _CrewApplicationsViewWebState extends State<CrewApplicationsViewWeb> {
   }
 
   Widget _buildList() {
-    final applications = _vm.applications;
+    final applications = _vm.applications.toList();
     final count = applications.length;
     final isLoading = _vm.isLoading;
 
     if (count == 0) {
-      if (isLoading) return const SizedBox(height: 120);
+      if (isLoading) return const CrewApplicationsSkeleton();
       return const WebEmptyState(message: '가입 신청한 사람이 없어요');
     }
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
+        // 목업(174:86093) — ExtraBold 14.
         Text(
           '신청한 유저 $count',
-          style: SDSTextStyle.bold.copyWith(fontSize: 15, color: SDSColor.gray900),
+          style: SDSTextStyle.extraBold.copyWith(fontSize: 14, color: SDSColor.gray900),
         ),
+        // 머리줄 ↔ 첫 행 16 (목업 — 머리줄 16, 행 32).
         const SizedBox(height: SDSSpacing.md),
-        for (final apply in applications) ...[
+        for (final (index, apply) in applications.indexed) ...[
+          // 신청자 사이 24 (목업 16에서 조금 띄움 — 메시지 박스가 붙어 있어 더 필요하다).
+          if (index > 0) const SizedBox(height: 24),
           _buildRow(apply),
-          const SizedBox(height: SDSSpacing.md),
         ],
       ],
     );
@@ -160,40 +170,48 @@ class _CrewApplicationsViewWebState extends State<CrewApplicationsViewWeb> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Row(
-          children: [
-            WebAvatar(
-              url: info?.profileImageUrlUser,
-              size: 36,
-              userId: apply.applicantUserId ?? info?.userId,
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Text(
-                info?.displayName ?? '',
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: SDSTextStyle.regular.copyWith(fontSize: 15, color: SDSColor.gray900),
+        // 줄 높이 32 = 아바타 크기(목업 174:86094).
+        SizedBox(
+          height: 32,
+          child: Row(
+            children: [
+              WebAvatar(
+                url: info?.profileImageUrlUser,
+                size: 32,
+                userId: apply.applicantUserId ?? info?.userId,
               ),
-            ),
-            _PillButton(
-              label: '수락하기',
-              // 목업: 수락은 연한 파랑 채움 + 파란 글씨.
-              background: SDSColor.blue50,
-              foreground: SDSColor.snowliveBlue,
-              onTap: () => _onApprove(apply),
-            ),
-            const SizedBox(width: 6),
-            _PillButton(
-              label: '거절',
-              background: SDSColor.snowliveWhite,
-              foreground: SDSColor.gray900,
-              hasBorder: true,
-              onTap: () => _onReject(apply),
-            ),
-          ],
+              // 아바타 ↔ 닉네임 10 (목업 — 아바타 32, 닉네임 x=42).
+              const SizedBox(width: 10),
+              Expanded(
+                child: Text(
+                  info?.displayName ?? '',
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: SDSTextStyle.regular
+                      .copyWith(fontSize: 15, height: 18 / 15, color: SDSColor.gray900),
+                ),
+              ),
+              CrewPillButton(
+                label: '수락하기',
+                // 목업: 수락은 연한 파랑 채움 + 파란 글씨.
+                background: _kApproveBackground,
+                foreground: SDSColor.snowliveBlue,
+                onTap: () => _onApprove(apply),
+              ),
+              // 버튼 사이 8 (목업 6에서 조금 띄움 — 사용자 확정).
+              const SizedBox(width: 8),
+              CrewPillButton(
+                label: '거절',
+                background: SDSColor.snowliveWhite,
+                foreground: SDSColor.gray900,
+                hasBorder: true,
+                onTap: () => _onReject(apply),
+              ),
+            ],
+          ),
         ),
-        const SizedBox(height: SDSSpacing.sm),
+        // 이름 줄 ↔ 메시지 박스 10.
+        const SizedBox(height: 10),
         Container(
           width: double.infinity,
           decoration: BoxDecoration(
@@ -207,40 +225,6 @@ class _CrewApplicationsViewWebState extends State<CrewApplicationsViewWeb> {
           ),
         ),
       ],
-    );
-  }
-}
-
-class _PillButton extends StatelessWidget {
-  final String label;
-  final Color background;
-  final Color foreground;
-  final bool hasBorder;
-  final VoidCallback onTap;
-
-  const _PillButton({
-    required this.label,
-    required this.background,
-    required this.foreground,
-    required this.onTap,
-    this.hasBorder = false,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return ElevatedButton(
-      onPressed: onTap,
-      style: ElevatedButton.styleFrom(
-        backgroundColor: background,
-        elevation: 0,
-        shadowColor: Colors.transparent,
-        side: hasBorder ? BorderSide(color: SDSColor.gray200) : null,
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-        minimumSize: Size.zero,
-        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
-      ),
-      child: Text(label, style: SDSTextStyle.bold.copyWith(fontSize: 13, color: foreground)),
     );
   }
 }

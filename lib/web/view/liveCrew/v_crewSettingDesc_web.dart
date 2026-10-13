@@ -2,6 +2,7 @@ import 'package:com.snowlive/core/viewmodel/vm_user.dart';
 import 'package:com.snowlive/web/routes/routes_web.dart';
 import 'package:com.snowlive/web/util/responsive_web.dart';
 import 'package:com.snowlive/web/view/liveCrew/w_crew_setting_scaffold_web.dart';
+import 'package:com.snowlive/web/view/liveCrew/w_crew_setting_widgets_web.dart';
 import 'package:com.snowlive/web/viewmodel/crew/vm_crewSetting_web.dart';
 import 'package:com.snowlive/web/widget/w_web_form_fields_web.dart';
 import 'package:com.snowlive/web/widget/w_web_toast_web.dart';
@@ -82,17 +83,24 @@ class _CrewSettingDescViewWebState extends State<CrewSettingDescViewWeb> {
       fallbackRoute: '${WebRoutes.crewSetting}?id=$_crewId',
       actionLabel: '완료',
       onAction: _onSave,
+      submitting: _vm.submittingRx,
       child: CrewSettingGuard(
         isLoggedIn: _userVm.user.user_id != null,
         canOpen: _vm.canEditDescription,
-        child: WebFormTextField(
-          label: '소개글',
-          controller: _controller,
-          hint: '크루 소개글을 입력해 주세요. (최대 $kCrewDescriptionMaxLength자 이내)',
-          maxLength: kCrewDescriptionMaxLength,
-          maxLines: 5,
-          height: 160,
-          inputFormatters: [LengthLimitingTextInputFormatter(kCrewDescriptionMaxLength)],
+        // 소개글이 오기 전에는 빈 입력칸이 보이다가 글이 **툭 들어찬다** → 자리표시.
+        // ⚠️ Rx(`info`)를 읽으므로 Obx로 감싼다(`_prefilled`만 보면 다시 안 그려진다).
+        child: Obx(
+          () => _vm.info == null
+              ? const CrewSettingDescSkeleton()
+              : WebFormTextField(
+                  label: '소개글',
+                  controller: _controller,
+                  hint: '크루 소개글을 입력해 주세요. (최대 $kCrewDescriptionMaxLength자 이내)',
+                  maxLength: kCrewDescriptionMaxLength,
+                  maxLines: 5,
+                  height: 160,
+                  inputFormatters: [LengthLimitingTextInputFormatter(kCrewDescriptionMaxLength)],
+                ),
         ),
       ),
     );

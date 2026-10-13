@@ -8,7 +8,7 @@ import 'package:com.snowlive/web/view/liveCrew/w_crew_image_color_picker_web.dar
 import 'package:com.snowlive/web/view/liveCrew/w_crewcreate_image_picker_web.dart';
 import 'package:com.snowlive/web/viewmodel/crew/vm_crewCreate_web.dart';
 import 'package:com.snowlive/web/widget/w_web_form_fields_web.dart';
-import 'package:com.snowlive/web/widget/w_web_overlay_modal_web.dart';
+import 'package:com.snowlive/web/widget/w_web_popup_web.dart';
 import 'package:com.snowlive/web/widget/w_web_back_icon_web.dart';
 import 'package:com.snowlive/web/widget/w_web_icon_button_web.dart';
 import 'package:flutter/material.dart';
@@ -140,53 +140,15 @@ class _CrewCreateViewWebState extends State<CrewCreateViewWeb> {
     }
   }
 
-  Future<void> _showDoneDialog() {
-    return showWebOverlayModal<void>(
+  /// 생성 완료 안내 — **웹 공용 박스형 팝업**(`showWebBoxPopup`)을 그대로 쓴다.
+  /// 예전에는 자체 카드였는데 폭(320)·패딩·버튼 규격·hover가 공통과 달랐다(사용자 확정).
+  Future<void> _showDoneDialog() async {
+    await showWebBoxPopup(
       context: context,
+      title: '크루 생성이 완료되었어요!',
+      primaryLabel: '확인',
+      // 안내만 하는 팝업이라 배경 탭으로 닫지 않는다(닫히면 크루홈으로 못 보낸다).
       barrierDismissible: false,
-      // 웹 표준 팝업 카드 스펙(라운드 16 / 최대폭 320 / 패딩 24,28,24,12 /
-      // 타이틀 bold 16) — showWebConfirmDialog와 동일. 버튼 구성만 목업대로.
-      builder: (_, close) => Material(
-        color: SDSColor.snowliveWhite,
-        borderRadius: BorderRadius.circular(16),
-        clipBehavior: Clip.antiAlias,
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 320),
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(24, 28, 24, 12),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  '크루 생성이 완료되었어요!',
-                  textAlign: TextAlign.center,
-                  style: SDSTextStyle.bold.copyWith(fontSize: 16, color: SDSColor.gray900),
-                ),
-                const SizedBox(height: SDSSpacing.md),
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: close,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: SDSColor.snowliveBlue,
-                      elevation: 0,
-                      padding: const EdgeInsets.symmetric(vertical: 14),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                    ),
-                    child: Text(
-                      '확인',
-                      style: SDSTextStyle.bold.copyWith(
-                        fontSize: 15,
-                        color: SDSColor.snowliveWhite,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
     );
   }
 

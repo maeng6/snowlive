@@ -31,10 +31,15 @@ class WebSettingsRow extends StatelessWidget {
     return InkWell(
       onTap: onTap,
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 14),
+        // 목업(174:85477) — 글줄 27 + 상하 12 = 행 피치 51.
+        padding: const EdgeInsets.symmetric(vertical: 12),
         child: Row(
           children: [
-            Text(label, style: SDSTextStyle.bold.copyWith(fontSize: 15, color: SDSColor.gray900)),
+            Text(
+              label,
+              style: SDSTextStyle.bold
+                  .copyWith(fontSize: 16, height: 27 / 16, color: SDSColor.gray900),
+            ),
             if (badgeLabel?.isNotEmpty ?? false) ...[
               const SizedBox(width: SDSSpacing.sm),
               _TextBadge(label: badgeLabel!),
@@ -43,7 +48,8 @@ class WebSettingsRow extends StatelessWidget {
               _CountBadge(count: count),
             ],
             const Spacer(),
-            Icon(Icons.chevron_right, size: 20, color: SDSColor.gray300),
+            // 목업 — 꺾쇠 24, gray300.
+            Icon(Icons.chevron_right, size: 24, color: SDSColor.gray300),
           ],
         ),
       ),
@@ -84,15 +90,17 @@ class _TextBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // 목업(174:85491) — 35×19, 패딩 6/4, Bold 10(글줄 11), 라운드 23.
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
       decoration: BoxDecoration(
         color: SDSColor.snowliveBlue,
-        borderRadius: BorderRadius.circular(50),
+        borderRadius: BorderRadius.circular(23),
       ),
       child: Text(
         label,
-        style: SDSTextStyle.bold.copyWith(fontSize: 11, color: SDSColor.snowliveWhite),
+        style: SDSTextStyle.bold
+            .copyWith(fontSize: 10, height: 11 / 10, color: SDSColor.snowliveWhite),
       ),
     );
   }

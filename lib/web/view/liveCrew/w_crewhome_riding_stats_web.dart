@@ -135,7 +135,7 @@ class _CrewHomeRidingStatsWebState extends State<CrewHomeRidingStatsWeb> {
           ],
         ),
         // 제목줄 ↔ 카드 12 (목업 — 제목줄 36, 카드 48).
-        const SizedBox(height: 12),
+        const SizedBox(height: 10),
         if (context.screenType != WebScreenType.mobile)
           // 두 카드는 **같은 높이**로 선다(사용자 확정) — 내용이 긴 쪽에 짧은 쪽이
           // 맞춰진다. 슬로프 목록이 상위 N개로 잘려 있어(kCrewTopSlopeCount) 한쪽이
@@ -164,7 +164,7 @@ class _CrewHomeRidingStatsWebState extends State<CrewHomeRidingStatsWeb> {
           // 가운데로 몰렸다(실측, 2026-10-12 QA).
           Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [left, const SizedBox(height: 20), right],
+            children: [left, const SizedBox(height: 16), right],
           ),
       ],
     );
@@ -209,7 +209,15 @@ class _SlopeCountCard extends StatelessWidget {
           // 빈 상태는 헤더 **아래**가 아니라 카드 전체 기준 가운데에 둔다 —
           // 그래야 시간대별 기록 카드의 빈 상태와 같은 높이에 선다(헤더 줄 수가
           // 서로 다르므로, 헤더 아래에 쌓으면 두 카드의 위치가 어긋난다).
-          ? Stack(children: [header, const CrewRidingEmptyState()])
+          ? Stack(children: [
+              header,
+          // ⚠️ `Positioned.fill`이 꼭 필요하다 — 그냥 겹치면 Stack이 **자식 크기**로
+          // 먼저 정해진 뒤(빈 상태 92) 최소 높이로 늘어나는데, 자식은 이미 위쪽에
+          // 배치돼 상단에 붙는다(모바일 실측). Positioned는 늘어난 **최종 크기**를
+          // 기준으로 배치돼 정확히 가운데 온다. PC·태블릿은 IntrinsicHeight가 높이를
+          // 먼저 확정해 줘서 증상이 안 보였다.
+              const Positioned.fill(child: CrewRidingEmptyState()),
+            ])
           : Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -402,7 +410,15 @@ class CrewTimeCountCard extends StatelessWidget {
       child: isEmpty
           // 슬로프 카드와 같은 처리 — 빈 상태는 제목 아래가 아니라 카드 전체
           // 기준 가운데에 겹쳐 둔다(두 카드의 문구가 같은 높이에 선다).
-          ? Stack(children: [titleText, const CrewRidingEmptyState()])
+          ? Stack(children: [
+              titleText,
+          // ⚠️ `Positioned.fill`이 꼭 필요하다 — 그냥 겹치면 Stack이 **자식 크기**로
+          // 먼저 정해진 뒤(빈 상태 92) 최소 높이로 늘어나는데, 자식은 이미 위쪽에
+          // 배치돼 상단에 붙는다(모바일 실측). Positioned는 늘어난 **최종 크기**를
+          // 기준으로 배치돼 정확히 가운데 온다. PC·태블릿은 IntrinsicHeight가 높이를
+          // 먼저 확정해 줘서 증상이 안 보였다.
+              const Positioned.fill(child: CrewRidingEmptyState()),
+            ])
           : Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -585,7 +601,15 @@ class _RidingStatsModal extends StatelessWidget {
       child: isEmpty
           // 크루홈 카드와 같은 처리 — 빈 상태는 제목 아래가 아니라 카드 전체
           // 기준 가운데에 겹쳐 둔다(시간대별 카드의 문구와 같은 높이에 선다).
-          ? Stack(children: [slopeHeader, const CrewRidingEmptyState()])
+          ? Stack(children: [
+              slopeHeader,
+          // ⚠️ `Positioned.fill`이 꼭 필요하다 — 그냥 겹치면 Stack이 **자식 크기**로
+          // 먼저 정해진 뒤(빈 상태 92) 최소 높이로 늘어나는데, 자식은 이미 위쪽에
+          // 배치돼 상단에 붙는다(모바일 실측). Positioned는 늘어난 **최종 크기**를
+          // 기준으로 배치돼 정확히 가운데 온다. PC·태블릿은 IntrinsicHeight가 높이를
+          // 먼저 확정해 줘서 증상이 안 보였다.
+              const Positioned.fill(child: CrewRidingEmptyState()),
+            ])
           : Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [

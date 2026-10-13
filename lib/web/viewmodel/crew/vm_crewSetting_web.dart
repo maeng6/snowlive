@@ -64,6 +64,9 @@ class CrewSettingViewModelWeb extends GetxController {
   bool get hasError => _hasError.value;
   bool get isSubmitting => _isSubmitting.value;
 
+  /// 버튼 하나만 다시 그리려고 Rx 자체를 넘겨줄 때 쓴다(스캐폴드의 진행 버튼).
+  RxBool get submittingRx => _isSubmitting;
+
   int? get _myUserId => _userVM.user.user_id;
 
   /// 지금 보고 있는 크루에서 내 역할. 멤버 목록의 `status`를 그대로 쓴다.

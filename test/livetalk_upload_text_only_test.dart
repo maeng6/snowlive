@@ -6,7 +6,9 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 
-/// 라이브톡 올리기 — `사진 없이 글만 올리기` 경로.
+/// 라이브톡 올리기 — **사진 없이 글만 올리는** 경로.
+/// 예전에는 1단계에 `사진 없이 글만 올리기` 버튼이 따로 있었는데, 안내 문구에 녹이고
+/// 다음 버튼을 늘 활성으로 바꿨다(사용자 확정). 그 동작을 여기서 못 박는다.
 void main() {
   setUp(() => Get.testMode = true);
   tearDown(Get.reset);
@@ -50,24 +52,24 @@ void main() {
     }
   }
 
+  /// 1단계의 진행 버튼 — PC·태블릿은 `›` 원형, 모바일 시트는 `다음` 알약이다.
+  Finder nextButton(double width) =>
+      width < 768 ? find.text('다음') : find.byIcon(Icons.chevron_right);
+
   for (final width in <double>[1440, 800, 375]) {
-    testWidgets('${width.toInt()}: `사진 없이 글만 올리기`는 카드 안쪽에 여유를 두고 앉는다', (tester) async {
+    testWidgets('${width.toInt()}: 안내 문구가 사진 없이도 올릴 수 있다고 알려준다', (tester) async {
       await openFlow(tester, width);
       expect(tester.takeException(), isNull);
-      final entry = tester.getRect(find.text('사진 없이 글만 올리기'));
-      final card = cardRect(tester);
-      // 예전엔 카드 아래 끝에 붙어 있었다(여백 ~6).
-      // 목업 카드 아래 여백: PC 40 / 태블릿 25 (모바일 시트는 10 + 안전영역).
-      final minGap = switch (width) { >= 1024 => 36.0, >= 768 => 24.0, _ => 18.0 };
-      expect(card.bottom - entry.bottom, greaterThanOrEqualTo(minGap));
-      expect(find.text('이미지 없이 글만 올리기'), findsNothing);
+      expect(find.textContaining('사진 없이 글만 올려도 괜찮아요'), findsOneWidget);
+      // 따로 있던 버튼은 없앴다.
+      expect(find.text('사진 없이 글만 올리기'), findsNothing);
     });
 
-    testWidgets('${width.toInt()}: 1단계 → 글만 올리기 → 사진 추가 칸, 카드 높이가 그대로다', (tester) async {
+    testWidgets('${width.toInt()}: 사진을 안 골라도 다음으로 넘어간다, 카드 높이도 그대로', (tester) async {
       await openFlow(tester, width);
       final step0 = cardRect(tester).height;
 
-      await tester.tap(find.text('사진 없이 글만 올리기'));
+      await tester.tap(nextButton(width));
       await tester.pump(const Duration(milliseconds: 300));
       expect(tester.takeException(), isNull);
       expect(find.text('사진 추가'), findsOneWidget);
@@ -97,21 +99,23 @@ void main() {
   testWidgets('크루톡도 두 단계 높이가 같다(공개범위 줄 포함)', (tester) async {
     await openFlow(tester, 1440, crewId: 334);
     final step0 = cardRect(tester).height;
-    await tester.tap(find.text('사진 없이 글만 올리기'));
+    await tester.tap(nextButton(1440));
     await tester.pump(const Duration(milliseconds: 300));
     expect(tester.takeException(), isNull);
     expect(find.text('전체공개'), findsOneWidget);
     expect(cardRect(tester).height, closeTo(step0, 0.5));
   });
 
-  testWidgets('사진을 고른 뒤 `글만 올리기`를 누르면 사진을 빼고 넘어간다', (tester) async {
+  testWidgets('고른 사진은 다음 단계로 그대로 따라간다', (tester) async {
     await openFlow(tester, 1440);
     vm.setPickedImage(XFile('blob:http://localhost/p'));
     await tester.pump();
     drainImageErrors(tester);
-    await tester.tap(find.text('사진 없이 글만 올리기'));
+    await tester.tap(nextButton(1440));
     await tester.pump(const Duration(milliseconds: 300));
-    expect(vm.hasPickedImage, isFalse);
-    expect(find.text('사진 없이 글만 올려요.'), findsOneWidget);
+    drainImageErrors(tester);
+    // 예전 `글만 올리기` 버튼은 사진을 빼고 넘어갔지만, 다음 버튼은 그대로 들고 간다.
+    expect(vm.hasPickedImage, isTrue);
+    expect(find.text('글 내용을 입력하세요.'), findsOneWidget);
   });
 }

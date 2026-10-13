@@ -187,17 +187,23 @@ class CrewMemberRankedRowWeb extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final m = RankingRowMetrics.of(context);
+
     return Row(
       children: [
+        // 순위 숫자 — 랭킹 홈과 같은 규격(Bold 14 · 좌측 정렬 · 순위 ↔ 프로필 간격은
+        // `RankingRowMetrics.rankGap`). 폭은 세 자리(`226`)까지 들어가는 28 고정 —
+        // 랭킹 홈은 페이지마다 TextPainter로 재지만, 크루 안 순위는 자리 수가
+        // 거의 변하지 않아 고정값이 목록 사이에서 더 안정적이다.
         SizedBox(
           width: kCrewMemberRankWidth,
           child: Text(
             '$rank',
-            textAlign: TextAlign.center,
             maxLines: 1,
             style: SDSTextStyle.bold.copyWith(fontSize: 14, color: SDSColor.gray900),
           ),
         ),
+        SizedBox(width: m.rankGap),
         // 아바타·닉네임·상태메시지·점수·티어는 멤버 목록과 같은 줄을 쓴다.
         Expanded(child: CrewMemberRowWeb(member: member, onTap: onTap)),
       ],

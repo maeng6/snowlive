@@ -267,6 +267,9 @@ class WebLiveCrewBinding extends Bindings {
     // 갤러리 사진의 `라이브톡에서 보기`·신고·숨기기가 라이브톡 상세 VM을 Get.find 한다
     // → 함께 등록해야 URL 직접 진입(#/livecrew 새로고침)에서 죽지 않는다.
     Get.lazyPut(() => LiveTalkDetailViewModelWeb(), fenix: true);
+    // `가입 신청한 크루` 입구를 **신청이 있을 때만** 띄우려면 홈에서 내 신청 목록을
+    // 읽어야 한다(목록·취소가 가입하기 VM에 들어 있다).
+    Get.lazyPut(() => CrewJoinViewModelWeb(), fenix: true);
   }
 }
 

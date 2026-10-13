@@ -14,6 +14,8 @@ import 'package:com.snowlive/web/view/liveCrew/w_livecrew_filter_chips_web.dart'
 import 'package:com.snowlive/web/view/liveCrew/w_livecrew_gallery_web.dart';
 import 'package:com.snowlive/web/view/liveCrew/w_livecrew_list_grid_web.dart';
 import 'package:com.snowlive/web/view/liveCrew/w_livecrew_photo_viewer_web.dart';
+import 'package:com.snowlive/web/view/liveCrew/crew_my_applications_dummy_web.dart';
+import 'package:com.snowlive/web/viewmodel/crew/vm_crewJoin_web.dart';
 import 'package:com.snowlive/web/view/liveCrew/w_livecrew_sidebar_web.dart';
 import 'package:com.snowlive/web/view/liveCrew/w_livecrew_top_carousel_web.dart';
 import 'package:com.snowlive/web/view/liveTalk/w_livetalk_detail_overlay_web.dart';
@@ -76,6 +78,10 @@ class _LiveCrewHomeViewWebState extends State<LiveCrewHomeViewWeb> {
   /// 지금 불러 둔 크루 id — 같은 크루를 중복 조회하지 않는다.
   int? _myCrewLoadedId;
 
+  /// 승인 대기 중인 내 가입 신청이 있는지. **있을 때만** `가입 신청한 크루` 입구를
+  /// 띄운다(사용자 확정) — 신청한 적 없는 사람에게는 빈 화면으로 가는 버튼이다.
+  bool _hasApplications = false;
+
   @override
   void initState() {
     super.initState();
@@ -84,12 +90,14 @@ class _LiveCrewHomeViewWebState extends State<LiveCrewHomeViewWeb> {
       if (!mounted) return;
       _vm.fetchCrewHome();
       _syncMyCrew();
+      _syncMyApplications();
     });
     // 홈 데이터는 재조회하지 않는다 — `crew/home/`은 user_id를 받지 않아 게스트와
     // 로그인 응답이 같다. 다만 **내 크루**는 로그인이 확정돼야 알 수 있어 그때 읽는다.
     ever(Get.find<AuthCheckViewModelWeb>().statusRx, (WebAuthStatus status) {
       if (status == WebAuthStatus.checking || !mounted) return;
       _syncMyCrew();
+      _syncMyApplications();
     });
   }
 
@@ -111,6 +119,25 @@ class _LiveCrewHomeViewWebState extends State<LiveCrewHomeViewWeb> {
     if (!mounted || !res.success) return;
     setState(() => _myCrew =
         CrewDetailResponse.fromJson(res.data as Map<String, dynamic>).crewDetailInfo);
+  }
+
+  /// 승인 대기 중인 신청이 있는지 확인한다. 로그인 전이거나 이미 크루가 있으면
+  /// 조회하지 않는다(그 상태에서는 입구 자체가 안 뜬다).
+  Future<void> _syncMyApplications() async {
+    // 더미를 강제한 동안은 입구가 사라지지 않게 통과시킨다(치울 때 함께 되돌린다).
+    if (kCrewMyApplicationsForceDummy) {
+      if (!_hasApplications && mounted) setState(() => _hasApplications = true);
+      return;
+    }
+    if (_userVm.user.user_id == null || _userVm.user.crew_id != null) {
+      if (_hasApplications && mounted) setState(() => _hasApplications = false);
+      return;
+    }
+    final vm = Get.find<CrewJoinViewModelWeb>();
+    await vm.loadMyApplications();
+    if (!mounted) return;
+    final has = vm.myApplications.isNotEmpty;
+    if (has != _hasApplications) setState(() => _hasApplications = has);
   }
 
   Future<void> _openLiveTalk(LiveTalk talk) async {
@@ -186,11 +213,25 @@ class _LiveCrewHomeViewWebState extends State<LiveCrewHomeViewWeb> {
     final content = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          '라이브크루',
-          // 홈 타이틀 공통: PC 32 / 태블릿·모바일 24 (중고거래 홈 기준).
-          style: SDSTextStyle.extraBold.copyWith(
-              fontSize: webHomeTitleSize(context), color: SDSColor.gray900),
+        // 우측 열이 접히는 태블릿·모바일에서는 `가입 신청한 크루` 입구가 사이드바에
+        // 없으므로 **타이틀 줄 제일 우측**에 텍스트 버튼으로 둔다(사용자 확정).
+        // PC는 사이드바에 라인 버튼으로 있으니 넣지 않는다. 이미 크루가 있으면
+        // 신청 내역이 의미 없어 사이드바와 같은 규칙으로 감춘다(한 계정 한 크루).
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Expanded(
+              child: Text(
+                '라이브크루',
+                // 홈 타이틀 공통: PC 32 / 태블릿·모바일 24 (중고거래 홈 기준).
+                style: SDSTextStyle.extraBold.copyWith(
+                    fontSize: webHomeTitleSize(context), color: SDSColor.gray900),
+              ),
+            ),
+            // 신청이 **있을 때만** 띄운다(`_syncMyApplications`가 로그인·크루 유무까지 본다).
+            if (!context.isDesktop && _hasApplications)
+              const LiveCrewMyApplicationsLink(),
+          ],
         ),
         // 타이틀 ↔ 본문: PC 32 / 좁은 폭 12.
         // 좁은 폭은 바로 아래가 캐러셀 레일인데, 레일이 카드 위아래로 그림자 여유
@@ -303,7 +344,7 @@ class _LiveCrewHomeViewWebState extends State<LiveCrewHomeViewWeb> {
       children: [
         Expanded(child: child),
         const SizedBox(width: kWebSidebarGap),
-        LiveCrewSidebarWeb(myCrew: _myCrew),
+        LiveCrewSidebarWeb(myCrew: _myCrew, hasApplications: _hasApplications),
       ],
     );
   }

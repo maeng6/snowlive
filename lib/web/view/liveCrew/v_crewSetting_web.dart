@@ -1,4 +1,3 @@
-import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/core/viewmodel/vm_user.dart';
 import 'package:com.snowlive/web/routes/routes_web.dart';
 import 'package:com.snowlive/web/util/responsive_web.dart';
@@ -41,8 +40,6 @@ class _CrewSettingViewWebState extends State<CrewSettingViewWeb> {
       });
     }
   }
-
-  String get _crewRoute => '${WebRoutes.crewHome}?id=$_crewId';
 
   Future<void> _open(String route) async {
     await Get.toNamed('$route?id=$_crewId');
@@ -177,16 +174,6 @@ class _CrewSettingViewWebState extends State<CrewSettingViewWeb> {
               else
                 WebSettingsRow(label: '크루 탈퇴', onTap: _onWithdraw),
             ],
-          ),
-          const SizedBox(height: SDSSpacing.md),
-          Center(
-            child: TextButton(
-              onPressed: () => Get.offAllNamed(_crewRoute),
-              child: Text(
-                '크루홈으로',
-                style: SDSTextStyle.bold.copyWith(fontSize: 13, color: SDSColor.gray500),
-              ),
-            ),
           ),
         ],
       ),

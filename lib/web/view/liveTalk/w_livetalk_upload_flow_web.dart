@@ -170,17 +170,21 @@ class _UploadFlowState extends State<_UploadFlow> {
       };
 
   /// PC·태블릿은 같은 드래그 안내(목업 80:217253 / 80:228872), 모바일만 앨범/촬영 안내.
+  ///
+  /// 사진 없이 글만 올릴 수도 있어서 그 안내를 **문구에 같이 적는다**(사용자 확정) —
+  /// 예전에는 아래에 `사진 없이 글만 올리기` 버튼을 따로 뒀는데, 다음 버튼이 늘
+  /// 활성이라 그냥 넘어가면 되므로 버튼은 없앴다.
   String _pickSubtitle(BuildContext context) =>
       context.screenType == WebScreenType.mobile
-          ? '라이브톡에 올릴 사진을\n앨범에서 선택하거나 촬영해주세요'
-          : '여기에 사진을 드래그하세요';
+          ? '라이브톡에 올릴 사진을 앨범에서 선택하거나 촬영해주세요\n사진 없이 글만 올려도 괜찮아요'
+          : '여기에 사진을 드래그하세요\n사진 없이 글만 올려도 괜찮아요';
 
   VoidCallback? _nextAction(bool isStep0) {
     if (_vm.isSubmitting) return null;
     if (isStep0) {
-      // 사진이 없으면 진행 버튼이 비활성이다(목업의 회색 `›`).
-      // 대신 아래 '이미지 없이 글만 올리기'로 텍스트만 올릴 수 있다.
-      return _vm.hasPickedImage ? () => setState(() => _step = 1) : null;
+      // 사진이 없어도 글만 올릴 수 있으므로 **늘 활성**이다(사용자 확정).
+      // 실제로 올릴 수 있는지는 2단계에서 사진·글 유무로 판정한다.
+      return () => setState(() => _step = 1);
     }
     // 2단계(업로드): 이미지가 있거나 글이 있으면 올릴 수 있다(둘 다 없으면 비활성).
     final canSubmit = _vm.hasPickedImage || _textController.text.trim().isNotEmpty;
@@ -200,9 +204,9 @@ class _UploadFlowState extends State<_UploadFlow> {
         Center(child: _ImagePreviewBox(vm: _vm, isDragging: _isDragging)),
         SizedBox(
           height: switch (context.screenType) {
-            // 목업 42 / 50에서 줄였다 — 아래 `글만 올리기` 줄이 들어갈 자리.
+            // 목업 — PC 42 / 태블릿 50.
             WebScreenType.desktop => _kPickGap,
-            WebScreenType.tablet => _kPickGap,
+            WebScreenType.tablet => 50,
             // 모바일은 사진 칸 아래에 안내 문구가 먼저 온다.
             WebScreenType.mobile => 16,
           },
@@ -258,17 +262,6 @@ class _UploadFlowState extends State<_UploadFlow> {
               ],
             ),
           ),
-        // 사진 없이 글만 올리고 싶을 때 — 2단계(글 작성)로 바로 넘어간다.
-        // 고른 사진이 있으면 빼고 넘어간다(이 버튼의 뜻이 `사진 없이`라서).
-        const SizedBox(height: _kTextOnlyGap),
-        Center(
-          child: _TextOnlyEntry(
-            onTap: () {
-              _vm.clearPickedImage();
-              setState(() => _step = 1);
-            },
-          ),
-        ),
         if (isMobile) const SizedBox(height: 10),
       ],
     );
@@ -329,21 +322,15 @@ class _UploadFlowState extends State<_UploadFlow> {
   }
 }
 
-/// 1단계 사진 칸 ↔ 버튼(PC·태블릿). 목업 42/50에서 줄여 `글만 올리기` 줄 자리를 만든다.
-const double _kPickGap = 30;
+/// 1단계 사진 칸 ↔ 버튼(PC·태블릿). 목업 42/50.
+const double _kPickGap = 42;
 
-/// 선택 버튼 ↔ `글만 올리기` 줄.
-const double _kTextOnlyGap = 8;
-
-/// `글만 올리기` 줄 높이.
-const double _kTextOnlyHeight = 40;
-
-/// 카드가 목업보다 커지는 양 = 줄(간격 포함) − 줄인 사진 칸 아래 간격.
-/// PC 48 − 12 = 36 / 태블릿 48 − 20 = 28. 모바일은 시트 높이를 내용이 정해서 1단계 실측
-/// (487 = 목업 455 + 32)에 맞춘다 — 2단계가 이보다 낮으면 단계를 넘길 때 시트가 들썩인다.
-const double _kTextOnlyExtraDesktop = _kTextOnlyGap + _kTextOnlyHeight - (42 - _kPickGap);
-const double _kTextOnlyExtraTablet = _kTextOnlyGap + _kTextOnlyHeight - (50 - _kPickGap);
-const double _kTextOnlyExtraMobile = 32;
+/// 카드가 목업보다 커지는 양. 안내 문구가 **두 줄**이 되면서(사진 없이도 올릴 수
+/// 있다는 안내를 더했다) 늘어난 한 줄만큼이다. 모바일은 본문에 문구가 들어 있어
+/// 그 줄만큼, PC·태블릿은 부제라 카드 머리 쪽에서 늘어난다.
+const double _kTextOnlyExtraDesktop = 20;
+const double _kTextOnlyExtraTablet = 20;
+const double _kTextOnlyExtraMobile = 20;
 
 /// 1단계 사진 칸 한 변(PC·태블릿 목업 240). 카드 390 안에서 좌우 75씩 남는다.
 const double kLiveTalkPickBoxSize = 240;
@@ -495,10 +482,17 @@ class _AddPhotoSlotState extends State<_AddPhotoSlot> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(
-                Icons.add_photo_alternate_outlined,
-                size: 26,
-                color: active ? SDSColor.snowliveBlue : SDSColor.gray400,
+              // 1단계 사진 칸과 **같은 카메라 아이콘**을 쓴다(크기만 26으로 줄임).
+              // ⚠️ colorFilter로 색을 덮지 않는다 — srcIn은 실루엣 전체를 칠해서
+              // 렌즈처럼 흰색으로 뚫어둔 구멍까지 메워버린다. 색은 그대로 두고
+              // 불투명도만 조절한다(1단계와 같은 처리).
+              Opacity(
+                opacity: active ? 0.55 : 0.25,
+                child: SvgPicture.asset(
+                  'assets/imgs/icons/icon_input_camera.svg',
+                  width: 26,
+                  height: 26,
+                ),
               ),
               const SizedBox(height: 4),
               Text(
@@ -603,61 +597,6 @@ class _VisibilityToggle extends StatelessWidget {
         // 크기·색 규칙은 공용 WebSwitch에 있다.
         WebSwitch(value: isPublic, onChanged: onChanged),
       ],
-    );
-  }
-}
-
-/// `사진 없이 글만 올리기 ›` — 1단계에서 2단계(글 작성)로 바로 가는 보조 버튼.
-///
-/// 예전엔 밑줄 회색 링크라 눈에 잘 안 띄고 카드 아래 끝에 붙어 있었다. 라벨 + `›`로
-/// "글 쓰는 쪽으로 넘어간다"는 걸 보이고, hover하면 알약 배경이 깔린다.
-/// 메인 동작(사진 고르기)보다 한 단계 약하게 — 채움 없는 텍스트 버튼이다.
-class _TextOnlyEntry extends StatefulWidget {
-  final VoidCallback onTap;
-
-  const _TextOnlyEntry({required this.onTap});
-
-  @override
-  State<_TextOnlyEntry> createState() => _TextOnlyEntryState();
-}
-
-class _TextOnlyEntryState extends State<_TextOnlyEntry> {
-  bool _hovered = false;
-
-  @override
-  Widget build(BuildContext context) {
-    return MouseRegion(
-      cursor: SystemMouseCursors.click,
-      onEnter: (_) => setState(() => _hovered = true),
-      onExit: (_) => setState(() => _hovered = false),
-      child: GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        onTap: widget.onTap,
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 150),
-          height: _kTextOnlyHeight,
-          padding: const EdgeInsets.symmetric(horizontal: 14),
-          decoration: BoxDecoration(
-            color: _hovered ? SDSColor.gray50 : Colors.transparent,
-            borderRadius: BorderRadius.circular(_kTextOnlyHeight / 2),
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                '사진 없이 글만 올리기',
-                style: SDSTextStyle.bold.copyWith(
-                  fontSize: 14,
-                  height: 18 / 14,
-                  color: SDSColor.gray700,
-                ),
-              ),
-              const SizedBox(width: 2),
-              const Icon(Icons.chevron_right, size: 18, color: SDSColor.gray500),
-            ],
-          ),
-        ),
-      ),
     );
   }
 }

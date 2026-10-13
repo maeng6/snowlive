@@ -5,6 +5,7 @@ import 'package:com.snowlive/web/util/crew_visual_web.dart';
 import 'package:com.snowlive/web/util/responsive_web.dart';
 import 'package:com.snowlive/web/view/liveCrew/w_crew_image_color_picker_web.dart';
 import 'package:com.snowlive/web/view/liveCrew/w_crew_setting_scaffold_web.dart';
+import 'package:com.snowlive/web/view/liveCrew/w_crew_setting_widgets_web.dart';
 import 'package:com.snowlive/web/view/liveCrew/w_crewcreate_image_picker_web.dart';
 import 'package:com.snowlive/web/viewmodel/crew/vm_crewCreate_web.dart';
 import 'package:com.snowlive/web/viewmodel/crew/vm_crewSetting_web.dart';
@@ -110,12 +111,16 @@ class _CrewSettingImageViewWebState extends State<CrewSettingImageViewWeb> {
       fallbackRoute: '${WebRoutes.crewSetting}?id=$_crewId',
       actionLabel: '완료',
       onAction: _onSave,
+      submitting: _vm.submittingRx,
       child: CrewSettingGuard(
         isLoggedIn: _userVm.user.user_id != null,
         canOpen: _vm.canManageCrew,
         child: Obx(() {
           // 서버 값(색·로고)을 읽어야 하므로 구독을 걸어둔다.
           final info = _vm.info;
+          // 색이 오기 전에는 팔레트 **첫 색**이 고른 것처럼 보이다가 실제 색으로
+          // 튄다(로고도 기본 마크가 먼저 스친다) → 자리표시로 막는다.
+          if (info == null) return const CrewSettingImageSkeleton();
           return Padding(
             padding: const EdgeInsets.only(top: SDSSpacing.lg),
             child: CrewImageColorPicker(

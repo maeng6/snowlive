@@ -49,7 +49,8 @@ class _CrewSeasonRankingViewWebState extends State<CrewSeasonRankingViewWeb> {
     });
   }
 
-  /// 어느 시즌 랭킹인지 목록 위에 함께 적는다(제목은 목업대로 고정).
+  /// 어느 시즌 랭킹인지 **타이틀에** 적는다 — 이 화면은 진입한 시즌의 데이터만
+  /// 보여주므로(기록실에서 시즌을 들고 넘어온다) 목록 위에 따로 적을 필요가 없다.
   String get _seasonLabel {
     final season = _season ?? _vm.season;
     final matched = crewRecordSeasons().firstWhere(
@@ -62,8 +63,11 @@ class _CrewSeasonRankingViewWebState extends State<CrewSeasonRankingViewWeb> {
   @override
   Widget build(BuildContext context) {
     return CrewRecordScaffoldWeb(
-      title: '크루원 시즌 랭킹',
+      title: '$_seasonLabel 크루원 랭킹',
+      // 서브 페이지 공통 폭 800(PC만 — 태블릿·모바일은 좌우 여백 20/16만 두고 꽉 찬다).
       maxWidth: kWebSubPageMaxWidth,
+      // 페이지네이션이 바닥에 붙지 않게(멤버 목록과 같은 80).
+      bottomPadding: 80,
       fallbackRoute: '${WebRoutes.crewRecordRoom}?id=$_crewId',
       child: Obx(_buildBody),
     );
@@ -101,21 +105,17 @@ class _CrewSeasonRankingViewWebState extends State<CrewSeasonRankingViewWeb> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Row(
-          children: [
-            Text(
-              '크루원 ${members.length}',
-              style: SDSTextStyle.bold.copyWith(fontSize: 15, color: SDSColor.gray900),
-            ),
-            const SizedBox(width: SDSSpacing.sm),
-            Text(
-              _seasonLabel,
-              style: SDSTextStyle.regular.copyWith(fontSize: 13, color: SDSColor.gray500),
-            ),
-          ],
+        // 섹션 제목 공통 Bold 16. 시즌은 타이틀에 있어 여기서 또 적지 않는다.
+        Text(
+          '크루원 ${members.length}',
+          style: SDSTextStyle.bold.copyWith(fontSize: 16, color: SDSColor.gray900),
         ),
         const SizedBox(height: SDSSpacing.md),
-        for (var i = 0; i < pageItems.length; i++)
+        for (var i = 0; i < pageItems.length; i++) ...[
+          // 행 사이 8 — **랭킹 홈 목록과 같은 간격**(`v_rankingHome_web.dart`의
+          // 행마다 `Padding(bottom: 8)`). 순위 숫자가 붙은 랭킹 목록이라 멤버 목록의
+          // 피치 50이 아니라 랭킹 쪽을 따른다(사용자 확정).
+          if (i > 0) const SizedBox(height: 8),
           CrewMemberRankedRowWeb(
             // 서버 `overall_rank`는 전체 랭킹 순위라 크루 안에서는 맞지 않는다 →
             // 목록 순서로 번호를 붙인다(앱과 동일).
@@ -123,6 +123,7 @@ class _CrewSeasonRankingViewWebState extends State<CrewSeasonRankingViewWeb> {
             member: pageItems[i],
             onTap: () => _onMemberTap(pageItems[i]),
           ),
+        ],
         if (totalPages > 1) ...[
           const SizedBox(height: SDSSpacing.xl),
           NumberedPaginationBar(
