@@ -1,6 +1,8 @@
 import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/core/viewmodel/vm_user.dart';
 import 'package:com.snowlive/web/routes/routes_web.dart';
+import 'package:com.snowlive/web/view/community/v_communityUpload_web.dart'
+    show openCommunityUpload;
 import 'package:com.snowlive/web/util/responsive_web.dart';
 import 'package:com.snowlive/web/view/community/w_community_header_web.dart';
 import 'package:com.snowlive/web/view/community/w_community_list_web.dart';
@@ -98,7 +100,8 @@ class _CommunityHomeViewWebState extends State<CommunityHomeViewWeb> {
     _reload();
   }
 
-  void _onWritePost() => Get.toNamed(WebRoutes.communityUpload);
+  // 미로그인이면 페이지 대신 로그인 유도 팝업(중고거래와 동일 처리).
+  void _onWritePost() => openCommunityUpload(context);
 
   @override
   Widget build(BuildContext context) {
