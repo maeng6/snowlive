@@ -108,19 +108,12 @@ Future<void> showWebTierImageViewer(
     builder: (ctx) {
       final double viewW = MediaQuery.of(ctx).size.width;
       final double imgW = math.min(viewW - 72, 360).toDouble();
-      // 탭뿐 아니라 ESC로도 닫는다(딤 처리된 확대 뷰 공통 규칙). 입력이 없어
-      // autofocus로 포커스를 잡아도 안전하다.
+      // 탭뿐 아니라 ESC로도 닫는다(딤 처리된 확대 뷰 공통 규칙).
+      // autofocus는 페이지에 이미 포커스가 있으면 동작하지 않아서(ESC 미작동),
+      // 명시적으로 포커스를 요청하는 _TierEscFocus를 쓴다.
       return Positioned.fill(
-        child: Focus(
-          autofocus: true,
-          onKeyEvent: (node, event) {
-            if (event is KeyDownEvent &&
-                event.logicalKey == LogicalKeyboardKey.escape) {
-              close();
-              return KeyEventResult.handled;
-            }
-            return KeyEventResult.ignored;
-          },
+        child: _TierEscFocus(
+          onEscape: close,
           child: Stack(
             children: [
               Positioned.fill(
@@ -152,6 +145,51 @@ Future<void> showWebTierImageViewer(
   );
   overlay.insert(entry);
   return completer.future;
+}
+
+/// 티어 확대 뷰에 ESC 닫기를 입힌다. 루트 Overlay에 꽂히는 엔트리라 키 이벤트를
+/// 받으려면 포커스가 있어야 하는데, autofocus는 페이지에 포커스가 이미 있으면
+/// 동작하지 않아서(= ESC가 안 먹힘) 마운트 직후 **명시적으로** 포커스를 요청한다.
+class _TierEscFocus extends StatefulWidget {
+  final VoidCallback onEscape;
+  final Widget child;
+
+  const _TierEscFocus({required this.onEscape, required this.child});
+
+  @override
+  State<_TierEscFocus> createState() => _TierEscFocusState();
+}
+
+class _TierEscFocusState extends State<_TierEscFocus> {
+  final FocusNode _node = FocusNode(debugLabel: 'tierEsc');
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) _node.requestFocus();
+    });
+  }
+
+  @override
+  void dispose() {
+    _node.dispose();
+    super.dispose();
+  }
+
+  KeyEventResult _onKey(FocusNode node, KeyEvent event) {
+    if (event is KeyDownEvent &&
+        event.logicalKey == LogicalKeyboardKey.escape) {
+      widget.onEscape();
+      return KeyEventResult.handled;
+    }
+    return KeyEventResult.ignored;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Focus(focusNode: _node, onKeyEvent: _onKey, child: widget.child);
+  }
 }
 
 class _WebImageViewer extends StatefulWidget {
@@ -228,14 +266,22 @@ class _WebImageViewerState extends State<_WebImageViewer>
     duration: const Duration(milliseconds: 200),
   );
 
+  // ESC/화살표 키를 받으려면 포커스가 필요하다. autofocus만으로는 페이지에 이미
+  // 포커스가 있을 때 동작하지 않아, 마운트 직후 명시적으로 포커스를 요청한다.
+  final FocusNode _viewerFocus = FocusNode(debugLabel: 'imageViewer');
+
   @override
   void initState() {
     super.initState();
     _index = widget.initialIndex;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) _viewerFocus.requestFocus();
+    });
   }
 
   @override
   void dispose() {
+    _viewerFocus.dispose();
     _snapBackCtrl.dispose();
     _transform.dispose();
     super.dispose();
@@ -360,6 +406,7 @@ class _WebImageViewerState extends State<_WebImageViewer>
     _scheduleMeasure();
 
     return Focus(
+      focusNode: _viewerFocus,
       autofocus: true,
       onKeyEvent: _onKey,
       child: Stack(
