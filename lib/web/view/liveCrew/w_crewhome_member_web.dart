@@ -7,6 +7,7 @@ import 'package:com.snowlive/web/viewmodel/crew/vm_crewSetting_web.dart';
 import 'package:com.snowlive/web/util/responsive_web.dart';
 import 'package:com.snowlive/web/viewmodel/friend/vm_friend_web.dart';
 import 'package:com.snowlive/web/widget/w_network_image_web.dart';
+import 'package:com.snowlive/web/widget/w_web_image_viewer_web.dart';
 import 'package:com.snowlive/web/widget/w_web_avatar_web.dart';
 import 'package:com.snowlive/web/widget/w_web_overlay_modal_web.dart';
 import 'package:com.snowlive/web/widget/w_web_profile_card_web.dart';
@@ -284,13 +285,21 @@ class _CrewMemberRowWebState extends State<CrewMemberRowWeb> {
               ),
               if (member.tierIconUrl?.isNotEmpty ?? false) ...[
                 const SizedBox(width: 8),
-                WebNetworkImage(
-                  url: member.tierIconUrl,
-                  width: 36,
-                  height: 36,
-                  fit: BoxFit.contain,
-                  showPlaceholder: false,
-                  smoothDownscale: true,
+                MouseRegion(
+                  cursor: SystemMouseCursors.click,
+                  child: GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    onTap: () =>
+                        showWebPhotoViewer(context, url: member.tierIconUrl),
+                    child: WebNetworkImage(
+                      url: member.tierIconUrl,
+                      width: 36,
+                      height: 36,
+                      fit: BoxFit.contain,
+                      showPlaceholder: false,
+                      smoothDownscale: true,
+                    ),
+                  ),
                 ),
               ],
             ],

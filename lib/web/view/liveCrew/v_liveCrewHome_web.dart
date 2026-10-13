@@ -119,13 +119,17 @@ class _LiveCrewHomeViewWebState extends State<LiveCrewHomeViewWeb> {
     // 라이브톡 홈의 분기를 그대로 따른다 — 모바일만 별도 화면, 그 외는 오버레이.
     if (context.screenType == WebScreenType.mobile) {
       await Get.toNamed('${WebRoutes.liveTalkDetail}?id=$id');
+      // 상세에서 삭제됐을 수 있으니 돌아오면 갤러리를 새로고침한다.
+      if (mounted) await _vm.refresh();
       return;
     }
-    await showLiveTalkDetailOverlay(
+    // 오버레이는 목록 변경 여부(true=좋아요/댓글/삭제)를 반환한다 — 변경 시 새로고침.
+    final changed = await showLiveTalkDetailOverlay(
       context: context,
       livetalkId: id,
       userId: _userVm.user.user_id,
     );
+    if (changed && mounted) await _vm.refresh();
   }
 
   Future<void> _onPhotoMoreAction(LiveTalk talk, WebMoreAction action) async {

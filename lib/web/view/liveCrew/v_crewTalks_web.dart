@@ -68,7 +68,7 @@ class _CrewTalksViewWebState extends State<CrewTalksViewWeb> {
     super.dispose();
   }
 
-  List<LiveTalk> get _talks => const [];
+  List<LiveTalk> get _talks => _vm.crewTalks;
 
   void _goBack() {
     // URL 직접 진입이라 돌아갈 화면이 없으면 크루홈으로 보낸다(멤버 화면과 같은 처리).
@@ -95,13 +95,17 @@ class _CrewTalksViewWebState extends State<CrewTalksViewWeb> {
     if (id == null) return;
     if (context.screenType == WebScreenType.mobile) {
       await Get.toNamed('${WebRoutes.liveTalkDetail}?id=$id');
+      // 상세에서 좋아요·댓글·삭제가 일어났을 수 있으니 돌아오면 목록을 새로고침한다.
+      if (mounted) await _vm.refresh();
       return;
     }
-    await showLiveTalkDetailOverlay(
+    // 오버레이는 목록 변경 여부(true=좋아요/댓글/삭제)를 반환한다 — 변경 시 새로고침.
+    final changed = await showLiveTalkDetailOverlay(
       context: context,
       livetalkId: id,
       userId: _userVm.user.user_id,
     );
+    if (changed && mounted) await _vm.refresh();
   }
 
   void _onMoreAction(LiveTalk item, WebMoreAction action) {
@@ -119,6 +123,8 @@ class _CrewTalksViewWebState extends State<CrewTalksViewWeb> {
           'livetalk_id': item.livetalkId,
           'user_id': userId,
         });
+        // 삭제 성공 시 목록을 새로고침해 지워진 글이 남지 않게 한다.
+        if (response.success && mounted) await _vm.refresh();
         return response.success;
       },
       onReport: () => mapWebActionResponse(
@@ -179,7 +185,7 @@ class _CrewTalksViewWebState extends State<CrewTalksViewWeb> {
                     Flexible(
                       child: ConstrainedBox(
                         constraints: const BoxConstraints(maxWidth: kCrewTalksFeedWidth),
-                        child: _buildFeedColumn(),
+                        child: Obx(() => _buildFeedColumn()),
                       ),
                     ),
                     const SizedBox(width: kWebSidebarGap),
@@ -187,7 +193,7 @@ class _CrewTalksViewWebState extends State<CrewTalksViewWeb> {
                   ],
                 )
               else
-                _buildFeedColumn(),
+                Obx(() => _buildFeedColumn()),
             ],
           ),
         ),

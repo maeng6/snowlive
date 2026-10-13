@@ -133,7 +133,11 @@ String homeTempLabel(dynamic raw) {
 
 /// 홈 날씨 카드가 쓰는 리조트. 정적 [resortList]가 nx/ny와 네이버·웹캠·슬로프·셔틀
 /// 링크를 모두 갖고 있어서 추가 API가 필요 없다.
-List<ResortModel> get homeResorts => resortList;
+///
+/// 앱의 리조트 셀렉터(w_selectResort/w_favoriteResort)가 `index != 4`로 제외하는
+/// 비활성 리조트(에덴밸리)를 웹도 같은 기준으로 숨긴다.
+List<ResortModel> get homeResorts =>
+    resortList.where((r) => r.index != 4).toList();
 
 /// 처음 보여줄 리조트. 로그인 유저는 자주 가는 스키장, 게스트는 목업의 휘닉스파크.
 ///

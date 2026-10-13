@@ -9,6 +9,7 @@ import 'package:com.snowlive/web/util/crew_visual_web.dart';
 import 'package:com.snowlive/web/util/responsive_web.dart';
 import 'package:com.snowlive/web/view/fleamarket/w_fleamarket_filter_sheet_web.dart';
 import 'package:com.snowlive/web/widget/w_web_filter_menu_web.dart';
+import 'package:com.snowlive/web/widget/w_web_image_viewer_web.dart';
 import 'package:com.snowlive/web/view/home/w_home_sections_web.dart';
 import 'package:com.snowlive/core/model/m_crewHome.dart';
 import 'package:com.snowlive/web/view/liveCrew/w_livecrew_crew_modal_web.dart';
@@ -573,7 +574,14 @@ class _RankingArchiveViewWebState extends State<RankingArchiveViewWeb> {
               ),
               if (!_isResortScoped && (user.overallTierIconUrl?.isNotEmpty ?? false)) ...[
                 const SizedBox(width: 8),
-                WebNetworkImage(url: user.overallTierIconUrl, width: 36, height: 36, fit: BoxFit.contain, showPlaceholder: false, smoothDownscale: true),
+                MouseRegion(
+                  cursor: SystemMouseCursors.click,
+                  child: GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    onTap: () => showWebPhotoViewer(context, url: user.overallTierIconUrl),
+                    child: WebNetworkImage(url: user.overallTierIconUrl, width: 36, height: 36, fit: BoxFit.contain, showPlaceholder: false, smoothDownscale: true),
+                  ),
+                ),
               ],
               ],
             ),
@@ -646,7 +654,14 @@ class _RankingArchiveViewWebState extends State<RankingArchiveViewWeb> {
                 ),
                 if (hasTierIcon) ...[
                   const SizedBox(width: 8),
-                  WebNetworkImage(url: crew.overallTierIconUrl, width: 36, height: 36, fit: BoxFit.contain, showPlaceholder: false, smoothDownscale: true),
+                  MouseRegion(
+                    cursor: SystemMouseCursors.click,
+                    child: GestureDetector(
+                      behavior: HitTestBehavior.opaque,
+                      onTap: () => showWebPhotoViewer(context, url: crew.overallTierIconUrl),
+                      child: WebNetworkImage(url: crew.overallTierIconUrl, width: 36, height: 36, fit: BoxFit.contain, showPlaceholder: false, smoothDownscale: true),
+                    ),
+                  ),
                 ],
               ],
             ),
