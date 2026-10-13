@@ -3,6 +3,7 @@ import 'package:com.snowlive/core/model/m_crewDetail.dart';
 import 'package:com.snowlive/web/routes/routes_web.dart';
 import 'package:com.snowlive/web/util/crew_visual_web.dart';
 import 'package:com.snowlive/web/util/responsive_web.dart';
+import 'package:com.snowlive/web/widget/w_web_title_row_link_web.dart';
 import 'package:com.snowlive/web/widget/w_network_image_web.dart';
 import 'package:com.snowlive/web/widget/w_web_stats_bar_web.dart';
 import 'package:com.snowlive/web/widget/w_web_icon_button_web.dart';
@@ -36,6 +37,10 @@ class CrewHomeHeaderWeb extends StatelessWidget {
   final int? visitorToday;
   final int? visitorTotal;
 
+  /// `가입 신청하기` — **모바일에서만** 이 줄 우측 끝에 텍스트 버튼으로 온다
+  /// (사용자 확정). PC·태블릿은 요약 바 안에 남아 있어 null로 들어온다.
+  final VoidCallback? onApply;
+
   const CrewHomeHeaderWeb({
     super.key,
     required this.info,
@@ -45,6 +50,7 @@ class CrewHomeHeaderWeb extends StatelessWidget {
     this.onAlarmTap,
     this.visitorToday,
     this.visitorTotal,
+    this.onApply,
   });
 
   String _fmtVisitor(int? v) => v == null ? '-' : _numberFormat.format(v);
@@ -99,14 +105,35 @@ class CrewHomeHeaderWeb extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text(
-                info.crewName ?? '',
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                // 크루명은 서브 페이지 타이틀 공통값(PC 30 / 태블릿 24 / 모바일 20).
-                // 목업 PC가 30이라 공통값과 같다.
-                style: SDSTextStyle.bold
-                    .copyWith(fontSize: webSubPageTitleSize(context), color: SDSColor.gray900),
+              // `가입 신청하기`(모바일 전용)는 **크루명과 같은 줄**에 둬서 글자와
+              // 세로 중심이 맞는다(사용자 확정 — 헤더 줄 전체 기준으로 가운데
+              // 두면 부제까지 포함한 중심이라 크루명보다 11 내려간다).
+              // 아이콘이 없는 상태라 이 열이 콘텐츠 우측선까지 차지한다.
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      info.crewName ?? '',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      // 크루명은 서브 페이지 타이틀 공통값(PC 30 / 태블릿 24 / 모바일 20).
+                      // 목업 PC가 30이라 공통값과 같다.
+                      style: SDSTextStyle.bold.copyWith(
+                          fontSize: webSubPageTitleSize(context), color: SDSColor.gray900),
+                    ),
+                  ),
+                  if (onApply != null) ...[
+                    const SizedBox(width: SDSSpacing.sm),
+                    // ⚠️ 높이는 링크에 **직접** 넘긴다(바깥에서 감싸면 상하 패딩까지
+                    // 조여져 글자 아래가 잘린다). 크루명 글줄과 같은 높이라
+                    // 세로 중심이 맞고 부제도 밀리지 않는다.
+                    WebTitleRowLink(
+                      label: '가입 신청하기',
+                      onTap: onApply!,
+                      boxHeight: webSubPageTitleSize(context) * (24 / 20),
+                    ),
+                  ],
+                ],
               ),
               if (subtitle.isNotEmpty) ...[
                 // 이름 ↔ 부제 2 (목업 161:94376).
@@ -274,6 +301,9 @@ class _CrewAlarmButtonState extends State<_CrewAlarmButton> {
 /// 크루 소개글 블록 — 앱 크루홈(`v_crewHome.dart:301~`)처럼 통계 바 아래에 따로 둔다.
 /// 한 줄을 넘으면 +/- 아이콘으로 펼치고 접는다(앱과 같은 에셋). 소개가 비면 아무것도
 /// 그리지 않는다(상위에서 비었을 때 넣지 않으니 안전장치 겸용).
+/// 소개글 글줄 높이. 펼침/접힘 토글도 **같은 높이**를 써야 글자가 튀지 않는다.
+const double _kIntroLineHeight = 22;
+
 class CrewHomeDescriptionWeb extends StatefulWidget {
   final String? description;
 
@@ -291,13 +321,14 @@ class _CrewHomeDescriptionWebState extends State<CrewHomeDescriptionWeb> {
     final text = widget.description?.trim() ?? '';
     if (text.isEmpty) return const SizedBox.shrink();
 
-    final textStyle = SDSTextStyle.regular
-        .copyWith(fontSize: 14, height: 22 / 14, color: SDSColor.gray700);
+    final textStyle = SDSTextStyle.regular.copyWith(
+        fontSize: 14, height: _kIntroLineHeight / 14, color: SDSColor.gray700);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        // 상단 구분선(앱과 같은 위치) — 요약 바 구분선과 같은 gray700 10%.
+        // 상단 구분선 — 소개글 블록이 **크루 이름 쪽 바로 아래**에 오므로 이름과
+        // 소개글을 가르는 선이 된다(사용자 확정).
         Container(height: 1, color: SDSColor.gray700.withValues(alpha: 0.1)),
         const SizedBox(height: 14),
         LayoutBuilder(
@@ -311,9 +342,11 @@ class _CrewHomeDescriptionWebState extends State<CrewHomeDescriptionWeb> {
             )..layout(maxWidth: (constraints.maxWidth - 28).clamp(0, constraints.maxWidth));
             final overflowing = painter.didExceedMaxLines;
 
+            // ⚠️ 정렬을 **항상 start**로 둔다. 접힘만 center로 주면 토글(22)과
+            // 글줄(22)이 같은 높이여도, 예전처럼 토글이 더 높으면 접힘에서 글자가
+            // 아래로 밀려 펼칠 때 1px 튀었다(사용자 지적).
             return Row(
-              crossAxisAlignment:
-                  _expanded ? CrossAxisAlignment.start : CrossAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Expanded(
                   child: Text(
@@ -354,14 +387,22 @@ class _CrewIntroToggle extends StatelessWidget {
       child: GestureDetector(
         onTap: onTap,
         behavior: HitTestBehavior.opaque,
-        child: Padding(
-          padding: const EdgeInsets.all(2),
-          child: Image.asset(
-            expanded
-                ? 'assets/imgs/icons/icon_minus_round.png'
-                : 'assets/imgs/icons/icon_plus_round.png',
-            width: 20,
-            height: 20,
+        // ⚠️ 높이를 **글줄(22)과 같게** 못 박고 아이콘을 그 안에서 가운데 둔다.
+        // 상하 패딩으로 24가 되면 글줄보다 높아져서 Row가 글자를 밀어낸다 —
+        // 펼침/접힘에서 글자 위치가 바뀌던 원인이다. 좌우 2는 유지해 누를 폭을 둔다.
+        child: SizedBox(
+          height: _kIntroLineHeight,
+          child: Center(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 2),
+              child: Image.asset(
+                expanded
+                    ? 'assets/imgs/icons/icon_minus_round.png'
+                    : 'assets/imgs/icons/icon_plus_round.png',
+                width: 20,
+                height: 20,
+              ),
+            ),
           ),
         ),
       ),

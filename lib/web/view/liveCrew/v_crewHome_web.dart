@@ -216,6 +216,11 @@ class _CrewHomeViewWebState extends State<CrewHomeViewWeb> {
       return isLoading ? const _CrewHomeSkeleton() : const SizedBox(height: 240);
     }
 
+    final isMobileWidth = context.screenType == WebScreenType.mobile;
+    // `가입 신청하기`는 내 크루가 아닐 때만 — 자리가 폭에 따라 다르다(사용자 확정):
+    // **모바일은 크루명 줄 우측 끝** 텍스트 버튼, PC·태블릿은 요약 바 안.
+    final VoidCallback? onApply = _vm.isMyCrew ? null : _onApply;
+
     // 헤더는 **블록 전체 폭**(목업 — 로고~설정 아이콘이 사이드바 오른쪽 끝까지 간다).
     // 그 아래부터 본문 874 / 사이드바 220으로 나뉜다.
     final header = CrewHomeHeaderWeb(
@@ -227,26 +232,38 @@ class _CrewHomeViewWebState extends State<CrewHomeViewWeb> {
       onAlarmTap: () => Get.toNamed('${WebRoutes.crewApplications}?id=$_crewId'),
       visitorToday: _vm.visitorToday,
       visitorTotal: _vm.visitorTotal,
+      onApply: isMobileWidth ? onApply : null,
     );
+
+    // 블록 사이 공통 간격 — 예전 "헤더 쪽 ↔ 요약 바" 값을 그대로 쓴다.
+    final double blockGap = context.isDesktop ? 30 : (isMobileWidth ? 16 : 20);
+    final hasDescription = info.description?.trim().isNotEmpty ?? false;
 
     final content = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        // 크루 소개글(있을 때만) — **크루 이름 쪽 바로 아래**, 요약 바보다 위다
+        // (사용자 확정). 블록 맨 위의 구분선이 이름과 소개글을 가른다.
+        if (hasDescription) ...[
+          CrewHomeDescriptionWeb(description: info.description),
+          SizedBox(height: blockGap),
+        ],
         CrewHomeSummaryBarWeb(
           memberCount: info.crewMemberTotal,
           overallRank: _season?.overallRank,
           totalScore: _season?.overallTotalScore,
-          // 내 크루가 아닐 때만 가입 신청을 노출한다(목업).
-          onApply: _vm.isMyCrew ? null : _onApply,
+          // 모바일은 크루명 줄로 올라가므로 여기서는 비운다.
+          onApply: isMobileWidth ? null : onApply,
           onMembersTap: () => Get.toNamed('${WebRoutes.crewMembers}?id=$_crewId'),
         ),
-        // 크루 소개글(있을 때만) — 앱처럼 통계 바 아래 별도 블록으로 둔다.
-        if (info.description?.trim().isNotEmpty ?? false) ...[
-          SizedBox(height: context.screenType == WebScreenType.mobile ? 16 : 20),
-          CrewHomeDescriptionWeb(description: info.description),
+        // `시즌 기록실 | 일별 현황` — PC는 우측 사이드바 카드로 있고, 우측 열이
+        // 접히는 좁은 폭에서는 **요약 바 아래**에 텍스트 줄로 온다(사용자 확정).
+        if (!context.isDesktop) ...[
+          SizedBox(height: blockGap),
+          CrewRecordLinkRow(crewId: _crewId),
         ],
         // 통계 바 ↔ 라이딩 통계 (PC·태블릿 40 / 모바일 32 — 목업).
-        SizedBox(height: context.screenType == WebScreenType.mobile ? 32 : 40),
+        SizedBox(height: isMobileWidth ? 32 : 40),
         CrewHomeRidingStatsWeb(
           season: _season,
           crewName: info.crewName ?? '',
@@ -287,10 +304,8 @@ class _CrewHomeViewWebState extends State<CrewHomeViewWeb> {
           // 뒤로가기 ↔ 로고 줄 (목업 — 태블릿 28 / 모바일 18).
           SizedBox(height: isMobile ? 18 : 28),
           header,
-          // 로고 줄 ↔ 링크 줄 (태블릿 10 / 모바일 12), 링크 줄 ↔ 통계 바는
-          // 헤더 블록 아래 여백으로 태블릿 20 / 모바일 16 (목업 161:94357·102331).
-          SizedBox(height: isMobile ? 12 : 10),
-          CrewRecordLinkRow(crewId: _crewId),
+          // 로고 줄 ↔ 본문(소개글 또는 요약 바) — 태블릿 20 / 모바일 16.
+          // 링크 줄은 요약 바 아래로 내려가 더 이상 여기 없다.
           SizedBox(height: isMobile ? 16 : 20),
           content,
         ],
@@ -301,7 +316,7 @@ class _CrewHomeViewWebState extends State<CrewHomeViewWeb> {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         header,
-        // 헤더 ↔ 통계 바 10 (목업 — 헤더 블록 196, 통계 바 206)
+        // 헤더 ↔ 본문(소개글 또는 통계 바) 30 (목업)
         const SizedBox(height: 30),
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -309,7 +324,7 @@ class _CrewHomeViewWebState extends State<CrewHomeViewWeb> {
             Expanded(child: content),
             const SizedBox(width: kWebSidebarGap),
             CrewHomeSidebarWeb(
-              // 내 크루가 아니면 업로드 버튼 없이 링크 카드만 보인다
+              // 내 크루가 아니면 업로드 버튼 없이 링크 카드만 보인다.
               onUploadTalk: _vm.isMyCrew ? _onUploadTalk : null,
               crewId: _crewId,
             ),
@@ -322,7 +337,7 @@ class _CrewHomeViewWebState extends State<CrewHomeViewWeb> {
   Widget _buildMemberSection(List<CrewRanking> members) {
     final topCount = crewHomeTopMemberCount(context);
     final top = members.take(topCount).toList();
-    // 2열은 태블릿까지(목업 161:93789 — 760 안에 356 × 2, 간격 48). 모바일만 1열.
+    // 2열은 태블릿까지(목업 161:93789 — 760 안에 356 × 2, 간격 48). 모바일만 1열
     final columns = context.screenType == WebScreenType.mobile ? 1 : 2;
     final perColumn = (top.length / columns).ceil();
 

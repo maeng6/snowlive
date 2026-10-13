@@ -4,6 +4,7 @@ import 'package:com.snowlive/web/util/crew_visual_web.dart';
 import 'package:com.snowlive/web/widget/w_network_image_web.dart';
 import 'package:com.snowlive/web/routes/routes_web.dart';
 import 'package:com.snowlive/web/util/responsive_web.dart';
+import 'package:com.snowlive/web/widget/w_web_title_row_link_web.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -247,43 +248,16 @@ class _CtaOutlinedButton extends StatelessWidget {
 }
 
 /// `가입 신청한 크루` 입구의 **텍스트 버튼** — 우측 열이 접히는 태블릿·모바일에서
-/// 라이브크루 타이틀 줄 **제일 우측**에 둔다(사용자 확정). hover는 아이콘·링크 공통(불투명도 0.6).
-class LiveCrewMyApplicationsLink extends StatefulWidget {
+/// 라이브크루 타이틀 줄 **제일 우측**에 둔다(사용자 확정).
+/// 규격·hover는 공용 [WebTitleRowLink] — 크루홈 모바일의 `가입 신청하기`와 같은 것이다.
+class LiveCrewMyApplicationsLink extends StatelessWidget {
   const LiveCrewMyApplicationsLink({super.key});
 
   @override
-  State<LiveCrewMyApplicationsLink> createState() => _MyApplicationsSidebarLinkState();
-}
-
-class _MyApplicationsSidebarLinkState extends State<LiveCrewMyApplicationsLink> {
-  bool _hovered = false;
-
-  @override
   Widget build(BuildContext context) {
-    return MouseRegion(
-      cursor: SystemMouseCursors.click,
-      onEnter: (_) => setState(() => _hovered = true),
-      onExit: (_) => setState(() => _hovered = false),
-      child: GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        onTap: () => Get.toNamed(WebRoutes.crewMyApplications),
-        child: Opacity(
-          opacity: _hovered ? 0.6 : 1.0,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 6),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  '가입 신청한 크루',
-                  style: SDSTextStyle.bold.copyWith(fontSize: 13, color: SDSColor.gray600),
-                ),
-                const Icon(Icons.chevron_right, size: 16, color: SDSColor.gray600),
-              ],
-            ),
-          ),
-        ),
-      ),
+    return WebTitleRowLink(
+      label: '가입 신청한 크루',
+      onTap: () => Get.toNamed(WebRoutes.crewMyApplications),
     );
   }
 }
