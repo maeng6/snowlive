@@ -12,6 +12,13 @@ import 'package:get/get.dart';
 /// 판별은 [Get.currentRoute]의 경로명(쿼리 제외)과 대상 경로명을 비교한다. 프로필
 /// 미리보기 팝업 등은 라우트가 아니라 Overlay라, currentRoute는 팝업 아래의 실제
 /// 페이지를 가리켜 "지금 같은 상세 위에 있는가" 판별이 정확하다.
+/// **화면을 옮겼다**는 신호. 라우트명이 그대로인 교체(프로필→프로필)까지 잡히므로
+/// 라우트 문자열 변화만 보는 것보다 확실하다.
+///
+/// 셸이 이걸 구독해 모바일 메뉴 패널을 닫는다 — 패널은 라우트가 아니라 셸의 Stack
+/// 위층이라, 패널 위에서 뜬 팝업이 화면을 바꿔도 패널이 그대로 덮고 있었다.
+final RxInt webRouteNavigationTick = 0.obs;
+
 void pushWebRoute(String route) {
   final targetName = route.split('?').first;
   final currentName = Get.currentRoute.split('?').first;
@@ -22,6 +29,7 @@ void pushWebRoute(String route) {
   } else {
     Get.toNamed(route);
   }
+  webRouteNavigationTick.value++;
 }
 
 /// 프로필 상세 진입(모든 "프로필 보러가기"·크루멤버·랭킹 모달이 이걸 쓴다).

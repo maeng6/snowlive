@@ -1,10 +1,13 @@
+import 'package:com.snowlive/web/util/web_profile_nav_web.dart';
 import 'package:com.snowlive/web/util/responsive_web.dart';
+import 'package:com.snowlive/web/widget/gnb/w_gnb_current_route_web.dart';
 import 'package:com.snowlive/web/widget/gnb/w_gnb_desktop_topbar.dart';
 import 'package:com.snowlive/web/widget/gnb/w_gnb_drawer.dart';
 import 'package:com.snowlive/web/widget/gnb/w_gnb_sidebar.dart';
 import 'package:com.snowlive/web/widget/gnb/w_gnb_topbar.dart';
 import 'package:com.snowlive/web/widget/w_top_loading_bar_web.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 /// 모든 웹 페이지를 감싸는 최상위 셸. 데스크탑에서는 좌측 사이드바,
 /// 태블릿/모바일에서는 상단바 + (앱바 아래로 뜨는) 전체 화면 메뉴로 렌더링한다.
@@ -25,6 +28,30 @@ class _WebAppShellState extends State<WebAppShell>
     duration: const Duration(milliseconds: 250),
   );
 
+  /// 라우트가 바뀌면 메뉴 패널을 닫는다.
+  ///
+  /// 패널은 라우트가 아니라 **셸의 Stack 위층**이라, 패널 위에서 뜬 팝업
+  /// (아바타를 눌러 뜨는 프로필 미리보기 등)이 `Get.toNamed`로 화면을 바꿔도
+  /// 패널이 그대로 덮고 있어 "이동했는데 아무 일도 안 일어난 것"처럼 보였다.
+  /// 패널 안의 메뉴 항목들은 각자 `onClose`를 부르지만, 패널 **위에 뜬 팝업**은
+  /// 패널 상태를 모르므로 여기서 라우트를 보고 닫는다.
+  late final Worker _routeWorker;
+
+  /// 같은 라우트로 **교체**되는 이동(프로필→프로필)은 라우트명이 그대로라
+  /// [currentRouteWeb]이 안 바뀐다 → 공용 네비 헬퍼의 신호도 함께 구독한다.
+  late final Worker _navWorker;
+
+  @override
+  void initState() {
+    super.initState();
+    void closeIfOpen(_) {
+      if (mounted && !_menuCtrl.isDismissed) _closeMenu();
+    }
+
+    _routeWorker = ever(currentRouteWeb, closeIfOpen);
+    _navWorker = ever(webRouteNavigationTick, closeIfOpen);
+  }
+
   void _toggleMenu() {
     if (_menuCtrl.isDismissed || _menuCtrl.status == AnimationStatus.reverse) {
       _menuCtrl.forward();
@@ -37,6 +64,8 @@ class _WebAppShellState extends State<WebAppShell>
 
   @override
   void dispose() {
+    _routeWorker.dispose();
+    _navWorker.dispose();
     _menuCtrl.dispose();
     super.dispose();
   }
