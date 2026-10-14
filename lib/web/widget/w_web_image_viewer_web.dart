@@ -8,6 +8,7 @@ import 'package:com.snowlive/web/widget/w_skeleton_web.dart';
 import 'package:com.snowlive/web/widget/w_web_icon_button_web.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 /// 웹 공용 이미지 라이트박스(커뮤니티 본문·중고거래 갤러리 공용).
 ///
@@ -89,8 +90,14 @@ Future<void> showWebPhotoViewer(
 Future<void> showWebTierImageViewer(
   BuildContext context, {
   required String? url,
+  String? tierNameEng, // 티어 영문명(예: DIAMOND) — 있으면 이미지 아래 크게 표시
+  String? tierNameKor, // 티어 한글명(예: 다이아몬드) — 있으면 영문 아래 작게 표시
 }) {
   if (url == null || url.isEmpty) return Future.value();
+
+  final String eng = (tierNameEng ?? '').trim();
+  final String kor = (tierNameKor ?? '').trim();
+  final bool hasName = eng.isNotEmpty || kor.isNotEmpty;
 
   final overlay = Overlay.of(context, rootOverlay: true);
   final completer = Completer<void>();
@@ -125,15 +132,53 @@ Future<void> showWebTierImageViewer(
               Center(
                 child: GestureDetector(
                   onTap: close,
-                  child: SizedBox(
-                    width: imgW,
-                    child: WebNetworkImage(
-                      url: url,
-                      width: imgW,
-                      fit: BoxFit.contain,
-                      showPlaceholder: false,
-                      smoothDownscale: true,
-                    ),
+                  // 앱(v_rankingList_Indi)과 동일 — 이미지 아래에 티어명을 겹쳐 올린다.
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      SizedBox(
+                        width: imgW,
+                        child: WebNetworkImage(
+                          url: url,
+                          width: imgW,
+                          fit: BoxFit.contain,
+                          showPlaceholder: false,
+                          smoothDownscale: true,
+                        ),
+                      ),
+                      if (hasName)
+                        // 이미지와 40px 겹쳐 올려 배지 하단에 이름이 붙게 한다(앱과 동일).
+                        Transform.translate(
+                          offset: const Offset(0, -40),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              if (eng.isNotEmpty)
+                                Text(
+                                  eng,
+                                  textAlign: TextAlign.center,
+                                  // 루트 Overlay라 Material 조상이 없어 생기는
+                                  // 노란 밑줄을 명시적으로 제거한다(앱과 동일).
+                                  style: GoogleFonts.bebasNeue(
+                                    color: SDSColor.snowliveWhite,
+                                    fontSize: 36,
+                                    decoration: TextDecoration.none,
+                                  ),
+                                ),
+                              if (kor.isNotEmpty)
+                                Text(
+                                  kor,
+                                  textAlign: TextAlign.center,
+                                  style: SDSTextStyle.bold.copyWith(
+                                    color: SDSColor.snowliveWhite.withOpacity(0.5),
+                                    fontSize: 16,
+                                    decoration: TextDecoration.none,
+                                  ),
+                                ),
+                            ],
+                          ),
+                        ),
+                    ],
                   ),
                 ),
               ),

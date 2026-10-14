@@ -300,13 +300,13 @@ class RankingIndivHistoryView extends StatelessWidget {
                                                         barrierColor: Colors.black.withOpacity(0.85),
                                                         context: context,
                                                         builder: (BuildContext context) {
-                                                          return Dialog(
-                                                            backgroundColor: Colors.transparent, // 다이얼로그 배경을 투명하게 설정
-                                                            child: GestureDetector(
-                                                              onTap: () {
-                                                                Navigator.of(context).pop(); // 클릭 시 다이얼로그 닫기
-                                                              },
-                                                              child: Column(
+                                                          return GestureDetector(
+                behavior: HitTestBehavior.opaque, // 딤 배경 어디를 눌러도 닫히게
+                onTap: () {
+                  Navigator.of(context).pop(); // 어디를 눌러도 닫기
+                },
+                child: Center(
+                  child: Column(
                                                                 mainAxisAlignment: MainAxisAlignment.center,
                                                                 children: [
                                                                   Container(
