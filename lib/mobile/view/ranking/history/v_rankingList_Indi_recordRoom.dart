@@ -1,4 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:com.snowlive/core/widget/w_tier_enlarge.dart';
 import 'package:com.snowlive/core/data/imgaUrls/Data_url_image.dart';
 import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/mobile/routes/routes.dart';
@@ -1583,13 +1584,21 @@ class RankingIndiView_recordRoom extends StatelessWidget {
                                               ),
                                             ),
                                           if(_rankingListViewModel_recordRoom.resortOrTotal=='전체스키장' && _rankingListViewModel_recordRoom.dayOrTotal=='누적')
-                                            Transform.translate(
-                                              offset: Offset(4, 1),
-                                              child: ExtendedImage.network(
-                                                '${document.overallTierIconUrl}',
-                                                enableMemoryCache: true,
-                                                fit: BoxFit.cover,
-                                                width: 36,
+                                            GestureDetector(
+                                              onTap: () => showTierEnlargeDialog(
+                                                context,
+                                                document.overallTierIconUrl,
+                                                nameEng: document.tierNameEng,
+                                                nameKor: document.tierNameKor,
+                                              ),
+                                              child: Transform.translate(
+                                                offset: Offset(4, 1),
+                                                child: ExtendedImage.network(
+                                                  '${document.overallTierIconUrl}',
+                                                  enableMemoryCache: true,
+                                                  fit: BoxFit.cover,
+                                                  width: 36,
+                                                ),
                                               ),
                                             ),
                                         ],
