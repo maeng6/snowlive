@@ -306,10 +306,13 @@ class _WebImageViewerState extends State<_WebImageViewer>
   Rect? _stageRect;
 
   /// 모바일 핀치 확대 후 손을 떼면 원래 배율로 스르륵 복귀시키는 애니메이션.
-  late final AnimationController _snapBackCtrl = AnimationController(
-    vsync: this,
-    duration: const Duration(milliseconds: 200),
-  );
+  ///
+  /// ⚠️ **`initState`에서 만든다.** 선언부에서 `late final ... = AnimationController(...)`로
+  /// 두면 지연 초기화라, 핀치를 한 번도 안 하면(PC에서는 늘 그렇다) 끝까지 생성되지
+  /// 않고 `dispose()`의 `_snapBackCtrl.dispose()`가 **그때 처음 초기화를 실행**한다.
+  /// 이미 트리에서 떨어져 나간 상태라 `vsync: this`가 조상을 못 찾아
+  /// "Looking up a deactivated widget's ancestor is unsafe"로 터진다.
+  late final AnimationController _snapBackCtrl;
 
   // ESC/화살표 키를 받으려면 포커스가 필요하다. autofocus만으로는 페이지에 이미
   // 포커스가 있을 때 동작하지 않아, 마운트 직후 명시적으로 포커스를 요청한다.
@@ -319,6 +322,10 @@ class _WebImageViewerState extends State<_WebImageViewer>
   void initState() {
     super.initState();
     _index = widget.initialIndex;
+    _snapBackCtrl = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 200),
+    );
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) _viewerFocus.requestFocus();
     });
