@@ -364,6 +364,7 @@ class _RankingArchiveViewWebState extends State<RankingArchiveViewWeb> {
             RankingTierBadge(
               iconUrl: my.overallTierIconUrl,
               name: my.tierNameKor ?? '',
+              tierNameEng: my.tierNameEng,
               stacked: isMobile,
             ),
         ],
@@ -580,7 +581,10 @@ class _RankingArchiveViewWebState extends State<RankingArchiveViewWeb> {
                         cursor: SystemMouseCursors.click,
                         child: GestureDetector(
                           behavior: HitTestBehavior.opaque,
-                          onTap: () => showWebTierImageViewer(context, url: user.overallTierIconUrl),
+                          onTap: () => showWebTierImageViewer(context,
+                              url: user.overallTierIconUrl,
+                              tierNameEng: user.tierNameEng,
+                              tierNameKor: user.tierNameKor),
                           child: WebNetworkImage(url: user.overallTierIconUrl, width: 36, height: 36, fit: BoxFit.contain, showPlaceholder: false, smoothDownscale: true),
                         ),
                       )

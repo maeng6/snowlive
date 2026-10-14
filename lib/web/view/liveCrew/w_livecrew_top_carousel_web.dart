@@ -371,7 +371,9 @@ class _LiveCrewTopCarouselWebState extends State<LiveCrewTopCarouselWeb>
             _buildArrows(),
           ],
         ),
-        if (widget.topicCount > 1) ...[
+        // 모바일웹 사이즈에서는 캐러셀 점 인디케이터를 숨긴다(사용자 요청).
+        // 태블릿은 PC처럼 그대로 보여준다.
+        if (!_isMobile(context) && widget.topicCount > 1) ...[
           const SizedBox(height: 10),
           _buildDots(),
         ],

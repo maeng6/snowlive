@@ -1,4 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:com.snowlive/core/widget/w_tier_enlarge.dart';
 import 'package:com.snowlive/core/data/imgaUrls/Data_url_image.dart';
 import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/mobile/routes/routes.dart';
@@ -231,14 +232,17 @@ class CrewMemberRankingListView_recordRoom extends StatelessWidget {
                               ),
                             ),
                             SizedBox(width: 2),
-                            Transform.translate(
-                              offset: Offset(4, 1),
-                              child: ExtendedImage.network(
-                                '${ranking.tierIconUrl}',
-                                enableMemoryCache: true,
-                                cacheHeight: 108,
-                                fit: BoxFit.cover,
-                                width: 36,
+                            GestureDetector(
+                              onTap: () => showTierEnlargeDialog(context, ranking.tierIconUrl),
+                              child: Transform.translate(
+                                offset: Offset(4, 1),
+                                child: ExtendedImage.network(
+                                  '${ranking.tierIconUrl}',
+                                  enableMemoryCache: true,
+                                  cacheHeight: 108,
+                                  fit: BoxFit.cover,
+                                  width: 36,
+                                ),
                               ),
                             )
                           ],

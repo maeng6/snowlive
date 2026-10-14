@@ -561,6 +561,7 @@ class _RankingHomeViewWebState extends State<RankingHomeViewWeb> {
             RankingTierBadge(
               iconUrl: my.overallTierIconUrl,
               name: my.tierNameKor ?? '',
+              tierNameEng: my.tierNameEng,
               stacked: isMobile,
             ),
         ],
@@ -759,7 +760,10 @@ class _RankingHomeViewWebState extends State<RankingHomeViewWeb> {
                           cursor: SystemMouseCursors.click,
                           child: GestureDetector(
                             behavior: HitTestBehavior.opaque,
-                            onTap: () => showWebTierImageViewer(context, url: user.overallTierIconUrl),
+                            onTap: () => showWebTierImageViewer(context,
+                                url: user.overallTierIconUrl,
+                                tierNameEng: user.tierNameEng,
+                                tierNameKor: user.tierNameKor),
                             child: WebNetworkImage(url: user.overallTierIconUrl, width: 36, height: 36, fit: BoxFit.contain, showPlaceholder: false, smoothDownscale: true),
                           ),
                         )

@@ -91,7 +91,9 @@ class _ResortHomeViewState extends State<ResortHomeView> with
 
   //TODO: Dependency Injection**************************************************
 
-  /// 실시간위치 탭 노출 여부 조회(season/visibility: 출시 토글 OR 테스트대상).
+  /// 실시간위치 탭 노출 여부 조회.
+  /// ⚠️ 아직 개발 중인 기능이라 '출시 토글(paid_features_live)'과 분리해 **테스트 대상에게만** 노출한다.
+  /// (show_live_map = 테스트대상 전용 신호). 비테스트 유저는 기존 '라이브중인 친구' 바텀시트 그대로.
   Future<void> _fetchPaidLiveVisible() async {
     final uid = _userViewModel.user.user_id;
     if (uid is! int) {
@@ -100,7 +102,7 @@ class _ResortHomeViewState extends State<ResortHomeView> with
     }
     try {
       final res = await SeasonPassAPI().fetchVisibility(userId: uid);
-      _showPaidLive = res.success && res.data is Map && res.data['show_paid'] == true;
+      _showPaidLive = res.success && res.data is Map && res.data['show_live_map'] == true;
     } catch (_) {
       _showPaidLive = false;
     }
@@ -875,39 +877,301 @@ class _ResortHomeViewState extends State<ResortHomeView> with
                           maxChildSize: 0.88,
                           expand: false,
                           builder: (context, scrollController) {
-                            return DefaultTabController(
-                              length: _showPaidLive ? 2 : 1,
-                              child: Column(
-                                children: [
-                                  const SizedBox(height: 12),
-                                  Center(
-                                    child: Container(
-                                      height: 4,
-                                      width: 36,
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(10),
-                                        color: SDSColor.gray200,
+                            // 일반(비테스트) 유저: 탭 추가 전 '원래' 바텀시트를 그대로 사용.
+                            if (!_showPaidLive) {
+                              return Stack(
+                              children: [
+                                Container(
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.only(topLeft: Radius.circular(16), topRight: Radius.circular(16)),
+                                      color: SDSColor.snowliveWhite,
+                                    ),
+                                    padding: EdgeInsets.only(right: 16, left: 16, top: 12),
+                                    child: Obx(()=>Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Center(
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(bottom: 20),
+                                            child: Container(
+                                              height: 4,
+                                              width: 36,
+                                              decoration: BoxDecoration(
+                                                borderRadius: BorderRadius.circular(10),
+                                                color: SDSColor.gray200,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        Stack(
+                                          children: [
+                                            Container(
+                                              width: _size.width,
+                                              height: 32,
+                                              child: Center(
+                                                child: Text(
+                                                  '라이브중인 친구',
+                                                  style: SDSTextStyle.bold.copyWith(fontSize: 16, color: SDSColor.gray900),
+                                                ),
+                                              ),
+                                            ),
+                                            Positioned(
+                                              right: 0,
+                                              top: 0,
+                                              bottom: 0,
+                                              child: ElevatedButton(
+                                                onPressed: () async{
+                                                  await _resortHomeViewModel.fetchBestFriendList(user_id: _userViewModel.user.user_id);
+                                                },
+                                                child: Text('새로고침',
+                                                  style: SDSTextStyle.bold.copyWith(fontSize: 13, color: SDSColor.gray900),
+                                                ),
+                                                style: ElevatedButton.styleFrom(
+                                                  padding: EdgeInsets.symmetric(horizontal: 14, vertical: 3),
+                                                  minimumSize: Size(36, 32),
+                                                  backgroundColor: SDSColor.snowliveWhite,
+                                                  side: BorderSide(
+                                                      color: SDSColor.gray200
+                                                  ),
+                                                  splashFactory: NoSplash.splashFactory, // 터치 시 효과 제거
+                                                  elevation: 0,
+                                                  shape: RoundedRectangleBorder(
+                                                      borderRadius: BorderRadius.circular(100)),
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        SizedBox(height: 20,),
+                                        (_resortHomeViewModel.isLoading_bestFriend == true)
+                                            ? Container(
+                                          child: Column(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            crossAxisAlignment: CrossAxisAlignment.center,
+                                            children: [
+                                              Center(
+                                                child: Container(
+                                                  width: 24,
+                                                  height: 24,
+                                                  child: CircularProgressIndicator(
+                                                    strokeWidth: 4,
+                                                    backgroundColor: SDSColor.gray100,
+                                                    color: SDSColor.gray300.withOpacity(0.6),
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        )
+                                            :
+                                        Expanded(
+                                          child: _resortHomeViewModel.bestFriendList.isEmpty
+                                              ? Center(
+                                            child: Container(
+                                              height: 180,
+                                              child: Text(
+                                                '친구를 등록해보세요.\n라이브중인 친구를 바로 확인하실 수 있어요.',
+                                                style: SDSTextStyle.regular.copyWith(
+                                                    fontSize: 14, color: SDSColor.gray500, height: 1.4
+                                                ),
+                                                textAlign: TextAlign.center,
+                                              ),
+                                            ),
+                                          )
+                                              : GridView.builder(
+                                              controller: scrollController,
+                                              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                                                crossAxisCount: 4, // 4개의 열로 표시
+                                                childAspectRatio: 2 / 3, // 너비와 높이 비율 조정
+                                              ),
+                                              itemCount: _resortHomeViewModel.bestFriendList.length,
+                                              itemBuilder: (context, index) {
+                                                var BFdoc = _resortHomeViewModel.bestFriendList[index];
+                                                return GestureDetector(
+                                                  onTap: () async {
+                                                    Get.toNamed(AppRoutes.friendDetail);
+                                                    await _friendDetailViewModel.fetchFriendDetailInfo(
+                                                      userId: _userViewModel.user.user_id,
+                                                      friendUserId: BFdoc.friendInfo.userId,
+                                                      season: _friendDetailViewModel.seasonDate,
+                                                    );
+                                                  },
+                                                  child: Container(
+                                                    width: (_size.width - 40) / 4, // 화면 너비를 4등분
+                                                    child: Column(
+                                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                                      mainAxisAlignment: MainAxisAlignment.start,
+                                                      children: [
+                                                        Stack(
+                                                          children: [
+                                                            Container(
+                                                              width: 68,
+                                                              height: 68,
+                                                              decoration: BoxDecoration(
+                                                                borderRadius: BorderRadius.circular(100),
+                                                                border: (BFdoc.friendInfo.withinBoundary == true &&
+                                                                    BFdoc.friendInfo.revealWb == true)
+                                                                    ? Border.all(
+                                                                  color: SDSColor.snowliveBlue,
+                                                                  width: 2,
+                                                                )
+                                                                    : Border.all(
+                                                                  color: SDSColor.gray100,
+                                                                  width: 1,
+                                                                ),
+                                                              ),
+                                                              alignment: Alignment.center,
+                                                              child: BFdoc.friendInfo.profileImageUrlUser.isNotEmpty
+                                                                  ? ExtendedImage.network(
+                                                                BFdoc.friendInfo.profileImageUrlUser,
+                                                                enableMemoryCache: true,
+                                                                cacheHeight: 204,  // 메모리 최적화: 68 * 3 (3x 레티나)
+                                                                shape: BoxShape.circle,
+                                                                borderRadius: BorderRadius.circular(100),
+                                                                width: 68,
+                                                                height: 68,
+                                                                fit: BoxFit.cover,
+                                                                loadStateChanged: (ExtendedImageState state) {
+                                                                  switch (state.extendedImageLoadState) {
+                                                                    case LoadState.loading:
+                                                                    // 로딩 중일 때 로딩 인디케이터를 표시
+                                                                      return Shimmer.fromColors(
+                                                                        baseColor: SDSColor.gray200!,
+                                                                        highlightColor: SDSColor.gray50!,
+                                                                        child: Container(
+                                                                          width: 32,
+                                                                          height: 32,
+                                                                          decoration: BoxDecoration(
+                                                                            color: Colors.white,
+                                                                            borderRadius: BorderRadius.circular(8),
+                                                                          ),
+                                                                        ),
+                                                                      );
+                                                                    case LoadState.completed:
+                                                                    // 로딩이 완료되었을 때 이미지 반환
+                                                                      return state.completedWidget;
+                                                                    case LoadState.failed:
+                                                                    // 로딩이 실패했을 때 대체 이미지 또는 다른 처리
+                                                                      return ExtendedImage.network(
+                                                                        '${profileImgUrlList[0].default_round}', // 대체 이미지 경로
+                                                                        width: 32,
+                                                                        height: 32,
+                                                                        fit: BoxFit.cover,
+                                                                      );
+                                                                  }
+                                                                },
+                                                              )
+                                                                  : ClipOval(
+                                                                child: Image.asset(
+                                                                  'assets/imgs/profile/img_profile_default_circle.png',
+                                                                  width: 68,
+                                                                  height: 68,
+                                                                  fit: BoxFit.cover,
+                                                                ),
+                                                              ),
+                                                            ),
+                                                            if (BFdoc.friendInfo.withinBoundary == true &&
+                                                                BFdoc.friendInfo.revealWb == true)
+                                                              Positioned(
+                                                                right: 0,
+                                                                bottom: 0,
+                                                                left: 0,
+                                                                child: Center(
+                                                                  child: Image.asset(
+                                                                    'assets/imgs/icons/icon_badge_live.png',
+                                                                    width: 34,
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                          ],
+                                                        ),
+                                                        SizedBox(height: 6),
+                                                        Container(
+                                                          width: 72,
+                                                          child: Text(
+                                                            BFdoc.friendInfo.displayName,
+                                                            overflow: TextOverflow.ellipsis,
+                                                            textAlign: TextAlign.center,
+                                                            style: TextStyle(
+                                                                fontSize: 12,
+                                                                fontWeight: FontWeight.normal,
+                                                                color: SDSColor.gray900),
+                                                          ),
+                                                        ),
+                                                        Row(
+                                                          mainAxisAlignment: MainAxisAlignment.center,
+                                                          children: [
+                                                            Text(
+                                                              (BFdoc.lastPassSlope == null)
+                                                                  ? ''
+                                                                  : '${BFdoc.lastPassSlope}',
+                                                              overflow: TextOverflow.ellipsis,
+                                                              textAlign: TextAlign.center,
+                                                              style: SDSTextStyle.regular.copyWith(
+                                                                  fontSize: 11,
+                                                                  color: SDSColor.gray500),
+                                                            ),
+                                                            Text(
+                                                              (BFdoc.lastPassTime == null)
+                                                                  ? ''
+                                                                  : '·${GetDatetime().getAgoString(BFdoc.lastPassTime!)}',
+                                                              overflow: TextOverflow.ellipsis,
+                                                              textAlign: TextAlign.center,
+                                                              style: SDSTextStyle.regular.copyWith(
+                                                                  fontSize: 11,
+                                                                  color: SDSColor.gray500),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                );
+                                              }),
+                                        ),
+                                      ],
+                                    ),)
+                                ),
+                                Positioned(
+                                  left: 0,
+                                  right: 0,
+                                  bottom: 0,
+                                  child: Container(
+                                    color: SDSColor.snowliveWhite,
+                                    child: SafeArea(
+                                      top: false,
+                                      child: Container(
+                                        padding: EdgeInsets.only(left: 16, right: 16, top: 12, bottom: 20),
+                                        child: ElevatedButton(
+                                        onPressed: () async {
+                                          Navigator.pop(context);
+                                          Get.toNamed(AppRoutes.friendList);
+                                          await _friendListViewModel.fetchFriendList();
+                                          await _friendListViewModel.fetchFriendRequestList(_userViewModel.user.user_id);
+                                        },
+                                        child: Text(
+                                          '친구 관리 바로가기',
+                                          style: SDSTextStyle.bold.copyWith(color: SDSColor.gray700, fontSize: 16),
+                                        ),
+                                        style: TextButton.styleFrom(
+                                          shape: const RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.all(Radius.circular(6)),
+                                          ),
+                                          elevation: 0,
+                                          splashFactory: InkRipple.splashFactory,
+                                          minimumSize: Size(double.infinity, 48),
+                                          backgroundColor: SDSColor.gray100,
+                                        ),
                                       ),
                                     ),
                                   ),
-                                  // 실시간위치 탭은 출시 토글 ON 또는 테스트 대상일 때만.
-                                  if (_showPaidLive)
-                                    TabBar(
-                                      labelColor: SDSColor.gray900,
-                                      unselectedLabelColor: SDSColor.gray500,
-                                      indicatorColor: SDSColor.snowliveBlue,
-                                      indicatorSize: TabBarIndicatorSize.label,
-                                      labelStyle: SDSTextStyle.bold.copyWith(fontSize: 15),
-                                      unselectedLabelStyle: SDSTextStyle.bold.copyWith(fontSize: 15),
-                                      tabs: const [
-                                        Tab(text: '라이브중인 친구'),
-                                        Tab(text: '실시간 위치'),
-                                      ],
-                                    ),
-                                  Expanded(
-                                    child: TabBarView(
-                                      children: [
-                            Stack(
+                                ),
+                                ),
+                              ],
+                            );
+                            }
+                            // 친구목록 콘텐츠(공통). 테스트/일반 두 바텀시트가 이 위젯을 재사용한다.
+                            final liveFriends = Stack(
                               children: [
                                 Container(
                                     decoration: BoxDecoration(
@@ -1184,13 +1448,66 @@ class _ResortHomeViewState extends State<ResortHomeView> with
                                 ),
                                 ),
                               ],
-                            ),
-                                        if (_showPaidLive) const LiveMapPanel(),
-                                      ],
+                            );
+
+                            // 상단 드래그 핸들(공통).
+                            final handle = Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                const SizedBox(height: 12),
+                                Center(
+                                  child: Container(
+                                    height: 4,
+                                    width: 36,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10),
+                                      color: SDSColor.gray200,
                                     ),
                                   ),
-                                ],
-                              ),
+                                ),
+                              ],
+                            );
+
+                            // ── 테스트 대상 전용 바텀시트: '라이브중인 친구' + '실시간 위치' 탭 ──
+                            if (_showPaidLive) {
+                              return DefaultTabController(
+                                length: 2,
+                                child: Column(
+                                  children: [
+                                    handle,
+                                    TabBar(
+                                      labelColor: SDSColor.gray900,
+                                      unselectedLabelColor: SDSColor.gray500,
+                                      indicatorColor: SDSColor.snowliveBlue,
+                                      indicatorSize: TabBarIndicatorSize.label,
+                                      labelStyle:
+                                          SDSTextStyle.bold.copyWith(fontSize: 15),
+                                      unselectedLabelStyle:
+                                          SDSTextStyle.bold.copyWith(fontSize: 15),
+                                      tabs: const [
+                                        Tab(text: '라이브중인 친구'),
+                                        Tab(text: '실시간 위치'),
+                                      ],
+                                    ),
+                                    Expanded(
+                                      child: TabBarView(
+                                        children: [
+                                          liveFriends,
+                                          const LiveMapPanel(),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            }
+
+                            // ── 일반 유저 바텀시트: 탭 없이 기존 '라이브중인 친구' 그대로 ──
+                            return Column(
+                              children: [
+                                handle,
+                                Expanded(child: liveFriends),
+                              ],
                             );
                           },
                         ));

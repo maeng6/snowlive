@@ -1,4 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:com.snowlive/core/widget/w_tier_enlarge.dart';
 import 'package:com.snowlive/core/data/imgaUrls/Data_url_image.dart';
 import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/mobile/routes/routes.dart';
@@ -224,12 +225,12 @@ class RankingIndiView extends StatelessWidget {
                                                             barrierColor: Colors.black.withOpacity(0.85),
                                                             context: context,
                                                             builder: (BuildContext context) {
-                                                              return Dialog(
-                                                                backgroundColor: Colors.transparent, // 다이얼로그 배경을 투명하게 설정
-                                                                child: GestureDetector(
-                                                                  onTap: () {
-                                                                    Navigator.of(context).pop(); // 클릭 시 다이얼로그 닫기
-                                                                  },
+                                                              return GestureDetector(
+                                                                behavior: HitTestBehavior.opaque, // 딤 배경 어디를 눌러도 닫히게
+                                                                onTap: () {
+                                                                  Navigator.of(context).pop(); // 어디를 눌러도 닫기
+                                                                },
+                                                                child: Center(
                                                                   child: Column(
                                                                     mainAxisAlignment: MainAxisAlignment.center,
                                                                     children: [
@@ -1592,13 +1593,21 @@ class RankingIndiView extends StatelessWidget {
                                               ),
                                             ),
                                           if(_rankingListViewModel.resortOrTotal=='전체스키장' && _rankingListViewModel.dayOrTotal=='누적')
-                                            Transform.translate(
-                                              offset: Offset(4, 1),
-                                              child: ExtendedImage.network(
-                                                '${document.overallTierIconUrl}',
-                                                enableMemoryCache: true,
-                                                fit: BoxFit.cover,
-                                                width: 36,
+                                            GestureDetector(
+                                              onTap: () => showTierEnlargeDialog(
+                                                context,
+                                                document.overallTierIconUrl,
+                                                nameEng: document.tierNameEng,
+                                                nameKor: document.tierNameKor,
+                                              ),
+                                              child: Transform.translate(
+                                                offset: Offset(4, 1),
+                                                child: ExtendedImage.network(
+                                                  '${document.overallTierIconUrl}',
+                                                  enableMemoryCache: true,
+                                                  fit: BoxFit.cover,
+                                                  width: 36,
+                                                ),
                                               ),
                                             ),
                                         ],
@@ -1749,12 +1758,12 @@ class RankingIndiView extends StatelessWidget {
                                                         barrierColor: Colors.black.withOpacity(0.85),
                                                         context: context,
                                                         builder: (BuildContext context) {
-                                                          return Dialog(
-                                                            backgroundColor: Colors.transparent, // 다이얼로그 배경을 투명하게 설정
-                                                            child: GestureDetector(
-                                                              onTap: () {
-                                                                Navigator.of(context).pop(); // 클릭 시 다이얼로그 닫기
-                                                              },
+                                                          return GestureDetector(
+                                                            behavior: HitTestBehavior.opaque, // 딤 배경 어디를 눌러도 닫히게
+                                                            onTap: () {
+                                                              Navigator.of(context).pop(); // 어디를 눌러도 닫기
+                                                            },
+                                                            child: Center(
                                                               child: Column(
                                                                 mainAxisAlignment: MainAxisAlignment.center,
                                                                 children: [

@@ -1,4 +1,7 @@
+import 'dart:math' as math;
+
 import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
+import 'package:com.snowlive/mobile/test_polygon/slope_geometry.dart';
 import 'package:com.snowlive/web/routes/routes_web.dart';
 import 'package:com.snowlive/web/viewmodel/location/vm_liveMap_web.dart';
 import 'package:com.snowlive/web/widget/w_web_back_icon_web.dart';
@@ -144,23 +147,78 @@ class LiveMapViewWeb extends StatelessWidget {
           children: [
             _title('실시간 위치'),
             const SizedBox(height: SDSSpacing.sm),
+            // 리조트 칩 — 친구가 2개 이상 스키장에 흩어져 있을 때만.
+            Obx(() {
+              final groups = vm.resortGroups;
+              if (groups.length < 2) return const SizedBox.shrink();
+              return Padding(
+                padding: const EdgeInsets.only(bottom: SDSSpacing.sm),
+                child: SizedBox(
+                  height: 34,
+                  child: ListView.separated(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: groups.length,
+                    separatorBuilder: (_, __) => const SizedBox(width: 8),
+                    itemBuilder: (_, i) {
+                      final g = groups[i];
+                      final rid = g['resort_id'] as int;
+                      final sel = rid == vm.selectedResortId.value;
+                      return GestureDetector(
+                        onTap: () => vm.selectResort(rid),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 14),
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                            color: sel ? SDSColor.snowliveBlue : SDSColor.gray100,
+                            borderRadius: BorderRadius.circular(100),
+                          ),
+                          child: Text('${g['resort_name']} ${g['count']}',
+                              style: SDSTextStyle.bold.copyWith(
+                                  fontSize: 13,
+                                  color: sel
+                                      ? SDSColor.snowliveWhite
+                                      : SDSColor.gray700)),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              );
+            }),
             AspectRatio(
               aspectRatio: 1,
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(10),
-                child: Obx(() => CustomPaint(
-                      painter: _PositionsPainter(
-                          vm.friendsOnMap.toList(growable: false)),
-                      child: vm.friendsOnMap.isEmpty
-                          ? Center(
-                              child: Text('공유 중인 친구 위치가 없어요.',
-                                  style: SDSTextStyle.regular.copyWith(
-                                      fontSize: 13, color: SDSColor.gray400)),
-                            )
-                          : null,
-                    )),
+                child: Obx(() {
+                  final here = vm.friendsInSelectedResort;
+                  final hasGroups = vm.resortGroups.isNotEmpty;
+                  return CustomPaint(
+                    painter: _ResortMapPainter(
+                        vm.slopesForSelected.toList(growable: false), here),
+                    child: here.isEmpty
+                        ? Center(
+                            child: Text(
+                                hasGroups
+                                    ? '이 스키장에 표시할 친구가 없어요.'
+                                    : '라이딩 중인 친구가 없어요.',
+                                style: SDSTextStyle.regular.copyWith(
+                                    fontSize: 13, color: SDSColor.gray400)),
+                          )
+                        : null,
+                  );
+                }),
               ),
             ),
+            Obx(() {
+              final n = vm.outsideCount;
+              if (n == 0) return const SizedBox.shrink();
+              return Padding(
+                padding: const EdgeInsets.only(top: SDSSpacing.sm),
+                child: Text('스키장 밖 · $n명',
+                    style: SDSTextStyle.regular
+                        .copyWith(fontSize: 12, color: SDSColor.gray500)),
+              );
+            }),
           ],
         ),
       );
@@ -224,62 +282,114 @@ class LiveMapViewWeb extends StatelessWidget {
   }
 }
 
-/// 친구들의 경위도를 뷰 bbox에 투영해 마커로 찍는다(간이 지도).
-class _PositionsPainter extends CustomPainter {
+/// 선택 리조트의 슬로프 폴리곤을 배경으로 깔고, 그 위에 친구 점을 같은 투영으로 올린다.
+/// 투영: 위경도 → 등거리 미터 → 단일 배율(종횡비 유지) 센터핏 (앱/궤적 렌더러와 동일).
+class _ResortMapPainter extends CustomPainter {
+  final List<SlopePoly> slopes;
   final List<Map<String, dynamic>> friends;
-  _PositionsPainter(this.friends);
+  _ResortMapPainter(this.slopes, this.friends);
+
+  static const _bg = Color(0xFF0B1220);
+  static const _poly = Color(0xFF94A3B8);
+  static const _axis = Color(0xFF334155);
+  static const _riding = Color(0xFF3D83ED);
+  static const _idle = Color(0xFF94A3B8);
 
   @override
   void paint(Canvas canvas, Size size) {
-    canvas.drawRect(Rect.fromLTWH(0, 0, size.width, size.height),
-        Paint()..color = const Color(0xFF0B1220));
-    final pts = <List<double>>[];
+    canvas.drawRect(
+        Rect.fromLTWH(0, 0, size.width, size.height), Paint()..color = _bg);
+
+    final geo = <GeoPt>[];
+    for (final s in slopes) {
+      geo.addAll(s.ring);
+    }
     for (final f in friends) {
       final c = f['coordinates'];
       if (c is List && c.length >= 2 && c[0] is num && c[1] is num) {
-        pts.add([(c[0] as num).toDouble(), (c[1] as num).toDouble()]);
+        geo.add(GeoPt((c[1] as num).toDouble(), (c[0] as num).toDouble()));
       }
     }
-    if (pts.isEmpty) return;
-    double minX = pts.first[0], maxX = pts.first[0];
-    double minY = pts.first[1], maxY = pts.first[1];
-    for (final p in pts) {
-      if (p[0] < minX) minX = p[0];
-      if (p[0] > maxX) maxX = p[0];
-      if (p[1] < minY) minY = p[1];
-      if (p[1] > maxY) maxY = p[1];
+    if (geo.isEmpty) return;
+
+    final refLat = geo.map((p) => p.lat).reduce((a, b) => a + b) / geo.length;
+    const mPerLat = 111320.0;
+    final mPerLng = 111320.0 * math.cos(refLat * math.pi / 180);
+    double mx(GeoPt p) => p.lng * mPerLng;
+    double my(GeoPt p) => p.lat * mPerLat;
+
+    double minX = double.infinity, maxX = -double.infinity;
+    double minY = double.infinity, maxY = -double.infinity;
+    for (final p in geo) {
+      final x = mx(p), y = my(p);
+      minX = math.min(minX, x);
+      maxX = math.max(maxX, x);
+      minY = math.min(minY, y);
+      maxY = math.max(maxY, y);
     }
-    final spanX = (maxX - minX) == 0 ? 1e-6 : (maxX - minX);
-    final spanY = (maxY - minY) == 0 ? 1e-6 : (maxY - minY);
-    const pad = 36.0;
+    final w = (maxX - minX).abs() < 1e-6 ? 1.0 : (maxX - minX);
+    final h = (maxY - minY).abs() < 1e-6 ? 1.0 : (maxY - minY);
+    final scale = math.min(size.width / w, size.height / h) * 0.86;
+    final midX = (minX + maxX) / 2, midY = (minY + maxY) / 2;
+    Offset toXY(GeoPt p) => Offset(
+          size.width / 2 + (mx(p) - midX) * scale,
+          size.height / 2 - (my(p) - midY) * scale,
+        );
+
+    final fill = Paint()
+      ..color = _poly.withValues(alpha: 0.16)
+      ..style = PaintingStyle.fill;
+    final stroke = Paint()
+      ..color = _poly.withValues(alpha: 0.5)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.2;
+    final axisPaint = Paint()
+      ..color = _axis
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1;
+    for (final s in slopes) {
+      if (s.ring.length < 3) continue;
+      final path = Path()..moveTo(toXY(s.ring.first).dx, toXY(s.ring.first).dy);
+      for (int i = 1; i < s.ring.length; i++) {
+        final o = toXY(s.ring[i]);
+        path.lineTo(o.dx, o.dy);
+      }
+      path.close();
+      canvas.drawPath(path, fill);
+      canvas.drawPath(path, stroke);
+      if (s.axis.length >= 2) {
+        final ap = Path()..moveTo(toXY(s.axis.first).dx, toXY(s.axis.first).dy);
+        for (int i = 1; i < s.axis.length; i++) {
+          final o = toXY(s.axis[i]);
+          ap.lineTo(o.dx, o.dy);
+        }
+        canvas.drawPath(ap, axisPaint);
+      }
+    }
+
+    final white = Paint()
+      ..color = Colors.white
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2;
     for (final f in friends) {
       final c = f['coordinates'];
       if (c is! List || c.length < 2 || c[0] is! num || c[1] is! num) continue;
-      final lng = (c[0] as num).toDouble();
-      final lat = (c[1] as num).toDouble();
-      final x = pad + (lng - minX) / spanX * (size.width - 2 * pad);
-      // 위도는 위가 북쪽 → 화면 위로
-      final y = size.height - pad - (lat - minY) / spanY * (size.height - 2 * pad);
+      final o = toXY(GeoPt((c[1] as num).toDouble(), (c[0] as num).toDouble()));
       final riding = f['is_riding'] == true;
-      canvas.drawCircle(Offset(x, y), 7,
-          Paint()..color = riding ? const Color(0xFF3D83ED) : const Color(0xFF94A3B8));
-      canvas.drawCircle(Offset(x, y), 7,
-          Paint()
-            ..color = Colors.white
-            ..style = PaintingStyle.stroke
-            ..strokeWidth = 2);
-      final name = '${f['display_name'] ?? ''}';
+      canvas.drawCircle(o, 7, Paint()..color = riding ? _riding : _idle);
+      canvas.drawCircle(o, 7, white);
       final tp = TextPainter(
         text: TextSpan(
-            text: name,
+            text: '${f['display_name'] ?? ''}',
             style: const TextStyle(
                 color: Colors.white, fontSize: 11, fontFamily: 'Pretendard')),
         textDirection: TextDirection.ltr,
       )..layout();
-      tp.paint(canvas, Offset(x - tp.width / 2, y + 10));
+      tp.paint(canvas, Offset(o.dx - tp.width / 2, o.dy + 10));
     }
   }
 
   @override
-  bool shouldRepaint(covariant _PositionsPainter old) => old.friends != friends;
+  bool shouldRepaint(covariant _ResortMapPainter old) =>
+      old.friends != friends || old.slopes != slopes;
 }

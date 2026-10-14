@@ -141,8 +141,14 @@ class RankingTierBadge extends StatelessWidget {
   final String? iconUrl;
   final String name;
   final bool stacked;
+  final String? tierNameEng; // 확대보기에서 앱처럼 영문 티어명도 보여주기 위함
 
-  const RankingTierBadge({required this.iconUrl, required this.name, required this.stacked});
+  const RankingTierBadge({
+    required this.iconUrl,
+    required this.name,
+    required this.stacked,
+    this.tierNameEng,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -153,7 +159,8 @@ class RankingTierBadge extends StatelessWidget {
           cursor: SystemMouseCursors.click,
           child: GestureDetector(
             behavior: HitTestBehavior.opaque,
-            onTap: () => showWebTierImageViewer(context, url: iconUrl),
+            onTap: () => showWebTierImageViewer(context,
+                url: iconUrl, tierNameEng: tierNameEng, tierNameKor: name),
             child: WebNetworkImage(
                 url: iconUrl,
                 width: size,

@@ -305,7 +305,7 @@ class _TierCell extends StatelessWidget {
             child: GestureDetector(
               behavior: HitTestBehavior.opaque,
               onTap: () =>
-                  showWebTierImageViewer(context, url: iconUrl),
+                  showWebTierImageViewer(context, url: iconUrl, tierNameKor: name),
               child: WebNetworkImage(
                 url: iconUrl,
                 width: 28,
