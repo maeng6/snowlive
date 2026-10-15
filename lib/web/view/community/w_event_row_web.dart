@@ -1,5 +1,9 @@
+import 'dart:async';
+
+import 'package:com.snowlive/core/api/api_event.dart';
 import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/core/model/m_event.dart';
+import 'package:com.snowlive/core/viewmodel/vm_user.dart';
 import 'package:com.snowlive/web/view/community/w_community_row_web.dart';
 import 'package:com.snowlive/web/view/community/w_event_preview_dialog_web.dart';
 import 'package:com.snowlive/web/viewmodel/event/vm_eventListPagination_web.dart';
@@ -75,8 +79,25 @@ String eventTitleLine(EventModel event) {
 /// 그대로 띄울 수 없다 → 크롤해둔 데이터로 미리보기를 보여주고, 원할 때만
 /// 다이얼로그 안의 "원본 보기"로 새 탭 이동한다(사이트 이탈 최소화).
 void openEventPreview(BuildContext context, EventModel event) {
-  Get.find<EventListPaginationViewModelWeb>().countView(event);
+  // 조회수 증가: 각종소식 페이지에선 전용 뷰모델이 목록 숫자까지 갱신하며 올리고,
+  // 홈 등 그 뷰모델이 없는 화면에선 **API를 직접 호출**해 똑같이 조회수를 올린다
+  // (중고거래·커뮤니티가 홈에서도 조회수가 오르는 것과 일관되게). 비로그인(게스트)도 센다.
+  if (Get.isRegistered<EventListPaginationViewModelWeb>()) {
+    Get.find<EventListPaginationViewModelWeb>().countView(event);
+  } else if (event.eventId != null) {
+    unawaited(EventAPI()
+        .incrementViewCount(eventId: event.eventId!, userId: _guestOrUserId()));
+  }
   showEventPreviewDialog(context: context, event: event);
+}
+
+/// 현재 로그인 유저 id(게스트/미등록이면 null — 서버가 익명 조회로 처리).
+int? _guestOrUserId() {
+  try {
+    final id = Get.find<UserViewModel>().user.user_id;
+    if (id is int && id > 0) return id;
+  } catch (_) {}
+  return null;
 }
 
 /// 각종소식 표 한 줄의 골격. 헤더 행과 데이터 행이 공유한다.

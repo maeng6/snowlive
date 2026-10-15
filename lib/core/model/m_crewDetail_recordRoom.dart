@@ -63,7 +63,7 @@ class CrewDetailInfo_recordRoom {
     crewId = json['crew_id'];
     crewIdTemp = json['crew_id_temp'];
     crewName = json['crew_name'];
-    crewLogoUrl = json['crew_logo_url'];
+    crewLogoUrl = (json['crew_logo_url_thumb'] ?? json['crew_logo_url']);
     color = json['color'];
     iskusbf = json['iskusbf'];
     revealInSearch = json['reveal_in_search'];

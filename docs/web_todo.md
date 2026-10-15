@@ -125,12 +125,46 @@ API가 열리면 라이브톡과 같은 뷰모델 패턴(`LiveTalkListPagination
 
 ---
 
-## 7. 테스트 — 깨진 20건 (2026-10-13 기준)
+## 7. 테스트 (2026-10-15 기준)
 
-`flutter test` 결과 **20건이 실패**합니다. 전부 최근 머지된 작업에서 온 것이고, 화면 디자인
-작업과는 별개입니다. 같은 원인끼리 묶으면 네 덩어리입니다.
+### 7-0. `dart:html` 때문에 웹 테스트가 **컴파일조차 안 된다** — 가장 먼저 처리 ⚠️
 
-### 7-1. 이미지 뷰어 — 11건 (`web_image_viewer_test.dart`, `web_profile_tap_test.dart`)
+`maeng_4.4.5`(2026-10-15)가 홈 섹션에 `dart:html`을 들여왔습니다.
+
+```dart
+// lib/web/view/home/w_home_sections_web.dart:2
+import 'dart:html' as html;
+...
+if (thumb != null && thumb.isNotEmpty) html.ImageElement().src = thumb;  // :1315
+```
+
+`dart:html`은 **브라우저에만** 있는 라이브러리입니다. `flutter test`는 Dart VM에서 도므로
+없고, `routes_web.dart`가 거의 모든 웹 화면을 import하면서 홈 섹션까지 이어지기 때문에
+**웹 위젯을 건드리는 테스트는 전부 컴파일 단계에서 막힙니다**.
+
+- 통과 수가 **299 → 50**으로 떨어졌습니다(테스트가 틀려서가 아니라 열리지 않아서).
+- **실제 웹 빌드·실행은 정상입니다** — 브라우저에는 `dart:html`이 있습니다.
+- 다만 `dart:html`은 **wasm 빌드를 막습니다**(`flutter build web` 경고에 이미 떠 있음).
+
+고치는 방법 — 썸네일 미리 받기를 `dart:html` 없이 하면 됩니다:
+`precacheImage(NetworkImage(thumb), context)`(Flutter 기본, 테스트에서도 컴파일됨) 또는
+`package:web`. 동작은 동일합니다.
+
+→ 이걸 고치기 전에는 **레이아웃을 테스트로 실측해 검증할 수 없습니다**(이번 UI 작업에서
+계속 쓰던 방식). 화면을 눈으로만 확인해야 합니다.
+
+### 7-1 ~ 7-4. 그 전부터 깨져 있던 것 (2026-10-13 기준 20건)
+
+아래는 `dart:html` 문제를 고친 뒤 다시 세어야 합니다. 그 시점 기록으로 남겨 둡니다.
+
+### 7-1. ~~이미지 뷰어 — 11건~~ ✅ 해결 (`hoon_0.16.8`)
+
+`_snapBackCtrl`이 선언부 지연 초기화(`late final ... = AnimationController(...)`)라, 핀치를
+한 번도 안 하면 생성되지 않은 채 `dispose()`가 **그때 처음 초기화를 실행**했습니다.
+`initState`로 옮겼습니다. 프로필 사진 탭 2건까지 함께 풀려 **20건 → 9건**이 됐습니다.
+
+<details><summary>원래 기록</summary>
+
 
 ```
 Looking up a deactivated widget's ancestor is unsafe.
@@ -142,6 +176,7 @@ Looking up a deactivated widget's ancestor is unsafe.
 처럼 조상 조회 자체를 끊는 것(라이브크루 캐러셀에서 같은 증상을 그렇게 고쳤습니다).
 
 실제 화면에서도 **사진 뷰어를 닫을 때마다 콘솔 에러**가 납니다.
+</details>
 
 ### 7-2. 커뮤니티 글쓰기 — 3건 (`community_update_web_test.dart`)
 
@@ -158,6 +193,11 @@ Looking up a deactivated widget's ancestor is unsafe.
 
 `livecrew_alarm_rank_web_test.dart`(홈 중고거래 페이지 점 개수),
 `web_page_title_test.dart`(새 라우트에 화면명 누락 — 라우트가 추가되면 걸리는 가드).
+
+**참고 2026-10-15** — 이 팝업 수정이 `master`(maeng)의 같은 버그 수정과 머지 충돌했습니다.
+양쪽이 같은 문제를 다르게 고친 것이라(루트에 `Positioned.fill` vs 내부에 `SizedBox.expand`)
+**maeng 버전으로 통일**했습니다(사용자 확정) — 다음 머지에서 같은 충돌이 안 나게. 보이는
+동작은 동일합니다.
 
 **참고** — 2026-10-13에 팝업 오류 하나를 고쳐 **40건 → 20건**이 됐습니다.
 `showWebOverlayModal`의 `Positioned.fill`이 ESC 래퍼 아래로 들어가 `Stack` 직접 자식이

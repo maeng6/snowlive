@@ -88,7 +88,7 @@ class FriendInfo {
   FriendInfo.fromJson(Map<String, dynamic> json) {
     userId = json['user_id'] ?? 0;
     displayName = json['display_name'] ?? 'Unknown';  // Null 처리, 기본값 'Unknown'
-    profileImageUrlUser = json['profile_image_url_user'] ?? '';  // Null 처리, 기본값 빈 문자열
+    profileImageUrlUser = (json['profile_image_url_user_thumb'] ?? json['profile_image_url_user']) ?? '';  // Null 처리, 기본값 빈 문자열
     stateMsg = json['state_msg'] ?? '';  // Null 처리, 기본값 빈 문자열
     withinBoundary = json['within_boundary'] ?? false;
     revealWb = json['reveal_wb'] ?? false;

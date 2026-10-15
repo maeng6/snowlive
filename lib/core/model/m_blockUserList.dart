@@ -52,7 +52,7 @@ class UserInfo {
   UserInfo.fromJson(Map<String, dynamic> json) {
     userId = json['user_id'] ?? 0;
     displayName = json['display_name'] ?? 'Unknown';
-    profileImageUrlUser = json['profile_image_url_user'] ?? '';
+    profileImageUrlUser = (json['profile_image_url_user_thumb'] ?? json['profile_image_url_user']) ?? '';
     stateMsg = json['state_msg'];
   }
 

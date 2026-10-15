@@ -24,6 +24,9 @@ class MyCrewRankingInfo {
   int? crewId;
   String? crewName;
   String? crewLogoUrl;
+  String? crewLogoUrlThumb;
+  String? get logoThumbUrl =>
+      (crewLogoUrlThumb?.isNotEmpty ?? false) ? crewLogoUrlThumb : crewLogoUrl;
   String? description;
   String? color;
   String? baseResortNickname;
@@ -52,11 +55,12 @@ class MyCrewRankingInfo {
   MyCrewRankingInfo.fromJson(Map<String, dynamic> json) {
     crewId = json['crew_id'];
     crewName = json['crew_name'];
-    if(json['crew_logo_url'] == ""){
+    if((json['crew_logo_url_thumb'] ?? json['crew_logo_url']) == ""){
       crewLogoUrl = null;
     }else{
-      crewLogoUrl = json['crew_logo_url']??null;
+      crewLogoUrl = (json['crew_logo_url_thumb'] ?? json['crew_logo_url'])??null;
     }
+    crewLogoUrlThumb = json['crew_logo_url_thumb'];
     description = json['description'];
     color = json['color'];
     baseResortNickname = json['base_resort_nickname'];
@@ -121,6 +125,9 @@ class CrewRanking {
   int? crewId;
   String? crewName;
   String? crewLogoUrl;
+  String? crewLogoUrlThumb;
+  String? get logoThumbUrl =>
+      (crewLogoUrlThumb?.isNotEmpty ?? false) ? crewLogoUrlThumb : crewLogoUrl;
   String? description;
   String? color;
   String? baseResortNickname;
@@ -152,7 +159,8 @@ class CrewRanking {
   CrewRanking.fromJson(Map<String, dynamic> json) {
     crewId = json['crew_id'];
     crewName = json['crew_name'];
-    crewLogoUrl = json['crew_logo_url'];
+    crewLogoUrl = (json['crew_logo_url_thumb'] ?? json['crew_logo_url']);
+    crewLogoUrlThumb = json['crew_logo_url_thumb'];
     description = json['description'];
     color = json['color'];
     baseResortNickname = json['base_resort_nickname'];

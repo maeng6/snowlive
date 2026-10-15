@@ -91,7 +91,7 @@ class SlopeRushRecordRoomCrew {
             ? json['crew_id'] as int
             : int.tryParse('${json['crew_id']}')),
         crewName: (json['crew_name'] ?? "").toString(),
-        crewLogoUrl: (json['crew_logo_url'] ?? "").toString(),
+        crewLogoUrl: ((json['crew_logo_url_thumb'] ?? json['crew_logo_url']) ?? "").toString(),
         description: (json['description'] ?? "").toString(),
         count: (json['count'] ?? 0) is int
             ? json['count']

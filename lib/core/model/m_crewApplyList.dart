@@ -58,7 +58,7 @@ class ApplicantUserInfo {
   ApplicantUserInfo.fromJson(Map<String, dynamic> json) {
     userId = json['user_id'];
     displayName = json['display_name'];
-    profileImageUrlUser = json['profile_image_url_user'];
+    profileImageUrlUser = (json['profile_image_url_user_thumb'] ?? json['profile_image_url_user']);
     favoriteResortNickname = json['favorite_resort_nickname'];
   }
 }
@@ -83,7 +83,7 @@ class CrewInfo {
   CrewInfo.fromJson(Map<String, dynamic> json) {
     crewId = json['crew_id'];
     crewName = json['crew_name'];
-    crewLogoUrl = json['crew_logo_url'];
+    crewLogoUrl = (json['crew_logo_url_thumb'] ?? json['crew_logo_url']);
     color = json['color'];
     description = json['description'];
     baseResortId = json['base_resort_id'];

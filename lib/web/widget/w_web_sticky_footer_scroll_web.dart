@@ -30,6 +30,11 @@ class WebStickyFooterScroll extends StatefulWidget {
   /// 당길 수 있게 overscroll 물리를 켠다. 완료될 때까지 스피너가 돈다.
   final Future<void> Function()? onRefresh;
 
+  /// 콘텐츠가 화면보다 짧을 때 푸터를 **화면 바닥에 고정**할지(기본 true).
+  /// false면 푸터가 콘텐츠 바로 아래에 붙는다(콘텐츠↔푸터 사이 빈 공백 제거) —
+  /// 콘텐츠가 짧으면 푸터 아래로 흰 여백이 남을 수 있다.
+  final bool pinFooterToBottom;
+
   const WebStickyFooterScroll({
     super.key,
     this.padding = EdgeInsets.zero,
@@ -37,6 +42,7 @@ class WebStickyFooterScroll extends StatefulWidget {
     required this.content,
     required this.footer,
     this.onRefresh,
+    this.pinFooterToBottom = true,
   });
 
   @override
@@ -94,7 +100,11 @@ class _WebStickyFooterScrollState extends State<WebStickyFooterScroll> {
           child: ConstrainedBox(
             constraints: BoxConstraints(minHeight: minHeight),
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              // 기본은 spaceBetween(푸터 바닥 고정). pinFooterToBottom=false면 start로
+              // 두어 푸터가 콘텐츠 바로 아래에 붙는다(콘텐츠↔푸터 공백 제거).
+              mainAxisAlignment: widget.pinFooterToBottom
+                  ? MainAxisAlignment.spaceBetween
+                  : MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [widget.content, widget.footer],
             ),

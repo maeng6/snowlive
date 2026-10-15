@@ -35,36 +35,17 @@
     var serviceWorkerVersion = null;
   </script>
   <script>
-    // 한 손가락 가로 스와이프 → 브라우저 뒤로/앞으로.
-    // Flutter 웹은 캔버스가 터치 이벤트를 가로채 네이티브 엣지 스와이프가 막힌다.
-    // 그래서 한 손가락 터치 제스처를 캡처 단계에서 관찰만 하고(passive=true라
-    // Flutter의 세로 스크롤·캐러셀은 그대로 동작), 끝날 때 가로 이동이 분명하면
-    // history.back()/forward()를 부른다.
-    //  - 오른쪽으로 스와이프(→) = 뒤로
-    //  - 왼쪽으로 스와이프(←)  = 앞으로
-    (function () {
-      var sx = 0, sy = 0, tracking = false;
-      var THRESHOLD = 70; // 분명한 스와이프로 볼 최소 가로 이동(px)
-      window.addEventListener('touchstart', function (e) {
-        // 두 손가락 이상(핀치·확대)은 무시하고 한 손가락만 추적한다.
-        if (e.touches.length !== 1) { tracking = false; return; }
-        tracking = true;
-        sx = e.touches[0].clientX;
-        sy = e.touches[0].clientY;
-      }, { passive: true, capture: true });
-      window.addEventListener('touchend', function (e) {
-        if (!tracking) return;
-        tracking = false;
-        var t = e.changedTouches && e.changedTouches[0];
-        if (!t) return;
-        var dx = t.clientX - sx;
-        var dy = t.clientY - sy;
-        // 가로가 세로보다 분명히 커야 스와이프로 본다(세로 스크롤 오작동 방지).
-        if (Math.abs(dx) < THRESHOLD || Math.abs(dx) < Math.abs(dy) * 1.5) return;
-        if (dx > 0) window.history.back();     // 오른쪽 → 뒤로
-        else window.history.forward();         // 왼쪽 → 앞으로
-      }, { passive: true, capture: true });
-    })();
+    // 가로 스와이프 뒤로가기는 전면 차단한다(앱 같은 느낌 + 캐러셀 오른쪽 스와이프
+    // 중 실수로 뒤로 가는 것 방지). overscroll-behavior-x:none(아래 CSS)로 대부분
+    // 막히고, 그래도 브라우저가 popstate를 쏘면 즉시 같은 위치를 다시 pushState해
+    // 사실상 뒤로가기가 일어나지 않게 한다. 화면 내 뒤로가기 버튼은 GetX의
+    // Get.back()을 쓰며 popstate를 발생시키지 않으므로 그대로 동작한다.
+    window.addEventListener('load', function () {
+      try { history.pushState(null, '', location.href); } catch (e) {}
+    });
+    window.addEventListener('popstate', function () {
+      try { history.pushState(null, '', location.href); } catch (e) {}
+    });
   </script>
   <!-- 토스페이먼츠 결제 SDK (시즌권 결제) -->
   <script src="https://js.tosspayments.com/v1/payment"></script>
@@ -104,6 +85,9 @@
       /* 모바일(터치)에서 탭할 때 브라우저가 캔버스 전체에 씌우는
          반투명 파란 탭 하이라이트를 끈다. */
       -webkit-tap-highlight-color: transparent;
+      /* 가로 스와이프로 브라우저 뒤로/앞으로가 트리거되는 걸 줄인다(표준).
+         (화면 내 뒤로가기 버튼·URL·브라우저 뒤로가기 버튼은 그대로 동작) */
+      overscroll-behavior-x: none;
     }
     * {
       -webkit-tap-highlight-color: transparent;
@@ -112,12 +96,13 @@
 </head>
 <body>
   <script>
+    // 표준 Flutter 부트스트랩(서비스워커 사용). 엔트리 파일(index.html·main.dart.js·
+    // flutter_service_worker.js 등)은 호스팅 헤더에서 no-cache로 매번 재검증하고,
+    // 해시 붙은 정적 에셋만 길게 캐시한다(firebase.json) → 새 배포가 바로 반영되면서도
+    // 캐시 이점을 유지한다. (과거 QA의 SW 끄기/캐시 전삭제 '강제 초기화'는 제거)
     window.addEventListener('load', function(ev) {
-      // Download main.dart.js
       _flutter.loader.loadEntrypoint({
-        serviceWorker: {
-          serviceWorkerVersion: serviceWorkerVersion,
-        }
+        serviceWorker: { serviceWorkerVersion: serviceWorkerVersion },
       }).then(function(engineInitializer) {
         return engineInitializer.initializeEngine();
       }).then(function(appRunner) {
@@ -125,6 +110,7 @@
       });
     });
   </script>
+
 
 
 </body></html>

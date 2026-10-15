@@ -79,7 +79,15 @@ class LiveCrewListGridWeb extends StatelessWidget {
   final List<CrewCard> crews;
   final void Function(CrewCard crew) onCrewTap;
 
-  const LiveCrewListGridWeb({super.key, required this.crews, required this.onCrewTap});
+  /// 행 오른쪽 끝에 붙일 숫자(예: 시즌 최다 라이브온의 "1234회"). null이면 안 붙인다.
+  final int? Function(CrewCard crew)? trailingCountOf;
+
+  const LiveCrewListGridWeb({
+    super.key,
+    required this.crews,
+    required this.onCrewTap,
+    this.trailingCountOf,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -112,7 +120,11 @@ class LiveCrewListGridWeb extends StatelessWidget {
                     // 행 48 + 간격 10 = 피치 58
                     for (var r = 0; r < chunks[i].length; r++) ...[
                       if (r > 0) const SizedBox(height: _kCrewRowGap),
-                      _CrewListRow(crew: chunks[i][r], onTap: () => onCrewTap(chunks[i][r])),
+                      _CrewListRow(
+                        crew: chunks[i][r],
+                        onTap: () => onCrewTap(chunks[i][r]),
+                        trailingCount: trailingCountOf?.call(chunks[i][r]),
+                      ),
                     ],
                   ],
                 ),
@@ -170,6 +182,7 @@ class LiveCrewListGridWeb extends StatelessWidget {
               leadingPadding: pagePadding,
               trailingPadding: trailingPadding,
               onCrewTap: onCrewTap,
+              trailingCountOf: trailingCountOf,
             ),
           ),
         );
@@ -191,6 +204,7 @@ class _CrewColumnPager extends StatefulWidget {
   final double leadingPadding;
   final double trailingPadding;
   final void Function(CrewCard crew) onCrewTap;
+  final int? Function(CrewCard crew)? trailingCountOf;
 
   const _CrewColumnPager({
     required this.chunks,
@@ -200,6 +214,7 @@ class _CrewColumnPager extends StatefulWidget {
     required this.leadingPadding,
     required this.trailingPadding,
     required this.onCrewTap,
+    this.trailingCountOf,
   });
 
   @override
@@ -268,6 +283,7 @@ class _CrewColumnPagerState extends State<_CrewColumnPager> {
                           // 열이 300 가까이 되므로 두 줄이 필요 없다 — 높이를 고정해야
                           // 가로 리스트 높이 계산이 맞는다.
                           allowTwoLines: false,
+                          trailingCount: widget.trailingCountOf?.call(column[r]),
                         ),
                       ],
                     ],
@@ -341,10 +357,14 @@ class _CrewListRow extends StatefulWidget {
   /// 좁은 폭의 가로 목록은 높이가 고정이라 한 줄로 묶는다.
   final bool allowTwoLines;
 
+  /// 행 오른쪽 끝에 세로 중앙으로 붙일 숫자(시즌 라이브온 인원). null이면 안 붙인다.
+  final int? trailingCount;
+
   const _CrewListRow({
     required this.crew,
     required this.onTap,
     this.allowTwoLines = true,
+    this.trailingCount,
   });
 
   @override
@@ -380,6 +400,9 @@ class _CrewListRowState extends State<_CrewListRow> {
             vertical: _kCrewRowVerticalPadding,
           ),
           child: Row(
+            // 크루명·소개글이 두 줄이면 행이 늘어나는데, 오른쪽 라이브온 인원은
+            // 그 전체 높이의 **세로 중앙**에 오게 한다.
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Container(
                 width: _kCrewLogoSize,
@@ -420,6 +443,13 @@ class _CrewListRowState extends State<_CrewListRow> {
                   ],
                 ),
               ),
+              if (widget.trailingCount != null) ...[
+                const SizedBox(width: 8),
+                Text(
+                  '${widget.trailingCount}명',
+                  style: SDSTextStyle.bold.copyWith(fontSize: 14, color: SDSColor.snowliveBlue),
+                ),
+              ],
             ],
           ),
         ),

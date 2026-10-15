@@ -34,11 +34,11 @@ class FleamarketDetailSellerRowWeb extends StatelessWidget {
         WebProfileTap(
           userId: detail.userId,
           name: userInfo?.displayName,
-          avatarUrl: userInfo?.profileImageUrlUser,
+          avatarUrl: userInfo?.avatarThumbUrl,
           child: ClipOval(
-            child: (userInfo?.profileImageUrlUser?.isNotEmpty ?? false)
+            child: (userInfo?.avatarThumbUrl?.isNotEmpty ?? false)
                 ? WebNetworkImage(
-                    url: userInfo!.profileImageUrlUser,
+                    url: userInfo!.avatarThumbUrl,
                     width: 30,
                     height: 30,
                     fallback: _defaultAvatar(),

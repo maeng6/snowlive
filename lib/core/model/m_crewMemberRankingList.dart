@@ -45,7 +45,7 @@ class CrewRanking {
     userId = json['user_id'];
     totalScore = (json['total_score'] as num?)?.toDouble();
     displayName = json['display_name'];
-    profileImageUrlUser = json['profile_image_url_user'];
+    profileImageUrlUser = (json['profile_image_url_user_thumb'] ?? json['profile_image_url_user']);
     stateMsg = json['state_msg'];
     withinBoundary = json['within_boundary'];
     revealWb = json['reveal_wb'];

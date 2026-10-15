@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
@@ -100,7 +101,7 @@ const List<RankingFilter_fed> kRankingSelectableFeds = [RankingFilter_fed.univ_s
 CrewCard rankingCrewToCard(CrewRanking crew) => CrewCard(
       crewId: crew.crewId,
       crewName: crew.crewName,
-      crewLogoUrl: crew.crewLogoUrl,
+      crewLogoUrl: crew.logoThumbUrl,
       color: crew.color,
       description: crew.description,
       baseResortNickname: crew.baseResortNickname,
@@ -129,7 +130,8 @@ class _RankingHomeViewWebState extends State<RankingHomeViewWeb> {
   final _searchController = TextEditingController();
   final RxString _searchQuery = ''.obs;
 
-  _RankingTab _tab = _RankingTab.individual;
+  // 기본 탭은 크루랭킹(사용자 요청: 크루 먼저). 크루 로드 후 개인랭킹을 백그라운드 선로딩.
+  _RankingTab _tab = _RankingTab.crew;
   bool _daily = false;
   RankingFilter_resort _selectedResort = RankingFilter_resort.total;
   RankingFilter_fed _selectedFed = RankingFilter_fed.initial;
@@ -182,7 +184,10 @@ class _RankingHomeViewWebState extends State<RankingHomeViewWeb> {
   Future<void> _reloadAndWarm() async {
     final q = _searchQuery.value.trim();
     final sq = q.isEmpty ? null : q;
-    if (mounted) setState(() => _warmingImages = true);
+    // 이미 데이터가 있는 탭(선로딩/직전 로드)은 스켈레톤 없이 그 자리에서 조용히 최신화.
+    final hasData =
+        _tab == _RankingTab.individual ? _vm.items.isNotEmpty : _crewVm.items.isNotEmpty;
+    if (mounted && !hasData) setState(() => _warmingImages = true);
     if (_tab == _RankingTab.individual) {
       await _vm.loadFirstPage(resortId: _resortId, federation: _federation, daily: _daily, searchQuery: sq);
     } else {
@@ -190,6 +195,48 @@ class _RankingHomeViewWebState extends State<RankingHomeViewWeb> {
           userId: _userVm.user.user_id, resortId: _resortId, federation: _federation, daily: _daily, searchQuery: sq);
     }
     await _warmUpImages();
+    // 현재 탭(기본=크루)을 먼저 보여준 뒤, **반대 탭을 같은 필터로 백그라운드 선로딩**한다 →
+    // 탭을 눌렀을 때 재조회·스켈레톤 없이 즉시 뜬다. 필터가 바뀌어도 매 reload마다 다시 맞춘다.
+    _prefetchOtherTab(sq);
+  }
+
+  /// 현재 탭의 반대편을 백그라운드에서 미리 받아둔다(데이터 + 첫 화면 이미지).
+  void _prefetchOtherTab(String? sq) {
+    if (_tab == _RankingTab.crew) {
+      unawaited(_vm
+          .loadFirstPage(
+              resortId: _resortId, federation: _federation, daily: _daily, searchQuery: sq)
+          .then((_) {
+        if (!mounted) return;
+        _precacheUrls({
+          for (final u in _vm.items.take(_kWarmUpImageCount)) ...[
+            if (u.avatarThumbUrl?.isNotEmpty ?? false) u.avatarThumbUrl!,
+            if (u.overallTierIconUrl?.isNotEmpty ?? false) u.overallTierIconUrl!,
+          ],
+        });
+      }));
+    } else {
+      unawaited(_crewVm
+          .loadFirstPage(
+              userId: _userVm.user.user_id,
+              resortId: _resortId,
+              federation: _federation,
+              daily: _daily,
+              searchQuery: sq)
+          .then((_) {
+        if (!mounted) return;
+        _precacheUrls({
+          for (final c in _crewVm.items.take(_kWarmUpImageCount))
+            if (c.logoThumbUrl?.isNotEmpty ?? false) c.logoThumbUrl!,
+        });
+      }));
+    }
+  }
+
+  void _precacheUrls(Iterable<String> urls) {
+    for (final url in urls) {
+      unawaited(precacheImage(NetworkImage(url), context).catchError((_) {}));
+    }
   }
 
   /// 페이지 이동도 같은 흐름을 탄다 — 새 페이지의 이미지가 뒤늦게 들어차지 않게.
@@ -209,12 +256,12 @@ class _RankingHomeViewWebState extends State<RankingHomeViewWeb> {
       if (_tab == _RankingTab.individual)
         for (final u in _vm.items.take(_kWarmUpImageCount))
           ...[
-            if (u.profileImageUrlUser?.isNotEmpty ?? false) u.profileImageUrlUser!,
+            if (u.avatarThumbUrl?.isNotEmpty ?? false) u.avatarThumbUrl!,
             if (u.overallTierIconUrl?.isNotEmpty ?? false) u.overallTierIconUrl!,
           ]
       else
         for (final c in _crewVm.items.take(_kWarmUpImageCount))
-          if (c.crewLogoUrl?.isNotEmpty ?? false) c.crewLogoUrl!,
+          if (c.logoThumbUrl?.isNotEmpty ?? false) c.logoThumbUrl!,
     };
     if (urls.isNotEmpty) {
       await Future.wait(
@@ -402,10 +449,18 @@ class _RankingHomeViewWebState extends State<RankingHomeViewWeb> {
 
   String _tabLabel(_RankingTab tab) => tab == _RankingTab.crew ? '크루랭킹' : '개인랭킹';
 
-  void _selectTab(_RankingTab tab) => setState(() {
-        _tab = tab;
-        _reload();
-      });
+  void _selectTab(_RankingTab tab) {
+    if (tab == _tab) return;
+    // 반대 탭을 미리 받아뒀으면(선로딩/직전 로드) 재조회 없이 **즉시 전환**(깜빡임 없음).
+    // 데이터가 없을 때만(선로딩 실패·게스트 등) 평소대로 조회한다.
+    final hasData =
+        tab == _RankingTab.individual ? _vm.items.isNotEmpty : _crewVm.items.isNotEmpty;
+    setState(() {
+      _tab = tab;
+      if (hasData) _warmingImages = false;
+    });
+    if (!hasData) _reload();
+  }
 
   /// 크루/개인 탭 + 스키장/리그 필터 pill을 한 줄에 둔다(목업).
   Widget _buildTabRow() {
@@ -418,7 +473,7 @@ class _RankingHomeViewWebState extends State<RankingHomeViewWeb> {
           // 현재 탭만 보여주는 드롭다운으로 접는다(커뮤니티 카테고리 탭과 동일).
           WebDropdownTextButton<_RankingTab>(
             label: _tabLabel(_tab),
-            values: const [_RankingTab.individual, _RankingTab.crew],
+            values: const [_RankingTab.crew, _RankingTab.individual],
             labelOf: _tabLabel,
             onSelected: _selectTab,
             labelStyle: SDSTextStyle.bold.copyWith(
@@ -430,7 +485,7 @@ class _RankingHomeViewWebState extends State<RankingHomeViewWeb> {
           // 탭 표준(피그마 64:112870) — bold 16, 비활성 gray200,
           // 1px 세로선 구분자, 간격 10 (커뮤니티·각종소식과 동일).
           ...WebTextTabs<_RankingTab>(
-            values: const [_RankingTab.individual, _RankingTab.crew],
+            values: const [_RankingTab.crew, _RankingTab.individual],
             selected: _tab,
             labelOf: _tabLabel,
             onSelected: _selectTab,
@@ -594,7 +649,7 @@ class _RankingHomeViewWebState extends State<RankingHomeViewWeb> {
             name: my.crewName ?? '',
             // 로고가 없으면 목록·팝업과 같은 색별 기본 `LIVE CREW` 로고를 쓴다
             // (여기만 사람 아이콘으로 떨어지고 있었다).
-            logoUrl: crewLogoUrlOf(logoUrl: my.crewLogoUrl, color: my.color),
+            logoUrl: crewLogoUrlOf(logoUrl: my.logoThumbUrl, color: my.color),
             stacked: isMobile,
             onTap: my.crewId == null
                 ? null
@@ -714,8 +769,8 @@ class _RankingHomeViewWebState extends State<RankingHomeViewWeb> {
                 // 순위 ↔ 프로필 12.
                 SizedBox(width: m.rankGap),
                 ClipOval(
-                  child: (user.profileImageUrlUser?.isNotEmpty ?? false)
-                      ? WebNetworkImage(url: user.profileImageUrlUser, width: m.avatar, height: m.avatar)
+                  child: (user.avatarThumbUrl?.isNotEmpty ?? false)
+                      ? WebNetworkImage(url: user.avatarThumbUrl, width: m.avatar, height: m.avatar)
                       : Container(
                           width: m.avatar,
                           height: m.avatar,
@@ -788,7 +843,7 @@ class _RankingHomeViewWebState extends State<RankingHomeViewWeb> {
     final isResortScoped = _selectedResort != RankingFilter_resort.total;
     final m = RankingRowMetrics.of(context);
     // 로고가 없으면 색별 기본 `LIVE CREW` 로고, 색도 없으면 회색 기본으로 떨어진다.
-    final logoUrl = crewLogoUrlOf(logoUrl: crew.crewLogoUrl, color: crew.color);
+    final logoUrl = crewLogoUrlOf(logoUrl: crew.logoThumbUrl, color: crew.color);
     // 크루랭킹에는 티어를 표시하지 않는다(개인랭킹만 티어 노출).
     // 크루명 아래 회색 보조줄: 베이스 스키장 별명 · 크루 소개글 (모바일과 동일).
     final baseNick = crew.baseResortNickname?.trim() ?? '';

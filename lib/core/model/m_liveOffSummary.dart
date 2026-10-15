@@ -40,7 +40,7 @@ class LiveOffSummaryModel {
     date = json['date'] ?? '';
     weekday = json['weekday'] ?? '';
     displayName = json['display_name'] ?? '';
-    profileImageUrlUser = json['profile_image_url_user'] ?? '';
+    profileImageUrlUser = (json['profile_image_url_user_thumb'] ?? json['profile_image_url_user']) ?? '';
     totalSlopeCount = json['total_slope_count'] ?? 0;
 
     // slope_counts_by_name 파싱

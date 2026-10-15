@@ -102,6 +102,8 @@ class UserInfo {
   int? userId;
   String? displayName;
   String? profileImageUrlUser;
+  // 아바타 자리용 서버 썸네일(320px WebP). 없으면 원본으로 폴백.
+  String? profileImageUrlUserThumb;
   String? resortNickname;
   String? crewName;
 
@@ -109,14 +111,22 @@ class UserInfo {
     this.userId,
     this.displayName,
     this.profileImageUrlUser,
+    this.profileImageUrlUserThumb,
     this.resortNickname,
     this.crewName,
   });
 
+  /// 아바타에 쓸 URL — 썸네일 있으면 썸네일, 없으면 원본.
+  String? get avatarThumbUrl =>
+      (profileImageUrlUserThumb?.isNotEmpty ?? false)
+          ? profileImageUrlUserThumb
+          : profileImageUrlUser;
+
   UserInfo.fromJson(Map<String, dynamic> json) {
     userId = json['user_id'];
     displayName = json['display_name'];
-    profileImageUrlUser = json['profile_image_url_user'];
+    profileImageUrlUser = (json['profile_image_url_user_thumb'] ?? json['profile_image_url_user']);
+    profileImageUrlUserThumb = json['profile_image_url_user_thumb'];
     resortNickname = json['resort_nickname'];
     crewName = json['crew_name'];
   }
@@ -125,6 +135,7 @@ class UserInfo {
     userId = userInfo.userId;
     displayName = userInfo.displayName;
     profileImageUrlUser = userInfo.profileImageUrlUser;
+    profileImageUrlUserThumb = userInfo.profileImageUrlUserThumb;
     resortNickname = userInfo.resortNickname;
     crewName = userInfo.crewName;
   }

@@ -15,7 +15,7 @@ class LiveTalkUserInfo {
   LiveTalkUserInfo.fromJson(Map<String, dynamic> json) {
     userId = json['user_id'];
     displayName = json['display_name'];
-    profileImageUrl = json['profile_image_url'];
+    profileImageUrl = (json['profile_image_url_thumb'] ?? json['profile_image_url']);
   }
 
   Map<String, dynamic> toJson() {

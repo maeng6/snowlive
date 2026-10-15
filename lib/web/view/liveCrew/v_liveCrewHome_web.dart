@@ -432,6 +432,10 @@ class _LiveCrewHomeViewWebState extends State<LiveCrewHomeViewWeb> {
                 crews: crews,
                 onCrewTap: (crew) =>
                     showLiveCrewModal(context, crew, resortFullnames: resortFullnames),
+                // `시즌 최다 라이브온` 칩에서만 행 오른쪽 끝에 시즌 라이브온 인원을 띄운다.
+                trailingCountOf: gridChip?.kind == CrewHomeChipKind.liveonSeason
+                    ? (crew) => crew.liveonSeasonCount
+                    : null,
               ),
             ],
           ),

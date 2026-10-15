@@ -15,6 +15,9 @@ class MyRankingInfo {
   int? userId;
   String? displayName;
   String? profileImageUrlUser;
+  String? profileImageUrlUserThumb;
+  String? get avatarThumbUrl =>
+      (profileImageUrlUserThumb?.isNotEmpty ?? false) ? profileImageUrlUserThumb : profileImageUrlUser;
   String? resortNickname;
   String? crewName;
   int? overallTotalScore;
@@ -49,7 +52,8 @@ class MyRankingInfo {
   MyRankingInfo.fromJson(Map<String, dynamic> json) {
     userId = json['user_id'];
     displayName = json['display_name'];
-    profileImageUrlUser = json['profile_image_url_user'] ?? '';
+    profileImageUrlUser = (json['profile_image_url_user_thumb'] ?? json['profile_image_url_user']) ?? '';
+    profileImageUrlUserThumb = json['profile_image_url_user_thumb'];
     resortNickname = json['resort_nickname'] ?? '-';
     crewName = json['crew_name'] ?? '';
     overallTotalScore = json['overall_total_score']?.round() ?? 0;
@@ -87,6 +91,9 @@ class RankingUser {
   int? userId;
   String? displayName;
   String? profileImageUrlUser;
+  String? profileImageUrlUserThumb;
+  String? get avatarThumbUrl =>
+      (profileImageUrlUserThumb?.isNotEmpty ?? false) ? profileImageUrlUserThumb : profileImageUrlUser;
   String? resortNickname;
   String? crewName;
   int? overallTotalScore;
@@ -125,7 +132,8 @@ class RankingUser {
   RankingUser.fromJson(Map<String, dynamic> json) {
     userId = json['user_id'];
     displayName = json['display_name'];
-    profileImageUrlUser = json['profile_image_url_user'];
+    profileImageUrlUser = (json['profile_image_url_user_thumb'] ?? json['profile_image_url_user']);
+    profileImageUrlUserThumb = json['profile_image_url_user_thumb'];
     resortNickname = json['resort_nickname'];
     crewName = json['crew_name'];
     overallTotalScore = json['overall_total_score']?.round();
