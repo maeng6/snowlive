@@ -44,32 +44,39 @@ class FriendRowWeb extends StatelessWidget {
             // 행 전체가 이미 팝업을 여는 화면(친구 목록)에서는 사진에 따로 붙이지
             // 않는다 — 그쪽은 결과(요청 보냄)를 받아 목록을 갱신해야 한다.
             WebAvatar(url: avatarUrl, size: 40, userId: onTap == null ? userId : null),
-            const SizedBox(width: SDSSpacing.sm),
+            // 아바타 ↔ 텍스트 12 (목업 218:67569).
+            const SizedBox(width: 12),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: [
+                  // 목업(218:67572) — 닉네임 Regular 15 gray900, 줄높이 18.
                   Text(
                     name,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: SDSTextStyle.bold.copyWith(fontSize: 14, color: SDSColor.gray900),
+                    style: SDSTextStyle.regular.copyWith(
+                        fontSize: 15, height: 18 / 15, color: SDSColor.gray900),
                   ),
                   if (hasStateMsg) ...[
                     const SizedBox(height: 2),
+                    // 목업(218:67573) — 상태메시지 Regular 13 #949494(gray500), 줄높이 18.
                     Text(
                       stateMsg!,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: SDSTextStyle.regular.copyWith(fontSize: 12, color: SDSColor.gray500),
+                      style: SDSTextStyle.regular.copyWith(
+                          fontSize: 13, height: 18 / 13, color: SDSColor.gray500),
                     ),
                   ],
                 ],
               ),
             ),
             if (trailing != null) ...[
-              const SizedBox(width: SDSSpacing.sm),
+              // 목업은 좌측(아바타+텍스트)과 우측을 양 끝으로 벌린다 — 텍스트가
+              // Expanded라 이 간격은 **최소 여백**으로만 쓰인다.
+              const SizedBox(width: 12),
               trailing!,
             ],
           ],
@@ -79,7 +86,10 @@ class FriendRowWeb extends StatelessWidget {
   }
 }
 
-/// 행 우측의 회색 알약 액션 버튼(`친구 추가` / `요청 취소` / `차단 해제` / `거절`).
+/// 행 우측의 알약 액션 버튼(`친구 추가` / `요청 취소` / `차단 해제` / `거절`).
+///
+/// 목업(218:68231) — 흰 배경 + gray200 1px 테두리, 라운드 20, 패딩 10/7,
+/// ExtraBold 12. 채움이 아니라 테두리라서 목록 안에서 글자보다 먼저 읽히지 않는다.
 class FriendRowActionButton extends StatelessWidget {
   final String label;
   final VoidCallback? onTap;
@@ -97,18 +107,23 @@ class FriendRowActionButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: SDSColor.gray50,
-      borderRadius: BorderRadius.circular(999),
+      color: SDSColor.snowliveWhite,
+      shape: RoundedRectangleBorder(
+        side: BorderSide(color: SDSColor.gray200),
+        borderRadius: BorderRadius.circular(20),
+      ),
       clipBehavior: Clip.antiAlias,
       child: InkWell(
         onTap: onTap,
+        // 배경이 흰색이라 리플만으로는 눌린 티가 약하다 → hover에 연회색을 깐다.
+        hoverColor: SDSColor.gray50,
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
           child: Text(
             label,
             maxLines: 1,
-            style: SDSTextStyle.bold.copyWith(
-              fontSize: 13,
+            style: SDSTextStyle.extraBold.copyWith(
+              fontSize: 12,
               color: isDestructive ? SDSColor.red : SDSColor.gray900,
             ),
           ),

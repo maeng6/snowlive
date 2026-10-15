@@ -7,7 +7,8 @@ import 'package:com.snowlive/web/widget/w_web_more_menu_web.dart';
 import 'package:flutter/material.dart';
 
 const String kProfileGuestbookHint = '방명록을 남겨주세요';
-const String kProfileGuestbookEmptyIcon = 'assets/imgs/icons/icon_friendsTalk_nodata.png';
+const String kProfileGuestbookEmptyIcon =
+    'assets/imgs/icons/icon_friendsTalk_nodata.png';
 
 /// 방명록 입력줄.
 ///
@@ -54,7 +55,10 @@ class _LockedInput extends StatelessWidget {
       onTap: onTap,
       borderRadius: BorderRadius.circular(8),
       child: Container(
-        decoration: BoxDecoration(color: SDSColor.gray50, borderRadius: BorderRadius.circular(8)),
+        decoration: BoxDecoration(
+          color: SDSColor.gray50,
+          borderRadius: BorderRadius.circular(8),
+        ),
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
         child: Row(
           children: [
@@ -63,13 +67,23 @@ class _LockedInput extends StatelessWidget {
             Expanded(
               child: Text(
                 kProfileGuestbookHint,
-                style: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray400),
+                style: SDSTextStyle.regular.copyWith(
+                  fontSize: 14,
+                  color: SDSColor.gray400,
+                ),
               ),
             ),
             Container(
-              decoration: BoxDecoration(color: SDSColor.gray200, shape: BoxShape.circle),
+              decoration: BoxDecoration(
+                color: SDSColor.gray200,
+                shape: BoxShape.circle,
+              ),
               padding: const EdgeInsets.all(4),
-              child: Icon(Icons.arrow_upward, size: 16, color: SDSColor.snowliveWhite),
+              child: Icon(
+                Icons.arrow_upward,
+                size: 16,
+                color: SDSColor.snowliveWhite,
+              ),
             ),
           ],
         ),
@@ -113,14 +127,20 @@ class ProfileGuestbookListWeb extends StatelessWidget {
             Text(
               '방명록에 안부 인사를 남겨보세요!',
               textAlign: TextAlign.center,
-              style: SDSTextStyle.bold.copyWith(fontSize: 14, color: SDSColor.gray900),
+              style: SDSTextStyle.bold.copyWith(
+                fontSize: 14,
+                color: SDSColor.gray900,
+              ),
             ),
             if ((emptyHint ?? '').isNotEmpty) ...[
               const SizedBox(height: 4),
               Text(
                 emptyHint!,
                 textAlign: TextAlign.center,
-                style: SDSTextStyle.regular.copyWith(fontSize: 13, color: SDSColor.gray400),
+                style: SDSTextStyle.regular.copyWith(
+                  fontSize: 13,
+                  color: SDSColor.gray400,
+                ),
               ),
             ],
           ],
@@ -184,13 +204,19 @@ class _GuestbookRow extends StatelessWidget {
                   talk.authorInfo.displayName,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: SDSTextStyle.bold.copyWith(fontSize: 13, color: SDSColor.gray900),
+                  style: SDSTextStyle.bold.copyWith(
+                    fontSize: 13,
+                    color: SDSColor.gray900,
+                  ),
                 ),
               ),
               const SizedBox(width: 6),
               Text(
                 TimeStamp().getAgo(talk.uploadTime),
-                style: SDSTextStyle.regular.copyWith(fontSize: 12, color: SDSColor.gray400),
+                style: SDSTextStyle.regular.copyWith(
+                  fontSize: 12,
+                  color: SDSColor.gray400,
+                ),
               ),
               // '...' 메뉴는 맨 오른쪽이 아니라 시간 바로 오른쪽에 붙인다.
               const SizedBox(width: 2),
@@ -218,10 +244,16 @@ class _GuestbookRow extends StatelessWidget {
                   color: SDSColor.blue50,
                   borderRadius: BorderRadius.circular(12),
                 ),
-                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 14,
+                  vertical: 12,
+                ),
                 child: Text(
                   talk.content,
-                  style: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray900),
+                  style: SDSTextStyle.regular.copyWith(
+                    fontSize: 14,
+                    color: SDSColor.gray900,
+                  ),
                 ),
               ),
             ),

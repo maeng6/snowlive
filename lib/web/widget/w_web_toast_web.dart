@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
+import 'package:com.snowlive/web/widget/gnb/w_gnb_desktop_topbar.dart';
 import 'package:flutter/material.dart';
 
 /// 짧은 완료 안내용 다크 알약 토스트.
@@ -20,6 +21,13 @@ void showWebToast(
 }) {
   final overlay = Overlay.of(context, rootOverlay: true);
 
+  // 루트 Overlay는 고정 상단바까지 덮는다 → 상단 토스트를 그냥 올리면 상단바에
+  // 걸친다. 상단바 높이만큼 내려 목업(218:68888)처럼 바로 아래에서 시작하게 한다.
+  // 상단바는 PC·태블릿(WebGnbDesktopTopBar)과 모바일(WebGnbTopBar) 모두 56이라
+  // 폭에 상관없이 같은 값을 쓴다 — 한쪽 높이를 바꾸면 여기도 같이 봐야 한다.
+  final isTopAligned = alignment.resolve(TextDirection.ltr).y < 0;
+  final topInset = isTopAligned ? kGnbDesktopTopBarHeight : 0.0;
+
   late final OverlayEntry entry;
   var isRemoved = false;
   void remove() {
@@ -35,7 +43,8 @@ void showWebToast(
           child: Align(
             alignment: alignment,
             child: Padding(
-              padding: const EdgeInsets.all(SDSSpacing.lg),
+              padding: EdgeInsets.fromLTRB(
+                  SDSSpacing.lg, SDSSpacing.lg + topInset, SDSSpacing.lg, SDSSpacing.lg),
               child: Material(
                 color: SDSColor.gray900,
                 borderRadius: BorderRadius.circular(8),

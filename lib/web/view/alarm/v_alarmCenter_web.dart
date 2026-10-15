@@ -13,9 +13,6 @@ import 'package:com.snowlive/web/widget/w_web_toast_web.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-/// 알림 목록 폭 — 설정 화면과 같은 좌측 정렬 한 열.
-const double _kListMaxWidth = 600;
-
 /// 스크롤이 바닥에서 이만큼 남으면 다음 페이지를 부른다.
 const double _kLoadMoreExtent = 300;
 
@@ -31,7 +28,7 @@ const Map<int, String> _kKindIcons = {
 
 /// 웹 알림센터. `#/alarm`
 ///
-/// 목업이 아직 없어 **앱 알림센터와 같은 정보**를 설정 화면과 같은 틀(흰 배경, 좌측 정렬
+/// 목업이 아직 없어 **앱 알림센터와 같은 정보**를 웹 공통 틀(흰 배경, 가운데 정렬
 /// 한 열, 태블릿·모바일은 `← 알림`)에 담았다.
 ///
 /// 줄: 종류 아이콘 + `종류명 · n분 전` / `닉네임 + 알림 문구` / 본문 미리보기.
@@ -118,7 +115,6 @@ class _AlarmCenterViewWebState extends State<AlarmCenterViewWeb> {
 
   @override
   Widget build(BuildContext context) {
-    final isDesktop = context.isDesktop;
     final isMobile = context.screenType == WebScreenType.mobile;
 
     return ColoredBox(
@@ -128,16 +124,18 @@ class _AlarmCenterViewWebState extends State<AlarmCenterViewWeb> {
         child: SingleChildScrollView(
           padding: webSubPagePadding(context),
           child: Align(
-            alignment: Alignment.topLeft,
+            alignment: Alignment.topCenter,
             child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: _kListMaxWidth),
+              // 서브 페이지 한 열 공통(PC 800 가운데 · 태블릿·모바일 꽉 참).
+              constraints: BoxConstraints(maxWidth: webSubPageColumnMaxWidth(context)),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   WebPageHeader(
                     title: '알림',
                     onBack: () => Get.back(),
-                    showBack: !isDesktop,
+                    // 사이드바 최상위(친구·알림·설정)라 친구 목록과 같은 홈 타이틀.
+                    useHomeTitle: true,
                   ),
                   SizedBox(height: isMobile ? SDSSpacing.lg : SDSSpacing.xl),
                   _buildBody(),

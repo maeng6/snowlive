@@ -181,8 +181,19 @@ class _CrewSettingViewWebState extends State<CrewSettingViewWeb> {
   }
 }
 
+/// 설정 허브 로딩 자리표시 — **실제 화면과 같은 구조**(섹션 제목 + 행 묶음)로 그린다.
+///
+/// 예전에는 높이 40짜리 네모 7개를 12 간격으로 세웠는데, 실제는 섹션 제목이 끼고
+/// 행 피치가 51이라 데이터가 도착하는 순간 목록이 230px 가까이 밀려났다.
+/// 자리값은 모두 실제 위젯에서 가져온다 —
+/// 섹션 제목 줄 27 + 아래 8(`CrewSettingSection`), 행 피치 51(`WebSettingsRow`:
+/// 글줄 27 + 상하 12), 섹션 사이 40.
 class _SettingSkeleton extends StatelessWidget {
   const _SettingSkeleton();
+
+  /// 섹션별 행 수 — `일반`(소개글·공지·이미지) / `크루원`(신청·관리·권한) / `일반`(삭제).
+  /// 권한에 따라 줄어들 수 있지만, 자리표시는 **가장 흔한 경우**(크루장)로 잡는다.
+  static const List<int> _rowsPerSection = [3, 3, 1];
 
   @override
   Widget build(BuildContext context) {
@@ -190,9 +201,30 @@ class _SettingSkeleton extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          for (var i = 0; i < 7; i++) ...[
-            if (i > 0) const SizedBox(height: 12),
-            const SkeletonBox(height: 40, radius: 6),
+          for (var s = 0; s < _rowsPerSection.length; s++) ...[
+            // 섹션 제목(Bold 13, 줄높이 27) + 아래 8.
+            const SizedBox(
+              height: 27,
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: SkeletonLine(width: 40, height: 16),
+              ),
+            ),
+            const SizedBox(height: 8),
+            for (var i = 0; i < _rowsPerSection[s]; i++)
+              // 행 피치 51 — 글자(27)는 가운데, 오른쪽 꺾쇠(24) 자리까지 둔다.
+              SizedBox(
+                height: 51,
+                child: Row(
+                  children: [
+                    SkeletonLine(width: 96 + (i % 3) * 36, height: 20),
+                    const Spacer(),
+                    const SkeletonBox(width: 24, height: 24, radius: 4),
+                  ],
+                ),
+              ),
+            // 섹션 사이 40.
+            const SizedBox(height: 40),
           ],
         ],
       ),

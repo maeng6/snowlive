@@ -84,6 +84,9 @@ class CrewSettingScaffoldWeb extends StatelessWidget {
                   title: title,
                   onBack: () => _goBack(context),
                   showBack: showBack,
+                  // 크루 설정 계열은 사이드바에 진입점이 없다 — 새 탭·새로고침으로
+                  // 들어오면 브라우저 뒤로가기도 갈 곳이 없어 PC에도 남긴다.
+                  showBackOnDesktop: true,
                   actions: [
                     if (hasAction && !isMobile) _buildActionButton(fullWidth: false),
                   ],

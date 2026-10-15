@@ -91,20 +91,20 @@ class CrewHomeTalkSectionWeb extends StatelessWidget {
             Text(
               // 목업의 제목 옆 숫자는 올라온 크루톡 개수다.
               talks.isEmpty ? '크루톡' : '크루톡 ${talks.length}',
-              style: SDSTextStyle.bold.copyWith(fontSize: 15, color: SDSColor.gray900),
+              style: SDSTextStyle.bold.copyWith(fontSize: 16, color: SDSColor.gray900),
             ),
             const Spacer(),
             // 필터가 **왼쪽**, 전체보기 버튼이 오른쪽 끝(사용자 확정).
             FleamarketFilterPill<CrewTalkGroupMode>(
               label: mode.label,
-              // 기본값(전체)이 아닐 때만 검정으로 채워 "필터가 걸렸다"를 알린다.
+              // 기본값(전체)이 아닐 때만 검정으로 채워 "필터가 걸렸다"를 알린다
               isActive: mode != CrewTalkGroupMode.all,
               values: CrewTalkGroupMode.values,
               labelOf: (m) => m.label,
               onSelected: onModeChanged,
             ),
             // 전체 화면 진입 버튼 — 다른 섹션의 `전체 슬로프 보기`·`전체 멤버`와
-            // **같은 규격**(테두리 gray100 · 라운드 6 · 패딩 12/10 · 높이 36 · Bold 13).
+            // **같은 규격**(테두리 gray100 · 라운드 6 · 패딩 12/10 · 높이 36 · Bold 13)
             if (talks.isNotEmpty && onSeeAll != null) ...[
               const SizedBox(width: SDSSpacing.sm),
               WebSectionLinkButton(label: '전체 크루톡 보기', onTap: onSeeAll!),
@@ -115,7 +115,7 @@ class CrewHomeTalkSectionWeb extends StatelessWidget {
         if (talks.isEmpty)
           const WebEmptyState(message: '아직 크루톡이 없어요')
         else if (mode == CrewTalkGroupMode.all)
-          // 상한까지만 그린다(나머지는 `전체 크루톡 보기`에서).
+          // 상한까지만 그린다(나머지는 `전체 크루톡 보기`에서)
           CrewTalkPhotoGrid(
             talks: talks.take(kCrewHomeTalkPreviewCount).toList(),
             onTalkTap: onTalkTap,

@@ -1,3 +1,4 @@
+import 'package:com.snowlive/web/widget/w_web_avatar_web.dart';
 import 'package:com.snowlive/core/model/m_crewDetail.dart';
 import 'package:com.snowlive/core/model/m_crewMemberList.dart';
 import 'package:com.snowlive/core/model/m_crewMemberRankingList.dart';
@@ -114,9 +115,12 @@ void main() {
         expect(find.text(n), findsOneWidget);
       }
       expect(find.text('900'), findsNothing);
-      // 순위는 아바타(행) 왼쪽.
+      // 순위는 **아바타 왼쪽**에 선다.
+      // ⚠️ 행 위젯(`CrewMemberRowWeb`) 경계로 재면 안 된다 — 순위가 그 안의
+      // `leading` 슬롯으로 들어가 있다(hover 박스가 순위까지 감싸야 목록이
+      // 콘텐츠 폭을 안 넘는다). 아바타를 기준으로 잰다.
       expect(tester.getRect(find.text('1')).right,
-          lessThanOrEqualTo(tester.getRect(find.byType(CrewMemberRowWeb).first).left));
+          lessThanOrEqualTo(tester.getRect(find.byType(WebAvatar).first).left));
     });
   });
 

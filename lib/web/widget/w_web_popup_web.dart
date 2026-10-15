@@ -356,6 +356,10 @@ Future<String?> showWebEditTextDialog({
 /// 웹 공용 팝업 — **박스 버튼 타입**(피그마 32:27568).
 /// 파란 채움 주 버튼(240×48, 라운드 5) 아래에 선택적 텍스트 부 버튼이 세로로 온다.
 /// 주 버튼 탭 → true, 그 외(부 버튼/배경 탭) → false.
+///
+/// [filledPrimary]를 false로 두면 주 버튼을 **채움 없이 검정 글자**로 그린다 —
+/// 고를 것이 없는 단순 안내(피그마 218:68675 `확인` 한 개)용이다. 채움 버튼은
+/// 누를 것을 권하는 모양이라 안내만 하는 팝업에는 과하다.
 Future<bool> showWebBoxPopup({
   required BuildContext context,
   required String title,
@@ -363,6 +367,7 @@ Future<bool> showWebBoxPopup({
   required String primaryLabel,
   String? secondaryLabel,
   bool barrierDismissible = true,
+  bool filledPrimary = true,
 }) async {
   final result = await showWebOverlayModal<bool>(
     context: context,
@@ -378,26 +383,42 @@ Future<bool> showWebBoxPopup({
         children: [
           SizedBox(
             height: 48,
-            child: ElevatedButton(
-              onPressed: () => close(true),
-              // 리플 대신 hover 시 배경에 검정 10% 블렌드(사이드바·하단바와 동일).
-              style: _noSplashStyle().copyWith(
-                elevation: const WidgetStatePropertyAll(0),
-                shape: WidgetStatePropertyAll(
-                  RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                ),
-                backgroundColor: WidgetStateProperty.resolveWith(
-                  (states) => states.contains(WidgetState.hovered)
-                      ? Color.alphaBlend(
-                          Colors.black.withValues(alpha: 0.1), SDSColor.snowliveBlue)
-                      : SDSColor.snowliveBlue,
-                ),
-              ),
-              child: Text(
-                primaryLabel,
-                style: SDSTextStyle.bold.copyWith(fontSize: 16, color: SDSColor.snowliveWhite),
-              ),
-            ),
+            child: filledPrimary
+                ? ElevatedButton(
+                    onPressed: () => close(true),
+                    // 리플 대신 hover 시 배경에 검정 10% 블렌드(사이드바·하단바와 동일).
+                    style: _noSplashStyle().copyWith(
+                      elevation: const WidgetStatePropertyAll(0),
+                      shape: WidgetStatePropertyAll(
+                        RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+                      ),
+                      backgroundColor: WidgetStateProperty.resolveWith(
+                        (states) => states.contains(WidgetState.hovered)
+                            ? Color.alphaBlend(
+                                Colors.black.withValues(alpha: 0.1), SDSColor.snowliveBlue)
+                            : SDSColor.snowliveBlue,
+                      ),
+                    ),
+                    child: Text(
+                      primaryLabel,
+                      style:
+                          SDSTextStyle.bold.copyWith(fontSize: 16, color: SDSColor.snowliveWhite),
+                    ),
+                  )
+                : TextButton(
+                    onPressed: () => close(true),
+                    style: _noSplashStyle().copyWith(
+                      shape: WidgetStatePropertyAll(
+                        RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+                      ),
+                    ),
+                    child: _HoverFade(
+                      child: Text(
+                        primaryLabel,
+                        style: SDSTextStyle.bold.copyWith(fontSize: 16, color: SDSColor.gray900),
+                      ),
+                    ),
+                  ),
           ),
           if (secondaryLabel != null) ...[
             const SizedBox(height: 8),

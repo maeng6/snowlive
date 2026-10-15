@@ -227,12 +227,12 @@ void main() {
       );
       final cell = tester.getSize(
         find
-            .byWidgetPredicate((w) => w is SizedBox && w.height == 54 && w.width == double.infinity)
+            .byWidgetPredicate((w) => w is SizedBox && w.height == 52 && w.width == double.infinity)
             .first,
       );
-      // 스트립 열 폭 52 - 좌우 패딩 4 = 48 → 높이(54)와 비슷한 사각형.
-      expect(cell.width, 48);
-      expect(cell.height, 54);
+      // 목업(1:8090) — 칸 46×52, 칸 사이 6(스트립 열 폭 52 - 좌우 패딩 3*2).
+      expect(cell.width, 46);
+      expect(cell.height, 52);
     });
 
     testWidgets('캘린더에서 기록이 있는 날만 누를 수 있다', (tester) async {
@@ -258,9 +258,20 @@ void main() {
       expect(tester.takeException(), isNull);
     });
 
-    testWidgets('이미 친구면 버튼이 아니라 표시로 그린다', (tester) async {
-      await pumpAt(tester, 1440, const WebProfileStateBadge(label: '친구', isPositive: true));
-      expect(find.text('친구'), findsOneWidget);
+    testWidgets('이미 친구면 버튼이 아니라 앱과 같은 표시로 그린다', (tester) async {
+      // 카드 안에서는 Column(center)이라 폭이 늘어나지 않는다 — 같은 조건을 만든다.
+      await pumpAt(
+        tester,
+        1440,
+        const Align(
+          alignment: Alignment.centerLeft,
+          child: WebProfileStateBadge(label: '내 친구', isPositive: true),
+        ),
+      );
+      expect(find.text('내 친구'), findsOneWidget);
+      // 앱 프로필(v_friendDetail)과 같은 68×34 알약 · 체크 아이콘 없음.
+      expect(tester.getSize(find.byType(WebProfileStateBadge)), const Size(68, 34));
+      expect(find.byIcon(Icons.check), findsNothing);
       // 누를 수 있는 것처럼 보이면 안 된다.
       expect(find.byType(OutlinedButton), findsNothing);
       expect(find.byType(ElevatedButton), findsNothing);

@@ -16,12 +16,17 @@ class WebSettingsRow extends StatelessWidget {
 
   final VoidCallback onTap;
 
+  /// 글줄(27) 위아래 여백. 화면마다 행 간격이 달라 열어 둔다
+  /// (크루 설정 12 → 피치 51, 친구 설정 8 → 피치 43).
+  final double verticalPadding;
+
   const WebSettingsRow({
     super.key,
     required this.label,
     this.badgeCount,
     this.badgeLabel,
     required this.onTap,
+    this.verticalPadding = 12,
   });
 
   @override
@@ -31,8 +36,8 @@ class WebSettingsRow extends StatelessWidget {
     return InkWell(
       onTap: onTap,
       child: Padding(
-        // 목업(174:85477) — 글줄 27 + 상하 12 = 행 피치 51.
-        padding: const EdgeInsets.symmetric(vertical: 12),
+        // 목업(174:85477) — 글줄 27 + 상하 여백이 행 피치를 만든다.
+        padding: EdgeInsets.symmetric(vertical: verticalPadding),
         child: Row(
           children: [
             Text(
@@ -48,8 +53,8 @@ class WebSettingsRow extends StatelessWidget {
               _CountBadge(count: count),
             ],
             const Spacer(),
-            // 목업 — 꺾쇠 24, gray300.
-            Icon(Icons.chevron_right, size: 24, color: SDSColor.gray300),
+            // 목업(218:68132) — 꺾쇠 24, #B7B7B7(gray400).
+            Icon(Icons.chevron_right, size: 24, color: SDSColor.gray400),
           ],
         ),
       ),
@@ -64,19 +69,18 @@ class _CountBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // 목업(218:68130) — 패딩 8/2, 라운드 10, ExtraBold 12.
+    // 자릿수에 따라 폭이 늘어나므로 고정 폭 대신 패딩으로만 잡는다.
     return Container(
-      // 한 자리는 원, 두 자리 이상은 알약이 되도록 최소 폭만 잡고 좌우 패딩을 준다.
-      constraints: const BoxConstraints(minWidth: 20),
-      height: 20,
       alignment: Alignment.center,
-      padding: const EdgeInsets.symmetric(horizontal: 6),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
       decoration: BoxDecoration(
         color: SDSColor.snowliveBlue,
-        borderRadius: BorderRadius.circular(999),
+        borderRadius: BorderRadius.circular(10),
       ),
       child: Text(
         '$count',
-        style: SDSTextStyle.bold.copyWith(fontSize: 12, color: SDSColor.snowliveWhite),
+        style: SDSTextStyle.extraBold.copyWith(fontSize: 12, color: SDSColor.snowliveWhite),
       ),
     );
   }

@@ -34,37 +34,28 @@ double crewMemberRowGap(BuildContext context) =>
 /// 행이 hover 박스용으로 갖는 좌우 패딩(랭킹 목록과 같은 8).
 const double kCrewMemberRowInset = SDSSpacing.sm;
 
-/// 멤버 목록을 **행 패딩만큼 좌우로 빼내** 프로필 이미지가 페이지 여백선에
-/// 정확히 서게 한다. hover 박스는 그만큼 여백 쪽으로 넘어간다(목업 정렬 기준).
+/// 멤버 목록 묶음. 지금은 **자리만 잡고 아무것도 하지 않는다**(자식을 그대로 넘긴다).
 ///
-/// ⚠️ [rowCount](가장 긴 열의 행 수)로 높이를 직접 계산해 못 박는다 — `OverflowBox`는
-/// 부모 제약만큼 커지는데, 스크롤 안에서는 세로가 무한이라 높이를 주지 않으면
-/// 레이아웃이 통째로 무너진다(행이 전부 겹쳐 보인다).
+/// 예전에는 행 패딩(8)만큼 좌우로 **빼내서** 프로필 이미지가 콘텐츠 좌측선에 서게
+/// 했는데, 그러면 행 박스(hover 면)가 콘텐츠 폭을 좌우로 8씩 넘어갔다 —
+/// **목록이 콘텐츠 너비를 벗어나 보인다**는 지적을 받았다(사용자 확정으로 제거).
+///
+/// 기준은 랭킹 홈이다. 거기도 행이 `horizontal: 8` 패딩을 갖지만 목록을 빼내지
+/// 않아서, 행 박스가 콘텐츠 폭에 딱 맞고 순위·프로필은 8 안쪽에서 시작한다.
+/// 이제 크루 멤버 목록도 같다.
+///
+/// 호출부를 건드리지 않고 남겨 둔다 — 세 화면(크루홈 TOP 10 · 시즌 랭킹 ·
+/// 멤버 전체)이 쓰는 자리라, 다시 빼낼 일이 생기면 여기 한 곳만 고치면 된다.
 class CrewMemberListInset extends StatelessWidget {
+  /// 가장 긴 열의 행 수. 지금은 쓰지 않지만(높이를 못 박을 필요가 없어졌다)
+  /// 호출부 API를 유지하려고 남겨 둔다.
   final int rowCount;
   final Widget child;
 
   const CrewMemberListInset({super.key, required this.rowCount, required this.child});
 
   @override
-  Widget build(BuildContext context) {
-    if (rowCount <= 0) return child;
-    final double rows = rowCount.toDouble();
-    final double height = rows * RankingRowMetrics.of(context).boxHeight +
-        (rows - 1) * crewMemberRowGap(context);
-
-    return SizedBox(
-      height: height,
-      child: LayoutBuilder(
-        builder: (context, constraints) => OverflowBox(
-          alignment: Alignment.center,
-          minWidth: 0,
-          maxWidth: constraints.maxWidth + kCrewMemberRowInset * 2,
-          child: child,
-        ),
-      ),
-    );
-  }
+  Widget build(BuildContext context) => child;
 }
 
 /// 멤버 목록 스켈레톤 — **실제 목록과 같은 열 수·행 피치·좌우 빼내기**를 쓴다.
@@ -76,6 +67,9 @@ class CrewMemberListSkeleton extends StatelessWidget {
   /// 순위 칸([CrewMemberRankedRowWeb])이 있는 목록이면 그 자리도 잡는다(크루홈 TOP 10).
   final bool showRank;
 
+  /// 순위 칸 폭 — 실제 목록과 **같은 값**을 넘겨야 로딩이 끝날 때 순위 열이 안 튄다.
+  final double? rankWidth;
+
   /// 열 사이 간격 — 크루홈 48 / 멤버 화면은 폭별 값.
   final double columnGap;
 
@@ -83,6 +77,7 @@ class CrewMemberListSkeleton extends StatelessWidget {
     super.key,
     required this.count,
     required this.columnGap,
+    this.rankWidth,
     this.showRank = false,
   });
 
@@ -105,18 +100,21 @@ class CrewMemberListSkeleton extends StatelessWidget {
                   children: [
                     for (var i = 0; i < perColumn; i++) ...[
                       if (i > 0) SizedBox(height: gap),
-                      if (showRank)
-                        const Row(
-                          children: [
-                            SizedBox(
-                              width: kCrewMemberRankWidth,
-                              child: Center(child: SkeletonBox(width: 12, height: 14)),
-                            ),
-                            Expanded(child: _CrewMemberRowSkeleton()),
-                          ],
-                        )
-                      else
-                        const _CrewMemberRowSkeleton(),
+                      // 순위 자리도 **행 프레임 안쪽**에 둔다(실제 행과 같은 구조).
+                      _CrewMemberRowSkeleton(
+                        leading: showRank
+                            ? Row(
+                                children: [
+                                  SizedBox(
+                                    width: rankWidth ?? kCrewMemberRankWidth,
+                                    child: const SkeletonBox(width: 12, height: 14),
+                                  ),
+                                  SizedBox(
+                                      width: RankingRowMetrics.of(context).rankGap),
+                                ],
+                              )
+                            : null,
+                      ),
                     ],
                   ],
                 ),
@@ -130,7 +128,10 @@ class CrewMemberListSkeleton extends StatelessWidget {
 }
 
 class _CrewMemberRowSkeleton extends StatelessWidget {
-  const _CrewMemberRowSkeleton();
+  /// 아바타 앞 자리(순위 숫자). 실제 행의 `leading`과 같은 위치다.
+  final Widget? leading;
+
+  const _CrewMemberRowSkeleton({this.leading});
 
   @override
   Widget build(BuildContext context) {
@@ -143,6 +144,7 @@ class _CrewMemberRowSkeleton extends StatelessWidget {
       ),
       child: Row(
         children: [
+          if (leading != null) leading!,
           SkeletonBox(width: m.avatar, height: m.avatar, isCircle: true),
           SizedBox(width: m.nameGap),
           const Expanded(
@@ -167,7 +169,26 @@ class _CrewMemberRowSkeleton extends StatelessWidget {
 }
 
 /// 순위 칸 폭(크루원 시즌 랭킹 · 크루홈 TOP 10 공용).
+/// 순위 칸 기본 폭 — 세 자리(`226`)까지 들어간다. **목록이 보여주는 최대 순위에
+/// 맞춰 줄이는 게 좋다**(크루홈 TOP 10은 두 자리면 충분하다) → 호출부에서
+/// `rankWidth`로 넘긴다. 못 넘길 때의 안전한 기본값으로만 쓴다.
 const double kCrewMemberRankWidth = 28;
+
+/// 순위 칸 폭을 **가장 큰 순위에 맞춰** 잰다. 랭킹 홈 `rankColumnWidth`와 같은 방식
+/// (Bold 14 · 최소 16)이라 목록 사이에서 순위 열 폭이 어긋나지 않는다.
+double crewMemberRankWidth(BuildContext context, int maxRank) {
+  final painter = TextPainter(
+    text: TextSpan(
+      text: '$maxRank',
+      style: SDSTextStyle.bold.copyWith(fontSize: 14),
+    ),
+    // intl이 같은 이름의 TextDirection을 내보내 충돌하므로 컨텍스트에서 가져온다.
+    textDirection: Directionality.of(context),
+    textScaler: MediaQuery.textScalerOf(context),
+  )..layout();
+  // 한 자리만 있는 목록에서도 숫자가 답답해 보이지 않게 최소폭을 둔다(랭킹 홈과 동일).
+  return painter.width < 16 ? 16 : painter.width;
+}
 
 /// 순위 숫자 + 멤버 한 줄. 크루홈 `랭킹 TOP 10 멤버`와 `크루원 시즌 랭킹`이 같이 쓴다.
 ///
@@ -178,35 +199,46 @@ class CrewMemberRankedRowWeb extends StatelessWidget {
   final CrewRanking member;
   final VoidCallback onTap;
 
+  /// 순위 칸 폭. 목록이 보여주는 **가장 큰 순위**에 맞춰 넘긴다
+  /// (`crewMemberRankWidth`). 안 넘기면 세 자리 기준 기본값.
+  final double? rankWidth;
+
   const CrewMemberRankedRowWeb({
     super.key,
     required this.rank,
     required this.member,
     required this.onTap,
+    this.rankWidth,
   });
 
   @override
   Widget build(BuildContext context) {
     final m = RankingRowMetrics.of(context);
 
-    return Row(
-      children: [
-        // 순위 숫자 — 랭킹 홈과 같은 규격(Bold 14 · 좌측 정렬 · 순위 ↔ 프로필 간격은
-        // `RankingRowMetrics.rankGap`). 폭은 세 자리(`226`)까지 들어가는 28 고정 —
-        // 랭킹 홈은 페이지마다 TextPainter로 재지만, 크루 안 순위는 자리 수가
-        // 거의 변하지 않아 고정값이 목록 사이에서 더 안정적이다.
-        SizedBox(
-          width: kCrewMemberRankWidth,
-          child: Text(
-            '$rank',
-            maxLines: 1,
-            style: SDSTextStyle.bold.copyWith(fontSize: 14, color: SDSColor.gray900),
+    // ⚠️ hover 박스(=행 프레임)는 **순위까지 감싼다**(랭킹 홈과 같은 구조).
+    // 순위를 프레임 밖에 두면 박스가 좌측 32 안쪽 · 우측 8 바깥으로 비대칭이 되어
+    // 목록이 콘텐츠 폭을 넘어 보인다(사용자 지적). 프레임이 전체를 감싸면
+    // 빼낸 8이 좌우 대칭이 되고, 순위와 티어가 콘텐츠 좌·우선에 정확히 선다.
+    return CrewMemberRowWeb(
+      member: member,
+      onTap: onTap,
+      // 순위 숫자 — 랭킹 홈과 같은 규격(Bold 14 · 좌측 정렬 · 순위 ↔ 프로필 간격은
+      // `RankingRowMetrics.rankGap`). 폭은 세 자리(`226`)까지 들어가는 28 고정 —
+      // 랭킹 홈은 페이지마다 TextPainter로 재지만, 크루 안 순위는 자리 수가
+      // 거의 변하지 않아 고정값이 목록 사이에서 더 안정적이다.
+      leading: Row(
+        children: [
+          SizedBox(
+            width: rankWidth ?? kCrewMemberRankWidth,
+            child: Text(
+              '$rank',
+              maxLines: 1,
+              style: SDSTextStyle.bold.copyWith(fontSize: 14, color: SDSColor.gray900),
+            ),
           ),
-        ),
-        SizedBox(width: m.rankGap),
-        // 아바타·닉네임·상태메시지·점수·티어는 멤버 목록과 같은 줄을 쓴다.
-        Expanded(child: CrewMemberRowWeb(member: member, onTap: onTap)),
-      ],
+          SizedBox(width: m.rankGap),
+        ],
+      ),
     );
   }
 }
@@ -215,7 +247,16 @@ class CrewMemberRowWeb extends StatefulWidget {
   final CrewRanking member;
   final VoidCallback onTap;
 
-  const CrewMemberRowWeb({super.key, required this.member, required this.onTap});
+  /// 아바타 **앞**에 들어가는 내용(크루홈·시즌 랭킹의 순위 숫자).
+  /// 행 프레임(hover 박스·패딩) 안쪽에 들어가므로 좌우 정렬이 아바타와 함께 맞는다.
+  final Widget? leading;
+
+  const CrewMemberRowWeb({
+    super.key,
+    required this.member,
+    required this.onTap,
+    this.leading,
+  });
 
   @override
   State<CrewMemberRowWeb> createState() => _CrewMemberRowWebState();
@@ -254,6 +295,7 @@ class _CrewMemberRowWebState extends State<CrewMemberRowWeb> {
           ),
           child: Row(
             children: [
+              if (widget.leading != null) widget.leading!,
               WebAvatar(url: member.profileImageUrlUser, size: m.avatar),
               SizedBox(width: m.nameGap),
               Expanded(
@@ -545,7 +587,7 @@ class _CrewMemberProfileCardState extends State<_CrewMemberProfileCard> {
     if (friendVm.myUserId != null && friendVm.myUserId == widget.userId) return null;
     if (_requestSent) return const WebProfileStateBadge(label: '요청 보냄');
     if (_areWeFriend == true) {
-      return const WebProfileStateBadge(label: '친구', isPositive: true);
+      return const WebProfileStateBadge(label: '내 친구', isPositive: true);
     }
     return WebProfilePillButton(
       label: _isSending ? '요청 중…' : '친구 추가',

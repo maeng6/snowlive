@@ -15,12 +15,24 @@ class WebPageHeader extends StatelessWidget {
   /// 타이틀 오른쪽 끝에 붙는 위젯들(등록/저장 버튼 등). 비우면 타이틀만.
   final List<Widget> actions;
 
-  /// 뒤로가기 노출 여부(설정처럼 데스크탑에선 사이드바가 있어 뒤로가기가 없는 화면).
+  /// 뒤로가기 노출 여부 — **태블릿·모바일 기준**이다.
+  /// PC에서는 기본적으로 숨긴다: GNB 사이드바와 브라우저 뒤로가기가 있어
+  /// 화면 안 뒤로가기가 중복이다(사용자 확정).
   final bool showBack;
+
+  /// PC에서도 뒤로가기를 남긴다.
+  /// 사이드바에 진입점이 없어 새 탭·새로고침으로 들어오면 돌아갈 길이 막히는
+  /// 화면(크루 설정 계열)만 켠다.
+  final bool showBackOnDesktop;
 
   /// false면 타이틀이 남은 폭을 차지하지 않는다 — 헤더 오른쪽에 검색바 등
   /// 다른 요소를 같은 줄에 이어 붙이는 화면(랭킹 기록실)용
   final bool expandTitle;
+
+  /// 사이드바 최상위 화면(친구·알림·설정)은 서브 페이지가 아니라 **목록 홈**이라
+  /// 홈과 같은 타이틀을 쓴다 — extraBold, `webHomeTitleSize`(PC 32 / 24 / 20).
+  /// 기본값은 서브 페이지 표준(bold, `webSubPageTitleSize` — PC 30 / 24 / 20).
+  final bool useHomeTitle;
 
   const WebPageHeader({
     super.key,
@@ -29,6 +41,8 @@ class WebPageHeader extends StatelessWidget {
     this.actions = const [],
     this.showBack = true,
     this.expandTitle = true,
+    this.useHomeTitle = false,
+    this.showBackOnDesktop = false,
   });
 
   @override
@@ -38,18 +52,22 @@ class WebPageHeader extends StatelessWidget {
       title,
       maxLines: 1,
       overflow: TextOverflow.ellipsis,
-      style: SDSTextStyle.bold.copyWith(
-        // PC 30 / 태블릿 24 / 모바일 20 — 모바일은 목록 화면 타이틀(webHomeTitleSize)과
-        // 같은 20으로 맞췄다(2026-10-02 사용자 확정, 서브 페이지 전체 공통).
-        fontSize: webSubPageTitleSize(context),
+      style: (useHomeTitle ? SDSTextStyle.extraBold : SDSTextStyle.bold).copyWith(
+        // 서브 페이지는 PC 30 / 태블릿 24 / 모바일 20 — 모바일은 목록 화면
+        // 타이틀(webHomeTitleSize)과 같은 20으로 맞췄다(서브 페이지 전체 공통).
+        fontSize: useHomeTitle ? webHomeTitleSize(context) : webSubPageTitleSize(context),
         color: SDSColor.gray900,
       ),
     );
 
+    // PC는 사이드바·브라우저 뒤로가기가 있어 화면 안 뒤로가기를 두지 않는다
+    // ([showBackOnDesktop]을 켠 화면만 예외).
+    final showBackIcon = showBack && (!context.isDesktop || showBackOnDesktop);
+
     return Row(
       mainAxisSize: expandTitle ? MainAxisSize.max : MainAxisSize.min,
       children: [
-        if (showBack) ...[
+        if (showBackIcon) ...[
           WebIconButton(
             onTap: onBack,
             // 좌측 히트 여백은 0 — 아이콘이 콘텐츠 좌측선에 붙는다.

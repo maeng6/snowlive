@@ -106,7 +106,7 @@ class _RankingProfileCardState extends State<_RankingProfileCard> {
     if (friendVm.myUserId != null && friendVm.myUserId == widget.user.userId) return null;
     if (_requestSent) return const WebProfileStateBadge(label: '요청 보냄');
     if (_areWeFriend == true) {
-      return const WebProfileStateBadge(label: '친구', isPositive: true);
+      return const WebProfileStateBadge(label: '내 친구', isPositive: true);
     }
     return WebProfilePillButton(
       label: _isSending ? '요청 중…' : '친구 추가',

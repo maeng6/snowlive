@@ -30,6 +30,12 @@ const double kWebSidebarGap = 40;
 /// 중고거래 상세는 이 폭을 이미지 377 + 간격 30 + 정보 393으로 나눠 쓴다.
 const double kWebSubPageMaxWidth = 800;
 
+/// 서브 페이지 한 열의 실제 최대폭 — PC만 [kWebSubPageMaxWidth]로 묶고
+/// 태블릿·모바일은 페이지 여백만 두고 꽉 채운다(좁은 폭에서 묶으면 양옆 여백만 커진다).
+/// 알림·설정·친구 하위 화면이 이 값을 공유한다.
+double webSubPageColumnMaxWidth(BuildContext context) =>
+    context.isDesktop ? kWebSubPageMaxWidth : double.infinity;
+
 enum WebScreenType { mobile, tablet, desktop }
 
 extension ResponsiveContext on BuildContext {

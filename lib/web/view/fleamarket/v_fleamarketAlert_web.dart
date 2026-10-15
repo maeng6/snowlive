@@ -282,7 +282,6 @@ class _FleamarketAlertViewWebState extends State<FleamarketAlertViewWeb> {
 
   @override
   Widget build(BuildContext context) {
-    final isDesktop = context.isDesktop;
     final isMobile = context.screenType == WebScreenType.mobile;
 
     final Widget scroll = SingleChildScrollView(
@@ -296,13 +295,9 @@ class _FleamarketAlertViewWebState extends State<FleamarketAlertViewWeb> {
       ),
       child: Center(
         child: ConstrainedBox(
-          // PC만 800 고정 중앙 — 태블릿·모바일은 제한 없이 화면(패딩 제외)을
-          // 가득 채운다(올리기·수정·상세와 동일 규칙).
-          constraints: BoxConstraints(
-            maxWidth: isDesktop
-                ? kWebSubPageMaxWidth
-                : double.infinity,
-          ),
+          // 서브 페이지 한 열 공통(PC 800 가운데 · 태블릿·모바일 꽉 참) —
+          // 올리기·수정·상세·알림·설정과 같은 헬퍼를 쓴다.
+          constraints: BoxConstraints(maxWidth: webSubPageColumnMaxWidth(context)),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -349,9 +344,13 @@ class _FleamarketAlertViewWebState extends State<FleamarketAlertViewWeb> {
   Widget _buildTitleRow(bool isMobile) {
     // 서브 페이지 공통 헤더 표준(WebPageHeader) — 타이틀·뒤로가기 크기는
     // 위젯이 브레이크포인트별로 처리한다. PC·태블릿은 등록하기가 우측에 온다.
+    //
+    // PC는 사이드바로 오갈 수 있어 뒤로가기를 두지 않고, 타이틀도 알림·설정과
+    // 같은 홈 규격을 쓴다 — 셋이 같은 줄 위치·크기로 보여야 한다.
     return WebPageHeader(
       title: '키워드 알림 설정',
       onBack: _goBack,
+      useHomeTitle: true,
       actions: [
         if (!isMobile && !_isGuest)
           _SubmitButton(enabled: _canSubmit, isSubmitting: _isSubmitting, onTap: _onSubmit),

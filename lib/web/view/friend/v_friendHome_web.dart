@@ -12,9 +12,10 @@ import 'package:com.snowlive/web/viewmodel/auth/vm_authcheck_web.dart';
 import 'package:com.snowlive/web/viewmodel/friend/vm_friend_web.dart';
 import 'package:com.snowlive/web/viewmodel/paid/vm_paidVisibility_web.dart';
 import 'package:com.snowlive/web/widget/w_empty_state_web.dart';
+import 'package:com.snowlive/web/widget/w_web_icon_button_web.dart';
 import 'package:com.snowlive/web/widget/w_web_filter_menu_web.dart';
 import 'package:com.snowlive/web/widget/w_web_more_menu_web.dart';
-import 'package:com.snowlive/web/widget/w_web_overlay_modal_web.dart';
+import 'package:com.snowlive/web/widget/w_web_popup_web.dart';
 import 'package:com.snowlive/web/widget/w_web_search_field_web.dart';
 import 'package:com.snowlive/web/widget/w_web_toast_web.dart';
 import 'package:flutter/material.dart';
@@ -141,108 +142,27 @@ class _FriendHomeViewWebState extends State<FriendHomeViewWeb> {
     if (sent == true) await _vm.refreshAll();
   }
 
-  Future<void> _showLoginRequiredDialog() {
-    return showWebOverlayModal<void>(
+  /// 비로그인 검색 안내 — 웹 공용 박스 팝업(로그인하기 / 다음에 하기).
+  Future<void> _showLoginRequiredDialog() async {
+    final goLogin = await showWebBoxPopup(
       context: context,
-      builder: (_, close) => Material(
-        color: SDSColor.snowliveWhite,
-        borderRadius: BorderRadius.circular(16),
-        clipBehavior: Clip.antiAlias,
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 320),
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(24, 28, 24, 12),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  '로그인이 필요해요.',
-                  textAlign: TextAlign.center,
-                  style: SDSTextStyle.bold.copyWith(fontSize: 16, color: SDSColor.gray900),
-                ),
-                const SizedBox(height: SDSSpacing.sm),
-                Text(
-                  '친구 검색은 로그인한 뒤에 할 수 있어요.',
-                  textAlign: TextAlign.center,
-                  style: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray500),
-                ),
-                const SizedBox(height: SDSSpacing.lg),
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      close();
-                      Get.toNamed(WebRoutes.login);
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: SDSColor.snowliveBlue,
-                      elevation: 0,
-                      minimumSize: const Size(double.infinity, 48),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                    ),
-                    child: Text(
-                      '로그인하기',
-                      style:
-                          SDSTextStyle.bold.copyWith(fontSize: 15, color: SDSColor.snowliveWhite),
-                    ),
-                  ),
-                ),
-                TextButton(
-                  onPressed: close,
-                  child: Text(
-                    '다음에 하기',
-                    style: SDSTextStyle.bold.copyWith(fontSize: 15, color: SDSColor.gray900),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
+      title: '로그인이 필요해요.',
+      message: '친구 검색은 로그인한 뒤에 할 수 있어요.',
+      primaryLabel: '로그인하기',
+      secondaryLabel: '다음에 하기',
     );
+    if (goLogin) Get.toNamed(WebRoutes.login);
   }
 
-  Future<void> _showNotFoundDialog() {
-    return showWebOverlayModal<void>(
+  /// 검색 결과 없음 안내(피그마 218:68675).
+  /// 고를 것이 없는 안내라 `확인` 한 개 · 채움 없는 버튼이다.
+  Future<void> _showNotFoundDialog() async {
+    await showWebBoxPopup(
       context: context,
-      builder: (_, close) => Material(
-        color: SDSColor.snowliveWhite,
-        borderRadius: BorderRadius.circular(16),
-        clipBehavior: Clip.antiAlias,
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 320),
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(24, 28, 24, 12),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  '검색하신 친구가 없습니다.',
-                  textAlign: TextAlign.center,
-                  style: SDSTextStyle.bold.copyWith(fontSize: 16, color: SDSColor.gray900),
-                ),
-                const SizedBox(height: SDSSpacing.sm),
-                Text(
-                  '닉네임 전체를 정확히 입력해 주세요.',
-                  textAlign: TextAlign.center,
-                  style: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray500),
-                ),
-                const SizedBox(height: SDSSpacing.md),
-                SizedBox(
-                  width: double.infinity,
-                  child: TextButton(
-                    onPressed: close,
-                    child: Text(
-                      '확인',
-                      style: SDSTextStyle.bold.copyWith(fontSize: 15, color: SDSColor.snowliveBlue),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
+      title: '검색하신 친구가 없습니다.',
+      message: '닉네임 전체를 정확히 입력해 주세요.',
+      primaryLabel: '확인',
+      filledPrimary: false,
     );
   }
 
@@ -326,12 +246,14 @@ class _FriendHomeViewWebState extends State<FriendHomeViewWeb> {
         padding: webHomePagePadding(context),
         child: Center(
           child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: kFriendContentMaxWidth),
+            constraints: BoxConstraints(maxWidth: friendContentMaxWidth(context)),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 ..._buildHeader(isDesktop),
-                const SizedBox(height: SDSSpacing.md),
+                // 헤더 ↔ 목록: PC 29(목업 218:68675 — 타이틀 블록 pb19 + 목록 top 10),
+                // 태블릿·모바일 26(목업 218:71076 / 218:69162 — 검색창 끝에서 목록까지).
+                SizedBox(height: isDesktop ? 29 : 26),
                 if (_isGuest) _buildGuestBody() else Obx(_buildList),
               ],
             ),
@@ -353,14 +275,21 @@ class _FriendHomeViewWebState extends State<FriendHomeViewWeb> {
     );
     final searchField = WebSearchField(
       controller: _searchController,
-      hint: '친구 검색',
+      // 목업(218:67555) 문구 — 닉네임 전체일치로 **유저**를 찾는 검색이라 `친구 검색`이
+      // 아니다(친구가 아닌 사람도 찾는다).
+      hint: '유저 검색',
+      borderRadius: 6,
       onSubmitted: _onSearch,
     );
-    final settingsButton = IconButton(
-      onPressed: () => Get.toNamed(WebRoutes.friendSettings),
-      padding: EdgeInsets.zero,
-      constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
-      icon: Image.asset('assets/imgs/icons/icon_settings.png', width: 22, height: 22),
+    // 목업(218:67561) — 헤더 아이콘 26. 누를 여백은 **좌측에만** 둬서 아이콘
+    // 오른쪽 끝이 콘텐츠 우측선에 붙는다(뒤로가기가 좌측선에 붙는 것과 같은 처리).
+    // `IconButton`은 자체 최소 크기·여백이 있어 우측에 11이 남았다 → 공용 버튼으로.
+    // ⚠️ 세로 여백은 0 — 주면 줄 높이가 아이콘(26) + 여백이 되어 태블릿·모바일에서
+    // 타이틀 줄이 목업(26)보다 두꺼워지고 아래 검색창·목록이 전부 밀린다.
+    final settingsButton = WebIconButton(
+      onTap: () => Get.toNamed(WebRoutes.friendSettings),
+      padding: const EdgeInsets.fromLTRB(4, 0, 0, 0),
+      icon: Image.asset('assets/imgs/icons/icon_settings.png', width: 26, height: 26),
     );
 
     if (isDesktop) {
@@ -368,9 +297,12 @@ class _FriendHomeViewWebState extends State<FriendHomeViewWeb> {
         Row(
           children: [
             title,
-            const SizedBox(width: SDSSpacing.lg),
-            Expanded(child: searchField),
-            const SizedBox(width: SDSSpacing.md),
+            // 타이틀 ↔ 검색창 36 (목업 218:67550 gap).
+            const SizedBox(width: 36),
+            // 검색창은 **260 고정**이다(목업 218:67552) — 늘리면 설정 아이콘까지
+            // 붙어서 목업의 여백이 사라진다.
+            SizedBox(width: 260, child: searchField),
+            const Spacer(),
             settingsButton,
           ],
         ),
@@ -388,7 +320,8 @@ class _FriendHomeViewWebState extends State<FriendHomeViewWeb> {
     return WebEmptyState(
       message: '로그인하고 친구를 추가해보세요.',
       iconAsset: _kFriendEmptyIcon,
-      iconWidth: 96,
+      // 목업(218:67789) — 73.
+      iconWidth: 73,
       iconFit: BoxFit.contain,
       actionLabel: '로그인하기',
       onAction: () => Get.toNamed(WebRoutes.login),
@@ -406,7 +339,8 @@ class _FriendHomeViewWebState extends State<FriendHomeViewWeb> {
       return WebEmptyState(
         message: '등록된 친구가 없습니다.',
         iconAsset: _kFriendEmptyIcon,
-        iconWidth: 96,
+        // 목업(218:67789) — 73.
+      iconWidth: 73,
         iconFit: BoxFit.contain,
         actionLabel: '친구 추가하기',
         // 검색창으로 유저를 찾아 추가하는 흐름이라 검색창에 포커스를 준다.
@@ -503,12 +437,18 @@ class _FriendMoreButtonState extends State<_FriendMoreButton> {
         child: GestureDetector(
           behavior: HitTestBehavior.opaque,
           onTap: _open,
+          // 목업(218:67574) — `···` 26. 누를 여백은 좌·상·하로만 두어
+          // **아이콘 오른쪽 끝이 콘텐츠 우측선에 붙는다**(목업 정렬).
           child: Padding(
-            padding: const EdgeInsets.all(6),
+            padding: const EdgeInsets.fromLTRB(6, 6, 0, 6),
             child: SvgPicture.asset(
               'assets/imgs/icons/icon_header_more_web.svg',
-              width: 20,
-              height: 20,
+              width: 26,
+              height: 26,
+              // 목업은 점이 #B7B7B7(gray400)이다. 에셋 자체는 gray900이라
+              // **여기서만** 덧칠한다 — 같은 에셋을 쓰는 공용 ⋯ 메뉴
+              // (`w_web_more_menu_web.dart`)는 진한 색 그대로다.
+              colorFilter: const ColorFilter.mode(SDSColor.gray400, BlendMode.srcIn),
             ),
           ),
         ),

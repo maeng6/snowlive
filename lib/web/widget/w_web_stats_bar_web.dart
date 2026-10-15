@@ -21,13 +21,26 @@ class WebStatItem {
 ///
 /// 모바일은 한 줄에 세 칸을 넣으면 넘치므로 각 칸이 **값(위)·라벨(아래)**로 쌓이고
 /// 칸 사이 구분선 여백을 0으로 줄여 폭을 나눠 갖는다.
+/// 바 안쪽 좌우 여백. 지표 줄 · 하단 구분선 · 하단 내용이 **같은 값**을 써야
+/// 글자와 선의 좌우가 맞는다(사용자 확정).
+const double _kBarHorizontalPadding = 30;
+
 class WebStatsBar extends StatelessWidget {
   final List<WebStatItem> items;
 
   /// 바 오른쪽 끝에 붙는 위젯(가입 신청·랭킹 진입 링크 등). 모바일에서는 칸 아래로 내려간다.
   final Widget? trailing;
 
-  const WebStatsBar({super.key, required this.items, this.trailing});
+  /// 지표 줄 **아래, 박스 안쪽**에 들어가는 내용(크루홈 소개글). 주면 지표 줄과
+  /// 가르는 가로선이 함께 깔린다 — 선의 좌우는 글자 좌우 여백과 같다(사용자 확정).
+  final Widget? footer;
+
+  const WebStatsBar({
+    super.key,
+    required this.items,
+    this.trailing,
+    this.footer,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -38,15 +51,44 @@ class WebStatsBar extends StatelessWidget {
 
     // 높이는 54로 못 박는다 — 랭킹 카드는 티어 아이콘(40)이 높이를 만들어
     // 7+40+7 = 54가 되는데, 여기는 아이콘이 없어 그냥 두면 40으로 얇아진다.
-    return Container(
+    final statsRow = Container(
       constraints: BoxConstraints(minHeight: isMobile ? 0 : 54),
       alignment: isMobile ? null : Alignment.centerLeft,
+      padding: EdgeInsets.symmetric(
+          horizontal: _kBarHorizontalPadding, vertical: isMobile ? 16 : 7),
+      child: isMobile ? _buildStacked(cells) : _buildInline(cells),
+    );
+
+    return Container(
       decoration: BoxDecoration(
         color: SDSColor.gray50,
         borderRadius: BorderRadius.circular(16),
       ),
-      padding: EdgeInsets.symmetric(horizontal: 30, vertical: isMobile ? 16 : 7),
-      child: isMobile ? _buildStacked(cells) : _buildInline(cells),
+      child: footer == null
+          ? statsRow
+          : Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              // ⚠️ min이 없으면 가용 높이를 다 먹어 박스가 세로로 늘어난다
+              // (높이가 정해진 부모 안에서 쓰일 때).
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                statsRow,
+                // 구분선 좌우를 **글자 좌우 여백과 같게** 들여 넣는다(사용자 확정).
+                // 색은 지표 칸 사이 구분선과 같은 gray700 10%.
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: _kBarHorizontalPadding),
+                  child: Container(
+                      height: 1, color: SDSColor.gray700.withValues(alpha: 0.1)),
+                ),
+                Padding(
+                  // 선 ↔ 내용 14(예전 소개글 블록과 같은 값), 좌우는 지표 줄과 같은 값.
+                  padding: EdgeInsets.fromLTRB(_kBarHorizontalPadding, 14,
+                      _kBarHorizontalPadding, isMobile ? 16 : 14),
+                  child: footer!,
+                ),
+              ],
+            ),
     );
   }
 

@@ -1,4 +1,3 @@
-import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/core/viewmodel/friend/vm_friendList.dart';
 import 'package:com.snowlive/web/routes/routes_web.dart';
 import 'package:com.snowlive/web/view/friend/w_friend_page_scaffold_web.dart';
@@ -9,6 +8,9 @@ import 'package:com.snowlive/web/widget/w_empty_state_web.dart';
 import 'package:com.snowlive/web/widget/w_web_settings_row_web.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
+/// 목업(218:68126) 행 간격 16 = 글줄 위아래 8.
+const double _kRowVerticalPadding = 8;
 
 /// 친구 설정 화면.
 ///
@@ -57,27 +59,22 @@ class _FriendSettingsViewWebState extends State<FriendSettingsViewWeb> {
               actionLabel: '로그인하기',
               onAction: () => Get.toNamed(WebRoutes.login),
             )
+          // 목업(218:68126) — 구분선 없이 글줄 27 + 상하 8(피치 43)로만 나눈다.
           : Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 // 유료기능 출시 전에는 테스트 대상에게만 노출.
                 Obx(() => PaidVisibilityControllerWeb.isVisible
-                    ? Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          WebSettingsRow(
-                            label: '실시간 위치 공유',
-                            onTap: () =>
-                                Get.toNamed(WebRoutes.friendLocationShare),
-                          ),
-                          Divider(
-                              color: SDSColor.gray100, height: 1, thickness: 1),
-                        ],
+                    ? WebSettingsRow(
+                        label: '실시간 위치 공유',
+                        verticalPadding: _kRowVerticalPadding,
+                        onTap: () => Get.toNamed(WebRoutes.friendLocationShare),
                       )
                     : const SizedBox.shrink()),
                 Obx(() => WebSettingsRow(
                       label: '친구 요청 관리',
                       badgeCount: _listVm.friendsRequestList.length,
+                      verticalPadding: _kRowVerticalPadding,
                       onTap: () async {
                         await Get.toNamed(WebRoutes.friendRequests);
                         // 돌아왔을 때 배지가 옛 개수로 남지 않게 한다.
@@ -85,12 +82,11 @@ class _FriendSettingsViewWebState extends State<FriendSettingsViewWeb> {
                         await _vm.refreshRequests();
                       },
                     )),
-                Divider(color: SDSColor.gray100, height: 1, thickness: 1),
                 WebSettingsRow(
                   label: '차단한 친구 관리',
+                  verticalPadding: _kRowVerticalPadding,
                   onTap: () => Get.toNamed(WebRoutes.friendBlockList),
                 ),
-                Divider(color: SDSColor.gray100, height: 1, thickness: 1),
               ],
             ),
     );

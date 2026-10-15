@@ -39,24 +39,47 @@ class WebEmptyState extends StatelessWidget {
           children: [
             // 정사각 에셋 기준이므로 높이도 iconWidth를 따라간다(높이 고정 시 fill에서 찌그러짐).
             Image.asset(iconAsset, width: iconWidth, height: iconWidth, fit: iconFit),
-            const SizedBox(height: 12),
+            // 목업(218:67694) — 아이콘 ↔ 문구 10.
+            const SizedBox(height: 10),
             Text(
               message,
               textAlign: TextAlign.center,
-              style: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray500),
+              // 목업 — Regular 14, 줄높이 20, #666(gray600).
+              style: SDSTextStyle.regular
+                  .copyWith(fontSize: 14, height: 20 / 14, color: SDSColor.gray600),
             ),
             if (actionLabel != null && onAction != null) ...[
-              const SizedBox(height: SDSSpacing.lg),
+              // 문구 ↔ 버튼 16 (목업).
+              const SizedBox(height: SDSSpacing.md),
+              // 목업(218:67785) — 흰 알약 버튼. 높이 34 = 상하 9 + 글줄 16,
+              // 좌우 12 · 라운드 20 · 테두리 gray200 · ExtraBold 13 gray900.
+              // 라인 버튼 hover는 웹 공통 — 테두리·글자는 그대로, 면이 gray50이 된다.
               OutlinedButton(
                 onPressed: onAction,
-                style: OutlinedButton.styleFrom(
-                  side: BorderSide(color: SDSColor.gray200),
-                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                style: ButtonStyle(
+                  splashFactory: NoSplash.splashFactory,
+                  overlayColor: const WidgetStatePropertyAll(Colors.transparent),
+                  animationDuration: Duration.zero,
+                  side: WidgetStatePropertyAll(BorderSide(color: SDSColor.gray200)),
+                  backgroundColor: WidgetStateProperty.resolveWith(
+                    (states) => states.contains(WidgetState.hovered)
+                        ? SDSColor.gray50
+                        : SDSColor.snowliveWhite,
+                  ),
+                  padding: const WidgetStatePropertyAll(
+                      EdgeInsets.symmetric(horizontal: 12, vertical: 9)),
+                  minimumSize: const WidgetStatePropertyAll(Size.zero),
+                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  // 웹 기본 compact density가 최소 크기를 깎지 않게 표준으로 못 박는다.
+                  visualDensity: VisualDensity.standard,
+                  shape: WidgetStatePropertyAll(
+                    RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                  ),
                 ),
                 child: Text(
                   actionLabel!,
-                  style: SDSTextStyle.bold.copyWith(fontSize: 14, color: SDSColor.gray900),
+                  style: SDSTextStyle.extraBold.copyWith(
+                      fontSize: 13, height: 16 / 13, color: SDSColor.gray900),
                 ),
               ),
             ],

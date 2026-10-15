@@ -29,28 +29,32 @@ class WebSearchField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // 목업(218:67552) — 높이 40 = 상하 10 + 글줄 20, 좌우 14, 아이콘 16,
+    // 아이콘 ↔ 글자 8, 글자 15. 친구 목록·크루 가입하기가 같은 컴포넌트다.
     return Container(
-      height: 44,
-      padding: const EdgeInsets.symmetric(horizontal: 16),
+      height: 40,
+      padding: const EdgeInsets.symmetric(horizontal: 14),
       decoration: BoxDecoration(
         color: SDSColor.gray50,
         borderRadius: BorderRadius.circular(borderRadius),
       ),
       child: Row(
         children: [
-          Image.asset('assets/imgs/icons/icon_search.png', width: 18, height: 18),
-          const SizedBox(width: 6),
+          Image.asset('assets/imgs/icons/icon_search.png', width: 16, height: 16),
+          const SizedBox(width: 8),
           Expanded(
             child: TextField(
               controller: controller,
               focusNode: focusNode,
               textInputAction: TextInputAction.search,
               onSubmitted: onSubmitted,
-              style: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray900),
-              cursorHeight: 16,
+              style: SDSTextStyle.regular.copyWith(fontSize: 15, color: SDSColor.gray900),
+              // 커서 높이 = 글자 크기 + 2(웹 공통 규칙).
+              cursorHeight: 17,
               decoration: InputDecoration(
                 hintText: hint,
-                hintStyle: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray400),
+                // 목업 힌트색 #949494 = gray500.
+                hintStyle: SDSTextStyle.regular.copyWith(fontSize: 15, color: SDSColor.gray500),
                 border: InputBorder.none,
                 isDense: true,
                 contentPadding: EdgeInsets.zero,

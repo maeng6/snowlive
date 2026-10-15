@@ -72,13 +72,18 @@ void main() {
     expect(find.byType(WebBackIcon), findsOneWidget);
   });
 
-  testWidgets('목록은 좌측 정렬 고정폭이다 (넓은 화면에서 늘어나지 않는다)', (tester) async {
+  testWidgets('PC 목록은 800 한 열이 가운데 정렬된다', (tester) async {
     await pumpSettings(tester, 1440);
-    final row = tester.getRect(find.text('친구 추가 요청'));
-    // 서브 페이지 공통 좌측 여백(webSubPagePadding 데스크탑 40)에서 시작하고,
-    // 우측은 화면 끝까지 가지 않는다.
-    expect(row.left, 40);
-    expect(tester.getRect(find.byIcon(Icons.chevron_right).first).right, lessThan(700));
+    // 서브 페이지 공통 여백(webSubPagePadding 데스크탑 40) 안쪽에서 800이 가운데로.
+    const side = 40 + (1440 - 40 * 2 - 800) / 2;
+    expect(tester.getRect(find.text('친구 추가 요청')).left, side);
+    expect(tester.getRect(find.byIcon(Icons.chevron_right).first).right, 1440 - side);
+  });
+
+  testWidgets('태블릿 목록은 좌우 여백 20만 두고 꽉 찬다', (tester) async {
+    await pumpSettings(tester, 800);
+    expect(tester.getRect(find.text('친구 추가 요청')).left, 20);
+    expect(tester.getRect(find.byIcon(Icons.chevron_right).first).right, 800 - 20);
   });
 
   testWidgets('배경은 흰색이다', (tester) async {

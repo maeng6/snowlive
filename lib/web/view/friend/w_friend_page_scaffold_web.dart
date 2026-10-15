@@ -5,8 +5,15 @@ import 'package:com.snowlive/web/widget/w_web_page_header_web.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-/// 목업 실측 522. 사람 목록이라 넓히면 이름과 우측 버튼이 과하게 벌어진다.
+/// 친구 **목록** 콘텐츠 열 PC 최대폭. 목업(218:68675) 실측 522 —
+/// 사람 목록이라 더 넓히면 이름과 우측 버튼이 과하게 벌어진다.
+/// 하위 화면(설정·요청 관리 등)은 알림·설정과 같은 서브 페이지 한 열 800을 쓴다.
 const double kFriendContentMaxWidth = 520;
+
+/// 태블릿·모바일은 화면 자체가 좁아 520으로 묶으면 양옆 여백만 커진다
+/// → 페이지 여백(좌우 20/16)만 두고 폭을 꽉 채운다.
+double friendContentMaxWidth(BuildContext context) =>
+    context.isDesktop ? kFriendContentMaxWidth : double.infinity;
 
 /// 친구 하위 화면(설정 / 요청 관리 / 차단 관리)이 공유하는 골격.
 ///
@@ -38,7 +45,8 @@ class FriendPageScaffoldWeb extends StatelessWidget {
         padding: webSubPagePadding(context),
         child: Center(
           child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: kFriendContentMaxWidth),
+            // 알림·설정과 같은 서브 페이지 한 열(PC 800 가운데 · 그 외 꽉 참).
+            constraints: BoxConstraints(maxWidth: webSubPageColumnMaxWidth(context)),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [

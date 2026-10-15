@@ -111,6 +111,7 @@ class _CrewSeasonRankingViewWebState extends State<CrewSeasonRankingViewWeb> {
           style: SDSTextStyle.bold.copyWith(fontSize: 16, color: SDSColor.gray900),
         ),
         const SizedBox(height: SDSSpacing.md),
+        // 순위 칸 폭은 **이 목록의 가장 큰 순위**에 맞춘다(크루원이 많으면 세 자리).
         for (var i = 0; i < pageItems.length; i++) ...[
           // 행 사이 8 — **랭킹 홈 목록과 같은 간격**(`v_rankingHome_web.dart`의
           // 행마다 `Padding(bottom: 8)`). 순위 숫자가 붙은 랭킹 목록이라 멤버 목록의
@@ -121,6 +122,7 @@ class _CrewSeasonRankingViewWebState extends State<CrewSeasonRankingViewWeb> {
             // 목록 순서로 번호를 붙인다(앱과 동일).
             rank: start + i + 1,
             member: pageItems[i],
+            rankWidth: crewMemberRankWidth(context, members.length),
             onTap: () => _onMemberTap(pageItems[i]),
           ),
         ],

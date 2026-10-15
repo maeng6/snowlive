@@ -7,7 +7,6 @@ import 'package:com.snowlive/web/view/liveCrew/crew_home_sections_web.dart';
 import 'package:com.snowlive/web/widget/w_network_image_web.dart';
 import 'dart:async';
 
-
 import 'package:com.snowlive/web/widget/w_web_edge_fade_web.dart';
 import 'package:flutter/material.dart';
 
@@ -22,7 +21,9 @@ const double _kCardHeight = 166;
 const double _kMobileCardWidth = 122;
 const double _kMobileCardHeight = 120;
 
-bool _isMobile(BuildContext context) => context.screenType == WebScreenType.mobile;
+bool _isMobile(BuildContext context) =>
+    context.screenType == WebScreenType.mobile;
+
 /// 카드 치수 — 스켈레톤이 같은 크기로 자리를 잡아야 해서 공개한다.
 double crewCarouselCardWidth(BuildContext context) =>
     _isMobile(context) ? _kMobileCardWidth : _kCardWidth;
@@ -32,7 +33,8 @@ double crewCarouselCardHeight(BuildContext context) =>
 /// 레일(가로 리스트) 높이 = 카드 + 그림자 여유(위아래 16씩).
 /// 카드보다 위아래로 여유를 둬야 hover 시 **떠오른 카드와 그림자가 잘리지 않는다**
 /// — 가로 리스트는 제 높이 밖을 잘라낸다.
-double crewCarouselRailHeight(BuildContext context) => crewCarouselCardHeight(context) + 32;
+double crewCarouselRailHeight(BuildContext context) =>
+    crewCarouselCardHeight(context) + 32;
 
 double _cardWidth(BuildContext context) => crewCarouselCardWidth(context);
 double _cardHeight(BuildContext context) => crewCarouselCardHeight(context);
@@ -43,11 +45,13 @@ const double _kCardLift = 3;
 
 /// hover 시 확대 비율 — 들어올린 느낌을 더한다(너무 키우면 옆 카드와 겹쳐 보인다).
 const double _kCardHoverScale = 1.015;
+
 /// 카드 사이 간격 — PC·태블릿 16 / 모바일 10.
 /// 모바일은 카드가 작아 16이면 휑하고, 목업값(6.35)은 너무 붙어 보여 가운데로 잡았다.
 const double _kCardGap = SDSSpacing.md;
 const double _kMobileCardGap = 10;
-double _cardGap(BuildContext context) => _isMobile(context) ? _kMobileCardGap : _kCardGap;
+double _cardGap(BuildContext context) =>
+    _isMobile(context) ? _kMobileCardGap : _kCardGap;
 
 /// 데스크탑 좌측 문구 블록 폭 — 목업 텍스트가 263이라 그보다 좁으면 타이틀이
 /// 3줄로 접힌다. 263 + 캐러셀과의 간격 16.
@@ -82,9 +86,6 @@ class LiveCrewTopCarouselWeb extends StatefulWidget {
   final int topicIndex;
   final int topicCount;
 
-  /// 점을 눌러 바로 그 주제로 가기.
-  final ValueChanged<int>? onSelectTopic;
-
   const LiveCrewTopCarouselWeb({
     super.key,
     required this.title,
@@ -98,7 +99,6 @@ class LiveCrewTopCarouselWeb extends StatefulWidget {
     this.onNextTopic,
     this.topicIndex = 0,
     this.topicCount = 1,
-    this.onSelectTopic,
   });
 
   @override
@@ -112,7 +112,9 @@ class _LiveCrewTopCarouselWebState extends State<LiveCrewTopCarouselWeb>
   /// 자동 스크롤 타이머가 **레일이 막 트리에서 빠진 프레임**에 걸리면
   /// "Looking up a deactivated widget's ancestor is unsafe"로 터진다.
   /// 이 레일은 주제가 바뀌면 어차피 0으로 되돌리므로 위치를 저장할 이유가 없다.
-  final ScrollController _controller = ScrollController(keepScrollOffset: false);
+  final ScrollController _controller = ScrollController(
+    keepScrollOffset: false,
+  );
 
   /// 자동으로 흘러가는 타이머. 목록을 두 번 이어 붙여(아래 `_loopCount`) 끝에 닿으면
   /// 한 바퀴 길이만큼 되돌려서 끊김 없이 반복한다.
@@ -120,6 +122,17 @@ class _LiveCrewTopCarouselWebState extends State<LiveCrewTopCarouselWeb>
 
   /// 사용자가 보고 있거나 직접 끌고 있는 동안에는 멈춘다.
   bool _paused = false;
+
+  /// 카드 한 칸의 피치(카드 폭 + 간격)를 **build에서 재어 둔 값**.
+  /// 화면 폭에만 의존하므로 주제가 바뀌어도 그대로 유효하다.
+  ///
+  /// ⚠️ 자동 스크롤 타이머 안에서 `_cardWidth(context)`류를 직접 부르면 안 된다 —
+  /// 그 안이 `MediaQuery.sizeOf(context)`를 타는데, 위젯이 트리에서
+  /// **빠진(deactivated)** 동안에는 조상 조회가 금지돼
+  /// `Looking up a deactivated widget's ancestor is unsafe`가 난다.
+  /// `State.mounted`는 deactivated 구간에서도 **true**라 그걸로는 막히지 않고,
+  /// 16ms 타이머라 그 구간 동안 같은 에러가 콘솔에 쏟아진다.
+  double _cardPitchCache = 0;
 
   /// 주제 전환 애니메이션. 누른 화살표 방향으로 새 내용이 들어온다.
   late final AnimationController _topicCtrl = AnimationController(
@@ -158,7 +171,8 @@ class _LiveCrewTopCarouselWebState extends State<LiveCrewTopCarouselWeb>
   static const int _loopCount = 400;
 
   /// 한 바퀴(원본 목록 하나)의 길이.
-  double _lapExtent(int count) => count * (_cardWidth(context) + _cardGap(context));
+  double _lapExtent(int count) =>
+      count * (_cardWidth(context) + _cardGap(context));
 
   /// 시작 위치 — 가운데 바퀴. 여기서 왼쪽으로도 200바퀴를 끌 수 있다.
   double _startOffset(int count) => _lapExtent(count) * (_loopCount ~/ 2);
@@ -178,7 +192,9 @@ class _LiveCrewTopCarouselWebState extends State<LiveCrewTopCarouselWeb>
     _startAutoScroll();
     _playStagger();
     // 첫 레이아웃 뒤라야 스크롤 위치를 잡을 수 있다.
-    WidgetsBinding.instance.addPostFrameCallback((_) => _resetRail());
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) _resetRail();
+    });
   }
 
   @override
@@ -214,7 +230,10 @@ class _LiveCrewTopCarouselWebState extends State<LiveCrewTopCarouselWeb>
   /// 전환 중 가로로 밀어 주는 래퍼. 레일은 ListView가 하나뿐이어야 해서
   /// (스크롤 컨트롤러가 둘에 붙으면 터진다) 교체 대신 **들어오는 연출만** 준다.
   Widget _slideIn(Widget child, double shift) {
-    final curved = CurvedAnimation(parent: _topicCtrl, curve: Curves.easeOutCubic);
+    final curved = CurvedAnimation(
+      parent: _topicCtrl,
+      curve: Curves.easeOutCubic,
+    );
     return AnimatedBuilder(
       animation: curved,
       builder: (_, inner) => Transform.translate(
@@ -230,7 +249,8 @@ class _LiveCrewTopCarouselWebState extends State<LiveCrewTopCarouselWeb>
     // 약 60fps. Ticker 대신 타이머를 쓰는 이유는 멈춤/재개가 단순해서다.
     _autoScroll = Timer.periodic(const Duration(milliseconds: 16), (_) {
       if (!mounted || _paused || !_canLoop) return;
-      if (!_controller.hasClients || !_controller.position.hasContentDimensions) return;
+      if (!_controller.hasClients || !_controller.position.hasContentDimensions)
+        return;
       // 레일이 트리에서 빠지는 중이면(주제 전환·폭 변경으로 리빌드) 건드리지 않는다.
       if (!(_controller.position.context.storageContext.mounted)) return;
       // 사용자가 끌고 있는 중에는 건드리지 않는다.
@@ -241,7 +261,9 @@ class _LiveCrewTopCarouselWebState extends State<LiveCrewTopCarouselWeb>
       final next = _controller.offset + _stepPerFrame;
       // 끝 바퀴에 닿기 전에 한 바퀴 뒤로 접어 둔다(그림이 같아 티가 안 난다).
       // 400바퀴라 실제로는 거의 걸리지 않는 안전장치다.
-      final lap = _lapExtent(widget.crews.length);
+      // build에서 재어 둔 피치만 쓴다(위 `_cardPitchCache` 주석 참고).
+      final lap = _cardPitchCache * widget.crews.length;
+      if (lap <= 0) return;
       _controller.jumpTo(next > max - lap ? next - lap : next);
     });
   }
@@ -249,6 +271,8 @@ class _LiveCrewTopCarouselWebState extends State<LiveCrewTopCarouselWeb>
   @override
   Widget build(BuildContext context) {
     final isDesktop = context.isDesktop;
+    // 폭이 바뀌면 카드 크기도 바뀌므로 매 빌드에서 다시 재어 둔다.
+    _cardPitchCache = _cardWidth(context) + _cardGap(context);
     final lead = _slideIn(_buildLead(), _kLeadEnterShift);
     final rail = _slideIn(_buildRail(), _kRailEnterShift);
 
@@ -278,7 +302,6 @@ class _LiveCrewTopCarouselWebState extends State<LiveCrewTopCarouselWeb>
         ],
       );
     }
-
   }
 
   /// 레일을 페이지 여백 밖(화면 좌우 끝)까지 넓힌다. 카드가 가장자리에서 잘려
@@ -298,23 +321,15 @@ class _LiveCrewTopCarouselWebState extends State<LiveCrewTopCarouselWeb>
     );
   }
 
-  /// 화살표는 카드가 아니라 **주제**를 넘긴다. 왼쪽의 점은 전체 몇 개 중
-  /// 몇 번째 주제인지 알려주고, 눌러서 바로 갈 수도 있다.
-  Widget _buildDots() => _TopicDots(
-        count: widget.topicCount,
-        index: widget.topicIndex,
-        onSelect: widget.onSelectTopic,
-      );
-
   Widget _buildArrows() => Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          _ArrowButton(icon: Icons.chevron_left, onTap: widget.onPrevTopic),
-          // 화살표 사이 10 (목업).
-          const SizedBox(width: 10),
-          _ArrowButton(icon: Icons.chevron_right, onTap: widget.onNextTopic),
-        ],
-      );
+    mainAxisSize: MainAxisSize.min,
+    children: [
+      _ArrowButton(icon: Icons.chevron_left, onTap: widget.onPrevTopic),
+      // 화살표 사이 10 (목업).
+      const SizedBox(width: 10),
+      _ArrowButton(icon: Icons.chevron_right, onTap: widget.onNextTopic),
+    ],
+  );
 
   Widget _buildLead() {
     final isDesktop = context.isDesktop;
@@ -337,46 +352,29 @@ class _LiveCrewTopCarouselWebState extends State<LiveCrewTopCarouselWeb>
         SizedBox(height: isDesktop ? 6 : 4),
         Text(
           widget.subtitle,
-          style: SDSTextStyle.regular.copyWith(fontSize: 12, color: SDSColor.gray500),
+          style: SDSTextStyle.regular.copyWith(
+            fontSize: 12,
+            color: SDSColor.gray500,
+          ),
         ),
       ],
     );
 
-    // PC는 문구 아래에 점 인디케이터, 그 아래에 화살표가 붙는다.
+    // PC는 문구 아래에 화살표가 붙는다(점 인디케이터는 쓰지 않는다 — 사용자 확정).
     if (isDesktop) {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          texts,
-          const SizedBox(height: 10),
-          if (widget.topicCount > 1) ...[
-            _buildDots(),
-            const SizedBox(height: 20),
-          ],
-          _buildArrows(),
-        ],
+        children: [texts, const SizedBox(height: 10), _buildArrows()],
       );
     }
 
-    // 좁은 폭에서는 화살표가 문구 **오른쪽 끝**에 서고(목업 Frame 996 x=702)
-    // 점 인디케이터는 PC와 같이 **문구 아래** 왼쪽에 붙는다.
-    return Column(
+    // 좁은 폭에서는 화살표가 문구 **오른쪽 끝**에 선다(목업 Frame 996 x=702).
+    return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(child: texts),
-            const SizedBox(width: SDSSpacing.md),
-            _buildArrows(),
-          ],
-        ),
-        // 모바일웹 사이즈에서는 캐러셀 점 인디케이터를 숨긴다(사용자 요청).
-        // 태블릿은 PC처럼 그대로 보여준다.
-        if (!_isMobile(context) && widget.topicCount > 1) ...[
-          const SizedBox(height: 10),
-          _buildDots(),
-        ],
+        Expanded(child: texts),
+        const SizedBox(width: SDSSpacing.md),
+        _buildArrows(),
       ],
     );
   }
@@ -394,7 +392,10 @@ class _LiveCrewTopCarouselWebState extends State<LiveCrewTopCarouselWeb>
         child: Text(
           widget.emptyMessage,
           textAlign: TextAlign.center,
-          style: SDSTextStyle.regular.copyWith(fontSize: 13, color: SDSColor.gray400),
+          style: SDSTextStyle.regular.copyWith(
+            fontSize: 13,
+            color: SDSColor.gray400,
+          ),
         ),
       );
     }
@@ -430,21 +431,22 @@ class _LiveCrewTopCarouselWebState extends State<LiveCrewTopCarouselWeb>
                 return Padding(
                   padding: EdgeInsets.only(right: _cardGap(context)),
                   child: Center(
-                  // 주제가 바뀌면 키가 바뀌어 등장 애니메이션이 다시 돈다
-                  // (카드가 30ms씩 밀려 떠오르며 "새 묶음"이 깔린 느낌을 준다).
-                  child: _StaggerIn(
-                    key: ValueKey('${widget.topicIndex}:$index'),
-                    order: index % count,
-                    // 전환 직후에만 연출한다 — 자동 스크롤로 되들어오는 카드는 그냥 보인다.
-                    animate: _staggerActive,
-                    child: _CrewCarouselCard(
-                      crew: crew,
-                      // 1위 크루만 크루 색으로 채워 강조한다(목업의 파란 카드).
-                      isHighlighted: widget.highlightFirst && index % count == 0,
-                      resortFullnames: widget.resortFullnames,
-                      onTap: () => widget.onCrewTap(crew),
+                    // 주제가 바뀌면 키가 바뀌어 등장 애니메이션이 다시 돈다
+                    // (카드가 30ms씩 밀려 떠오르며 "새 묶음"이 깔린 느낌을 준다).
+                    child: _StaggerIn(
+                      key: ValueKey('${widget.topicIndex}:$index'),
+                      order: index % count,
+                      // 전환 직후에만 연출한다 — 자동 스크롤로 되들어오는 카드는 그냥 보인다.
+                      animate: _staggerActive,
+                      child: _CrewCarouselCard(
+                        crew: crew,
+                        // 1위 크루만 크루 색으로 채워 강조한다(목업의 파란 카드).
+                        isHighlighted:
+                            widget.highlightFirst && index % count == 0,
+                        resortFullnames: widget.resortFullnames,
+                        onTap: () => widget.onCrewTap(crew),
+                      ),
                     ),
-                  ),
                   ),
                 );
               },
@@ -537,9 +539,14 @@ class _CrewCarouselCardState extends State<_CrewCarouselCard> {
     final active = _hovered;
     final background = active ? accent : SDSColor.gray50;
     final nameColor = active ? SDSColor.snowliveWhite : SDSColor.gray900;
-    final subColor = active ? SDSColor.snowliveWhite.withValues(alpha: 0.8) : SDSColor.gray500;
+    final subColor = active
+        ? SDSColor.snowliveWhite.withValues(alpha: 0.8)
+        : SDSColor.gray500;
     final logoUrl = crewLogoUrlOf(logoUrl: crew.crewLogoUrl, color: crew.color);
-    final subtitle = crewCardSubtitle(crew, resortFullnames: widget.resortFullnames);
+    final subtitle = crewCardSubtitle(
+      crew,
+      resortFullnames: widget.resortFullnames,
+    );
     final isMobile = _isMobile(context);
     // 로고 — 목업: PC 64 / 모바일 50.8(161:50105).
     final logoSize = isMobile ? 50.0 : 64.0;
@@ -554,8 +561,8 @@ class _CrewCarouselCardState extends State<_CrewCarouselCard> {
         // 확대는 카드 중심 기준이라 좌우로도 조금씩 자란다.
         transform: active
             ? (Matrix4.identity()
-              ..translate(0.0, -_kCardLift)
-              ..scale(_kCardHoverScale))
+                ..translate(0.0, -_kCardLift)
+                ..scale(_kCardHoverScale))
             : Matrix4.identity(),
         transformAlignment: Alignment.center,
         decoration: BoxDecoration(
@@ -584,53 +591,63 @@ class _CrewCarouselCardState extends State<_CrewCarouselCard> {
           clipBehavior: Clip.antiAlias,
           child: InkWell(
             onTap: widget.onTap,
-        child: SizedBox(
-          width: _cardWidth(context),
-          height: _cardHeight(context),
-          child: Padding(
-            // 카드가 작아진 만큼 상단 여백도 한 단계 줄였다(목업 28).
-            // 모바일은 카드가 122×120이라 여백·로고·글자를 한 단계씩 더 줄인다.
-            padding: isMobile
-                ? const EdgeInsets.fromLTRB(10, 16, 10, 10)
-                : const EdgeInsets.fromLTRB(14, 22, 14, 14),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Container(
-                  width: logoSize,
-                  height: logoSize,
-                  decoration: BoxDecoration(
-                    color: SDSColor.snowliveWhite,
-                    // 공용 비율(한 변의 0.2).
-                    borderRadius: BorderRadius.circular(crewLogoRadius(logoSize)),
-                  ),
-                  clipBehavior: Clip.antiAlias,
-                  child: (logoUrl?.isNotEmpty ?? false)
-                      ? WebNetworkImage(url: logoUrl, width: logoSize, height: logoSize)
-                      : null,
+            child: SizedBox(
+              width: _cardWidth(context),
+              height: _cardHeight(context),
+              child: Padding(
+                // 카드가 작아진 만큼 상단 여백도 한 단계 줄였다(목업 28).
+                // 모바일은 카드가 122×120이라 여백·로고·글자를 한 단계씩 더 줄인다.
+                padding: isMobile
+                    ? const EdgeInsets.fromLTRB(10, 16, 10, 10)
+                    : const EdgeInsets.fromLTRB(14, 22, 14, 14),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      width: logoSize,
+                      height: logoSize,
+                      decoration: BoxDecoration(
+                        color: SDSColor.snowliveWhite,
+                        // 공용 비율(한 변의 0.2).
+                        borderRadius: BorderRadius.circular(
+                          crewLogoRadius(logoSize),
+                        ),
+                      ),
+                      clipBehavior: Clip.antiAlias,
+                      child: (logoUrl?.isNotEmpty ?? false)
+                          ? WebNetworkImage(
+                              url: logoUrl,
+                              width: logoSize,
+                              height: logoSize,
+                            )
+                          : null,
+                    ),
+                    SizedBox(height: isMobile ? 10 : SDSSpacing.md),
+                    Text(
+                      crew.crewName ?? '',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: SDSTextStyle.bold.copyWith(
+                        fontSize: isMobile ? 12 : 14,
+                        color: nameColor,
+                      ),
+                    ),
+                    if (subtitle.isNotEmpty) ...[
+                      SizedBox(height: isMobile ? 2 : 4),
+                      Text(
+                        subtitle,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: SDSTextStyle.regular.copyWith(
+                          fontSize: isMobile ? 10 : 11,
+                          color: subColor,
+                        ),
+                      ),
+                    ],
+                  ],
                 ),
-                SizedBox(height: isMobile ? 10 : SDSSpacing.md),
-                Text(
-                  crew.crewName ?? '',
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: SDSTextStyle.bold
-                      .copyWith(fontSize: isMobile ? 12 : 14, color: nameColor),
-                ),
-                if (subtitle.isNotEmpty) ...[
-                  SizedBox(height: isMobile ? 2 : 4),
-                  Text(
-                    subtitle,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: SDSTextStyle.regular
-                        .copyWith(fontSize: isMobile ? 10 : 11, color: subColor),
-                  ),
-                ],
-              ],
+              ),
             ),
-          ),
-        ),
           ),
         ),
       ),
@@ -658,7 +675,8 @@ class _StaggerIn extends StatefulWidget {
   State<_StaggerIn> createState() => _StaggerInState();
 }
 
-class _StaggerInState extends State<_StaggerIn> with SingleTickerProviderStateMixin {
+class _StaggerInState extends State<_StaggerIn>
+    with SingleTickerProviderStateMixin {
   late final AnimationController _ctrl = AnimationController(
     vsync: this,
     duration: const Duration(milliseconds: 220),
@@ -694,47 +712,6 @@ class _StaggerInState extends State<_StaggerIn> with SingleTickerProviderStateMi
         child: Opacity(opacity: curved.value.clamp(0, 1), child: child),
       ),
       child: widget.child,
-    );
-  }
-}
-
-/// 주제 점 인디케이터 — 모두 같은 크기의 원이고 **현재 주제만 진하다**.
-class _TopicDots extends StatelessWidget {
-  final int count;
-  final int index;
-  final ValueChanged<int>? onSelect;
-
-  const _TopicDots({required this.count, required this.index, this.onSelect});
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        for (var i = 0; i < count; i++) ...[
-          if (i > 0) const SizedBox(width: 5),
-          MouseRegion(
-            cursor: onSelect == null ? MouseCursor.defer : SystemMouseCursors.click,
-            child: GestureDetector(
-              onTap: onSelect == null ? null : () => onSelect!(i),
-              // 점이 작아서 히트 영역을 세로로 넓힌다.
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 2),
-                child: AnimatedContainer(
-                  duration: const Duration(milliseconds: 260),
-                  curve: Curves.easeOutCubic,
-                  width: 6,
-                  height: 6,
-                  decoration: BoxDecoration(
-                    color: i == index ? SDSColor.gray900 : SDSColor.gray200,
-                    shape: BoxShape.circle,
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ],
-      ],
     );
   }
 }

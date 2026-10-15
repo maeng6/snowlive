@@ -8,7 +8,7 @@ import 'package:com.snowlive/web/view/friend/w_friend_row_web.dart';
 import 'package:com.snowlive/web/viewmodel/auth/vm_authcheck_web.dart';
 import 'package:com.snowlive/web/viewmodel/friend/vm_friend_web.dart';
 import 'package:com.snowlive/web/widget/w_empty_state_web.dart';
-import 'package:com.snowlive/web/widget/w_web_overlay_modal_web.dart';
+import 'package:com.snowlive/web/widget/w_web_popup_web.dart';
 import 'package:com.snowlive/web/widget/w_web_more_menu_web.dart';
 import 'package:com.snowlive/web/widget/w_web_text_tabs_web.dart';
 import 'package:com.snowlive/web/widget/w_web_toast_web.dart';
@@ -67,58 +67,15 @@ class _FriendRequestsViewWebState extends State<FriendRequestsViewWeb> {
     );
   }
 
-  /// 목업의 수락 확인은 일반 확인 다이얼로그와 모양이 다르다
-  /// (파란 전체폭 `친구 추가하기` + 아래 `다음에 하기`) → 따로 그린다.
-  Future<bool> _confirmAccept(String name) async {
-    final result = await showWebOverlayModal<bool>(
+  /// 수락 확인(피그마 218:68503) — 웹 공용 박스 팝업.
+  /// 파란 채움 `친구 추가하기` 아래에 텍스트 `다음에 하기`가 오는 구성이다.
+  Future<bool> _confirmAccept(String name) {
+    return showWebBoxPopup(
       context: context,
-      builder: (_, close) => Material(
-        color: SDSColor.snowliveWhite,
-        borderRadius: BorderRadius.circular(16),
-        clipBehavior: Clip.antiAlias,
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 320),
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(24, 28, 24, 12),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  '$name님을\n친구로 추가하시겠어요?',
-                  textAlign: TextAlign.center,
-                  style: SDSTextStyle.bold.copyWith(fontSize: 16, color: SDSColor.gray900),
-                ),
-                const SizedBox(height: SDSSpacing.lg),
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: () => close(true),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: SDSColor.snowliveBlue,
-                      elevation: 0,
-                      minimumSize: const Size(double.infinity, 48),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                    ),
-                    child: Text(
-                      '친구 추가하기',
-                      style: SDSTextStyle.bold.copyWith(fontSize: 15, color: SDSColor.snowliveWhite),
-                    ),
-                  ),
-                ),
-                TextButton(
-                  onPressed: () => close(false),
-                  child: Text(
-                    '다음에 하기',
-                    style: SDSTextStyle.bold.copyWith(fontSize: 15, color: SDSColor.gray900),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
+      title: '$name님을\n친구로 추가하시겠어요?',
+      primaryLabel: '친구 추가하기',
+      secondaryLabel: '다음에 하기',
     );
-    return result ?? false;
   }
 
   Future<void> _accept(RequestFriendList request) async {
@@ -193,8 +150,16 @@ class _FriendRequestsViewWebState extends State<FriendRequestsViewWeb> {
                       if (t == _tab) return;
                       setState(() => _tab = t);
                     },
+                    // 목업(218:68213) — bold 16, 비활성도 bold gray200,
+                    // 구분자는 1px 세로선, 좌우 간격 10.
+                    fontSize: 16,
+                    inactiveBold: true,
+                    inactiveColor: SDSColor.gray200,
+                    lineDivider: true,
+                    dividerGap: 10,
                   ),
-                  const SizedBox(height: SDSSpacing.lg),
+                  // 탭 줄 ↔ 목록 20(목업 218:68213 하단 여백).
+                  const SizedBox(height: 20),
                   if (_tab == _RequestTab.received)
                     _buildList(
                       received,

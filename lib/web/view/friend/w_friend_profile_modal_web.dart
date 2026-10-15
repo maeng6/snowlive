@@ -143,7 +143,7 @@ class _FriendProfileSheetState extends State<_FriendProfileSheet> {
     }
     // 상세를 받기 전에는 관계를 모르므로 버튼을 눌러도 되게 두되, 이미 친구면 표시만 한다.
     if (info?.areWeFriend ?? widget.initialAreWeFriend) {
-      return const WebProfileStateBadge(label: '친구', isPositive: true);
+      return const WebProfileStateBadge(label: '내 친구', isPositive: true);
     }
     return WebProfilePillButton(
       label: _isSending ? '요청 중…' : '친구 추가',

@@ -1,6 +1,5 @@
 import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/core/model/m_friendDetail.dart';
-import 'package:com.snowlive/core/model/m_friendsTalk.dart';
 import 'package:com.snowlive/core/viewmodel/ranking/vm_rankingList_recordRoom.dart'
     show RankingFilter_season;
 import 'package:com.snowlive/web/routes/routes_web.dart';
@@ -19,15 +18,15 @@ import 'package:com.snowlive/web/widget/w_web_icon_button_web.dart';
 import 'package:com.snowlive/web/widget/w_web_filter_menu_web.dart';
 import 'package:com.snowlive/web/widget/w_skeleton_web.dart';
 import 'package:com.snowlive/web/widget/w_web_more_menu_web.dart';
-import 'package:com.snowlive/web/widget/w_web_overlay_modal_web.dart';
 import 'package:com.snowlive/web/widget/w_web_profile_card_web.dart';
 import 'package:com.snowlive/web/widget/w_web_text_tabs_web.dart';
 import 'package:com.snowlive/web/widget/w_web_toast_web.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-/// 목업 실측 폭(통계 카드가 2열로 눕는다).
-const double kProfileContentMaxWidth = 1136;
+/// 프로필 콘텐츠 열 PC 최대폭 — 목업(1:7764) 실측 874.
+/// 통계 카드 2열(423 + 간격 21 + 430)이 이 폭에 정확히 들어간다.
+const double kProfileContentMaxWidth = 874;
 
 /// 모바일 하단 고정 입력줄 높이(패딩 12+12 + 줄 48).
 const double _kMobileInputBarHeight = 76;
@@ -70,7 +69,8 @@ class _ProfileDetailViewWebState extends State<ProfileDetailViewWeb> {
     super.initState();
     _userId = int.tryParse(Get.parameters['id'] ?? '');
     // 알림센터의 `방명록` 알림은 `&tab=guestbook`으로 들어와 방명록 탭을 바로 연다.
-    if (Get.parameters['tab'] == WebRoutes.userProfileTabGuestbook) _tab = _ProfileTab.guestbook;
+    if (Get.parameters['tab'] == WebRoutes.userProfileTabGuestbook)
+      _tab = _ProfileTab.guestbook;
     final id = _userId;
     if (id == null) return;
 
@@ -141,23 +141,24 @@ class _ProfileDetailViewWebState extends State<ProfileDetailViewWeb> {
 
   @override
   Widget build(BuildContext context) {
-    final isDesktop = context.isDesktop;
     final isMobile = context.screenType == WebScreenType.mobile;
 
     final scrollArea = Container(
       color: SDSColor.snowliveWhite,
-      padding: EdgeInsets.fromLTRB(
-        isDesktop ? SDSSpacing.xl : SDSSpacing.md,
-        // 상단은 서브 페이지 공통(PC 32 / 태블릿 16 / 모바일 20 — 홈과 동일).
-        webSubPagePadding(context).top,
-        isDesktop ? SDSSpacing.xl : SDSSpacing.md,
-        // 모바일 방명록 탭은 하단 입력줄이 떠 있어 그만큼 여백을 둔다.
-        isMobile && _tab == _ProfileTab.guestbook ? _kMobileInputBarHeight : SDSSpacing.xl,
+      // 서브 페이지 공통 여백(좌우 40/20/16 · 상단 58/20/16).
+      // 모바일 방명록 탭은 하단 입력줄이 떠 있어 그만큼 여백을 둔다.
+      padding: webSubPagePadding(
+        context,
+        bottom: isMobile && _tab == _ProfileTab.guestbook
+            ? _kMobileInputBarHeight
+            : SDSSpacing.xl,
       ),
       child: SingleChildScrollView(
         child: Center(
           child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: kProfileContentMaxWidth),
+            constraints: const BoxConstraints(
+              maxWidth: kProfileContentMaxWidth,
+            ),
             child: Obx(_buildBody),
           ),
         ),
@@ -216,7 +217,9 @@ class _ProfileDetailViewWebState extends State<ProfileDetailViewWeb> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        if (canGoBack) ...[
+        // PC는 사이드바·브라우저 뒤로가기가 있어 화면 안 뒤로가기를 두지 않는다
+        // (목업 1:7764에도 없다 — WebPageHeader와 같은 규칙).
+        if (canGoBack && !context.isDesktop) ...[
           Align(
             alignment: Alignment.centerLeft,
             child: WebIconButton(
@@ -239,11 +242,20 @@ class _ProfileDetailViewWebState extends State<ProfileDetailViewWeb> {
             values: _ProfileTab.values,
             selected: _tab,
             labelOf: _tabLabel,
+            // 목업(1:7949) — bold 16, 비활성도 bold gray200,
+            // 구분자는 1px 세로선, 좌우 간격 10(친구 요청 관리 탭과 같은 규격).
+            fontSize: 16,
+            inactiveBold: true,
+            inactiveColor: SDSColor.gray200,
+            lineDivider: true,
+            dividerGap: 10,
             onSelected: (tab) {
               if (tab == _tab) return;
               setState(() => _tab = tab);
               // 기록실은 처음 열 때 최신 시즌을 받아온다.
-              if (tab == _ProfileTab.recordRoom && _vm.record == null && !_vm.isRecordLoading) {
+              if (tab == _ProfileTab.recordRoom &&
+                  _vm.record == null &&
+                  !_vm.isRecordLoading) {
                 _vm.loadRecord(crewRecordSeasons().first.dbSeason);
               }
             },
@@ -255,13 +267,13 @@ class _ProfileDetailViewWebState extends State<ProfileDetailViewWeb> {
         else
           switch (_tab) {
             _ProfileTab.stats => _StatsPane(
-                key: const ValueKey('stats'),
-                detail: detail,
-                ownerName: info.displayName,
-                ownerImageUrl: info.profileImageUrlUser,
-                // 넓은 폭에서는 파란 바 왼쪽에 라벨. 내 프로필이면 `내 랭킹`, 남의 프로필이면 `랭킹`.
-                leadingLabel: _vm.isMe ? '내 랭킹' : '랭킹',
-              ),
+              key: const ValueKey('stats'),
+              detail: detail,
+              ownerName: info.displayName,
+              ownerImageUrl: info.profileImageUrlUser,
+              // 넓은 폭에서는 파란 바 왼쪽에 라벨. 내 프로필이면 `내 랭킹`, 남의 프로필이면 `랭킹`.
+              leadingLabel: _vm.isMe ? '내 랭킹' : '랭킹',
+            ),
             _ProfileTab.guestbook => _buildGuestbook(talkCount),
             _ProfileTab.recordRoom => _buildRecordRoom(info),
           },
@@ -270,11 +282,11 @@ class _ProfileDetailViewWebState extends State<ProfileDetailViewWeb> {
   }
 
   String _tabLabel(_ProfileTab tab) => switch (tab) {
-        _ProfileTab.stats => '라이딩 통계',
-        _ProfileTab.guestbook => '방명록',
-        // 남의 프로필에서도 어색하지 않게 `내`를 뺀다.
-        _ProfileTab.recordRoom => '시즌 기록실',
-      };
+    _ProfileTab.stats => '라이딩 통계',
+    _ProfileTab.guestbook => '방명록',
+    // 남의 프로필에서도 어색하지 않게 `내`를 뺀다.
+    _ProfileTab.recordRoom => '시즌 기록실',
+  };
 
   /// 내 프로필 편집 화면으로 갔다가 돌아오면 바뀐 정보로 다시 받는다.
   Future<void> _openEdit() async {
@@ -304,7 +316,8 @@ class _ProfileDetailViewWebState extends State<ProfileDetailViewWeb> {
       );
     }
     // 이미 친구거나 요청을 보냈으면 누를 것이 없다 → 버튼이 아니라 표시로 그린다.
-    if (_vm.areWeFriend) return const WebProfileStateBadge(label: '친구', isPositive: true);
+    if (_vm.areWeFriend)
+      return const WebProfileStateBadge(label: '내 친구', isPositive: true);
     if (_requestSent) return const WebProfileStateBadge(label: '요청 보냄');
     return _HeaderPill(
       label: _isSendingRequest ? '요청 중…' : '친구 추가',
@@ -327,7 +340,8 @@ class _ProfileDetailViewWebState extends State<ProfileDetailViewWeb> {
         ProfileGuestbookListWeb(
           talks: _vm.talks,
           canDelete: (talk) => talk.authorUserId == _vm.myUserId || _vm.isMe,
-          canReport: (talk) => _vm.isLoggedIn && talk.authorUserId != _vm.myUserId,
+          canReport: (talk) =>
+              _vm.isLoggedIn && talk.authorUserId != _vm.myUserId,
           onDelete: (talk) async {
             final ok = await _vm.deleteGuestbook(
               talkId: talk.friendsTalkId,
@@ -336,8 +350,9 @@ class _ProfileDetailViewWebState extends State<ProfileDetailViewWeb> {
             if (ok) await _vm.refreshTalks();
             return ok;
           },
-          onReport: (talk) =>
-              mapWebActionResponse(() => _vm.reportGuestbook(talk.friendsTalkId)),
+          onReport: (talk) => mapWebActionResponse(
+            () => _vm.reportGuestbook(talk.friendsTalkId),
+          ),
           emptyHint: _guestbookLockedMessage(),
         ),
       ],
@@ -419,15 +434,21 @@ class _HeaderPill extends StatelessWidget {
     return OutlinedButton(
       onPressed: onTap,
       style: OutlinedButton.styleFrom(
+        // 목업(1:7851) — 테두리 gray200, 패딩 16/10, 라운드 5, 글자 Bold 13 gray700.
         side: BorderSide(color: SDSColor.gray200),
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
         minimumSize: Size.zero,
         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
       ),
       child: Text(
         label,
-        style: SDSTextStyle.bold.copyWith(fontSize: 13, color: SDSColor.gray900),
+        // 줄높이 16 고정 — 목업 버튼 높이 36(패딩 10+10 + 글줄 16)에 맞춘다.
+        style: SDSTextStyle.bold.copyWith(
+          fontSize: 13,
+          height: 16 / 13,
+          color: SDSColor.gray700,
+        ),
       ),
     );
   }
@@ -454,7 +475,8 @@ class _SeasonSelector extends StatefulWidget {
 class _SeasonSelectorState extends State<_SeasonSelector> {
   final LayerLink _link = LayerLink();
 
-  String _label(RankingFilter_season season) => '${season.korean.replaceAll('시즌', '')} 시즌 랭킹';
+  String _label(RankingFilter_season season) =>
+      '${season.korean.replaceAll('시즌', '')} 시즌 랭킹';
 
   Future<void> _open() async {
     final selected = await showWebFilterMenu<RankingFilter_season>(
@@ -487,7 +509,10 @@ class _SeasonSelectorState extends State<_SeasonSelector> {
             children: [
               Text(
                 _label(current),
-                style: SDSTextStyle.bold.copyWith(fontSize: 15, color: widget.color),
+                style: SDSTextStyle.bold.copyWith(
+                  fontSize: 15,
+                  color: widget.color,
+                ),
               ),
               const SizedBox(width: 2),
               Icon(Icons.expand_more, size: 18, color: widget.color),
@@ -564,7 +589,8 @@ class _StatsPaneState extends State<_StatsPane> {
   CalendarInfo? get _selected {
     final day = _selectedDay;
     if (day == null) return null;
-    final key = '${_month.year}-${_month.month.toString().padLeft(2, '0')}'
+    final key =
+        '${_month.year}-${_month.month.toString().padLeft(2, '0')}'
         '-${day.toString().padLeft(2, '0')}';
     return _byDate[key];
   }
@@ -582,14 +608,20 @@ class _StatsPaneState extends State<_StatsPane> {
   Widget build(BuildContext context) {
     final isMobile = context.screenType == WebScreenType.mobile;
     final season = widget.detail.seasonRankingInfo;
-    final hasRecord = season.overallTotalCount > 0 || season.countInfo.isNotEmpty;
+    final hasRecord =
+        season.overallTotalCount > 0 || season.countInfo.isNotEmpty;
 
-    final leading = widget.seasonSelectorBuilder?.call(SDSColor.snowliveWhite) ??
+    final leading =
+        widget.seasonSelectorBuilder?.call(SDSColor.snowliveWhite) ??
         (widget.leadingLabel == null
             ? null
             : Text(
                 widget.leadingLabel!,
-                style: SDSTextStyle.bold.copyWith(fontSize: 15, color: SDSColor.snowliveWhite),
+                // 목업(1:7959) — `내 랭킹` Bold 16.
+                style: SDSTextStyle.bold.copyWith(
+                  fontSize: 16,
+                  color: SDSColor.snowliveWhite,
+                ),
               ));
 
     if (!hasRecord) {
@@ -639,7 +671,8 @@ class _StatsPaneState extends State<_StatsPane> {
           tierName: season.tierNameKor,
           tierIconUrl: season.overallTierIconUrl,
         ),
-        const SizedBox(height: SDSSpacing.lg),
+        // 목업(1:7764) — 랭킹 바 ↔ 통계 토글 40.
+        const SizedBox(height: 40),
         Row(
           children: [
             _ModePill(
@@ -656,7 +689,8 @@ class _StatsPaneState extends State<_StatsPane> {
           ],
         ),
         if (_mode == _StatsMode.daily) ...[
-          const SizedBox(height: SDSSpacing.xl),
+          // 목업 — 토글 ↔ 월 네비게이션 24.
+          const SizedBox(height: SDSSpacing.lg),
           ProfileDailyCalendarWeb(
             month: _month,
             countsByDay: _countsByDay,
@@ -667,7 +701,8 @@ class _StatsPaneState extends State<_StatsPane> {
             onNextMonth: () => _shiftMonth(1),
           ),
         ],
-        const SizedBox(height: SDSSpacing.xl),
+        // 목업 — 날짜 스트립(또는 토글) ↔ 라이딩 통계 40.
+        const SizedBox(height: 40),
         if (_mode == _StatsMode.total)
           ProfileRidingStatsWeb(
             totalCount: season.overallTotalCount,
@@ -696,7 +731,11 @@ class _ModePill extends StatelessWidget {
   final bool isActive;
   final VoidCallback onTap;
 
-  const _ModePill({required this.label, required this.isActive, required this.onTap});
+  const _ModePill({
+    required this.label,
+    required this.isActive,
+    required this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -704,18 +743,23 @@ class _ModePill extends StatelessWidget {
       color: isActive ? SDSColor.snowliveBlack : SDSColor.snowliveWhite,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20),
-        side: BorderSide(color: isActive ? SDSColor.snowliveBlack : SDSColor.gray200),
+        // 목업(1:7991) — 비활성 테두리 gray100.
+        side: BorderSide(
+          color: isActive ? SDSColor.snowliveBlack : SDSColor.gray100,
+        ),
       ),
       clipBehavior: Clip.antiAlias,
       child: InkWell(
         onTap: onTap,
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+          // 목업(1:7991) — 패딩 좌 14 / 우 12 / 상하 10, Bold 14.
+          padding: const EdgeInsets.fromLTRB(14, 10, 12, 10),
           child: Text(
             label,
             style: SDSTextStyle.bold.copyWith(
-              fontSize: 13,
-              color: isActive ? SDSColor.snowliveWhite : SDSColor.gray900,
+              fontSize: 14,
+              height: 16 / 14,
+              color: isActive ? SDSColor.snowliveWhite : SDSColor.snowliveBlack,
             ),
           ),
         ),

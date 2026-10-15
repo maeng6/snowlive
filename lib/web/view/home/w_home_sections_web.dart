@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:html' as html;
 
 import 'package:com.snowlive/core/api/api_fleamarket.dart';
 import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
@@ -970,10 +969,20 @@ class _HomeCrewCardsWebState extends State<HomeCrewCardsWeb>
   /// 카드당 200ms, 80ms 간격 → 3장 기준 총 360ms.
   static const int _kCardFadeMs = 200;
   static const int _kCardStaggerMs = 80;
-  late final AnimationController _cardsEnter = AnimationController(
-    vsync: this,
-    duration: const Duration(milliseconds: _kCardFadeMs + _kCardStaggerMs * 2),
-  )..forward();
+  /// ⚠️ **`initState`에서 만든다.** 선언부에서 바로 생성하면 지연 초기화라,
+  /// **모바일에서는 이 컨트롤러를 쓰지 않아**(스와이프 PageView를 쓴다) 끝까지
+  /// 만들어지지 않고 `dispose()`가 그때 처음 초기화를 실행한다 → 이미 트리에서
+  /// 떨어진 상태라 "Looking up a deactivated widget's ancestor is unsafe"로 터진다.
+  late final AnimationController _cardsEnter;
+
+  @override
+  void initState() {
+    super.initState();
+    _cardsEnter = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: _kCardFadeMs + _kCardStaggerMs * 2),
+    )..forward();
+  }
 
   @override
   void dispose() {
@@ -1284,10 +1293,12 @@ class _HomeFleamarketWebState extends State<HomeFleamarketWeb>
   /// 6장이라 스태거 간격은 짧게(50ms) 가져간다.
   static const int _kCardFadeMs = 200;
   static const int _kCardStaggerMs = 50;
-  late final AnimationController _cardsEnter = AnimationController(
-    vsync: this,
-    duration: const Duration(milliseconds: _kCardFadeMs + _kCardStaggerMs * 5),
-  )..forward();
+  /// ⚠️ **`initState`에서 만든다.** 선언부에서 `late final ... = AnimationController(...)`로
+  /// 두면 지연 초기화라, **모바일에서는 이 컨트롤러를 쓰지 않아**(스와이프 PageView를
+  /// 쓴다) 끝까지 생성되지 않고 `dispose()`의 `_cardsEnter.dispose()`가 그때 처음
+  /// 초기화를 실행한다. 이미 트리에서 떨어진 상태라 `vsync: this`가 조상을 못 찾아
+  /// "Looking up a deactivated widget's ancestor is unsafe"로 터진다.
+  late final AnimationController _cardsEnter;
 
   /// 모바일 PageView(스와이프) 컨트롤러.
   final PageController _mobileController = PageController();
@@ -1295,7 +1306,15 @@ class _HomeFleamarketWebState extends State<HomeFleamarketWeb>
   @override
   void initState() {
     super.initState();
-    _preloadThumbs();
+    _cardsEnter = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: _kCardFadeMs + _kCardStaggerMs * 5),
+    )..forward();
+    // precacheImage는 context의 의존성(ImageConfiguration)을 읽으므로 initState에서
+    // 바로 부를 수 없다 → 첫 프레임 뒤에 선로딩한다.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) _preloadThumbs();
+    });
   }
 
   @override
@@ -1305,14 +1324,21 @@ class _HomeFleamarketWebState extends State<HomeFleamarketWeb>
     if (!identical(oldWidget.items, widget.items)) _preloadThumbs();
   }
 
-  /// 홈 중고거래 카드 썸네일을 즉시 전부 브라우저 HTTP 캐시에 받아둔다 —
-  /// 카드가 화면에 들어오기 전에 받아놔서 그리는 순간 바로 뜨고, 상세로 들어가도
-  /// 같은 썸네일이 캐시에서 즉시 뜬다. (ImageElement.src만 세팅해도 받아 캐시한다.)
+  /// 홈 중고거래 카드 썸네일을 즉시 전부 받아둔다 — 카드가 화면에 들어오기 전에
+  /// 받아놔서 그리는 순간 바로 뜨고, 상세로 들어가도 같은 썸네일이 캐시에서 즉시 뜬다.
+  ///
+  /// ⚠️ `dart:html`의 `ImageElement().src`를 쓰지 말 것. 브라우저에만 있는
+  /// 라이브러리라 (1) `flutter test`는 Dart VM에서 돌아 **웹 위젯을 건드리는 테스트가
+  /// 전부 컴파일 단계에서 막히고**(`routes_web.dart`가 이 파일까지 끌고 온다),
+  /// (2) wasm 빌드도 막힌다. `precacheImage`는 어디서나 컴파일되고 같은 일을 한다.
+  /// 받는 주소는 서버가 축소해 준 목록 썸네일(`listUrl`)이라 디코드 비용도 작다.
   void _preloadThumbs() {
     for (final item in widget.items) {
       final thumb =
           (item.photos?.isNotEmpty ?? false) ? item.photos!.first.listUrl : null;
-      if (thumb != null && thumb.isNotEmpty) html.ImageElement().src = thumb;
+      if (thumb == null || thumb.isEmpty) continue;
+      // 선로딩 실패(죽은 URL·오프라인)는 조용히 넘긴다 — 안 잡으면 터진다.
+      precacheImage(NetworkImage(thumb), context, onError: (_, __) {});
     }
   }
 
@@ -1552,12 +1578,22 @@ class _HomeEventWebState extends State<HomeEventWeb>
 
   static const int _kCardFadeMs = 200;
   static const int _kCardStaggerMs = 50;
-  late final AnimationController _cardsEnter = AnimationController(
-    vsync: this,
-    duration: const Duration(milliseconds: _kCardFadeMs + _kCardStaggerMs * 5),
-  )..forward();
+  /// ⚠️ **`initState`에서 만든다.** 선언부에서 바로 생성하면 지연 초기화라,
+  /// **모바일에서는 이 컨트롤러를 쓰지 않아**(스와이프 PageView를 쓴다) 끝까지
+  /// 만들어지지 않고 `dispose()`가 그때 처음 초기화를 실행한다 → 이미 트리에서
+  /// 떨어진 상태라 "Looking up a deactivated widget's ancestor is unsafe"로 터진다.
+  late final AnimationController _cardsEnter;
 
   final PageController _mobileController = PageController();
+
+  @override
+  void initState() {
+    super.initState();
+    _cardsEnter = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: _kCardFadeMs + _kCardStaggerMs * 5),
+    )..forward();
+  }
 
   @override
   void dispose() {

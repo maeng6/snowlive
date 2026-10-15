@@ -42,13 +42,10 @@ class SnowliveWebApp extends StatelessWidget {
       title: kWebBrandTitle,
       getPages: WebRoutes.pages,
       initialRoute: WebRoutes.home,
-      // 웹에서 좌우 슬라이드 전환은 "모바일 앱을 그대로 옮긴" 느낌의 가장 큰 원인이다.
-      // GNB(사이드바/상단바)는 라우트 Navigator 바깥이라 고정된 채 콘텐츠만 바뀌는데,
-      // 슬라이드를 쓰면 콘텐츠가 사이드바 밑에서 밀려 나오는 것처럼 보인다.
-      // 방향성 없는 짧은 크로스페이드로 통일한다(일반적인 SPA 관례).
-      // 150ms: 지연으로 인지되는 200ms 아래. Material 기본 300ms는 웹에선 느리게 느껴진다.
-      defaultTransition: Transition.fadeIn,
-      transitionDuration: const Duration(milliseconds: 150),
+      // 라우트 전환 효과 없이 즉시 바뀐다 — 일반 웹페이지처럼 보이게 한다(사용자 확정).
+      // GNB(사이드바/상단바)는 라우트 Navigator 바깥이라 어차피 고정이고 콘텐츠만 교체된다.
+      defaultTransition: Transition.noTransition,
+      transitionDuration: Duration.zero,
       // GNB(사이드바/드로어)의 활성 탭 볼드 표시가 라우트 변경을 따라오도록
       // 매 라우팅 시점에 현재 라우트를 반응형 신호에 반영한다.
       // routingCallback 자체가 Navigator가 라우트를 push하며 자신을 빌드하는

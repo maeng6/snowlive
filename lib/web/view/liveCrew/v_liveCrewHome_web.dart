@@ -116,8 +116,11 @@ class _LiveCrewHomeViewWebState extends State<LiveCrewHomeViewWeb> {
     _myCrewLoadedId = crewId;
     final res = await CrewAPI().getCrewDetails(crewId);
     if (!mounted || !res.success) return;
-    setState(() => _myCrew =
-        CrewDetailResponse.fromJson(res.data as Map<String, dynamic>).crewDetailInfo);
+    setState(
+      () => _myCrew = CrewDetailResponse.fromJson(
+        res.data as Map<String, dynamic>,
+      ).crewDetailInfo,
+    );
   }
 
   /// 승인 대기 중인 신청이 있는지 확인한다. 로그인 전이거나 이미 크루가 있으면
@@ -156,7 +159,8 @@ class _LiveCrewHomeViewWebState extends State<LiveCrewHomeViewWeb> {
   /// 비로그인이면 커뮤니티·중고거래와 동일한 로그인 유도 다이얼로그를 띄우고,
   /// 로그인 상태면 [route]로 이동한다(크루 만들기/가입하기 공통).
   Future<void> _gateCrewAction(String route) async {
-    final isGuest = Get.find<AuthCheckViewModelWeb>().status ==
+    final isGuest =
+        Get.find<AuthCheckViewModelWeb>().status ==
         WebAuthStatus.unauthenticated;
     if (!isGuest) {
       Get.toNamed(route);
@@ -191,7 +195,11 @@ class _LiveCrewHomeViewWebState extends State<LiveCrewHomeViewWeb> {
     );
   }
 
-  void _openPhoto(List<LiveTalk> gallery, Map<int, CrewCard> crewIndex, int index) {
+  void _openPhoto(
+    List<LiveTalk> gallery,
+    Map<int, CrewCard> crewIndex,
+    int index,
+  ) {
     showLiveCrewPhotoViewer(
       context,
       talks: gallery,
@@ -219,7 +227,9 @@ class _LiveCrewHomeViewWebState extends State<LiveCrewHomeViewWeb> {
                 '라이브크루',
                 // 홈 타이틀 공통: PC 32 / 태블릿·모바일 24 (중고거래 홈 기준).
                 style: SDSTextStyle.extraBold.copyWith(
-                    fontSize: webHomeTitleSize(context), color: SDSColor.gray900),
+                  fontSize: webHomeTitleSize(context),
+                  color: SDSColor.gray900,
+                ),
               ),
             ),
             // 신청이 **있을 때만** 띄운다(`_syncMyApplications`가 로그인·크루 유무까지 본다).
@@ -240,30 +250,30 @@ class _LiveCrewHomeViewWebState extends State<LiveCrewHomeViewWeb> {
     final isDesktop = context.isDesktop;
 
     final scroll = WebStickyFooterScroll(
-        onRefresh: _vm.refresh, // 당겨서 새로고침
-        // 홈 공통 여백(중고거래 홈 기준). 좁은 폭에서는 하단 플로팅 바 뒤로
-        // 콘텐츠가 지나가므로 바 높이만큼 더 비운다(중고거래·커뮤니티와 동일).
-        padding: webHomePagePadding(
-          context,
-          bottom: isDesktop ? 32 : kWebFloatingBottomBarHeight + SDSSpacing.md,
+      onRefresh: _vm.refresh, // 당겨서 새로고침
+      // 홈 공통 여백(중고거래 홈 기준). 좁은 폭에서는 하단 플로팅 바 뒤로
+      // 콘텐츠가 지나가므로 바 높이만큼 더 비운다(중고거래·커뮤니티와 동일).
+      padding: webHomePagePadding(
+        context,
+        bottom: isDesktop ? 32 : kWebFloatingBottomBarHeight + SDSSpacing.md,
+      ),
+      content: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: kLiveCrewContentMaxWidth),
+          // 사이드바는 페이지 우측이 아니라 **크루 목록 섹션 옆**에 붙는다(목업) —
+          // 캐러셀·사진 그리드는 목록과 같은 874 폭을 쓰고, CTA 버튼만 칩 줄과
+          // 같은 선에서 시작한다.
+          child: content,
         ),
-        content: Center(
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: kLiveCrewContentMaxWidth),
-            // 사이드바는 페이지 우측이 아니라 **크루 목록 섹션 옆**에 붙는다(목업) —
-            // 캐러셀·사진 그리드는 목록과 같은 874 폭을 쓰고, CTA 버튼만 칩 줄과
-            // 같은 선에서 시작한다.
-            child: content,
-          ),
-        ),
-        // 홈·목록 화면과 동일한 푸터 — 끝 여백 PC 120 / 그 외 80.
-        footer: Column(
-          children: [
-            SizedBox(height: webFooterTopGap(context)),
-            const HomeFooterWeb(),
-          ],
-        ),
-      );
+      ),
+      // 홈·목록 화면과 동일한 푸터 — 끝 여백 PC 120 / 그 외 80.
+      footer: Column(
+        children: [
+          SizedBox(height: webFooterTopGap(context)),
+          const HomeFooterWeb(),
+        ],
+      ),
+    );
 
     return Container(
       color: SDSColor.snowliveWhite,
@@ -287,7 +297,8 @@ class _LiveCrewHomeViewWebState extends State<LiveCrewHomeViewWeb> {
                             background: SDSColor.snowliveBlue,
                             foreground: SDSColor.snowliveWhite,
                             onTap: () => Get.toNamed(
-                                '${WebRoutes.crewHome}?id=${_myCrew!.crewId}'),
+                              '${WebRoutes.crewHome}?id=${_myCrew!.crewId}',
+                            ),
                           )
                         : Row(
                             children: [
@@ -297,7 +308,8 @@ class _LiveCrewHomeViewWebState extends State<LiveCrewHomeViewWeb> {
                                   label: '크루 가입하기',
                                   background: SDSColor.gray100,
                                   foreground: SDSColor.gray900,
-                                  onTap: () => _gateCrewAction(WebRoutes.crewJoin),
+                                  onTap: () =>
+                                      _gateCrewAction(WebRoutes.crewJoin),
                                 ),
                               ),
                               const SizedBox(width: 10),
@@ -306,7 +318,8 @@ class _LiveCrewHomeViewWebState extends State<LiveCrewHomeViewWeb> {
                                   label: '크루 만들기',
                                   background: SDSColor.snowliveBlue,
                                   foreground: SDSColor.snowliveWhite,
-                                  onTap: () => _gateCrewAction(WebRoutes.crewCreate),
+                                  onTap: () =>
+                                      _gateCrewAction(WebRoutes.crewCreate),
                                 ),
                               ),
                             ],
@@ -353,12 +366,16 @@ class _LiveCrewHomeViewWebState extends State<LiveCrewHomeViewWeb> {
       if (hasError) {
         return WebErrorState(onRetry: _vm.refresh);
       }
-      return isLoading ? const _LiveCrewSkeleton() : const SizedBox(height: 240);
+      return isLoading
+          ? const _LiveCrewSkeleton()
+          : const SizedBox(height: 240);
     }
 
     // 크루가 한 곳도 없는 주제(비시즌의 `오늘 라이브온 많은 크루` 등)는 안내 문구를
     // 띄우는 대신 **주제 자체를 뺀다** — 넘겨도 빈 칸만 나오던 것을 없앴다.
-    final sections = crewHomeSections(home).where((s) => s.crews.isNotEmpty).toList();
+    final sections = crewHomeSections(
+      home,
+    ).where((s) => s.crews.isNotEmpty).toList();
     final chips = crewHomeChips(home);
     final selected = _resolveChip(chips);
     // 스키장 목록은 **항상** 만든다 — `스키장별` 칩이 드롭다운 pill이라 눌리기 전에도
@@ -378,33 +395,41 @@ class _LiveCrewHomeViewWebState extends State<LiveCrewHomeViewWeb> {
       children: [
         // 상단은 주제 하나만 보여주고 화살표로 넘긴다
         if (sections.isNotEmpty) ...[
-          Builder(builder: (context) {
-            final index = _topicIndex.clamp(0, sections.length - 1);
-            final section = sections[index];
-            return LiveCrewTopCarouselWeb(
-              title: section.title,
-              subtitle: section.subtitle,
-              emptyMessage: section.emptyMessage,
-              crews: section.crews,
-              highlightFirst: section.highlightFirst,
-              resortFullnames: resortFullnames,
-              onCrewTap: (crew) =>
-                  showLiveCrewModal(context, crew, resortFullnames: resortFullnames),
-              // 마지막 주제에서 더 넘기면 **처음으로 돌아간다**(양방향 순환) —
-              // 끝에서 화살표가 죽어 더 못 보는 것처럼 보이던 걸 없앴다.
-              onPrevTopic: sections.length < 2
-                  ? null
-                  : () => setState(() =>
-                      _topicIndex = (index - 1 + sections.length) % sections.length),
-              onNextTopic: sections.length < 2
-                  ? null
-                  : () => setState(() => _topicIndex = (index + 1) % sections.length),
-              // 전환 방향·점 인디케이터용.
-              topicIndex: index,
-              topicCount: sections.length,
-              onSelectTopic: (i) => setState(() => _topicIndex = i),
-            );
-          }),
+          Builder(
+            builder: (context) {
+              final index = _topicIndex.clamp(0, sections.length - 1);
+              final section = sections[index];
+              return LiveCrewTopCarouselWeb(
+                title: section.title,
+                subtitle: section.subtitle,
+                emptyMessage: section.emptyMessage,
+                crews: section.crews,
+                highlightFirst: section.highlightFirst,
+                resortFullnames: resortFullnames,
+                onCrewTap: (crew) => showLiveCrewModal(
+                  context,
+                  crew,
+                  resortFullnames: resortFullnames,
+                ),
+                // 마지막 주제에서 더 넘기면 **처음으로 돌아간다**(양방향 순환) —
+                // 끝에서 화살표가 죽어 더 못 보는 것처럼 보이던 걸 없앴다.
+                onPrevTopic: sections.length < 2
+                    ? null
+                    : () => setState(
+                        () => _topicIndex =
+                            (index - 1 + sections.length) % sections.length,
+                      ),
+                onNextTopic: sections.length < 2
+                    ? null
+                    : () => setState(
+                        () => _topicIndex = (index + 1) % sections.length,
+                      ),
+                // 전환 방향·점 인디케이터용.
+                topicIndex: index,
+                topicCount: sections.length,
+              );
+            },
+          ),
           // 캐러셀 ↔ `어떤 크루가 있을까요?`: PC 48 / 좁은 폭 60 (목업 — 문구 블록
           // 끝 370, 제목 430). 좁은 폭은 문구가 레일 아래에 와서 더 띄워야 섞이지 않는다.
           SizedBox(height: context.isDesktop ? SDSSpacing.xxl : 60),
@@ -416,22 +441,27 @@ class _LiveCrewHomeViewWebState extends State<LiveCrewHomeViewWeb> {
             children: [
               LiveCrewFilterChipsWeb(
                 chips: chips,
-          selected: selected,
-          onSelected: (chip) => setState(() {
-            _selectedChip = chip;
-            // 다른 칩으로 옮기면 스키장 선택은 버린다(다시 들어오면 첫 스키장부터).
-            if (chip.kind != CrewHomeChipKind.byResort) _selectedResortChip = null;
-          }),
+                selected: selected,
+                onSelected: (chip) => setState(() {
+                  _selectedChip = chip;
+                  // 다른 칩으로 옮기면 스키장 선택은 버린다(다시 들어오면 첫 스키장부터).
+                  if (chip.kind != CrewHomeChipKind.byResort)
+                    _selectedResortChip = null;
+                }),
                 resortChips: resortChips,
                 selectedResort: selectedResort,
-                onResortSelected: (chip) => setState(() => _selectedResortChip = chip),
+                onResortSelected: (chip) =>
+                    setState(() => _selectedResortChip = chip),
               ),
               // 칩 줄 ↔ 목록: PC 24 / 좁은 폭 30 (목업).
               SizedBox(height: context.isDesktop ? SDSSpacing.lg : 20),
               LiveCrewListGridWeb(
                 crews: crews,
-                onCrewTap: (crew) =>
-                    showLiveCrewModal(context, crew, resortFullnames: resortFullnames),
+                onCrewTap: (crew) => showLiveCrewModal(
+                  context,
+                  crew,
+                  resortFullnames: resortFullnames,
+                ),
                 // `시즌 최다 라이브온` 칩에서만 행 오른쪽 끝에 시즌 라이브온 인원을 띄운다.
                 trailingCountOf: gridChip?.kind == CrewHomeChipKind.liveonSeason
                     ? (crew) => crew.liveonSeasonCount
@@ -451,7 +481,10 @@ class _LiveCrewHomeViewWebState extends State<LiveCrewHomeViewWeb> {
             Center(
               child: Text(
                 '상위 ${crews.length}개 크루입니다.',
-                style: SDSTextStyle.regular.copyWith(fontSize: 12, color: SDSColor.gray400),
+                style: SDSTextStyle.regular.copyWith(
+                  fontSize: 12,
+                  color: SDSColor.gray400,
+                ),
               ),
             ),
           ),
@@ -469,7 +502,9 @@ class _LiveCrewHomeViewWebState extends State<LiveCrewHomeViewWeb> {
             context.isDesktop,
             _CrewListMoreButton(
               label: '${gridChip.label} 크루 전체보기',
-              onTap: () => Get.toNamed('${WebRoutes.crewJoin}?resort=${gridChip.resortId}'),
+              onTap: () => Get.toNamed(
+                '${WebRoutes.crewJoin}?resort=${gridChip.resortId}',
+              ),
             ),
           ),
         ],
@@ -496,7 +531,10 @@ class _LiveCrewHomeViewWebState extends State<LiveCrewHomeViewWeb> {
               label: '사진 더보기',
               onTap: () => setState(() {
                 _galleryVisibleCount =
-                    (_galleryVisibleCount + _kGalleryPageSize).clamp(0, gallery.length);
+                    (_galleryVisibleCount + _kGalleryPageSize).clamp(
+                      0,
+                      gallery.length,
+                    );
               }),
             ),
           ),
@@ -561,7 +599,10 @@ class _CrewListMoreButtonState extends State<_CrewListMoreButton> {
             children: [
               Text(
                 widget.label,
-                style: SDSTextStyle.bold.copyWith(fontSize: 14, color: SDSColor.gray600),
+                style: SDSTextStyle.bold.copyWith(
+                  fontSize: 14,
+                  color: SDSColor.gray600,
+                ),
               ),
             ],
           ),
@@ -582,7 +623,7 @@ class _LiveCrewSkeleton extends StatelessWidget {
     final cardHeight = crewCarouselCardHeight(context);
     final railHeight = crewCarouselRailHeight(context);
 
-    // 캐러셀 좌측(PC) / 아래(좁은 폭) 문구 — 제목 두 줄 + 부제 + 점 + 화살표.
+    // 캐러셀 좌측(PC) / 아래(좁은 폭) 문구 — 제목 두 줄 + 부제(점 인디케이터는 없앴다).
     final lead = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -591,15 +632,6 @@ class _LiveCrewSkeleton extends StatelessWidget {
         SkeletonLine(width: 180, height: isMobile ? 25 : 27),
         SizedBox(height: isDesktop ? 6 : 4),
         const SkeletonLine(width: 160, height: 16),
-        const SizedBox(height: 10),
-        Row(
-          children: [
-            for (var i = 0; i < 4; i++) ...[
-              if (i > 0) const SizedBox(width: 5),
-              const SkeletonBox(width: 6, height: 6, isCircle: true),
-            ],
-          ],
-        ),
       ],
     );
 
@@ -624,7 +656,11 @@ class _LiveCrewSkeleton extends StatelessWidget {
             // 카드 사이 — PC·태블릿 16 / 모바일 6 (실제 레일과 동일).
             if (i > 0) SizedBox(width: isMobile ? 6 : SDSSpacing.md),
             Center(
-              child: SkeletonBox(width: cardWidth, height: cardHeight, radius: 12),
+              child: SkeletonBox(
+                width: cardWidth,
+                height: cardHeight,
+                radius: 12,
+              ),
             ),
           ],
         ],
@@ -689,34 +725,40 @@ class _LiveCrewSkeleton extends StatelessWidget {
 
   /// PC 목록 — 3열 × 10행을 한 화면에 그린다(실제와 같은 구성).
   Widget _desktopListSkeleton() => Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          for (var c = 0; c < 3; c++) ...[
-            if (c > 0) const SizedBox(width: kCrewDesktopColumnGutter),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  for (var r = 0; r < kCrewRowsPerColumn; r++) ...[
-                    if (r > 0) const SizedBox(height: kCrewRowGap),
-                    const SkeletonBox(height: kCrewRowHeight, radius: 8),
-                  ],
-                ],
-              ),
-            ),
-          ],
-        ],
-      );
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      for (var c = 0; c < 3; c++) ...[
+        if (c > 0) const SizedBox(width: kCrewDesktopColumnGutter),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              for (var r = 0; r < kCrewRowsPerColumn; r++) ...[
+                if (r > 0) const SizedBox(height: kCrewRowGap),
+                const SkeletonBox(height: kCrewRowHeight, radius: 8),
+              ],
+            ],
+          ),
+        ),
+      ],
+    ],
+  );
 
   /// 좁은 폭 목록 — 실제는 가로 스와이프라, 스켈레톤도 **같은 열 폭으로 풀블리드**에
   /// 깔고 다음 열이 걸쳐 보이게 둔다(스크롤은 하지 않는다).
   Widget _pagerListSkeleton(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        final columnWidth = crewNarrowColumnWidth(context, constraints.maxWidth);
+        final columnWidth = crewNarrowColumnWidth(
+          context,
+          constraints.maxWidth,
+        );
         final gutter = crewColumnGutter(context);
         final screenWidth = MediaQuery.sizeOf(context).width;
-        final pagePadding = ((screenWidth - constraints.maxWidth) / 2).clamp(0.0, 40.0);
+        final pagePadding = ((screenWidth - constraints.maxWidth) / 2).clamp(
+          0.0,
+          40.0,
+        );
 
         return _fullBleed(
           context,
@@ -736,7 +778,10 @@ class _LiveCrewSkeleton extends StatelessWidget {
                         children: [
                           for (var r = 0; r < kCrewRowsPerColumn; r++) ...[
                             if (r > 0) const SizedBox(height: kCrewRowGap),
-                            const SkeletonBox(height: kCrewRowHeight, radius: 8),
+                            const SkeletonBox(
+                              height: kCrewRowHeight,
+                              radius: 8,
+                            ),
                           ],
                         ],
                       ),
@@ -762,7 +807,8 @@ class _LiveCrewSkeleton extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, constraints) {
         const spacing = 2.0;
-        final cellWidth = (constraints.maxWidth - spacing * (columns - 1)) / columns;
+        final cellWidth =
+            (constraints.maxWidth - spacing * (columns - 1)) / columns;
         final cellHeight = cellWidth * (175.8 / 173.2);
         return Column(
           children: [
@@ -772,7 +818,11 @@ class _LiveCrewSkeleton extends StatelessWidget {
                 children: [
                   for (var c = 0; c < columns; c++) ...[
                     if (c > 0) const SizedBox(width: spacing),
-                    SkeletonBox(width: cellWidth, height: cellHeight, radius: 0),
+                    SkeletonBox(
+                      width: cellWidth,
+                      height: cellHeight,
+                      radius: 0,
+                    ),
                   ],
                 ],
               ),
@@ -785,7 +835,11 @@ class _LiveCrewSkeleton extends StatelessWidget {
 
   /// 페이지 여백 밖(화면 좌우 끝)까지 넓힌다 — 실제 레일·목록과 같은 처리.
   /// ⚠️ 높이를 못 박지 않으면 OverflowBox 자식이 아예 안 그려진다.
-  Widget _fullBleed(BuildContext context, Widget child, {required double height}) {
+  Widget _fullBleed(
+    BuildContext context,
+    Widget child, {
+    required double height,
+  }) {
     final screenWidth = MediaQuery.sizeOf(context).width;
     return SizedBox(
       height: height,

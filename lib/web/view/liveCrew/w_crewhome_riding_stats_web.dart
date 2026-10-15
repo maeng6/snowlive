@@ -379,11 +379,23 @@ class CrewTimeCountCard extends StatelessWidget {
   final bool filled;
   final double chartHeight;
 
+  /// 카드 껍데기(배경·라운드·패딩)와 제목 스타일 — 화면마다 달라서 열어 둔다.
+  /// 기본값은 크루홈(blue50 · 라운드 16 · 패딩 20 · Regular 13),
+  /// 프로필은 목업(1:7925)대로 gray50 · 라운드 12 · 패딩 24 · Regular 14를 넘긴다.
+  final Color? backgroundColor;
+  final double borderRadius;
+  final double cardPadding;
+  final TextStyle? titleStyle;
+
   const CrewTimeCountCard({
     super.key,
     required this.timeCounts,
     this.title = '시간대별 기록',
     this.filled = true,
+    this.backgroundColor,
+    this.borderRadius = 16,
+    this.cardPadding = 20,
+    this.titleStyle,
     // 목업(161:86816) 차트 영역 228 → 카드 높이가 310으로 고정된다.
     this.chartHeight = 228,
   });
@@ -396,17 +408,21 @@ class CrewTimeCountCard extends StatelessWidget {
     final isEmpty = max == 0;
 
     final titleText = Text(title,
-        style: filled
-            // 카드 제목은 좌측 카드와 같은 Regular 13.
-            ? SDSTextStyle.regular.copyWith(fontSize: 13, color: SDSColor.gray500)
-            : SDSTextStyle.bold.copyWith(fontSize: 13, color: SDSColor.gray900));
+        style: titleStyle ??
+            (filled
+                // 카드 제목은 좌측 카드와 같은 Regular 13.
+                ? SDSTextStyle.regular.copyWith(fontSize: 13, color: SDSColor.gray500)
+                : SDSTextStyle.bold.copyWith(fontSize: 13, color: SDSColor.gray900)));
 
     final card = Container(
       // 카드 라운드는 좌측 카드와 같은 16(목업).
       decoration: filled
-          ? BoxDecoration(color: SDSColor.blue50, borderRadius: BorderRadius.circular(16))
+          ? BoxDecoration(
+              color: backgroundColor ?? SDSColor.blue50,
+              borderRadius: BorderRadius.circular(borderRadius),
+            )
           : null,
-      padding: filled ? const EdgeInsets.all(20) : EdgeInsets.zero,
+      padding: filled ? EdgeInsets.all(cardPadding) : EdgeInsets.zero,
       child: isEmpty
           // 슬로프 카드와 같은 처리 — 빈 상태는 제목 아래가 아니라 카드 전체
           // 기준 가운데에 겹쳐 둔다(두 카드의 문구가 같은 높이에 선다).

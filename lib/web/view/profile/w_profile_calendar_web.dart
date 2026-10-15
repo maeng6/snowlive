@@ -1,15 +1,19 @@
 import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/web/util/responsive_web.dart';
 import 'package:com.snowlive/web/util/web_drag_scroll_web.dart';
+import 'package:com.snowlive/web/widget/w_web_edge_fade_web.dart';
+import 'package:com.snowlive/web/widget/w_web_icon_button_web.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 const List<String> kProfileWeekdayLabels = ['월', '화', '수', '목', '금', '토', '일'];
 
 /// 그 달의 일수.
-int profileDaysInMonth(int year, int month) =>
-    DateTime(month == 12 ? year + 1 : year, month == 12 ? 1 : month + 1, 1)
-        .subtract(const Duration(days: 1))
-        .day;
+int profileDaysInMonth(int year, int month) => DateTime(
+  month == 12 ? year + 1 : year,
+  month == 12 ? 1 : month + 1,
+  1,
+).subtract(const Duration(days: 1)).day;
 
 /// 일간 통계 캘린더.
 ///
@@ -39,7 +43,9 @@ class ProfileDailyCalendarWeb extends StatelessWidget {
   });
 
   bool _isToday(int day) =>
-      today.year == month.year && today.month == month.month && today.day == day;
+      today.year == month.year &&
+      today.month == month.month &&
+      today.day == day;
 
   @override
   Widget build(BuildContext context) {
@@ -48,11 +54,7 @@ class ProfileDailyCalendarWeb extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        _MonthNavigator(
-          month: month,
-          onPrev: onPrevMonth,
-          onNext: onNextMonth,
-        ),
+        _MonthNavigator(month: month, onPrev: onPrevMonth, onNext: onNextMonth),
         const SizedBox(height: SDSSpacing.md),
         if (isMobile) _buildGrid() else _buildStrip(),
       ],
@@ -82,14 +84,16 @@ class ProfileDailyCalendarWeb extends StatelessWidget {
     ];
     final trailing = (7 - cells.length % 7) % 7;
     for (var i = 1; i <= trailing; i++) {
-      cells.add(_DayCell(
-        day: i,
-        count: null,
-        isSelected: false,
-        isToday: false,
-        isOutside: true,
-        onTap: null,
-      ));
+      cells.add(
+        _DayCell(
+          day: i,
+          count: null,
+          isSelected: false,
+          isToday: false,
+          isOutside: true,
+          onTap: null,
+        ),
+      );
     }
 
     return Column(
@@ -97,7 +101,9 @@ class ProfileDailyCalendarWeb extends StatelessWidget {
         Row(
           children: [
             for (final label in kProfileWeekdayLabels)
-              Expanded(child: Center(child: _WeekdayLabel(label: label))),
+              Expanded(
+                child: Center(child: _WeekdayLabel(label: label)),
+              ),
           ],
         ),
         const SizedBox(height: 8),
@@ -105,7 +111,9 @@ class ProfileDailyCalendarWeb extends StatelessWidget {
           Row(
             children: [
               for (var i = week * 7; i < week * 7 + 7; i++)
-                Expanded(child: i < cells.length ? cells[i] : const _EmptyCell()),
+                Expanded(
+                  child: i < cells.length ? cells[i] : const _EmptyCell(),
+                ),
             ],
           ),
       ],
@@ -116,26 +124,36 @@ class ProfileDailyCalendarWeb extends StatelessWidget {
   Widget _buildStrip() {
     final days = profileDaysInMonth(month.year, month.month);
     // 마우스로 끌어서도 넘길 수 있게 한다(웹 기본값은 휠만 허용).
-    return WebHorizontalDragScroll(
-      child: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: Row(
-          children: [
-            for (var day = 1; day <= days; day++)
-              SizedBox(
-                width: 52,
-                child: Column(
-                  children: [
-                    _WeekdayLabel(
-                      label: kProfileWeekdayLabels[
-                          DateTime(month.year, month.month, day).weekday - 1],
-                    ),
-                    const SizedBox(height: 8),
-                    _buildCell(day),
-                  ],
+    // 좌우 끝은 흰 그라데이션으로 덮어 스트립이 잘려 끝나지 않게 한다(사용자 확정).
+    return WebEdgeFade(
+      fadeWidth: 40,
+      child: WebHorizontalDragScroll(
+        child: SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(
+            children: [
+              for (var day = 1; day <= days; day++)
+                SizedBox(
+                  width: 52,
+                  child: Column(
+                    children: [
+                      _WeekdayLabel(
+                        label:
+                            kProfileWeekdayLabels[DateTime(
+                                  month.year,
+                                  month.month,
+                                  day,
+                                ).weekday -
+                                1],
+                      ),
+                      // 목업 — 요일 줄 ↔ 날짜 칸 4.
+                      const SizedBox(height: 4),
+                      _buildCell(day),
+                    ],
+                  ),
                 ),
-              ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -147,48 +165,53 @@ class _MonthNavigator extends StatelessWidget {
   final VoidCallback onPrev;
   final VoidCallback onNext;
 
-  const _MonthNavigator({required this.month, required this.onPrev, required this.onNext});
+  const _MonthNavigator({
+    required this.month,
+    required this.onPrev,
+    required this.onNext,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        _ArrowButton(icon: Icons.chevron_left, onTap: onPrev),
-        const SizedBox(width: SDSSpacing.md),
+        _ArrowButton(
+          asset: 'assets/imgs/icons/icon_profile_calendar_prev.svg',
+          onTap: onPrev,
+        ),
+        // 목업(1:8244) — 화살표 ↔ 라벨 31.
+        const SizedBox(width: 31),
         Text(
           '${month.year}년 ${month.month}월',
-          style: SDSTextStyle.bold.copyWith(fontSize: 16, color: SDSColor.gray900),
+          style: SDSTextStyle.bold.copyWith(
+            fontSize: 16,
+            color: SDSColor.gray900,
+          ),
         ),
-        const SizedBox(width: SDSSpacing.md),
-        _ArrowButton(icon: Icons.chevron_right, onTap: onNext),
+        const SizedBox(width: 31),
+        _ArrowButton(
+          asset: 'assets/imgs/icons/icon_profile_calendar_next.svg',
+          onTap: onNext,
+        ),
       ],
     );
   }
 }
 
 class _ArrowButton extends StatelessWidget {
-  final IconData icon;
+  final String asset;
   final VoidCallback onTap;
 
-  const _ArrowButton({required this.icon, required this.onTap});
+  const _ArrowButton({required this.asset, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: SDSColor.snowliveWhite,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20),
-        side: BorderSide(color: SDSColor.gray100),
-      ),
-      clipBehavior: Clip.antiAlias,
-      child: InkWell(
-        onTap: onTap,
-        child: Padding(
-          padding: const EdgeInsets.all(4),
-          child: Icon(icon, size: 18, color: SDSColor.gray900),
-        ),
-      ),
+    // 목업(1:8245)에서 추출한 에셋 — gray100 테두리 원 + 검정 꺾쇠 24.
+    return WebIconButton(
+      onTap: onTap,
+      padding: EdgeInsets.zero,
+      icon: SvgPicture.asset(asset, width: 24, height: 24),
     );
   }
 }
@@ -200,9 +223,19 @@ class _WeekdayLabel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text(
-      label,
-      style: SDSTextStyle.regular.copyWith(fontSize: 12, color: SDSColor.gray400),
+    // 목업(1:8001) — 요일 칸 높이 24, 글자는 가운데.
+    return SizedBox(
+      height: 24,
+      child: Center(
+        child: Text(
+          label,
+          // 목업(1:8003) — Regular 10, 검정 60%.
+          style: SDSTextStyle.regular.copyWith(
+            fontSize: 10,
+            color: SDSColor.snowliveBlack.withValues(alpha: 0.6),
+          ),
+        ),
+      ),
     );
   }
 }
@@ -211,7 +244,7 @@ class _EmptyCell extends StatelessWidget {
   const _EmptyCell();
 
   @override
-  Widget build(BuildContext context) => const SizedBox(height: 58);
+  Widget build(BuildContext context) => const SizedBox(height: 52);
 }
 
 class _DayCell extends StatelessWidget {
@@ -239,18 +272,19 @@ class _DayCell extends StatelessWidget {
     final background = isSelected
         ? SDSColor.gray900
         : hasRecord
-            ? SDSColor.blue50
-            : Colors.transparent;
+        ? SDSColor.blue50
+        : Colors.transparent;
     final dayColor = isSelected
         ? SDSColor.snowliveWhite
         : isOutside
-            ? SDSColor.gray300
-            : isToday
-                ? SDSColor.snowliveBlue
-                : SDSColor.gray900;
+        ? SDSColor.gray300
+        : isToday
+        ? SDSColor.snowliveBlue
+        : SDSColor.gray900;
 
     return Padding(
-      padding: const EdgeInsets.all(2),
+      // 목업 — 칸 46, 칸 사이 6(열 폭 52).
+      padding: const EdgeInsets.symmetric(horizontal: 3),
       child: Material(
         color: background,
         borderRadius: BorderRadius.circular(8),
@@ -258,32 +292,42 @@ class _DayCell extends StatelessWidget {
         child: InkWell(
           onTap: onTap,
           child: SizedBox(
-            height: 54,
+            // 목업 — 칸 높이 52.
+            height: 52,
             // ⚠️ 폭을 주지 않으면 Material이 글자 너비에 맞춰 줄어들어 칸이 알약처럼
             // 보인다(실측). 목업은 열 폭을 채운 **둥근 사각형**이다.
             width: double.infinity,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  '$day',
-                  maxLines: 1,
-                  style: SDSTextStyle.bold.copyWith(fontSize: 15, color: dayColor),
-                ),
-                if (hasRecord) ...[
-                  const SizedBox(height: 2),
+            child: Padding(
+              // 목업(1:8092) — 글자 블록은 위에서 10에 붙는다. 가운데 정렬로 두면
+              // 기록 없는 날의 날짜만 아래로 내려가 줄이 어긋난다.
+              padding: const EdgeInsets.only(top: 10),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
                   Text(
-                    '$count',
+                    '$day',
                     maxLines: 1,
-                    style: SDSTextStyle.regular.copyWith(
-                      fontSize: 12,
-                      color: isSelected
-                          ? SDSColor.snowliveWhite.withValues(alpha: 0.8)
-                          : SDSColor.gray500,
+                    style: SDSTextStyle.bold.copyWith(
+                      fontSize: 15,
+                      color: dayColor,
                     ),
                   ),
+                  if (hasRecord) ...[
+                    // 목업(1:8096) — 날짜 ↔ 횟수 4, 횟수 Regular 12 검정 50%.
+                    const SizedBox(height: 4),
+                    Text(
+                      '$count',
+                      maxLines: 1,
+                      style: SDSTextStyle.regular.copyWith(
+                        fontSize: 12,
+                        color: isSelected
+                            ? SDSColor.snowliveWhite.withValues(alpha: 0.8)
+                            : SDSColor.snowliveBlack.withValues(alpha: 0.5),
+                      ),
+                    ),
+                  ],
                 ],
-              ],
+              ),
             ),
           ),
         ),

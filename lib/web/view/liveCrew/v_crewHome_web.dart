@@ -242,12 +242,6 @@ class _CrewHomeViewWebState extends State<CrewHomeViewWeb> {
     final content = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // 크루 소개글(있을 때만) — **크루 이름 쪽 바로 아래**, 요약 바보다 위다
-        // (사용자 확정). 블록 맨 위의 구분선이 이름과 소개글을 가른다.
-        if (hasDescription) ...[
-          CrewHomeDescriptionWeb(description: info.description),
-          SizedBox(height: blockGap),
-        ],
         CrewHomeSummaryBarWeb(
           memberCount: info.crewMemberTotal,
           overallRank: _season?.overallRank,
@@ -255,6 +249,11 @@ class _CrewHomeViewWebState extends State<CrewHomeViewWeb> {
           // 모바일은 크루명 줄로 올라가므로 여기서는 비운다.
           onApply: isMobileWidth ? null : onApply,
           onMembersTap: () => Get.toNamed('${WebRoutes.crewMembers}?id=$_crewId'),
+          // 크루 소개글은 **이 박스 안쪽 하단**에 가로선으로 구분해 넣는다
+          // (사용자 확정 — 전에는 박스 위에 별도 블록이었다).
+          footer: hasDescription
+              ? CrewHomeDescriptionWeb(description: info.description)
+              : null,
         ),
         // `시즌 기록실 | 일별 현황` — PC는 우측 사이드바 카드로 있고, 우측 열이
         // 접히는 좁은 폭에서는 **요약 바 아래**에 텍스트 줄로 온다(사용자 확정).
@@ -337,9 +336,12 @@ class _CrewHomeViewWebState extends State<CrewHomeViewWeb> {
   Widget _buildMemberSection(List<CrewRanking> members) {
     final topCount = crewHomeTopMemberCount(context);
     final top = members.take(topCount).toList();
-    // 2열은 태블릿까지(목업 161:93789 — 760 안에 356 × 2, 간격 48). 모바일만 1열
+    // 2열은 태블릿까지(목업 161:93789 — 760 안에 356 × 2, 간격 48). 모바일만 1열.
     final columns = context.screenType == WebScreenType.mobile ? 1 : 2;
     final perColumn = (top.length / columns).ceil();
+    // TOP 10까지만 나오므로 순위 칸을 **두 자리 폭**으로 줄인다(사용자 확정) —
+    // 세 자리 기준 기본값(28)이면 순위와 프로필 사이가 떠 보인다.
+    final rankWidth = crewMemberRankWidth(context, top.length);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -354,7 +356,7 @@ class _CrewHomeViewWebState extends State<CrewHomeViewWeb> {
             WebSectionLinkButton(
               label: '전체 멤버',
               // '랭킹 TOP N 멤버' 섹션의 전체보기 → 크루원 '랭킹' 전체 리스트로.
-              // (멤버 명부 페이지 crewMembers가 아니라 crewSeasonRanking)
+              // (멤버 명부 페이지 crewMembers가 아니라 crewSeasonRanking).
               onTap: () => Get.toNamed('${WebRoutes.crewSeasonRanking}?id=$_crewId'),
             ),
           ],
@@ -381,6 +383,7 @@ class _CrewHomeViewWebState extends State<CrewHomeViewWeb> {
                           // 1열이 1~5위, 2열이 6~10위(열 순서대로 채운다).
                           rank: i * perColumn + index + 1,
                           member: member,
+                          rankWidth: rankWidth,
                           onTap: () => _onMemberTap(member),
                         ),
                       ],
@@ -478,6 +481,8 @@ class _CrewHomeSkeleton extends StatelessWidget {
           count: crewHomeTopMemberCount(context),
           columnGap: 48,
           showRank: true,
+          // 실제 목록과 같은 순위 칸 폭 — 다르면 로딩이 끝날 때 순위 열이 튄다.
+          rankWidth: crewMemberRankWidth(context, crewHomeTopMemberCount(context)),
         ),
         const SizedBox(height: 48),
         const _SectionTitleSkeleton(buttonWidth: 73),

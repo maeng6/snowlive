@@ -327,10 +327,9 @@ class _CrewHomeDescriptionWebState extends State<CrewHomeDescriptionWeb> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        // 상단 구분선 — 소개글 블록이 **크루 이름 쪽 바로 아래**에 오므로 이름과
-        // 소개글을 가르는 선이 된다(사용자 확정).
-        Container(height: 1, color: SDSColor.gray700.withValues(alpha: 0.1)),
-        const SizedBox(height: 14),
+        // ⚠️ 상단 구분선·여백은 여기서 그리지 않는다 — 소개글이 **지표 바 박스 안쪽
+        // 하단**에 들어가므로 선과 간격은 `WebStatsBar(footer:)`가 담당한다
+        // (사용자 확정). 선을 여기서 또 그리면 두 줄이 된다.
         LayoutBuilder(
           builder: (context, constraints) {
             // 토글 아이콘(20) + 간격(8) 자리를 빼고 한 줄에 들어가는지 잰다(앱과 같은 방식).
@@ -422,6 +421,9 @@ class CrewHomeSummaryBarWeb extends StatelessWidget {
   /// `멤버(명)` 칸을 누르면 전체 멤버 화면으로 보낸다.
   final VoidCallback? onMembersTap;
 
+  /// 박스 안쪽 하단에 들어갈 크루 소개글. 없으면 지표 줄만 그린다.
+  final Widget? footer;
+
   const CrewHomeSummaryBarWeb({
     super.key,
     required this.memberCount,
@@ -429,6 +431,7 @@ class CrewHomeSummaryBarWeb extends StatelessWidget {
     required this.totalScore,
     this.onApply,
     this.onMembersTap,
+    this.footer,
   });
 
   @override
@@ -450,7 +453,10 @@ class CrewHomeSummaryBarWeb extends StatelessWidget {
       // 내 크루가 아닐 때만 가입 신청을 노출한다(목업).
       trailing: onApply == null
           ? null
-          : WebStatsBarLink(label: '가입 신청하기', onTap: onApply!),
+          // 글자 15 — 같은 지표 바 진입 링크(`크루원 시즌 랭킹`)와 같은 값으로 맞춘다
+          // (사용자 확정. 공용 기본값 16은 이 바에서 다른 곳과 어긋났다).
+          : WebStatsBarLink(label: '가입 신청하기', fontSize: 15, onTap: onApply!),
+      footer: footer,
     );
   }
 }

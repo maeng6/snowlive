@@ -42,7 +42,9 @@ class _ProfileEditViewWebState extends State<ProfileEditViewWeb> {
   /// 자동로그인이 늦게 확정되면 그때 불러온다. 테스트처럼 인증 VM이 없는 환경에서는
   /// UserViewModel의 user_id만 본다.
   AuthCheckViewModelWeb? get _authVm =>
-      Get.isRegistered<AuthCheckViewModelWeb>() ? Get.find<AuthCheckViewModelWeb>() : null;
+      Get.isRegistered<AuthCheckViewModelWeb>()
+      ? Get.find<AuthCheckViewModelWeb>()
+      : null;
   Worker? _authWorker;
 
   @override
@@ -136,7 +138,9 @@ class _ProfileEditViewWebState extends State<ProfileEditViewWeb> {
       child: SingleChildScrollView(
         padding: webSubPagePadding(
           context,
-          bottom: isMobile ? kWebFloatingBottomBarHeight + SDSSpacing.md : SDSSpacing.xl,
+          bottom: isMobile
+              ? kWebFloatingBottomBarHeight + SDSSpacing.md
+              : SDSSpacing.xl,
         ),
         child: Center(
           child: ConstrainedBox(
@@ -151,7 +155,11 @@ class _ProfileEditViewWebState extends State<ProfileEditViewWeb> {
                   onBack: _goBack,
                   actions: [
                     if (isDesktop)
-                      Obx(() => _showActions ? _buildSaveButton(expand: false) : const SizedBox.shrink()),
+                      Obx(
+                        () => _showActions
+                            ? _buildSaveButton(expand: false)
+                            : const SizedBox.shrink(),
+                      ),
                   ],
                 ),
                 SizedBox(height: webFormHeaderGap(context)),
@@ -167,13 +175,17 @@ class _ProfileEditViewWebState extends State<ProfileEditViewWeb> {
 
     final bar = Obx(() {
       if (!_showActions) return const SizedBox.shrink();
-      if (isMobile) return WebFloatingBottomBar(child: _buildSaveButton(expand: true));
+      if (isMobile)
+        return WebFloatingBottomBar(child: _buildSaveButton(expand: true));
       return Container(
         decoration: BoxDecoration(
           color: SDSColor.snowliveWhite,
           border: Border(top: BorderSide(color: SDSColor.gray100)),
         ),
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: SDSSpacing.md),
+        padding: const EdgeInsets.symmetric(
+          horizontal: 20,
+          vertical: SDSSpacing.md,
+        ),
         child: _buildSaveButton(expand: true),
       );
     });
@@ -220,13 +232,24 @@ class _ProfileEditViewWebState extends State<ProfileEditViewWeb> {
             minimumSize: const Size(0, 40),
             padding: const EdgeInsets.symmetric(horizontal: 16),
             tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(5),
+            ),
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              if (saving) ...[const _Spinner(), const SizedBox(width: SDSSpacing.sm)],
-              Text('저장', style: SDSTextStyle.bold.copyWith(fontSize: 16, color: SDSColor.snowliveWhite)),
+              if (saving) ...[
+                const _Spinner(),
+                const SizedBox(width: SDSSpacing.sm),
+              ],
+              Text(
+                '저장',
+                style: SDSTextStyle.bold.copyWith(
+                  fontSize: 16,
+                  color: SDSColor.snowliveWhite,
+                ),
+              ),
             ],
           ),
         ),
@@ -264,24 +287,28 @@ class _ProfileEditViewWebState extends State<ProfileEditViewWeb> {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Center(
-          child: Obx(() => ProfileImageCircleWeb(
-                image: _vm.newImage,
-                imageUrl: _vm.imageUrl,
-                onPick: _pickImage,
-                onRemove: _vm.removeImage,
-              )),
+          child: Obx(
+            () => ProfileImageCircleWeb(
+              image: _vm.newImage,
+              imageUrl: _vm.imageUrl,
+              onPick: _pickImage,
+              onRemove: _vm.removeImage,
+            ),
+          ),
         ),
         const SizedBox(height: SDSSpacing.xl),
-        Obx(() => WebFormTextField(
-              label: '닉네임',
-              isRequired: true,
-              controller: _vm.nicknameController,
-              hint: '닉네임을 입력해 주세요.(최대 $kProfileNicknameMaxLength자)',
-              maxLength: kProfileNicknameMaxLength,
-              // 앱과 같이 공백 입력을 막는다.
-              inputFormatters: [FilteringTextInputFormatter.deny(RegExp(r'\s'))],
-              errorText: _vm.nicknameError,
-            )),
+        Obx(
+          () => WebFormTextField(
+            label: '닉네임',
+            isRequired: true,
+            controller: _vm.nicknameController,
+            hint: '닉네임을 입력해 주세요.(최대 $kProfileNicknameMaxLength자)',
+            maxLength: kProfileNicknameMaxLength,
+            // 앱과 같이 공백 입력을 막는다.
+            inputFormatters: [FilteringTextInputFormatter.deny(RegExp(r'\s'))],
+            errorText: _vm.nicknameError,
+          ),
+        ),
         const SizedBox(height: SDSSpacing.md),
         WebFormTextField(
           label: '상태메시지',
@@ -290,42 +317,50 @@ class _ProfileEditViewWebState extends State<ProfileEditViewWeb> {
           maxLength: kProfileStateMsgMaxLength,
         ),
         const SizedBox(height: SDSSpacing.md),
-        Obx(() => WebFormDropdownField<int>(
-              label: '자주가는 스키장',
-              isRequired: true,
-              value: _vm.hasResort ? (resortNameList[_vm.resortIndex] ?? '') : '자주가는 스키장을 선택해주세요.',
-              placeholder: '자주가는 스키장을 선택해주세요.',
-              values: kOnboardingSelectableResortIndexes,
-              labelOf: (index) => resortNameList[index] ?? '',
-              onSelected: _vm.selectResort,
-              helperText: '자주가는 스키장과 관련된 다양한 서비스를 즐길 수 있습니다',
-              sheetShowsLabelTitle: true,
-              sheetAlignStart: true,
-            )),
+        Obx(
+          () => WebFormDropdownField<int>(
+            label: '자주가는 스키장',
+            isRequired: true,
+            value: _vm.hasResort
+                ? (resortNameList[_vm.resortIndex] ?? '')
+                : '자주가는 스키장을 선택해주세요.',
+            placeholder: '자주가는 스키장을 선택해주세요.',
+            values: kOnboardingSelectableResortIndexes,
+            labelOf: (index) => resortNameList[index] ?? '',
+            onSelected: _vm.selectResort,
+            helperText: '자주가는 스키장과 관련된 다양한 서비스를 즐길 수 있습니다',
+            sheetShowsLabelTitle: true,
+            sheetAlignStart: true,
+          ),
+        ),
         const SizedBox(height: SDSSpacing.md),
-        Obx(() => WebFormDropdownField<String>(
-              label: '종목',
-              isRequired: true,
-              value: _vm.skiOrBoard.isEmpty ? '스키 또는 스노보드 선택' : _vm.skiOrBoard,
-              placeholder: '스키 또는 스노보드 선택',
-              values: kOnboardingSkiOrBoardOptions,
-              labelOf: (value) => value,
-              onSelected: _vm.selectSkiOrBoard,
-              sheetShowsLabelTitle: true,
-              sheetAlignStart: true,
-            )),
+        Obx(
+          () => WebFormDropdownField<String>(
+            label: '종목',
+            isRequired: true,
+            value: _vm.skiOrBoard.isEmpty ? '스키 또는 스노보드 선택' : _vm.skiOrBoard,
+            placeholder: '스키 또는 스노보드 선택',
+            values: kOnboardingSkiOrBoardOptions,
+            labelOf: (value) => value,
+            onSelected: _vm.selectSkiOrBoard,
+            sheetShowsLabelTitle: true,
+            sheetAlignStart: true,
+          ),
+        ),
         const SizedBox(height: SDSSpacing.md),
-        Obx(() => WebFormDropdownField<String>(
-              label: '성별',
-              isRequired: true,
-              value: _vm.sex.isEmpty ? '성별 선택' : _vm.sex,
-              placeholder: '성별 선택',
-              values: kOnboardingSexOptions,
-              labelOf: (value) => value,
-              onSelected: _vm.selectSex,
-              sheetShowsLabelTitle: true,
-              sheetAlignStart: true,
-            )),
+        Obx(
+          () => WebFormDropdownField<String>(
+            label: '성별',
+            isRequired: true,
+            value: _vm.sex.isEmpty ? '성별 선택' : _vm.sex,
+            placeholder: '성별 선택',
+            values: kOnboardingSexOptions,
+            labelOf: (value) => value,
+            onSelected: _vm.selectSex,
+            sheetShowsLabelTitle: true,
+            sheetAlignStart: true,
+          ),
+        ),
         const SizedBox(height: SDSSpacing.lg),
         Row(
           children: [
@@ -333,15 +368,30 @@ class _ProfileEditViewWebState extends State<ProfileEditViewWeb> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('프로필 비공개',
-                      style: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray900)),
+                  Text(
+                    '프로필 비공개',
+                    style: SDSTextStyle.regular.copyWith(
+                      fontSize: 14,
+                      color: SDSColor.gray900,
+                    ),
+                  ),
                   const SizedBox(height: 2),
-                  Text('켜면 다른 사람에게 라이딩 통계·방명록·시즌 기록실이 보이지 않아요.',
-                      style: SDSTextStyle.regular.copyWith(fontSize: 12, color: SDSColor.gray500)),
+                  Text(
+                    '켜면 다른 사람에게 라이딩 통계·방명록·시즌 기록실이 보이지 않아요.',
+                    style: SDSTextStyle.regular.copyWith(
+                      fontSize: 12,
+                      color: SDSColor.gray500,
+                    ),
+                  ),
                 ],
               ),
             ),
-            Obx(() => WebSwitch(value: _vm.hideProfile, onChanged: _vm.setHideProfile)),
+            Obx(
+              () => WebSwitch(
+                value: _vm.hideProfile,
+                onChanged: _vm.setHideProfile,
+              ),
+            ),
           ],
         ),
       ],
@@ -375,7 +425,9 @@ class _FormSkeleton extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          const Center(child: SkeletonBox(width: 120, height: 120, isCircle: true)),
+          const Center(
+            child: SkeletonBox(width: 120, height: 120, isCircle: true),
+          ),
           const SizedBox(height: SDSSpacing.xl),
           for (var i = 0; i < 5; i++) ...[
             const SkeletonBox(width: 80, height: 16),

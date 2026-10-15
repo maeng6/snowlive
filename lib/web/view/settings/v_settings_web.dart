@@ -26,9 +26,6 @@ class SettingsViewWeb extends StatefulWidget {
 }
 
 class _SettingsViewWebState extends State<SettingsViewWeb> {
-  /// 목업의 설정 목록 폭(좌측 정렬, 우측은 비어 있다).
-  static const double _listMaxWidth = 600;
-
   final SettingsViewModelWeb _vm = Get.find<SettingsViewModelWeb>();
 
   @override
@@ -44,9 +41,10 @@ class _SettingsViewWebState extends State<SettingsViewWeb> {
         // 서브 페이지 공통 여백(중고거래 상세·폼 기준).
         padding: webSubPagePadding(context),
         child: Align(
-          alignment: Alignment.topLeft,
+          alignment: Alignment.topCenter,
           child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: _listMaxWidth),
+            // 서브 페이지 한 열 공통(PC 800 가운데 · 태블릿·모바일 꽉 참).
+            constraints: BoxConstraints(maxWidth: webSubPageColumnMaxWidth(context)),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
@@ -67,7 +65,8 @@ class _SettingsViewWebState extends State<SettingsViewWeb> {
     return WebPageHeader(
       title: '설정',
       onBack: () => Get.back(),
-      showBack: !isDesktop,
+      // 사이드바 최상위(친구·알림·설정)라 친구 목록과 같은 홈 타이틀.
+      useHomeTitle: true,
     );
   }
 

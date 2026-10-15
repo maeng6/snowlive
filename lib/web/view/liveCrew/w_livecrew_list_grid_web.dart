@@ -447,7 +447,7 @@ class _CrewListRowState extends State<_CrewListRow> {
                 const SizedBox(width: 8),
                 Text(
                   '${widget.trailingCount}명',
-                  style: SDSTextStyle.bold.copyWith(fontSize: 14, color: SDSColor.snowliveBlue),
+                  style: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray900),
                 ),
               ],
             ],

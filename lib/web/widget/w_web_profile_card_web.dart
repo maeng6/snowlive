@@ -331,31 +331,41 @@ class WebProfileStateBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // 이미 친구일 때는 앱 프로필(`v_friendDetail.dart`)과 같은 규격 —
+    // 68×34 blue50 알약에 bold 13 파란 글자. 앱에는 체크 아이콘이 없다.
+    if (isPositive) {
+      return Container(
+        width: 68,
+        height: 34,
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          color: SDSColor.blue50,
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Text(
+          label,
+          style: SDSTextStyle.bold.copyWith(fontSize: 13, color: SDSColor.snowliveBlue),
+        ),
+      );
+    }
+
+    // 요청 보냄 등 대기 상태 — 앱에 대응하는 표시가 없어 웹 자체 규격을 쓴다.
     // 같은 슬롯에 들어가므로 알약 버튼과 같은 높이(34)로 맞춘다.
     return Container(
       height: 34,
       alignment: Alignment.center,
       decoration: BoxDecoration(
-        color: isPositive ? SDSColor.blue50 : SDSColor.gray50,
+        color: SDSColor.gray50,
         borderRadius: BorderRadius.circular(20),
       ),
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 9),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          if (isPositive) ...[
-            Icon(Icons.check, size: 16, color: SDSColor.snowliveBlue),
-            const SizedBox(width: 4),
-          ],
-          Text(
-            label,
-            style: SDSTextStyle.extraBold.copyWith(
-              fontSize: 13,
-              height: 16 / 13,
-              color: isPositive ? SDSColor.snowliveBlue : SDSColor.gray500,
-            ),
-          ),
-        ],
+      child: Text(
+        label,
+        style: SDSTextStyle.extraBold.copyWith(
+          fontSize: 13,
+          height: 16 / 13,
+          color: SDSColor.gray500,
+        ),
       ),
     );
   }
