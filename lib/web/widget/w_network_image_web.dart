@@ -53,6 +53,20 @@ class WebNetworkImage extends StatefulWidget {
   /// 종류가 몇 안 되는 아이콘에만 쓴다(사진·프로필에는 쓰지 말 것).
   final bool smoothDownscale;
 
+  /// 디코드 크기(cacheWidth)를 **지정하지 않고** 원본 그대로 디코드한다.
+  /// 이러면 내부 ImageProvider 키가 `NetworkImage(url)`과 정확히 같아져서,
+  /// 바깥에서 `precacheImage(NetworkImage(url), context)`로 미리 디코드해 둔 게
+  /// 이 위젯에 **그대로 재사용**된다(캐러셀처럼 진입 시 전부 선로딩해 두고
+  /// 넘기는 순간 스켈레톤 없이 즉시 띄우려는 경우). cacheWidth를 주면 키가
+  /// ResizeImage로 달라져 선로딩 캐시가 안 맞는다.
+  final bool rawDecode;
+
+  /// 디코드 크기(cacheWidth)를 **이 값으로 고정**한다(기본 자동계산 대신). 썸네일보다
+  /// 선명한 큰 소스를 쓰되 메모리는 묶고 싶을 때(상세 캐러셀 원본을 2048로 디코드 등).
+  /// 바깥에서 `precacheImage(ResizeImage(NetworkImage(url), width: decodeWidth))`로
+  /// 미리 올려두면 키가 같아 그대로 재사용된다. (rawDecode/smoothDownscale보다 우선.)
+  final int? decodeWidth;
+
   const WebNetworkImage({
     super.key,
     required this.url,
@@ -66,6 +80,8 @@ class WebNetworkImage extends StatefulWidget {
     this.showPlaceholder = true,
     this.placeholderAspectRatio,
     this.smoothDownscale = false,
+    this.rawDecode = false,
+    this.decodeWidth,
   });
 
   @override
@@ -137,8 +153,10 @@ class _WebNetworkImageState extends State<WebNetworkImage> {
         width: width,
         height: height,
         fit: widget.fit,
-        // smoothDownscale이면 디코드 크기를 주지 않는다(Safari 알파 문제 — 위 주석).
-        cacheWidth: widget.smoothDownscale ? null : cacheW,
+        // decodeWidth가 있으면 그 값으로 고정, 아니면 smoothDownscale(Safari 알파 문제)·
+        // rawDecode(precache 키 일치)는 원본 그대로, 그 외엔 자동계산(cacheW).
+        cacheWidth: widget.decodeWidth ??
+            ((widget.smoothDownscale || widget.rawDecode) ? null : cacheW),
         filterQuality: widget.smoothDownscale ? FilterQuality.medium : FilterQuality.low,
         gaplessPlayback: widget.gaplessPlayback,
         // Firebase Storage가 Access-Control-Allow-Origin을 주지 않아서, 캔버스에

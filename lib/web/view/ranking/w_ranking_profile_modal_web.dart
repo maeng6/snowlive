@@ -122,7 +122,7 @@ class _RankingProfileCardState extends State<_RankingProfileCard> {
     return WebProfileCard(
       data: WebProfileCardData(
         userId: user.userId,
-        avatarUrl: user.profileImageUrlUser,
+        avatarUrl: user.avatarThumbUrl,
         displayName: user.displayName,
         // 랭킹은 리조트를 `resort_nickname`으로 준다(친구 상세는 `favorite_resort`).
         resortName: user.resortNickname,

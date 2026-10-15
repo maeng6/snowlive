@@ -1,12 +1,16 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:http/http.dart' as http;
 import 'package:com.snowlive/core/api/ApiResponse.dart';
 import 'package:com.snowlive/core/api/api_community.dart';
+import 'package:com.snowlive/core/api/api_event.dart';
 import 'package:com.snowlive/core/api/api_fleamarket.dart';
 import 'package:com.snowlive/core/api/api_ranking.dart';
 import 'package:com.snowlive/core/model/m_communityList.dart';
 import 'package:com.snowlive/core/model/m_crewHome.dart';
+import 'package:com.snowlive/core/model/m_event.dart';
 import 'package:com.snowlive/core/model/m_fleamarket.dart';
 import 'package:com.snowlive/core/model/m_rankingListCrew.dart';
 import 'package:com.snowlive/core/model/m_rankingListIndiv.dart';
@@ -55,6 +59,11 @@ class HomeViewModelWeb extends GetxController {
   Map<String, dynamic> get weather => Map<String, dynamic>.from(_weather);
   bool get isWeatherLoading => _isWeatherLoading.value;
 
+  /// 네이버/웹캠/슬로프/셔틀 링크를 **DB(Resort_info)**에서 받아둔다(어드민이 DB만 고치면
+  /// 반영되도록). 비어 있으면 위젯이 정적 리스트 값으로 폴백한다. 키: naver/webcam/slope/bus.
+  final RxMap<String, String> _resortLinks = <String, String>{}.obs;
+  Map<String, String> get resortLinks => Map<String, String>.from(_resortLinks);
+
   // ── 오늘의 랭킹 ──
   final RxList<RankingUser> _todayIndiv = <RankingUser>[].obs;
   final RxList<CrewRanking> _todayCrew = <CrewRanking>[].obs;
@@ -85,6 +94,14 @@ class HomeViewModelWeb extends GetxController {
   List<Fleamarket> get fleamarket => List<Fleamarket>.from(_fleamarket);
   bool get isFleamarketLoading => _isFleamarketLoading.value;
 
+  // ── 각종소식(이벤트 크롤 피드 최신) ──
+  final EventAPI _eventAPI = EventAPI();
+  final RxList<EventModel> _events = <EventModel>[].obs;
+  final RxBool _isEventLoading = false.obs;
+
+  List<EventModel> get events => List<EventModel>.from(_events);
+  bool get isEventLoading => _isEventLoading.value;
+
   /// 오늘의 랭킹 배지에 쓰는 날짜. 화면이 매번 DateTime.now()를 부르지 않게 한 곳에 둔다.
   DateTime get today => DateTime.now();
 
@@ -97,6 +114,7 @@ class HomeViewModelWeb extends GetxController {
     loadCommunity();
     loadCrewCards();
     loadFleamarket();
+    loadEvents();
   }
 
   @override
@@ -131,6 +149,7 @@ class HomeViewModelWeb extends GetxController {
       loadCommunity(),
       loadCrewCards(),
       loadFleamarket(),
+      loadEvents(),
     ]);
   }
 
@@ -158,7 +177,35 @@ class HomeViewModelWeb extends GetxController {
   // ── 날씨 ──
   Future<void> selectResort(ResortModel resort) async {
     _resort.value = resort;
+    // 링크(셔틀 등)는 DB에서 받아 쓴다 — 리조트 바뀌면 이전 DB링크는 버리고(그 사이엔
+    // 정적값 폴백) 새로 받는다. 날씨와 병렬로(블로킹하지 않음).
+    _resortLinks.clear();
+    _fetchResortLinks(resort);
     await _fetchWeather(resort);
+  }
+
+  /// 선택 리조트의 링크(naver/webcam/slope/bus)를 DB(Resort_info)에서 받아둔다.
+  /// 정적 ResortModel.index(0-based) + 1 == DB resort_id 매핑을 쓴다(실측 일치).
+  Future<void> _fetchResortLinks(ResortModel resort) async {
+    final index = resort.index;
+    if (index == null) return;
+    final resortId = index + 1;
+    try {
+      final res = await http.get(Uri.parse(
+          'https://snowlive-api-c617725e2b78.herokuapp.com/api/resort/resort/$resortId/'));
+      if (res.statusCode != 200) return;
+      final d = json.decode(utf8.decode(res.bodyBytes)) as Map<String, dynamic>;
+      // 리조트를 빠르게 바꾸면 응답이 뒤바뀔 수 있다 → 마지막 선택만 반영.
+      if (_resort.value?.index != index) return;
+      _resortLinks.value = {
+        if ((d['url_naver'] ?? '').toString().isNotEmpty) 'naver': d['url_naver'],
+        if ((d['url_webcam'] ?? '').toString().isNotEmpty) 'webcam': d['url_webcam'],
+        if ((d['url_slope'] ?? '').toString().isNotEmpty) 'slope': d['url_slope'],
+        if ((d['url_bus'] ?? '').toString().isNotEmpty) 'bus': d['url_bus'],
+      };
+    } catch (_) {
+      // 실패 시 정적값으로 폴백(위젯이 처리).
+    }
   }
 
   Future<void> _fetchWeather(ResortModel resort) async {
@@ -265,6 +312,22 @@ class HomeViewModelWeb extends GetxController {
       // 무시 — 목록이 비면 화면이 안내를 띄운다.
     } finally {
       _isFleamarketLoading(false);
+    }
+  }
+
+  // ── 각종소식(최신 첫 페이지) ──
+  Future<void> loadEvents() async {
+    _isEventLoading(true);
+    try {
+      final ApiResponse res = await _eventAPI.fetchEventList();
+      if (res.success && res.data is Map<String, dynamic>) {
+        final parsed = EventListResponse.fromJson(res.data as Map<String, dynamic>);
+        _events.value = parsed.events;
+      }
+    } catch (_) {
+      // 무시 — 목록이 비면 화면이 안내를 띄운다.
+    } finally {
+      _isEventLoading(false);
     }
   }
 }

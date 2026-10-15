@@ -123,6 +123,8 @@ class _HomeViewWebState extends State<HomeViewWeb> {
           child: WebStickyFooterScroll(
             controller: _scrollController,
             onRefresh: _vm.refreshAll, // 당겨서 새로고침
+            // 푸터를 콘텐츠 바로 아래에 붙인다(크루 카드↔푸터 사이 공백 제거).
+            pinFooterToBottom: false,
 
             content: Center(
               child: ConstrainedBox(
@@ -167,6 +169,7 @@ class _HomeViewWebState extends State<HomeViewWeb> {
                               weather: _vm.weather,
                               isLoading: _vm.isWeatherLoading,
                               onResortSelected: _vm.selectResort,
+                              linkUrls: _vm.resortLinks, // 셔틀 등 링크는 DB값 우선
                             ),
                           ),
                           // 날씨 ↔ 오늘의 랭킹 간격 30.
@@ -192,6 +195,7 @@ class _HomeViewWebState extends State<HomeViewWeb> {
                                   )
                                 : const SizedBox.shrink(),
                           ),
+                          // 중고거래
                           Obx(
                             () => HomeFleamarketWeb(
                               items: _vm.fleamarket,
@@ -199,10 +203,19 @@ class _HomeViewWebState extends State<HomeViewWeb> {
                             ),
                           ),
                           SizedBox(height: isMobile ? SDSSpacing.xl : SDSSpacing.xxl),
+                          // 커뮤니티
                           Obx(
                             () => HomeCommunityWeb(
                               posts: _vm.community,
                               isLoading: _vm.isCommunityLoading,
+                            ),
+                          ),
+                          SizedBox(height: isMobile ? SDSSpacing.xl : SDSSpacing.xxl),
+                          // 각종소식 — 커뮤니티 아래로 배치(사용자 요청), 같은 가로 그리드.
+                          Obx(
+                            () => HomeEventWeb(
+                              items: _vm.events,
+                              isLoading: _vm.isEventLoading,
                             ),
                           ),
                           SizedBox(height: isMobile ? SDSSpacing.xl : SDSSpacing.xxl),
@@ -219,12 +232,12 @@ class _HomeViewWebState extends State<HomeViewWeb> {
                 ),
               ),
             ),
-            // 콘텐츠 ↔ 푸터 간격은 최소 120(짧으면 푸터가 하단으로 밀린다).
+            // 콘텐츠 ↔ 푸터 간격(위 pinFooterToBottom:false라 푸터가 콘텐츠 바로 아래).
             footer: Center(
               child: ConstrainedBox(
                 constraints: const BoxConstraints(maxWidth: kHomeMaxContentWidth),
                 child: Padding(
-                  padding: EdgeInsets.fromLTRB(horizontal, 120, horizontal, horizontal),
+                  padding: EdgeInsets.fromLTRB(horizontal, 48, horizontal, horizontal),
                   child: HomeFooterWeb(key: _footerKey),
                 ),
               ),

@@ -56,7 +56,7 @@ class AuthorInfo {
   AuthorInfo.fromJson(Map<String, dynamic> json) {
     userId = json['user_id'] ?? 0; // null 처리
     displayName = json['display_name'] ?? ''; // null 처리
-    profileImageUrlUser = json['profile_image_url_user'] ?? ''; // null 처리
+    profileImageUrlUser = (json['profile_image_url_user_thumb'] ?? json['profile_image_url_user']) ?? ''; // null 처리
     crewName = json['crew_name'] ?? ''; // null 처리
     favoriteResortNickname = json['favorite_resort_nickname'] ?? ''; // null 처리
   }

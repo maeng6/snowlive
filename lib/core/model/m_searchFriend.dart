@@ -19,7 +19,7 @@ class SearchFriend {
       userId = json['user_id'];
       crewName = json['crew_name'];
       displayName = json['display_name'];
-      profileImageUrlUser = json['profile_image_url_user'];
+      profileImageUrlUser = (json['profile_image_url_user_thumb'] ?? json['profile_image_url_user']);
       skiorboard = json['skiorboard'];
       areWeFriend = json['are_we_friend'];
   }

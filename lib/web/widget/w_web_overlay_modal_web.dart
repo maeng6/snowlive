@@ -168,7 +168,11 @@ class _ModalOpenTransitionState extends State<_ModalOpenTransition>
   Widget build(BuildContext context) {
     final bool fromBottom = widget.alignment == Alignment.bottomCenter;
 
-    return Positioned.fill(
+    // ⚠️ Positioned.fill은 부모가 Stack일 때만 유효하다. 이 위젯은 오버레이 엔트리가
+    // Focus(_OverlayEscHandler)로 감싸여 있어 직속 부모가 Stack이 아니다 →
+    // Positioned.applyParentData 타입 캐스트가 터진다. SizedBox.expand로 뷰포트를
+    // 꽉 채운다(엔트리가 풀스크린 제약을 주므로 동일하게 동작).
+    return SizedBox.expand(
       child: GestureDetector(
         onTap: widget.onBarrierTap,
         child: AnimatedBuilder(

@@ -7,6 +7,7 @@ import 'package:com.snowlive/web/widget/w_network_image_web.dart';
 import 'package:com.snowlive/web/widget/w_web_overlay_modal_web.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 /// 미리보기 카드 폭(PC·태블릿). 모바일은 뷰포트에서 좌우 여백(모달 기본 패딩)만
 /// 빼고 꽉 채운다. 피드 글이라 본문·사진을 편히 읽을 정도의 폭.
@@ -134,7 +135,17 @@ class _EventPreviewCard extends StatelessWidget {
                 height: 48,
                 child: ElevatedButton(
                   onPressed: () {
-                    Get.find<EventListPaginationViewModelWeb>().openLanding(event);
+                    // 각종소식 페이지에선 뷰모델(조회로그 포함)로, 홈 등 뷰모델이 없는
+                    // 화면에선 랜딩 URL을 직접 새 탭으로 연다.
+                    if (Get.isRegistered<EventListPaginationViewModelWeb>()) {
+                      Get.find<EventListPaginationViewModelWeb>().openLanding(event);
+                    } else {
+                      final raw = event.landingUrl;
+                      final uri = (raw == null || raw.isEmpty) ? null : Uri.tryParse(raw);
+                      if (uri != null && (uri.scheme == 'http' || uri.scheme == 'https')) {
+                        launchUrl(uri, mode: LaunchMode.externalApplication);
+                      }
+                    }
                   },
                   style: ButtonStyle(
                     elevation: const WidgetStatePropertyAll(0),

@@ -59,12 +59,17 @@ class HomeWeatherBarWeb extends StatefulWidget {
   final bool isLoading;
   final ValueChanged<ResortModel> onResortSelected;
 
+  /// 네이버/웹캠/슬로프/셔틀 링크의 **DB값**(키: naver/webcam/slope/bus). 있으면 정적값 대신
+  /// 이걸 쓴다(어드민이 DB만 고쳐도 반영). 비면 정적 ResortModel 값으로 폴백.
+  final Map<String, String> linkUrls;
+
   const HomeWeatherBarWeb({
     super.key,
     required this.resort,
     required this.weather,
     this.isLoading = false,
     required this.onResortSelected,
+    this.linkUrls = const {},
   });
 
   @override
@@ -169,7 +174,7 @@ class _HomeWeatherBarWebState extends State<HomeWeatherBarWeb> {
       children: [
         _buildMobileCard(),
         const SizedBox(height: SDSSpacing.md),
-        _HomeWeatherLinks(resort: widget.resort, fillWidth: true),
+        _HomeWeatherLinks(resort: widget.resort, linkUrls: widget.linkUrls, fillWidth: true),
       ],
     );
   }
@@ -190,7 +195,7 @@ class _HomeWeatherBarWebState extends State<HomeWeatherBarWeb> {
           ),
         ),
         const SizedBox(width: _kDesktopGapToLinks),
-        _HomeWeatherLinks(resort: widget.resort),
+        _HomeWeatherLinks(resort: widget.resort, linkUrls: widget.linkUrls),
       ],
     );
   }
@@ -236,7 +241,7 @@ class _HomeWeatherBarWebState extends State<HomeWeatherBarWeb> {
                 Image.asset(icon, width: 40, height: 40),
                 const SizedBox(width: 8),
                 Text(
-                  homeTempLabel(weather['temp']),
+                  homeTempLabel(weather['temp'], decimals: 1),
                   style: GoogleFonts.bebasNeue(fontSize: 36, color: fg, height: 1.0),
                 ),
                 const SizedBox(width: 2),
@@ -312,7 +317,7 @@ class _HomeWeatherBarWebState extends State<HomeWeatherBarWeb> {
                     child: AnimatedOpacity(
                       opacity: _isExpanded ? 0 : 1,
                       duration: const Duration(milliseconds: 200),
-                      child: Center(child: _HomeWeatherLinks(resort: widget.resort)),
+                      child: Center(child: _HomeWeatherLinks(resort: widget.resort, linkUrls: widget.linkUrls)),
                     ),
                   ),
                 ),
@@ -458,7 +463,7 @@ class _HomeWeatherBarWebState extends State<HomeWeatherBarWeb> {
       children: [
         // 기온 숫자: Bebas Neue 36 / ° 28 (피그마 기준).
         Text(
-          homeTempLabel(weather['temp']),
+          homeTempLabel(weather['temp'], decimals: 1),
           style: GoogleFonts.bebasNeue(fontSize: 36, color: color, height: 1.0),
         ),
         const SizedBox(width: 2),
@@ -754,11 +759,14 @@ class _Metric extends StatelessWidget {
 class _HomeWeatherLinks extends StatelessWidget {
   final ResortModel? resort;
 
+  /// 링크 DB값(키: naver/webcam/slope/bus). 있으면 정적 [resort] 값보다 우선.
+  final Map<String, String> linkUrls;
+
   /// 카드 아래 전체폭 한 줄일 때(세로 스택) — 네 칸을 균등 분할한다(라벨이 잘리지 않게).
   /// 뷰포트가 아니라 **배치**로 정한다: 좁은 데스크탑 폭에서도 세로 스택이면 이 모양이다.
   final bool fillWidth;
 
-  const _HomeWeatherLinks({required this.resort, this.fillWidth = false});
+  const _HomeWeatherLinks({required this.resort, this.linkUrls = const {}, this.fillWidth = false});
 
   /// 링크 줄 텍스트 스타일(필요폭 계산과 공유).
   static TextStyle labelStyle({required bool compact}) => SDSTextStyle.regular.copyWith(
@@ -772,11 +780,12 @@ class _HomeWeatherLinks extends StatelessWidget {
   Widget build(BuildContext context) {
     final isMobile = fillWidth;
 
+    // DB값(linkUrls)이 있으면 그걸 쓰고, 없으면 정적 리조트 모델 값으로 폴백한다.
     final links = <({String label, String asset, String? url})>[
-      (label: labels[0], asset: 'assets/imgs/icons/icon_home_naver.png', url: resort?.naverUrl),
-      (label: labels[1], asset: 'assets/imgs/icons/icon_home_livecam.png', url: resort?.webcamUrl),
-      (label: labels[2], asset: 'assets/imgs/icons/icon_home_slope.png', url: resort?.slopeUrl),
-      (label: labels[3], asset: 'assets/imgs/icons/icon_home_bus.png', url: resort?.busUrl),
+      (label: labels[0], asset: 'assets/imgs/icons/icon_home_naver.png', url: linkUrls['naver'] ?? resort?.naverUrl),
+      (label: labels[1], asset: 'assets/imgs/icons/icon_home_livecam.png', url: linkUrls['webcam'] ?? resort?.webcamUrl),
+      (label: labels[2], asset: 'assets/imgs/icons/icon_home_slope.png', url: linkUrls['slope'] ?? resort?.slopeUrl),
+      (label: labels[3], asset: 'assets/imgs/icons/icon_home_bus.png', url: linkUrls['bus'] ?? resort?.busUrl),
     ];
 
     return Padding(
@@ -973,7 +982,7 @@ class _WeatherBarFit {
     final resortBlock = nameRow > dateWidth ? nameRow : dateWidth;
 
     // ── 기온 블록(숫자 + ° + 아이콘) ──
-    final tempBlock = w(homeTempLabel(weather['temp']), GoogleFonts.bebasNeue(fontSize: 36, height: 1.0)) +
+    final tempBlock = w(homeTempLabel(weather['temp'], decimals: 1), GoogleFonts.bebasNeue(fontSize: 36, height: 1.0)) +
         2 +
         w('°', GoogleFonts.bebasNeue(fontSize: 28, height: 1.0)) +
         SDSSpacing.xs +

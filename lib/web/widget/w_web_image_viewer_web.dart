@@ -28,6 +28,7 @@ Future<void> showWebImageViewer({
   required int initialIndex,
   ValueChanged<int>? onIndexChanged,
   bool smoothDownscale = false,
+  bool preloadAll = false,
 }) {
   if (imageUrls.isEmpty) return Future.value();
 
@@ -52,6 +53,7 @@ Future<void> showWebImageViewer({
         onIndexChanged: onIndexChanged,
         onClose: close,
         smoothDownscale: smoothDownscale,
+        preloadAll: preloadAll,
       ),
     ),
   );
@@ -248,6 +250,11 @@ class _WebImageViewer extends StatefulWidget {
   /// 그대로 전달한다.
   final bool smoothDownscale;
 
+  /// 열릴 때 **모든 원본을 Flutter 이미지 캐시로 미리 디코드**해 둘지(중고거래 갤러리).
+  /// 켜면 메인 이미지를 rawDecode로 그려 precache 캐시와 키를 맞춰서, 어느 장으로
+  /// 넘겨도 네트워크·디코드 대기 없이 즉시 뜬다. (커뮤니티/티어 뷰어는 끈다.)
+  final bool preloadAll;
+
   const _WebImageViewer({
     required this.title,
     required this.imageUrls,
@@ -255,6 +262,7 @@ class _WebImageViewer extends StatefulWidget {
     required this.onIndexChanged,
     required this.onClose,
     this.smoothDownscale = false,
+    this.preloadAll = false,
   });
 
   @override
@@ -315,6 +323,8 @@ class _WebImageViewerState extends State<_WebImageViewer>
   // 포커스가 있을 때 동작하지 않아, 마운트 직후 명시적으로 포커스를 요청한다.
   final FocusNode _viewerFocus = FocusNode(debugLabel: 'imageViewer');
 
+  bool _precached = false;
+
   @override
   void initState() {
     super.initState();
@@ -322,6 +332,20 @@ class _WebImageViewerState extends State<_WebImageViewer>
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) _viewerFocus.requestFocus();
     });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!widget.preloadAll || _precached) return;
+    _precached = true;
+    // 원본 전부를 Flutter 이미지 캐시로 **디코드까지** 미리 올려둔다. 메인 이미지가
+    // rawDecode(cacheWidth 없음)라 키가 NetworkImage(url)로 같아져 그대로 재사용된다
+    // → 넘기는 순간 대기 없이 뜬다. (갤러리에서 이미 브라우저 캐시를 데워둬서 빠르게 끝남.)
+    // 실패(CORS/404)해도 뷰어는 그 자리에서 다시 받으므로 조용히 무시.
+    for (final url in widget.imageUrls) {
+      precacheImage(NetworkImage(url), context, onError: (_, __) {});
+    }
   }
 
   @override
@@ -401,7 +425,15 @@ class _WebImageViewerState extends State<_WebImageViewer>
     if (_transform.value.getMaxScaleOnAxis() > 1.05) return;
     final dx = last.dx - start.dx;
     final dy = last.dy - start.dy;
-    // 세로 성분이 더 크거나 이동이 짧으면 스와이프가 아니다.
+    // 모바일: 한 손가락으로 **아래로 끌어내리면** 갤러리를 닫는다(pull-to-dismiss).
+    // 세로 성분이 가로보다 분명히 크고 아래로 충분히(80px) 내렸을 때만.
+    if (context.screenType == WebScreenType.mobile &&
+        dy > 80 &&
+        dy.abs() > dx.abs()) {
+      widget.onClose();
+      return;
+    }
+    // 세로 성분이 더 크거나 이동이 짧으면 (가로)스와이프가 아니다.
     if (dx.abs() < 60 || dx.abs() < dy.abs()) return;
     _goTo(dx < 0 ? _index + 1 : _index - 1);
   }
@@ -520,6 +552,9 @@ class _WebImageViewerState extends State<_WebImageViewer>
                                     // 티어 배지 등 반투명 PNG는 원본을 밉맵으로
                                     // 부드럽게 그려 확대 시 테두리가 깨지지 않게 한다.
                                     smoothDownscale: widget.smoothDownscale,
+                                    // 미리 precache해 둔 원본과 키를 맞춰 즉시 표시
+                                    // (원본 그대로 디코드 → 확대 화질도 더 선명).
+                                    rawDecode: widget.preloadAll,
                                   ),
                                 ),
                               ),

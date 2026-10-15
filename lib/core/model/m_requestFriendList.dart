@@ -80,7 +80,7 @@ class MyUserInfo {
   MyUserInfo.fromJson(Map<String, dynamic> json) {
     userId = json['user_id'] ?? 0;
     displayName = json['display_name'] ?? 'Unknown'; // 기본값 처리
-    profileImageUrlUser = json['profile_image_url_user'] ?? '';
+    profileImageUrlUser = (json['profile_image_url_user_thumb'] ?? json['profile_image_url_user']) ?? '';
     stateMsg = json['state_msg'] ?? '';
     withinBoundary = json['within_boundary'] ?? false;
     revealWb = json['reveal_wb'] ?? false;
@@ -118,7 +118,7 @@ class FriendUserInfo {
   FriendUserInfo.fromJson(Map<String, dynamic> json) {
     userId = json['user_id'] ?? 0;
     displayName = json['display_name'] ?? 'Unknown'; // 기본값 처리
-    profileImageUrlUser = json['profile_image_url_user'] ?? '';
+    profileImageUrlUser = (json['profile_image_url_user_thumb'] ?? json['profile_image_url_user']) ?? '';
     stateMsg = json['state_msg'];
     withinBoundary = json['within_boundary'] ?? false;
     revealWb = json['reveal_wb'] ?? false;

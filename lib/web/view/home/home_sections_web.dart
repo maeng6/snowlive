@@ -132,13 +132,14 @@ String homeWeatherDateLabel(DateTime date) =>
 /// `2027. 01. 14` — `오늘의 랭킹` 옆 검은 배지.
 String homeTodayBadgeLabel(DateTime date) => DateFormat('yyyy. MM. dd').format(date);
 
-/// 소수점이 섞여 오는 기온(`23.4`) → `23`. 값이 없으면 `-`.
-String homeTempLabel(dynamic raw) {
+/// 기온 라벨. [decimals]=0이면 정수로 반올림(`23.4`→`23`),
+/// [decimals]=1이면 앱처럼 소수점 첫째자리까지(`23.4`→`23.4`). 값이 없으면 `-`.
+String homeTempLabel(dynamic raw, {int decimals = 0}) {
   final text = raw?.toString().trim() ?? '';
   if (text.isEmpty || text == '-') return '-';
   final value = double.tryParse(text);
   if (value == null) return text;
-  return value.round().toString();
+  return decimals > 0 ? value.toStringAsFixed(decimals) : value.round().toString();
 }
 
 /// 홈 날씨 카드가 쓰는 리조트. 정적 [resortList]가 nx/ny와 네이버·웹캠·슬로프·셔틀
@@ -167,8 +168,11 @@ ResortModel homeDefaultResort(int? favoriteResortId) {
 
 // ──────────────────────────────── 커뮤니티 ────────────────────────────────
 
-/// 홈 커뮤니티 섹션에 받아 두는 최신글 수(PC·태블릿 2열 × 3행).
-const int kHomeCommunityFetchCount = 6;
+/// 홈 커뮤니티 섹션에 받아 두는 최신글 수 — 캐러셀 페이지당 4개 × 최대 3페이지 = 12개.
+const int kHomeCommunityFetchCount = 12;
+
+/// 홈 커뮤니티 캐러셀 최대 페이지 수(페이지당 4개 → 3페이지=12개, 점 3개).
+const int kHomeCommunityMaxPages = 3;
 
 /// 폭별로 보여줄 글 수 — PC·태블릿 6(2열 × 3행) / 모바일 4(1열).
 int homeCommunityCount({required bool isMobile}) => isMobile ? 4 : kHomeCommunityFetchCount;

@@ -99,7 +99,7 @@ class UserInfoBeta {
   UserInfoBeta.fromJson(Map<String, dynamic> json) {
     userId = json['user_id'];
     displayName = json['display_name'];
-    profileImageUrlUser = json['profile_image_url_user'];
+    profileImageUrlUser = (json['profile_image_url_user_thumb'] ?? json['profile_image_url_user']);
     crewName = json['crew_name'];
     resortNickname = json['resort_nickname'];
   }

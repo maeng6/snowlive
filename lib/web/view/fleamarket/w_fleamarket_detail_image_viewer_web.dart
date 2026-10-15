@@ -28,6 +28,9 @@ Future<void> showFleamarketImageViewerWeb({
     title: title,
     imageUrls: urls,
     initialIndex: initialIndex,
+    // 상세 진입 시 갤러리가 원본을 브라우저 캐시에 예열해 둔다 → 뷰어는 열릴 때
+    // 그 원본들을 Flutter 캐시로 precache까지 올려, 넘겨도 대기 없이 바로 뜬다.
+    preloadAll: true,
     onIndexChanged: (index) {
       // 커뮤니티 라우트에서도 이 뷰어 코드가 로드되므로 등록 여부를 확인한다.
       if (Get.isRegistered<FleamarketDetailViewModel>()) {

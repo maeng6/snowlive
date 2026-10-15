@@ -1,17 +1,22 @@
 import 'dart:async';
-import 'dart:math' as math;
+import 'dart:html' as html;
 
+import 'package:com.snowlive/core/api/api_fleamarket.dart';
 import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/core/model/m_communityList.dart';
+import 'package:com.snowlive/core/model/m_event.dart';
 import 'package:com.snowlive/core/model/m_fleamarket.dart';
 import 'package:com.snowlive/core/model/m_rankingListCrew.dart';
 import 'package:com.snowlive/core/model/m_rankingListIndiv.dart';
+import 'package:com.snowlive/core/viewmodel/vm_user.dart';
 import 'package:com.snowlive/web/routes/routes_web.dart';
 import 'package:com.snowlive/web/util/crew_visual_web.dart';
 import 'package:com.snowlive/web/util/responsive_web.dart';
 import 'package:com.snowlive/web/util/web_external_links.dart';
 import 'package:com.snowlive/web/view/community/w_community_row_web.dart'
     show CommunityTitleLine, openCommunityDetail;
+import 'package:com.snowlive/web/view/community/w_event_row_web.dart'
+    show openEventPreview;
 import 'package:com.snowlive/web/view/home/home_sections_web.dart';
 import 'package:com.snowlive/web/viewmodel/home/vm_home_web.dart';
 import 'package:com.snowlive/web/widget/w_empty_state_web.dart';
@@ -697,71 +702,129 @@ const double _kCommunityColumnGap = 48;
 /// `오늘의 랭킹`이 회색 패널이라 패널로 또 감싸지 않는다.
 ///
 /// PC·태블릿 2열 × 3행(1열에 최신 1~3, 2열에 4~6 — 크루홈 TOP 10과 같은 열 순서) /
-/// 모바일 1열 × 4개.
-class HomeCommunityWeb extends StatelessWidget {
+/// 홈 커뮤니티 — 중고거래·각종소식과 같은 **가로 캐러셀**(최대 3페이지, 하단 점 인디케이터).
+/// PC·태블릿 2열 × 3행(6개) / 모바일 1열 × 4행(4개).
+class HomeCommunityWeb extends StatefulWidget {
   final List<Community> posts;
   final bool isLoading;
 
   const HomeCommunityWeb({super.key, required this.posts, required this.isLoading});
 
   @override
+  State<HomeCommunityWeb> createState() => _HomeCommunityWebState();
+}
+
+class _HomeCommunityWebState extends State<HomeCommunityWeb> {
+  int _page = 0;
+
+  /// 모바일 PageView(스와이프) 컨트롤러.
+  final PageController _mobileController = PageController();
+
+  @override
+  void dispose() {
+    _mobileController.dispose();
+    super.dispose();
+  }
+
+  void _goTo(int page, int pageCount) {
+    setState(() => _page = page % pageCount);
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final isMobile = context.screenType == WebScreenType.mobile;
-    final count = homeCommunityCount(isMobile: isMobile);
+    final screenType = context.screenType;
+    final isMobile = screenType == WebScreenType.mobile;
     final columns = isMobile ? 1 : 2;
-    final perColumn = (count / columns).ceil();
-    final items = posts.take(count).toList();
+    // 모바일 1열 × 4행(4개) / 그 외 2열 × 3행(6개).
+    final perPage = isMobile ? 4 : 6;
+    final perColumn = (perPage / columns).ceil();
+    final pages = homeCarouselPages(
+      widget.posts.take(perPage * kHomeCommunityMaxPages).toList(),
+      perPage,
+    );
+    final page =
+        pages.isEmpty ? const <Community>[] : pages[_page.clamp(0, pages.length - 1)];
 
     final Widget body;
-    if (isLoading && items.isEmpty) {
-      body = SkeletonShimmer(
-        child: _columns(
-          columns: columns,
-          perColumn: perColumn,
-          build: (_) => const _HomeCommunityRowSkeleton(),
-          length: count,
+    if (widget.isLoading && widget.posts.isEmpty) {
+      body = _pageBody(
+        perColumn,
+        SkeletonShimmer(
+          child: _columns(
+            columns: columns,
+            perColumn: perColumn,
+            length: perPage,
+            build: (_) => const _HomeCommunityRowSkeleton(),
+          ),
         ),
       );
-    } else if (items.isEmpty) {
+    } else if (widget.posts.isEmpty) {
       body = const WebEmptyState(message: '아직 올라온 글이 없어요');
+    } else if (isMobile) {
+      // 모바일: 손가락을 따라오는 PageView 스와이프(중고거래와 동일).
+      body = _ExpandablePageView(
+        controller: _mobileController,
+        onPageChanged: (p) => setState(() => _page = p),
+        pageGap: SDSSpacing.md * 2,
+        children: [
+          for (final pageItems in pages) _grid(columns, perColumn, pageItems),
+        ],
+      );
     } else {
-      body = _columns(
-        columns: columns,
-        perColumn: perColumn,
-        build: (i) => _HomeCommunityRow(post: items[i]),
-        length: items.length,
+      body = _SwipeDetector(
+        // 태블릿은 스와이프로도 페이지를 넘긴다.
+        enabled: screenType == WebScreenType.tablet && pages.length > 1,
+        onSwipeLeft: () => _goTo(_page + 1, pages.length),
+        onSwipeRight: () => _goTo(_page - 1, pages.length),
+        child: _grid(columns, perColumn, page),
       );
     }
-
-    // 글 목록은 행의 좌우 패딩(8)만큼 **바깥으로 빼서** 글자가 제목 `커뮤니티`와 같은
-    // 세로선에 서게 한다(hover 배경만 여백 쪽으로 넘어간다 — 크루홈 멤버 목록과 같은 처리).
-    // ⚠️ OverflowBox는 높이를 못 박아야 한다(스크롤 안이라 세로가 무한).
-    final Widget alignedBody = items.isEmpty && !isLoading
-        ? body
-        : SizedBox(
-            // 1열이 먼저 차므로 높이 = 1열의 실제 행 수(글이 적을 때 빈 칸이 남지 않게).
-            height: (items.isEmpty ? perColumn : math.min(perColumn, items.length)) *
-                _kCommunityRowHeight,
-            child: LayoutBuilder(
-              builder: (context, constraints) => OverflowBox(
-                minWidth: 0,
-                maxWidth: constraints.maxWidth + SDSSpacing.sm * 2,
-                child: body,
-              ),
-            ),
-          );
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         _HomeSectionHeader(
           title: '커뮤니티',
+          onPrev: pages.length > 1 ? () => _goTo(_page - 1, pages.length) : null,
+          onNext: pages.length > 1 ? () => _goTo(_page + 1, pages.length) : null,
           trailing: _MoreButton(onTap: () => Get.toNamed(WebRoutes.community)),
         ),
         // 헤더 ↔ 본문 16 — 크루·중고거래 캐러셀과 같다.
         const SizedBox(height: 16),
-        alignedBody,
+        body,
+        if (pages.length > 1) ...[
+          const SizedBox(height: 24),
+          _Dots(count: pages.length, index: _page.clamp(0, pages.length - 1)),
+        ],
       ],
+    );
+  }
+
+  /// 한 페이지(최대 4글)를 좌측 정렬 그리드로.
+  Widget _grid(int columns, int perColumn, List<Community> items) {
+    return _pageBody(
+      perColumn,
+      _columns(
+        columns: columns,
+        perColumn: perColumn,
+        length: items.length,
+        build: (i) => _HomeCommunityRow(post: items[i]),
+      ),
+    );
+  }
+
+  /// 페이지 높이를 고정(행 수 × 행높이)하고, 글 목록을 행 패딩(8)만큼 **바깥으로 빼서**
+  /// 글자가 제목 `커뮤니티`와 같은 세로선에 서게 한다(hover 배경만 여백 쪽으로 넘어간다).
+  Widget _pageBody(int perColumn, Widget child) {
+    return SizedBox(
+      height: perColumn * _kCommunityRowHeight,
+      child: LayoutBuilder(
+        builder: (context, constraints) => OverflowBox(
+          minWidth: 0,
+          maxWidth: constraints.maxWidth + SDSSpacing.sm * 2,
+          child: child,
+        ),
+      ),
     );
   }
 
@@ -1230,6 +1293,30 @@ class _HomeFleamarketWebState extends State<HomeFleamarketWeb>
   final PageController _mobileController = PageController();
 
   @override
+  void initState() {
+    super.initState();
+    _preloadThumbs();
+  }
+
+  @override
+  void didUpdateWidget(covariant HomeFleamarketWeb oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // 데이터가 늦게 도착(로딩 완료)하면 그때 선로딩한다.
+    if (!identical(oldWidget.items, widget.items)) _preloadThumbs();
+  }
+
+  /// 홈 중고거래 카드 썸네일을 즉시 전부 브라우저 HTTP 캐시에 받아둔다 —
+  /// 카드가 화면에 들어오기 전에 받아놔서 그리는 순간 바로 뜨고, 상세로 들어가도
+  /// 같은 썸네일이 캐시에서 즉시 뜬다. (ImageElement.src만 세팅해도 받아 캐시한다.)
+  void _preloadThumbs() {
+    for (final item in widget.items) {
+      final thumb =
+          (item.photos?.isNotEmpty ?? false) ? item.photos!.first.listUrl : null;
+      if (thumb != null && thumb.isNotEmpty) html.ImageElement().src = thumb;
+    }
+  }
+
+  @override
   void dispose() {
     _cardsEnter.dispose();
     _mobileController.dispose();
@@ -1388,7 +1475,22 @@ class _FleamarketMiniCardState extends State<_FleamarketMiniCard> with _TapFeedb
         onTapDown: (_) => pressDown(),
         onTapUp: (_) => pressUpDelayed(),
         onTapCancel: pressCancel,
-        onTap: () => Get.toNamed('${WebRoutes.fleamarketDetail}?id=${item.fleaId}'),
+        onTap: () {
+          // 리스트 카드와 동일하게 진입 시 조회수를 올린다(홈에서도 일관되게).
+          // 중고거래 조회수는 상세 로드가 아니라 카드 탭에서 증가하므로 여기서 호출한다.
+          // 상세 페이지는 조회수를 또 올리지 않아 중복 집계되지 않는다. 게스트도 센다.
+          final id = item.fleaId;
+          if (id != null) {
+            int? uid;
+            try {
+              final u = Get.find<UserViewModel>().user.user_id;
+              if (u is int && u > 0) uid = u;
+            } catch (_) {}
+            unawaited(FleamarketAPI()
+                .addView(fleamarketId: id, body: {if (uid != null) 'user_id': uid}));
+          }
+          Get.toNamed('${WebRoutes.fleamarketDetail}?id=$id');
+        },
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -1423,6 +1525,232 @@ class _FleamarketMiniCardState extends State<_FleamarketMiniCard> with _TapFeedb
             Text(
               '${_numberFormat.format(item.price ?? 0)}원',
               style: SDSTextStyle.bold.copyWith(fontSize: 16, color: SDSColor.gray900),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ─────────────────────────────── 각종소식 ───────────────────────────────
+
+/// 홈의 `각종소식` 캐러셀. 중고거래와 동일한 가로 그리드 — 썸네일 + 제목 + 요약 한 줄.
+class HomeEventWeb extends StatefulWidget {
+  final List<EventModel> items;
+  final bool isLoading;
+
+  const HomeEventWeb({super.key, required this.items, required this.isLoading});
+
+  @override
+  State<HomeEventWeb> createState() => _HomeEventWebState();
+}
+
+class _HomeEventWebState extends State<HomeEventWeb>
+    with SingleTickerProviderStateMixin {
+  int _page = 0;
+
+  static const int _kCardFadeMs = 200;
+  static const int _kCardStaggerMs = 50;
+  late final AnimationController _cardsEnter = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: _kCardFadeMs + _kCardStaggerMs * 5),
+  )..forward();
+
+  final PageController _mobileController = PageController();
+
+  @override
+  void dispose() {
+    _cardsEnter.dispose();
+    _mobileController.dispose();
+    super.dispose();
+  }
+
+  void _goTo(int page, int pageCount) {
+    setState(() => _page = page % pageCount);
+    _cardsEnter.forward(from: 0);
+  }
+
+  Animation<double> _cardFade(int i) {
+    final int totalMs = _cardsEnter.duration!.inMilliseconds;
+    final double start = (i * _kCardStaggerMs) / totalMs;
+    final double end =
+        ((i * _kCardStaggerMs + _kCardFadeMs) / totalMs).clamp(0.0, 1.0);
+    return CurvedAnimation(
+      parent: _cardsEnter,
+      curve: Interval(start, end, curve: Curves.easeOut),
+    );
+  }
+
+  int _perPage(WebScreenType type) => switch (type) {
+        WebScreenType.desktop => 6,
+        WebScreenType.tablet => 4,
+        WebScreenType.mobile => 2,
+      };
+
+  @override
+  Widget build(BuildContext context) {
+    final screenType = context.screenType;
+    final perPage = _perPage(screenType);
+    final pages = homeCarouselPages(
+      widget.items.take(perPage * kHomeFleamarketMaxPages).toList(),
+      perPage,
+    );
+    final page =
+        pages.isEmpty ? const <EventModel>[] : pages[_page.clamp(0, pages.length - 1)];
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        _HomeSectionHeader(
+          title: '각종소식',
+          onPrev: pages.length > 1 ? () => _goTo(_page - 1, pages.length) : null,
+          onNext: pages.length > 1 ? () => _goTo(_page + 1, pages.length) : null,
+          trailing: _MoreButton(onTap: () => Get.toNamed(WebRoutes.event)),
+        ),
+        const SizedBox(height: 16),
+        if (widget.isLoading)
+          Row(
+            children: [
+              for (var i = 0; i < perPage; i++) ...[
+                if (i > 0) const SizedBox(width: SDSSpacing.md),
+                const Expanded(
+                  child: SkeletonShimmer(
+                    child: SkeletonBox(width: double.infinity, height: 160, radius: 8),
+                  ),
+                ),
+              ],
+            ],
+          )
+        else if (widget.items.isEmpty)
+          const WebEmptyState(message: '아직 등록된 소식이 없어요')
+        else if (screenType == WebScreenType.mobile)
+          _ExpandablePageView(
+            controller: _mobileController,
+            onPageChanged: (p) => setState(() => _page = p),
+            pageGap: SDSSpacing.md * 2,
+            children: [
+              for (final pageItems in pages)
+                _buildCards(screenType, perPage, pageItems),
+            ],
+          )
+        else
+          _SwipeDetector(
+            enabled: screenType == WebScreenType.tablet && pages.length > 1,
+            onSwipeLeft: () => _goTo(_page + 1, pages.length),
+            onSwipeRight: () => _goTo(_page - 1, pages.length),
+            child: _buildCards(screenType, perPage, page),
+          ),
+        if (pages.length > 1) ...[
+          const SizedBox(height: 24),
+          _Dots(count: pages.length, index: _page.clamp(0, pages.length - 1)),
+        ],
+      ],
+    );
+  }
+
+  Widget _buildCards(
+      WebScreenType screenType, int perPage, List<EventModel> page) {
+    final bool isMobile = screenType == WebScreenType.mobile;
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        for (var i = 0; i < perPage; i++) ...[
+          if (i > 0) const SizedBox(width: SDSSpacing.md),
+          Expanded(
+            child: i < page.length
+                ? (isMobile
+                    ? _EventMiniCard(item: page[i])
+                    : AnimatedBuilder(
+                        animation: _cardFade(i),
+                        builder: (context, child) {
+                          final anim = _cardFade(i);
+                          return Opacity(
+                            opacity: anim.value,
+                            child: Transform.translate(
+                              offset: Offset(0, (1 - anim.value) * 12),
+                              child: child,
+                            ),
+                          );
+                        },
+                        child: _EventMiniCard(item: page[i]),
+                      ))
+                : const SizedBox.shrink(),
+          ),
+        ],
+      ],
+    );
+  }
+}
+
+class _EventMiniCard extends StatefulWidget {
+  final EventModel item;
+
+  const _EventMiniCard({required this.item});
+
+  @override
+  State<_EventMiniCard> createState() => _EventMiniCardState();
+}
+
+class _EventMiniCardState extends State<_EventMiniCard> with _TapFeedback {
+  bool _hovered = false;
+
+  bool get _highlighted => _hovered || pressed;
+
+  EventModel get item => widget.item;
+
+  @override
+  Widget build(BuildContext context) {
+    final photo = item.thumbImgUrl;
+    // 제목 아래 요약 한 줄: 카테고리 · 계정명.
+    final cat = (item.category ?? '').trim();
+    final acc = (item.crawlAccountName ?? item.crawlAccountUsername ?? '').trim();
+    final summary = [cat, acc].where((s) => s.isNotEmpty).join(' · ');
+
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      onEnter: (_) => setState(() => _hovered = true),
+      onExit: (_) => setState(() => _hovered = false),
+      child: GestureDetector(
+        onTapDown: (_) => pressDown(),
+        onTapUp: (_) => pressUpDelayed(),
+        onTapCancel: pressCancel,
+        onTap: () => openEventPreview(context, item),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // 중고거래 카드와 동일: 1:1 이미지, radius 10, 빈 배경 #F2F3F7.
+            AspectRatio(
+              aspectRatio: 1,
+              child: AnimatedScale(
+                scale: _highlighted ? 0.98 : 1.0,
+                duration: const Duration(milliseconds: 200),
+                curve: Curves.easeOut,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(10),
+                  child: Container(
+                    color: const Color(0xFFF2F3F7),
+                    child: (photo?.isNotEmpty ?? false)
+                        ? WebNetworkImage(url: photo, fit: BoxFit.cover)
+                        : const SizedBox.shrink(),
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 12),
+            // 제목 + 요약 한 줄.
+            Text(
+              item.title ?? '',
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray900),
+            ),
+            const SizedBox(height: 2),
+            Text(
+              summary,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: SDSTextStyle.regular.copyWith(fontSize: 13, color: SDSColor.gray500),
             ),
           ],
         ),

@@ -42,7 +42,7 @@ class CrewCard {
     return CrewCard(
       crewId: json['crew_id'],
       crewName: json['crew_name'],
-      crewLogoUrl: json['crew_logo_url'],
+      crewLogoUrl: (json['crew_logo_url_thumb'] ?? json['crew_logo_url']),
       color: json['color'],
       description: json['description'],
       baseResortId: json['base_resort_id'],
