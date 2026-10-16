@@ -20,7 +20,7 @@
 
   <!-- iOS meta tags & icons -->
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="스노우라이브">
   <link rel="apple-touch-icon" href="icons/Icon-192.png">
 
@@ -71,7 +71,30 @@
   
   
   
-  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport">
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport">
+  <script>
+    // [중요] Flutter 엔진(full_page_embedding_strategy)이 기동 시 viewport 메타를
+    // 자기 것(viewport-fit 없음)으로 교체해버려 standalone PWA의 safe-area 인셋이
+    // 0으로 꺼진다. 메타가 바뀔 때마다 viewport-fit=cover를 다시 넣어 인셋을 유지한다.
+    (function () {
+      function ensureCover(m) {
+        if (!m) return;
+        var c = m.getAttribute('content') || '';
+        if (c.indexOf('viewport-fit') === -1) {
+          m.setAttribute('content', (c ? c.replace(/\s*,?\s*$/, '') + ', ' : '') + 'viewport-fit=cover');
+        }
+      }
+      function fix() {
+        var list = document.querySelectorAll('meta[name="viewport"]');
+        for (var i = 0; i < list.length; i++) ensureCover(list[i]);
+      }
+      fix();
+      try {
+        var mo = new MutationObserver(fix);
+        mo.observe(document.head, { childList: true, subtree: true, attributes: true, attributeFilter: ['content'] });
+      } catch (e) {}
+    })();
+  </script>
   
   
   <style>
@@ -95,6 +118,14 @@
   </style>
 </head>
 <body>
+  <!-- 시스템 safe-area 인셋 측정용 probe. standalone(홈화면 추가) PWA에서
+       env(safe-area-inset-*)가 패딩으로 들어오고, Flutter(Dart)가 이 값을 읽어
+       MediaQuery.padding에 주입한다(웹 엔진이 안 넘겨주는 인셋을 대신 공급). -->
+  <div id="safe-probe" style="position:fixed;top:0;left:0;width:0;height:0;visibility:hidden;pointer-events:none;
+       padding-top:constant(safe-area-inset-top);padding-top:env(safe-area-inset-top);
+       padding-right:constant(safe-area-inset-right);padding-right:env(safe-area-inset-right);
+       padding-bottom:constant(safe-area-inset-bottom);padding-bottom:env(safe-area-inset-bottom);
+       padding-left:constant(safe-area-inset-left);padding-left:env(safe-area-inset-left);"></div>
   <script>
     // 표준 Flutter 부트스트랩(서비스워커 사용). 엔트리 파일(index.html·main.dart.js·
     // flutter_service_worker.js 등)은 호스팅 헤더에서 no-cache로 매번 재검증하고,

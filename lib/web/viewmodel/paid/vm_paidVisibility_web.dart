@@ -11,6 +11,10 @@ class PaidVisibilityControllerWeb extends GetxController {
   // 웹 GNB 메뉴 온오프 맵 {route_prefix: bool}. 키 없으면 노출(true).
   final RxMap<String, bool> menus = <String, bool>{}.obs;
   final RxBool todayRanking = true.obs; // 웹 홈 '오늘의 랭킹' 섹션
+  /// 서버에서 노출 설정을 **한 번이라도 받아왔는지**. 로드 전엔 메뉴를 숨겨
+  /// '꺼진 메뉴가 잠깐 보였다 사라지는' 깜빡임(FOUC)을 막는다. 성공·실패 무관하게
+  /// 첫 조회가 끝나면 true로 두고(실패 시 빈 맵이라 기존처럼 기본 노출로 복귀).
+  final RxBool ready = false.obs;
   final SeasonPassAPI _api = SeasonPassAPI();
 
   @override
@@ -49,6 +53,10 @@ class PaidVisibilityControllerWeb extends GetxController {
       }
     } catch (_) {
       // 조회 실패 시 유료는 숨김(보수적), 랭킹은 기본 노출 유지.
+    } finally {
+      // 첫 조회가 끝나면(성공/실패 무관) 메뉴를 그린다. 실패면 빈 맵이라
+      // menuVisible이 기존 '키 없으면 노출' 규칙으로 돌아간다(fail-open).
+      ready.value = true;
     }
   }
 
@@ -60,10 +68,21 @@ class PaidVisibilityControllerWeb extends GetxController {
   /// 유료기능 진입점 노출 여부. 미등록 환경(테스트 등)에선 false.
   static bool get isVisible => _c?.showPaid.value ?? false;
 
-  /// 웹 GNB 메뉴(route prefix) 노출 여부. 맵에 키가 없으면 기본 노출(true).
-  static bool menuVisible(String? routePrefix) =>
-      routePrefix == null ? true : (_c?.menus[routePrefix] ?? true);
+  /// 웹 GNB 메뉴(route prefix) 노출 여부. 로드 전(!ready)엔 숨겨 깜빡임을 막고,
+  /// 로드 후엔 맵에 키가 없으면 기본 노출(true).
+  static bool menuVisible(String? routePrefix) {
+    if (routePrefix == null) return true;
+    final c = _c;
+    if (c == null) return true; // 미등록 환경(테스트 등)
+    if (!c.ready.value) return false; // 설정 로드 전엔 숨김
+    return c.menus[routePrefix] ?? true;
+  }
 
-  /// 웹 홈 '오늘의 랭킹' 섹션 노출 여부. 기본 노출(true).
-  static bool get todayRankingVisible => _c?.todayRanking.value ?? true;
+  /// 웹 홈 '오늘의 랭킹' 섹션 노출 여부. 로드 전엔 숨김, 로드 후 기본 노출(true).
+  static bool get todayRankingVisible {
+    final c = _c;
+    if (c == null) return true;
+    if (!c.ready.value) return false;
+    return c.todayRanking.value;
+  }
 }

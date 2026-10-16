@@ -37,11 +37,16 @@ class ProfileHeaderWeb extends StatelessWidget {
   /// (내 프로필의 `프로필 편집`. 앱도 정보 아래에 `프로필 수정` 버튼이 있다).
   final Widget? mobileAction;
 
+  /// 공유 아이콘. 로그인·친구 여부와 무관하게 항상 보인다. PC·태블릿은 오른쪽
+  /// 액션 옆, 모바일은 액션과 함께 헤더 아래 가운데에 둔다.
+  final Widget? share;
+
   const ProfileHeaderWeb({
     super.key,
     required this.info,
     this.action,
     this.mobileAction,
+    this.share,
   });
 
   /// 목업 `휘닉스파크 · 올두맹`. 프로필 팝업과 같은 순서(리조트 · 크루)를 쓴다.
@@ -104,9 +109,17 @@ class ProfileHeaderWeb extends StatelessWidget {
               ),
             ),
           ],
-          if (mobileAction != null) ...[
+          if (share != null || mobileAction != null) ...[
             const SizedBox(height: 12),
-            mobileAction!,
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (share != null) share!,
+                if (share != null && mobileAction != null)
+                  const SizedBox(width: SDSSpacing.sm),
+                if (mobileAction != null) mobileAction!,
+              ],
+            ),
           ],
         ],
       );
@@ -177,10 +190,13 @@ class ProfileHeaderWeb extends StatelessWidget {
             ],
           ),
         ),
-        if (action != null) ...[
+        if (share != null || action != null) ...[
           // 목업 — 소속 블록 ↔ 버튼 24.
           const SizedBox(width: SDSSpacing.lg),
-          action!,
+          if (share != null) share!,
+          if (share != null && action != null)
+            const SizedBox(width: SDSSpacing.sm),
+          if (action != null) action!,
         ],
       ],
     );

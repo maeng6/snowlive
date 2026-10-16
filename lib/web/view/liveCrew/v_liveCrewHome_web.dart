@@ -62,6 +62,9 @@ class _LiveCrewHomeViewWebState extends State<LiveCrewHomeViewWeb> {
   /// `스키장별 크루` 드롭다운에서 선택한 스키장.
   CrewHomeChip? _selectedResortChip;
 
+  /// `대학 리그` 드롭다운에서 선택한 리그(스키/보드).
+  CrewHomeChip? _selectedUnivChip;
+
   /// 상단 캐러셀에서 보고 있는 주제(좌우 화살표로 넘긴다).
   int _topicIndex = 0;
 
@@ -383,8 +386,16 @@ class _LiveCrewHomeViewWebState extends State<LiveCrewHomeViewWeb> {
     final resortChips = crewHomeResortChips(home);
     final isByResort = selected?.kind == CrewHomeChipKind.byResort;
     final selectedResort = isByResort ? _resolveResortChip(resortChips) : null;
-    // `스키장별`은 칩 자체에 목록이 없다 → 드롭다운에서 고른 스키장의 크루를 쓴다.
-    final gridChip = isByResort ? selectedResort : selected;
+    // 대학 리그도 드롭다운 pill이라 항목 목록을 항상 만들어 둔다.
+    final univChips = crewHomeUnivChips(home);
+    final isUnivLeague = selected?.kind == CrewHomeChipKind.univLeague;
+    final selectedUniv = isUnivLeague ? _resolveUnivChip(univChips) : null;
+    // 드롭다운 칩(`스키장별`·`대학 리그`)은 칩 자체에 목록이 없다 → 고른 항목의 크루를 쓴다.
+    final gridChip = isByResort
+        ? selectedResort
+        : isUnivLeague
+            ? selectedUniv
+            : selected;
     final crews = crewsForChip(home, gridChip);
     final resortFullnames = crewResortFullnames(home);
     final crewIndex = crewIndexOf(home);
@@ -444,28 +455,41 @@ class _LiveCrewHomeViewWebState extends State<LiveCrewHomeViewWeb> {
                 selected: selected,
                 onSelected: (chip) => setState(() {
                   _selectedChip = chip;
-                  // 다른 칩으로 옮기면 스키장 선택은 버린다(다시 들어오면 첫 스키장부터).
+                  // 다른 칩으로 옮기면 드롭다운 선택은 버린다(다시 들어오면 첫 항목부터).
                   if (chip.kind != CrewHomeChipKind.byResort)
                     _selectedResortChip = null;
+                  if (chip.kind != CrewHomeChipKind.univLeague)
+                    _selectedUnivChip = null;
                 }),
                 resortChips: resortChips,
                 selectedResort: selectedResort,
                 onResortSelected: (chip) =>
                     setState(() => _selectedResortChip = chip),
+                univChips: univChips,
+                selectedUniv: selectedUniv,
+                onUnivSelected: (chip) =>
+                    setState(() => _selectedUnivChip = chip),
               ),
               // 칩 줄 ↔ 목록: PC 24 / 좁은 폭 30 (목업).
               SizedBox(height: context.isDesktop ? SDSSpacing.lg : 20),
               LiveCrewListGridWeb(
+                // 칩/드롭다운을 바꾸면 그리드를 새로 만들어 가로 스크롤을 첫 페이지로
+                // 초기화한다(같은 칩의 데이터 갱신 땐 key가 같아 스크롤 위치 유지).
+                key: ValueKey(gridChip),
                 crews: crews,
                 onCrewTap: (crew) => showLiveCrewModal(
                   context,
                   crew,
                   resortFullnames: resortFullnames,
                 ),
-                // `시즌 최다 라이브온` 칩에서만 행 오른쪽 끝에 시즌 라이브온 인원을 띄운다.
-                trailingCountOf: gridChip?.kind == CrewHomeChipKind.liveonSeason
-                    ? (crew) => crew.liveonSeasonCount
-                    : null,
+                // 행 오른쪽 끝 숫자(같은 "N명" UI):
+                //  · 시즌 최다 라이브온 → 이번 시즌 라이브온 인원
+                //  · 대형 크루 → 총 멤버 수
+                trailingCountOf: switch (gridChip?.kind) {
+                  CrewHomeChipKind.liveonSeason => (crew) => crew.liveonSeasonCount,
+                  CrewHomeChipKind.mostMembers => (crew) => crew.memberCount,
+                  _ => null,
+                },
               ),
             ],
           ),
@@ -543,12 +567,13 @@ class _LiveCrewHomeViewWebState extends State<LiveCrewHomeViewWeb> {
     );
   }
 
-  /// 선택 칩 결정. 아직 안 골랐거나 (데이터가 바뀌어) 사라진 칩이면 첫 칩으로.
+  /// 선택 칩 결정. 아직 안 골랐거나 (데이터가 바뀌어) 사라진 칩이면 기본 칩
+  /// (`시즌 최다 라이브온`)으로.
   CrewHomeChip? _resolveChip(List<CrewHomeChip> chips) {
     if (chips.isEmpty) return null;
     final current = _selectedChip;
     if (current != null && chips.contains(current)) return current;
-    return chips.first;
+    return crewHomeDefaultChip(chips);
   }
 
   /// 스키장 드롭다운 선택 결정. 같은 규칙으로 첫 스키장을 기본값으로 쓴다.
@@ -557,6 +582,14 @@ class _LiveCrewHomeViewWebState extends State<LiveCrewHomeViewWeb> {
     final current = _selectedResortChip;
     if (current != null && resortChips.contains(current)) return current;
     return resortChips.first;
+  }
+
+  /// 대학 리그 드롭다운 선택 결정. 같은 규칙으로 첫 리그(스키)를 기본값으로 쓴다.
+  CrewHomeChip? _resolveUnivChip(List<CrewHomeChip> univChips) {
+    if (univChips.isEmpty) return null;
+    final current = _selectedUnivChip;
+    if (current != null && univChips.contains(current)) return current;
+    return univChips.first;
   }
 }
 

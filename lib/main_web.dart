@@ -1,3 +1,6 @@
+import 'dart:html' as html;
+import 'dart:math' as math;
+
 import 'package:com.snowlive/firebase_options.dart';
 import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/core/viewmodel/vm_user.dart';
@@ -15,9 +18,42 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:get/get.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
+/// 시스템 safe-area 인셋(상태바/노치·홈 인디케이터). index.html의 #safe-probe
+/// computed padding(env(safe-area-inset-*))을 읽어 넣는다. 홈화면 추가(standalone)
+/// PWA에서만 0이 아니고, 일반 브라우저 탭은 0이라 영향 없다.
+final ValueNotifier<EdgeInsets> _safeInsets = ValueNotifier<EdgeInsets>(EdgeInsets.zero);
+
+EdgeInsets _readSafeInsets() {
+  try {
+    final el = html.document.getElementById('safe-probe');
+    if (el == null) return EdgeInsets.zero;
+    final s = el.getComputedStyle();
+    double px(String? v) =>
+        double.tryParse((v ?? '').replaceAll('px', '').trim()) ?? 0.0;
+    return EdgeInsets.fromLTRB(
+        px(s.paddingLeft), px(s.paddingTop), px(s.paddingRight), px(s.paddingBottom));
+  } catch (_) {
+    return EdgeInsets.zero;
+  }
+}
+
+void _trackSafeInsets() {
+  void update() => _safeInsets.value = _readSafeInsets();
+  update();
+  WidgetsBinding.instance.addPostFrameCallback((_) => update());
+  html.window.onResize.listen((_) => update()); // 회전도 resize를 동반한다
+  // Flutter 엔진이 viewport 메타를 교체했다가 index.html의 옵저버가 cover를 다시
+  // 넣는 사이, env 인셋이 잠깐 0→34로 돌아온다. resize 이벤트가 안 뜰 수 있어
+  // 초기 몇 초간 몇 번 더 재측정해 안정된 값을 잡는다.
+  for (final ms in const [300, 800, 1500, 3000]) {
+    Future.delayed(Duration(milliseconds: ms), update);
+  }
+}
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  _trackSafeInsets();
   await initializeDateFormatting('ko', null);
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
@@ -126,7 +162,12 @@ class SnowliveWebApp extends StatelessWidget {
         // 있는 이 Overlay를 통해서만 열 수 있다 (Overlay.of(rootOverlay: true)로 접근).
         final shell = Overlay(
           initialEntries: [
-            OverlayEntry(builder: (_) => WebAppShell(child: child!)),
+            // 홈화면 추가(standalone PWA)로 열 때 상태바/노치·홈 인디케이터 영역을
+            // 시스템 safe-area 인셋만큼 자동으로 비운다(viewport-fit=cover로 엔진이
+            // env(safe-area-inset-*)를 읽어 온다). 일반 브라우저 탭은 인셋이 0이라
+            // 영향 없음. 풀스크린 오버레이(이미지 뷰어 등)는 이 Overlay보다 상위
+            // rootOverlay로 열려 edge-to-edge를 유지한다.
+            OverlayEntry(builder: (_) => SafeArea(child: WebAppShell(child: child!))),
           ],
         );
         // [Flutter 웹 프레임워크 버그 우회] 브라우저 창이 포커스를 받을 때
@@ -137,11 +178,11 @@ class SnowliveWebApp extends StatelessWidget {
         // 감싸 이 크래시를 없앤다(세로 레이아웃이라 탭 순서 차이는 사실상 없다).
         return FocusTraversalGroup(
           policy: WidgetOrderTraversalPolicy(),
-          child: MediaQuery(
-            data: MediaQuery.of(context).copyWith(textScaler: TextScaler.linear(1.0)),
-            // 브라우저 탭 제목을 화면별로(`중고거래 | 스노우라이브`). 라우트 신호를 따라가고,
-            // 위의 앱 전역 Title보다 아래에 있어 앱이 다시 빌드돼도 이 값이 마지막에 남는다.
-            // shell은 밖에서 한 번 만든 인스턴스라 제목이 바뀌어도 셸은 다시 빌드되지 않는다.
+          // 시스템 safe-area 인셋을 MediaQuery.padding에 주입한다. 웹 엔진이 이 값을
+          // 안 넘겨줘서(SafeArea가 web에선 사실상 no-op) 홈화면 추가 PWA에서 하단
+          // 버튼이 홈 인디케이터에 붙던 문제를 해결한다. 셸 안 SafeArea가 이 padding을 소비.
+          child: ValueListenableBuilder<EdgeInsets>(
+            valueListenable: _safeInsets,
             child: Obx(
               () => Title(
                 title: webPageTitle(currentRouteWeb.value),
@@ -149,6 +190,23 @@ class SnowliveWebApp extends StatelessWidget {
                 child: shell,
               ),
             ),
+            builder: (context, insets, titledShell) {
+              // 엔진이 주는 padding(지원 시)과 probe 인셋을 max로 합친다 — 어느 쪽도
+              // 0으로 덮지 않아, 엔진이 이미 safe-area를 주면 그대로 살리고 아니면 probe가 보충.
+              final base = MediaQuery.of(context);
+              final merged = EdgeInsets.fromLTRB(
+                math.max(base.padding.left, insets.left),
+                math.max(base.padding.top, insets.top),
+                math.max(base.padding.right, insets.right),
+                math.max(base.padding.bottom, insets.bottom),
+              );
+              return MediaQuery(
+                data: base.copyWith(textScaler: TextScaler.linear(1.0), padding: merged),
+                // 브라우저 탭 제목을 화면별로(`중고거래 | 스노우라이브`). shell은 밖에서 한 번
+                // 만든 인스턴스라 제목이 바뀌어도 셸은 다시 빌드되지 않는다.
+                child: titledShell!,
+              );
+            },
           ),
         );
       },

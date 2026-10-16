@@ -8,6 +8,14 @@
         "**/.*",
         "**/node_modules/**"
       ],
+      "comment0": "공유 링크는 snowlive.kr로 보이게 하고, 실제 OG/리다이렉트는 백엔드(app.snowlive.kr)가 처리.",
+      "redirects": [
+        { "source": "/share/flea/:id", "destination": "https://app.snowlive.kr/share/flea/:id/", "type": 302 },
+        { "source": "/share/user/:id", "destination": "https://app.snowlive.kr/share/user/:id/", "type": 302 },
+        { "source": "/share/community/:id", "destination": "https://app.snowlive.kr/share/community/:id/", "type": 302 },
+        { "source": "/share/livetalk/:id", "destination": "https://app.snowlive.kr/share/livetalk/:id/", "type": 302 },
+        { "source": "/share/crew/:id", "destination": "https://app.snowlive.kr/share/crew/:id/", "type": 302 }
+      ],
       "rewrites": [
         {
           "source": "**",
@@ -38,6 +46,14 @@
         "firebase.json",
         "**/.*",
         "**/node_modules/**"
+      ],
+      "comment0": "공유 링크는 snowlive.kr로 보이게 하고, 실제 OG/리다이렉트는 백엔드(app.snowlive.kr)가 처리.",
+      "redirects": [
+        { "source": "/share/flea/:id", "destination": "https://app.snowlive.kr/share/flea/:id/", "type": 302 },
+        { "source": "/share/user/:id", "destination": "https://app.snowlive.kr/share/user/:id/", "type": 302 },
+        { "source": "/share/community/:id", "destination": "https://app.snowlive.kr/share/community/:id/", "type": 302 },
+        { "source": "/share/livetalk/:id", "destination": "https://app.snowlive.kr/share/livetalk/:id/", "type": 302 },
+        { "source": "/share/crew/:id", "destination": "https://app.snowlive.kr/share/crew/:id/", "type": 302 }
       ],
       "rewrites": [
         {

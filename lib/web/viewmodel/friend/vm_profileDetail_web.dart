@@ -61,9 +61,9 @@ class ProfileDetailViewModelWeb extends GetxController {
   /// 비공개 프로필. 내 프로필은 항상 보인다(앱과 동일).
   bool get isHidden => (_detail.value?.friendUserInfo.hideProfile ?? false) && !isMe;
 
-  /// 방명록은 **친구만** 남길 수 있다(목업의 자물쇠 + 안내 문구). 내 방명록에는
+  /// 방명록은 **로그인한 사람이면 친구가 아니어도** 남길 수 있다. 내 방명록에는
   /// 내가 쓰지 않는다(앱과 동일 — 입력창 자체를 감춘다).
-  bool get canWriteGuestbook => isLoggedIn && !isMe && areWeFriend && !isHidden;
+  bool get canWriteGuestbook => isLoggedIn && !isMe && !isHidden;
 
   // ===== 조회 =====
 

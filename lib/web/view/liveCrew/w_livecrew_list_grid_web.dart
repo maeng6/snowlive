@@ -79,7 +79,8 @@ class LiveCrewListGridWeb extends StatelessWidget {
   final List<CrewCard> crews;
   final void Function(CrewCard crew) onCrewTap;
 
-  /// 행 오른쪽 끝에 붙일 숫자(예: 시즌 최다 라이브온의 "1234회"). null이면 안 붙인다.
+  /// 행 오른쪽 끝에 붙일 숫자(예: 시즌 라이브온 인원 / 총 멤버 수, "1234명").
+  /// null이면 안 붙인다.
   final int? Function(CrewCard crew)? trailingCountOf;
 
   const LiveCrewListGridWeb({

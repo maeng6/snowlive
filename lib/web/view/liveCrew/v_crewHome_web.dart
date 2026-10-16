@@ -6,6 +6,8 @@ import 'package:com.snowlive/core/model/m_crewDetail.dart';
 import 'package:com.snowlive/web/routes/routes_web.dart';
 import 'package:com.snowlive/web/util/crew_visual_web.dart';
 import 'package:com.snowlive/web/util/responsive_web.dart';
+import 'package:com.snowlive/web/util/web_share_url.dart';
+import 'package:com.snowlive/web/util/web_share_link_web.dart';
 import 'package:com.snowlive/web/view/liveCrew/w_crewhome_header_web.dart';
 import 'package:com.snowlive/web/view/liveCrew/w_crewhome_member_web.dart';
 import 'package:com.snowlive/web/view/liveCrew/w_crewhome_riding_stats_web.dart';
@@ -128,6 +130,19 @@ class _CrewHomeViewWebState extends State<CrewHomeViewWeb> {
     Get.offAllNamed(WebRoutes.liveCrew);
   }
 
+  /// 공유 — 카카오 등 미리보기(OG)를 위해 백엔드 share 링크를 쓴다. PC는 복사,
+  /// 태블릿·모바일은 OS 공유 시트. 미리보기: 크루로고(OG 가운데) + '크루명 | 스라 라이브크루'.
+  void _onShare() {
+    final id = _crewId;
+    if (id == null) return;
+    final name = (_vm.info?.crewName ?? '라이브크루').trim();
+    shareOrCopyLink(
+      context,
+      url: crewShareLink(id),
+      title: '$name | 스라 라이브크루',
+    );
+  }
+
   Future<void> _onApply() async {
     if (_userVm.user.user_id == null) {
       Get.snackbar('알림', '로그인이 필요합니다.');
@@ -233,6 +248,7 @@ class _CrewHomeViewWebState extends State<CrewHomeViewWeb> {
       visitorToday: _vm.visitorToday,
       visitorTotal: _vm.visitorTotal,
       onApply: isMobileWidth ? onApply : null,
+      onShare: _onShare,
     );
 
     // 블록 사이 공통 간격 — 예전 "헤더 쪽 ↔ 요약 바" 값을 그대로 쓴다.

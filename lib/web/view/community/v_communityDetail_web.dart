@@ -3,6 +3,7 @@ import 'package:com.snowlive/core/model/m_communityDetail.dart';
 import 'package:com.snowlive/core/viewmodel/vm_user.dart';
 import 'package:com.snowlive/web/routes/routes_web.dart';
 import 'package:com.snowlive/web/util/web_share_url.dart';
+import 'package:com.snowlive/web/util/web_share_link_web.dart';
 import 'package:com.snowlive/web/viewmodel/community/vm_communityListPagination_web.dart';
 import 'package:com.snowlive/web/util/responsive_web.dart';
 import 'package:com.snowlive/web/widget/w_web_more_menu_web.dart';
@@ -115,14 +116,17 @@ class _CommunityDetailViewWebState extends State<CommunityDetailViewWeb> {
     }
   }
 
-  void _copyLink() {
+  void _onShare() {
     final id = _communityId;
     if (id == null) return;
-    // 웹은 해시 URL 전략이라 '#'을 포함해야 같은 화면으로 다시 들어온다.
-    // 호스트는 항상 배포 도메인(snowlive.kr)으로 고정한다(QA url 노출 방지).
-    final url = canonicalHashUrl('${WebRoutes.communityDetail}?id=$id');
-    Clipboard.setData(ClipboardData(text: url));
-    Get.snackbar('링크 복사 완료', '게시글 주소가 복사되었어요.');
+    // 카카오 등 미리보기(OG)를 위해 백엔드 share 링크를 쓴다. PC는 복사, 태블릿·모바일은
+    // OS 공유 시트. 미리보기: 대표사진 + '글제목 | 스라 커뮤니티' + 내용.
+    final title = (_vm.detail?.title ?? '커뮤니티').trim();
+    shareOrCopyLink(
+      context,
+      url: communityShareLink(id),
+      title: '$title | 스라 커뮤니티',
+    );
   }
 
   Future<void> _onPostMoreAction(WebMoreAction action) async {
@@ -408,7 +412,7 @@ class _CommunityDetailViewWebState extends State<CommunityDetailViewWeb> {
         // IconButton의 원형 hover 배경을 쓰지 않는다.
         // 피그마 64:127537 — 아이콘 26, 사이 간격 16. 클릭 영역 28(패딩 1).
         WebIconButton(
-          onTap: _copyLink,
+          onTap: _onShare,
           tooltip: '링크 복사',
           padding: const EdgeInsets.all(1),
           icon: SvgPicture.asset(

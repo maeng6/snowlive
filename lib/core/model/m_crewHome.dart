@@ -92,6 +92,27 @@ class CrewHomeResortGroup {
   }
 }
 
+/// 중단 "대학 리그" 1개 블록(스키/보드). federation = `univ_ski` | `univ_board`.
+class CrewHomeLeagueGroup {
+  final String? federation;
+  final String? label;
+  final List<CrewCard> crews;
+
+  CrewHomeLeagueGroup({
+    this.federation,
+    this.label,
+    List<CrewCard>? crews,
+  }) : crews = crews ?? [];
+
+  factory CrewHomeLeagueGroup.fromJson(Map<String, dynamic> json) {
+    return CrewHomeLeagueGroup(
+      federation: json['federation'],
+      label: json['label'],
+      crews: CrewCard.listFrom(json['crews']),
+    );
+  }
+}
+
 /// 크루홈 전체 응답. 상단 5리스트 + 중단(스키장별 + 4리스트) + 하단(공개 크루톡).
 class CrewHomeModel {
   // 상단
@@ -103,6 +124,7 @@ class CrewHomeModel {
 
   // 중단
   final List<CrewHomeResortGroup> byResort; // 스키장별(리조트별 30)
+  final List<CrewHomeLeagueGroup> universityLeague; // 대학 리그(스키/보드)
   final List<CrewCard> mostMembers;         // 크루원 많은 순
   final List<CrewCard> liveonSeason;        // 이번시즌 라이브온 많은
   final List<CrewCard> skiMajority;         // 스키 비율 50% 초과(10명 이상)
@@ -118,6 +140,7 @@ class CrewHomeModel {
     List<CrewCard>? diverseResort,
     List<CrewCard>? todayScore,
     List<CrewHomeResortGroup>? byResort,
+    List<CrewHomeLeagueGroup>? universityLeague,
     List<CrewCard>? mostMembers,
     List<CrewCard>? liveonSeason,
     List<CrewCard>? skiMajority,
@@ -129,6 +152,7 @@ class CrewHomeModel {
         diverseResort = diverseResort ?? [],
         todayScore = todayScore ?? [],
         byResort = byResort ?? [],
+        universityLeague = universityLeague ?? [],
         mostMembers = mostMembers ?? [],
         liveonSeason = liveonSeason ?? [],
         skiMajority = skiMajority ?? [],
@@ -148,6 +172,14 @@ class CrewHomeModel {
       }
     }
 
+    final leagueRaw = middle['university_league'];
+    final universityLeague = <CrewHomeLeagueGroup>[];
+    if (leagueRaw is List) {
+      for (final e in leagueRaw) {
+        if (e is Map<String, dynamic>) universityLeague.add(CrewHomeLeagueGroup.fromJson(e));
+      }
+    }
+
     final talksRaw = bottom['crew_talks'];
     final talks = <LiveTalk>[];
     if (talksRaw is List) {
@@ -163,6 +195,7 @@ class CrewHomeModel {
       diverseResort: CrewCard.listFrom(top['diverse_resort']),
       todayScore: CrewCard.listFrom(top['today_score']),
       byResort: byResort,
+      universityLeague: universityLeague,
       mostMembers: CrewCard.listFrom(middle['most_members']),
       liveonSeason: CrewCard.listFrom(middle['liveon_season']),
       skiMajority: CrewCard.listFrom(middle['ski_majority']),

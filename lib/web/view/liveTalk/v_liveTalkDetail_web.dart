@@ -12,8 +12,12 @@ import 'package:com.snowlive/web/widget/w_web_comment_input_web.dart';
 import 'package:com.snowlive/web/widget/w_web_image_viewer_web.dart';
 import 'package:com.snowlive/web/widget/w_web_more_menu_web.dart';
 import 'package:com.snowlive/web/widget/w_web_page_header_web.dart';
+import 'package:com.snowlive/web/widget/w_web_icon_button_web.dart';
 import 'package:com.snowlive/web/util/responsive_web.dart';
+import 'package:com.snowlive/web/util/web_share_url.dart';
+import 'package:com.snowlive/web/util/web_share_link_web.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 
 /// 모바일 전용 라이브톡 **게시물 상세** 화면 — 사진·글·좋아요·댓글이 한 화면에
@@ -293,6 +297,31 @@ class _LiveTalkDetailViewWebState extends State<LiveTalkDetailViewWeb> {
       onBack: () => Get.key.currentState?.canPop() == true
           ? Get.back()
           : Get.offNamed(WebRoutes.liveTalk),
+      actions: [
+        WebIconButton(
+          onTap: _onShare,
+          tooltip: '링크 복사',
+          padding: const EdgeInsets.all(1),
+          icon: SvgPicture.asset(
+            'assets/imgs/icons/icon_header_share_web.svg',
+            width: 26,
+            height: 26,
+          ),
+        ),
+      ],
+    );
+  }
+
+  /// 공유 — 카카오 등 미리보기(OG)를 위해 백엔드 share 링크를 쓴다. PC는 복사,
+  /// 태블릿·모바일은 OS 공유 시트. 미리보기: 첨부사진 + '닉네임님의 라이브톡 | 스라' + 내용.
+  void _onShare() {
+    final id = _livetalkId;
+    if (id == null) return;
+    final author = _vm.detail?.userInfo?.displayName ?? '스노우라이브 유저';
+    shareOrCopyLink(
+      context,
+      url: livetalkShareLink(id),
+      title: '$author님의 라이브톡 | 스라',
     );
   }
 

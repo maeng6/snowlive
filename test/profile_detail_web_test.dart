@@ -304,11 +304,11 @@ void main() {
           canReport: (_) => false,
           onDelete: (_) async => true,
           onReport: (_) async => throw UnimplementedError(),
-          emptyHint: '안부 인사를 남기기 위해서는 먼저 친구가 되어야해요.',
+          emptyHint: '로그인이 필요해요.',
         ),
       );
       expect(find.text('방명록에 안부 인사를 남겨보세요!'), findsOneWidget);
-      expect(find.text('안부 인사를 남기기 위해서는 먼저 친구가 되어야해요.'), findsOneWidget);
+      expect(find.text('로그인이 필요해요.'), findsOneWidget);
     });
 
     testWidgets('잠긴 방명록 입력줄은 눌러도 전송하지 않고 안내만 한다', (tester) async {

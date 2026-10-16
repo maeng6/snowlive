@@ -103,9 +103,19 @@ List<CrewHomeSection> crewHomeSections(CrewHomeModel home) => [
       ),
     ];
 
-/// 칩 종류. `byResort`는 스키장 드롭다운 pill, 나머지 넷은 일반 칩이고,
-/// `resort`는 그 드롭다운 **항목**(화면에 칩으로 그려지지 않는다)이다.
-enum CrewHomeChipKind { byResort, mostMembers, liveonSeason, ski, board, resort }
+/// 칩 종류. `byResort`·`univLeague`는 드롭다운 pill, `mostMembers`/`liveonSeason`/
+/// `ski`/`board`는 일반 칩이고, `resort`/`univLeagueOption`은 각 드롭다운의 **항목**
+/// (화면에 칩으로 그려지지 않는다)이다.
+enum CrewHomeChipKind {
+  byResort,
+  univLeague,
+  mostMembers,
+  liveonSeason,
+  ski,
+  board,
+  resort,
+  univLeagueOption,
+}
 
 /// `어떤 크루가 있을까요?` 줄의 칩 하나.
 class CrewHomeChip {
@@ -117,18 +127,26 @@ class CrewHomeChip {
   /// 리조트 칩일 때만 채운다.
   final int? resortId;
 
-  const CrewHomeChip({required this.kind, required this.label, this.resortId});
+  /// 대학 리그 항목일 때만 채운다(`univ_ski` | `univ_board`).
+  final String? federation;
+
+  const CrewHomeChip(
+      {required this.kind, required this.label, this.resortId, this.federation});
 
   @override
   bool operator ==(Object other) =>
-      other is CrewHomeChip && other.kind == kind && other.resortId == resortId;
+      other is CrewHomeChip &&
+      other.kind == kind &&
+      other.resortId == resortId &&
+      other.federation == federation;
 
   @override
-  int get hashCode => Object.hash(kind, resortId);
+  int get hashCode => Object.hash(kind, resortId, federation);
 }
 
-/// 칩 순서(사용자 확정) — `스키장별 크루` · `대형 크루` · `시즌 최다 라이브온` ·
-/// `스키어 중심 크루` · `보더 중심 크루`. 라벨은 칩 한 줄에 들어가도록 짧게 쓰고,
+/// 칩 순서(사용자 확정) — `스키장별 크루` · `시즌 최다 라이브온` · `대형 크루` ·
+/// `스키어 중심 크루` · `보더 중심 크루`. `시즌 최다 라이브온`을 `대형 크루` 왼쪽에 두고
+/// 기본 선택 칩으로 쓴다([crewHomeDefaultChip]). 라벨은 칩 한 줄에 들어가도록 짧게 쓰고,
 /// 종목이 아니라 **사람**을 가리킨다 — 기준이 크루원 구성비(70%)라서다.
 /// (`멤버 많은 순`·`이번 시즌 라이브온 많이 한 순`에서 줄임).
 /// 해당 목록이 비면 눌러도 빈 화면이므로 칩을 만들지 않는다.
@@ -137,18 +155,49 @@ List<CrewHomeChip> crewHomeChips(CrewHomeModel home) {
   if (crewHomeResortChips(home).isNotEmpty) {
     chips.add(const CrewHomeChip(kind: CrewHomeChipKind.byResort, label: '스키장별 크루'));
   }
-  if (home.mostMembers.isNotEmpty) {
-    chips.add(const CrewHomeChip(kind: CrewHomeChipKind.mostMembers, label: '대형 크루'));
+  if (crewHomeUnivChips(home).isNotEmpty) {
+    chips.add(const CrewHomeChip(kind: CrewHomeChipKind.univLeague, label: '대학 리그'));
   }
   if (home.liveonSeason.isNotEmpty) {
     chips.add(const CrewHomeChip(
         kind: CrewHomeChipKind.liveonSeason, label: '시즌 최다 라이브온'));
+  }
+  if (home.mostMembers.isNotEmpty) {
+    chips.add(const CrewHomeChip(kind: CrewHomeChipKind.mostMembers, label: '대형 크루'));
   }
   if (crewMajorityCrews(home.skiMajority).isNotEmpty) {
     chips.add(const CrewHomeChip(kind: CrewHomeChipKind.ski, label: '스키어 중심 크루'));
   }
   if (crewMajorityCrews(home.boardMajority).isNotEmpty) {
     chips.add(const CrewHomeChip(kind: CrewHomeChipKind.board, label: '보더 중심 크루'));
+  }
+  return chips;
+}
+
+/// 기본 선택 칩(사용자 확정) — 라이브크루 홈에 들어오면 `시즌 최다 라이브온`이
+/// 선택된 채로 보인다. 그 칩이 없으면(비시즌 등) 첫 칩으로 떨어진다.
+CrewHomeChip? crewHomeDefaultChip(List<CrewHomeChip> chips) {
+  if (chips.isEmpty) return null;
+  for (final chip in chips) {
+    if (chip.kind == CrewHomeChipKind.liveonSeason) return chip;
+  }
+  return chips.first;
+}
+
+/// 대학 리그 드롭다운에 담을 항목(`대학 리그(스키)` · `대학 리그(보드)`).
+/// 크루가 한 곳도 없는 리그는 뺀다 — 둘 다 없으면 `대학 리그` 칩 자체가 안 뜬다.
+List<CrewHomeChip> crewHomeUnivChips(CrewHomeModel home) {
+  final chips = <CrewHomeChip>[];
+  for (final group in home.universityLeague) {
+    if (group.crews.isEmpty) continue;
+    final fed = group.federation;
+    final label = group.label;
+    if (fed == null || fed.isEmpty || label == null || label.isEmpty) continue;
+    chips.add(CrewHomeChip(
+      kind: CrewHomeChipKind.univLeagueOption,
+      label: label,
+      federation: fed,
+    ));
   }
   return chips;
 }
@@ -179,6 +228,14 @@ List<CrewCard> crewsForChip(CrewHomeModel home, CrewHomeChip? chip) {
   if (chip == null) return const [];
   switch (chip.kind) {
     case CrewHomeChipKind.byResort:
+      return const [];
+    case CrewHomeChipKind.univLeague:
+      // 부모 pill 자체는 목록이 없다 — 드롭다운에서 고른 리그 항목을 넘겨야 한다.
+      return const [];
+    case CrewHomeChipKind.univLeagueOption:
+      for (final group in home.universityLeague) {
+        if (group.federation == chip.federation) return group.crews;
+      }
       return const [];
     case CrewHomeChipKind.mostMembers:
       return home.mostMembers;

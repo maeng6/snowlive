@@ -31,6 +31,13 @@ class LiveCrewFilterChipsWeb extends StatelessWidget {
   final CrewHomeChip? selectedResort;
   final ValueChanged<CrewHomeChip>? onResortSelected;
 
+  /// 드롭다운에 담을 대학 리그 목록(`대학 리그(스키)` · `대학 리그(보드)`).
+  final List<CrewHomeChip> univChips;
+
+  /// 지금 고른 대학 리그(= pill에 찍히는 이름). 아직 안 골랐으면 null.
+  final CrewHomeChip? selectedUniv;
+  final ValueChanged<CrewHomeChip>? onUnivSelected;
+
   const LiveCrewFilterChipsWeb({
     super.key,
     required this.chips,
@@ -39,6 +46,9 @@ class LiveCrewFilterChipsWeb extends StatelessWidget {
     this.resortChips = const [],
     this.selectedResort,
     this.onResortSelected,
+    this.univChips = const [],
+    this.selectedUniv,
+    this.onUnivSelected,
   });
 
   @override
@@ -63,11 +73,13 @@ class LiveCrewFilterChipsWeb extends StatelessWidget {
                 height: _kChipRowHeight,
                 child: chip.kind == CrewHomeChipKind.byResort
                     ? _buildResortPill(chip)
-                    : _ToggleChip(
-                        label: chip.label,
-                        isActive: chip == selected,
-                        onTap: () => onSelected(chip),
-                      ),
+                    : chip.kind == CrewHomeChipKind.univLeague
+                        ? _buildUnivPill(chip)
+                        : _ToggleChip(
+                            label: chip.label,
+                            isActive: chip == selected,
+                            onTap: () => onSelected(chip),
+                          ),
               ),
           ],
         ),
@@ -88,6 +100,23 @@ class LiveCrewFilterChipsWeb extends StatelessWidget {
         // 스키장을 고르는 것으로 `스키장별` 선택까지 끝난다 — 칩을 먼저 누를 필요가 없다.
         onSelected(byResort);
         onResortSelected?.call(chip);
+      },
+    );
+  }
+
+  Widget _buildUnivPill(CrewHomeChip univLeague) {
+    final isActive = selected?.kind == CrewHomeChipKind.univLeague;
+    return FleamarketFilterPill<CrewHomeChip>(
+      // 고른 리그가 곧 필터값이라 pill에 그 이름(대학 리그(스키)/(보드))을 찍는다.
+      label: isActive ? (selectedUniv?.label ?? univLeague.label) : univLeague.label,
+      isActive: isActive,
+      title: '대학 리그',
+      values: univChips,
+      labelOf: (chip) => chip.label,
+      onSelected: (chip) {
+        // 리그를 고르는 것으로 `대학 리그` 선택까지 끝난다 — 칩을 먼저 누를 필요가 없다.
+        onSelected(univLeague);
+        onUnivSelected?.call(chip);
       },
     );
   }

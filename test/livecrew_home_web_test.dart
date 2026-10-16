@@ -150,11 +150,19 @@ void main() {
       final chips = crewHomeChips(_home());
       expect(chips.map((c) => c.label).toList(), [
         '스키장별 크루',
-        '대형 크루',
         '시즌 최다 라이브온',
+        '대형 크루',
         '스키어 중심 크루',
         '보더 중심 크루',
       ]);
+    });
+
+    test('기본 선택 칩은 시즌 최다 라이브온', () {
+      final chips = crewHomeChips(_home());
+      expect(crewHomeDefaultChip(chips)?.kind, CrewHomeChipKind.liveonSeason);
+      // 그 칩이 없으면(비시즌 등) 첫 칩으로 떨어진다.
+      final noLiveon = chips.where((c) => c.kind != CrewHomeChipKind.liveonSeason).toList();
+      expect(crewHomeDefaultChip(noLiveon), noLiveon.first);
     });
 
     test('목록이 비면 그 칩을 만들지 않는다', () {
@@ -287,7 +295,7 @@ void main() {
         1440,
         LiveCrewFilterChipsWeb(
           chips: chips,
-          selected: chips[1], // 대형 크루
+          selected: chips.firstWhere((c) => c.kind == CrewHomeChipKind.mostMembers),
           onSelected: (_) {},
         ),
       );

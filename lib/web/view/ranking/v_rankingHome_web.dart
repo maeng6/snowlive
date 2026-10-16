@@ -91,7 +91,7 @@ double rankColumnWidth(BuildContext context, Iterable<int?> ranks) {
   return math.max(painter.width, 16);
 }
 
-const List<RankingFilter_fed> kRankingSelectableFeds = [RankingFilter_fed.univ_ski, RankingFilter_fed.univ_board];
+const List<RankingFilter_fed> kRankingSelectableFeds = [RankingFilter_fed.univ_ski, RankingFilter_fed.univ_board, RankingFilter_fed.univ_all];
 
 /// 랭킹 크루 → 크루 미리보기 팝업이 받는 [CrewCard].
 ///

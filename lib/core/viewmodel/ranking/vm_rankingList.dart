@@ -1296,7 +1296,8 @@ enum RankingFilter_resort {
 enum RankingFilter_fed {
   initial("리그별 랭킹", ""),
   univ_ski("대학 리그(스키)", "univ_ski"),
-  univ_board("대학 리그(보드)", "univ_board");
+  univ_board("대학 리그(보드)", "univ_board"),
+  univ_all("대학 리그(합산)", "univ_all");
 
   final String korean;
   final String english;

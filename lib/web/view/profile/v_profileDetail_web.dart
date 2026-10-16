@@ -4,6 +4,8 @@ import 'package:com.snowlive/core/viewmodel/ranking/vm_rankingList_recordRoom.da
     show RankingFilter_season;
 import 'package:com.snowlive/web/routes/routes_web.dart';
 import 'package:com.snowlive/web/util/responsive_web.dart';
+import 'package:com.snowlive/web/util/web_share_link_web.dart';
+import 'package:com.snowlive/web/util/web_share_url.dart';
 import 'package:com.snowlive/web/view/liveCrew/crew_record_sections_web.dart'
     show crewRecordSeasons;
 import 'package:com.snowlive/web/view/profile/w_profile_calendar_web.dart';
@@ -22,6 +24,7 @@ import 'package:com.snowlive/web/widget/w_web_profile_card_web.dart';
 import 'package:com.snowlive/web/widget/w_web_text_tabs_web.dart';
 import 'package:com.snowlive/web/widget/w_web_toast_web.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 
 /// 프로필 콘텐츠 열 PC 최대폭 — 목업(1:7764) 실측 874.
@@ -234,6 +237,7 @@ class _ProfileDetailViewWebState extends State<ProfileDetailViewWeb> {
           info: info,
           action: _buildHeaderAction(),
           mobileAction: _buildMobileHeaderAction(),
+          share: _buildShareAction(info),
         ),
         const SizedBox(height: SDSSpacing.lg),
         Align(
@@ -300,6 +304,28 @@ class _ProfileDetailViewWebState extends State<ProfileDetailViewWeb> {
     if (context.screenType != WebScreenType.mobile) return null;
     if (_authVm.status == WebAuthStatus.checking || !_vm.isMe) return null;
     return _HeaderPill(label: '프로필 편집', onTap: _openEdit);
+  }
+
+  /// 공유 아이콘 — 로그인·친구 여부와 무관하게 늘 보인다. PC는 링크 복사,
+  /// 태블릿·모바일은 OS 공유 시트(shareOrCopyLink). 카카오 미리보기(OG)를 위해
+  /// 백엔드 share 링크를 쓴다.
+  Widget? _buildShareAction(FriendUserInfo? info) {
+    final id = _userId;
+    if (id == null) return null;
+    return WebIconButton(
+      onTap: () => shareOrCopyLink(
+        context,
+        url: profileShareLink(id),
+        title: '${(info?.displayName ?? '스노우라이브 유저').trim()} | 스라 프로필',
+      ),
+      tooltip: '링크 복사',
+      padding: const EdgeInsets.all(1),
+      icon: SvgPicture.asset(
+        'assets/imgs/icons/icon_header_share_web.svg',
+        width: 26,
+        height: 26,
+      ),
+    );
   }
 
   Widget? _buildHeaderAction() {
@@ -392,7 +418,7 @@ class _ProfileDetailViewWebState extends State<ProfileDetailViewWeb> {
   String? _guestbookLockedMessage() {
     if (_vm.isMe || _vm.canWriteGuestbook) return null;
     if (!_vm.isLoggedIn) return '로그인이 필요해요.';
-    return '안부 인사를 남기기 위해서는 먼저 친구가 되어야해요.';
+    return null;
   }
 
   // ===== 기록실 =====

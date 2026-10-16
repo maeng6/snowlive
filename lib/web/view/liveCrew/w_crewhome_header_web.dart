@@ -11,6 +11,7 @@ import 'package:com.snowlive/web/widget/w_web_image_viewer_web.dart';
 import 'package:com.snowlive/web/widget/w_web_profile_tap_web.dart';
 import 'package:com.snowlive/web/viewmodel/alarm/vm_alarmCenter_web.dart' show AlarmBadgeWeb;
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
@@ -41,6 +42,9 @@ class CrewHomeHeaderWeb extends StatelessWidget {
   /// (사용자 확정). PC·태블릿은 요약 바 안에 남아 있어 null로 들어온다.
   final VoidCallback? onApply;
 
+  /// 공유 아이콘(링크 복사 / OS 공유 시트). 로그인·소속 여부와 무관하게 늘 보인다.
+  final VoidCallback? onShare;
+
   const CrewHomeHeaderWeb({
     super.key,
     required this.info,
@@ -51,6 +55,7 @@ class CrewHomeHeaderWeb extends StatelessWidget {
     this.visitorToday,
     this.visitorTotal,
     this.onApply,
+    this.onShare,
   });
 
   String _fmtVisitor(int? v) => v == null ? '-' : _numberFormat.format(v);
@@ -165,6 +170,19 @@ class CrewHomeHeaderWeb extends StatelessWidget {
               textAlign: TextAlign.right,
                 style: SDSTextStyle.regular.copyWith(fontSize: 12, color: SDSColor.gray400),
               ),
+            ),
+          ),
+        ],
+        if (onShare != null) ...[
+          const SizedBox(width: SDSSpacing.md),
+          WebIconButton(
+            onTap: onShare!,
+            tooltip: '링크 복사',
+            padding: const EdgeInsets.all(1),
+            icon: SvgPicture.asset(
+              'assets/imgs/icons/icon_header_share_web.svg',
+              width: 26,
+              height: 26,
             ),
           ),
         ],

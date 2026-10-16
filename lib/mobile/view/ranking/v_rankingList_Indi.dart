@@ -1207,6 +1207,30 @@ class RankingIndiView extends StatelessWidget {
                                                                                 borderRadius:
                                                                                 BorderRadius.circular(16)),
                                                                           ),
+ListTile(
+                                                                            contentPadding: EdgeInsets.zero,
+                                                                            title: Center(
+                                                                              child: Text(
+                                                                                '${RankingFilter_fed.univ_all.korean}',
+                                                                                style: SDSTextStyle.bold.copyWith(
+                                                                                    fontSize: 15,
+                                                                                    color: SDSColor.gray900
+                                                                                ),
+                                                                              ),
+                                                                            ),
+                                                                            onTap: () async {
+                                                                              Navigator.pop(context);
+                                                                              _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.initial.korean}');
+                                                                              _rankingListViewModel.changeCategory_fed('${RankingFilter_fed.univ_all.english}');
+                                                                              _rankingListViewModel.changeResortOrTotal('전체스키장');
+                                                                              _rankingListViewModel.changeResortNum(99);
+                                                                              _rankingListViewModel.changeMyBoxText();
+                                                                              await _rankingListViewModel.toggleDataDayOrTotal_tapFilter();
+                                                                            },
+                                                                            shape: RoundedRectangleBorder(
+                                                                                borderRadius:
+                                                                                BorderRadius.circular(16)),
+                                                                          ),
                                                                         ],
                                                                       ),
                                                                     ),
@@ -1233,9 +1257,7 @@ class RankingIndiView extends StatelessWidget {
                                                     Text(
                                                         (_rankingListViewModel.selectedCategory_fed=='리그별 랭킹')
                                                             ? '${RankingFilter_fed.initial.korean}'
-                                                            :(_rankingListViewModel.selectedCategory_fed=='univ_board')
-                                                            ?'${RankingFilter_fed.univ_board.korean}'
-                                                            :'${RankingFilter_fed.univ_ski.korean}',
+                                                            :(_rankingListViewModel.selectedCategory_fed=='univ_board')?'${RankingFilter_fed.univ_board.korean}':(_rankingListViewModel.selectedCategory_fed=='univ_all')?'${RankingFilter_fed.univ_all.korean}':'${RankingFilter_fed.univ_ski.korean}',
                                                         style: SDSTextStyle.bold.copyWith(
                                                             fontSize: 13,
                                                             color: (_rankingListViewModel.selectedCategory_fed != '리그별 랭킹' ) ? Color(0xFFFFFFFF) : Color(0xFF111111)))
@@ -1311,6 +1333,30 @@ class RankingIndiView extends StatelessWidget {
                                                                               Navigator.pop(context);
                                                                               _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.initial.korean}');
                                                                               _rankingListViewModel.changeCategory_fed('${RankingFilter_fed.univ_board.english}');
+                                                                              _rankingListViewModel.changeResortOrTotal('전체스키장');
+                                                                              _rankingListViewModel.changeResortNum(99);
+                                                                              _rankingListViewModel.changeMyBoxText();
+                                                                              await _rankingListViewModel.toggleDataDayOrTotal_tapFilter();
+                                                                            },
+                                                                            shape: RoundedRectangleBorder(
+                                                                                borderRadius:
+                                                                                BorderRadius.circular(16)),
+                                                                          ),
+ListTile(
+                                                                            contentPadding: EdgeInsets.zero,
+                                                                            title: Center(
+                                                                              child: Text(
+                                                                                '${RankingFilter_fed.univ_all.korean}',
+                                                                                style: SDSTextStyle.bold.copyWith(
+                                                                                    fontSize: 15,
+                                                                                    color: SDSColor.gray900
+                                                                                ),
+                                                                              ),
+                                                                            ),
+                                                                            onTap: () async {
+                                                                              Navigator.pop(context);
+                                                                              _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.initial.korean}');
+                                                                              _rankingListViewModel.changeCategory_fed('${RankingFilter_fed.univ_all.english}');
                                                                               _rankingListViewModel.changeResortOrTotal('전체스키장');
                                                                               _rankingListViewModel.changeResortNum(99);
                                                                               _rankingListViewModel.changeMyBoxText();
@@ -2735,6 +2781,30 @@ class RankingIndiView extends StatelessWidget {
                                                                                 borderRadius:
                                                                                 BorderRadius.circular(16)),
                                                                           ),
+ListTile(
+                                                                            contentPadding: EdgeInsets.zero,
+                                                                            title: Center(
+                                                                              child: Text(
+                                                                                '${RankingFilter_fed.univ_all.korean}',
+                                                                                style: SDSTextStyle.bold.copyWith(
+                                                                                    fontSize: 15,
+                                                                                    color: SDSColor.gray900
+                                                                                ),
+                                                                              ),
+                                                                            ),
+                                                                            onTap: () async {
+                                                                              Navigator.pop(context);
+                                                                              _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.initial.korean}');
+                                                                              _rankingListViewModel.changeCategory_fed('${RankingFilter_fed.univ_all.english}');
+                                                                              _rankingListViewModel.changeResortOrTotal('전체스키장');
+                                                                              _rankingListViewModel.changeResortNum(99);
+                                                                              _rankingListViewModel.changeMyBoxText();
+                                                                              await _rankingListViewModel.toggleDataDayOrTotal_tapFilter();
+                                                                            },
+                                                                            shape: RoundedRectangleBorder(
+                                                                                borderRadius:
+                                                                                BorderRadius.circular(16)),
+                                                                          ),
                                                                         ],
                                                                       ),
                                                                     ),
@@ -2761,9 +2831,7 @@ class RankingIndiView extends StatelessWidget {
                                                     Text(
                                                         (_rankingListViewModel.selectedCategory_fed=='리그별 랭킹')
                                                             ? '${RankingFilter_fed.initial.korean}'
-                                                            :(_rankingListViewModel.selectedCategory_fed=='univ_board')
-                                                            ?'${RankingFilter_fed.univ_board.korean}'
-                                                            :'${RankingFilter_fed.univ_ski.korean}',
+                                                            :(_rankingListViewModel.selectedCategory_fed=='univ_board')?'${RankingFilter_fed.univ_board.korean}':(_rankingListViewModel.selectedCategory_fed=='univ_all')?'${RankingFilter_fed.univ_all.korean}':'${RankingFilter_fed.univ_ski.korean}',
                                                         style: SDSTextStyle.bold.copyWith(
                                                             fontSize: 13,
                                                             color: (_rankingListViewModel.selectedCategory_fed != '리그별 랭킹' ) ? Color(0xFFFFFFFF) : Color(0xFF111111)))
@@ -2839,6 +2907,30 @@ class RankingIndiView extends StatelessWidget {
                                                                               Navigator.pop(context);
                                                                               _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.initial.korean}');
                                                                               _rankingListViewModel.changeCategory_fed('${RankingFilter_fed.univ_board.english}');
+                                                                              _rankingListViewModel.changeResortOrTotal('전체스키장');
+                                                                              _rankingListViewModel.changeResortNum(99);
+                                                                              _rankingListViewModel.changeMyBoxText();
+                                                                              await _rankingListViewModel.toggleDataDayOrTotal_tapFilter();
+                                                                            },
+                                                                            shape: RoundedRectangleBorder(
+                                                                                borderRadius:
+                                                                                BorderRadius.circular(16)),
+                                                                          ),
+ListTile(
+                                                                            contentPadding: EdgeInsets.zero,
+                                                                            title: Center(
+                                                                              child: Text(
+                                                                                '${RankingFilter_fed.univ_all.korean}',
+                                                                                style: SDSTextStyle.bold.copyWith(
+                                                                                    fontSize: 15,
+                                                                                    color: SDSColor.gray900
+                                                                                ),
+                                                                              ),
+                                                                            ),
+                                                                            onTap: () async {
+                                                                              Navigator.pop(context);
+                                                                              _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.initial.korean}');
+                                                                              _rankingListViewModel.changeCategory_fed('${RankingFilter_fed.univ_all.english}');
                                                                               _rankingListViewModel.changeResortOrTotal('전체스키장');
                                                                               _rankingListViewModel.changeResortNum(99);
                                                                               _rankingListViewModel.changeMyBoxText();

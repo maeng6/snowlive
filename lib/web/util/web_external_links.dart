@@ -29,7 +29,7 @@ const String kAppStoreUrlIos =
 const String kInstagramUrl = 'https://www.instagram.com/snowlive_official/';
 
 /// 카카오톡 채널 1:1 채팅(앱 `스노우라이브 소개 > 카카오 채널`과 같은 링크).
-const String kKakaoChannelUrl = 'https://pf.kakao.com/_LxnDdG/chat';
+const String kKakaoChannelUrl = 'https://pf.kakao.com/_LxnDdG/';
 
 /// 가입 완료 모달에 띄울 QR 목록.
 ///
