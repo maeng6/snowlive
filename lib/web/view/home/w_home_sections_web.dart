@@ -811,7 +811,7 @@ class _HomeCommunityWebState extends State<HomeCommunityWeb> {
             columns: columns,
             perColumn: perColumn,
             length: perPage,
-            build: (_) => const _HomeCommunityRowSkeleton(),
+            build: (_, isLast) => _HomeCommunityRowSkeleton(isLast: isLast),
           ),
         ),
       );
@@ -873,7 +873,7 @@ class _HomeCommunityWebState extends State<HomeCommunityWeb> {
         columns: columns,
         perColumn: perColumn,
         length: items.length,
-        build: (i) => _HomeCommunityRow(post: items[i]),
+        build: (i, isLast) => _HomeCommunityRow(post: items[i], isLast: isLast),
       ),
     );
   }
@@ -888,11 +888,13 @@ class _HomeCommunityWebState extends State<HomeCommunityWeb> {
   }
 
   /// [length]개를 열 순서로 채운다(1열이 먼저 찬다).
+  /// [build]의 두 번째 인자는 **그 열의 마지막 줄인지** — 맨 아래 줄은 구분선을
+  /// 긋지 않는다(목록 끝에 선이 떠 보인다, 사용자 확정).
   Widget _columns({
     required int columns,
     required int perColumn,
     required int length,
-    required Widget Function(int index) build,
+    required Widget Function(int index, bool isLast) build,
   }) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -908,7 +910,7 @@ class _HomeCommunityWebState extends State<HomeCommunityWeb> {
                   i < (c + 1) * perColumn && i < length;
                   i++
                 )
-                  build(i),
+                  build(i, i == length - 1 || i == (c + 1) * perColumn - 1),
               ],
             ),
           ),
@@ -924,7 +926,10 @@ class _HomeCommunityWebState extends State<HomeCommunityWeb> {
 class _HomeCommunityRow extends StatefulWidget {
   final Community post;
 
-  const _HomeCommunityRow({required this.post});
+  /// 열의 맨 아래 줄이면 하단 구분선을 긋지 않는다.
+  final bool isLast;
+
+  const _HomeCommunityRow({required this.post, this.isLast = false});
 
   @override
   State<_HomeCommunityRow> createState() => _HomeCommunityRowState();
@@ -948,7 +953,9 @@ class _HomeCommunityRowState extends State<_HomeCommunityRow> {
           height: _kCommunityRowHeight,
           padding: const EdgeInsets.symmetric(horizontal: _kCommunityRowPadH),
           decoration: BoxDecoration(
-            border: Border(bottom: BorderSide(color: SDSColor.gray100)),
+            border: widget.isLast
+                ? null
+                : Border(bottom: BorderSide(color: SDSColor.gray100)),
           ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -982,16 +989,21 @@ class _HomeCommunityRowState extends State<_HomeCommunityRow> {
 }
 
 class _HomeCommunityRowSkeleton extends StatelessWidget {
-  const _HomeCommunityRowSkeleton();
+  /// 열의 맨 아래 줄이면 하단 구분선을 긋지 않는다(실제 행과 동일).
+  final bool isLast;
+
+  const _HomeCommunityRowSkeleton({this.isLast = false});
 
   @override
   Widget build(BuildContext context) {
-    // 실제 행과 같은 규격 — 줄 높이 86 · 하단 구분선 gray100.
+    // 실제 행과 같은 규격 — 줄 높이·하단 구분선 gray100.
     return Container(
       height: _kCommunityRowHeight,
       padding: const EdgeInsets.symmetric(horizontal: _kCommunityRowPadH),
       decoration: BoxDecoration(
-        border: Border(bottom: BorderSide(color: SDSColor.gray100)),
+        border: isLast
+            ? null
+            : Border(bottom: BorderSide(color: SDSColor.gray100)),
       ),
       child: const Column(
         mainAxisAlignment: MainAxisAlignment.center,

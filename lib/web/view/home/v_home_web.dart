@@ -205,7 +205,7 @@ class _HomeViewWebState extends State<HomeViewWeb> {
                           //  · 랭킹 보임: 날씨 30 랭킹, 랭킹 아래는 섹션 간격
                           //  · 랭킹 숨김: 날씨 아래가 바로 섹션 간격
                           // → 어느 경우든 **중고거래 위는 섹션 간격**(PC·태블릿 48 /
-                          //   모바일 32)으로 다른 섹션 사이와 같다
+                          //   모바일 32)으로 다른 섹션 사이와 같다.
                           Obx(
                             () =>
                                 PaidVisibilityControllerWeb.todayRankingVisible
