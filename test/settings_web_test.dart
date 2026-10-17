@@ -10,7 +10,20 @@ import 'package:get/get.dart';
 void main() {
   setUp(() {
     Get.testMode = true;
-    Get.put(UserViewModel());
+    // 계정 그룹(로그아웃·회원탈퇴)은 **로그인 상태에서만** 보인다 → 유저 모델을 채운다.
+    Get.put(UserViewModel()).updateUserModel_data({
+      'user_id': 1,
+      'uid': 'firebase-uid',
+      'display_name': '테스터',
+      'profile_image_url_user': null,
+      'state_msg': '',
+      'favorite_resort': 13,
+      'instant_resort': 5,
+      'skiorboard': '스노보드',
+      'sex': '남자',
+      'hide_profile': false,
+      'date_joined': '2024-01-01T00:00:00Z',
+    });
     // AuthCheckViewModelWeb은 onInit에서 Firebase를 부른다 → 화면 렌더에 필요 없으니
     // 등록하지 않는다(로그아웃/탈퇴를 실제로 누르는 테스트는 여기 범위가 아니다).
     Get.put(SettingsViewModelWeb());

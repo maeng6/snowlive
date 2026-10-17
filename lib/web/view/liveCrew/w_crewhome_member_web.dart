@@ -174,21 +174,10 @@ class _CrewMemberRowSkeleton extends StatelessWidget {
 /// `rankWidth`로 넘긴다. 못 넘길 때의 안전한 기본값으로만 쓴다.
 const double kCrewMemberRankWidth = 28;
 
-/// 순위 칸 폭을 **가장 큰 순위에 맞춰** 잰다. 랭킹 홈 `rankColumnWidth`와 같은 방식
-/// (Bold 14 · 최소 16)이라 목록 사이에서 순위 열 폭이 어긋나지 않는다.
-double crewMemberRankWidth(BuildContext context, int maxRank) {
-  final painter = TextPainter(
-    text: TextSpan(
-      text: '$maxRank',
-      style: SDSTextStyle.bold.copyWith(fontSize: 14),
-    ),
-    // intl이 같은 이름의 TextDirection을 내보내 충돌하므로 컨텍스트에서 가져온다.
-    textDirection: Directionality.of(context),
-    textScaler: MediaQuery.textScalerOf(context),
-  )..layout();
-  // 한 자리만 있는 목록에서도 숫자가 답답해 보이지 않게 최소폭을 둔다(랭킹 홈과 동일).
-  return painter.width < 16 ? 16 : painter.width;
-}
+/// 순위 칸 폭을 **가장 큰 순위의 자릿수에 맞춰** 잰다. 랭킹 홈과 같은
+/// [rankNumberColumnWidth]를 써서 목록 사이에서 순위 열 폭이 어긋나지 않는다.
+double crewMemberRankWidth(BuildContext context, int maxRank) =>
+    rankNumberColumnWidth(context, maxRank);
 
 /// 순위 숫자 + 멤버 한 줄. 크루홈 `랭킹 TOP 10 멤버`와 `크루원 시즌 랭킹`이 같이 쓴다.
 ///
@@ -223,9 +212,8 @@ class CrewMemberRankedRowWeb extends StatelessWidget {
       member: member,
       onTap: onTap,
       // 순위 숫자 — 랭킹 홈과 같은 규격(Bold 14 · 좌측 정렬 · 순위 ↔ 프로필 간격은
-      // `RankingRowMetrics.rankGap`). 폭은 세 자리(`226`)까지 들어가는 28 고정 —
-      // 랭킹 홈은 페이지마다 TextPainter로 재지만, 크루 안 순위는 자리 수가
-      // 거의 변하지 않아 고정값이 목록 사이에서 더 안정적이다.
+      // `RankingRowMetrics.rankGap`). 폭은 호출부가 `crewMemberRankWidth`로
+      // 목록의 최대 자릿수에 맞춰 넘긴다(못 넘기면 세 자리 기준 기본값).
       leading: Row(
         children: [
           SizedBox(
@@ -233,6 +221,9 @@ class CrewMemberRankedRowWeb extends StatelessWidget {
             child: Text(
               '$rank',
               maxLines: 1,
+              softWrap: false,
+              // 칸 폭이 한 끗 모자라도 끝자리가 사라지지 않게 잘라내지 않는다.
+              overflow: TextOverflow.visible,
               style: SDSTextStyle.bold.copyWith(fontSize: 14, color: SDSColor.gray900),
             ),
           ),

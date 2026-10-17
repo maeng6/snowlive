@@ -52,8 +52,11 @@ class MyCrewCard extends StatelessWidget {
 
     return Container(
       padding: const EdgeInsets.all(SDSSpacing.md),
+      // 회색 면 대신 **라인 카드**(사용자 확정) — 흰 면 + gray100 외곽선.
+      // 랭킹 사이드바의 링크 카드와 같은 결이다.
       decoration: BoxDecoration(
-        color: SDSColor.gray50,
+        color: SDSColor.snowliveWhite,
+        border: Border.all(color: SDSColor.gray100),
         borderRadius: BorderRadius.circular(8),
       ),
       child: Column(

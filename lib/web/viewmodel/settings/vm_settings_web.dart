@@ -2,7 +2,6 @@ import 'package:com.snowlive/core/api/ApiResponse.dart';
 import 'package:com.snowlive/core/api/api_login.dart';
 import 'package:com.snowlive/core/viewmodel/vm_user.dart';
 import 'package:com.snowlive/web/viewmodel/auth/vm_authcheck_web.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
 
 /// 설정 화면의 쓰기 동작(로그아웃·회원탈퇴).
@@ -35,7 +34,7 @@ class SettingsViewModelWeb extends GetxController {
     try {
       final ApiResponse res = await _loginAPI.deleteUser(userId);
       if (res.success) {
-        await FirebaseAuth.instance.signOut();
+        // 세션·status·유저 모델을 한 번에 비운다(로그아웃과 같은 경로).
         await _authVM.signOut();
         return SettingsWithdrawResult.success;
       }

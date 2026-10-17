@@ -15,7 +15,7 @@ import 'package:com.snowlive/web/widget/w_web_page_header_web.dart';
 import 'package:com.snowlive/web/widget/w_web_icon_button_web.dart';
 import 'package:com.snowlive/web/util/responsive_web.dart';
 import 'package:com.snowlive/web/util/web_share_url.dart';
-import 'package:com.snowlive/web/util/web_share_link_web.dart';
+import 'package:com.snowlive/web/util/web_share_link.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';

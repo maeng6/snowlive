@@ -163,13 +163,15 @@ class _CrewCreateViewWebState extends State<CrewCreateViewWeb> {
     final pagePadding = webSubPagePadding(context);
     final scrollArea = Container(
       color: SDSColor.snowliveWhite,
-      padding: EdgeInsets.fromLTRB(
-        pagePadding.left,
-        pagePadding.top,
-        pagePadding.right,
-        isMobile ? _kMobileBarHeight : SDSSpacing.xl,
-      ),
       child: SingleChildScrollView(
+        // ⚠️ 페이지 여백은 **스크롤 영역 안쪽**(웹 공통) — 바깥 Container에 주면
+        // 스크롤바가 브라우저 우측 끝이 아니라 여백 안쪽에 뜬다.
+        padding: EdgeInsets.fromLTRB(
+          pagePadding.left,
+          pagePadding.top,
+          pagePadding.right,
+          isMobile ? _kMobileBarHeight : SDSSpacing.xl,
+        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
@@ -250,7 +252,9 @@ class _CrewCreateViewWebState extends State<CrewCreateViewWeb> {
         elevation: const WidgetStatePropertyAll(0),
         animationDuration: Duration.zero,
         backgroundColor: WidgetStateProperty.resolveWith((states) {
-          if (states.contains(WidgetState.disabled)) return SDSColor.gray300;
+          // 비활성 버튼은 웹 공통 **gray200**(목업 comp_button #E4E4E4에 가장 가까운
+          // 토큰). 화면마다 다르면 바로 눈에 띈다(사용자 확정).
+          if (states.contains(WidgetState.disabled)) return SDSColor.gray200;
           if (states.contains(WidgetState.hovered)) {
             return Color.alphaBlend(Colors.black.withValues(alpha: 0.1), SDSColor.snowliveBlue);
           }
@@ -341,10 +345,11 @@ class _CrewCreateViewWebState extends State<CrewCreateViewWeb> {
         Text(
           '라이브 크루를 통해 같은 라이딩 스타일의 친구들과\n교류하며 라이딩의 즐거움을 더 높여 보세요.',
           textAlign: TextAlign.center,
+          // 본문 글줄은 웹 공통 20(팝업 표준과 같은 값, 사용자 확정).
           style: SDSTextStyle.regular.copyWith(
             fontSize: 14,
             color: SDSColor.gray500,
-            height: 22 / 14,
+            height: 20 / 14,
           ),
         ),
         // 부제 ↔ 일러스트 42 (목업 — 제목 블록 하단 패딩 30 + 12).

@@ -3,7 +3,7 @@ import 'package:com.snowlive/core/model/m_communityDetail.dart';
 import 'package:com.snowlive/core/viewmodel/vm_user.dart';
 import 'package:com.snowlive/web/routes/routes_web.dart';
 import 'package:com.snowlive/web/util/web_share_url.dart';
-import 'package:com.snowlive/web/util/web_share_link_web.dart';
+import 'package:com.snowlive/web/util/web_share_link.dart';
 import 'package:com.snowlive/web/viewmodel/community/vm_communityListPagination_web.dart';
 import 'package:com.snowlive/web/util/responsive_web.dart';
 import 'package:com.snowlive/web/widget/w_web_more_menu_web.dart';

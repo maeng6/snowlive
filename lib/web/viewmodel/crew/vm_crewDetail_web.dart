@@ -93,6 +93,18 @@ class CrewDetailViewModelWeb extends GetxController {
       );
 
   Future<void> load(int crewId) async {
+    // 다른 크루로 바뀌면 이전 크루 데이터를 비워 스켈레톤부터 다시 시작한다 —
+    // 안 비우면 새 크루홈이 뜨는 동안 앞 크루의 멤버·크루톡이 그대로 보인다.
+    // 같은 크루 재조회(`refresh`)는 비우지 않는다(화면이 스켈레톤으로 튄다).
+    if (_crewId != crewId) {
+      _info.value = null;
+      _season.value = null;
+      _members.clear();
+      _fullMembers.clear();
+      _crewTalks.clear();
+      _visitorToday.value = null;
+      _visitorTotal.value = null;
+    }
     _crewId = crewId;
     _isLoading.value = true;
     _hasError.value = false;
@@ -106,16 +118,34 @@ class CrewDetailViewModelWeb extends GetxController {
         return;
       }
       final parsed = CrewDetailResponse.fromJson(res.data as Map<String, dynamic>);
-      _info.value = parsed.crewDetailInfo;
-      _season.value = parsed.seasonRankingInfo;
       // 상세 응답이 준 방문자수로 먼저 채운 뒤(=우리 방문 POST 이전 값),
       // 방문 POST가 오늘 카운트를 +1 반영한 최신값으로 덮어쓴다.
       _visitorToday.value = parsed.crewDetailInfo?.visitorToday;
       _visitorTotal.value = parsed.crewDetailInfo?.visitorTotal;
       _logVisit(crewId); // 진입당 1회 방문 집계(비차단)
-      await _loadMembers(crewId: crewId, season: season);
-      await _loadFullMembers(crewId);
-      await _loadCrewTalks(crewId);
+
+      // ⚠️ 화면은 `info != null`로 스켈레톤을 끝낸다 → info를 먼저 넣으면 TOP 10·
+      // 크루톡이 "없어요"로 떴다가 나중에 채워진다. 섹션 데이터를 **동시에 받아**
+      // 다 모인 뒤에 한 번에 넣어서, 스켈레톤이 끝나는 순간 화면이 완성돼 있게 한다.
+      // (셋은 서로 의존이 없어 순차 await보다 눈에 띄게 빠르다.)
+      final membersFuture = _fetchMembers(
+        crewId: crewId,
+        season: season,
+        // 비로그인 방문자는 크루장 id로 부른다(아래 주석 참고). 이 시점엔 아직
+        // _info를 안 넣었으므로 방금 받은 응답에서 가져온다.
+        leaderUserId: parsed.crewDetailInfo?.crewLeaderUserId,
+      );
+      final fullMembersFuture = _fetchFullMembers(crewId);
+      final talksFuture = _fetchCrewTalks(crewId);
+      final members = await membersFuture;
+      final fullMembers = await fullMembersFuture;
+      final talks = await talksFuture;
+
+      _info.value = parsed.crewDetailInfo;
+      _season.value = parsed.seasonRankingInfo;
+      _members.assignAll(members);
+      _fullMembers.assignAll(fullMembers);
+      _crewTalks.assignAll(talks);
     } catch (e) {
       debugPrint('[CrewDetail] 조회 예외: $e');
       _hasError.value = true;
@@ -151,62 +181,58 @@ class CrewDetailViewModelWeb extends GetxController {
   /// 필수입니다"). 그런데 응답(`ranking_results`)에는 개인화된 값이 하나도 없어서
   /// 누구 id로 부르든 결과가 같다(실측). 그래서 비로그인 방문자에게도 목업대로
   /// 멤버를 보여주기 위해 **크루장 id로 채워** 호출한다.
-  Future<void> _loadMembers({required int crewId, required String season}) async {
-    final userId = _userVM.user.user_id ?? _info.value?.crewLeaderUserId;
-    if (userId == null) {
-      _members.clear();
-      return;
-    }
+  Future<List<CrewRanking>> _fetchMembers({
+    required int crewId,
+    required String season,
+    required int? leaderUserId,
+  }) async {
+    final userId = _userVM.user.user_id ?? leaderUserId;
+    if (userId == null) return const [];
     try {
       final res = await _api.getCrewRanking(crewId: crewId, userId: userId, season: season);
       if (!res.success) {
         debugPrint('[CrewDetail] 멤버 랭킹 실패: ${res.error}');
-        _members.clear();
-        return;
+        return const [];
       }
       final parsed = CrewRankingResponse.fromJson(res.data as Map<String, dynamic>);
-      _members.assignAll(parsed.rankingResults ?? []);
+      return parsed.rankingResults ?? const [];
     } catch (e) {
       debugPrint('[CrewDetail] 멤버 랭킹 예외: $e');
-      _members.clear();
+      return const [];
     }
   }
 
   /// 크루 전체 멤버(역할 포함). 앱과 같은 `/crew/{id}/members/`를 쓴다 —
   /// 이번 시즌 기록이 없는 멤버도 **모두** 포함된다(멤버 화면 전용).
-  Future<void> _loadFullMembers(int crewId) async {
+  Future<List<CrewMember>> _fetchFullMembers(int crewId) async {
     try {
       final res = await _api.listCrewMembers(crewId);
       if (!res.success) {
         debugPrint('[CrewDetail] 멤버 목록 실패: ${res.error}');
-        _fullMembers.clear();
-        return;
+        return const [];
       }
       final parsed = CrewMemberListResponse.fromJson(res.data as Map<String, dynamic>);
-      _fullMembers.assignAll(parsed.crewMembers ?? []);
+      return parsed.crewMembers ?? const [];
     } catch (e) {
       debugPrint('[CrewDetail] 멤버 목록 예외: $e');
-      _fullMembers.clear();
+      return const [];
     }
   }
 
   /// 이 크루의 크루톡 목록(최신순). 비공개 글은 서버가 크루원에게만 내려준다.
-  Future<void> _loadCrewTalks(int crewId) async {
+  Future<List<LiveTalk>> _fetchCrewTalks(int crewId) async {
     try {
       final res = await _talkApi.fetchList({
         'user_id': _userVM.user.user_id,
         'crew_id': crewId,
       });
-      if (!res.success) {
-        _crewTalks.clear();
-        return;
-      }
+      if (!res.success) return const [];
       final parsed =
           LiveTalkListResponse.fromJson(res.data as Map<String, dynamic>);
-      _crewTalks.assignAll(parsed.results ?? []);
+      return parsed.results ?? const [];
     } catch (e) {
       debugPrint('[CrewDetail] 크루톡 조회 예외: $e');
-      _crewTalks.clear();
+      return const [];
     }
   }
 

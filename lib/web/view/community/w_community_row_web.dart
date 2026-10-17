@@ -19,19 +19,89 @@ const double kCommunityColGap = 30;
 
 /// 글자 폭 실측. 열 폭을 숫자로 박으면 글꼴 메트릭에 따라 끝이 잘린다(날짜 80에서
 /// '일'이 잘렸다). 그렇다고 폭을 풀면 행마다 열 시작선이 어긋난다 → 재서 고정한다.
-double measureWebTextWidth(String text, TextStyle style) {
+///
+/// [textScaler]를 꼭 넘긴다 — 브라우저 글자 배율이 100%가 아니면 실제 렌더가
+/// 측정값보다 넓어져 끝 글자가 다시 잘린다.
+double measureWebTextWidth(
+  String text,
+  TextStyle style, {
+  TextScaler textScaler = TextScaler.noScaling,
+}) {
   final painter = TextPainter(
     text: TextSpan(text: text, style: style),
     // `intl`도 TextDirection을 내보내서 이름이 겹친다 → 별칭을 쓴다.
     textDirection: ui.TextDirection.ltr,
+    textScaler: textScaler,
   )..layout();
   return painter.width;
 }
 
+/// 표 메타 셀 글자 — 두 표(커뮤니티·각종소식)의 행·헤더·측정이 **같은 값**을 쓴다.
+/// 측정과 렌더가 다른 스타일을 쓰면 폭이 어긋나 끝 글자가 잘린다.
+TextStyle get webTableMetaStyle => SDSTextStyle.regular.copyWith(fontSize: 14);
+TextStyle get webTableHeaderStyle => SDSTextStyle.bold.copyWith(fontSize: 14);
+
+/// 열 폭에 더하는 여유. 서브픽셀 반올림·배율 환산에서 1px이 모자라 끝 글자가
+/// 잘리는 걸 막는다(남는 4px은 열 간격 30 안에서 눈에 띄지 않는다).
+const double _kMetaColumnSlack = 4;
+
+/// 가장 넓은 숫자 글리프. Pretendard는 고정폭 숫자가 아니라 숫자에 따라 폭이 다르다.
+String _widestDigitGlyph(TextScaler textScaler) {
+  var widest = '0';
+  var max = 0.0;
+  for (var d = 0; d <= 9; d++) {
+    final w = measureWebTextWidth('$d', webTableMetaStyle, textScaler: textScaler);
+    if (w > max) {
+      max = w;
+      widest = '$d';
+    }
+  }
+  return widest;
+}
+
+/// 날짜 열 측정용 **최악 표본** — 표시 형식에 가장 넓은 숫자를 채운 문자열.
+///
+/// 그 페이지에 실제로 있는 날짜만 재면 (1) 다른 숫자 조합이 더 넓을 때 잘리고,
+/// (2) 페이지를 넘길 때마다 열 폭이 흔들린다. 형식이 고정이므로 최악을 재는 게 맞다.
+String worstCaseDateSample(TextScaler textScaler) {
+  final digit = _widestDigitGlyph(textScaler);
+  return _communityDateFormat
+      .format(DateTime(2222, 12, 22))
+      .replaceAll(RegExp(r'\d'), digit);
+}
+
+/// 숫자 열(조회수) 측정용 최악 표본 — 가장 긴 값의 자릿수를 가장 넓은 숫자로 채운다.
+String worstCaseNumberSample(List<String> values, TextScaler textScaler) {
+  var digits = 1;
+  for (final v in values) {
+    if (v.length > digits) digits = v.length;
+  }
+  return _widestDigitGlyph(textScaler) * digits;
+}
+
+/// 메타 열 한 칸의 폭 — 헤더 글자와 주어진 표본 중 가장 넓은 값 + 여유.
+double metaColumnWidth({
+  required List<String> samples,
+  required String headerText,
+  required TextScaler textScaler,
+}) {
+  var max = measureWebTextWidth(headerText, webTableHeaderStyle, textScaler: textScaler);
+  for (final v in samples) {
+    final w = measureWebTextWidth(v, webTableMetaStyle, textScaler: textScaler);
+    if (w > max) max = w;
+  }
+  return max.ceilToDouble() + _kMetaColumnSlack;
+}
+
 /// 표 메타 열(작성자·작성일·조회수) 폭.
 ///
-/// **그 페이지에 실제로 있는 값 중 가장 긴 것**(헤더 글자 포함)을 재서 모든 행과
-/// 헤더가 같은 폭을 쓴다 — 잘리지도, 행마다 어긋나지도 않는다.
+/// 닉네임(작성자)은 **그 페이지에 실제로 있는 값 중 가장 긴 것**, 숫자 열(작성일·
+/// 조회수)은 **형식상 최악의 값**을 재서 헤더와 모든 행이 같은 폭을 쓴다 —
+/// 잘리지도, 행마다 어긋나지도 않는다.
+///
+/// ⚠️ 폭을 `static final`로 캐시하지 않는다 — 웹에서는 글꼴(Pretendard)이 늦게
+/// 로드되는데, 그전에 한 번 재서 굳히면 실제 렌더보다 좁은 폭이 세션 내내 남아
+/// 끝 글자가 잘린다. 측정은 TextPainter 몇 번이라 매 빌드에 재도 싸다.
 class CommunityMetaWidths {
   final double author;
   final double date;
@@ -39,42 +109,40 @@ class CommunityMetaWidths {
 
   const CommunityMetaWidths({required this.author, required this.date, required this.views});
 
-  /// 로딩 스켈레톤이 쓰는 폭. 실제 데이터가 올 때 열이 크게 안 움직이도록
-  /// **대표적인 길이의 표본**으로 재둔다(닉네임 6자·날짜 전체·조회수 4자리).
-  static final CommunityMetaWidths skeleton = CommunityMetaWidths._from(
-    const ['스노우라이버'],
-    const ['2026. 10. 03'],
-    const ['1234'],
-  );
-
-  /// 헤더만 그리는 동안(첫 로딩) 쓰는 기본값 — 헤더 글자 폭만 반영한다.
-  static final CommunityMetaWidths headerOnly = CommunityMetaWidths._from(const [], const [], const []);
+  /// 로딩 스켈레톤·헤더가 쓰는 폭. 실제 데이터가 올 때 열이 크게 안 움직이도록
+  /// **대표적인 길이의 표본**으로 재둔다(닉네임 6자, 날짜·조회수는 최악값).
+  static CommunityMetaWidths skeletonOf(BuildContext context) => CommunityMetaWidths._from(
+        const ['스노우라이버'],
+        const ['1234'],
+        MediaQuery.textScalerOf(context),
+      );
 
   factory CommunityMetaWidths._from(
-      List<String> authors, List<String> dates, List<String> views) {
-    final meta = SDSTextStyle.regular.copyWith(fontSize: 14);
-    final header = SDSTextStyle.bold.copyWith(fontSize: 14);
-    double widest(List<String> values, String headerText) {
-      var max = measureWebTextWidth(headerText, header);
-      for (final v in values) {
-        final w = measureWebTextWidth(v, meta);
-        if (w > max) max = w;
-      }
-      // 반올림으로 1px 모자라 잘리는 일이 없게 살짝 올린다.
-      return max.ceilToDouble() + 2;
-    }
-
+      List<String> authors, List<String> views, TextScaler textScaler) {
     return CommunityMetaWidths(
-      author: widest(authors, '작성자'),
-      date: widest(dates, '작성일'),
-      views: widest(views, '조회수'),
+      author: metaColumnWidth(
+        samples: authors,
+        headerText: '작성자',
+        textScaler: textScaler,
+      ),
+      date: metaColumnWidth(
+        samples: [worstCaseDateSample(textScaler)],
+        headerText: '작성일',
+        textScaler: textScaler,
+      ),
+      views: metaColumnWidth(
+        samples: [worstCaseNumberSample(views, textScaler)],
+        headerText: '조회수',
+        textScaler: textScaler,
+      ),
     );
   }
 
-  factory CommunityMetaWidths.of(List<Community> items) => CommunityMetaWidths._from(
+  factory CommunityMetaWidths.of(BuildContext context, List<Community> items) =>
+      CommunityMetaWidths._from(
         [for (final c in items) c.userInfo?.displayName ?? ''],
-        [for (final c in items) communityDateLabel(c.uploadTime)],
         [for (final c in items) '${c.viewsCount ?? 0}'],
+        MediaQuery.textScalerOf(context),
       );
 }
 
@@ -120,6 +188,17 @@ void openCommunityDetail(Community community) {
   if (id == null) return;
   Get.toNamed('${WebRoutes.communityDetail}?id=$id');
 }
+
+/// 열 폭이 어떤 이유로든 모자랄 때 **자르지 않고** 열 간격(30) 쪽으로 넘겨 그린다.
+/// 끝 글자가 사라지는 것보다 간격을 몇 px 먹는 편이 낫다 — 열 폭은 이미 최악값으로
+/// 재므로 평소엔 넘치지 않는다.
+Widget webTableNoClipText(String text, TextStyle style) => Text(
+  text,
+  maxLines: 1,
+  softWrap: false,
+  overflow: TextOverflow.visible,
+  style: style,
+);
 
 /// 표 한 줄의 골격. **헤더 행과 데이터 행이 이 함수를 공유**하므로 열이 어긋나지 않는다.
 Widget communityTableRowShell({
@@ -193,9 +272,9 @@ class CommunityTableHeaderRow extends StatelessWidget {
       padding: const EdgeInsets.only(top: 5, bottom: 13),
       border: Border(bottom: BorderSide(color: SDSColor.gray200)),
       titleCell: Text('제목', style: style),
-      authorCell: Text('작성자', style: style),
-      dateCell: Text('작성일', style: style),
-      viewsCell: Text('조회수', style: style),
+      authorCell: webTableNoClipText('작성자', style),
+      dateCell: webTableNoClipText('작성일', style),
+      viewsCell: webTableNoClipText('조회수', style),
     );
   }
 }
@@ -245,16 +324,8 @@ class CommunityTableRow extends StatelessWidget {
             overflow: TextOverflow.ellipsis,
             style: metaStyle,
           ),
-          dateCell: Text(
-            communityDateLabel(community.uploadTime),
-            maxLines: 1,
-            style: metaStyle,
-          ),
-          viewsCell: Text(
-            '${community.viewsCount ?? 0}',
-            maxLines: 1,
-            style: metaStyle,
-          ),
+          dateCell: webTableNoClipText(communityDateLabel(community.uploadTime), metaStyle),
+          viewsCell: webTableNoClipText('${community.viewsCount ?? 0}', metaStyle),
           previewLine: preview.isEmpty
               ? null
               : HighlightedText(
@@ -332,16 +403,16 @@ class CommunityCardRow extends StatelessWidget {
                   ),
                 ),
                 communityMetaDivider(),
-                Text(
+                webTableNoClipText(
                   communityDateLabel(community.uploadTime),
-                  style: metaStyle,
+                  metaStyle,
                 ),
                 communityMetaDivider(),
                 // 아웃라인 눈 아이콘(목업 에셋) — PNG는 틴트하면 눈알(흰색)까지
                 // 단색으로 덮여 실루엣이 된다. 틴트는 메타 텍스트와 동일(gray600).
                 Icon(Icons.visibility, size: 14, color: SDSColor.gray400),
                 const SizedBox(width: 2),
-                Text('${community.viewsCount ?? 0}', style: metaStyle),
+                webTableNoClipText('${community.viewsCount ?? 0}', metaStyle),
               ],
             ),
           ],
@@ -429,10 +500,15 @@ class CommunityTitleLine extends StatelessWidget {
   final Community community;
   final String query;
 
+  /// 제목에 밑줄을 긋는다 — 줄 전체를 칠하는 대신 **제목만** 반응하게 하는
+  /// hover 표시(홈 커뮤니티 목록). 목록 화면들은 행 배경으로 반응하므로 false.
+  final bool underline;
+
   const CommunityTitleLine({
     super.key,
     required this.community,
     required this.query,
+    this.underline = false,
   });
 
   @override
@@ -456,6 +532,8 @@ class CommunityTitleLine extends StatelessWidget {
             style: SDSTextStyle.regular.copyWith(
               fontSize: 15,
               color: SDSColor.gray900,
+              decoration: underline ? TextDecoration.underline : null,
+              decorationColor: SDSColor.gray900,
             ),
           ),
         ),

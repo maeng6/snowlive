@@ -80,12 +80,18 @@ class _HomeTodayRankingWebState extends State<HomeTodayRankingWeb> {
       ),
       // PC: 좌우 40 / 상하 30, 태블릿: 좌우 30 / 상하 30, 모바일: 좌우 16 / 상하 24.
       padding: switch (screenType) {
-        WebScreenType.desktop =>
-          const EdgeInsets.symmetric(horizontal: 40, vertical: 30),
-        WebScreenType.tablet =>
-          const EdgeInsets.symmetric(horizontal: 30, vertical: 30),
-        WebScreenType.mobile =>
-          const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+        WebScreenType.desktop => const EdgeInsets.symmetric(
+          horizontal: 40,
+          vertical: 30,
+        ),
+        WebScreenType.tablet => const EdgeInsets.symmetric(
+          horizontal: 30,
+          vertical: 30,
+        ),
+        WebScreenType.mobile => const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 24,
+        ),
       },
       // 목업: 데스크탑은 제목·날짜·안내가 **왼쪽 열**에 세로로 놓이고 카드가 그 오른쪽에
       // 붙는다. 태블릿·모바일은 제목이 위, 카드가 아래다.
@@ -161,27 +167,29 @@ class _HomeTodayRankingWebState extends State<HomeTodayRankingWeb> {
 
   // 제목: PC ExtraBold / 모바일 Bold(피그마), gray900
   Widget _buildTitle({required double fontSize, bool extraBold = true}) => Text(
-        '오늘의 랭킹',
-        style: (extraBold ? SDSTextStyle.extraBold : SDSTextStyle.bold)
-            .copyWith(fontSize: fontSize, color: SDSColor.gray900),
-      );
+    '오늘의 랭킹',
+    style: (extraBold ? SDSTextStyle.extraBold : SDSTextStyle.bold).copyWith(
+      fontSize: fontSize,
+      color: SDSColor.gray900,
+    ),
+  );
 
   // 날짜 배지: 검정 pill(40). PC 패딩 10/6·13 / 모바일 10/4·Bold 10 (피그마 기준)
   Widget _buildDateBadge({bool isMobile = false}) => Container(
-        padding: EdgeInsets.symmetric(horizontal: 10, vertical: isMobile ? 4 : 6),
-        decoration: BoxDecoration(
-          color: SDSColor.snowliveBlack,
-          borderRadius: BorderRadius.circular(40),
-        ),
-        child: Text(
-          homeTodayBadgeLabel(widget.today),
-          style: (isMobile ? SDSTextStyle.bold : SDSTextStyle.regular).copyWith(
-            fontSize: isMobile ? 10 : 13,
-            color: SDSColor.snowliveWhite,
-            height: isMobile ? 16 / 10 : 16 / 14,
-          ),
-        ),
-      );
+    padding: EdgeInsets.symmetric(horizontal: 10, vertical: isMobile ? 4 : 6),
+    decoration: BoxDecoration(
+      color: SDSColor.snowliveBlack,
+      borderRadius: BorderRadius.circular(40),
+    ),
+    child: Text(
+      homeTodayBadgeLabel(widget.today),
+      style: (isMobile ? SDSTextStyle.bold : SDSTextStyle.regular).copyWith(
+        fontSize: isMobile ? 10 : 13,
+        color: SDSColor.snowliveWhite,
+        height: isMobile ? 16 / 10 : 16 / 14,
+      ),
+    ),
+  );
 
   /// 목업의 안내 문구. 좌측 열에서는 두 줄, 한 줄로 놓을 때는 줄바꿈을 공백으로 편다
   Widget _buildNote({int maxLines = 1, Color? color}) {
@@ -190,8 +198,11 @@ class _HomeTodayRankingWebState extends State<HomeTodayRankingWeb> {
       maxLines == 1 ? text.replaceAll('\n', ' ') : text,
       maxLines: maxLines,
       overflow: TextOverflow.ellipsis,
-      style: SDSTextStyle.regular
-          .copyWith(fontSize: 12, height: 1.4, color: color ?? SDSColor.gray400),
+      style: SDSTextStyle.regular.copyWith(
+        fontSize: 12,
+        height: 1.4,
+        color: color ?? SDSColor.gray400,
+      ),
     );
   }
 
@@ -266,7 +277,9 @@ class _HomeTodayRankingWebState extends State<HomeTodayRankingWeb> {
             rankChange: widget.crew[i].rankChange,
             onTap: widget.crew[i].crewId == null
                 ? null
-                : () => Get.toNamed('${WebRoutes.crewHome}?id=${widget.crew[i].crewId}'),
+                : () => Get.toNamed(
+                    '${WebRoutes.crewHome}?id=${widget.crew[i].crewId}',
+                  ),
             // 로고가 없는 크루는 크루 색 기본 `LIVE CREW` 로고로 대체한다.
             // 기본 로고 PNG는 자체 테두리/라운드 디자인이 있어 장식을 겹치지 않는다.
             leading: _CrewLogo(
@@ -391,10 +404,7 @@ class _SizeReportingWidget extends StatefulWidget {
   final Widget child;
   final ValueChanged<Size> onSizeChange;
 
-  const _SizeReportingWidget({
-    required this.child,
-    required this.onSizeChange,
-  });
+  const _SizeReportingWidget({required this.child, required this.onSizeChange});
 
   @override
   State<_SizeReportingWidget> createState() => _SizeReportingWidgetState();
@@ -443,12 +453,18 @@ class _RankingCard extends StatelessWidget {
       ),
       // PC: 좌우 30 / 상하 24, 태블릿: 좌우 20 / 상하 20, 모바일: 좌우 16 / 상하 24 (피그마).
       padding: switch (context.screenType) {
-        WebScreenType.desktop =>
-          const EdgeInsets.symmetric(horizontal: 30, vertical: 24),
-        WebScreenType.tablet =>
-          const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-        WebScreenType.mobile =>
-          const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+        WebScreenType.desktop => const EdgeInsets.symmetric(
+          horizontal: 30,
+          vertical: 24,
+        ),
+        WebScreenType.tablet => const EdgeInsets.symmetric(
+          horizontal: 20,
+          vertical: 20,
+        ),
+        WebScreenType.mobile => const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 16,
+        ),
       },
       child: isLoading
           ? Column(
@@ -459,9 +475,18 @@ class _RankingCard extends StatelessWidget {
                     child: SkeletonShimmer(
                       child: Row(
                         children: [
-                          const SkeletonBox(width: 32, height: 32, isCircle: true),
+                          const SkeletonBox(
+                            width: 32,
+                            height: 32,
+                            isCircle: true,
+                          ),
                           const SizedBox(width: 10),
-                          const Expanded(child: SkeletonBox(width: double.infinity, height: 14)),
+                          const Expanded(
+                            child: SkeletonBox(
+                              width: double.infinity,
+                              height: 14,
+                            ),
+                          ),
                         ],
                       ),
                     ),
@@ -469,11 +494,11 @@ class _RankingCard extends StatelessWidget {
               ],
             )
           : isEmpty
-              ? Padding(
-                  padding: const EdgeInsets.symmetric(vertical: SDSSpacing.xl),
-                  child: WebEmptyState(message: emptyMessage, iconWidth: 48),
-                )
-              : Column(children: children),
+          ? Padding(
+              padding: const EdgeInsets.symmetric(vertical: SDSSpacing.xl),
+              child: WebEmptyState(message: emptyMessage, iconWidth: 48),
+            )
+          : Column(children: children),
     );
   }
 }
@@ -515,7 +540,10 @@ class _RankingRow extends StatelessWidget {
               child: Text(
                 '$rank',
                 textAlign: TextAlign.center,
-                style: SDSTextStyle.bold.copyWith(fontSize: 14, color: SDSColor.gray900),
+                style: SDSTextStyle.bold.copyWith(
+                  fontSize: 14,
+                  color: SDSColor.gray900,
+                ),
               ),
             ),
             const SizedBox(width: 6),
@@ -531,14 +559,20 @@ class _RankingRow extends StatelessWidget {
                     name,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray900),
+                    style: SDSTextStyle.regular.copyWith(
+                      fontSize: 14,
+                      color: SDSColor.gray900,
+                    ),
                   ),
                   if (subtitle.isNotEmpty) ...[
                     Text(
                       subtitle,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: SDSTextStyle.regular.copyWith(fontSize: 11, color: SDSColor.gray500),
+                      style: SDSTextStyle.regular.copyWith(
+                        fontSize: 11,
+                        color: SDSColor.gray500,
+                      ),
                     ),
                   ],
                 ],
@@ -550,11 +584,17 @@ class _RankingRow extends StatelessWidget {
               context.screenType == WebScreenType.mobile
                   ? _numberFormat.format(score)
                   : '${_numberFormat.format(score)}점',
-              style: SDSTextStyle.regular.copyWith(fontSize: 16, color: SDSColor.gray900),
+              style: SDSTextStyle.regular.copyWith(
+                fontSize: 16,
+                color: SDSColor.gray900,
+              ),
             ),
             const SizedBox(width: 4),
             // 화살표 자리는 값이 없어도 비워 둔다 — 점수 우측 끝이 행마다 흔들리지 않게.
-            SizedBox(width: 10, child: Center(child: _RankChangeArrow(change: rankChange))),
+            SizedBox(
+              width: 10,
+              child: Center(child: _RankChangeArrow(change: rankChange)),
+            ),
           ],
         ),
       ),
@@ -563,7 +603,11 @@ class _RankingRow extends StatelessWidget {
     if (onTap == null) return row;
     return MouseRegion(
       cursor: SystemMouseCursors.click,
-      child: GestureDetector(behavior: HitTestBehavior.opaque, onTap: onTap, child: row),
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: onTap,
+        child: row,
+      ),
     );
   }
 }
@@ -605,15 +649,15 @@ class _RoundedTrianglePainter extends CustomPainter {
 
     final path = pointUp
         ? (Path()
-          ..moveTo(size.width / 2, inset)
-          ..lineTo(size.width - inset, size.height - inset)
-          ..lineTo(inset, size.height - inset)
-          ..close())
+            ..moveTo(size.width / 2, inset)
+            ..lineTo(size.width - inset, size.height - inset)
+            ..lineTo(inset, size.height - inset)
+            ..close())
         : (Path()
-          ..moveTo(inset, inset)
-          ..lineTo(size.width - inset, inset)
-          ..lineTo(size.width / 2, size.height - inset)
-          ..close());
+            ..moveTo(inset, inset)
+            ..lineTo(size.width - inset, inset)
+            ..lineTo(size.width / 2, size.height - inset)
+            ..close());
 
     final fill = Paint()..color = color;
     final stroke = Paint()
@@ -687,18 +731,27 @@ class _CrewLogo extends StatelessWidget {
 
 // ──────────────────────────────── 커뮤니티 ────────────────────────────────
 
-/// 커뮤니티 글 한 줄 높이(제목 줄 + 메타 줄 + 상하 여백). 스켈레톤도 같은 높이를 쓴다.
-const double _kCommunityRowHeight = 68;
+/// 커뮤니티 글 한 줄 높이(구분선 1 포함). 페이지 높이를 `행 수 × 이 값`으로
+/// 고정하므로 스켈레톤도 같은 값을 쓴다.
+///
+/// 내용 41(제목 줄 20 + 4 + 메타 줄 17)에 위아래 약 20씩(사용자 확정 — 86에서
+/// 상하 2씩만 줄였다).
+const double _kCommunityRowHeight = 82;
 
-/// 2열 사이 간격 — 크루홈 `랭킹 TOP 10 멤버` 2열과 같은 48.
-const double _kCommunityColumnGap = 48;
+/// 글 줄 좌우 패딩 — **0**(사용자 확정). 글자가 섹션 제목 `커뮤니티`와 같은 세로선에
+/// 선다. 박스형일 때만 안쪽 여백이 필요했다.
+const double _kCommunityRowPadH = 0;
+
+/// 2열 사이 간격 — **16**(사용자 확정. 48에서 좁혔다).
+const double _kCommunityColumnGap = SDSSpacing.md;
 
 /// 홈 `커뮤니티` — 게시판 최신글.
 ///
-/// 목업이 없어 홈 섹션 규칙(제목 + 검정 `더보기`)과 커뮤니티 목록 화면의 행 부품
+/// 목업이 없어 홈 섹션 규칙(제목 + `더보기` 버튼)과 커뮤니티 목록 화면의 행 부품
 /// (`[칩] 제목 [🖼] (N)` = [CommunityTitleLine])을 그대로 조합했다. 실데이터가 대부분
-/// 글 위주라(사진 있는 글 약 1/3) 카드형 대신 **선으로 나뉜 목록**이다. 바로 위
-/// `오늘의 랭킹`이 회색 패널이라 패널로 또 감싸지 않는다.
+/// 글 위주라(사진 있는 글 약 1/3) 사진 카드형이 아니라 **하단 구분선으로 나눈
+/// 목록**이다(박스형과 비교 중 — 사용자 요청으로 다시 구분선). 바로 위 `오늘의 랭킹`이
+/// 회색 패널이라 패널로 또 감싸지 않는다.
 ///
 /// PC·태블릿 2열 × 3행(1열에 최신 1~3, 2열에 4~6 — 크루홈 TOP 10과 같은 열 순서) /
 /// 홈 커뮤니티 — 중고거래·각종소식과 같은 **가로 캐러셀**(최대 3페이지, 하단 점 인디케이터).
@@ -707,7 +760,11 @@ class HomeCommunityWeb extends StatefulWidget {
   final List<Community> posts;
   final bool isLoading;
 
-  const HomeCommunityWeb({super.key, required this.posts, required this.isLoading});
+  const HomeCommunityWeb({
+    super.key,
+    required this.posts,
+    required this.isLoading,
+  });
 
   @override
   State<HomeCommunityWeb> createState() => _HomeCommunityWebState();
@@ -741,8 +798,9 @@ class _HomeCommunityWebState extends State<HomeCommunityWeb> {
       widget.posts.take(perPage * kHomeCommunityMaxPages).toList(),
       perPage,
     );
-    final page =
-        pages.isEmpty ? const <Community>[] : pages[_page.clamp(0, pages.length - 1)];
+    final page = pages.isEmpty
+        ? const <Community>[]
+        : pages[_page.clamp(0, pages.length - 1)];
 
     final Widget body;
     if (widget.isLoading && widget.posts.isEmpty) {
@@ -784,12 +842,17 @@ class _HomeCommunityWebState extends State<HomeCommunityWeb> {
       children: [
         _HomeSectionHeader(
           title: '커뮤니티',
-          onPrev: pages.length > 1 ? () => _goTo(_page - 1, pages.length) : null,
-          onNext: pages.length > 1 ? () => _goTo(_page + 1, pages.length) : null,
+          onPrev: pages.length > 1
+              ? () => _goTo(_page - 1, pages.length)
+              : null,
+          onNext: pages.length > 1
+              ? () => _goTo(_page + 1, pages.length)
+              : null,
           trailing: _MoreButton(onTap: () => Get.toNamed(WebRoutes.community)),
         ),
-        // 헤더 ↔ 본문 16 — 크루·중고거래 캐러셀과 같다.
-        const SizedBox(height: 16),
+        // 헤더 ↔ 본문 — PC·태블릿 16(크루·중고거래 캐러셀과 같다),
+        // **모바일은 12**(사용자 확정 — 줄 목록이라 16은 떠 보였다).
+        SizedBox(height: isMobile ? 12 : 16),
         body,
         if (pages.length > 1) ...[
           const SizedBox(height: 24),
@@ -801,8 +864,11 @@ class _HomeCommunityWebState extends State<HomeCommunityWeb> {
 
   /// 한 페이지(최대 4글)를 좌측 정렬 그리드로.
   Widget _grid(int columns, int perColumn, List<Community> items) {
+    // 글이 적으면 그만큼만 높이를 쓴다 — 열을 1열부터 채우므로 실제 줄 수는
+    // `min(열당 줄 수, 글 수)`다(빈 줄만큼 아래가 비던 문제).
+    final rows = items.length < perColumn ? items.length : perColumn;
     return _pageBody(
-      perColumn,
+      rows,
       _columns(
         columns: columns,
         perColumn: perColumn,
@@ -812,19 +878,13 @@ class _HomeCommunityWebState extends State<HomeCommunityWeb> {
     );
   }
 
-  /// 페이지 높이를 고정(행 수 × 행높이)하고, 글 목록을 행 패딩(8)만큼 **바깥으로 빼서**
-  /// 글자가 제목 `커뮤니티`와 같은 세로선에 서게 한다(hover 배경만 여백 쪽으로 넘어간다).
-  Widget _pageBody(int perColumn, Widget child) {
-    return SizedBox(
-      height: perColumn * _kCommunityRowHeight,
-      child: LayoutBuilder(
-        builder: (context, constraints) => OverflowBox(
-          minWidth: 0,
-          maxWidth: constraints.maxWidth + SDSSpacing.sm * 2,
-          child: child,
-        ),
-      ),
-    );
+  /// 페이지 높이를 고정([rows] × 피치)한다.
+  ///
+  /// 예전에는 목록을 행 패딩만큼 바깥으로 빼서 글자를 제목 `커뮤니티`와 같은 세로선에
+  /// 세웠는데, 박스 라인은 **페이지 좌우 여백선을 넘으면 안 되므로** 그 보정을 뺐다
+  /// (글자는 박스 안쪽 패딩만큼 들어가 보인다 — 중고거래·크루 카드와 같은 모양).
+  Widget _pageBody(int rows, Widget child) {
+    return SizedBox(height: rows * _kCommunityRowHeight, child: child);
   }
 
   /// [length]개를 열 순서로 채운다(1열이 먼저 찬다).
@@ -843,7 +903,12 @@ class _HomeCommunityWebState extends State<HomeCommunityWeb> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                for (var i = c * perColumn; i < (c + 1) * perColumn && i < length; i++) build(i),
+                for (
+                  var i = c * perColumn;
+                  i < (c + 1) * perColumn && i < length;
+                  i++
+                )
+                  build(i),
               ],
             ),
           ),
@@ -854,7 +919,8 @@ class _HomeCommunityWebState extends State<HomeCommunityWeb> {
 }
 
 /// 글 한 줄 — 1줄 `[칩] 제목 [🖼] (N)`(커뮤니티 목록과 같은 부품), 2줄 `닉네임 · 3시간 전 · 조회 52`.
-/// 아래 구분선 gray100(커뮤니티 표와 같은 선), hover는 gray50 배경, 누르면 게시글 상세.
+/// **하단 구분선**(gray100)으로 나뉘고, hover는 **제목에 밑줄**만 긋는다(사용자 확정 —
+/// 줄 전체를 gray50으로 칠하면 과해 보였다). 누르면 게시글 상세.
 class _HomeCommunityRow extends StatefulWidget {
   final Community post;
 
@@ -877,37 +943,37 @@ class _HomeCommunityRowState extends State<_HomeCommunityRow> {
       child: GestureDetector(
         behavior: HitTestBehavior.opaque,
         onTap: () => openCommunityDetail(widget.post),
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 120),
+        child: Container(
+          // 줄 높이는 고정 — 페이지 높이가 행 수 × 이 값이라 내용대로 줄면 아래가 빈다.
           height: _kCommunityRowHeight,
-          padding: const EdgeInsets.symmetric(horizontal: SDSSpacing.sm),
-          // hover 배경은 행 패딩까지(목록을 바깥으로 뺀 만큼 여백 쪽으로) 깔리고,
-          // 구분선은 안쪽 콘텐츠 폭에만 그어 페이지 여백선 밖으로 나가지 않게 한다.
-          color: _hovered ? SDSColor.gray50 : SDSColor.snowliveWhite,
-          child: DecoratedBox(
-            decoration: const BoxDecoration(
-              border: Border(bottom: BorderSide(color: SDSColor.gray100)),
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                CommunityTitleLine(community: widget.post, query: ''),
-                if (meta.isNotEmpty) ...[
-                  const SizedBox(height: 4),
-                  Text(
-                    meta,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: SDSTextStyle.regular.copyWith(
-                      fontSize: 13,
-                      height: 17 / 13,
-                      color: SDSColor.gray500,
-                    ),
+          padding: const EdgeInsets.symmetric(horizontal: _kCommunityRowPadH),
+          decoration: BoxDecoration(
+            border: Border(bottom: BorderSide(color: SDSColor.gray100)),
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // hover 표시는 제목 밑줄만(줄 배경은 칠하지 않는다).
+              CommunityTitleLine(
+                community: widget.post,
+                query: '',
+                underline: _hovered,
+              ),
+              if (meta.isNotEmpty) ...[
+                const SizedBox(height: 4),
+                Text(
+                  meta,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: SDSTextStyle.regular.copyWith(
+                    fontSize: 13,
+                    height: 17 / 13,
+                    color: SDSColor.gray500,
                   ),
-                ],
+                ),
               ],
-            ),
+            ],
           ),
         ),
       ),
@@ -920,14 +986,14 @@ class _HomeCommunityRowSkeleton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // 실제 행과 같은 규격 — 줄 높이 86 · 하단 구분선 gray100.
     return Container(
       height: _kCommunityRowHeight,
-      padding: const EdgeInsets.symmetric(horizontal: SDSSpacing.sm),
-      child: const DecoratedBox(
-        decoration: BoxDecoration(
-          border: Border(bottom: BorderSide(color: SDSColor.gray100)),
-        ),
-        child: Column(
+      padding: const EdgeInsets.symmetric(horizontal: _kCommunityRowPadH),
+      decoration: BoxDecoration(
+        border: Border(bottom: BorderSide(color: SDSColor.gray100)),
+      ),
+      child: const Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -939,10 +1005,9 @@ class _HomeCommunityRowSkeleton extends StatelessWidget {
               SizedBox(width: 48),
             ],
           ),
-            SizedBox(height: 6),
-            SkeletonBox(width: 150, height: 12),
-          ],
-        ),
+          SizedBox(height: 6),
+          SkeletonBox(width: 150, height: 12),
+        ],
       ),
     );
   }
@@ -955,7 +1020,11 @@ class HomeCrewCardsWeb extends StatefulWidget {
   final List<HomeCrewCard> cards;
   final bool isLoading;
 
-  const HomeCrewCardsWeb({super.key, required this.cards, required this.isLoading});
+  const HomeCrewCardsWeb({
+    super.key,
+    required this.cards,
+    required this.isLoading,
+  });
 
   @override
   State<HomeCrewCardsWeb> createState() => _HomeCrewCardsWebState();
@@ -969,6 +1038,7 @@ class _HomeCrewCardsWebState extends State<HomeCrewCardsWeb>
   /// 카드당 200ms, 80ms 간격 → 3장 기준 총 360ms.
   static const int _kCardFadeMs = 200;
   static const int _kCardStaggerMs = 80;
+
   /// ⚠️ **`initState`에서 만든다.** 선언부에서 바로 생성하면 지연 초기화라,
   /// **모바일에서는 이 컨트롤러를 쓰지 않아**(스와이프 PageView를 쓴다) 끝까지
   /// 만들어지지 않고 `dispose()`가 그때 처음 초기화를 실행한다 → 이미 트리에서
@@ -980,7 +1050,9 @@ class _HomeCrewCardsWebState extends State<HomeCrewCardsWeb>
     super.initState();
     _cardsEnter = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: _kCardFadeMs + _kCardStaggerMs * 2),
+      duration: const Duration(
+        milliseconds: _kCardFadeMs + _kCardStaggerMs * 2,
+      ),
     )..forward();
   }
 
@@ -1003,8 +1075,10 @@ class _HomeCrewCardsWebState extends State<HomeCrewCardsWeb>
   Animation<double> _cardFade(int i) {
     final int totalMs = _cardsEnter.duration!.inMilliseconds;
     final double start = (i * _kCardStaggerMs) / totalMs;
-    final double end =
-        ((i * _kCardStaggerMs + _kCardFadeMs) / totalMs).clamp(0.0, 1.0);
+    final double end = ((i * _kCardStaggerMs + _kCardFadeMs) / totalMs).clamp(
+      0.0,
+      1.0,
+    );
     return CurvedAnimation(
       parent: _cardsEnter,
       curve: Interval(start, end, curve: Curves.easeOut),
@@ -1012,25 +1086,31 @@ class _HomeCrewCardsWebState extends State<HomeCrewCardsWeb>
   }
 
   int _perPage(WebScreenType type) => switch (type) {
-        WebScreenType.desktop => 3,
-        WebScreenType.tablet => 2,
-        WebScreenType.mobile => 1,
-      };
+    WebScreenType.desktop => 3,
+    WebScreenType.tablet => 2,
+    WebScreenType.mobile => 1,
+  };
 
   @override
   Widget build(BuildContext context) {
     final screenType = context.screenType;
     final perPage = _perPage(screenType);
     final pages = homeCarouselPages(widget.cards, perPage);
-    final page = pages.isEmpty ? const <HomeCrewCard>[] : pages[_page.clamp(0, pages.length - 1)];
+    final page = pages.isEmpty
+        ? const <HomeCrewCard>[]
+        : pages[_page.clamp(0, pages.length - 1)];
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         _HomeSectionHeader(
           title: '우리 크루는요',
-          onPrev: pages.length > 1 ? () => _goTo(_page - 1, pages.length) : null,
-          onNext: pages.length > 1 ? () => _goTo(_page + 1, pages.length) : null,
+          onPrev: pages.length > 1
+              ? () => _goTo(_page - 1, pages.length)
+              : null,
+          onNext: pages.length > 1
+              ? () => _goTo(_page + 1, pages.length)
+              : null,
         ),
         // 헤더 ↔ 캐러셀 간격 16.
         const SizedBox(height: 16),
@@ -1068,7 +1148,10 @@ class _HomeCrewCardsWebState extends State<HomeCrewCardsWeb>
   }
 
   Widget _buildCards(
-      WebScreenType screenType, int perPage, List<HomeCrewCard> page) {
+    WebScreenType screenType,
+    int perPage,
+    List<HomeCrewCard> page,
+  ) {
     final bool isMobile = screenType == WebScreenType.mobile;
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -1079,23 +1162,23 @@ class _HomeCrewCardsWebState extends State<HomeCrewCardsWeb>
           Expanded(
             child: i < page.length
                 ? (isMobile
-                    // 모바일: PageView가 전환을 담당하므로 스태거 없이 그대로.
-                    ? _CrewTalkCard(card: page[i])
-                    : AnimatedBuilder(
-                        animation: _cardFade(i),
-                        builder: (context, child) {
-                          final anim = _cardFade(i);
-                          return Opacity(
-                            opacity: anim.value,
-                            // 아래에서 위로 12px 살짝 올라오며 등장.
-                            child: Transform.translate(
-                              offset: Offset(0, (1 - anim.value) * 12),
-                              child: child,
-                            ),
-                          );
-                        },
-                        child: _CrewTalkCard(card: page[i]),
-                      ))
+                      // 모바일: PageView가 전환을 담당하므로 스태거 없이 그대로.
+                      ? _CrewTalkCard(card: page[i])
+                      : AnimatedBuilder(
+                          animation: _cardFade(i),
+                          builder: (context, child) {
+                            final anim = _cardFade(i);
+                            return Opacity(
+                              opacity: anim.value,
+                              // 아래에서 위로 12px 살짝 올라오며 등장.
+                              child: Transform.translate(
+                                offset: Offset(0, (1 - anim.value) * 12),
+                                child: child,
+                              ),
+                            );
+                          },
+                          child: _CrewTalkCard(card: page[i]),
+                        ))
                 : const SizedBox.shrink(),
           ),
         ],
@@ -1110,7 +1193,11 @@ class _HomeCrewCardsWebState extends State<HomeCrewCardsWeb>
           if (i > 0) const SizedBox(width: SDSSpacing.md),
           const Expanded(
             child: SkeletonShimmer(
-              child: SkeletonBox(width: double.infinity, height: 260, radius: 12),
+              child: SkeletonBox(
+                width: double.infinity,
+                height: 260,
+                radius: 12,
+              ),
             ),
           ),
         ],
@@ -1135,10 +1222,52 @@ class _CrewTalkCardState extends State<_CrewTalkCard> with _TapFeedback {
 
   HomeCrewCard get card => widget.card;
 
+  /// 사진 자리에 그리는 **로고 판**.
+  ///
+  /// 배경색 규칙(사용자 확정):
+  /// - 크루가 등록한 로고가 **없으면**(색별 기본 `LIVE CREW` 마크) → **크루 색**
+  ///   (색도 없으면 gray100)
+  /// - 크루가 **직접 등록한 로고**가 있으면 → **gray800(#222222)**.
+  ///   로고 색을 알 수 없으니 크루 색을 깔면 로고와 부딪힌다.
+  Widget _crewPlate({required String? color, required String? logoUrl}) {
+    final hasCustomLogo = logoUrl?.isNotEmpty ?? false;
+    final mark = crewLogoUrlOf(logoUrl: logoUrl, color: color);
+    return Container(
+      color: hasCustomLogo
+          ? SDSColor.gray800
+          : (crewColorOf(color) ?? SDSColor.gray100),
+      alignment: Alignment.center,
+      child: (mark?.isNotEmpty ?? false)
+          // 마크는 판 폭의 20%. 등록 로고는 원본이 사각 이미지라 **라운드를 직접
+          // 입힌다**(한 변의 0.2 = crewLogoRadius, 기본 마크에 구워진 곡률과 같은 규칙).
+          // 기본 `LIVE CREW` 마크는 이미 모서리가 둥글고 배경이 투명해 그대로 둔다.
+          ? LayoutBuilder(
+              builder: (context, constraints) {
+                final markSize = constraints.maxWidth * 0.20;
+                return SizedBox(
+                  width: markSize,
+                  height: markSize,
+                  child: WebNetworkImage(
+                    url: mark,
+                    width: markSize,
+                    height: markSize,
+                    fit: hasCustomLogo ? BoxFit.cover : BoxFit.contain,
+                    borderRadius: hasCustomLogo ? crewLogoRadius(markSize) : 0,
+                  ),
+                );
+              },
+            )
+          : const SizedBox.shrink(),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final crewColor = crewColorOf(card.crewColor);
-    final logoUrl = crewLogoUrlOf(logoUrl: card.crewLogoUrl, color: card.crewColor);
+    final logoUrl = crewLogoUrlOf(
+      logoUrl: card.crewLogoUrl,
+      color: card.crewColor,
+    );
 
     // 크루톡 카드 → 라이브톡 상세(해당 글). talkId 없으면(예외) 크루홈으로 폴백.
     final int? openTalkId = card.talkId;
@@ -1154,9 +1283,11 @@ class _CrewTalkCardState extends State<_CrewTalkCard> with _TapFeedback {
         onTap: !tappable
             ? null
             : () async {
-                await Get.toNamed(openTalkId != null
-                    ? '${WebRoutes.liveTalkDetail}?id=$openTalkId'
-                    : '${WebRoutes.crewHome}?id=${card.crewId}');
+                await Get.toNamed(
+                  openTalkId != null
+                      ? '${WebRoutes.liveTalkDetail}?id=$openTalkId'
+                      : '${WebRoutes.crewHome}?id=${card.crewId}',
+                );
                 // 상세에서 크루톡이 삭제됐을 수 있으니 돌아오면 홈 크루카드를 새로고침한다.
                 if (mounted && Get.isRegistered<HomeViewModelWeb>()) {
                   await Get.find<HomeViewModelWeb>().loadCrewCards();
@@ -1179,37 +1310,43 @@ class _CrewTalkCardState extends State<_CrewTalkCard> with _TapFeedback {
                     fit: StackFit.expand,
                     children: [
                       if (card.imageUrl != null)
-                        WebNetworkImage(url: card.imageUrl, fit: BoxFit.cover)
+                        // 사진이 깨지면 **크루 색이 없는 판**(gray100 + 회색 기본 마크)으로
+                        // 떨어진다(사용자 확정) — 실패한 사진에 크루 색을 입히면
+                        // 사진이 있는 카드처럼 보인다.
+                        WebNetworkImage(
+                          url: card.imageUrl,
+                          fit: BoxFit.cover,
+                          fallback: _crewPlate(color: null, logoUrl: null),
+                        )
                       else
-                        // 사진이 없으면 크루 색 배경 + 기본 로고(목업의 초록 카드).
-                        Container(
-                          color: crewColor ?? SDSColor.gray100,
-                          alignment: Alignment.center,
-                          child: FractionallySizedBox(
-                            widthFactor: 0.20,
-                            child: (logoUrl?.isNotEmpty ?? false)
-                                ? WebNetworkImage(url: logoUrl, fit: BoxFit.contain)
-                                : const SizedBox.shrink(),
+                        // 사진이 없으면 로고 판(목업의 초록 카드).
+                        _crewPlate(
+                          color: card.crewColor,
+                          logoUrl: card.crewLogoUrl,
+                        ),
+                      if (card.isNew)
+                        // NEW 배지: 검정 pill(40), 패딩 9/4, Bold 10 (피그마 기준).
+                        Positioned(
+                          left: 12,
+                          top: 12,
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 9,
+                              vertical: 4,
+                            ),
+                            decoration: BoxDecoration(
+                              color: SDSColor.snowliveBlack,
+                              borderRadius: BorderRadius.circular(40),
+                            ),
+                            child: Text(
+                              'NEW',
+                              style: SDSTextStyle.bold.copyWith(
+                                fontSize: 10,
+                                color: SDSColor.snowliveWhite,
+                              ),
+                            ),
                           ),
                         ),
-                    if (card.isNew)
-                      // NEW 배지: 검정 pill(40), 패딩 9/4, Bold 10 (피그마 기준).
-                      Positioned(
-                        left: 12,
-                        top: 12,
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 4),
-                          decoration: BoxDecoration(
-                            color: SDSColor.snowliveBlack,
-                            borderRadius: BorderRadius.circular(40),
-                          ),
-                          child: Text(
-                            'NEW',
-                            style: SDSTextStyle.bold
-                                .copyWith(fontSize: 10, color: SDSColor.snowliveWhite),
-                          ),
-                        ),
-                      ),
                     ],
                   ),
                 ),
@@ -1225,7 +1362,12 @@ class _CrewTalkCardState extends State<_CrewTalkCard> with _TapFeedback {
                   Row(
                     children: [
                       // 크루 로고 30, radius 5 (피그마 기준)
-                      _CrewLogo(logoUrl: logoUrl, color: crewColor, size: 26, radius: 5),
+                      _CrewLogo(
+                        logoUrl: logoUrl,
+                        color: crewColor,
+                        size: 26,
+                        radius: 5,
+                      ),
                       const SizedBox(width: 6),
                       Flexible(
                         child: Text(
@@ -1247,7 +1389,10 @@ class _CrewTalkCardState extends State<_CrewTalkCard> with _TapFeedback {
                     card.title,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: SDSTextStyle.bold.copyWith(fontSize: 16, color: SDSColor.gray900),
+                    style: SDSTextStyle.bold.copyWith(
+                      fontSize: 16,
+                      color: SDSColor.gray900,
+                    ),
                   ),
                   const SizedBox(height: 2),
                   // 설명: 최대 2줄. 문구가 없거나 한 줄이어도 두 줄 높이(14*1.4*2)를
@@ -1258,8 +1403,11 @@ class _CrewTalkCardState extends State<_CrewTalkCard> with _TapFeedback {
                       card.description,
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
-                      style: SDSTextStyle.regular
-                          .copyWith(fontSize: 14, height: 1.4, color: SDSColor.gray900),
+                      style: SDSTextStyle.regular.copyWith(
+                        fontSize: 14,
+                        height: 1.4,
+                        color: SDSColor.gray900,
+                      ),
                     ),
                   ),
                 ],
@@ -1279,7 +1427,11 @@ class HomeFleamarketWeb extends StatefulWidget {
   final List<Fleamarket> items;
   final bool isLoading;
 
-  const HomeFleamarketWeb({super.key, required this.items, required this.isLoading});
+  const HomeFleamarketWeb({
+    super.key,
+    required this.items,
+    required this.isLoading,
+  });
 
   @override
   State<HomeFleamarketWeb> createState() => _HomeFleamarketWebState();
@@ -1293,6 +1445,7 @@ class _HomeFleamarketWebState extends State<HomeFleamarketWeb>
   /// 6장이라 스태거 간격은 짧게(50ms) 가져간다.
   static const int _kCardFadeMs = 200;
   static const int _kCardStaggerMs = 50;
+
   /// ⚠️ **`initState`에서 만든다.** 선언부에서 `late final ... = AnimationController(...)`로
   /// 두면 지연 초기화라, **모바일에서는 이 컨트롤러를 쓰지 않아**(스와이프 PageView를
   /// 쓴다) 끝까지 생성되지 않고 `dispose()`의 `_cardsEnter.dispose()`가 그때 처음
@@ -1308,7 +1461,9 @@ class _HomeFleamarketWebState extends State<HomeFleamarketWeb>
     super.initState();
     _cardsEnter = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: _kCardFadeMs + _kCardStaggerMs * 5),
+      duration: const Duration(
+        milliseconds: _kCardFadeMs + _kCardStaggerMs * 5,
+      ),
     )..forward();
     // precacheImage는 context의 의존성(ImageConfiguration)을 읽으므로 initState에서
     // 바로 부를 수 없다 → 첫 프레임 뒤에 선로딩한다.
@@ -1334,8 +1489,9 @@ class _HomeFleamarketWebState extends State<HomeFleamarketWeb>
   /// 받는 주소는 서버가 축소해 준 목록 썸네일(`listUrl`)이라 디코드 비용도 작다.
   void _preloadThumbs() {
     for (final item in widget.items) {
-      final thumb =
-          (item.photos?.isNotEmpty ?? false) ? item.photos!.first.listUrl : null;
+      final thumb = (item.photos?.isNotEmpty ?? false)
+          ? item.photos!.first.listUrl
+          : null;
       if (thumb == null || thumb.isEmpty) continue;
       // 선로딩 실패(죽은 URL·오프라인)는 조용히 넘긴다 — 안 잡으면 터진다.
       precacheImage(NetworkImage(thumb), context, onError: (_, __) {});
@@ -1357,8 +1513,10 @@ class _HomeFleamarketWebState extends State<HomeFleamarketWeb>
   Animation<double> _cardFade(int i) {
     final int totalMs = _cardsEnter.duration!.inMilliseconds;
     final double start = (i * _kCardStaggerMs) / totalMs;
-    final double end =
-        ((i * _kCardStaggerMs + _kCardFadeMs) / totalMs).clamp(0.0, 1.0);
+    final double end = ((i * _kCardStaggerMs + _kCardFadeMs) / totalMs).clamp(
+      0.0,
+      1.0,
+    );
     return CurvedAnimation(
       parent: _cardsEnter,
       curve: Interval(start, end, curve: Curves.easeOut),
@@ -1366,10 +1524,10 @@ class _HomeFleamarketWebState extends State<HomeFleamarketWeb>
   }
 
   int _perPage(WebScreenType type) => switch (type) {
-        WebScreenType.desktop => 6,
-        WebScreenType.tablet => 4,
-        WebScreenType.mobile => 2,
-      };
+    WebScreenType.desktop => 6,
+    WebScreenType.tablet => 4,
+    WebScreenType.mobile => 2,
+  };
 
   @override
   Widget build(BuildContext context) {
@@ -1379,16 +1537,24 @@ class _HomeFleamarketWebState extends State<HomeFleamarketWeb>
       widget.items.take(perPage * kHomeFleamarketMaxPages).toList(),
       perPage,
     );
-    final page = pages.isEmpty ? const <Fleamarket>[] : pages[_page.clamp(0, pages.length - 1)];
+    final page = pages.isEmpty
+        ? const <Fleamarket>[]
+        : pages[_page.clamp(0, pages.length - 1)];
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         _HomeSectionHeader(
           title: '중고거래',
-          onPrev: pages.length > 1 ? () => _goTo(_page - 1, pages.length) : null,
-          onNext: pages.length > 1 ? () => _goTo(_page + 1, pages.length) : null,
-          trailing: _MoreButton(onTap: () => Get.toNamed(WebRoutes.fleamarketList)),
+          onPrev: pages.length > 1
+              ? () => _goTo(_page - 1, pages.length)
+              : null,
+          onNext: pages.length > 1
+              ? () => _goTo(_page + 1, pages.length)
+              : null,
+          trailing: _MoreButton(
+            onTap: () => Get.toNamed(WebRoutes.fleamarketList),
+          ),
         ),
         // 헤더 ↔ 그리드 간격 — 크루 캐러셀과 동일(16)
         const SizedBox(height: 16),
@@ -1399,7 +1565,11 @@ class _HomeFleamarketWebState extends State<HomeFleamarketWeb>
                 if (i > 0) const SizedBox(width: SDSSpacing.md),
                 const Expanded(
                   child: SkeletonShimmer(
-                    child: SkeletonBox(width: double.infinity, height: 160, radius: 8),
+                    child: SkeletonBox(
+                      width: double.infinity,
+                      height: 160,
+                      radius: 8,
+                    ),
                   ),
                 ),
               ],
@@ -1437,7 +1607,10 @@ class _HomeFleamarketWebState extends State<HomeFleamarketWeb>
   }
 
   Widget _buildCards(
-      WebScreenType screenType, int perPage, List<Fleamarket> page) {
+    WebScreenType screenType,
+    int perPage,
+    List<Fleamarket> page,
+  ) {
     final bool isMobile = screenType == WebScreenType.mobile;
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -1447,23 +1620,23 @@ class _HomeFleamarketWebState extends State<HomeFleamarketWeb>
           Expanded(
             child: i < page.length
                 ? (isMobile
-                    // 모바일: PageView가 전환을 담당하므로 스태거 없이 그대로.
-                    ? _FleamarketMiniCard(item: page[i])
-                    : AnimatedBuilder(
-                        animation: _cardFade(i),
-                        builder: (context, child) {
-                          final anim = _cardFade(i);
-                          return Opacity(
-                            opacity: anim.value,
-                            // 아래에서 위로 12px 살짝 올라오며 등장.
-                            child: Transform.translate(
-                              offset: Offset(0, (1 - anim.value) * 12),
-                              child: child,
-                            ),
-                          );
-                        },
-                        child: _FleamarketMiniCard(item: page[i]),
-                      ))
+                      // 모바일: PageView가 전환을 담당하므로 스태거 없이 그대로.
+                      ? _FleamarketMiniCard(item: page[i])
+                      : AnimatedBuilder(
+                          animation: _cardFade(i),
+                          builder: (context, child) {
+                            final anim = _cardFade(i);
+                            return Opacity(
+                              opacity: anim.value,
+                              // 아래에서 위로 12px 살짝 올라오며 등장.
+                              child: Transform.translate(
+                                offset: Offset(0, (1 - anim.value) * 12),
+                                child: child,
+                              ),
+                            );
+                          },
+                          child: _FleamarketMiniCard(item: page[i]),
+                        ))
                 : const SizedBox.shrink(),
           ),
         ],
@@ -1481,7 +1654,8 @@ class _FleamarketMiniCard extends StatefulWidget {
   State<_FleamarketMiniCard> createState() => _FleamarketMiniCardState();
 }
 
-class _FleamarketMiniCardState extends State<_FleamarketMiniCard> with _TapFeedback {
+class _FleamarketMiniCardState extends State<_FleamarketMiniCard>
+    with _TapFeedback {
   bool _hovered = false;
 
   bool get _highlighted => _hovered || pressed;
@@ -1491,7 +1665,9 @@ class _FleamarketMiniCardState extends State<_FleamarketMiniCard> with _TapFeedb
   @override
   Widget build(BuildContext context) {
     // 목록은 축소 썸네일 우선(없으면 원본으로 폴백).
-    final photo = (item.photos?.isNotEmpty ?? false) ? item.photos!.first.listUrl : null;
+    final photo = (item.photos?.isNotEmpty ?? false)
+        ? item.photos!.first.listUrl
+        : null;
 
     return MouseRegion(
       cursor: SystemMouseCursors.click,
@@ -1512,8 +1688,12 @@ class _FleamarketMiniCardState extends State<_FleamarketMiniCard> with _TapFeedb
               final u = Get.find<UserViewModel>().user.user_id;
               if (u is int && u > 0) uid = u;
             } catch (_) {}
-            unawaited(FleamarketAPI()
-                .addView(fleamarketId: id, body: {if (uid != null) 'user_id': uid}));
+            unawaited(
+              FleamarketAPI().addView(
+                fleamarketId: id,
+                body: {if (uid != null) 'user_id': uid},
+              ),
+            );
           }
           Get.toNamed('${WebRoutes.fleamarketDetail}?id=$id');
         },
@@ -1545,12 +1725,18 @@ class _FleamarketMiniCardState extends State<_FleamarketMiniCard> with _TapFeedb
               item.productName ?? item.title ?? '',
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray900),
+              style: SDSTextStyle.regular.copyWith(
+                fontSize: 14,
+                color: SDSColor.gray900,
+              ),
             ),
             const SizedBox(height: 2),
             Text(
               '${_numberFormat.format(item.price ?? 0)}원',
-              style: SDSTextStyle.bold.copyWith(fontSize: 16, color: SDSColor.gray900),
+              style: SDSTextStyle.bold.copyWith(
+                fontSize: 16,
+                color: SDSColor.gray900,
+              ),
             ),
           ],
         ),
@@ -1578,6 +1764,7 @@ class _HomeEventWebState extends State<HomeEventWeb>
 
   static const int _kCardFadeMs = 200;
   static const int _kCardStaggerMs = 50;
+
   /// ⚠️ **`initState`에서 만든다.** 선언부에서 바로 생성하면 지연 초기화라,
   /// **모바일에서는 이 컨트롤러를 쓰지 않아**(스와이프 PageView를 쓴다) 끝까지
   /// 만들어지지 않고 `dispose()`가 그때 처음 초기화를 실행한다 → 이미 트리에서
@@ -1591,7 +1778,9 @@ class _HomeEventWebState extends State<HomeEventWeb>
     super.initState();
     _cardsEnter = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: _kCardFadeMs + _kCardStaggerMs * 5),
+      duration: const Duration(
+        milliseconds: _kCardFadeMs + _kCardStaggerMs * 5,
+      ),
     )..forward();
   }
 
@@ -1610,8 +1799,10 @@ class _HomeEventWebState extends State<HomeEventWeb>
   Animation<double> _cardFade(int i) {
     final int totalMs = _cardsEnter.duration!.inMilliseconds;
     final double start = (i * _kCardStaggerMs) / totalMs;
-    final double end =
-        ((i * _kCardStaggerMs + _kCardFadeMs) / totalMs).clamp(0.0, 1.0);
+    final double end = ((i * _kCardStaggerMs + _kCardFadeMs) / totalMs).clamp(
+      0.0,
+      1.0,
+    );
     return CurvedAnimation(
       parent: _cardsEnter,
       curve: Interval(start, end, curve: Curves.easeOut),
@@ -1619,10 +1810,10 @@ class _HomeEventWebState extends State<HomeEventWeb>
   }
 
   int _perPage(WebScreenType type) => switch (type) {
-        WebScreenType.desktop => 6,
-        WebScreenType.tablet => 4,
-        WebScreenType.mobile => 2,
-      };
+    WebScreenType.desktop => 6,
+    WebScreenType.tablet => 4,
+    WebScreenType.mobile => 2,
+  };
 
   @override
   Widget build(BuildContext context) {
@@ -1632,16 +1823,21 @@ class _HomeEventWebState extends State<HomeEventWeb>
       widget.items.take(perPage * kHomeFleamarketMaxPages).toList(),
       perPage,
     );
-    final page =
-        pages.isEmpty ? const <EventModel>[] : pages[_page.clamp(0, pages.length - 1)];
+    final page = pages.isEmpty
+        ? const <EventModel>[]
+        : pages[_page.clamp(0, pages.length - 1)];
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         _HomeSectionHeader(
           title: '각종소식',
-          onPrev: pages.length > 1 ? () => _goTo(_page - 1, pages.length) : null,
-          onNext: pages.length > 1 ? () => _goTo(_page + 1, pages.length) : null,
+          onPrev: pages.length > 1
+              ? () => _goTo(_page - 1, pages.length)
+              : null,
+          onNext: pages.length > 1
+              ? () => _goTo(_page + 1, pages.length)
+              : null,
           trailing: _MoreButton(onTap: () => Get.toNamed(WebRoutes.event)),
         ),
         const SizedBox(height: 16),
@@ -1652,7 +1848,11 @@ class _HomeEventWebState extends State<HomeEventWeb>
                 if (i > 0) const SizedBox(width: SDSSpacing.md),
                 const Expanded(
                   child: SkeletonShimmer(
-                    child: SkeletonBox(width: double.infinity, height: 160, radius: 8),
+                    child: SkeletonBox(
+                      width: double.infinity,
+                      height: 160,
+                      radius: 8,
+                    ),
                   ),
                 ),
               ],
@@ -1686,7 +1886,10 @@ class _HomeEventWebState extends State<HomeEventWeb>
   }
 
   Widget _buildCards(
-      WebScreenType screenType, int perPage, List<EventModel> page) {
+    WebScreenType screenType,
+    int perPage,
+    List<EventModel> page,
+  ) {
     final bool isMobile = screenType == WebScreenType.mobile;
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -1696,21 +1899,21 @@ class _HomeEventWebState extends State<HomeEventWeb>
           Expanded(
             child: i < page.length
                 ? (isMobile
-                    ? _EventMiniCard(item: page[i])
-                    : AnimatedBuilder(
-                        animation: _cardFade(i),
-                        builder: (context, child) {
-                          final anim = _cardFade(i);
-                          return Opacity(
-                            opacity: anim.value,
-                            child: Transform.translate(
-                              offset: Offset(0, (1 - anim.value) * 12),
-                              child: child,
-                            ),
-                          );
-                        },
-                        child: _EventMiniCard(item: page[i]),
-                      ))
+                      ? _EventMiniCard(item: page[i])
+                      : AnimatedBuilder(
+                          animation: _cardFade(i),
+                          builder: (context, child) {
+                            final anim = _cardFade(i);
+                            return Opacity(
+                              opacity: anim.value,
+                              child: Transform.translate(
+                                offset: Offset(0, (1 - anim.value) * 12),
+                                child: child,
+                              ),
+                            );
+                          },
+                          child: _EventMiniCard(item: page[i]),
+                        ))
                 : const SizedBox.shrink(),
           ),
         ],
@@ -1740,7 +1943,8 @@ class _EventMiniCardState extends State<_EventMiniCard> with _TapFeedback {
     final photo = item.thumbImgUrl;
     // 제목 아래 요약 한 줄: 카테고리 · 계정명.
     final cat = (item.category ?? '').trim();
-    final acc = (item.crawlAccountName ?? item.crawlAccountUsername ?? '').trim();
+    final acc = (item.crawlAccountName ?? item.crawlAccountUsername ?? '')
+        .trim();
     final summary = [cat, acc].where((s) => s.isNotEmpty).join(' · ');
 
     return MouseRegion(
@@ -1779,14 +1983,20 @@ class _EventMiniCardState extends State<_EventMiniCard> with _TapFeedback {
               item.title ?? '',
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray900),
+              style: SDSTextStyle.regular.copyWith(
+                fontSize: 14,
+                color: SDSColor.gray900,
+              ),
             ),
             const SizedBox(height: 2),
             Text(
               summary,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: SDSTextStyle.regular.copyWith(fontSize: 13, color: SDSColor.gray500),
+              style: SDSTextStyle.regular.copyWith(
+                fontSize: 13,
+                color: SDSColor.gray500,
+              ),
             ),
           ],
         ),
@@ -1959,20 +2169,26 @@ class _MoreButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // 더보기: 검정 배경, radius 4, 패딩 13/8, Bold 13 (피그마 기준).
+    // 더보기: gray100 배경 · 블랙 텍스트(사용자 확정 — 검정 배경에서 변경),
+    // radius 4, 패딩 13/8, Bold 13.
+    // hover는 웹 공통 — 리플·그림자 없이 연회색 면에 검정 4%만 덧칠한다.
     return Material(
-      color: SDSColor.snowliveBlack,
+      color: SDSColor.gray100,
       borderRadius: BorderRadius.circular(4),
       clipBehavior: Clip.antiAlias,
       child: InkWell(
         onTap: onTap,
         splashFactory: NoSplash.splashFactory,
         highlightColor: Colors.transparent,
+        hoverColor: Colors.black.withValues(alpha: 0.04),
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 8),
           child: Text(
             '더보기',
-            style: SDSTextStyle.bold.copyWith(fontSize: 13, color: SDSColor.snowliveWhite),
+            style: SDSTextStyle.bold.copyWith(
+              fontSize: 13,
+              color: SDSColor.gray900,
+            ),
           ),
         ),
       ),
@@ -2110,28 +2326,28 @@ class HomeFooterWeb extends StatelessWidget {
   // 모바일(피그마 1:13252): 로고(19) ↔ Contact 30, 3열 좌측 정렬(간격 60),
   // Contact ↔ 배지 30, 배지 높이 40 한 줄(간격 10).
   List<Widget> _buildMobile() => [
-        // 모바일도 목업처럼 좌측 정렬(stretch 안에서는 이미지가 가운데로 붙는다).
-        Align(alignment: Alignment.centerLeft, child: _logo(height: 19)),
-        const SizedBox(height: 30),
-        _contactColumns(gap: 60),
-        const SizedBox(height: 30),
-        _storeBadges(),
-      ];
+    // 모바일도 목업처럼 좌측 정렬(stretch 안에서는 이미지가 가운데로 붙는다).
+    Align(alignment: Alignment.centerLeft, child: _logo(height: 19)),
+    const SizedBox(height: 30),
+    _contactColumns(gap: 60),
+    const SizedBox(height: 30),
+    _storeBadges(),
+  ];
 
   /// GNB 좌상단과 **같은 로고 에셋**(벡터)을 쓴다. PC·태블릿 22 / 모바일 19.
   /// 탭하면 홈으로 이동한다(상단바 로고와 동일).
   Widget _logo({double height = 22}) => MouseRegion(
-        cursor: SystemMouseCursors.click,
-        child: GestureDetector(
-          onTap: () => Get.toNamed(WebRoutes.home),
-          child: SvgPicture.asset(
-            'assets/imgs/logos/snowlive_logo_black_web.svg',
-            height: height,
-            fit: BoxFit.contain,
-            alignment: Alignment.centerLeft,
-          ),
-        ),
-      );
+    cursor: SystemMouseCursors.click,
+    child: GestureDetector(
+      onTap: () => Get.toNamed(WebRoutes.home),
+      child: SvgPicture.asset(
+        'assets/imgs/logos/snowlive_logo_black_web.svg',
+        height: height,
+        fit: BoxFit.contain,
+        alignment: Alignment.centerLeft,
+      ),
+    ),
+  );
 
   Widget _contactColumns({double gap = 70}) {
     // 좁은 폭(모바일 375)에서는 3열 + 간격이 그대로는 들어가지 않아 넘쳤다(실측 130px).
@@ -2155,7 +2371,10 @@ class HomeFooterWeb extends StatelessWidget {
         // 두지 않는다 — 아래 요소와의 간격(40)이 정확히 유지되도록
         Text(
           'Contact',
-          style: SDSTextStyle.bold.copyWith(fontSize: 14, color: SDSColor.gray900),
+          style: SDSTextStyle.bold.copyWith(
+            fontSize: 14,
+            color: SDSColor.gray900,
+          ),
         ),
         for (final contact in contacts) ...[
           const SizedBox(height: 8),
@@ -2217,7 +2436,11 @@ class HomeFooterWeb extends StatelessWidget {
       // 카피라이트 ↔ 링크 간격 16 (피그마 기준).
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: [copyright, const SizedBox(height: SDSSpacing.md), links],
+        children: [
+          copyright,
+          const SizedBox(height: SDSSpacing.md),
+          links,
+        ],
       );
     }
     // 카피라이트는 Expanded로 남은 폭 안에 둔다(좁으면 줄바꿈). Spacer 사이에 두면
@@ -2255,7 +2478,10 @@ class _ContactLinkState extends State<_ContactLink> {
       onExit: (_) => setState(() => _isHovered = false),
       child: GestureDetector(
         behavior: HitTestBehavior.opaque,
-        onTap: () => launchUrl(Uri.parse(widget.url), mode: LaunchMode.externalApplication),
+        onTap: () => launchUrl(
+          Uri.parse(widget.url),
+          mode: LaunchMode.externalApplication,
+        ),
         child: Text(
           widget.label,
           style: SDSTextStyle.regular.copyWith(
@@ -2279,11 +2505,7 @@ class _StoreBadge extends StatelessWidget {
   /// 배지 높이 40 (피그마 기준).
   final double height;
 
-  const _StoreBadge({
-    required this.kind,
-    required this.url,
-    this.height = 40,
-  });
+  const _StoreBadge({required this.kind, required this.url, this.height = 40});
 
   @override
   Widget build(BuildContext context) {
@@ -2291,7 +2513,8 @@ class _StoreBadge extends StatelessWidget {
     return MouseRegion(
       cursor: SystemMouseCursors.click,
       child: GestureDetector(
-        onTap: () => launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication),
+        onTap: () =>
+            launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication),
         child: SvgPicture.asset(
           isApple
               ? 'assets/imgs/logos/badge_app_store.svg'
@@ -2314,7 +2537,8 @@ class _FooterLink extends StatelessWidget {
     return MouseRegion(
       cursor: SystemMouseCursors.click,
       child: GestureDetector(
-        onTap: () => launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication),
+        onTap: () =>
+            launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication),
         child: Text(
           label,
           style: SDSTextStyle.regular.copyWith(

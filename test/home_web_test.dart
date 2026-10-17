@@ -1,7 +1,8 @@
 import 'package:com.snowlive/core/model/m_communityList.dart';
 import 'package:com.snowlive/core/model/m_crewHome.dart';
 import 'package:com.snowlive/core/model/m_liveTalk.dart';
-import 'package:com.snowlive/web/view/community/w_community_row_web.dart' show CommunityCategoryChip;
+import 'package:com.snowlive/web/view/community/w_community_row_web.dart'
+    show CommunityCategoryChip;
 import 'package:com.snowlive/web/view/home/home_sections_web.dart';
 import 'package:com.snowlive/core/model/m_rankingListIndiv.dart';
 import 'package:com.snowlive/core/model/m_resortModel.dart';
@@ -446,8 +447,8 @@ void main() {
       final full = tester.getSize(find.byType(HomeCommunityWeb)).height;
       await pumpCommunity(tester, 1440, HomeCommunityWeb(posts: posts, isLoading: false));
       expect(tester.getSize(find.byType(HomeCommunityWeb)).height, greaterThan(full));
-      // 제목 글자가 섹션 제목과 같은 세로선(행 패딩만큼 바깥으로 뺐다).
-      // 칩 **상자**의 왼쪽(안쪽 글자는 칩 패딩 4만큼 더 들어가 있다).
+      // 글 줄의 **칩 상자** 왼쪽이 섹션 제목과 같은 세로선(줄 좌우 패딩 0).
+      // 안쪽 글자는 칩 패딩 4만큼 더 들어가 있다.
       expect(tester.getTopLeft(find.byType(CommunityCategoryChip).first).dx,
           closeTo(tester.getTopLeft(find.text('커뮤니티')).dx, 1));
     });
@@ -688,6 +689,21 @@ void main() {
         );
         expect(tester.takeException(), isNull);
         expectCardDoesNotCoverLinks(tester, 'bar $barWidth');
+
+        // 카드는 **링크 앞까지 꽉 찬다** — 피그마 375로 고정해 두면 태블릿에서
+        // 카드가 모바일 폭처럼 보이고 오른쪽에 빈 공간이 남았다.
+        // 카드 오른쪽 끝 ↔ 첫 링크 라벨 = 간격 24 + 링크 내부 패딩 8.
+        // (테스트 글꼴이 실제보다 넓어 이 폭이 세로 스택으로 떨어지면 카드가 없다.)
+        final cards = find.byType(AnimatedContainer);
+        if (cards.evaluate().isNotEmpty) {
+          final collapsed = tester.getRect(cards.first);
+          final firstLabel = tester.getRect(find.text('네이버 날씨'));
+          expect(
+            firstLabel.left - collapsed.right,
+            lessThanOrEqualTo(24 + 8 + 1),
+            reason: 'bar $barWidth — 카드 오른쪽에 빈 공간이 남았다',
+          );
+        }
 
         // 펼친 상태도 확인한다(카드가 전체폭으로 길어지며 지표 창 360이 붙는다).
         final chip = find.byWidgetPredicate(

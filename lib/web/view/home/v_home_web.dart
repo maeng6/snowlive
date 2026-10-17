@@ -2,6 +2,7 @@ import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/web/util/responsive_web.dart';
 import 'package:com.snowlive/web/view/home/home_sections_web.dart';
 import 'package:com.snowlive/web/view/home/w_home_hero_web.dart';
+import 'package:com.snowlive/web/view/home/w_home_quick_menu_web.dart';
 import 'package:com.snowlive/web/view/home/w_home_open_chat_web.dart';
 import 'package:com.snowlive/web/view/home/w_home_sections_web.dart';
 import 'package:com.snowlive/web/view/home/w_home_weather_web.dart';
@@ -87,10 +88,13 @@ class _HomeViewWebState extends State<HomeViewWeb> {
   /// 단, 오픈 채팅 자신이 뷰포트 위로 밀려나가지는 않게 상한을 둔다.
   void _updateChatBottomPush() {
     final stackBox = _stackKey.currentContext?.findRenderObject() as RenderBox?;
-    final footerBox = _footerKey.currentContext?.findRenderObject() as RenderBox?;
+    final footerBox =
+        _footerKey.currentContext?.findRenderObject() as RenderBox?;
     final chatBox = _chatKey.currentContext?.findRenderObject() as RenderBox?;
     if (stackBox == null || footerBox == null) return;
-    final double footerTop = footerBox.localToGlobal(Offset.zero, ancestor: stackBox).dy;
+    final double footerTop = footerBox
+        .localToGlobal(Offset.zero, ancestor: stackBox)
+        .dy;
     double push = stackBox.size.height - footerTop + 20;
     // 위젯(바/패널) 높이만큼은 화면 안에 남긴다.
     final double chatHeight = chatBox?.size.height ?? 0;
@@ -106,6 +110,9 @@ class _HomeViewWebState extends State<HomeViewWeb> {
   Widget build(BuildContext context) {
     final screenType = context.screenType;
     final isMobile = screenType == WebScreenType.mobile;
+    // 홈 본문 섹션 사이 간격 — 랭킹 아래(중고거래 위)부터 전부 40(사용자 확정).
+    // 예전에는 PC·태블릿 48 / 모바일 32였다.
+    const sectionGap = 40.0;
     // 여백: PC 40 / 태블릿 20 / 모바일 16 (피그마 기준).
     final horizontal = switch (screenType) {
       WebScreenType.desktop => 40.0,
@@ -128,7 +135,9 @@ class _HomeViewWebState extends State<HomeViewWeb> {
 
             content: Center(
               child: ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: kHomeMaxContentWidth),
+                constraints: const BoxConstraints(
+                  maxWidth: kHomeMaxContentWidth,
+                ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
@@ -138,7 +147,12 @@ class _HomeViewWebState extends State<HomeViewWeb> {
                     // 끝까지 꽉 차야 해서다(사용자 확정). 그래서 아래 본문 Padding을
                     // 히어로와 나눠 든다.
                     if (isMobile)
-                      Obx(() => HomeHeroWeb(banners: _vm.banners, isLoaded: _vm.isBannerLoaded)),
+                      Obx(
+                        () => HomeHeroWeb(
+                          banners: _vm.banners,
+                          isLoaded: _vm.isBannerLoaded,
+                        ),
+                      ),
                     Padding(
                       // 상하 여백도 좌우와 동일 규칙(PC 40 / 태블릿 20 / 모바일 16).
                       // 모바일은 히어로가 위를 덮으므로 상단 여백을 주지 않는다.
@@ -153,16 +167,27 @@ class _HomeViewWebState extends State<HomeViewWeb> {
                         children: [
                           if (!isMobile)
                             Obx(
-                              () => HomeHeroWeb(banners: _vm.banners, isLoaded: _vm.isBannerLoaded),
+                              () => HomeHeroWeb(
+                                banners: _vm.banners,
+                                isLoaded: _vm.isBannerLoaded,
+                              ),
                             ),
-                          // 히어로 ↔ 날씨 간격: PC 40 / 태블릿 30 / 모바일 20.
+                          // 히어로 ↔ 다음 블록 — PC는 퀵메뉴가 없어 날씨가 바로
+                          // 붙으므로 40, 태블릿·모바일은 **히어로 ↔ 퀵메뉴 24**
+                          // (모두 사용자 확정).
                           SizedBox(
-                            height: switch (screenType) {
-                              WebScreenType.desktop => 40.0,
-                              WebScreenType.tablet => 30.0,
-                              WebScreenType.mobile => 20,
-                            },
+                            height: screenType == WebScreenType.desktop
+                                ? 40
+                                : 24,
                           ),
+                          // 퀵메뉴 — 태블릿·모바일만(데스크탑은 좌측 사이드바가 그 역할).
+                          // **히어로 바로 아래**(사용자 확정). 모바일은 히어로가 없어
+                          // 콘텐츠 맨 위에 온다.
+                          if (screenType != WebScreenType.desktop) ...[
+                            const HomeQuickMenuWeb(),
+                            // 퀵메뉴 ↔ 날씨 24.
+                            const SizedBox(height: 24),
+                          ],
                           Obx(
                             () => HomeWeatherBarWeb(
                               resort: _vm.resort,
@@ -172,28 +197,34 @@ class _HomeViewWebState extends State<HomeViewWeb> {
                               linkUrls: _vm.resortLinks, // 셔틀 등 링크는 DB값 우선
                             ),
                           ),
-                          // 날씨 ↔ 오늘의 랭킹 간격 30.
-                          SizedBox(height: 30),
                           // 순서: 오늘의 랭킹 → 중고거래 → 커뮤니티 → 우리 크루는요.
-                          // 오늘의 랭킹은 어드민 토글(비시즌 등)로 끄면 숨김(테스트 대상은 노출).
+                          // 오늘의 랭킹은 어드민 토글(비시즌 등)로 끄면 숨김(테스트 대상은 노출)
+                          //
+                          // 날씨 뒤 간격을 이 Obx **안에서** 만든다 — 랭킹이 숨겨질 때
+                          // 바깥에 고정 간격을 두면 중고거래 위만 좁아졌다(사용자 지적).
+                          //  · 랭킹 보임: 날씨 30 랭킹, 랭킹 아래는 섹션 간격
+                          //  · 랭킹 숨김: 날씨 아래가 바로 섹션 간격
+                          // → 어느 경우든 **중고거래 위는 섹션 간격**(PC·태블릿 48 /
+                          //   모바일 32)으로 다른 섹션 사이와 같다
                           Obx(
-                            () => PaidVisibilityControllerWeb.todayRankingVisible
+                            () =>
+                                PaidVisibilityControllerWeb.todayRankingVisible
                                 ? Column(
-                                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.stretch,
                                     children: [
+                                      // 날씨 ↔ 오늘의 랭킹 30(한 묶음처럼 붙인다).
+                                      const SizedBox(height: 30),
                                       HomeTodayRankingWeb(
                                         today: _vm.today,
                                         indiv: _vm.todayIndiv,
                                         crew: _vm.todayCrew,
                                         isLoading: _vm.isRankingLoading,
                                       ),
-                                      SizedBox(
-                                          height: isMobile
-                                              ? SDSSpacing.xl
-                                              : SDSSpacing.xxl),
+                                      const SizedBox(height: sectionGap),
                                     ],
                                   )
-                                : const SizedBox.shrink(),
+                                : const SizedBox(height: sectionGap),
                           ),
                           // 중고거래
                           Obx(
@@ -202,7 +233,7 @@ class _HomeViewWebState extends State<HomeViewWeb> {
                               isLoading: _vm.isFleamarketLoading,
                             ),
                           ),
-                          SizedBox(height: isMobile ? SDSSpacing.xl : SDSSpacing.xxl),
+                          SizedBox(height: sectionGap),
                           // 커뮤니티
                           Obx(
                             () => HomeCommunityWeb(
@@ -210,7 +241,7 @@ class _HomeViewWebState extends State<HomeViewWeb> {
                               isLoading: _vm.isCommunityLoading,
                             ),
                           ),
-                          SizedBox(height: isMobile ? SDSSpacing.xl : SDSSpacing.xxl),
+                          SizedBox(height: sectionGap),
                           // 각종소식 — 커뮤니티 아래로 배치(사용자 요청), 같은 가로 그리드.
                           Obx(
                             () => HomeEventWeb(
@@ -218,7 +249,7 @@ class _HomeViewWebState extends State<HomeViewWeb> {
                               isLoading: _vm.isEventLoading,
                             ),
                           ),
-                          SizedBox(height: isMobile ? SDSSpacing.xl : SDSSpacing.xxl),
+                          SizedBox(height: sectionGap),
                           Obx(
                             () => HomeCrewCardsWeb(
                               cards: _vm.crewCards,
@@ -235,9 +266,16 @@ class _HomeViewWebState extends State<HomeViewWeb> {
             // 콘텐츠 ↔ 푸터 간격(위 pinFooterToBottom:false라 푸터가 콘텐츠 바로 아래).
             footer: Center(
               child: ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: kHomeMaxContentWidth),
+                constraints: const BoxConstraints(
+                  maxWidth: kHomeMaxContentWidth,
+                ),
                 child: Padding(
-                  padding: EdgeInsets.fromLTRB(horizontal, 48, horizontal, horizontal),
+                  padding: EdgeInsets.fromLTRB(
+                    horizontal,
+                    48,
+                    horizontal,
+                    horizontal,
+                  ),
                   child: HomeFooterWeb(key: _footerKey),
                 ),
               ),

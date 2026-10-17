@@ -173,20 +173,65 @@ class CrewHomeHeaderWeb extends StatelessWidget {
             ),
           ),
         ],
-        if (onShare != null) ...[
+        if (onShare != null || showAlarm || showSettings) ...[
           const SizedBox(width: SDSSpacing.md),
+          CrewHomeHeaderActionsWeb(
+            crewId: info.crewId,
+            onShare: onShare,
+            showAlarm: showAlarm,
+            alarmUserId: alarmUserId,
+            onAlarmTap: onAlarmTap,
+            showSettings: showSettings,
+          ),
+        ],
+      ],
+    );
+  }
+}
+
+/// 헤더 우측 아이콘 묶음 — `공유 · 알림 종 · 설정 톱니`.
+///
+/// PC·태블릿은 크루명 줄 오른쪽 끝에 붙지만, **모바일은 뒤로가기 줄**로 통째로
+/// 내려간다(사용자 확정) — 좁은 폭에서 크루명 줄에 아이콘 셋이 몰려 빡빡했다.
+/// 두 자리가 같은 위젯을 쓰므로 아이콘 크기·간격·배지가 어긋나지 않는다.
+class CrewHomeHeaderActionsWeb extends StatelessWidget {
+  final int? crewId;
+  final VoidCallback? onShare;
+  final bool showAlarm;
+  final int? alarmUserId;
+  final VoidCallback? onAlarmTap;
+  final bool showSettings;
+
+  const CrewHomeHeaderActionsWeb({
+    super.key,
+    required this.crewId,
+    this.onShare,
+    this.showAlarm = false,
+    this.alarmUserId,
+    this.onAlarmTap,
+    this.showSettings = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        if (onShare != null) ...[
           WebIconButton(
             onTap: onShare!,
             tooltip: '링크 복사',
-            padding: const EdgeInsets.all(1),
+            // 히트 여백은 옆 아이콘들과 **같은 4** — 아이콘 사이 간격이 전부
+            // 12(4 + 4 + 4)로 똑같아진다(사용자 확정, 전에는 공유만 1이라 21이었다).
+            padding: const EdgeInsets.all(4),
             icon: SvgPicture.asset(
               'assets/imgs/icons/icon_header_share_web.svg',
               width: 26,
               height: 26,
             ),
           ),
+          if (showAlarm || showSettings) const SizedBox(width: 4),
         ],
-        if (showAlarm || showSettings) const SizedBox(width: SDSSpacing.md),
         if (showAlarm)
           _CrewAlarmButton(
             userId: alarmUserId,
@@ -202,7 +247,7 @@ class CrewHomeHeaderWeb extends StatelessWidget {
             // 앱과 같은 에셋(v_fleaMarketMain.dart:99) — 설정은 gray900으로 틴트한다.
             asset: 'assets/imgs/icons/icon_header_setting.png',
             tint: SDSColor.gray900,
-            onTap: () => Get.toNamed('${WebRoutes.crewSetting}?id=${info.crewId}'),
+            onTap: () => Get.toNamed('${WebRoutes.crewSetting}?id=$crewId'),
             flushRight: true,
           ),
         ],
@@ -350,13 +395,15 @@ class _CrewHomeDescriptionWebState extends State<CrewHomeDescriptionWeb> {
         // (사용자 확정). 선을 여기서 또 그리면 두 줄이 된다.
         LayoutBuilder(
           builder: (context, constraints) {
-            // 토글 아이콘(20) + 간격(8) 자리를 빼고 한 줄에 들어가는지 잰다(앱과 같은 방식).
+            // 토글 아이콘(16) + 간격(8) 자리를 빼고 한 줄에 들어가는지 잰다(앱과 같은 방식).
             final painter = TextPainter(
               text: TextSpan(text: text, style: textStyle),
               maxLines: 1,
               // intl이 같은 이름의 TextDirection을 내보내 충돌하므로 컨텍스트에서 가져온다.
               textDirection: Directionality.of(context),
-            )..layout(maxWidth: (constraints.maxWidth - 28).clamp(0, constraints.maxWidth));
+            )..layout(
+                maxWidth: (constraints.maxWidth - (WebCircleGlyph.size + 8))
+                    .clamp(0, constraints.maxWidth));
             final overflowing = painter.didExceedMaxLines;
 
             // ⚠️ 정렬을 **항상 start**로 둔다. 접힘만 center로 주면 토글(22)과
@@ -406,20 +453,17 @@ class _CrewIntroToggle extends StatelessWidget {
         behavior: HitTestBehavior.opaque,
         // ⚠️ 높이를 **글줄(22)과 같게** 못 박고 아이콘을 그 안에서 가운데 둔다.
         // 상하 패딩으로 24가 되면 글줄보다 높아져서 Row가 글자를 밀어낸다 —
-        // 펼침/접힘에서 글자 위치가 바뀌던 원인이다. 좌우 2는 유지해 누를 폭을 둔다.
+        // 펼침/접힘에서 글자 위치가 바뀌던 원인이다.
+        //
+        // 좌우 패딩은 두지 않는다 — 아이콘 오른쪽 끝이 바로 위 `가입 신청하기 ❯`의
+        // 꺾쇠 원과 **같은 선에 서야 한다**(사용자 확정). 둘 다 박스 안쪽 여백이
+        // 같으므로 패딩 0이면 정확히 맞는다.
         child: SizedBox(
           height: _kIntroLineHeight,
           child: Center(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 2),
-              child: Image.asset(
-                expanded
-                    ? 'assets/imgs/icons/icon_minus_round.png'
-                    : 'assets/imgs/icons/icon_plus_round.png',
-                width: 20,
-                height: 20,
-              ),
-            ),
+            // 꺾쇠 링크와 **같은 검정 원(16)** 규격. 예전 PNG(20, 회색 테두리)는
+            // 바로 위 원과 크기·색이 달라 따로 놀았다(사용자 지적).
+            child: WebCircleGlyph(icon: expanded ? Icons.remove : Icons.add),
           ),
         ),
       ),

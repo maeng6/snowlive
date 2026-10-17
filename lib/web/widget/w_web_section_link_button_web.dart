@@ -41,7 +41,13 @@ class WebSectionLinkButton extends StatelessWidget {
       ),
       child: Text(
         label,
-        style: SDSTextStyle.bold.copyWith(fontSize: 13, color: SDSColor.gray900),
+        // ⚠️ 글줄 16 고정 — 안 박으면 폰트 메트릭(웹 Pretendard ≈16.5, 테스트 폰트 19)에
+        // 따라 버튼 높이가 36을 넘는다. 패딩 10+10 + 글줄 16 = 목업의 36.
+        style: SDSTextStyle.bold.copyWith(
+          fontSize: 13,
+          height: 16 / 13,
+          color: SDSColor.gray900,
+        ),
       ),
     );
   }

@@ -2,7 +2,6 @@ import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/web/util/responsive_web.dart';
 import 'package:com.snowlive/web/util/web_drag_scroll_web.dart';
 import 'package:com.snowlive/web/widget/w_web_edge_fade_web.dart';
-import 'package:com.snowlive/web/widget/w_web_icon_button_web.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -55,7 +54,8 @@ class ProfileDailyCalendarWeb extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         _MonthNavigator(month: month, onPrev: onPrevMonth, onNext: onNextMonth),
-        const SizedBox(height: SDSSpacing.md),
+        // 목업 — 월 네비(24) ↔ 날짜: PC·태블릿 24(1:7764 411→435) / 모바일 20(1:5279→1:5032).
+        SizedBox(height: isMobile ? 20 : SDSSpacing.lg),
         if (isMobile) _buildGrid() else _buildStrip(),
       ],
     );
@@ -106,8 +106,11 @@ class ProfileDailyCalendarWeb extends StatelessWidget {
               ),
           ],
         ),
-        const SizedBox(height: 8),
-        for (var week = 0; week * 7 < cells.length; week++)
+        // 목업(1:5032) — 요일 줄 ↔ 첫 주 4(스트립과 같은 값).
+        const SizedBox(height: 4),
+        for (var week = 0; week * 7 < cells.length; week++) ...[
+          // 목업 — 주 사이 6(칸 52 + 6 = 피치 58).
+          if (week > 0) const SizedBox(height: 6),
           Row(
             children: [
               for (var i = week * 7; i < week * 7 + 7; i++)
@@ -116,6 +119,7 @@ class ProfileDailyCalendarWeb extends StatelessWidget {
                 ),
             ],
           ),
+        ],
       ],
     );
   }
@@ -173,45 +177,105 @@ class _MonthNavigator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final style = SDSTextStyle.bold.copyWith(
+      fontSize: 16,
+      color: SDSColor.gray900,
+    );
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        _ArrowButton(
-          asset: 'assets/imgs/icons/icon_profile_calendar_prev.svg',
-          onTap: onPrev,
-        ),
+        _ArrowButton(asset: 'icon_profile_calendar_prev', onTap: onPrev),
         // 목업(1:8244) — 화살표 ↔ 라벨 31.
         const SizedBox(width: 31),
-        Text(
-          '${month.year}년 ${month.month}월',
-          style: SDSTextStyle.bold.copyWith(
-            fontSize: 16,
-            color: SDSColor.gray900,
+        // ⚠️ 라벨 폭을 **가장 넓은 날짜 기준**으로 고정한다. 글자 폭대로 두면
+        // `5월`(한 자리) ↔ `12월`(두 자리)에서 라벨이 넓어지며 좌우 화살표가
+        // 같이 움직인다(사용자 지적). 폭을 박으면 달을 넘겨도 화살표가 제자리다.
+        SizedBox(
+          width: _labelWidth(context, style),
+          child: Text(
+            '${month.year}년 ${month.month}월',
+            textAlign: TextAlign.center,
+            maxLines: 1,
+            softWrap: false,
+            style: style,
           ),
         ),
         const SizedBox(width: 31),
-        _ArrowButton(
-          asset: 'assets/imgs/icons/icon_profile_calendar_next.svg',
-          onTap: onNext,
-        ),
+        _ArrowButton(asset: 'icon_profile_calendar_next', onTap: onNext),
       ],
     );
   }
+
+  /// `0000년 00월`을 **가장 넓은 숫자**로 채워 잰 폭. Pretendard 숫자는 고정폭이
+  /// 아니라서(`0`이 `2`보다 넓다) 특정 달로 재면 다른 달이 넘칠 수 있다.
+  double _labelWidth(BuildContext context, TextStyle style) {
+    final direction = Directionality.of(context);
+    final scaler = MediaQuery.textScalerOf(context);
+
+    var widestDigit = '0';
+    var widestWidth = 0.0;
+    for (var digit = 0; digit <= 9; digit++) {
+      final painter = TextPainter(
+        text: TextSpan(text: '$digit', style: style),
+        textDirection: direction,
+        textScaler: scaler,
+      )..layout();
+      if (painter.width > widestWidth) {
+        widestWidth = painter.width;
+        widestDigit = '$digit';
+      }
+    }
+
+    final template = '0000년 00월'.replaceAll('0', widestDigit);
+    final painter = TextPainter(
+      text: TextSpan(text: template, style: style),
+      textDirection: direction,
+      textScaler: scaler,
+    )..layout();
+    // 레이아웃 반올림에서 끝 글자가 깎이지 않게 올린다.
+    return painter.width.ceilToDouble();
+  }
 }
 
-class _ArrowButton extends StatelessWidget {
+/// 월 이동 화살표. 목업(1:8245)에서 뽑은 에셋 — gray100 테두리 원 + 검정 꺾쇠 24.
+///
+/// hover는 **검정으로 반전**된다(사용자 확정) — 원이 검정으로 차고 꺾쇠가 흰색이 된다.
+/// 아이콘이 60%로 죽는 웹 공통 아이콘 버튼 규칙 대신 이 버튼만 따로 쓰는 이유는,
+/// 테두리 원이 있어 면을 채우는 쪽이 눌리는 버튼처럼 읽히기 때문이다.
+///
+/// 원 테두리와 꺾쇠가 **서로 다른 색**이라 colorFilter 하나로는 못 만든다 →
+/// 반전 상태를 같은 좌표·같은 선 두께의 `_on` 에셋으로 따로 둔다.
+class _ArrowButton extends StatefulWidget {
+  /// 에셋 이름(확장자·경로 없이). hover에는 `_on`이 붙은 짝을 쓴다.
   final String asset;
   final VoidCallback onTap;
 
   const _ArrowButton({required this.asset, required this.onTap});
 
   @override
+  State<_ArrowButton> createState() => _ArrowButtonState();
+}
+
+class _ArrowButtonState extends State<_ArrowButton> {
+  bool _hovered = false;
+
+  @override
   Widget build(BuildContext context) {
-    // 목업(1:8245)에서 추출한 에셋 — gray100 테두리 원 + 검정 꺾쇠 24.
-    return WebIconButton(
-      onTap: onTap,
-      padding: EdgeInsets.zero,
-      icon: SvgPicture.asset(asset, width: 24, height: 24),
+    final name = _hovered ? '${widget.asset}_on' : widget.asset;
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      onEnter: (_) => setState(() => _hovered = true),
+      onExit: (_) => setState(() => _hovered = false),
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: widget.onTap,
+        child: SvgPicture.asset(
+          'assets/imgs/icons/$name.svg',
+          width: 24,
+          height: 24,
+        ),
+      ),
     );
   }
 }
@@ -229,10 +293,11 @@ class _WeekdayLabel extends StatelessWidget {
       child: Center(
         child: Text(
           label,
-          // 목업(1:8003) — Regular 10, 검정 60%.
+          // 목업(1:8003) — Regular 10, #111 60%, 글줄 14(칸 24 안에서 위아래 5).
           style: SDSTextStyle.regular.copyWith(
             fontSize: 10,
-            color: SDSColor.snowliveBlack.withValues(alpha: 0.6),
+            height: 14 / 10,
+            color: SDSColor.gray900.withValues(alpha: 0.6),
           ),
         ),
       ),
@@ -291,6 +356,10 @@ class _DayCell extends StatelessWidget {
         clipBehavior: Clip.antiAlias,
         child: InkWell(
           onTap: onTap,
+          // hover는 웹 공통 — **면이 어두워진다**(전역 테마가 기본 hover를 꺼 두므로
+          // 여기서 직접 준다). 누를 수 있는 날에만 InkWell이 붙어 있어 기록 없는 날은
+          // 그대로다. 선택된(검정) 칸에서는 거의 보이지 않는 게 정상(토글 칩과 같다).
+          hoverColor: Colors.black.withValues(alpha: 0.04),
           child: SizedBox(
             // 목업 — 칸 높이 52.
             height: 52,
@@ -307,22 +376,26 @@ class _DayCell extends StatelessWidget {
                   Text(
                     '$day',
                     maxLines: 1,
+                    // ⚠️ 글줄 16 고정(목업 1:8093) — 폰트 기본 글줄(≈18)로 두면
+                    // 두 줄 블록이 36이 아니라 40이 돼 칸 아래 여백(6)이 사라진다.
                     style: SDSTextStyle.bold.copyWith(
                       fontSize: 15,
+                      height: 16 / 15,
                       color: dayColor,
                     ),
                   ),
                   if (hasRecord) ...[
-                    // 목업(1:8096) — 날짜 ↔ 횟수 4, 횟수 Regular 12 검정 50%.
+                    // 목업(1:8096) — 날짜 ↔ 횟수 4, 횟수 Regular 12 #111 50%.
                     const SizedBox(height: 4),
                     Text(
                       '$count',
                       maxLines: 1,
                       style: SDSTextStyle.regular.copyWith(
                         fontSize: 12,
+                        height: 16 / 12,
                         color: isSelected
                             ? SDSColor.snowliveWhite.withValues(alpha: 0.8)
-                            : SDSColor.snowliveBlack.withValues(alpha: 0.5),
+                            : SDSColor.gray900.withValues(alpha: 0.5),
                       ),
                     ),
                   ],

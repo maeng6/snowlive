@@ -63,7 +63,7 @@ class CrewRecordLinkRow extends StatelessWidget {
   }
 }
 
-/// 텍스트 링크 한 칸. hover 규칙은 통계 바의 `멤버(명)`과 같다 — **밑줄만** 생긴다.
+/// 텍스트 링크 한 칸. hover 규칙은 통계 바의 `멤버(명)`과 같다 — **밑줄만** 생긴다
 class _CrewLinkText extends StatefulWidget {
   final String label;
   final VoidCallback onTap;
@@ -103,7 +103,7 @@ class _CrewLinkTextState extends State<_CrewLinkText> {
   }
 }
 
-/// `시즌 기록실` / `일별 현황` 두 링크의 **데스크탑 카드 버전**(우측 열).
+/// `시즌 기록실` / `일별 현황` 두 링크의 **데스크탑 카드 버전**(우측 열)
 class CrewRecordLinkCards extends StatelessWidget {
   final int? crewId;
 
@@ -118,7 +118,7 @@ class CrewRecordLinkCards extends StatelessWidget {
           label: '시즌 기록실',
           onTap: () => Get.toNamed('${WebRoutes.crewRecordRoom}?id=$crewId'),
         ),
-        // 카드 사이 8 (목업 — 카드 52, 다음 카드 60).
+        // 카드 사이 8 (목업 — 카드 52, 다음 카드 60)
         const SizedBox(height: 8),
         _CrewLinkCard(
           label: '일별 현황',
@@ -137,10 +137,10 @@ class CrewTalkUploadButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // 높이는 공용 webActionButtonHeight(PC 44 / 그 외 48).
+    // 높이는 공용 webActionButtonHeight(PC 44 / 그 외 48)
     final double height = webActionButtonHeight(context);
     // 글자는 PC 사이드바 공통 Bold 14, 좁은 폭 플로팅 바는 Bold 16
-    // (라이브톡 하단 바와 같은 규격 — 목업 161:94356도 16).
+    // (라이브톡 하단 바와 같은 규격 — 목업 161:94356도 16)
     final double fontSize = context.isDesktop ? 14 : 16;
 
     return SizedBox(
@@ -150,7 +150,7 @@ class CrewTalkUploadButton extends StatelessWidget {
       height: height,
       child: ElevatedButton(
         onPressed: onTap,
-        // 채움 버튼 hover — 배경에 검정 10%를 섞어 어두워진다(웹 공통).
+        // 채움 버튼 hover — 배경에 검정 10%를 섞어 어두워진다(웹 공통)
         // ⚠️ `elevation: 0`만으로는 부족하다. ElevatedButton은 hover에서 elevation을
         // 올려 **그림자**를 만들므로 모든 상태의 elevation을 0으로 못 박는다.
         style: ButtonStyle(

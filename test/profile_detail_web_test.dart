@@ -3,8 +3,11 @@ import 'package:com.snowlive/core/model/m_friendsTalk.dart';
 import 'package:com.snowlive/web/view/profile/w_profile_calendar_web.dart';
 import 'package:com.snowlive/web/view/profile/w_profile_guestbook_web.dart';
 import 'package:com.snowlive/web/view/profile/w_profile_widgets_web.dart';
+import 'package:com.snowlive/web/widget/w_web_avatar_web.dart';
 import 'package:com.snowlive/web/widget/w_web_profile_card_web.dart';
+import 'package:com.snowlive/web/widget/w_web_section_link_button_web.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 Map<String, dynamic> _slope(String name, int count, double ratio) =>
@@ -102,6 +105,279 @@ void main() {
     test('슬로프 최댓값', () {
       expect(ProfileRidingStatsWeb.maxCountOf(_detail().seasonRankingInfo.countInfo), 135);
       expect(ProfileRidingStatsWeb.maxCountOf(const []), 0);
+    });
+  });
+
+  group('버튼 높이 (웹 데스크탑 density)', () {
+    // 웹(데스크탑)에서 Flutter 기본 테마는 VisualDensity.compact다 →
+    // ButtonStyleButton이 패딩을 상하좌우 4씩 깎아 **36이어야 할 버튼이 28**이 된다.
+    // 테스트 기본값(android=standard)은 이 버그를 숨기므로 테마로 직접 재현한다.
+    testWidgets('`전체 슬로프 보기`는 36 높이를 지킨다', (tester) async {
+      await tester.pumpWidget(MaterialApp(
+        theme: ThemeData(visualDensity: VisualDensity.compact),
+        home: Scaffold(
+          body: Center(
+            child: WebSectionLinkButton(label: '전체 슬로프 보기', onTap: () {}),
+          ),
+        ),
+      ));
+      await tester.pumpAndSettle();
+      final size = tester.getSize(find.byType(WebSectionLinkButton));
+      expect(size.height, 36);
+    });
+  });
+
+  group('태블릿(800)', () {
+    // 목업(1:2423)에는 뒤로가기가 없지만 웹에는 필요하다 → 윗줄로 빼지 않고
+    // **프로필 사진 왼쪽**에 넣는다(사용자 확정). 윗줄이면 헤더가 내려가 다른
+    // 서브 페이지와 상단 여백이 어긋난다.
+    testWidgets('뒤로가기는 헤더 줄 안, 프로필 사진 왼쪽에 선다', (tester) async {
+      tester.view.physicalSize = const Size(800, 1200);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(tester.view.reset);
+      const backKey = Key('back');
+      await tester.pumpWidget(MaterialApp(
+        home: Scaffold(
+          body: ProfileHeaderWeb(
+            info: _detail().friendUserInfo,
+            leading: const SizedBox(key: backKey, width: 30, height: 30),
+          ),
+        ),
+      ));
+      await tester.pumpAndSettle();
+      final back = tester.getRect(find.byKey(backKey));
+      final avatar = tester.getRect(find.byType(WebAvatar).first);
+      // 뒤로가기는 콘텐츠 좌측선에서 시작하고, 아바타는 그 오른쪽 3.
+      expect(back.left, 0);
+      expect(avatar.left, back.right + 3);
+      // 같은 줄 — 세로 중심이 같다.
+      expect(back.center.dy, closeTo(avatar.center.dy, 0.5));
+    });
+
+    // 태블릿은 PC 목업 폭(874)으로 묶지 않고 페이지 여백만 두고 꽉 채운다.
+    // 768~1023 구간이라 1000폭에서 묶이면 양옆 여백만 커진다.
+    testWidgets('1000폭에서 콘텐츠가 874로 묶이지 않는다', (tester) async {
+      tester.view.physicalSize = const Size(1000, 1200);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(tester.view.reset);
+      await tester.pumpWidget(MaterialApp(
+        home: Scaffold(
+          body: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: ProfileRankBarWeb(
+              leading: const Text('내 랭킹'),
+              score: 49540,
+              rank: 24,
+              tierName: '그랜드 마스터',
+              tierIconUrl: null,
+            ),
+          ),
+        ),
+      ));
+      await tester.pumpAndSettle();
+      // 바가 좌우 여백 20만 빼고 꽉 찬다(= 960).
+      expect(tester.getSize(find.byType(ProfileRankBarWeb)).width, 960);
+    });
+
+    testWidgets('통계 카드가 태블릿에서도 2열로 선다', (tester) async {
+      tester.view.physicalSize = const Size(800, 1600);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(tester.view.reset);
+      final season = _detail().seasonRankingInfo;
+      await tester.pumpWidget(MaterialApp(
+        home: Scaffold(
+          body: SingleChildScrollView(
+            child: ProfileRidingStatsWeb(
+              totalCount: season.overallTotalCount,
+              slopes: season.countInfo,
+              timeCounts: profileTimeCounts(season.timeInfo),
+              ownerName: '전일권',
+            ),
+          ),
+        ),
+      ));
+      await tester.pumpAndSettle();
+      final leftCard = tester.getTopLeft(find.text('총 라이딩 횟수'));
+      final rightCard = tester.getTopLeft(find.text('시간대별 기록'));
+      // 같은 줄(위 선이 같다) + 오른쪽 카드가 실제로 오른쪽에 있다.
+      expect(leftCard.dy, closeTo(rightCard.dy, 0.5));
+      expect(rightCard.dx, greaterThan(leftCard.dx + 300));
+    });
+  });
+
+  group('모바일(375) 전체 슬로프', () {
+    // 크루홈과 같은 동작 — 좁은 화면에서는 팝업 대신 그 자리에서 펼친다.
+    // 버튼이 있고 없고에 따라 제목이 위아래로 튀면 안 된다(제목 줄 높이 36 고정).
+    testWidgets('버튼이 없어도 제목 위치가 그대로다', (tester) async {
+      tester.view.physicalSize = const Size(375, 1600);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(tester.view.reset);
+
+      Future<double> titleTop(int slopeCount) async {
+        await tester.pumpWidget(MaterialApp(
+          home: Scaffold(
+            body: SingleChildScrollView(
+              child: ProfileRidingStatsWeb(
+                totalCount: 135,
+                slopes: [
+                  for (var i = 1; i <= slopeCount; i++)
+                    SlopeCountInfo.fromJson(_slope('슬로프$i', 100 - i, 1.0)),
+                ],
+                timeCounts: const [57, 102, 135, 36, 15, 0, 0, 0, 0],
+                ownerName: '전일권',
+              ),
+            ),
+          ),
+        ));
+        await tester.pumpAndSettle();
+        return tester.getTopLeft(find.text('라이딩 통계')).dy;
+      }
+
+      // 9개 → 버튼 있음 / 3개 → 모바일에서는 버튼이 사라진다.
+      final withButton = await titleTop(9);
+      expect(find.text('전체 슬로프 보기'), findsOneWidget);
+      final withoutButton = await titleTop(3);
+      expect(find.text('전체 슬로프 보기'), findsNothing);
+      expect(withoutButton, withButton);
+    });
+
+    testWidgets('`전체 슬로프 보기`를 누르면 목록이 아래로 펼쳐진다', (tester) async {
+      tester.view.physicalSize = const Size(375, 2400);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(tester.view.reset);
+      // 상한(7)보다 많아야 펼칠 거리가 생긴다.
+      final slopes = [
+        for (var i = 1; i <= 9; i++)
+          SlopeCountInfo.fromJson(_slope('슬로프$i', 100 - i, 1.0)),
+      ];
+      await tester.pumpWidget(MaterialApp(
+        home: Scaffold(
+          body: SingleChildScrollView(
+            child: ProfileRidingStatsWeb(
+              totalCount: 135,
+              slopes: slopes,
+              timeCounts: const [57, 102, 135, 36, 15, 0, 0, 0, 0],
+              ownerName: '전일권',
+            ),
+          ),
+        ),
+      ));
+      await tester.pumpAndSettle();
+      // 기본은 상위 7개까지만.
+      expect(find.text('슬로프7'), findsOneWidget);
+      expect(find.text('슬로프8'), findsNothing);
+
+      await tester.tap(find.text('전체 슬로프 보기'));
+      await tester.pumpAndSettle();
+      expect(find.text('슬로프9'), findsOneWidget);
+      expect(find.text('슬로프 접기'), findsOneWidget);
+
+      await tester.tap(find.text('슬로프 접기'));
+      await tester.pumpAndSettle();
+      expect(find.text('슬로프8'), findsNothing);
+    });
+  });
+
+  group('모바일 시간대별 기록', () {
+    // 9칸이 가로로 밀려나지 않고 **한 화면에** 들어와야 한다(앱과 같은 모양).
+    for (final width in [375.0, 320.0]) {
+      testWidgets('${width.toInt()}폭에서 가로 스크롤 없이 9칸이 다 보인다', (tester) async {
+        tester.view.physicalSize = Size(width, 1400);
+        tester.view.devicePixelRatio = 1.0;
+        addTearDown(tester.view.reset);
+        final season = _detail().seasonRankingInfo;
+        await tester.pumpWidget(MaterialApp(
+          home: Scaffold(
+            body: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: ProfileRidingStatsWeb(
+                  totalCount: season.overallTotalCount,
+                  slopes: season.countInfo,
+                  timeCounts: profileTimeCounts(season.timeInfo),
+                  ownerName: '전일권',
+                ),
+              ),
+            ),
+          ),
+        ));
+        await tester.pumpAndSettle();
+        expect(tester.takeException(), isNull);
+        // 라벨이 두 줄로 접혀 9개가 모두 그려진다.
+        expect(find.textContaining('00-'), findsOneWidget);
+        expect(find.textContaining('22-'), findsOneWidget);
+        // 가로 스크롤 뷰로 빠지지 않는다.
+        final scrollables = tester
+            .widgetList<SingleChildScrollView>(find.byType(SingleChildScrollView))
+            .where((s) => s.scrollDirection == Axis.horizontal);
+        expect(scrollables, isEmpty);
+      });
+    }
+  });
+
+  group('랭킹 바 높이', () {
+    // 스켈레톤이 같은 값(모바일 78 / 그 외 54)으로 자리를 잡는다 — 둘이 어긋나면
+    // 로딩이 끝나는 순간 화면이 튄다.
+    for (final c in [(375.0, 78.0), (800.0, 54.0), (1440.0, 54.0)]) {
+      testWidgets('${c.$1.toInt()}폭에서 ${c.$2.toInt()}', (tester) async {
+        tester.view.physicalSize = Size(c.$1, 900);
+        tester.view.devicePixelRatio = 1.0;
+        addTearDown(tester.view.reset);
+        await tester.pumpWidget(MaterialApp(
+          home: Scaffold(
+            // 실제 화면처럼 스크롤뷰 안(높이 무제한)에 둔다.
+            body: SingleChildScrollView(
+              child: ProfileRankBarWeb(
+                leading: const Text('내 랭킹'),
+                score: 49540,
+                rank: 24,
+                tierName: '그랜드 마스터',
+                // 티어 아이콘(40)이 바 높이를 만든다 — null이면 자리가 사라진다.
+                tierIconUrl: 'https://example.com/tier.png',
+              ),
+            ),
+          ),
+        ));
+        await tester.pumpAndSettle();
+        expect(tester.getSize(find.byType(ProfileRankBarWeb)).height, c.$2);
+      });
+    }
+  });
+
+  group('일간 통계 월 네비게이션', () {
+    // 라벨 폭을 안 박으면 `5월`(한 자리) ↔ `12월`(두 자리)에서 글자가 넓어지며
+    // 좌우 화살표가 8px씩 밀린다(사용자 지적). 폭 고정 전에는 이 테스트가 실패한다.
+    testWidgets('달이 바뀌어도 라벨 폭과 화살표 위치가 그대로다', (tester) async {
+      tester.view.physicalSize = const Size(1200, 900);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(tester.view.reset);
+
+      Future<(double, double, double)> measure(DateTime month, String label) async {
+        await tester.pumpWidget(MaterialApp(
+          home: Scaffold(
+            body: ProfileDailyCalendarWeb(
+              month: month,
+              countsByDay: const {},
+              selectedDay: null,
+              today: DateTime(2026, 5, 13),
+              onSelectDay: (_) {},
+              onPrevMonth: () {},
+              onNextMonth: () {},
+            ),
+          ),
+        ));
+        await tester.pumpAndSettle();
+        final arrows = find.byType(SvgPicture);
+        return (
+          tester.getSize(find.text(label)).width,
+          tester.getTopLeft(arrows.at(0)).dx,
+          tester.getTopRight(arrows.at(1)).dx,
+        );
+      }
+
+      final may = await measure(DateTime(2026, 5), '2026년 5월');
+      final dec = await measure(DateTime(2026, 12), '2026년 12월');
+      expect(may, dec, reason: '5월=$may 12월=$dec');
     });
   });
 

@@ -39,37 +39,41 @@ class WebGnbSidebar extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               // 각 메뉴는 어드민 '메뉴 설정' 토글로 끄면 숨김(테스트 대상은 노출).
-              Obx(() => Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      for (final item in kGnbPrimaryItems)
-                        if (PaidVisibilityControllerWeb.menuVisible(
-                            item.routePrefix))
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 12),
-                            child: GnbNavRow(item: item, collapsed: collapsed),
-                          ),
-                    ],
-                  )),
+              Obx(
+                () => Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    for (final item in kGnbPrimaryItems)
+                      if (PaidVisibilityControllerWeb.menuVisible(
+                        item.routePrefix,
+                      ))
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 12),
+                          child: GnbNavRow(item: item, collapsed: collapsed),
+                        ),
+                  ],
+                ),
+              ),
               if (!collapsed) ...[
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   child: Divider(color: SDSColor.gray100, height: 1),
                 ),
                 // 유료기능 출시 전에는 '시즌권' 메뉴를 테스트 대상에게만 노출.
-                Obx(() => Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        for (final item in kGnbSecondaryItems)
-                          if (item.routePrefix != WebRoutes.seasonPass ||
-                              PaidVisibilityControllerWeb.isVisible)
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 12),
-                              child: GnbNavRow(item: item),
-                            ),
-                      ],
-                    )),
+                Obx(
+                  () => Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      for (final item in kGnbSecondaryItems)
+                        if (item.routePrefix != WebRoutes.seasonPass ||
+                            PaidVisibilityControllerWeb.isVisible)
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 12),
+                            child: GnbNavRow(item: item),
+                          ),
+                    ],
+                  ),
+                ),
               ],
               const Spacer(),
               // 접기/펼치기 토글 버튼(원형, 1px 보더).
@@ -81,7 +85,9 @@ class WebGnbSidebar extends StatelessWidget {
                   alignment: Alignment.centerLeft,
                   child: Material(
                     color: Colors.transparent,
-                    shape: CircleBorder(side: BorderSide(color: SDSColor.gray100)),
+                    shape: CircleBorder(
+                      side: BorderSide(color: SDSColor.gray100),
+                    ),
                     child: InkWell(
                       onTap: () => gnbSidebarCollapsed.toggle(),
                       customBorder: const CircleBorder(),

@@ -108,7 +108,11 @@ const List<GnbNavItemData> kGnbPrimaryItems = [
 const List<GnbNavItemData> kGnbSecondaryItems = [
   GnbNavItemData(label: '시즌권', routePrefix: WebRoutes.seasonPass),
   GnbNavItemData(label: '친구', routePrefix: WebRoutes.friend),
-  GnbNavItemData(label: '알림', routePrefix: WebRoutes.alarm, showsAlarmDot: true),
+  GnbNavItemData(
+    label: '알림',
+    routePrefix: WebRoutes.alarm,
+    showsAlarmDot: true,
+  ),
   GnbNavItemData(label: '설정', routePrefix: WebRoutes.settings),
 ];
 
@@ -119,15 +123,16 @@ bool gnbItemIsActive(GnbNavItemData item, String currentRoute) {
 
 /// 이미 들어와 있는 섹션의 메뉴를 다시 눌렀을 때 메인 목록을 새로고침한다.
 ///
-/// 커뮤니티·각종소식 목록 화면은 StatefulWidget이라 [Get.offAllNamed]로 라우트가
-/// 새로 생성되며 initState에서 알아서 재조회한다. 반면 중고거래 목록은
+/// 커뮤니티·각종소식 목록 화면은 StatefulWidget이라 라우트를 새로 만들면(교체)
+/// initState에서 알아서 재조회한다. 반면 중고거래 목록은
 /// StatelessWidget이고 최초 로드가 뷰모델 onInit에서만 일어나므로, 재진입해도
 /// 자동 갱신되지 않는다 → 여기서 뷰모델을 직접 다시 로드해준다.
 void _reloadSectionList(String prefix) {
   if (prefix == WebRoutes.fleamarketList &&
       Get.isRegistered<FleamarketPaginationViewModelWeb>()) {
-    Get.find<FleamarketPaginationViewModelWeb>()
-        .loadFirstPage(userId: Get.find<UserViewModel>().user.user_id);
+    Get.find<FleamarketPaginationViewModelWeb>().loadFirstPage(
+      userId: Get.find<UserViewModel>().user.user_id,
+    );
   }
 }
 
@@ -146,7 +151,11 @@ void openGnbSection(String prefix) {
     return;
   }
   if (Get.currentRoute.startsWith(prefix)) {
-    Get.offAllNamed(prefix);
+    // ⚠️ `offAllNamed`로 **스택 전체를 날리지 않는다** — 그러면 그때까지의 탭 이동
+    // 히스토리가 통째로 사라져 브라우저 뒤로가기가 먹통이 된다(사용자 지적).
+    // 지금 라우트만 교체하면 섹션 메인으로 되돌리며 새로 그리고(스크롤도 맨 위),
+    // 아래 스택은 그대로 남아 뒤로가기가 직전 탭으로 간다.
+    Get.offNamed(prefix, preventDuplicates: false);
     _reloadSectionList(prefix);
   } else {
     Get.toNamed(prefix);
@@ -162,7 +171,12 @@ class GnbNavRow extends StatelessWidget {
   /// LNB가 접힌 상태면 라벨 없이 아이콘만 가운데 정렬로 그린다.
   final bool collapsed;
 
-  const GnbNavRow({super.key, required this.item, this.onNavigate, this.collapsed = false});
+  const GnbNavRow({
+    super.key,
+    required this.item,
+    this.onNavigate,
+    this.collapsed = false,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -206,8 +220,7 @@ class GnbNavRow extends StatelessWidget {
               children: [
                 // 아이콘이 없는 항목(친구·설정)은 자리도 비우지 않고 글자만 둔다.
                 // 아이콘은 접힘/펼침과 무관하게 항상 같은 x 위치에 고정된다
-                if (icon != null)
-                  SizedBox(width: 24, height: 24, child: icon),
+                if (icon != null) SizedBox(width: 24, height: 24, child: icon),
                 // 라벨(과 아이콘-라벨 간격)은 트리에서 제거하지 않고 페이드+클리핑으로
                 // 자연스럽게 사라진다. 간격을 이 안에 넣어야 접힘 폭이 정확히 44가 된다
                 Flexible(
@@ -226,10 +239,11 @@ class GnbNavRow extends StatelessWidget {
                                 maxLines: 1,
                                 softWrap: false,
                                 overflow: TextOverflow.clip,
-                                style: (active ? SDSTextStyle.bold : SDSTextStyle.bold).copyWith(
-                                  fontSize: 14,
-                                  color: fg,
-                                ),
+                                style:
+                                    (active
+                                            ? SDSTextStyle.bold
+                                            : SDSTextStyle.bold)
+                                        .copyWith(fontSize: 14, color: fg),
                               ),
                             ),
                             if (item.showsAlarmDot) const GnbAlarmDot(),
@@ -253,11 +267,20 @@ class GnbNavRow extends StatelessWidget {
   /// 구분되고, 슬로프크래프트·라이브톡처럼 안쪽에 흰 채움이 있는 그림은 단색으로
   /// 덧칠하면 그 겹침이 사라진다.
   /// 아이콘이 지정되지 않은 항목은 null을 돌려준다(2차 그룹은 텍스트만).
-  Widget? _buildIcon(GnbNavItemData item, {required bool active, required Color fg}) {
+  Widget? _buildIcon(
+    GnbNavItemData item, {
+    required bool active,
+    required Color fg,
+  }) {
     final svgOff = item.assetIconSvgOff;
     if (svgOff != null) {
       final svg = active ? (item.assetIconSvgOn ?? svgOff) : svgOff;
-      final icon = SvgPicture.asset(svg, width: 24, height: 24, fit: BoxFit.contain);
+      final icon = SvgPicture.asset(
+        svg,
+        width: 24,
+        height: 24,
+        fit: BoxFit.contain,
+      );
       return item.isPlaceholder ? Opacity(opacity: 0.35, child: icon) : icon;
     }
     if (item.assetIconOn != null) {
@@ -312,7 +335,10 @@ class _GnbAlarmDotState extends State<GnbAlarmDot> {
               key: const ValueKey('gnb-alarm-dot'),
               width: 6,
               height: 6,
-              decoration: const BoxDecoration(color: SDSColor.red, shape: BoxShape.circle),
+              decoration: const BoxDecoration(
+                color: SDSColor.red,
+                shape: BoxShape.circle,
+              ),
             ),
           );
         },

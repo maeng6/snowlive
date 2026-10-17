@@ -66,20 +66,30 @@ class _OnboardingViewWebState extends State<OnboardingViewWeb> {
   @override
   Widget build(BuildContext context) {
     if (_step == 0) {
-      return Obx(() => OnboardingScaffoldWeb(
-            onBack: _onBack,
-            primaryLabel: '다음',
-            onPrimary: vm.canProceedTerms ? () => setState(() => _step = 1) : null,
-            child: OnboardingTermsStepWeb(vm: vm),
-          ));
-    }
-
-    return Obx(() => OnboardingScaffoldWeb(
+      return Obx(
+        () => OnboardingScaffoldWeb(
           onBack: _onBack,
           primaryLabel: '다음',
-          onPrimary: vm.canSubmitProfile ? vm.submit : null,
-          isSubmitting: vm.isSubmitting,
-          child: OnboardingProfileStepWeb(vm: vm),
-        ));
+          onPrimary: vm.canProceedTerms
+              ? () => setState(() => _step = 1)
+              : null,
+          // 태블릿·모바일은 약관 블록이 버튼과 함께 화면 하단에 붙는다(목업).
+          bottomContent: OnboardingTermsAgreementsWeb(vm: vm),
+          child: OnboardingTermsStepWeb(vm: vm),
+        ),
+      );
+    }
+
+    return Obx(
+      () => OnboardingScaffoldWeb(
+        onBack: _onBack,
+        primaryLabel: '다음',
+        onPrimary: vm.canSubmitProfile ? vm.submit : null,
+        isSubmitting: vm.isSubmitting,
+        // 태블릿·모바일은 안내문이 버튼 바로 위에 붙는다(사용자 확정).
+        bottomContent: OnboardingProfileNoteWeb(vm: vm),
+        child: OnboardingProfileStepWeb(vm: vm),
+      ),
+    );
   }
 }

@@ -104,7 +104,12 @@ class _CrewHomeRidingStatsWebState extends State<CrewHomeRidingStatsWeb> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
+        // ⚠️ 제목 줄 높이를 **버튼 높이(36)로 못 박는다**(목업도 36) — 모바일에서
+        // 슬로프가 7개 이하면 버튼이 사라지는데, 안 박으면 그때 줄 높이가 글줄(19)로
+        // 줄어 제목이 위로 튄다(프로필 통계와 같은 처리).
+        SizedBox(
+          height: 36,
+          child: Row(
           children: [
             Text(
               widget.sectionTitle,
@@ -133,6 +138,7 @@ class _CrewHomeRidingStatsWebState extends State<CrewHomeRidingStatsWeb> {
                 },
               ),
           ],
+          ),
         ),
         // 제목줄 ↔ 카드 12 (목업 — 제목줄 36, 카드 48).
         const SizedBox(height: 10),
@@ -290,12 +296,17 @@ class CrewSlopeBarRow extends StatelessWidget {
   final int maxCount;
   final bool isTop;
 
+  /// 1등이 아닌 막대 색. 크루홈은 파란 카드 위라 기본값(blue100)이 맞지만,
+  /// 프로필은 회색 카드라 목업(1:7910)대로 gray200을 넘긴다.
+  final Color? barColor;
+
   const CrewSlopeBarRow({
     super.key,
     required this.label,
     required this.count,
     required this.maxCount,
     this.isTop = false,
+    this.barColor,
   });
 
   @override
@@ -332,7 +343,11 @@ class CrewSlopeBarRow extends StatelessWidget {
                     color: SDSColor.blue100,
                     borderRadius:
                         BorderRadius.horizontal(right: Radius.circular(_kBarRadius)),
-                  ).copyWith(color: isTop ? SDSColor.snowliveBlue : SDSColor.blue100),
+                  ).copyWith(
+                    color: isTop
+                        ? SDSColor.snowliveBlue
+                        : (barColor ?? SDSColor.blue100),
+                  ),
                 ),
               ),
               const SizedBox(width: 6),
@@ -368,8 +383,12 @@ class CrewSlopeBarRow extends StatelessWidget {
   }
 }
 
-/// 시간대 한 칸의 최소 폭(숫자가 한 줄로 들어가는 최소값).
+/// 시간대 한 칸의 최소 폭(라벨 `00-08`이 **한 줄**로 들어가는 최소값).
 const double _minBarSlot = 40;
+
+/// 라벨을 두 줄(`00-` / `08`)로 접었을 때의 최소 칸 폭 — 목업 모바일(1:5397)이
+/// 라벨 20 · 칸 피치 35다. 여기까지는 **가로 스크롤 없이 한 화면에** 들어간다.
+const double _minStackedBarSlot = 26;
 
 /// 시간대별 세로 막대 카드. 크루홈·전체보기 모달에서는 파란 카드로 쓰고, 일별 기록
 /// 카드 안에서는 [filled]를 끄고 제목만 바꿔 같은 위젯을 쓴다.
@@ -387,6 +406,10 @@ class CrewTimeCountCard extends StatelessWidget {
   final double cardPadding;
   final TextStyle? titleStyle;
 
+  /// 막대 색. 크루홈은 파란 카드 위라 기본값(blue100), 프로필은 회색 카드라
+  /// 목업(1:7929)대로 gray200을 넘긴다.
+  final Color? barColor;
+
   const CrewTimeCountCard({
     super.key,
     required this.timeCounts,
@@ -396,6 +419,7 @@ class CrewTimeCountCard extends StatelessWidget {
     this.borderRadius = 16,
     this.cardPadding = 20,
     this.titleStyle,
+    this.barColor,
     // 목업(161:86816) 차트 영역 228 → 카드 높이가 310으로 고정된다.
     this.chartHeight = 228,
   });
@@ -452,29 +476,39 @@ class CrewTimeCountCard extends StatelessWidget {
             // 화면이 통째로 깨졌다: 위 CrewSlopeBarRow 주석 참고).
             child: LayoutBuilder(
               builder: (context, constraints) {
+                final slot = constraints.maxWidth / timeCounts.length;
+                // 좁으면 라벨을 두 줄로 접어서 **한 화면에 넣는다**(앱과 같은 모양,
+                // 목업 모바일 1:5397). 예전에는 바로 가로 스크롤로 넘겼는데,
+                // 9칸이 화면 밖으로 밀려 전체 분포가 한눈에 안 들어왔다(사용자 지적).
+                final stacked = slot < _minBarSlot;
+                // 숫자·라벨 자리를 뺀 만큼만 막대가 쓴다 — 라벨이 두 줄이면 한 줄
+                // 높이(13)만큼 더 비운다.
+                final reserve = stacked ? 73.0 : 60.0;
                 final bars = [
                   for (var i = 0; i < timeCounts.length; i++)
                     _TimeBar(
                       label: kCrewTimeBuckets[i],
                       count: timeCounts[i],
                       maxCount: max,
-                      // 숫자·라벨 자리(60)를 뺀 만큼만 막대가 쓴다.
-                      maxBarHeight: (chartHeight - 60).clamp(20.0, 400.0),
+                      maxBarHeight: (chartHeight - reserve).clamp(20.0, 400.0),
+                      barColor: barColor,
+                      stackedLabel: stacked,
                     ),
                 ];
-                final slot = constraints.maxWidth / bars.length;
-                if (slot >= _minBarSlot) {
+                if (!stacked || slot >= _minStackedBarSlot) {
                   return Row(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [for (final bar in bars) Expanded(child: bar)],
                   );
                 }
+                // 두 줄로 접어도 안 들어갈 만큼 좁으면(아주 작은 화면) 그때만 스크롤.
                 return SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
-                      for (final bar in bars) SizedBox(width: _minBarSlot, child: bar),
+                      for (final bar in bars)
+                        SizedBox(width: _minStackedBarSlot, child: bar),
                     ],
                   ),
                 );
@@ -502,11 +536,18 @@ class _TimeBar extends StatelessWidget {
   /// 막대가 쓸 수 있는 최대 높이(숫자·라벨 자리를 뺀 값).
   final double maxBarHeight;
 
+  final Color? barColor;
+
+  /// 라벨을 `00-` / `08` 두 줄로 접을지(좁은 폭).
+  final bool stackedLabel;
+
   const _TimeBar({
     required this.label,
     required this.count,
     required this.maxCount,
     required this.maxBarHeight,
+    this.barColor,
+    this.stackedLabel = false,
   });
 
   @override
@@ -527,18 +568,28 @@ class _TimeBar extends StatelessWidget {
         Container(
           width: _kBarThickness,
           height: (maxBarHeight * ratio).clamp(count > 0 ? 4.0 : 0.0, maxBarHeight),
-          decoration: const BoxDecoration(
-            color: SDSColor.blue100,
-            borderRadius: BorderRadius.vertical(top: Radius.circular(_kBarRadius)),
+          decoration: BoxDecoration(
+            color: barColor ?? SDSColor.blue100,
+            borderRadius: const BorderRadius.vertical(
+              top: Radius.circular(_kBarRadius),
+            ),
           ),
         ),
         // 막대 ↔ 라벨 8, 라벨 Regular 11 (목업).
         const SizedBox(height: 8),
         Text(
-          label,
-          maxLines: 1,
-          softWrap: false,
-          style: SDSTextStyle.regular.copyWith(fontSize: 11, color: SDSColor.gray500),
+          // 두 줄 모드는 `-` 뒤에서 **확정적으로** 접는다(폰트 폭에 맡기면 기기마다
+          // 한 줄/두 줄이 갈린다). 목업 모바일도 `00-` / `08` 두 줄이다.
+          stackedLabel ? label.replaceFirst('-', '-\n') : label,
+          maxLines: stackedLabel ? 2 : 1,
+          softWrap: stackedLabel,
+          textAlign: TextAlign.center,
+          style: SDSTextStyle.regular.copyWith(
+            fontSize: 11,
+            // 목업 — 글줄 13(두 줄이면 26).
+            height: 13 / 11,
+            color: SDSColor.gray500,
+          ),
         ),
       ],
     );

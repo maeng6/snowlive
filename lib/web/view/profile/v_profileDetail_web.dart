@@ -4,7 +4,7 @@ import 'package:com.snowlive/core/viewmodel/ranking/vm_rankingList_recordRoom.da
     show RankingFilter_season;
 import 'package:com.snowlive/web/routes/routes_web.dart';
 import 'package:com.snowlive/web/util/responsive_web.dart';
-import 'package:com.snowlive/web/util/web_share_link_web.dart';
+import 'package:com.snowlive/web/util/web_share_link.dart';
 import 'package:com.snowlive/web/util/web_share_url.dart';
 import 'package:com.snowlive/web/view/liveCrew/crew_record_sections_web.dart'
     show crewRecordSeasons;
@@ -31,8 +31,9 @@ import 'package:get/get.dart';
 /// 통계 카드 2열(423 + 간격 21 + 430)이 이 폭에 정확히 들어간다.
 const double kProfileContentMaxWidth = 874;
 
-/// 모바일 하단 고정 입력줄 높이(패딩 12+12 + 줄 48).
-const double _kMobileInputBarHeight = 76;
+/// 하단 고정 입력줄이 가리는 높이(세로 패딩 12+12 + 줄 48). 콘텐츠 마지막 글이
+/// 입력줄 뒤로 숨지 않게 스크롤 영역 아래를 이만큼 비운다.
+const double _kFloatingInputBarHeight = 76;
 
 enum _ProfileTab { stats, guestbook, recordRoom }
 
@@ -107,6 +108,20 @@ class _ProfileDetailViewWebState extends State<ProfileDetailViewWeb> {
     super.dispose();
   }
 
+  /// 뒤로가기 — 스택에 돌아갈 화면이 있으면 pop, **없으면 홈으로** 보낸다.
+  ///
+  /// 메뉴 → `마이페이지`나 헤더 프로필 사진으로 들어오면 루트 전환(`offAllNamed`)이라
+  /// pop할 게 없다. 예전에는 그때 버튼을 아예 숨겼는데, 화면마다 뒤로가기가 있다
+  /// 없다 해서 혼란스러웠다 → **항상 그리고** 갈 곳만 분기한다(사용자 확정,
+  /// 크루홈·친구 하위 화면의 `goBackOr`와 같은 방식).
+  void _goBack() {
+    if (Navigator.of(context).canPop()) {
+      Get.back();
+      return;
+    }
+    Get.offAllNamed(WebRoutes.home);
+  }
+
   void _toast(String message) {
     showWebToast(
       context,
@@ -142,25 +157,41 @@ class _ProfileDetailViewWebState extends State<ProfileDetailViewWeb> {
     _toast(ok ? '방명록을 남겼습니다.' : '잠시 후 다시 시도해 주세요.');
   }
 
+  /// 방명록 입력줄을 **뷰포트 하단에 고정**할지. 태블릿·모바일이 같다(사용자 확정) —
+  /// 좁은 폭에서는 목록 위에 붙은 입력줄이 스크롤과 함께 사라져 쓰기 어렵다.
+  /// PC는 목업대로 목록 위에 그대로 둔다.
+  ///
+  /// ⚠️ **내 프로필에는 입력줄 자체가 없다**(앱과 동일) → 바를 아예 그리지 않는다.
+  /// 안 그러면 빈 바의 상단 라인과 상하 패딩만 남아 하단에 줄이 하나 그어진다
+  /// (사용자 지적). 스크롤 아래 여백(76)도 같이 빠진다.
+  bool _floatingInput(BuildContext context) =>
+      !context.isDesktop && _tab == _ProfileTab.guestbook && !_vm.isMe;
+
   @override
   Widget build(BuildContext context) {
     final isMobile = context.screenType == WebScreenType.mobile;
+    final floatingInput = _floatingInput(context);
 
     final scrollArea = Container(
       color: SDSColor.snowliveWhite,
-      // 서브 페이지 공통 여백(좌우 40/20/16 · 상단 58/20/16).
-      // 모바일 방명록 탭은 하단 입력줄이 떠 있어 그만큼 여백을 둔다.
-      padding: webSubPagePadding(
-        context,
-        bottom: isMobile && _tab == _ProfileTab.guestbook
-            ? _kMobileInputBarHeight
-            : SDSSpacing.xl,
-      ),
       child: SingleChildScrollView(
+        // ⚠️ 페이지 여백은 **스크롤 영역 안쪽**에 둔다(웹 공통) — 바깥 Container에
+        // 주면 스크롤바가 브라우저 우측 끝이 아니라 여백 안쪽에 뜬다.
+        // 서브 페이지 공통 여백(좌우 40/20/16 · 상단 58/20/16).
+        // 하단 입력줄이 떠 있으면 그만큼 아래를 비운다.
+        padding: webSubPagePadding(
+          context,
+          bottom: floatingInput ? _kFloatingInputBarHeight : SDSSpacing.xl,
+        ),
         child: Center(
           child: ConstrainedBox(
-            constraints: const BoxConstraints(
-              maxWidth: kProfileContentMaxWidth,
+            // PC만 목업 폭(874)으로 묶고 **태블릿·모바일은 페이지 여백만 두고 꽉
+            // 채운다**(사용자 확정) — 좁은 폭에서 묶으면 양옆 여백만 커진다.
+            // 서브 페이지 공통 규칙(`webSubPageColumnMaxWidth`)과 같은 처리다.
+            constraints: BoxConstraints(
+              maxWidth: context.isDesktop
+                  ? kProfileContentMaxWidth
+                  : double.infinity,
             ),
             child: Obx(_buildBody),
           ),
@@ -168,11 +199,11 @@ class _ProfileDetailViewWebState extends State<ProfileDetailViewWeb> {
       ),
     );
 
-    if (!isMobile || _tab != _ProfileTab.guestbook) return scrollArea;
+    if (!floatingInput) return _withHomeFallbackPop(scrollArea);
 
     // 콘텐츠가 짧으면 셸의 표면색이 하단에 배어 나오므로 스택 전체에 흰 배경을 깐다
     // (크루 만들기·설정에서 겪은 것과 같은 처리).
-    return Container(
+    return _withHomeFallbackPop(Container(
       color: SDSColor.snowliveWhite,
       child: Stack(
         children: [
@@ -182,13 +213,41 @@ class _ProfileDetailViewWebState extends State<ProfileDetailViewWeb> {
             right: 0,
             bottom: 0,
             child: Container(
-              color: SDSColor.snowliveWhite,
-              padding: const EdgeInsets.all(12),
+              decoration: const BoxDecoration(
+                color: SDSColor.snowliveWhite,
+                // 목업(1:6636) — 바 위에 **1px gray50(#F5F5F5)** 라인. 방명록이 길어
+                // 바 뒤로 스크롤될 때 목록과 입력줄을 갈라 준다(사용자 요청).
+                // ⚠️ 연회색 라인 공통값(gray100)보다 한 단계 연한 색이다 — 목업 값
+                // 그대로 쓴다(바가 떠 있는 느낌을 해치지 않을 만큼만 구분).
+                border: Border(top: BorderSide(color: SDSColor.gray50)),
+              ),
+              // 좌우는 **위 콘텐츠와 같은 선**에 맞춘다 — 페이지 여백과 같은 값
+              // (모바일 16 · 태블릿 20, 목업 1:6622도 모바일 16). 상하 12는 공통.
+              padding: EdgeInsets.symmetric(
+                horizontal: isMobile ? 16 : 20,
+                vertical: 12,
+              ),
               child: Obx(_buildGuestbookInput),
             ),
           ),
         ],
       ),
+    ));
+  }
+
+  /// **브라우저 뒤로가기**도 화면 안 뒤로가기와 같게 만든다.
+  ///
+  /// 메뉴 → `마이페이지`처럼 루트로 열리면(`offAllNamed`) pop할 게 없어서 브라우저
+  /// 뒤로가기를 눌러도 아무 일이 없었다(PC는 화면 안 뒤로가기도 없어 아예 못 나갔다).
+  /// 스택이 비었을 때만 가로채서 홈으로 보낸다 — 쌓여 있으면 평소대로 pop한다.
+  Widget _withHomeFallbackPop(Widget child) {
+    return PopScope(
+      canPop: Navigator.of(context).canPop(),
+      onPopInvokedWithResult: (didPop, _) {
+        if (didPop) return;
+        Get.offAllNamed(WebRoutes.home);
+      },
+      child: child,
     );
   }
 
@@ -210,36 +269,57 @@ class _ProfileDetailViewWebState extends State<ProfileDetailViewWeb> {
 
     final info = detail.friendUserInfo;
 
-    // 탭해서 들어온 프로필(커뮤니티 작성자·댓글·랭킹·크루멤버 등)은 스택 위에
-    // push돼 있으므로 뒤로가기로 직전 화면에 돌아간다. 메뉴바 마이페이지/헤더
-    // 프로필 사진으로 들어온 경우는 루트 전환(offAllNamed)이라 pop할 게 없어
-    // 버튼이 뜨지 않는다. 즉 canPop 여부로 자연스럽게 분기된다.
-    final bool canGoBack = Navigator.of(context).canPop();
     final bool isMobile = context.screenType == WebScreenType.mobile;
+    final Widget? shareAction = _buildShareAction(info);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         // PC는 사이드바·브라우저 뒤로가기가 있어 화면 안 뒤로가기를 두지 않는다
         // (목업 1:7764에도 없다 — WebPageHeader와 같은 규칙).
-        if (canGoBack && !context.isDesktop) ...[
-          Align(
-            alignment: Alignment.centerLeft,
-            child: WebIconButton(
-              onTap: () => Get.back(),
-              padding: const EdgeInsets.fromLTRB(0, 0, 4, 0),
-              icon: WebBackIcon(size: isMobile ? 24 : 30),
-            ),
+        //
+        // 모바일은 헤더가 가운데 정렬 기둥이라 뒤로가기를 **윗줄**에 따로 둔다.
+        // 태블릿은 목업(1:2423)에 뒤로가기가 없지만 웹에는 필요하므로 헤더 줄
+        // **안쪽 프로필 사진 왼쪽**에 넣는다(사용자 확정) — 윗줄로 빼면 헤더가
+        // 그만큼 내려가 다른 서브 페이지와 상단 여백이 어긋난다.
+        // 모바일은 헤더가 가운데 정렬 기둥이라 **윗줄**을 따로 둔다 —
+        // 왼쪽 뒤로가기 / 오른쪽 끝 공유(사용자 확정). 뒤로갈 곳이 없어도
+        // 공유는 남으므로 줄 자체는 공유만으로도 그린다.
+        if (isMobile) ...[
+          Row(
+            children: [
+              WebIconButton(
+                onTap: _goBack,
+                padding: const EdgeInsets.fromLTRB(0, 0, 4, 0),
+                icon: const WebBackIcon(size: 24),
+              ),
+              const Spacer(),
+              if (shareAction != null) shareAction,
+            ],
           ),
-          const SizedBox(height: SDSSpacing.sm),
+          const SizedBox(height: 20),
         ],
         ProfileHeaderWeb(
           info: info,
           action: _buildHeaderAction(),
           mobileAction: _buildMobileHeaderAction(),
-          share: _buildShareAction(info),
+          // 모바일 공유는 위 줄로 올라갔다 → 헤더 아래에는 두지 않는다.
+          share: isMobile ? null : shareAction,
+          leading: (!context.isDesktop && !isMobile)
+              ? WebIconButton(
+                  onTap: _goBack,
+                  // 서브 페이지 표준 — 좌측 히트 여백 0(화살표가 콘텐츠 좌측선에 붙는다).
+                  padding: const EdgeInsets.fromLTRB(0, 0, 4, 0),
+                  icon: const WebBackIcon(size: 30),
+                )
+              : null,
         ),
-        const SizedBox(height: SDSSpacing.lg),
+        // 목업 실측 — 헤더 바닥 → 탭 글줄 윗선.
+        // PC·태블릿(1:7764): 161 → 192 = 31.
+        // 모바일(1:6206/1:4839): 상태메시지 바닥 212 → 탭 글줄 250 = 38
+        //   (헤더 프레임 아래 패딩 16 + 블록 간격 10 + 탭 프레임 위 패딩 12).
+        // 여기 탭은 글줄만 그리므로 그 패딩들을 간격에 더해 둔다.
+        SizedBox(height: isMobile ? 38 : 31),
         Align(
           alignment: Alignment.centerLeft,
           child: WebTextTabs<_ProfileTab>(
@@ -265,7 +345,9 @@ class _ProfileDetailViewWebState extends State<ProfileDetailViewWeb> {
             },
           ),
         ),
-        const SizedBox(height: SDSSpacing.lg),
+        // 목업 — 탭 글줄 바닥 211 → 다음 블록까지. 라이딩 통계/기록실은 랭킹 바가
+        // 233에서 시작해 22(아래 패딩 12 + 간격 10), 방명록은 입력줄이 243이라 32다.
+        SizedBox(height: _tabBottomGap(isMobile)),
         if (isHidden)
           const WebEmptyState(message: '프로필 비공개 유저입니다.')
         else
@@ -285,11 +367,23 @@ class _ProfileDetailViewWebState extends State<ProfileDetailViewWeb> {
     );
   }
 
+  /// 탭 글줄 바닥 ↔ 아래 블록 윗선(목업 실측).
+  /// - 라이딩 통계: 파란 바가 바로 온다 — 22 (PC 1:7764 · 모바일 1:4839).
+  /// - 방명록: 입력줄(PC·태블릿) / 목록(모바일)이 와서 32 (1:8886 · 1:6206).
+  /// - 기록실 **모바일**: 시즌 드롭다운(글줄 19)이 먼저 와서 42 (1:5520 — 269 → 311).
+  ///   PC·태블릿은 드롭다운이 파란 바 **안**이라 통계 탭과 같은 22다.
+  double _tabBottomGap(bool isMobile) {
+    if (_tab == _ProfileTab.guestbook) return 32;
+    if (isMobile && _tab == _ProfileTab.recordRoom) return 42;
+    return 22;
+  }
+
   String _tabLabel(_ProfileTab tab) => switch (tab) {
     _ProfileTab.stats => '라이딩 통계',
     _ProfileTab.guestbook => '방명록',
-    // 남의 프로필에서도 어색하지 않게 `내`를 뺀다.
-    _ProfileTab.recordRoom => '시즌 기록실',
+    // 목업(1:7957)은 `내 시즌 기록실`이지만 그건 **내 프로필** 화면이다 —
+    // 남의 프로필에서 `내`가 붙으면 말이 안 되므로 그때는 뺀다(사용자 확정).
+    _ProfileTab.recordRoom => _vm.isMe ? '내 시즌 기록실' : '시즌 기록실',
   };
 
   /// 내 프로필 편집 화면으로 갔다가 돌아오면 바뀐 정보로 다시 받는다.
@@ -312,18 +406,38 @@ class _ProfileDetailViewWebState extends State<ProfileDetailViewWeb> {
   Widget? _buildShareAction(FriendUserInfo? info) {
     final id = _userId;
     if (id == null) return null;
-    return WebIconButton(
-      onTap: () => shareOrCopyLink(
-        context,
-        url: profileShareLink(id),
-        title: '${(info?.displayName ?? '스노우라이브 유저').trim()} | 스라 프로필',
-      ),
+    void onTap() => shareOrCopyLink(
+      context,
+      url: profileShareLink(id),
+      title: '${(info?.displayName ?? '스노우라이브 유저').trim()} | 스라 프로필',
+    );
+
+    if (context.screenType == WebScreenType.mobile) {
+      // 모바일은 **박스 없이 아이콘만** 뒤로가기 줄 우측 끝에 선다(사용자 확정).
+      // 크기는 같은 줄의 뒤로가기(24)에 맞춘다.
+      return WebIconButton(
+        onTap: onTap,
+        tooltip: '링크 복사',
+        padding: EdgeInsets.zero,
+        icon: SvgPicture.asset(
+          'assets/imgs/icons/icon_header_share_web.svg',
+          width: 24,
+          height: 24,
+        ),
+      );
+    }
+
+    // PC·태블릿은 프로필 편집·친구 추가와 **같은 박스 버튼**(사용자 확정) —
+    // 아이콘만 떠 있으면 옆 버튼과 높이·테두리가 안 맞아 따로 노는 것처럼 보인다.
+    return _HeaderIconPill(
       tooltip: '링크 복사',
-      padding: const EdgeInsets.all(1),
+      onTap: onTap,
+      // 박스(36×36)는 옆 버튼과 같게 두고 **아이콘만** 작게 — 26은 박스를 꽉 채워
+      // 글자 버튼 옆에서 혼자 커 보였다(사용자 확정).
       icon: SvgPicture.asset(
         'assets/imgs/icons/icon_header_share_web.svg',
-        width: 26,
-        height: 26,
+        width: 20,
+        height: 20,
       ),
     );
   }
@@ -354,14 +468,14 @@ class _ProfileDetailViewWebState extends State<ProfileDetailViewWeb> {
   // ===== 방명록 =====
 
   Widget _buildGuestbook(int talkCount) {
-    final isMobile = context.screenType == WebScreenType.mobile;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        // 모바일은 입력줄이 하단에 고정된다(목업) → 여기서는 그리지 않는다.
-        if (!isMobile) ...[
+        // 태블릿·모바일은 입력줄이 하단에 고정된다 → 여기서는 그리지 않는다.
+        if (!_floatingInput(context)) ...[
           _buildGuestbookInput(),
-          const SizedBox(height: SDSSpacing.lg),
+          // 목업(1:8886) — 입력줄(48) 바닥 291 → 목록 321 = 30.
+          const SizedBox(height: 30),
         ],
         ProfileGuestbookListWeb(
           talks: _vm.talks,
@@ -418,7 +532,9 @@ class _ProfileDetailViewWebState extends State<ProfileDetailViewWeb> {
   String? _guestbookLockedMessage() {
     if (_vm.isMe || _vm.canWriteGuestbook) return null;
     if (!_vm.isLoggedIn) return '로그인이 필요해요.';
-    return null;
+    // 로그인은 했는데 친구가 아니라 못 쓰는 경우 — 목업(1:9264)의 둘째 줄 문구.
+    // 전에는 null이라 빈 상태에 이유가 안 나오고, 잠긴 줄을 눌러도 아무 말이 없었다.
+    return kProfileGuestbookFriendOnlyHint;
   }
 
   // ===== 기록실 =====
@@ -449,6 +565,71 @@ class _ProfileDetailViewWebState extends State<ProfileDetailViewWeb> {
   }
 }
 
+/// 헤더 버튼과 **같은 껍데기**(테두리 gray200 · 라운드 5 · 높이 36)에 아이콘만 담는다.
+/// 공유처럼 글자가 없는 액션용 — 패딩 5 + 아이콘 26이라 정확히 36×36 정사각이 된다.
+class _HeaderIconPill extends StatelessWidget {
+  final Widget icon;
+  final VoidCallback? onTap;
+  final String? tooltip;
+
+  const _HeaderIconPill({required this.icon, this.onTap, this.tooltip});
+
+  @override
+  Widget build(BuildContext context) {
+    final button = OutlinedButton(
+      onPressed: onTap,
+      style: _headerButtonStyle(
+        padding: const EdgeInsets.all(5),
+        // 아이콘이 작아도 박스는 36×36 — 옆 글자 버튼과 윗선·아랫선이 맞는다
+        // (ButtonStyleButton이 남는 공간에 아이콘을 가운데로 둔다).
+        minimumSize: const Size(36, 36),
+      ),
+      child: icon,
+    );
+    return tooltip == null ? button : Tooltip(message: tooltip!, child: button);
+  }
+}
+
+/// 헤더 라인 버튼(프로필 편집 · 친구 추가 · 공유) 공통 스타일.
+///
+/// hover는 **웹 라인 버튼 공통** — 테두리·글자는 그대로, 면이 흰색 → gray50으로
+/// 어두워진다. 리플·그림자·전환 애니메이션은 쓰지 않는다
+/// (`WebSectionLinkButton` · `WebProfilePillButton` · 라이브크루 필터 칩과 같은 규칙).
+/// Material 기본값을 그대로 두면 리플과 보라 오버레이가 떠서 다른 화면과 어긋난다.
+///
+/// ⚠️ `visualDensity: standard` — 웹 기본(compact)은 패딩을 상하좌우 4씩 깎아
+/// 36이어야 할 버튼을 28로 만든다.
+ButtonStyle _headerButtonStyle({
+  required EdgeInsets padding,
+  required Size minimumSize,
+  /// 모서리를 **완전히 둥글게**(알약) 할지 — 모바일 `프로필 편집`만 true(사용자 확정).
+  bool stadium = false,
+}) {
+  return ButtonStyle(
+    splashFactory: NoSplash.splashFactory,
+    overlayColor: const WidgetStatePropertyAll(Colors.transparent),
+    shadowColor: const WidgetStatePropertyAll(Colors.transparent),
+    elevation: const WidgetStatePropertyAll(0),
+    animationDuration: Duration.zero,
+    backgroundColor: WidgetStateProperty.resolveWith(
+      (states) => states.contains(WidgetState.hovered)
+          ? SDSColor.gray50
+          : SDSColor.snowliveWhite,
+    ),
+    // 목업(1:7851) — 테두리 gray200, 라운드 5.
+    side: const WidgetStatePropertyAll(BorderSide(color: SDSColor.gray200)),
+    padding: WidgetStatePropertyAll(padding),
+    visualDensity: VisualDensity.standard,
+    minimumSize: WidgetStatePropertyAll(minimumSize),
+    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+    shape: WidgetStatePropertyAll(
+      stadium
+          ? const StadiumBorder()
+          : RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+    ),
+  );
+}
+
 class _HeaderPill extends StatelessWidget {
   final String label;
   final VoidCallback? onTap;
@@ -459,13 +640,12 @@ class _HeaderPill extends StatelessWidget {
   Widget build(BuildContext context) {
     return OutlinedButton(
       onPressed: onTap,
-      style: OutlinedButton.styleFrom(
-        // 목업(1:7851) — 테두리 gray200, 패딩 16/10, 라운드 5, 글자 Bold 13 gray700.
-        side: BorderSide(color: SDSColor.gray200),
+      // 목업(1:7851) — 패딩 16/10 + 글줄 16 = 80×36.
+      // 모바일만 모서리를 완전히 둥글게 쓴다(사용자 확정).
+      style: _headerButtonStyle(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-        minimumSize: Size.zero,
-        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+        minimumSize: const Size(0, 36),
+        stadium: context.screenType == WebScreenType.mobile,
       ),
       child: Text(
         label,
@@ -501,6 +681,10 @@ class _SeasonSelector extends StatefulWidget {
 class _SeasonSelectorState extends State<_SeasonSelector> {
   final LayerLink _link = LayerLink();
 
+  /// 파란 바 안의 링크는 **hover에서 밑줄**이 공통이다(`WebStatsBarLink`·지표 칸과
+  /// 같은 규칙) — 바 위에 배경 틴트를 깔면 색이 겹쳐 잘 안 보인다.
+  bool _hovered = false;
+
   String _label(RankingFilter_season season) =>
       '${season.korean.replaceAll('시즌', '')} 시즌 랭킹';
 
@@ -525,24 +709,34 @@ class _SeasonSelectorState extends State<_SeasonSelector> {
 
     return CompositedTransformTarget(
       link: _link,
-      child: InkWell(
-        onTap: _open,
-        borderRadius: BorderRadius.circular(6),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                _label(current),
-                style: SDSTextStyle.bold.copyWith(
-                  fontSize: 15,
-                  color: widget.color,
+      child: MouseRegion(
+        cursor: SystemMouseCursors.click,
+        onEnter: (_) => setState(() => _hovered = true),
+        onExit: (_) => setState(() => _hovered = false),
+        child: GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: _open,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  _label(current),
+                  // 라이딩 통계 탭의 `내 랭킹`과 **같은 자리·같은 크기**(Bold 16).
+                  style: SDSTextStyle.bold.copyWith(
+                    fontSize: 16,
+                    color: widget.color,
+                    decoration: _hovered
+                        ? TextDecoration.underline
+                        : TextDecoration.none,
+                    decorationColor: widget.color,
+                  ),
                 ),
-              ),
-              const SizedBox(width: 2),
-              Icon(Icons.expand_more, size: 18, color: widget.color),
-            ],
+                const SizedBox(width: 2),
+                Icon(Icons.expand_more, size: 18, color: widget.color),
+              ],
+            ),
           ),
         ),
       ),
@@ -643,16 +837,23 @@ class _StatsPaneState extends State<_StatsPane> {
             ? null
             : Text(
                 widget.leadingLabel!,
-                // 목업(1:7959) — `내 랭킹` Bold 16.
+                // 목업(1:7959) — `내 랭킹` Bold 16, 글줄 19.
                 style: SDSTextStyle.bold.copyWith(
                   fontSize: 16,
+                  height: 19 / 16,
                   color: SDSColor.snowliveWhite,
                 ),
               ));
 
     if (!hasRecord) {
-      // 기록이 없어도 '데이터 있는 시즌'과 동일한 디자인(시즌선택 + 파란 랭크바)을 그대로
-      // 보여주고, 점수·랭킹·티어만 '-'로 표시한다. (시즌 전환이 계속 가능)
+      // 목업(1:6994) — 기록이 없으면 **파란 랭킹 바도 통계 토글도 그리지 않고**
+      // 빈 상태만 보여준다(점수가 전부 `-`인 바는 알려 주는 게 없다).
+      //
+      // 예외: 기록실은 시즌 드롭다운이 **파란 바 안**에 있는 폭(PC·태블릿)에서만
+      // 바를 남긴다 — 빼 버리면 시즌을 바꿀 방법이 사라진다. 모바일은 드롭다운이
+      // 바 위에 따로 서므로 목업대로 바를 없앤다.
+      final keepBarForSeasonPicker =
+          widget.seasonSelectorBuilder != null && !isMobile;
       return Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -661,17 +862,20 @@ class _StatsPaneState extends State<_StatsPane> {
               alignment: Alignment.centerLeft,
               child: widget.seasonSelectorBuilder!(SDSColor.gray900),
             ),
-            const SizedBox(height: 12),
+            // 목업(1:5520) — 드롭다운(19) 바닥 330 → 파란 바 350 = 20.
+            const SizedBox(height: 20),
           ],
-          ProfileRankBarWeb(
-            leading: leading,
-            score: null,
-            rank: null,
-            tierName: null,
-            tierIconUrl: null,
-            empty: true,
-          ),
-          const SizedBox(height: SDSSpacing.xxl),
+          if (keepBarForSeasonPicker) ...[
+            ProfileRankBarWeb(
+              leading: leading,
+              score: null,
+              rank: null,
+              tierName: null,
+              tierIconUrl: null,
+              empty: true,
+            ),
+            const SizedBox(height: SDSSpacing.xxl),
+          ],
           const WebEmptyState(message: '아직 라이딩 기록이 없어요'),
         ],
       );
@@ -688,7 +892,8 @@ class _StatsPaneState extends State<_StatsPane> {
             alignment: Alignment.centerLeft,
             child: widget.seasonSelectorBuilder!(SDSColor.gray900),
           ),
-          const SizedBox(height: 12),
+          // 목업(1:5520) — 드롭다운(19) 바닥 330 → 파란 바 350 = 20.
+          const SizedBox(height: 20),
         ],
         ProfileRankBarWeb(
           leading: leading,
@@ -697,8 +902,8 @@ class _StatsPaneState extends State<_StatsPane> {
           tierName: season.tierNameKor,
           tierIconUrl: season.overallTierIconUrl,
         ),
-        // 목업(1:7764) — 랭킹 바 ↔ 통계 토글 40.
-        const SizedBox(height: 40),
+        // 목업 — 랭킹 바 ↔ 통계 토글: PC·태블릿 40 / 모바일 30(1:4994→1:5025).
+        SizedBox(height: isMobile ? 30 : 40),
         Row(
           children: [
             _ModePill(
@@ -715,8 +920,8 @@ class _StatsPaneState extends State<_StatsPane> {
           ],
         ),
         if (_mode == _StatsMode.daily) ...[
-          // 목업 — 토글 ↔ 월 네비게이션 24.
-          const SizedBox(height: SDSSpacing.lg),
+          // 목업 — 토글 ↔ 월 네비게이션: PC·태블릿 24 / 모바일 40(1:5025→1:5279).
+          SizedBox(height: isMobile ? 40 : SDSSpacing.lg),
           ProfileDailyCalendarWeb(
             month: _month,
             countsByDay: _countsByDay,
@@ -727,8 +932,8 @@ class _StatsPaneState extends State<_StatsPane> {
             onNextMonth: () => _shiftMonth(1),
           ),
         ],
-        // 목업 — 날짜 스트립(또는 토글) ↔ 라이딩 통계 40.
-        const SizedBox(height: 40),
+        // 목업 — 날짜 스트립(또는 토글) ↔ 라이딩 통계: PC·태블릿 40 / 모바일 30
+        SizedBox(height: isMobile ? 24 : 32),
         if (_mode == _StatsMode.total)
           ProfileRidingStatsWeb(
             totalCount: season.overallTotalCount,
@@ -765,77 +970,172 @@ class _ModePill extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: isActive ? SDSColor.snowliveBlack : SDSColor.snowliveWhite,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20),
-        // 목업(1:7991) — 비활성 테두리 gray100.
-        side: BorderSide(
-          color: isActive ? SDSColor.snowliveBlack : SDSColor.gray100,
+    final background = isActive ? SDSColor.snowliveBlack : SDSColor.snowliveWhite;
+    // 목업(1:7991) — 비활성 테두리 gray100.
+    final border = isActive ? SDSColor.snowliveBlack : SDSColor.gray100;
+
+    return ElevatedButton(
+      onPressed: onTap,
+      // hover는 **토글 칩 공통 규칙**(라이브크루 필터 칩과 동일) — 테두리는 고정하고
+      // 면만 어두워진다: 미선택은 흰색 → gray50, 선택됨은 배경에 검정 10%.
+      // 리플·그림자·전환 애니메이션은 쓰지 않는다(웹 공통).
+      style: ButtonStyle(
+        splashFactory: NoSplash.splashFactory,
+        overlayColor: const WidgetStatePropertyAll(Colors.transparent),
+        shadowColor: const WidgetStatePropertyAll(Colors.transparent),
+        elevation: const WidgetStatePropertyAll(0),
+        animationDuration: Duration.zero,
+        backgroundColor: WidgetStateProperty.resolveWith((states) {
+          if (!states.contains(WidgetState.hovered)) return background;
+          return isActive
+              ? Color.alphaBlend(Colors.black.withValues(alpha: 0.1), background)
+              : SDSColor.gray50;
+        }),
+        side: WidgetStatePropertyAll(BorderSide(color: border)),
+        // 목업(1:7991) — 패딩 좌 14 / 우 12 / 상하 10, Bold 14 글줄 16 → 78×36.
+        padding: const WidgetStatePropertyAll(EdgeInsets.fromLTRB(14, 10, 12, 10)),
+        // ⚠️ 웹 기본 visualDensity(compact)가 패딩을 4씩 깎는다.
+        visualDensity: VisualDensity.standard,
+        minimumSize: const WidgetStatePropertyAll(Size(0, 36)),
+        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+        shape: WidgetStatePropertyAll(
+          RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         ),
       ),
-      clipBehavior: Clip.antiAlias,
-      child: InkWell(
-        onTap: onTap,
-        child: Padding(
-          // 목업(1:7991) — 패딩 좌 14 / 우 12 / 상하 10, Bold 14.
-          padding: const EdgeInsets.fromLTRB(14, 10, 12, 10),
-          child: Text(
-            label,
-            style: SDSTextStyle.bold.copyWith(
-              fontSize: 14,
-              height: 16 / 14,
-              color: isActive ? SDSColor.snowliveWhite : SDSColor.snowliveBlack,
-            ),
-          ),
+      child: Text(
+        label,
+        style: SDSTextStyle.bold.copyWith(
+          fontSize: 14,
+          height: 16 / 14,
+          color: isActive ? SDSColor.snowliveWhite : SDSColor.snowliveBlack,
         ),
       ),
     );
   }
 }
 
+/// 첫 로딩 자리표시 — **실제 레이아웃과 같은 높이·간격**으로 잡는다.
+/// 하나라도 다르면 데이터가 도착하는 순간 화면이 튄다(크루홈 스켈레톤과 같은 원칙).
 class _ProfileSkeleton extends StatelessWidget {
   const _ProfileSkeleton();
 
   @override
   Widget build(BuildContext context) {
-    return const Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        // ⚠️ SkeletonBox는 흰색이고 색은 SkeletonShimmer가 입힌다 — 감싸지 않으면
-        // 흰 배경에 흰 박스라 아무것도 보이지 않는다.
-        SkeletonShimmer(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              SkeletonBox(height: 56, radius: 10),
-              SizedBox(height: SDSSpacing.lg),
-              SkeletonBox(height: 20, radius: 6),
+    final isMobile = context.screenType == WebScreenType.mobile;
+
+    // 헤더 — 모바일은 아바타 64 가운데 기둥(16 + 19 + 2 + 16 + 2 + 16 = 135),
+    // PC·태블릿은 한 줄(아바타 48 + 이름 / 소속·상태 / 버튼 80×36 = 48).
+    final header = isMobile
+        ? Column(
+            children: const [
+              SkeletonBox(width: 64, height: 64, isCircle: true),
+              SizedBox(height: 16),
+              SkeletonBox(width: 120, height: 19),
+              SizedBox(height: 2),
+              SkeletonBox(width: 180, height: 16),
+              SizedBox(height: 2),
+              SkeletonBox(width: 220, height: 16),
             ],
-          ),
-        ),
-        SizedBox(height: SDSSpacing.lg),
-        // 단독으로도 쓰이는 위젯이라 자기 shimmer를 갖고 있다.
-        _ProfileStatsSkeleton(),
-      ],
+          )
+        : Row(
+            children: const [
+              SkeletonBox(width: 48, height: 48, isCircle: true),
+              SizedBox(width: 12),
+              SkeletonBox(width: 160, height: 29),
+              Spacer(),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  SkeletonBox(width: 140, height: 16),
+                  SizedBox(height: 4),
+                  SkeletonBox(width: 200, height: 16),
+                ],
+              ),
+              SizedBox(width: SDSSpacing.lg),
+              SkeletonBox(width: 80, height: 36, radius: 5),
+            ],
+          );
+
+    return SkeletonShimmer(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          // 모바일 뒤로가기·공유 줄(24) + 아래 간격 8.
+          if (isMobile) ...[
+            const SkeletonBox(width: 24, height: 24, radius: 4),
+            const SizedBox(height: SDSSpacing.sm),
+          ],
+          header,
+          // 헤더 ↔ 탭(모바일 38 / 그 외 31).
+          SizedBox(height: isMobile ? 38 : 31),
+          // 탭 세 개 묶음 — 목업 폭 248, 글줄 19.
+          const SkeletonBox(width: 248, height: 19),
+          // 탭 ↔ 랭킹 바 22.
+          const SizedBox(height: 22),
+          const _ProfileStatsSkeleton(nested: true),
+        ],
+      ),
     );
   }
 }
 
+/// 랭킹 바 + 통계 토글 + 라이딩 통계 자리표시. 기록실 탭은 이것만 따로 쓴다.
 class _ProfileStatsSkeleton extends StatelessWidget {
-  const _ProfileStatsSkeleton();
+  /// 위에서 이미 [SkeletonShimmer]로 감쌌는지. 단독으로 쓰일 때만 자기 shimmer를 갖는다.
+  final bool nested;
+
+  const _ProfileStatsSkeleton({this.nested = false});
 
   @override
   Widget build(BuildContext context) {
-    return const SkeletonShimmer(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          SkeletonBox(height: 64, radius: 10),
-          SizedBox(height: SDSSpacing.lg),
-          SkeletonBox(height: 240, radius: 10),
-        ],
-      ),
+    final isMobile = context.screenType == WebScreenType.mobile;
+    final isDesktop = context.isDesktop;
+    const card = SkeletonBox(height: 310, radius: 12);
+
+    final body = Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        // 랭킹 바 — 모바일 80(값·라벨 2줄 + 티어 40) / 그 외 54.
+        SkeletonBox(height: isMobile ? 78 : 54, radius: 12),
+        SizedBox(height: isMobile ? 30 : 40),
+        // 누적/일간 토글 78×36, 사이 8.
+        const Row(
+          children: [
+            SkeletonBox(width: 78, height: 36, radius: 20),
+            SizedBox(width: SDSSpacing.sm),
+            SkeletonBox(width: 78, height: 36, radius: 20),
+          ],
+        ),
+        SizedBox(height: isMobile ? 30 : 40),
+        // 라이딩 통계 제목 줄(36) — 제목 + 우측 `전체 슬로프 보기` 109×36.
+        const SizedBox(
+          height: 36,
+          child: Row(
+            children: [
+              SkeletonBox(width: 100, height: 19),
+              Spacer(),
+              SkeletonBox(width: 109, height: 36, radius: 6),
+            ],
+          ),
+        ),
+        const SizedBox(height: 12),
+        if (isMobile)
+          const Column(children: [card, SizedBox(height: 20), card])
+        else
+          IntrinsicHeight(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Expanded(flex: isDesktop ? 423 : 1, child: card),
+                SizedBox(width: isDesktop ? 21 : 20),
+                Expanded(flex: isDesktop ? 430 : 1, child: card),
+              ],
+            ),
+          ),
+      ],
     );
+
+    return nested ? body : SkeletonShimmer(child: body);
   }
 }

@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:math' as math;
 
 import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/core/model/m_rankingListCrew.dart';
@@ -71,24 +70,14 @@ const List<RankingFilter_resort> kRankingSelectableResorts = [
   RankingFilter_resort.phoenix,
 ];
 
-/// 순위 숫자 칸 폭. 고정폭으로 두면 한 자리 순위에선 여백이 뜨고 네 자리(1000위~)에선
-/// 글줄이 넘어간다. 한 페이지의 순위는 연속 구간이라 **가장 큰 순위 하나만 실제로 재서**
-/// 그 폭으로 칸을 통일한다 — 이름 줄의 세로 정렬은 유지되고 남는 여백만 사라진다.
+/// 순위 숫자 칸 폭. 한 페이지의 순위 중 **가장 큰 순위의 자릿수**에 맞춰
+/// [rankNumberColumnWidth]로 잰다 — 이름 줄의 세로 정렬은 유지되고 남는 여백만 사라진다.
 double rankColumnWidth(BuildContext context, Iterable<int?> ranks) {
   var widest = 0;
   for (final rank in ranks) {
     if ((rank ?? 0) > widest) widest = rank!;
   }
-  final painter = TextPainter(
-    text: TextSpan(
-      text: '$widest',
-      style: SDSTextStyle.bold.copyWith(fontSize: 14),
-    ),
-    textDirection: TextDirection.ltr,
-    textScaler: MediaQuery.textScalerOf(context),
-  )..layout();
-  // 한 자리만 있는 페이지에서도 숫자가 답답해 보이지 않게 최소폭을 둔다.
-  return math.max(painter.width, 16);
+  return rankNumberColumnWidth(context, widest);
 }
 
 const List<RankingFilter_fed> kRankingSelectableFeds = [RankingFilter_fed.univ_ski, RankingFilter_fed.univ_board, RankingFilter_fed.univ_all];
@@ -763,6 +752,8 @@ class _RankingHomeViewWebState extends State<RankingHomeViewWeb> {
                     '${isResortScoped ? user.resortRank ?? '' : user.overallRank ?? ''}',
                     maxLines: 1,
                     softWrap: false,
+                    // 칸 폭이 한 끗 모자라도 끝자리가 사라지지 않게 잘라내지 않는다.
+                    overflow: TextOverflow.visible,
                     style: SDSTextStyle.bold.copyWith(fontSize: 14, color: SDSColor.gray900),
                   ),
                 ),
@@ -877,6 +868,8 @@ class _RankingHomeViewWebState extends State<RankingHomeViewWeb> {
                     '${isResortScoped ? crew.resortRank ?? '' : crew.overallRank ?? ''}',
                     maxLines: 1,
                     softWrap: false,
+                    // 칸 폭이 한 끗 모자라도 끝자리가 사라지지 않게 잘라내지 않는다.
+                    overflow: TextOverflow.visible,
                     style: SDSTextStyle.bold.copyWith(fontSize: 14, color: SDSColor.gray900),
                   ),
                 ),

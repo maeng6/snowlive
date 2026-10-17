@@ -31,7 +31,8 @@ const double _kCrewRowGap = 10;
 /// 화면 밖으로 정확히 빠진다**(12로 두면 왼쪽 끝에 선이 붙어 보인다).
 double _narrowDividerPad(BuildContext context) =>
     context.screenType == WebScreenType.tablet ? 20 : 12;
-double _narrowColumnGutter(BuildContext context) => _narrowDividerPad(context) * 2 + 1;
+double _narrowColumnGutter(BuildContext context) =>
+    _narrowDividerPad(context) * 2 + 1;
 
 /// 좁은 폭에서 한 열에 넣는 행 수(목업 10행). 화면 폭이 바뀌어도 이 구성은 그대로다.
 const int _kRowsPerColumn = 10;
@@ -64,10 +65,15 @@ int crewVisibleColumns(BuildContext context) =>
     context.screenType == WebScreenType.tablet ? 2 : 1;
 
 /// 좁은 폭 열 폭. [hasMore]가 false면 peek을 빼지 않는다(넘길 열이 없을 때).
-double crewNarrowColumnWidth(BuildContext context, double maxWidth, {bool hasMore = true}) {
+double crewNarrowColumnWidth(
+  BuildContext context,
+  double maxWidth, {
+  bool hasMore = true,
+}) {
   final visible = crewVisibleColumns(context);
   final peek = hasMore ? _columnPeek(context) : 0.0;
-  return (maxWidth - _narrowColumnGutter(context) * (visible - 1) - peek) / visible;
+  return (maxWidth - _narrowColumnGutter(context) * (visible - 1) - peek) /
+      visible;
 }
 
 /// 선택한 칩의 크루 목록. 열은 **위에서 아래로** 채운다(목업).
@@ -149,7 +155,8 @@ class LiveCrewListGridWeb extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, constraints) {
         final columnWidth =
-            (constraints.maxWidth - gutter * (visibleColumns - 1) - peek) / visibleColumns;
+            (constraints.maxWidth - gutter * (visibleColumns - 1) - peek) /
+            visibleColumns;
         // 칸 폭 = 열 + 구분선 묶음. 이게 곧 스냅 단위다.
         final pitch = columnWidth + gutter;
 
@@ -160,12 +167,17 @@ class LiveCrewListGridWeb extends StatelessWidget {
         // 스크롤 영역 안쪽에 페이지 여백을 다시 넣어, 열은 **여백 선에 맞춰** 서고
         // 넘길 때만 화면 끝까지 흐르게 한다. 여백이 선두에 들어가도 스냅 위치는
         // 그대로 열 피치의 배수다(여백만큼 밀린 자리에 열이 선다).
-        final pagePadding = ((screenWidth - constraints.maxWidth) / 2).clamp(0.0, 40.0);
+        final pagePadding = ((screenWidth - constraints.maxWidth) / 2).clamp(
+          0.0,
+          40.0,
+        );
         // 끝 여백이 모자라면 **마지막 스냅 지점이 maxScrollExtent에서 잘려** 그 열만
         // 여백 선에 못 선다. 마지막 열이 제자리에 설 만큼은 뒤를 비워 둔다
         // (비는 폭은 peek 자리와 같아 눈에 띄지 않는다).
-        final trailingPadding =
-            math.max(pagePadding, screenWidth - pagePadding - visibleColumns * pitch);
+        final trailingPadding = math.max(
+          pagePadding,
+          screenWidth - pagePadding - visibleColumns * pitch,
+        );
 
         return SizedBox(
           // 가로 리스트는 높이를 못 박아야 한다(행이 한 줄 고정이라 계산이 맞는다).
@@ -237,14 +249,21 @@ class _CrewColumnPagerState extends State<_CrewColumnPager> {
   bool _onScrollEnd(ScrollEndNotification notification) {
     if (_settling || !_controller.hasClients) return false;
     final position = _controller.position;
-    final target = (position.pixels / widget.pitch).roundToDouble() * widget.pitch;
-    final clamped = target.clamp(position.minScrollExtent, position.maxScrollExtent);
+    final target =
+        (position.pixels / widget.pitch).roundToDouble() * widget.pitch;
+    final clamped = target.clamp(
+      position.minScrollExtent,
+      position.maxScrollExtent,
+    );
     if ((clamped - position.pixels).abs() < 0.5) return false;
 
     _settling = true;
     _controller
-        .animateTo(clamped,
-            duration: const Duration(milliseconds: 200), curve: Curves.easeOut)
+        .animateTo(
+          clamped,
+          duration: const Duration(milliseconds: 200),
+          curve: Curves.easeOut,
+        )
         .whenComplete(() => _settling = false);
     return false;
   }
@@ -284,7 +303,9 @@ class _CrewColumnPagerState extends State<_CrewColumnPager> {
                           // 열이 300 가까이 되므로 두 줄이 필요 없다 — 높이를 고정해야
                           // 가로 리스트 높이 계산이 맞는다.
                           allowTwoLines: false,
-                          trailingCount: widget.trailingCountOf?.call(column[r]),
+                          trailingCount: widget.trailingCountOf?.call(
+                            column[r],
+                          ),
                         ),
                       ],
                     ],
@@ -292,7 +313,10 @@ class _CrewColumnPagerState extends State<_CrewColumnPager> {
                 ),
                 // 마지막 열도 **폭은 그대로** 두고 선만 감춘다(칸 폭이 일정해야 한다).
                 SizedBox(width: widget.dividerPad),
-                Container(width: 1, color: isLast ? Colors.transparent : SDSColor.gray100),
+                Container(
+                  width: 1,
+                  color: isLast ? Colors.transparent : SDSColor.gray100,
+                ),
                 SizedBox(width: widget.dividerPad),
               ],
             );
@@ -307,6 +331,15 @@ class _CrewColumnPagerState extends State<_CrewColumnPager> {
 ///
 /// `PageScrollPhysics`는 뷰포트 단위로만 스냅해서 쓸 수 없다 — 여기서는 스냅 단위가
 /// 뷰포트가 아니라 열 피치([itemExtent])다.
+///
+/// 스와이프는 **한 번에 한 칸**이다(사용자 확정).
+///  · 목표는 놓은 지점의 **바로 옆 열**(튕긴 방향으로 올림/내림, 천천히 놓으면 반올림)
+///    이라 관성으로 여러 칸이 지나가지 않는다.
+///  · ⚠️ 속도를 그대로 스프링에 넘기면 목표를 **지나쳤다가 되돌아온다**(사용자가 말한
+///    "어디 갔다가 다시 붙는" 느낌) → [_kMaxSettleVelocity]로 잘라서 넘긴다.
+/// 스프링에 넘기는 최대 속도(px/s). 이보다 빠르면 잘라서 넘긴다 — 오버슈트 방지.
+const double _kMaxSettleVelocity = 600;
+
 class _ColumnSnapPhysics extends ScrollPhysics {
   final double itemExtent;
 
@@ -319,20 +352,26 @@ class _ColumnSnapPhysics extends ScrollPhysics {
   /// 놓은 지점에서 가장 가까운 열. 속도가 충분하면 그 방향으로 한 칸 더 간다.
   double _targetPixels(ScrollMetrics position, double velocity) {
     final tolerance = toleranceFor(position);
-    var page = position.pixels / itemExtent;
+    final current = position.pixels / itemExtent;
+    var page = current;
     if (velocity < -tolerance.velocity) {
-      page = page.floorToDouble();
+      page = current.floorToDouble();
     } else if (velocity > tolerance.velocity) {
-      page = page.ceilToDouble();
+      page = current.ceilToDouble();
     } else {
-      page = page.roundToDouble();
+      page = current.roundToDouble();
     }
-    return (page * itemExtent)
-        .clamp(position.minScrollExtent, position.maxScrollExtent);
+    return (page * itemExtent).clamp(
+      position.minScrollExtent,
+      position.maxScrollExtent,
+    );
   }
 
   @override
-  Simulation? createBallisticSimulation(ScrollMetrics position, double velocity) {
+  Simulation? createBallisticSimulation(
+    ScrollMetrics position,
+    double velocity,
+  ) {
     // 경계 밖(오버스크롤)에서는 기본 동작에 맡긴다.
     if ((velocity <= 0 && position.pixels <= position.minScrollExtent) ||
         (velocity >= 0 && position.pixels >= position.maxScrollExtent)) {
@@ -341,8 +380,18 @@ class _ColumnSnapPhysics extends ScrollPhysics {
     final tolerance = toleranceFor(position);
     final target = _targetPixels(position, velocity);
     if ((target - position.pixels).abs() < tolerance.distance) return null;
-    return ScrollSpringSimulation(spring, position.pixels, target, velocity,
-        tolerance: tolerance);
+    // ⚠️ 속도를 그대로 넘기면 스프링이 목표를 지나쳤다가 되돌아온다 → 잘라서 넘긴다.
+    final settleVelocity = velocity.clamp(
+      -_kMaxSettleVelocity,
+      _kMaxSettleVelocity,
+    );
+    return ScrollSpringSimulation(
+      spring,
+      position.pixels,
+      target,
+      settleVelocity,
+      tolerance: tolerance,
+    );
   }
 
   /// 스냅이 끝난 뒤에도 미세하게 흐르지 않도록.
@@ -410,13 +459,18 @@ class _CrewListRowState extends State<_CrewListRow> {
                 height: _kCrewLogoSize,
                 decoration: BoxDecoration(
                   // 공용 비율(한 변의 0.2)로 모서리를 맞춘다.
-                  borderRadius: BorderRadius.circular(crewLogoRadius(_kCrewLogoSize)),
+                  borderRadius: BorderRadius.circular(
+                    crewLogoRadius(_kCrewLogoSize),
+                  ),
                   border: Border.all(color: SDSColor.gray100),
                 ),
                 clipBehavior: Clip.antiAlias,
                 child: (logoUrl?.isNotEmpty ?? false)
                     ? WebNetworkImage(
-                        url: logoUrl, width: _kCrewLogoSize, height: _kCrewLogoSize)
+                        url: logoUrl,
+                        width: _kCrewLogoSize,
+                        height: _kCrewLogoSize,
+                      )
                     : Container(color: SDSColor.gray100),
               ),
               const SizedBox(width: 10),
@@ -431,14 +485,20 @@ class _CrewListRowState extends State<_CrewListRow> {
                       // 다 잘려 버린다 → 두 줄까지 허용하고 그 뒤부터 말줄임.
                       maxLines: widget.allowTwoLines ? 2 : 1,
                       overflow: TextOverflow.ellipsis,
-                      style: SDSTextStyle.bold.copyWith(fontSize: 15, color: SDSColor.gray900),
+                      style: SDSTextStyle.bold.copyWith(
+                        fontSize: 15,
+                        color: SDSColor.gray900,
+                      ),
                     ),
                     if (subtitle.isNotEmpty) ...[
                       Text(
                         subtitle,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: SDSTextStyle.regular.copyWith(fontSize: 12, color: SDSColor.gray500),
+                        style: SDSTextStyle.regular.copyWith(
+                          fontSize: 12,
+                          color: SDSColor.gray500,
+                        ),
                       ),
                     ],
                   ],
@@ -448,7 +508,10 @@ class _CrewListRowState extends State<_CrewListRow> {
                 const SizedBox(width: 8),
                 Text(
                   '${widget.trailingCount}명',
-                  style: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray900),
+                  style: SDSTextStyle.regular.copyWith(
+                    fontSize: 14,
+                    color: SDSColor.gray900,
+                  ),
                 ),
               ],
             ],

@@ -4,6 +4,8 @@ import 'package:com.snowlive/web/widget/w_web_avatar_web.dart';
 import 'package:com.snowlive/web/widget/w_network_image_web.dart';
 import 'package:com.snowlive/web/widget/w_web_image_viewer_web.dart';
 import 'package:com.snowlive/web/widget/w_web_profile_tap_web.dart';
+import 'package:com.snowlive/web/widget/w_web_popup_web.dart'
+    show WebPopupCloseButton;
 import 'package:flutter/material.dart';
 
 /// 프로필 미리보기 카드에 필요한 값만 담은 VO.
@@ -61,9 +63,9 @@ class WebProfileCardData {
 
   /// `휘닉스파크 · ALLDOMAN`. 한쪽만 있으면 구분점 없이 그것만, 둘 다 없으면 빈 문자열.
   String get affiliationLine => [
-        if (resortName?.isNotEmpty ?? false) resortName!,
-        if (crewName?.isNotEmpty ?? false) crewName!,
-      ].join(' · ');
+    if (resortName?.isNotEmpty ?? false) resortName!,
+    if (crewName?.isNotEmpty ?? false) crewName!,
+  ].join(' · ');
 }
 
 /// 프로필 미리보기 카드 본문.
@@ -102,15 +104,21 @@ class WebProfileCard extends StatelessWidget {
   Widget _avatar(BuildContext context) {
     final onTap = (data.avatarUrl?.isNotEmpty ?? false)
         ? () => showWebPhotoViewer(
-              context,
-              url: data.avatarUrl,
-              title: data.displayName ?? '',
-            )
+            context,
+            url: data.avatarUrl,
+            title: data.displayName ?? '',
+          )
         : null;
     // 크루 로고 라운드는 **한 변의 0.2**(공용 비율). 호출자가 값을 주면 그걸 쓴다.
-    final radius = data.avatarRadius == null ? null : crewLogoRadius(data.avatarSize);
+    final radius = data.avatarRadius == null
+        ? null
+        : crewLogoRadius(data.avatarSize);
     if (radius == null) {
-      return WebAvatar(url: data.avatarUrl, size: data.avatarSize, onTap: onTap);
+      return WebAvatar(
+        url: data.avatarUrl,
+        size: data.avatarSize,
+        onTap: onTap,
+      );
     }
     return WebProfileTap(
       onTap: onTap,
@@ -127,7 +135,10 @@ class WebProfileCard extends StatelessWidget {
         clipBehavior: Clip.antiAlias,
         child: (data.avatarUrl?.isNotEmpty ?? false)
             ? WebNetworkImage(
-                url: data.avatarUrl, width: data.avatarSize, height: data.avatarSize)
+                url: data.avatarUrl,
+                width: data.avatarSize,
+                height: data.avatarSize,
+              )
             : null,
       ),
     );
@@ -153,7 +164,10 @@ class WebProfileCard extends StatelessWidget {
           data.displayName ?? '',
           textAlign: TextAlign.center,
           // 목업은 20이지만 커 보여 16으로 낮춘다(사용자 확정) — 유저 닉네임·크루명 공통.
-          style: SDSTextStyle.bold.copyWith(fontSize: 16, color: SDSColor.gray900),
+          style: SDSTextStyle.bold.copyWith(
+            fontSize: 16,
+            color: SDSColor.gray900,
+          ),
         ),
         if (data.affiliationLine.isNotEmpty) ...[
           SizedBox(height: lineGap),
@@ -161,10 +175,14 @@ class WebProfileCard extends StatelessWidget {
             data.affiliationLine,
             textAlign: TextAlign.center,
             // 목업은 소속도 본문과 같은 검정(gray900)이다 — 회색은 상태메시지만.
-            style: SDSTextStyle.regular.copyWith(fontSize: 12, color: SDSColor.gray900),
+            style: SDSTextStyle.regular.copyWith(
+              fontSize: 12,
+              color: SDSColor.gray900,
+            ),
           ),
         ],
-        if ((data.extraLine?.isNotEmpty ?? false) || data.isExtraLineLoading) ...[
+        if ((data.extraLine?.isNotEmpty ?? false) ||
+            data.isExtraLineLoading) ...[
           SizedBox(height: lineGap),
           // 글자 높이를 **못 박아** 로딩 중이든 값이 왔든 줄 높이가 같다.
           SizedBox(
@@ -192,7 +210,10 @@ class WebProfileCard extends StatelessWidget {
             textAlign: TextAlign.center,
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
-            style: SDSTextStyle.regular.copyWith(fontSize: 12, color: SDSColor.gray500),
+            style: SDSTextStyle.regular.copyWith(
+              fontSize: 12,
+              color: SDSColor.gray500,
+            ),
           ),
         ],
         if (action != null) ...[
@@ -217,52 +238,49 @@ class WebProfileCard extends StatelessWidget {
             SizedBox(
               width: double.infinity,
               child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                if (isSheet)
-                  // 목업 모바일은 닫기 X 대신 드래그 핸들이다.
-                  Container(
-                    width: 36,
-                    height: 4,
-                    margin: const EdgeInsets.only(top: SDSSpacing.md, bottom: SDSSpacing.lg),
-                    decoration: BoxDecoration(
-                      color: SDSColor.gray200,
-                      borderRadius: BorderRadius.circular(2),
-                    ),
-                  )
-                else
-                  const SizedBox(height: 50),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: isSheet ? SDSSpacing.lg : 56),
-                  child: content,
-                ),
-                // 소개글이 없으면(비로그인이라 상세를 못 받았거나 빈 값) 이름 바로 아래가
-                // 버튼이 되어 24가 과해 보인다 → 그때만 16으로 줄인다.
-                SizedBox(height: hasStateMsg ? 24 : 16),
-                // 점수·통합랭킹·티어 3분할은 뺐다. 카드는 신원 + 하단 버튼만 남긴다.
-                if (footer != null)
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if (isSheet)
+                    // 목업 모바일은 닫기 X 대신 드래그 핸들이다.
+                    Container(
+                      width: 36,
+                      height: 4,
+                      margin: const EdgeInsets.only(
+                        top: SDSSpacing.md,
+                        bottom: SDSSpacing.lg,
+                      ),
+                      decoration: BoxDecoration(
+                        color: SDSColor.gray200,
+                        borderRadius: BorderRadius.circular(2),
+                      ),
+                    )
+                  else
+                    const SizedBox(height: 50),
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                    child: SizedBox(width: double.infinity, child: footer!),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: isSheet ? SDSSpacing.lg : 56,
+                    ),
+                    child: content,
                   ),
-                SizedBox(height: footer != null ? 21 : 0),
-              ],
+                  // 소개글이 없으면(비로그인이라 상세를 못 받았거나 빈 값) 이름 바로 아래가
+                  // 버튼이 되어 24가 과해 보인다 → 그때만 16으로 줄인다.
+                  SizedBox(height: hasStateMsg ? 24 : 16),
+                  // 점수·통합랭킹·티어 3분할은 뺐다. 카드는 신원 + 하단 버튼만 남긴다.
+                  if (footer != null)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 10,
+                      ),
+                      child: SizedBox(width: double.infinity, child: footer!),
+                    ),
+                  SizedBox(height: footer != null ? 21 : 0),
+                ],
               ),
             ),
-            // 닫기 X — 목업은 26에 50% 불투명도, 우상단 16/16.
+            // 닫기 X — 웹 팝업 공통(26 · gray900 50% · 우상단 16/16).
             if (!isSheet && onClose != null)
-              Positioned(
-                top: 16,
-                right: 16,
-                child: Opacity(
-                  opacity: 0.5,
-                  child: InkWell(
-                    onTap: onClose,
-                    customBorder: const CircleBorder(),
-                    child: Icon(Icons.close, size: 26, color: SDSColor.gray900),
-                  ),
-                ),
-              ),
+              WebPopupCloseButton(onTap: onClose!),
           ],
         ),
       ),
@@ -288,32 +306,41 @@ class WebProfilePillButton extends StatelessWidget {
     return SizedBox(
       height: 34,
       child: OutlinedButton(
-      onPressed: onTap,
-      // 흰 배경 · 테두리 gray200 · 라운드 20 · 패딩 12/9 · ExtraBold 13.
-      // 라인 버튼 hover는 **면이 어두워진다**(흰 배경 → gray50) — 테두리·글자는 그대로.
-      // 그림자·리플·전환 애니메이션은 쓰지 않는다.
-      style: ButtonStyle(
-        splashFactory: NoSplash.splashFactory,
-        overlayColor: const WidgetStatePropertyAll(Colors.transparent),
-        shadowColor: const WidgetStatePropertyAll(Colors.transparent),
-        elevation: const WidgetStatePropertyAll(0),
-        animationDuration: Duration.zero,
-        backgroundColor: WidgetStateProperty.resolveWith(
-          (states) => states.contains(WidgetState.hovered)
-              ? SDSColor.gray50
-              : SDSColor.snowliveWhite,
+        onPressed: onTap,
+        // 흰 배경 · 테두리 gray200 · 라운드 20 · 패딩 12/9 · ExtraBold 13.
+        // 라인 버튼 hover는 **면이 어두워진다**(흰 배경 → gray50) — 테두리·글자는 그대로.
+        // 그림자·리플·전환 애니메이션은 쓰지 않는다.
+        style: ButtonStyle(
+          splashFactory: NoSplash.splashFactory,
+          overlayColor: const WidgetStatePropertyAll(Colors.transparent),
+          shadowColor: const WidgetStatePropertyAll(Colors.transparent),
+          elevation: const WidgetStatePropertyAll(0),
+          animationDuration: Duration.zero,
+          backgroundColor: WidgetStateProperty.resolveWith(
+            (states) => states.contains(WidgetState.hovered)
+                ? SDSColor.gray50
+                : SDSColor.snowliveWhite,
+          ),
+          side: const WidgetStatePropertyAll(
+            BorderSide(color: SDSColor.gray200),
+          ),
+          padding: const WidgetStatePropertyAll(
+            EdgeInsets.symmetric(horizontal: 12, vertical: 9),
+          ),
+          minimumSize: const WidgetStatePropertyAll(Size.zero),
+          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          shape: WidgetStatePropertyAll(
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          ),
         ),
-        side: const WidgetStatePropertyAll(BorderSide(color: SDSColor.gray200)),
-        padding: const WidgetStatePropertyAll(EdgeInsets.symmetric(horizontal: 12, vertical: 9)),
-        minimumSize: const WidgetStatePropertyAll(Size.zero),
-        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-        shape: WidgetStatePropertyAll(
-          RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        child: Text(
+          label,
+          style: SDSTextStyle.extraBold.copyWith(
+            fontSize: 13,
+            height: 16 / 13,
+            color: SDSColor.gray900,
+          ),
         ),
-      ),
-      child: Text(label,
-          style: SDSTextStyle.extraBold
-              .copyWith(fontSize: 13, height: 16 / 13, color: SDSColor.gray900)),
       ),
     );
   }
@@ -327,7 +354,11 @@ class WebProfileStateBadge extends StatelessWidget {
   final String label;
   final bool isPositive;
 
-  const WebProfileStateBadge({super.key, required this.label, this.isPositive = false});
+  const WebProfileStateBadge({
+    super.key,
+    required this.label,
+    this.isPositive = false,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -344,7 +375,10 @@ class WebProfileStateBadge extends StatelessWidget {
         ),
         child: Text(
           label,
-          style: SDSTextStyle.bold.copyWith(fontSize: 13, color: SDSColor.snowliveBlue),
+          style: SDSTextStyle.bold.copyWith(
+            fontSize: 13,
+            color: SDSColor.snowliveBlue,
+          ),
         ),
       );
     }
@@ -394,35 +428,46 @@ class WebProfileFooterButton extends StatelessWidget {
     return SizedBox(
       height: 48,
       child: ElevatedButton(
-      onPressed: onTap,
-      // 목업(106:18119, comp_button) — 높이 48 · 라운드 5 · Bold 16.
-      // ⚠️ 웹 기본 visualDensity가 높이를 깎으므로 SizedBox로 겉에서 못 박는다.
-      // hover는 배경에 검정 블렌드 — 파란 버튼 10%, 연회색은 4%(10%는 너무 진하다).
-      // 그림자·리플·전환 애니메이션 없음(웹 공통).
-      style: ButtonStyle(
-        splashFactory: NoSplash.splashFactory,
-        overlayColor: const WidgetStatePropertyAll(Colors.transparent),
-        shadowColor: const WidgetStatePropertyAll(Colors.transparent),
-        elevation: const WidgetStatePropertyAll(0),
-        animationDuration: Duration.zero,
-        backgroundColor: WidgetStateProperty.resolveWith((states) {
-          // 연회색 버튼은 비활성이어도 색을 바꾸지 않는다(기존 동작 유지).
-          if (states.contains(WidgetState.disabled) && background != SDSColor.gray50) {
-            return SDSColor.gray300;
-          }
-          if (!states.contains(WidgetState.hovered)) return background;
-          final tint = background == SDSColor.gray50 ? 0.04 : 0.1;
-          return Color.alphaBlend(Colors.black.withValues(alpha: tint), background);
-        }),
-        padding: const WidgetStatePropertyAll(EdgeInsets.zero),
-        minimumSize: const WidgetStatePropertyAll(Size(0, 48)),
-        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-        shape: WidgetStatePropertyAll(
-          RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+        onPressed: onTap,
+        // 목업(106:18119, comp_button) — 높이 48 · 라운드 5 · Bold 16.
+        // ⚠️ 웹 기본 visualDensity가 높이를 깎으므로 SizedBox로 겉에서 못 박는다.
+        // hover는 배경에 검정 블렌드 — 파란 버튼 10%, 연회색은 4%(10%는 너무 진하다).
+        // 그림자·리플·전환 애니메이션 없음(웹 공통).
+        style: ButtonStyle(
+          splashFactory: NoSplash.splashFactory,
+          overlayColor: const WidgetStatePropertyAll(Colors.transparent),
+          shadowColor: const WidgetStatePropertyAll(Colors.transparent),
+          elevation: const WidgetStatePropertyAll(0),
+          animationDuration: Duration.zero,
+          backgroundColor: WidgetStateProperty.resolveWith((states) {
+            // 연회색 버튼은 비활성이어도 색을 바꾸지 않는다(기존 동작 유지).
+            // 그 외 비활성은 웹 공통 **gray200**(사용자 확정 — 전 화면 동일 색).
+            if (states.contains(WidgetState.disabled) &&
+                background != SDSColor.gray50) {
+              return SDSColor.gray200;
+            }
+            if (!states.contains(WidgetState.hovered)) return background;
+            final tint = background == SDSColor.gray50 ? 0.04 : 0.1;
+            return Color.alphaBlend(
+              Colors.black.withValues(alpha: tint),
+              background,
+            );
+          }),
+          padding: const WidgetStatePropertyAll(EdgeInsets.zero),
+          minimumSize: const WidgetStatePropertyAll(Size(0, 48)),
+          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          shape: WidgetStatePropertyAll(
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+          ),
         ),
-      ),
-      child: Text(label,
-          style: SDSTextStyle.bold.copyWith(fontSize: 16, height: 20 / 16, color: foreground)),
+        child: Text(
+          label,
+          style: SDSTextStyle.bold.copyWith(
+            fontSize: 16,
+            height: 20 / 16,
+            color: foreground,
+          ),
+        ),
       ),
     );
   }

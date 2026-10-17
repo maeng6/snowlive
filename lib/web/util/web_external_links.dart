@@ -38,6 +38,6 @@ const String kKakaoChannelUrl = 'https://pf.kakao.com/_LxnDdG/';
 /// (아이폰으로 스캔했는데 Play 스토어가 열리던 문제). **스토어별로 QR을 따로 띄워서
 /// 쓰는 사람이 고르게 한다.**
 const List<({String label, String url})> kAppDownloadQrTargets = [
-  (label: 'App Store', url: kAppStoreUrlIos),
-  (label: 'Google Play', url: kAppStoreUrlAndroid),
+  (label: '앱스토어', url: kAppStoreUrlIos),
+  (label: '구글플레이', url: kAppStoreUrlAndroid),
 ];

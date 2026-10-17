@@ -1,7 +1,7 @@
 import 'package:com.snowlive/core/api/api_fleamarket.dart';
 import 'package:com.snowlive/core/api/api_user.dart';
 import 'package:com.snowlive/web/util/web_share_url.dart';
-import 'package:com.snowlive/web/util/web_share_link_web.dart';
+import 'package:com.snowlive/web/util/web_share_link.dart';
 import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/core/model/m_fleamarketDetail.dart';
 import 'package:com.snowlive/core/viewmodel/fleamarket/vm_fleamarketDetail.dart';

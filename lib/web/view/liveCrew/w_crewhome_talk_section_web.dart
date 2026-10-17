@@ -62,6 +62,13 @@ const int kCrewHomeTalkMemberCount = 10;
 /// 멤버 한 줄(가로 스크롤)에 보여줄 사진 수 상한.
 const int kCrewHomeTalkPerMemberCount = 20;
 
+/// 크루톡 사진 타일의 **디코드 폭**. 자동계산(표시폭 × DPR)에 맡기면 타일 크기가
+/// 레이아웃에 따라 미세하게 달라져 캐시 키가 매번 바뀐다 → 크루홈이 진입 전에
+/// 미리 받아둔(`precacheImage`) 이미지를 못 쓰고 다시 디코드한다. 값을 못 박아
+/// 선로딩 키와 일치시킨다. 타일은 PC 173 · 태블릿 ~180 · 멤버별 스트립 176이라
+/// 2배 DPR까지 덮는 360이면 충분하다.
+const int kCrewHomeTalkPhotoDecodeWidth = 360;
+
 class CrewHomeTalkSectionWeb extends StatelessWidget {
   final List<LiveTalk> talks;
   final CrewTalkGroupMode mode;
@@ -283,7 +290,13 @@ class _PhotoCell extends StatelessWidget {
         behavior: HitTestBehavior.opaque,
         onTap: onTap,
         child: (url?.isNotEmpty ?? false)
-            ? WebNetworkImage(url: url, width: size, height: size)
+            ? WebNetworkImage(
+                url: url,
+                width: size,
+                height: size,
+                // 선로딩 캐시와 키를 맞춘다(위 상수 설명 참고).
+                decodeWidth: kCrewHomeTalkPhotoDecodeWidth,
+              )
             : Container(
                 width: size,
                 height: size,

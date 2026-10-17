@@ -167,7 +167,7 @@ class _CommunityTableRowSkeleton extends StatelessWidget {
     return communityTableRowShell(
       // 데이터가 오면 실제 값으로 다시 잡히므로, 그때 열이 크게 안 움직이도록
       // 표본 기준 폭을 쓴다. 메타 자리는 열을 꽉 채워 폭이 바뀌어도 안 넘친다.
-      widths: CommunityMetaWidths.skeleton,
+      widths: CommunityMetaWidths.skeletonOf(context),
       rowHeight: 52,
       border: Border(bottom: BorderSide(color: SDSColor.gray100)),
       titleCell: Row(
@@ -285,7 +285,7 @@ class _EventTableRowSkeleton extends StatelessWidget {
     // 실제 행과 동일 규격 — 행 높이 52 고정, 분류 칩 20(hug), 이름 14,
     // 제목 15 + 우측 정사각 썸네일 30, 메타 14.
     return eventTableRowShell(
-      widths: EventMetaWidths.skeleton,
+      widths: EventMetaWidths.skeletonOf(context),
       rowHeight: 52,
       border: Border(bottom: BorderSide(color: SDSColor.gray100)),
       categoryCell: Row(children: const [SkeletonBox(width: 42, height: 20)]),
@@ -372,6 +372,41 @@ class _LiveTalkFeedItemSkeleton extends StatelessWidget {
       ],
     );
   }
+}
+
+/// 순위 숫자 칸의 기준 글꼴(랭킹 홈·크루 멤버 목록 공용).
+final TextStyle _rankNumberStyle = SDSTextStyle.bold.copyWith(fontSize: 14);
+
+/// 배율별로 잰 **가장 넓은 숫자 한 글자**의 폭. 매 행마다 10번씩 재지 않게 담아 둔다.
+final Map<double, double> _widestDigitWidth = {};
+
+/// 순위 숫자 칸 폭. 고정폭으로 두면 한 자리 순위에선 여백이 뜨고 네 자리(1000위~)에선
+/// 글줄이 넘어간다 → **보여줄 가장 큰 순위의 자릿수**에 맞춰 잰다.
+///
+/// ⚠️ 가장 큰 순위 숫자 자체(`22`)를 재면 안 된다 — Pretendard 숫자는 고정폭이 아니라
+/// `0`이 `2`보다 넓어서, 칸이 `22`에 딱 맞으면 같은 두 자리인 `20`이 칸을 넘어
+/// **끝자리가 잘린다**(크루원 랭킹에서 `20`·`22`가 `2`로 보이던 원인).
+/// 그래서 `0~9` 중 가장 넓은 글자 × 자릿수로 재고, 레이아웃 반올림에 끝 획이 깎이지
+/// 않게 올림한다.
+double rankNumberColumnWidth(BuildContext context, int maxRank) {
+  final scaler = MediaQuery.textScalerOf(context);
+  final scaledSize = scaler.scale(14);
+  final widestDigit = _widestDigitWidth.putIfAbsent(scaledSize, () {
+    var widest = 0.0;
+    for (var digit = 0; digit <= 9; digit++) {
+      final painter = TextPainter(
+        text: TextSpan(text: '$digit', style: _rankNumberStyle),
+        textDirection: TextDirection.ltr,
+        textScaler: scaler,
+      )..layout();
+      if (painter.width > widest) widest = painter.width;
+    }
+    return widest;
+  });
+  final digits = maxRank.abs().toString().length;
+  final width = (widestDigit * digits).ceilToDouble();
+  // 한 자리만 있는 목록에서도 숫자가 답답해 보이지 않게 최소폭을 둔다.
+  return width < 16 ? 16 : width;
 }
 
 /// 랭킹 리스트 자리표시. 데스크탑은 실제 화면과 동일하게 2단으로 그린다.
