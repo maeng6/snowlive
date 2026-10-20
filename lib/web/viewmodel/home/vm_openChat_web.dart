@@ -20,6 +20,10 @@ class OpenChatViewModelWeb extends GetxController {
   /// 새로 올라온 메시지. 말풍선(5초)으로 한 번 보여주고 비운다.
   final Rxn<OpenChatMessage> _latest = Rxn<OpenChatMessage>();
 
+  /// 안 읽은 새 글이 있는지(빨간점). **VM이 보유**해서 위젯이 재생성돼도 유지된다.
+  /// 채팅을 펼치면 markRead()로 내린다.
+  final RxBool _unread = false.obs;
+
   StreamSubscription<QuerySnapshot<Map<String, dynamic>>>? _sub;
 
   /// 스트림 첫 응답은 "새 메시지"가 아니다(들어오자마자 말풍선이 뜨면 안 된다).
@@ -33,6 +37,13 @@ class OpenChatViewModelWeb extends GetxController {
   /// 말풍선을 5초만 띄우려면 화면이 "새 메시지가 들어온 순간"을 알아야 한다
   /// → Rx 자체를 열어 `ever`로 감시하게 한다.
   Rxn<OpenChatMessage> get latestRx => _latest;
+
+  /// 안 읽은 새 글 여부(빨간점). 위젯은 이 Rx를 감시해 점을 그린다.
+  RxBool get unreadRx => _unread;
+  bool get unread => _unread.value;
+
+  /// 채팅을 펼쳤을 때 호출 — 미확인 표시(빨간점)를 내린다.
+  void markRead() => _unread.value = false;
 
   UserViewModel get _userVM => Get.find<UserViewModel>();
   int? get myUserId => _userVM.user.user_id;
@@ -80,7 +91,10 @@ class OpenChatViewModelWeb extends GetxController {
     }
     // 마지막 메시지가 바뀌었을 때만 말풍선을 띄운다(수정·삭제로 스냅샷이 와도 조용히).
     final last = parsed.isEmpty ? null : parsed.last;
-    if (last != null && last.id != previousLast) _latest.value = last;
+    if (last != null && last.id != previousLast) {
+      _latest.value = last;
+      _unread.value = true; // 새 글 → 빨간점(펼쳐져 있으면 위젯이 바로 markRead).
+    }
   }
 
   /// 말풍선을 내린다(5초 타이머 종료 또는 채팅창을 펼쳤을 때).

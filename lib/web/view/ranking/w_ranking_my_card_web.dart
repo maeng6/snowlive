@@ -179,6 +179,15 @@ class RankingTierBadge extends StatelessWidget {
       style: SDSTextStyle.bold.copyWith(fontSize: stacked ? 12 : 13, color: SDSColor.gray900),
     );
 
+    // 티어가 없을 땐 '-'만 — 아이콘 자리 폭(모바일 32 / 그 외 40)의 가운데에 둔다
+    // (아이콘이 없으면 min 크기라 '-'가 한쪽으로 치우쳐 보이던 것 교정).
+    if (name.isEmpty) {
+      return SizedBox(
+        width: stacked ? 32 : 40,
+        child: Center(child: nameText),
+      );
+    }
+
     if (stacked) {
       return Column(
         mainAxisSize: MainAxisSize.min,

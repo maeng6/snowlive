@@ -203,8 +203,8 @@ class FleamarketUploadViewWeb extends StatelessWidget {
     );
   }
 
-  /// 모바일 하단 플로팅 바 버튼 줄 — 임시저장 100 고정 + 판매하기 나머지,
-  /// 간격 10 (피그마 62:98468). 버튼 규격(높이 48)은 목록 하단바와 동일.
+  /// 모바일 하단 플로팅 바 버튼 줄 — 판매하기(전체 폭).
+  /// 버튼 규격(높이 48)은 목록 하단바와 동일.
   Widget _buildMobileBottomButtons(
     BuildContext context,
     FleamarketUploadViewModelWeb vm,
@@ -213,18 +213,6 @@ class FleamarketUploadViewWeb extends StatelessWidget {
       final isSubmitting = vm.isSubmitting.value;
       return Row(
         children: [
-          SizedBox(
-            width: 100,
-            child: WebBottomBarButton(
-              label: '임시저장',
-              background: SDSColor.snowliveWhite,
-              foreground: SDSColor.gray900,
-              onTap: isSubmitting
-                  ? null
-                  : () => Get.snackbar('알림', '임시저장 기능은 준비 중이에요.'),
-            ),
-          ),
-          const SizedBox(width: 10),
           Expanded(
             child: WebBottomBarButton(
               label: '판매하기',
@@ -258,41 +246,7 @@ class FleamarketUploadViewWeb extends StatelessWidget {
     bool expand = false,
   }) {
     Widget wrap(Widget child) => expand ? Expanded(child: child) : child;
-    // 제출 중에는 임시저장 버튼도 같이 잠가야 하는데, Obx로 판매하기 버튼만 감싸면
-    // 임시저장 버튼은 리빌드되지 않아 계속 눌린다. 두 버튼을 하나의 Obx 안에서 만든다.
     return [
-      // 목업: 임시저장은 테두리 없는 텍스트 버튼이다(bold 16, 패딩 16/10).
-      // visualDensity가 버튼 최소 높이를 깎으므로 SizedBox로 40을 강제한다.
-      wrap(
-        Obx(
-          () => SizedBox(
-            height: 40,
-            child: TextButton(
-              onPressed: vm.isSubmitting.value
-                  ? null
-                  : () => Get.snackbar('알림', '임시저장 기능은 준비 중이에요.'),
-              style: TextButton.styleFrom(
-                // 높이 40 고정(피그마 comp_button) — visualDensity에 눌리지 않게 한다.
-                minimumSize: const Size(0, 40),
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(5),
-                ),
-              ),
-              child: Text(
-                '임시저장',
-                style: SDSTextStyle.bold.copyWith(
-                  fontSize: 16,
-                  color: SDSColor.gray900,
-                ),
-              ),
-            ),
-          ),
-        ),
-      ),
-      // 버튼 사이 10 (피그마 62:98906).
-      const SizedBox(width: 10),
       wrap(
         Obx(() {
           final isSubmitting = vm.isSubmitting.value;

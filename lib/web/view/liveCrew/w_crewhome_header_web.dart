@@ -78,7 +78,7 @@ class CrewHomeHeaderWeb extends StatelessWidget {
       WebScreenType.mobile => 36,
     };
 
-    return Row(
+    final header = Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         // 크루 홈에서도 개인 프로필과 같이 로고를 누르면 확대해서 본다(앱과 동일).
@@ -184,6 +184,23 @@ class CrewHomeHeaderWeb extends StatelessWidget {
             showSettings: showSettings,
           ),
         ],
+      ],
+    );
+
+    // 데스크탑은 방문자수를 헤더 줄 안에 이미 넣었다(위 context.isDesktop 분기).
+    if (context.isDesktop) return header;
+    // 모바일/태블릿은 헤더 폭이 좁아 방문자수를 헤더 줄에 못 넣으므로 아래 줄로 내린다.
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        header,
+        const SizedBox(height: 8),
+        Text(
+          '방문자 Today ${_fmtVisitor(visitorToday)}  |  Total ${_fmtVisitor(visitorTotal)}',
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: SDSTextStyle.regular.copyWith(fontSize: 12, color: SDSColor.gray400),
+        ),
       ],
     );
   }

@@ -2,7 +2,7 @@ import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/core/viewmodel/vm_user.dart';
 import 'package:com.snowlive/web/routes/routes_web.dart';
 import 'package:com.snowlive/web/widget/gnb/w_gnb_nav_items.dart'
-    show openGnbSection;
+    show reloadToHomeWeb;
 import 'package:com.snowlive/web/view/friend/w_friend_live_popup_web.dart';
 import 'package:com.snowlive/web/util/responsive_web.dart';
 import 'package:flutter/material.dart';
@@ -51,7 +51,8 @@ class WebGnbTopbar extends StatelessWidget implements PreferredSizeWidget {
             child: GestureDetector(
               onTap: () {
                 onLogoTap?.call();
-                openGnbSection(WebRoutes.home);
+                // 로고 탭 → 홈으로 **브라우저 전체 새로고침**(사용자 확정).
+                reloadToHomeWeb();
               },
               child: SvgPicture.asset(
                 'assets/imgs/logos/snowlive_logo_black_web.svg',

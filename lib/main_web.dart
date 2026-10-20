@@ -5,12 +5,14 @@ import 'package:com.snowlive/firebase_options.dart';
 import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/core/viewmodel/vm_user.dart';
 import 'package:com.snowlive/web/routes/routes_web.dart';
+import 'package:com.snowlive/web/util/analytics_web.dart';
 import 'package:com.snowlive/web/util/web_page_title.dart';
 import 'package:com.snowlive/web/viewmodel/auth/vm_authcheck_web.dart';
 import 'package:com.snowlive/web/viewmodel/paid/vm_paidVisibility_web.dart';
 import 'package:com.snowlive/web/widget/gnb/w_gnb_current_route_web.dart';
 import 'package:com.snowlive/web/widget/w_top_loading_bar_web.dart';
 import 'package:com.snowlive/web/widget/gnb/w_web_shell.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_quill/flutter_quill.dart' show FlutterQuillLocalizations;
@@ -56,6 +58,13 @@ void main() async {
   _trackSafeInsets();
   await initializeDateFormatting('ko', null);
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  // 일부 네트워크(프록시·브라우저 확장·기업망)에서 Firestore 기본 WebChannel 스트리밍이
+  // 막혀 'Listen' RPC가 400/404로 끊긴다 → 배너(banner/homeHeroWeb)·오픈채팅 실시간이
+  // 에러도 데이터도 없이 '로딩 중'에 멈춘다. 롱폴링 자동감지를 켜 그런 환경에서도
+  // 실시간 구독이 붙게 한다(WebChannel이 되는 환경은 그대로 WebChannel 사용).
+  FirebaseFirestore.instance.settings = const Settings(
+    webExperimentalAutoDetectLongPolling: true,
+  );
 
   Get.put(UserViewModel(), permanent: true);
   // 게스트 우선 설계: initialRoute는 그대로 두고, 백그라운드에서 조용히
@@ -105,6 +114,8 @@ class SnowliveWebApp extends StatelessWidget {
         beginPageLoading();
         WidgetsBinding.instance.addPostFrameCallback((_) {
           currentRouteWeb.value = current;
+          // GA4 수동 page_view(해시 라우팅 SPA) — 실제 라우트 변경마다 1회.
+          sendPageViewWeb(current);
           // 전환이 너무 빨리 끝나면 바가 깜빡이는 것처럼 보여서 최소 노출 시간을 둔다.
           Future.delayed(const Duration(milliseconds: 200), endPageLoading);
         });

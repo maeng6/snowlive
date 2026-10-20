@@ -13,9 +13,15 @@ class SeasonPassViewModelWeb extends GetxController {
 
   // 구독상태
   final RxBool isPaid = false.obs;
+  // 로그인 유저 기준으로 구독 여부를 '실제로 한 번이라도 확정'했는지.
+  // 새로고침 직후엔 자동로그인이 비동기라 uid가 없어 조회가 '미결제'로 떨어지는데,
+  // 이 플래그가 false인 동안은 결제화면 대신 풀스크린 인디케이터를 띄운다.
+  final RxBool statusResolved = false.obs;
   final RxnString season = RxnString();
   final RxnString seasonName = RxnString();
-  final RxInt price = 0.obs;
+  // 기본 표시가는 7,700원(비로그인·조회 전에도 0원이 뜨지 않게). 서버 status가
+  // 오면 그 값으로 덮어쓴다.
+  final RxInt price = 7700.obs;
   final RxnString validUntil = RxnString();
   final Rxn<Map<String, dynamic>> currentPass = Rxn<Map<String, dynamic>>();
 
@@ -50,6 +56,7 @@ class SeasonPassViewModelWeb extends GetxController {
 
   Future<void> loadStatus() async {
     final uid = _uid;
+    // uid가 아직 없으면(자동로그인 복원 중) 판별하지 않는다 → statusResolved는 false 유지.
     if (uid == null) return;
     isLoading.value = true;
     try {
@@ -62,6 +69,8 @@ class SeasonPassViewModelWeb extends GetxController {
         price.value = (d['price'] is int) ? d['price'] : int.tryParse('${d['price']}') ?? 0;
         validUntil.value = d['valid_until']?.toString();
         currentPass.value = d['pass'] is Map ? Map<String, dynamic>.from(d['pass']) : null;
+        // 로그인 유저 기준 구독 여부가 실제로 확정됐다.
+        statusResolved.value = true;
       }
     } catch (_) {
     } finally {

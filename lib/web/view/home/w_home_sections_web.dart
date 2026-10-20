@@ -191,11 +191,10 @@ class _HomeTodayRankingWebState extends State<HomeTodayRankingWeb> {
     ),
   );
 
-  /// 목업의 안내 문구. 좌측 열에서는 두 줄, 한 줄로 놓을 때는 줄바꿈을 공백으로 편다
+  /// 오늘의 랭킹 안내 문구. 점수 집계 캐시가 1분이라 그 주기로 갱신된다.
   Widget _buildNote({int maxLines = 1, Color? color}) {
-    const text = '오늘의 랭킹은\n10분마다 순위가 업데이트돼요';
     return Text(
-      maxLines == 1 ? text.replaceAll('\n', ' ') : text,
+      '점수는 1분마다 업데이트됩니다.',
       maxLines: maxLines,
       overflow: TextOverflow.ellipsis,
       style: SDSTextStyle.regular.copyWith(
@@ -2444,26 +2443,50 @@ class HomeFooterWeb extends StatelessWidget {
       ],
     );
 
-    if (isMobile) {
-      // 카피라이트 ↔ 링크 간격 16 (피그마 기준).
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          copyright,
-          const SizedBox(height: SDSSpacing.md),
-          links,
-        ],
-      );
-    }
-    // 카피라이트는 Expanded로 남은 폭 안에 둔다(좁으면 줄바꿈). Spacer 사이에 두면
-    // 글이 길거나 폭이 좁을 때 그대로 가로로 넘친다.
-    return Row(
+    // 카피라이트 줄: 모바일은 세로, 그 외는 좌(카피라이트)·우(링크) 한 줄.
+    final Widget bottom = isMobile
+        ? Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              copyright,
+              const SizedBox(height: SDSSpacing.md),
+              links,
+            ],
+          )
+        : Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // 카피라이트는 Expanded로 남은 폭 안에 둔다(좁으면 줄바꿈).
+              Expanded(child: copyright),
+              const SizedBox(width: SDSSpacing.md),
+              links,
+            ],
+          );
+
+    // 사업자정보(전자상거래법) — 카피라이트 줄 위에 작은 회색 글씨로.
+    return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Expanded(child: copyright),
-        const SizedBox(width: SDSSpacing.md),
-        links,
+        _businessInfo(),
+        const SizedBox(height: 16),
+        bottom,
       ],
+    );
+  }
+
+  /// 전자상거래법 표시 사항(상호·대표·사업자번호·통신판매업신고·주소·연락처).
+  Widget _businessInfo() {
+    const info =
+        '상호 134CREATIVELAB   |   대표 민윤동   |   사업자등록번호 868-37-01089\n'
+        '통신판매업신고 2024-서울중구-1276   |   고객문의 010-2615-7492   |   134creativelab@snowlive.kr\n'
+        '주소 경기도 고양시 덕양구 삼송로 222, 제101동(업무시설) 제3층 제336호 (삼송동, 삼송역 현대 헤리엇)';
+    return Text(
+      info,
+      style: SDSTextStyle.regular.copyWith(
+        fontSize: 12,
+        height: 1.6,
+        color: SDSColor.snowliveBlack.withValues(alpha: 0.4),
+      ),
     );
   }
 }

@@ -33,6 +33,16 @@ class AuthCheckViewModelWeb extends GetxController {
     _status.value = WebAuthStatus.checking;
     // authStateChanges().first: Firebase가 저장된 세션을 복원할 때까지 대기 (currentUser는 초기에 null일 수 있음)
     final User? fbUser = await FirebaseAuth.instance.authStateChanges().first;
+    // 과거에 쓰던 익명 세션이 브라우저에 남아 있으면, 그 계정이 콘솔에서 삭제됐거나
+    // 익명 공급자가 꺼진 경우 토큰 갱신이 identitytoolkit 400으로 계속 실패한다.
+    // 더 이상 익명 로그인을 쓰지 않으므로, 남아 있으면 조용히 정리(로그아웃)한다.
+    if (fbUser != null && fbUser.isAnonymous) {
+      try {
+        await FirebaseAuth.instance.signOut();
+      } catch (_) {}
+      _status.value = WebAuthStatus.unauthenticated;
+      return;
+    }
     if (fbUser == null) {
       _status.value = WebAuthStatus.unauthenticated;
       return;
