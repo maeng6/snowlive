@@ -88,7 +88,10 @@ class SlopeCraftListWeb extends StatelessWidget {
 
   /// 전체 모드 — 슬로프별 1위 크루.
   List<Widget> _buildSlopeRows(BuildContext context) {
-    if (items.isEmpty) {
+    // 슬로프 목록은 와도(미점령 포함) 아무도 점령하지 않았으면 "점령 기록 없음"으로 안내한다.
+    // (예전엔 미점령 행만 쭉 떠서 '점령 기록이 없다'는 안내가 전혀 보이지 않았다.)
+    final hasAnyOccupied = items.any((item) => leaderOf(item) != null);
+    if (items.isEmpty || !hasAnyOccupied) {
       return [
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 40),

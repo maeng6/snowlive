@@ -55,6 +55,7 @@ class _HomeOpenChatWebState extends State<HomeOpenChatWeb>
   // 채팅이 닫힌 상태에서 새 메시지가 오면 true → '오픈 채팅' 옆 빨간점. 열면 false.
   bool _hasUnread = false;
   Worker? _latestWorker;
+  Worker? _unreadWorker;
 
   /// 모바일 바텀 시트(피그마 1:19330) — 앱바까지 딤으로 덮어야 해서
   /// 라우트 Navigator가 아니라 **루트 Overlay**에 직접 띄운다.
@@ -72,14 +73,21 @@ class _HomeOpenChatWebState extends State<HomeOpenChatWeb>
   @override
   void initState() {
     super.initState();
+    // 미확인(빨간점) 상태는 VM이 보유 → 위젯이 재생성돼도 유지된다. 현재값으로 먼저 맞추고,
+    // 이후 변화는 worker로 반영한다.
+    _hasUnread = _vm.unread;
+    _unreadWorker = ever(_vm.unreadRx, (v) {
+      if (mounted) setState(() => _hasUnread = v);
+    });
     _latestWorker = ever(_vm.latestRx, (message) {
       if (message == null) return;
       if (_isOpen || _sheetEntry != null) {
-        // 펼쳐 놓은 상태면 목록이 이미 보이므로 아래로 붙여준다.
+        // 펼쳐 놓은 상태면 목록이 이미 보이므로 바로 읽음 처리하고 아래로 붙여준다.
+        _vm.markRead();
         _scrollToBottom();
         return;
       }
-      _hasUnread = true; // 닫힌 상태에서 새 글 → 안 읽음 표시(_pushBubble가 setState).
+      // 닫힌 상태: 말풍선만 띄운다(빨간점은 VM이 이미 켠다).
       _pushBubble(message);
     });
   }
@@ -99,6 +107,7 @@ class _HomeOpenChatWebState extends State<HomeOpenChatWeb>
       timer.cancel();
     }
     _latestWorker?.dispose();
+    _unreadWorker?.dispose();
     _input.dispose();
     _listController.dispose();
     _sheetEntry?.remove();
@@ -148,6 +157,7 @@ class _HomeOpenChatWebState extends State<HomeOpenChatWeb>
         _hasUnread = false;
       });
       _vm.clearLatest();
+      _vm.markRead(); // VM 미확인 상태도 내린다(setState 바깥 — 중첩 setState 방지).
       _openMobileSheet();
       return;
     }
@@ -161,6 +171,7 @@ class _HomeOpenChatWebState extends State<HomeOpenChatWeb>
     if (_isOpen) {
       // 펼치면 말풍선은 역할이 끝났다.
       _vm.clearLatest();
+      _vm.markRead();
       _scrollToBottom();
     }
   }

@@ -352,30 +352,38 @@ class _FriendHomeViewWebState extends State<FriendHomeViewWeb> {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         for (final friend in friends)
-          FriendRowWeb(
-            avatarUrl: friend.friendInfo.profileImageUrlUser,
-            name: friend.friendInfo.displayName,
-            stateMsg: friend.friendInfo.stateMsg,
-            onTap: () async {
-              await showFriendProfileModal(
-                context,
-                friendUserId: friend.friendInfo.userId,
-                initialName: friend.friendInfo.displayName,
-                initialAvatarUrl: friend.friendInfo.profileImageUrlUser,
-                // 친구 목록에서 열었으니 관계는 이미 안다.
-                initialAreWeFriend: true,
-              );
-            },
-            // 내 자신 행에는 ···(삭제/차단)을 띄우지 않는다 — 나를 삭제·차단할 수 없다.
-            trailing: friend.friendInfo.userId == _myUserId
-                ? null
-                : _FriendMoreButton(
-                    isPaid: _isPaid,
-                    // 유료기능 출시 전(테스트 외)엔 위치공유 신청 항목 자체를 숨김.
-                    showShareLocation: PaidVisibilityControllerWeb.isVisible,
-                    onSelected: (action) => _onMoreAction(friend, action),
-                  ),
-          ),
+          // 내 자신 행은 완전히 비활성 — ···(삭제/차단)도, 행 탭(프로필 팝업)도 없앤다.
+          // (아이콘만 숨기면 탭 영역이 남아 눌리는 문제가 있었다.)
+          Builder(builder: (_) {
+            final isMe = friend.friendInfo.userId == _myUserId;
+            return FriendRowWeb(
+              avatarUrl: friend.friendInfo.profileImageUrlUser,
+              name: friend.friendInfo.displayName,
+              stateMsg: friend.friendInfo.stateMsg,
+              onTap: isMe
+                  ? null
+                  : () async {
+                      await showFriendProfileModal(
+                        context,
+                        friendUserId: friend.friendInfo.userId,
+                        initialName: friend.friendInfo.displayName,
+                        initialAvatarUrl: friend.friendInfo.profileImageUrlUser,
+                        // 친구 목록에서 열었으니 관계는 이미 안다.
+                        initialAreWeFriend: true,
+                      );
+                    },
+              trailing: isMe
+                  ? null
+                  : _FriendMoreButton(
+                      isPaid: _isPaid,
+                      // 위치공유는 이번 시즌 내부 테스트 중이라 신청 항목 자체를 숨김(플래그).
+                      showShareLocation:
+                          PaidVisibilityControllerWeb.locationShareEnabled &&
+                              PaidVisibilityControllerWeb.isVisible,
+                      onSelected: (action) => _onMoreAction(friend, action),
+                    ),
+            );
+          }),
       ],
     );
   }

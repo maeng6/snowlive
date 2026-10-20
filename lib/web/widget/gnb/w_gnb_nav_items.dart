@@ -106,7 +106,7 @@ const List<GnbNavItemData> kGnbPrimaryItems = [
 /// 2차 그룹: 친구 / 알림 / 설정(목업 순서). 사이드바·드로어가 같은 목록을 쓴다.
 /// 목업대로 **아이콘 없이 텍스트만** 쓴다(1차 그룹만 아이콘을 갖는다).
 const List<GnbNavItemData> kGnbSecondaryItems = [
-  GnbNavItemData(label: '시즌권', routePrefix: WebRoutes.seasonPass),
+  GnbNavItemData(label: '데이터랩', routePrefix: WebRoutes.seasonPass),
   GnbNavItemData(label: '친구', routePrefix: WebRoutes.friend),
   GnbNavItemData(
     label: '알림',
@@ -160,6 +160,17 @@ void openGnbSection(String prefix) {
   } else {
     Get.toNamed(prefix);
   }
+}
+
+/// 상단 로고 탭 = **사이드바 '홈' 탭과 완전히 동일 동작**.
+///
+/// 예전엔 `Get.offAllNamed(home)`로 스택을 통째로 날려 홈을 다시 만들었는데, 그러면
+/// 홈 뷰모델이 지워졌다 두 번 새로 생기면서(fenix) 배너 실시간 구독 재연결이 꼬여
+/// "다른 탭 거쳐 로고로 오면 배너가 안 뜨는" 문제가 있었다. 홈 탭이 쓰는
+/// [openGnbSection]을 그대로 재사용한다 — 다른 탭에선 스택 보존하며 toNamed, 홈이면
+/// refreshFromGnb(맨 위로 + 재조회)만.
+void reloadToHomeWeb() {
+  openGnbSection(WebRoutes.home);
 }
 
 /// 사이드바/드로어가 공유하는 항목 1개 행. 라우트가 있으면 이동하고,

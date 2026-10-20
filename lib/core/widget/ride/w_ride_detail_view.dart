@@ -6,6 +6,7 @@ import 'package:com.snowlive/core/model/m_rideDetail.dart';
 import 'package:com.snowlive/core/widget/ride/ride_image_save.dart';
 import 'package:com.snowlive/core/widget/ride/ride_video_export.dart';
 import 'package:com.snowlive/core/widget/ride/w_ride_charts_painter.dart';
+import 'package:com.snowlive/core/widget/ride/w_ride_route_3d_view.dart';
 import 'package:com.snowlive/core/widget/ride/w_ride_track_painter.dart';
 import 'package:com.snowlive/web/util/web_image_save.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
@@ -94,6 +95,44 @@ class _RideDetailViewState extends State<RideDetailView>
       _ctrl.forward();
     }
     setState(() {});
+  }
+
+  /// 궤적 이미지를 전체화면에서 핀치/스크롤로 확대해 본다(앱·웹 공통).
+  void _openTrackZoom(BuildContext context) {
+    final d = widget.detail;
+    showDialog(
+      context: context,
+      barrierColor: Colors.black.withValues(alpha: 0.92),
+      builder: (ctx) => Dialog(
+        backgroundColor: Colors.transparent,
+        insetPadding: const EdgeInsets.all(10),
+        child: Stack(
+          children: [
+            InteractiveViewer(
+              minScale: 1,
+              maxScale: 6,
+              child: Center(
+                child: AspectRatio(
+                  aspectRatio: 1,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(12),
+                    child: CustomPaint(painter: RideTrackPainter(detail: d)),
+                  ),
+                ),
+              ),
+            ),
+            Positioned(
+              top: 0,
+              right: 0,
+              child: IconButton(
+                icon: const Icon(Icons.close, color: Colors.white, size: 28),
+                onPressed: () => Navigator.of(ctx).pop(),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   Future<void> _saveImage() async {
@@ -199,17 +238,48 @@ class _RideDetailViewState extends State<RideDetailView>
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        if (d.record != null) _metaRow(d),
-        const SizedBox(height: 10),
-        // 궤적 이미지(캡처 대상)
-        _label('궤적 (슬로프 경계 · 진행방향)'),
-        RepaintBoundary(
-          key: _captureKey,
-          child: AspectRatio(
-            aspectRatio: 1,
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(10),
-              child: CustomPaint(painter: RideTrackPainter(detail: d)),
+        const SizedBox(height: 2),
+        // 3D 궤적 — 자동 회전 입체 애니메이션(속도색). samples 있을 때만.
+        if (s != null && s.hasData) ...[
+          _label('3D 궤적 · 자동 회전 (슬로프 면 위 라이딩)'),
+          RideRoute3DView(
+              samples: s,
+              slope: d.slope,
+              score: d.record?.score,
+              distance: d.record?.distance),
+          const SizedBox(height: 14),
+          _label('따라 내려가기 · 카메라 추적'),
+          RideRoute3DView(
+              samples: s,
+              slope: d.slope,
+              follow: true,
+              score: d.record?.score,
+              distance: d.record?.distance),
+          const SizedBox(height: 14),
+        ],
+        // 궤적 이미지(캡처 대상) — 탭하면 전체화면에서 핀치/스크롤로 확대.
+        _label('궤적 (슬로프 경계 · 진행방향) · 탭하면 확대'),
+        GestureDetector(
+          onTap: () => _openTrackZoom(context),
+          child: RepaintBoundary(
+            key: _captureKey,
+            child: AspectRatio(
+              aspectRatio: 1,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(10),
+                child: Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    CustomPaint(painter: RideTrackPainter(detail: d)),
+                    const Positioned(
+                      right: 8,
+                      bottom: 8,
+                      child: Icon(Icons.zoom_in,
+                          size: 20, color: Color(0xCCFFFFFF)),
+                    ),
+                  ],
+                ),
+              ),
             ),
           ),
         ),
@@ -292,16 +362,6 @@ class _RideDetailViewState extends State<RideDetailView>
           _chart('경사도 (%) · 거리', _gradient, const Color(0xFF34D399)),
         ],
       ],
-    );
-  }
-
-  Widget _metaRow(RideDetail d) {
-    final r = d.record!;
-    String f(double? v, String unit) =>
-        v == null ? '-' : '${v.toStringAsFixed(1)}$unit';
-    return Text(
-      '거리 ${f(r.distance, 'm')} · 평균 ${f(r.avgSpeed, 'km/h')} · 최고 ${f(r.maxSpeed, 'km/h')} · 점수 ${r.score?.toStringAsFixed(0) ?? '-'}',
-      style: SDSTextStyle.regular.copyWith(fontSize: 13, color: SDSColor.gray600),
     );
   }
 

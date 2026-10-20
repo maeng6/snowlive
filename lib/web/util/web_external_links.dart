@@ -8,11 +8,12 @@
 /// 정답은 앱과 같은 `id6444235991` / `com.snowlive`.
 library;
 
-const String kTermsOfServiceUrl =
-    'https://sites.google.com/view/snowlive-termsofservice/%ED%99%88';
+// 약관·개인정보는 자사 도메인(snowlive.kr)에 정적 페이지로 둔다 — Google OAuth
+// 브랜딩 인증은 이 링크들이 '소유·인증한 도메인'에 있어야 통과되기 때문
+// (구글사이트 sites.google.com은 소유 인증 불가).
+const String kTermsOfServiceUrl = 'https://snowlive.kr/terms.html';
 
-const String kPrivacyPolicyUrl =
-    'https://sites.google.com/view/134creativelabprivacypolicy/%ED%99%88';
+const String kPrivacyPolicyUrl = 'https://snowlive.kr/privacy.html';
 
 const String kLocationTermsUrl =
     'https://sites.google.com/view/134creativelablocationinfo/%ED%99%88';

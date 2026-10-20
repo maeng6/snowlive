@@ -282,38 +282,8 @@ class _HomeViewWebState extends State<HomeViewWeb> {
             ),
           ),
         ),
-        // 오픈 채팅은 스크롤과 무관하게 우측 하단에 떠 있는다.
-        // 스크롤 끝에서는 푸터 위 20px에서 멈춘다(_chatBottomPush).
-        // ⚠️ Positioned.fill + ValueListenableBuilder로 감싸, 스크롤 시 **이 부분만**
-        // 다시 그린다(홈 전체 재빌드 방지 = 스크롤 버벅임 해결). 빈 영역은 포인터를
-        // 가로채지 않아 뒤 스크롤은 그대로 동작한다.
-        Positioned.fill(
-          child: ValueListenableBuilder<double>(
-            valueListenable: _chatBottomPush,
-            builder: (context, push, _) {
-              final bottom = horizontal > push ? horizontal : push;
-              return Padding(
-                padding: EdgeInsets.only(
-                  right: horizontal,
-                  bottom: bottom,
-                  left: isMobile ? horizontal : 0,
-                ),
-                child: Align(
-                  alignment: Alignment.bottomRight,
-                  child: SizedBox(
-                    key: _chatKey,
-                    width: isMobile ? double.infinity : kHomeChatWidth,
-                    child: ValueListenableBuilder<bool>(
-                      valueListenable: _isScrolled,
-                      builder: (context, scrolled, _) =>
-                          HomeOpenChatWeb(isScrolled: scrolled),
-                    ),
-                  ),
-                ),
-              );
-            },
-          ),
-        ),
+        // 오픈채팅은 이제 공용 셸(WebAppShell)에서 모든 페이지에 떠 있으므로
+        // 홈 본문에서는 더 그리지 않는다(중복 방지).
       ],
     );
   }

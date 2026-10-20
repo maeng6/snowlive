@@ -1,5 +1,8 @@
+import 'package:com.snowlive/web/routes/routes_web.dart';
 import 'package:com.snowlive/web/util/web_profile_nav_web.dart';
 import 'package:com.snowlive/web/util/responsive_web.dart';
+import 'package:com.snowlive/web/view/home/w_home_open_chat_web.dart';
+import 'package:com.snowlive/web/viewmodel/home/vm_openChat_web.dart';
 import 'package:com.snowlive/web/widget/gnb/w_gnb_current_route_web.dart';
 import 'package:com.snowlive/web/widget/gnb/w_gnb_desktop_topbar.dart';
 import 'package:com.snowlive/web/widget/gnb/w_gnb_drawer.dart';
@@ -67,6 +70,7 @@ class _WebAppShellState extends State<WebAppShell>
     _routeWorker.dispose();
     _navWorker.dispose();
     _menuCtrl.dispose();
+    _chatScrolled.dispose();
     super.dispose();
   }
 
@@ -93,6 +97,65 @@ class _WebAppShellState extends State<WebAppShell>
   /// TopLoadingBar가 로딩 여부와 무관하게 항상 차지하는 높이.
   static const double _loadingBarHeight = 2;
 
+  /// 데스크탑에서 오픈채팅 바의 폭(홈과 동일).
+  static const double _chatWidth = 328;
+
+  /// 오픈채팅은 스크롤 중 아이콘으로 접힌다. 셸이 모든 페이지의 스크롤을
+  /// 가로채(NotificationListener) 전역으로 접힘 상태를 공유한다.
+  final ValueNotifier<bool> _chatScrolled = ValueNotifier<bool>(false);
+
+  bool _onScrollNotification(ScrollNotification n) {
+    if (n.metrics.axis == Axis.vertical) {
+      final scrolled = n.metrics.pixels > 8;
+      if (scrolled != _chatScrolled.value) _chatScrolled.value = scrolled;
+    }
+    return false; // 알림을 가로채지 않는다(스크롤은 그대로 동작).
+  }
+
+  /// 콘텐츠 위에 오픈채팅을 띄운 Stack. 빈 영역은 포인터를 가로채지 않아
+  /// 뒤 콘텐츠 상호작용은 그대로 유지된다.
+  Widget _withOpenChat(Widget child, {required bool isMobile}) {
+    // 오픈채팅은 이제 전 페이지에 뜨므로, 홈 바인딩이 안 돈 화면에서도
+    // 뷰모델이 있도록 여기서 보장한다(홈 전용 바인딩에만 있으면 Get.find가 터진다).
+    if (!Get.isRegistered<OpenChatViewModelWeb>()) {
+      Get.lazyPut<OpenChatViewModelWeb>(() => OpenChatViewModelWeb(), fenix: true);
+    }
+    return Stack(
+      fit: StackFit.expand,
+      children: [
+        NotificationListener<ScrollNotification>(
+          onNotification: _onScrollNotification,
+          child: child,
+        ),
+        Positioned.fill(
+          child: Padding(
+            padding: EdgeInsets.only(
+              right: isMobile ? 16 : 24,
+              left: isMobile ? 16 : 0,
+              bottom: isMobile ? 16 : 24,
+            ),
+            child: Align(
+              alignment: Alignment.bottomRight,
+              child: SizedBox(
+                width: isMobile ? double.infinity : _chatWidth,
+                // 홈에서만 스크롤에 따라 펼침/접힘. 그 외 화면에선 항상 접힌 아이콘.
+                child: Obx(() {
+                  final r = currentRouteWeb.value;
+                  final isHome = r == WebRoutes.home || r == '/';
+                  return ValueListenableBuilder<bool>(
+                    valueListenable: _chatScrolled,
+                    builder: (_, scrolled, __) => HomeOpenChatWeb(
+                        isScrolled: isHome ? scrolled : true),
+                  );
+                }),
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final screenType = context.screenType;
@@ -111,7 +174,7 @@ class _WebAppShellState extends State<WebAppShell>
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     const WebGnbSidebar(),
-                    Expanded(child: widget.child),
+                    Expanded(child: _withOpenChat(widget.child, isMobile: false)),
                   ],
                 ),
               ),
@@ -141,7 +204,7 @@ class _WebAppShellState extends State<WebAppShell>
               child: Stack(
                 fit: StackFit.expand,
                 children: [
-                  widget.child,
+                  _withOpenChat(widget.child, isMobile: true),
                   // 메뉴 패널은 페이드 없이 바로 뜨고 바로 사라진다.
                   // 아이콘 모프(햄버거↔X)만 컨트롤러로 애니메이션한다.
                   AnimatedBuilder(
