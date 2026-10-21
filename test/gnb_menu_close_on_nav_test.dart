@@ -8,15 +8,25 @@ import 'package:com.snowlive/web/widget/gnb/w_web_shell.dart';
 import 'package:flutter/material.dart';
 import 'package:com.snowlive/core/viewmodel/vm_user.dart';
 import 'package:com.snowlive/web/util/web_profile_nav_web.dart';
+import 'package:com.snowlive/web/viewmodel/home/vm_openChat_web.dart';
 import 'package:com.snowlive/web/viewmodel/paid/vm_paidVisibility_web.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get/get.dart';
+
+/// 셸은 모든 화면에 오픈채팅을 띄우려고 `OpenChatViewModelWeb`을 직접 lazyPut 한다.
+/// 그 VM은 onInit에서 Firestore를 구독하므로 Firebase가 없는 테스트에서는 터진다
+/// → 구독만 없앤 대역을 **미리** 등록해 셸이 lazyPut 하지 않게 한다.
+class _NoFirestoreOpenChat extends OpenChatViewModelWeb {
+  @override
+  void start() {}
+}
 
 void main() {
   setUp(() {
     Get.testMode = true;
     Get.put(UserViewModel());
     Get.put(PaidVisibilityControllerWeb());
+    Get.put<OpenChatViewModelWeb>(_NoFirestoreOpenChat());
   });
   tearDown(Get.reset);
 

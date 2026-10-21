@@ -67,12 +67,17 @@ class RidingCardListTileWeb extends StatelessWidget {
   final String? profileImageUrl;
   final VoidCallback onTap;
 
+  /// 월 묶음의 첫 줄인지. 첫 줄만 위 여백이 없다 —
+  /// 월 제목 아래 간격이 그 자리를 대신한다(목업 65:36714).
+  final bool isFirst;
+
   const RidingCardListTileWeb({
     required this.card,
     required this.cardType,
     required this.displayName,
     required this.profileImageUrl,
     required this.onTap,
+    this.isFirst = false,
   });
 
   @override
@@ -83,12 +88,13 @@ class RidingCardListTileWeb extends StatelessWidget {
         decoration: BoxDecoration(
           border: Border(bottom: BorderSide(color: SDSColor.gray100)),
         ),
-        padding: const EdgeInsets.symmetric(vertical: 14),
+        // 목업: 카드 56 ↔ 아래 16 ↔ 구분선 ↔ 위 16.
+        padding: EdgeInsets.only(top: isFirst ? 0 : 16, bottom: 16),
         child: Row(
           children: [
             Text(
               ridingCardDayLabel(card.date),
-              style: SDSTextStyle.bold.copyWith(fontSize: 15, color: SDSColor.gray900),
+              style: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray900),
             ),
             const SizedBox(width: SDSSpacing.md),
             // ⚠️ `Spacer` + `Flexible`을 쓰면 둘 다 flex 1이라 **남는 폭을 반씩 나눠 갖는다**
@@ -104,7 +110,8 @@ class RidingCardListTileWeb extends StatelessWidget {
                       card.riderTitle!,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: SDSTextStyle.regular.copyWith(fontSize: 12, color: SDSColor.gray400),
+                      // 목업은 #111 50% — 가장 가까운 토큰을 쓴다.
+                      style: SDSTextStyle.regular.copyWith(fontSize: 13, color: SDSColor.gray500),
                     ),
                   Text(
                     '총 ${card.totalSlopeCount ?? 0}회 라이딩',
@@ -113,14 +120,15 @@ class RidingCardListTileWeb extends StatelessWidget {
                 ],
               ),
             ),
-            const SizedBox(width: 12),
+            const SizedBox(width: 20),
             // 썸네일도 같은 카드 위젯이다(작게 그린다).
+            // 목업은 **높이 56** 기준 — 폭은 카드 비율로 따라온다(35.28).
             LiveTalkRidingCardWeb(
               card: card,
               cardType: cardType,
               displayName: displayName,
               profileImageUrl: profileImageUrl,
-              width: 34,
+              width: 56 * kRidingCardAspectRatio,
             ),
           ],
         ),

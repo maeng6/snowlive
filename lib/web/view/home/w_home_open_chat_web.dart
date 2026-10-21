@@ -60,10 +60,11 @@ class _HomeOpenChatWebState extends State<HomeOpenChatWeb>
   /// 모바일 바텀 시트(피그마 1:19330) — 앱바까지 딤으로 덮어야 해서
   /// 라우트 Navigator가 아니라 **루트 Overlay**에 직접 띄운다.
   OverlayEntry? _sheetEntry;
-  late final AnimationController _sheetCtrl = AnimationController(
-    vsync: this,
-    duration: const Duration(milliseconds: 250),
-  );
+  /// ⚠️ 선언부 지연 초기화(`late final ... = AnimationController(...)`)로 두면 안 된다 —
+  /// 시트를 한 번도 안 열면 생성되지 않은 채 `dispose()`가 그때 처음 초기화를 실행하고,
+  /// 그 안의 ticker가 이미 비활성인 조상을 조회해 예외가 난다
+  /// ("Looking up a deactivated widget's ancestor is unsafe"). initState에서 만든다.
+  late final AnimationController _sheetCtrl;
 
   /// 접힌 바 아래에 쌓인 말풍선들(오래된 것부터). 각자 3초 타이머로 사라진다.
   final List<_BubbleEntry> _bubbles = [];
@@ -73,6 +74,10 @@ class _HomeOpenChatWebState extends State<HomeOpenChatWeb>
   @override
   void initState() {
     super.initState();
+    _sheetCtrl = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 250),
+    );
     // 미확인(빨간점) 상태는 VM이 보유 → 위젯이 재생성돼도 유지된다. 현재값으로 먼저 맞추고,
     // 이후 변화는 worker로 반영한다.
     _hasUnread = _vm.unread;

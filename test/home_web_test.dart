@@ -300,7 +300,7 @@ void main() {
 
       final title = tester.getRect(find.text('오늘의 랭킹'));
       final badge = tester.getRect(find.text('2027. 01. 14'));
-      final note = tester.getRect(find.text('오늘의 랭킹은\n10분마다 순위가 업데이트돼요'));
+      final note = tester.getRect(find.text('점수는 1분마다 업데이트됩니다.'));
       final firstRow = tester.getRect(find.text('라이더0'));
 
       // 날짜 배지는 제목 아래, 안내는 그보다 아래(좌측 열 맨 아래).

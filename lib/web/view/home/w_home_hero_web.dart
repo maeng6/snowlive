@@ -349,7 +349,7 @@ class _HomeHeroWebState extends State<HomeHeroWeb> {
     if (isMobile) {
       return Positioned(left: 0, right: 0, bottom: 30, child: Center(child: logo));
     }
-    return Positioned(right: 50, bottom: 40, child: logo);
+    return Positioned(right: 50, bottom: 30, child: logo);
   }
 
   /// 페이지 인디케이터(기존 배너와 동일한 6px dot).

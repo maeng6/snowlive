@@ -195,6 +195,63 @@ void main() {
       });
     }
 
+    /// 목업 65:36714(Desktop) 실측값. 눈으로 맞춘 값이라 바뀌면 여기서 걸린다.
+    testWidgets('목록 행 치수가 목업과 같다 — 카드 56 · 아래 16 · 텍스트 간격 20', (tester) async {
+      await tester.binding.setSurfaceSize(const Size(560, 400));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+      await tester.pumpWidget(MaterialApp(
+        home: Scaffold(
+          body: SizedBox(
+            width: 480,
+            child: Column(
+              children: [
+                RidingCardListTileWeb(
+                  card: _card('2026-03-22', id: 1),
+                  cardType: 0,
+                  displayName: '치자나무',
+                  profileImageUrl: null,
+                  isFirst: true,
+                  onTap: () {},
+                ),
+                RidingCardListTileWeb(
+                  card: _card('2026-03-21', id: 2),
+                  cardType: 0,
+                  displayName: '치자나무',
+                  profileImageUrl: null,
+                  onTap: () {},
+                ),
+              ],
+            ),
+          ),
+        ),
+      ));
+      await tester.pumpAndSettle();
+
+      final tiles = find.byType(RidingCardListTileWeb);
+      final first = tester.getRect(tiles.at(0));
+      final second = tester.getRect(tiles.at(1));
+      final thumbs = find.byType(LiveTalkRidingCardWeb);
+      final thumb = tester.getRect(thumbs.at(0));
+
+      // 썸네일 카드: 높이 56(폭은 카드 비율로 따라온다).
+      expect(thumb.height, closeTo(56, 0.5));
+      expect(thumb.width, closeTo(56 * kRidingCardAspectRatio, 0.5));
+      // 오른쪽 끝에 붙는다.
+      expect(thumb.right, closeTo(first.right, 0.5));
+      // 첫 줄은 위 여백 없이 시작하고(월 제목 아래 간격이 대신한다) 아래 16 + 구분선 1.
+      expect(thumb.top, closeTo(first.top, 0.5));
+      expect(first.height, closeTo(56 + 16 + 1, 0.5));
+      // 둘째 줄부터는 위 16이 붙는다.
+      expect(second.height, closeTo(16 + 56 + 16 + 1, 0.5));
+
+      // 칭호·횟수 블록과 썸네일 사이 20.
+      final count = tester.getRect(find.descendant(
+        of: tiles.at(0),
+        matching: find.text('총 17회 라이딩'),
+      ));
+      expect(thumb.left - count.right, closeTo(20, 1.0));
+    });
+
     testWidgets('칭호 길이가 달라도 썸네일은 같은 오른쪽 끝에 붙는다 (정렬 회귀)', (tester) async {
       DailyRidingCard withTitle(String title) => DailyRidingCard.fromJson({
             'card_id': title.length,

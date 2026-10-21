@@ -10,6 +10,7 @@ import 'package:com.snowlive/web/util/responsive_web.dart';
 import 'package:com.snowlive/web/view/liveTalk/w_livetalk_riding_card_web.dart'
     show kRidingCardAspectRatio;
 import 'package:com.snowlive/web/view/ranking/riding_card_sections_web.dart';
+import 'package:com.snowlive/web/view/ranking/riding_cards_dummy_web.dart';
 import 'package:com.snowlive/web/view/ranking/w_ridingcard_actions_web.dart';
 import 'package:com.snowlive/web/view/ranking/w_ridingcard_detail_web.dart';
 import 'package:com.snowlive/web/view/ranking/w_ridingcard_season_web.dart';
@@ -22,11 +23,22 @@ import 'package:com.snowlive/web/widget/w_web_toast_web.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-/// 목업 실측 폭(월별 목록 + 우측 시즌 카드 열).
-const double kRidingCardsContentMaxWidth = 1160;
+/// 목업 실측 폭(월별 목록 480 + 간격 60 + 우측 시즌 카드 220).
+/// 이 화면은 목록이 좁은 기록 화면이라 공통 목록폭(1280)을 쓰지 않는다.
+const double kRidingCardsContentMaxWidth = 760;
 
-/// 우측 시즌 카드 열 폭(카드 240 + 여유).
-const double _kSeasonColumnWidth = 260;
+/// 우측 시즌 카드 열 폭. 카드 높이는 비율로 따라온다(220 → 349.25).
+const double _kSeasonColumnWidth = 220;
+
+/// 목록 ↔ 시즌 카드 열 간격.
+const double _kSeasonColumnGap = 60;
+
+/// 월 제목 줄 높이와 그 아래 첫 카드까지의 간격.
+const double _kMonthHeaderHeight = 48;
+const double _kMonthHeaderGap = 20;
+
+/// 월 묶음 사이 간격.
+const double _kMonthGroupGap = 40;
 
 /// 그리드 카드 사이 간격.
 const double _kGridGap = 12;
@@ -57,6 +69,11 @@ class _RidingCardsViewWebState extends State<RidingCardsViewWeb> {
   WebAuthStatus? _loadedForAuth;
   Worker? _authWorker;
 
+  /// UI 작업용 더미(`?dummy=cards`). 서버에 기록이 없을 때 화면을 보기 위한 것.
+  /// 주소를 고쳐 들어오는 경우까지 받으려고 **매번 URL에서 읽는다**(개발용 스위치).
+  /// ⚠️ 작업이 끝나면 이 분기와 `riding_cards_dummy_web.dart`를 같이 지운다.
+  bool get _isDummy => ridingCardsDummyRequested();
+
   @override
   void initState() {
     super.initState();
@@ -78,6 +95,10 @@ class _RidingCardsViewWebState extends State<RidingCardsViewWeb> {
   }
 
   void _loadIfNeeded() {
+    if (_isDummy) {
+      _fillDummy();
+      return;
+    }
     final status = _authVm.status;
     if (status == WebAuthStatus.checking) return;
     if (_loadedForAuth == status) return;
@@ -97,9 +118,21 @@ class _RidingCardsViewWebState extends State<RidingCardsViewWeb> {
     ]);
   }
 
+  /// 더미를 뷰모델에 그대로 넣는다 — 화면은 서버 데이터와 구분하지 않는다.
+  void _fillDummy() {
+    _vm.dailyRidingCardList.assignAll(dummyDailyRidingCards());
+    _vm.seasonRidingCard.value = dummySeasonRidingCard(_season.dbSeason);
+    _vm.isLoadingSeasonCard.value = false;
+    _vm.isLoadingDailyList.value = false;
+  }
+
   Future<void> _changeSeason(RankingFilter_season season) async {
     if (season == _season) return;
     setState(() => _season = season);
+    if (_isDummy) {
+      _fillDummy();
+      return;
+    }
     final userId = _userVm.user.user_id;
     if (userId == null) return;
     await _vm.fetchSeasonRidingCard(userId: userId, season: season.dbSeason);
@@ -146,6 +179,12 @@ class _RidingCardsViewWebState extends State<RidingCardsViewWeb> {
     final isGrid = _vm.isGridView.value;
     _vm.cardTypeMap.length; // 스킨을 바꿨을 때 카드가 다시 그려지도록 구독한다.
 
+    if (_isDummy && allCards.isEmpty) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) _fillDummy();
+      });
+    }
+
     final cards = ridingCardsForSeason(allCards, _season.dbSeason);
     final months = groupRidingCardsByMonth(cards);
 
@@ -160,18 +199,24 @@ class _RidingCardsViewWebState extends State<RidingCardsViewWeb> {
             color: SDSColor.gray900,
           ),
         ),
-        const SizedBox(height: SDSSpacing.lg),
+        const SizedBox(height: 40),
         Align(
           alignment: Alignment.centerLeft,
+          // 목업은 bold 16 · 비활성 gray200 · 1px 세로선 구분자(간격 10).
           child: WebTextTabs<RankingFilter_season>(
             values: ridingCardSeasons(),
             selected: _season,
             labelOf: (s) => s.korean,
             onSelected: _changeSeason,
+            fontSize: 16,
+            inactiveBold: true,
+            inactiveColor: SDSColor.gray200,
+            lineDivider: true,
+            dividerGap: 10,
           ),
         ),
         const SizedBox(height: SDSSpacing.xl),
-        if (_authVm.status == WebAuthStatus.unauthenticated)
+        if (!_isDummy && _authVm.status == WebAuthStatus.unauthenticated)
           WebEmptyState(
             message: '로그인하면 내 라이딩 기록 카드를 볼 수 있어요.',
             actionLabel: '로그인하기',
@@ -210,7 +255,7 @@ class _RidingCardsViewWebState extends State<RidingCardsViewWeb> {
       children: [
         Expanded(child: list),
         if (seasonPanel != null) ...[
-          const SizedBox(width: SDSSpacing.xl),
+          const SizedBox(width: _kSeasonColumnGap),
           SizedBox(width: _kSeasonColumnWidth, child: seasonPanel),
         ],
       ],
@@ -236,7 +281,7 @@ class _RidingCardsViewWebState extends State<RidingCardsViewWeb> {
             profileImageUrl: _userVm.user.profile_image_url_user,
           ),
         ),
-        const SizedBox(height: SDSSpacing.md),
+        const SizedBox(height: SDSSpacing.lg),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -251,7 +296,7 @@ class _RidingCardsViewWebState extends State<RidingCardsViewWeb> {
                 if (!ok) _toast('이 브라우저에서는 공유를 지원하지 않아요. 이미지 저장을 이용해 주세요.');
               },
             ),
-            const SizedBox(width: 12),
+            const SizedBox(width: 10),
             _SaveButton(
               label: '이미지 저장',
               isPrimary: false,
@@ -277,25 +322,28 @@ class _RidingCardsViewWebState extends State<RidingCardsViewWeb> {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         for (var i = 0; i < months.length; i++) ...[
-          if (i > 0) const SizedBox(height: SDSSpacing.xxl),
-          Row(
-            children: [
-              Text(
-                months[i].title,
-                style: SDSTextStyle.extraBold.copyWith(fontSize: 20, color: SDSColor.gray900),
-              ),
-              const Spacer(),
-              // 보기 전환은 목업처럼 첫 달 제목 줄에만 둔다(전체에 적용된다).
-              if (i == 0)
-                _ViewToggle(
-                  isGrid: isGrid,
-                  onChanged: (grid) {
-                    if (grid != isGrid) _vm.toggleViewMode();
-                  },
+          if (i > 0) const SizedBox(height: _kMonthGroupGap),
+          SizedBox(
+            height: _kMonthHeaderHeight,
+            child: Row(
+              children: [
+                Text(
+                  months[i].title,
+                  style: SDSTextStyle.bold.copyWith(fontSize: 24, color: SDSColor.gray900),
                 ),
-            ],
+                const Spacer(),
+                // 보기 전환은 목업처럼 첫 달 제목 줄에만 둔다(전체에 적용된다).
+                if (i == 0)
+                  _ViewToggle(
+                    isGrid: isGrid,
+                    onChanged: (grid) {
+                      if (grid != isGrid) _vm.toggleViewMode();
+                    },
+                  ),
+              ],
+            ),
           ),
-          const SizedBox(height: SDSSpacing.md),
+          const SizedBox(height: _kMonthHeaderGap),
           if (isGrid) _buildGrid(months[i].cards) else _buildList(months[i].cards),
         ],
       ],
@@ -337,13 +385,14 @@ class _RidingCardsViewWebState extends State<RidingCardsViewWeb> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        for (final card in cards)
+        for (var i = 0; i < cards.length; i++)
           RidingCardListTileWeb(
-            card: card,
-            cardType: _vm.getCardType(card.cardId ?? 0),
+            card: cards[i],
+            cardType: _vm.getCardType(cards[i].cardId ?? 0),
             displayName: _userVm.user.display_name,
             profileImageUrl: _userVm.user.profile_image_url_user,
-            onTap: () => _openDetail(card),
+            isFirst: i == 0,
+            onTap: () => _openDetail(cards[i]),
           ),
       ],
     );
@@ -376,7 +425,7 @@ class _ViewToggle extends StatelessWidget {
           isActive: isGrid,
           onTap: () => onChanged(true),
         ),
-        const SizedBox(width: 8),
+        const SizedBox(width: 6),
         _ToggleIcon(
           icon: Icons.format_list_bulleted,
           isActive: !isGrid,
@@ -399,8 +448,10 @@ class _ToggleIcon extends StatelessWidget {
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(6),
-      child: Padding(
-        padding: const EdgeInsets.all(4),
+      // 목업 아이콘 자리는 32x32(아이콘 22 + 둘레 여백).
+      child: SizedBox(
+        width: 32,
+        height: 32,
         child: Icon(icon, size: 22, color: isActive ? SDSColor.gray900 : SDSColor.gray300),
       ),
     );
@@ -440,17 +491,23 @@ class _SaveButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton(
-      onPressed: onTap,
-      style: ElevatedButton.styleFrom(
-        backgroundColor: isPrimary ? SDSColor.snowliveBlue : SDSColor.snowliveBlack,
-        elevation: 0,
-        padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 13),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
-      ),
-      child: Text(
-        label,
-        style: SDSTextStyle.bold.copyWith(fontSize: 14, color: SDSColor.snowliveWhite),
+    // 목업 96x40 · 라운드 20. 웹 기본 visualDensity가 높이를 깎으므로 함께 고정한다.
+    return SizedBox(
+      height: 40,
+      child: ElevatedButton(
+        onPressed: onTap,
+        style: ElevatedButton.styleFrom(
+          backgroundColor: isPrimary ? SDSColor.snowliveBlue : SDSColor.snowliveBlack,
+          elevation: 0,
+          minimumSize: const Size(96, 40),
+          padding: const EdgeInsets.symmetric(horizontal: 18),
+          visualDensity: VisualDensity.standard,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        ),
+        child: Text(
+          label,
+          style: SDSTextStyle.extraBold.copyWith(fontSize: 13, color: SDSColor.snowliveWhite),
+        ),
       ),
     );
   }
@@ -481,7 +538,7 @@ class _RidingCardsSkeleton extends StatelessWidget {
             child: SkeletonBox(radius: 20),
           ),
           const SizedBox(height: SDSSpacing.md),
-          const SkeletonBox(width: 160, height: 44, radius: 50),
+          const SkeletonBox(width: 146, height: 40, radius: 20),
         ],
       ),
     );
