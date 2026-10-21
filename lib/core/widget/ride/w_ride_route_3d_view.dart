@@ -586,7 +586,17 @@ class _RideRoute25DViewState extends State<RideRoute25DView>
   double _aux = 1, _auz = 0; // 진행축 단위벡터(플라이다운 카메라가 쓴다)
   List<double> _spd = const []; // _pts와 1:1 정렬된 지점별 속도(km/h)
   double _maxSpd = 1; // 계기판 최대 눈금
-  final TransformationController _zoom = TransformationController(); // 확대/팬
+  // 뷰 조작 상태: 줌(2D 스케일)·팬(px)·3D 회전(라디안).
+  double _vScale = 1.0;
+  Offset _vPan = Offset.zero;
+  double _manualRot = 0.0; // 사용자 수동 3D 회전
+  bool _userRotated = false; // 상호작용 시작하면 자동회전 정지
+  // 제스처 시작 스냅샷
+  double _s0 = 1.0, _r0 = 0.0;
+  Offset _p0 = Offset.zero, _f0 = Offset.zero;
+  // 두 손가락 제스처 모드: 0=미정, 1=회전전용, 2=줌전용(회전·줌 동시 금지).
+  int _twoMode = 0;
+
   bool _showScore = true; // 실시간 누적 점수 표시
   bool _showDist = true; // 실시간 누적 거리 표시
 
@@ -621,37 +631,91 @@ class _RideRoute25DViewState extends State<RideRoute25DView>
     _ctrl.repeat(min: 0.0, max: 1.0);
   }
 
-  /// alt(옵션) + 휠일 때만 포인터 위치 기준으로 줌. alt 없는 휠은 다이얼로그
-  /// 스크롤로 넘어가도록 소비하지 않는다.
+  Size _vpSize() {
+    final box = context.findRenderObject();
+    return box is RenderBox ? box.size : const Size(300, 300);
+  }
+
+  // 중앙 정렬 스케일 기준 팬 범위 클램프(빈칸 방지).
+  Offset _clampPan(Offset p) {
+    final sz = _vpSize();
+    final mx = (_vScale - 1) * sz.width / 2, my = (_vScale - 1) * sz.height / 2;
+    return Offset(p.dx.clamp(-mx, mx), p.dy.clamp(-my, my));
+  }
+
+  /// alt + 휠일 때만 포인터 위치 기준으로 줌. alt 없는 휠은 다이얼로그 스크롤로 통과.
   void _onPointerSignal(PointerSignalEvent event) {
     if (event is! PointerScrollEvent) return;
-    if (!HardwareKeyboard.instance.isAltPressed) return; // alt 없으면 통과(스크롤)
+    if (!HardwareKeyboard.instance.isAltPressed) return;
     GestureBinding.instance.pointerSignalResolver.register(event, (e) {
       final s = e as PointerScrollEvent;
-      _zoomAt(s.scrollDelta.dy < 0 ? 1.15 : (1 / 1.15), s.localPosition);
+      _applyZoom(s.scrollDelta.dy < 0 ? 1.15 : (1 / 1.15), s.localPosition);
     });
   }
 
-  void _zoomAt(double factor, Offset focal) {
-    final box = context.findRenderObject();
-    final size = box is RenderBox ? box.size : const Size(300, 300);
-    final cur = _zoom.value.clone();
-    final curScale = cur.getMaxScaleOnAxis();
-    final newScale = (curScale * factor).clamp(1.0, 8.0);
-    final f = newScale / curScale;
-    if ((f - 1).abs() < 1e-3) return;
-    final zoomM = Matrix4.identity()
-      ..translate(focal.dx, focal.dy)
-      ..scale(f)
-      ..translate(-focal.dx, -focal.dy);
-    var result = zoomM.multiplied(cur);
-    // 자식이 뷰포트를 벗어나 빈칸이 보이지 않도록 이동량 클램프.
-    final s = result.getMaxScaleOnAxis();
-    final t = result.getTranslation();
-    final tx = t.x.clamp(size.width * (1 - s), 0.0);
-    final ty = t.y.clamp(size.height * (1 - s), 0.0);
-    result.setTranslationRaw(tx, ty, 0);
-    _zoom.value = result;
+  void _applyZoom(double factor, Offset focal) {
+    final sz = _vpSize();
+    final center = Offset(sz.width / 2, sz.height / 2);
+    final old = _vScale;
+    final ns = (old * factor).clamp(1.0, 8.0);
+    if ((ns - old).abs() < 1e-3) return;
+    final k = ns / old;
+    final pan = (focal - center) * (1 - k) + _vPan * k;
+    setState(() {
+      _vScale = ns;
+      _vPan = _clampPan(pan);
+    });
+  }
+
+  void _onScaleStart(ScaleStartDetails d) {
+    // 처음 상호작용하면 자동회전을 현재 각도에서 '멈춘다'(점프 없이).
+    if (!_userRotated) _manualRot = (_ctrl.value - 0.5) * (math.pi / 2);
+    _userRotated = true;
+    _s0 = _vScale;
+    _p0 = _vPan;
+    _r0 = _manualRot;
+    _f0 = d.focalPoint;
+    _twoMode = 0; // 이번 제스처 모드 미정으로 초기화
+  }
+
+  void _onScaleUpdate(ScaleUpdateDetails d) {
+    final altDrag = kIsWeb &&
+        d.pointerCount <= 1 &&
+        HardwareKeyboard.instance.isAltPressed;
+    setState(() {
+      if (d.pointerCount >= 2) {
+        // 두 손가락: 회전과 줌 중 "먼저 임계를 넘은 쪽" 하나만 적용(동시 금지).
+        if (_twoMode == 0) {
+          final rotR = d.rotation.abs() / 0.12; // 약 7°
+          final zoomR = (d.scale - 1).abs() / 0.08; // 약 8%
+          if (rotR > 1 || zoomR > 1) _twoMode = rotR >= zoomR ? 1 : 2;
+        }
+        if (_twoMode == 1) {
+          // 회전 전용: 손가락 비트는 방향과 같게(화면 기준). 줌은 건드리지 않음.
+          _manualRot = _r0 - d.rotation;
+        } else if (_twoMode == 2) {
+          // 줌 전용: 회전은 건드리지 않음.
+          _vScale = (_s0 * d.scale).clamp(1.0, 8.0);
+        }
+        // 팬(이동)은 두 모드 모두에서 허용.
+        _vPan = _clampPan(_p0 + (d.focalPoint - _f0));
+      } else if (altDrag) {
+        // 웹 alt+드래그: 가로 이동량으로 3D 회전.
+        _manualRot = _r0 + (d.focalPoint - _f0).dx * 0.01;
+      } else {
+        // 한 손가락/드래그: 팬(이동).
+        _vPan = _clampPan(_p0 + (d.focalPoint - _f0));
+      }
+    });
+  }
+
+  void _resetView() {
+    setState(() {
+      _vScale = 1.0;
+      _vPan = Offset.zero;
+      _manualRot = 0.0;
+      _userRotated = false;
+    });
   }
 
   /// 도움말 버튼 — 탭하면 조작법 말풍선.
@@ -667,7 +731,7 @@ class _RideRoute25DViewState extends State<RideRoute25DView>
         ),
         textStyle: const TextStyle(
             color: Colors.white, fontSize: 12, height: 1.5),
-        message: 'alt+휠 = 줌인아웃\n더블클릭 = 원위치',
+        message: 'alt+휠 = 줌인아웃\nalt+드래그 = 회전 (앱: 두 손가락 비틀기)\n더블클릭 = 원위치',
         child: Container(
           width: 26,
           height: 26,
@@ -684,7 +748,6 @@ class _RideRoute25DViewState extends State<RideRoute25DView>
   @override
   void dispose() {
     _ctrl.dispose();
-    _zoom.dispose();
     super.dispose();
   }
 
@@ -881,41 +944,47 @@ class _RideRoute25DViewState extends State<RideRoute25DView>
         child: Stack(
           children: [
             Positioned.fill(
-              // 줌: alt+휠(웹) / 두 손가락 핀치(앱). 팬: 한 손가락·클릭 드래그. 더블탭: 원위치.
-              // alt 없이 그냥 휠은 다이얼로그 스크롤로 통과시킨다(Listener에서 alt일 때만 소비).
+              // 줌: alt+휠(웹) / 두 손가락 핀치(앱). 회전: alt+드래그(웹) / 두 손가락 비틀기(앱).
+              // 팬: 한 손가락·클릭 드래그. 더블탭: 원위치. alt 없는 휠은 다이얼로그 스크롤로 통과.
               child: Listener(
                 onPointerSignal: _onPointerSignal,
                 child: GestureDetector(
-                  onDoubleTap: () => _zoom.value = Matrix4.identity(),
-                  child: InteractiveViewer(
-                    transformationController: _zoom,
-                    minScale: 1.0,
-                    maxScale: 8.0,
-                    panEnabled: true,
-                    scaleEnabled: true,
-                    clipBehavior: Clip.hardEdge,
-                    child: AnimatedBuilder(
-                      animation: _ctrl,
-                      builder: (_, __) => CustomPaint(
-                        size: Size.infinite,
-                        painter: widget.follow
-                            ? _RideFollowPainter(
-                                pts: _pts,
-                                ring: _ring,
-                                aux: _aux,
-                                auz: _auz,
-                                progress: _ctrl.value,
-                                maxY: _maxY,
-                              )
-                            : _Ride25DPainter(
-                                pts: _pts,
-                                ring: _ring,
-                                rotation: math.atan2(-_aux, _auz) +
-                                    (_ctrl.value - 0.5) * (math.pi / 2),
-                                markerProgress: _ctrl.value,
-                                maxR: _maxR,
-                                maxY: _maxY,
-                              ),
+                  onScaleStart: _onScaleStart,
+                  onScaleUpdate: _onScaleUpdate,
+                  onDoubleTap: _resetView,
+                  child: ClipRect(
+                    child: Transform(
+                      alignment: Alignment.center,
+                      transform: Matrix4.identity()
+                        ..translate(_vPan.dx, _vPan.dy)
+                        ..scale(_vScale),
+                      child: AnimatedBuilder(
+                        animation: _ctrl,
+                        builder: (_, __) => CustomPaint(
+                          size: Size.infinite,
+                          painter: widget.follow
+                              ? _RideFollowPainter(
+                                  pts: _pts,
+                                  ring: _ring,
+                                  aux: _aux,
+                                  auz: _auz,
+                                  progress: _ctrl.value,
+                                  maxY: _maxY,
+                                )
+                              : _Ride25DPainter(
+                                  pts: _pts,
+                                  ring: _ring,
+                                  // 자동 90° 스윕(상호작용 전) 또는 수동 회전(상호작용 후).
+                                  rotation: math.atan2(-_aux, _auz) +
+                                      (_userRotated
+                                          ? _manualRot
+                                          : (_ctrl.value - 0.5) *
+                                              (math.pi / 2)),
+                                  markerProgress: _ctrl.value,
+                                  maxR: _maxR,
+                                  maxY: _maxY,
+                                ),
+                        ),
                       ),
                     ),
                   ),
@@ -1105,6 +1174,31 @@ class _Ride25DPainter extends CustomPainter {
     // 1) 슬로프 면 — 외곽 폴리곤(진행축으로 기울임)을 반투명 면 + 경계선으로 그린다.
     if (ring.length >= 3) {
       final rp = List<Offset>.generate(ring.length, (i) => proj(ring[i].x, ring[i].y, ring[i].z));
+      // 1-a) 눈 커튼 — 슬로프 경계(폴리곤 라인) 아래로 바닥까지 떨어지는 흰색 그라데이션
+      //      벽(눈 슬로프 느낌). 면/궤적보다 먼저 그려 뒤에 깔리게 한다.
+      final rfloor = List<Offset>.generate(
+          ring.length, (i) => proj(ring[i].x, 0, ring[i].z));
+      // 스무딩된 폴리곤 라인에 맞춰 커튼 윗변도 매끄럽게: top·floor를 같은 방식으로
+      // 리샘플해 대응 인덱스끼리 벽을 세운다(각진 커튼 방지).
+      final sTop = _smoothClosedPoints(rp);
+      final sFloor = _smoothClosedPoints(rfloor);
+      final m = sTop.length;
+      for (int i = 1; i <= m; i++) {
+        final a = i - 1, b = i % m;
+        final path = Path()
+          ..moveTo(sTop[a].dx, sTop[a].dy)
+          ..lineTo(sTop[b].dx, sTop[b].dy)
+          ..lineTo(sFloor[b].dx, sFloor[b].dy)
+          ..lineTo(sFloor[a].dx, sFloor[a].dy)
+          ..close();
+        canvas.drawPath(
+            path,
+            Paint()
+              ..shader = ui.Gradient.linear(sTop[b], sFloor[b], [
+                Colors.white.withValues(alpha: 0.20),
+                Colors.white.withValues(alpha: 0.0),
+              ]));
+      }
       final surf = _smoothClosedPath(rp); // 각진 경계를 부드럽게
       // 면: 은은한 청백색 채움(눈 슬로프 느낌).
       canvas.drawPath(surf, Paint()..color = const Color(0xFF9DB8FF).withValues(alpha: 0.10));
@@ -1116,29 +1210,43 @@ class _Ride25DPainter extends CustomPainter {
         ..color = const Color(0xFFBFD0FF).withValues(alpha: 0.55));
     }
 
-    // 2) 커튼월(PaceFace) — 궤적 리본에서 바닥(y=0)까지 떨어지는 반투명 그라데이션 벽.
-    //    세그먼트마다 쿼드로 채우고 위=accent 진함(0.26) → 아래=투명(0)으로 고도 프로파일을
-    //    보여준다(three_js buildCurtainMesh와 동일한 톤·형태).
+    // 2) 궤적 — 라이딩 진행(markerProgress)에 따라 "현재 지점까지만" 그린다.
+    //    (미리 전체 경로를 그려두지 않고, 타는 만큼 그려지도록 점열을 현재 위치에서 끊는다.)
+    final mi = (markerProgress * (n - 1)).clamp(0, n - 1).toDouble();
+    final i0 = mi.floor(), i1 = math.min(i0 + 1, n - 1);
+    final f = mi - i0;
+    final mPos = Offset.lerp(top[i0], top[i1], f)!;
     final floor = List<Offset>.generate(n, (i) => proj(pts[i].x, 0, pts[i].z));
-    // 성능: 세그먼트를 묶어(step) 그라데이션 쿼드 수를 줄인다(프레임 안정화).
+    final mFloor = Offset.lerp(floor[i0], floor[i1], f)!;
+    // 현재 지점까지의 점열(마지막 원소는 보간된 마커 위치).
+    final dTop = <Offset>[...top.sublist(0, i0 + 1), mPos];
+    final dFloor = <Offset>[...floor.sublist(0, i0 + 1), mFloor];
+    final dn = dTop.length;
+    final dElev = <double>[
+      for (int i = 0; i <= i0; i++) pts[i].t,
+      pts[i0].t + (pts[i1].t - pts[i0].t) * f,
+    ];
+
+    // 2-a) 커튼월(PaceFace) — 궤적 리본에서 바닥(y=0)까지 떨어지는 반투명 그라데이션 벽.
+    //      위=accent 진함(0.26) → 아래=투명(0)으로 고도 프로파일을 보여준다.
     const cs = 4;
-    for (int i = cs; i < n + cs - 1; i += cs) {
-      final a = i - cs, b = math.min(i, n - 1);
+    for (int i = cs; i < dn + cs - 1; i += cs) {
+      final a = i - cs, b = math.min(i, dn - 1);
       if (a >= b) break;
       final path = Path()
-        ..moveTo(top[a].dx, top[a].dy)
-        ..lineTo(top[b].dx, top[b].dy)
-        ..lineTo(floor[b].dx, floor[b].dy)
-        ..lineTo(floor[a].dx, floor[a].dy)
+        ..moveTo(dTop[a].dx, dTop[a].dy)
+        ..lineTo(dTop[b].dx, dTop[b].dy)
+        ..lineTo(dFloor[b].dx, dFloor[b].dy)
+        ..lineTo(dFloor[a].dx, dFloor[a].dy)
         ..close();
       final shader = ui.Gradient.linear(
-        top[b], floor[b],
+        dTop[b], dFloor[b],
         [_accent.withValues(alpha: 0.26), _accent.withValues(alpha: 0.0)],
       );
       canvas.drawPath(path, Paint()..shader = shader);
     }
 
-    // 3) 리본 — 글로우(블러) + 본선(고도 그라데이션)
+    // 2-b) 리본 — 글로우(블러) + 본선(고도 그라데이션)
     final glow = Paint()
       ..style = PaintingStyle.stroke
       ..strokeWidth = 10
@@ -1146,8 +1254,8 @@ class _Ride25DPainter extends CustomPainter {
       ..strokeJoin = StrokeJoin.round
       ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 6)
       ..color = _accent.withValues(alpha: 0.18);
-    final glowPath = Path()..moveTo(top.first.dx, top.first.dy);
-    for (int i = 1; i < n; i++) glowPath.lineTo(top[i].dx, top[i].dy);
+    final glowPath = Path()..moveTo(dTop.first.dx, dTop.first.dy);
+    for (int i = 1; i < dn; i++) glowPath.lineTo(dTop[i].dx, dTop[i].dy);
     canvas.drawPath(glowPath, glow);
 
     final core = Paint()
@@ -1156,17 +1264,12 @@ class _Ride25DPainter extends CustomPainter {
       ..strokeCap = StrokeCap.round
       ..strokeJoin = StrokeJoin.round
       ..isAntiAlias = true;
-    for (int i = 1; i < n; i++) {
-      core.color = _elev((pts[i - 1].t + pts[i].t) / 2);
-      canvas.drawLine(top[i - 1], top[i], core);
+    for (int i = 1; i < dn; i++) {
+      core.color = _elev((dElev[i - 1] + dElev[i]) / 2);
+      canvas.drawLine(dTop[i - 1], dTop[i], core);
     }
 
-    // 4) 마커 — 아크길이 균일이라 일정 속도. 글로우 펄스 + 바닥 수직선.
-    final mi = (markerProgress * (n - 1)).clamp(0, n - 1).toDouble();
-    final i0 = mi.floor(), i1 = math.min(i0 + 1, n - 1);
-    final f = mi - i0;
-    final mPos = Offset.lerp(top[i0], top[i1], f)!;
-    final mFloor = Offset.lerp(floor[i0], floor[i1], f)!;
+    // 3) 마커 — 현재 지점. 글로우 펄스 + 바닥 수직선.
     canvas.drawLine(mPos, mFloor, Paint()
       ..strokeWidth = 1.0
       ..color = Colors.white.withValues(alpha: 0.18));
@@ -1263,6 +1366,29 @@ class _RideFollowPainter extends CustomPainter {
     // 슬로프 면
     if (ring.length >= 3) {
       final rp = List<Offset>.generate(ring.length, (i) => proj(ring[i]));
+      // 눈 커튼 — 슬로프 경계(폴리곤 라인) 아래로 바닥까지 떨어지는 흰색 그라데이션.
+      final rfloor = List<Offset>.generate(
+          ring.length, (i) => proj(_P25(ring[i].x, 0, ring[i].z, 0)));
+      // 스무딩된 폴리곤 라인에 맞춰 커튼 윗변도 매끄럽게 리샘플.
+      final sTop = _smoothClosedPoints(rp);
+      final sFloor = _smoothClosedPoints(rfloor);
+      final m = sTop.length;
+      for (int i = 1; i <= m; i++) {
+        final a = i - 1, b = i % m;
+        final path = Path()
+          ..moveTo(sTop[a].dx, sTop[a].dy)
+          ..lineTo(sTop[b].dx, sTop[b].dy)
+          ..lineTo(sFloor[b].dx, sFloor[b].dy)
+          ..lineTo(sFloor[a].dx, sFloor[a].dy)
+          ..close();
+        canvas.drawPath(
+            path,
+            Paint()
+              ..shader = ui.Gradient.linear(sTop[b], sFloor[b], [
+                Colors.white.withValues(alpha: 0.20),
+                Colors.white.withValues(alpha: 0.0),
+              ]));
+      }
       final surf = _smoothClosedPath(rp); // 각진 경계를 부드럽게
       canvas.drawPath(surf,
           Paint()..color = const Color(0xFF9DB8FF).withValues(alpha: 0.10));
@@ -1274,21 +1400,30 @@ class _RideFollowPainter extends CustomPainter {
             ..strokeJoin = StrokeJoin.round
             ..color = const Color(0xFFBFD0FF).withValues(alpha: 0.55));
     }
+    // 궤적 — 라이딩 진행(progress)에 따라 "현재 지점까지만" 그린다(미리 그려두지 않음).
+    final mFloor = proj(_P25(mp.x, 0, mp.z, 0));
+    final dTop = <Offset>[...top.sublist(0, i0 + 1), mWorld];
+    final dFloor = <Offset>[...floor.sublist(0, i0 + 1), mFloor];
+    final dn = dTop.length;
+    final dElev = <double>[
+      for (int i = 0; i <= i0; i++) pts[i].t,
+      pts[i0].t + (pts[i1].t - pts[i0].t) * f,
+    ];
     // 커튼월 — 성능 위해 세그먼트를 묶어 그라데이션 쿼드 수를 줄인다.
     const cs = 4;
-    for (int i = cs; i < n + cs - 1; i += cs) {
-      final a = i - cs, b = math.min(i, n - 1);
+    for (int i = cs; i < dn + cs - 1; i += cs) {
+      final a = i - cs, b = math.min(i, dn - 1);
       if (a >= b) break;
       final path = Path()
-        ..moveTo(top[a].dx, top[a].dy)
-        ..lineTo(top[b].dx, top[b].dy)
-        ..lineTo(floor[b].dx, floor[b].dy)
-        ..lineTo(floor[a].dx, floor[a].dy)
+        ..moveTo(dTop[a].dx, dTop[a].dy)
+        ..lineTo(dTop[b].dx, dTop[b].dy)
+        ..lineTo(dFloor[b].dx, dFloor[b].dy)
+        ..lineTo(dFloor[a].dx, dFloor[a].dy)
         ..close();
       canvas.drawPath(
           path,
           Paint()
-            ..shader = ui.Gradient.linear(top[b], floor[b], [
+            ..shader = ui.Gradient.linear(dTop[b], dFloor[b], [
               _accent.withValues(alpha: 0.26),
               _accent.withValues(alpha: 0.0),
             ]));
@@ -1301,8 +1436,8 @@ class _RideFollowPainter extends CustomPainter {
       ..strokeJoin = StrokeJoin.round
       ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 7)
       ..color = _accent.withValues(alpha: 0.18);
-    final gp = Path()..moveTo(top.first.dx, top.first.dy);
-    for (int i = 1; i < n; i++) gp.lineTo(top[i].dx, top[i].dy);
+    final gp = Path()..moveTo(dTop.first.dx, dTop.first.dy);
+    for (int i = 1; i < dn; i++) gp.lineTo(dTop[i].dx, dTop[i].dy);
     canvas.drawPath(gp, glow);
     final core = Paint()
       ..style = PaintingStyle.stroke
@@ -1310,9 +1445,9 @@ class _RideFollowPainter extends CustomPainter {
       ..strokeCap = StrokeCap.round
       ..strokeJoin = StrokeJoin.round
       ..isAntiAlias = true;
-    for (int i = 1; i < n; i++) {
-      core.color = _elev((pts[i - 1].t + pts[i].t) / 2);
-      canvas.drawLine(top[i - 1], top[i], core);
+    for (int i = 1; i < dn; i++) {
+      core.color = _elev((dElev[i - 1] + dElev[i]) / 2);
+      canvas.drawLine(dTop[i - 1], dTop[i], core);
     }
     // 마커(앵커 위치)
     final pulse = 0.5 + 0.5 * math.sin(progress * 2 * math.pi * 6);
@@ -1398,6 +1533,31 @@ Path _smoothClosedPath(List<Offset> p) {
   }
   path.close();
   return path;
+}
+
+/// `_smoothClosedPath`와 똑같은 중점-2차베지어 닫힌곡선을 "점열"로 리샘플한다.
+/// 커튼(폴리곤 라인 아래 벽)의 윗변/바닥변을 스무딩된 면 경계에 정확히 맞추기 위해 사용.
+/// top·floor를 같은 perSeg로 리샘플하면 대응 인덱스끼리 매끄러운 벽을 세울 수 있다.
+List<Offset> _smoothClosedPoints(List<Offset> p, {int perSeg = 6}) {
+  final n = p.length;
+  if (n < 3) return List<Offset>.from(p);
+  Offset mid(Offset a, Offset b) =>
+      Offset((a.dx + b.dx) / 2, (a.dy + b.dy) / 2);
+  final out = <Offset>[];
+  Offset prevM = mid(p[n - 1], p[0]); // 곡선 시작점(마지막↔첫 변의 중점)
+  for (int i = 0; i < n; i++) {
+    final c = p[i]; // 제어점(원본 꼭짓점)
+    final m = mid(p[i], p[(i + 1) % n]); // 세그먼트 끝점(중점)
+    for (int s = 0; s < perSeg; s++) {
+      final t = s / perSeg, u = 1 - t;
+      out.add(Offset(
+        u * u * prevM.dx + 2 * u * t * c.dx + t * t * m.dx,
+        u * u * prevM.dy + 2 * u * t * c.dy + t * t * m.dy,
+      ));
+    }
+    prevM = m;
+  }
+  return out; // 닫힌 루프(out.last → out.first로 자연스럽게 이어짐)
 }
 
 /// 자동차 계기판형 속도계를 우하단에 그리고, 그 아래에 실시간 누적점수(현재/획득)를 쓴다.
