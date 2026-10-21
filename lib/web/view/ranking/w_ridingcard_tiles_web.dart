@@ -62,22 +62,25 @@ class RidingCardGridTileWeb extends StatelessWidget {
 /// 목록 한 줄 — 날짜 + 칭호 + 총 라이딩 횟수 + 카드 썸네일.
 class RidingCardListTileWeb extends StatelessWidget {
   final DailyRidingCard card;
+
+  /// 썸네일 배경을 고른다(0·1). 카드 안 내용은 그리지 않는다.
   final int cardType;
-  final String? displayName;
-  final String? profileImageUrl;
   final VoidCallback onTap;
 
   /// 월 묶음의 첫 줄인지. 첫 줄만 위 여백이 없다 —
   /// 월 제목 아래 간격이 그 자리를 대신한다(목업 65:36714).
   final bool isFirst;
 
+  /// 그 **달의** 마지막 줄인지. 달의 끝에는 구분선을 긋지 않는다
+  /// (다음 달 제목과 사이가 간격으로 충분히 나뉜다).
+  final bool isLast;
+
   const RidingCardListTileWeb({
     required this.card,
     required this.cardType,
-    required this.displayName,
-    required this.profileImageUrl,
     required this.onTap,
     this.isFirst = false,
+    this.isLast = false,
   });
 
   @override
@@ -86,7 +89,9 @@ class RidingCardListTileWeb extends StatelessWidget {
       onTap: onTap,
       child: Container(
         decoration: BoxDecoration(
-          border: Border(bottom: BorderSide(color: SDSColor.gray100)),
+          border: isLast
+              ? null
+              : Border(bottom: BorderSide(color: SDSColor.gray100)),
         ),
         // 목업: 카드 56 ↔ 아래 16 ↔ 구분선 ↔ 위 16.
         padding: EdgeInsets.only(top: isFirst ? 0 : 16, bottom: 16),
@@ -121,14 +126,21 @@ class RidingCardListTileWeb extends StatelessWidget {
               ),
             ),
             const SizedBox(width: 20),
-            // 썸네일도 같은 카드 위젯이다(작게 그린다).
-            // 목업은 **높이 56** 기준 — 폭은 카드 비율로 따라온다(35.28).
-            LiveTalkRidingCardWeb(
-              card: card,
-              cardType: cardType,
-              displayName: displayName,
-              profileImageUrl: profileImageUrl,
-              width: 56 * kRidingCardAspectRatio,
+            // 썸네일은 **카드 배경만** 그린다 — 앱 목록(`v_ridingCardList.dart`)과
+            // 크기(40x64)·라운드(6)·맞춤(cover)까지 같다. 이 크기에 기록을 다 그리면
+            // 글자가 읽히지 않는다(목업도 배경만이다).
+            ClipRRect(
+              borderRadius: BorderRadius.circular(6),
+              child: SizedBox(
+                width: 40,
+                height: 64,
+                child: Image.asset(
+                  cardType == 0
+                      ? 'assets/imgs/imgs/img_summury_bg.png'
+                      : 'assets/imgs/imgs/img_summury_bg_2.png',
+                  fit: BoxFit.cover,
+                ),
+              ),
             ),
           ],
         ),

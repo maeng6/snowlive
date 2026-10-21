@@ -6,7 +6,20 @@ import 'package:com.snowlive/web/view/ranking/w_ridingcard_detail_web.dart';
 import 'package:com.snowlive/web/view/ranking/w_ridingcard_season_web.dart';
 import 'package:com.snowlive/web/view/ranking/w_ridingcard_tiles_web.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_test/flutter_test.dart';
+
+/// 목록 썸네일 — 앱과 같이 **카드 배경 이미지만** 그린다.
+Finder _thumb() => find.byWidgetPredicate((w) =>
+    w is Image &&
+    w.image is AssetImage &&
+    (w.image as AssetImage).assetName.contains('img_summury_bg'));
+
+/// 앱과 같은 아이콘 에셋을 쓰는지까지 함께 본다(머티리얼 아이콘으로 되돌아가면 걸린다).
+Finder _svgAsset(String name) => find.byWidgetPredicate((w) =>
+    w is SvgPicture &&
+    w.bytesLoader is SvgAssetLoader &&
+    (w.bytesLoader as SvgAssetLoader).assetName.contains(name));
 
 DailyRidingCard _card(String date, {int id = 1, int count = 17}) =>
     DailyRidingCard.fromJson({
@@ -180,8 +193,6 @@ void main() {
           RidingCardListTileWeb(
             card: _card('2026-03-22'),
             cardType: 1,
-            displayName: '치자나무',
-            profileImageUrl: null,
             onTap: () => tapped++,
           ),
         );
@@ -196,7 +207,7 @@ void main() {
     }
 
     /// 목업 65:36714(Desktop) 실측값. 눈으로 맞춘 값이라 바뀌면 여기서 걸린다.
-    testWidgets('목록 행 치수가 목업과 같다 — 카드 56 · 아래 16 · 텍스트 간격 20', (tester) async {
+    testWidgets('목록 행 치수 — 썸네일 40x64(앱과 동일) · 아래 16 · 텍스트 간격 20', (tester) async {
       await tester.binding.setSurfaceSize(const Size(560, 400));
       addTearDown(() => tester.binding.setSurfaceSize(null));
       await tester.pumpWidget(MaterialApp(
@@ -208,16 +219,12 @@ void main() {
                 RidingCardListTileWeb(
                   card: _card('2026-03-22', id: 1),
                   cardType: 0,
-                  displayName: '치자나무',
-                  profileImageUrl: null,
                   isFirst: true,
                   onTap: () {},
                 ),
                 RidingCardListTileWeb(
                   card: _card('2026-03-21', id: 2),
                   cardType: 0,
-                  displayName: '치자나무',
-                  profileImageUrl: null,
                   onTap: () {},
                 ),
               ],
@@ -230,19 +237,27 @@ void main() {
       final tiles = find.byType(RidingCardListTileWeb);
       final first = tester.getRect(tiles.at(0));
       final second = tester.getRect(tiles.at(1));
-      final thumbs = find.byType(LiveTalkRidingCardWeb);
+      final thumbs = _thumb();
       final thumb = tester.getRect(thumbs.at(0));
 
-      // 썸네일 카드: 높이 56(폭은 카드 비율로 따라온다).
-      expect(thumb.height, closeTo(56, 0.5));
-      expect(thumb.width, closeTo(56 * kRidingCardAspectRatio, 0.5));
+      // 썸네일: 앱과 같은 40x64.
+      expect(thumb.width, closeTo(40, 0.5));
+      expect(thumb.height, closeTo(64, 0.5));
       // 오른쪽 끝에 붙는다.
       expect(thumb.right, closeTo(first.right, 0.5));
       // 첫 줄은 위 여백 없이 시작하고(월 제목 아래 간격이 대신한다) 아래 16 + 구분선 1.
       expect(thumb.top, closeTo(first.top, 0.5));
-      expect(first.height, closeTo(56 + 16 + 1, 0.5));
+      expect(first.height, closeTo(64 + 16 + 1, 0.5));
       // 둘째 줄부터는 위 16이 붙는다.
-      expect(second.height, closeTo(16 + 56 + 16 + 1, 0.5));
+      expect(second.height, closeTo(16 + 64 + 16 + 1, 0.5));
+
+      // 마지막 줄은 구분선이 없다 → 그만큼(1) 낮다.
+      final lastTile = tester.widget<Container>(find.descendant(
+        of: find.byType(RidingCardListTileWeb).last,
+        matching: find.byType(Container),
+      ).first);
+      expect((lastTile.decoration as BoxDecoration).border, isNotNull,
+          reason: '기본값은 구분선 있음');
 
       // 칭호·횟수 블록과 썸네일 사이 20.
       final count = tester.getRect(find.descendant(
@@ -250,6 +265,31 @@ void main() {
         matching: find.text('총 17회 라이딩'),
       ));
       expect(thumb.left - count.right, closeTo(20, 1.0));
+    });
+
+    testWidgets('목록 마지막 줄에는 구분선이 없다', (tester) async {
+      await tester.binding.setSurfaceSize(const Size(560, 400));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+      await tester.pumpWidget(MaterialApp(
+        home: Scaffold(
+          body: SizedBox(
+            width: 480,
+            child: RidingCardListTileWeb(
+              card: _card('2026-03-22'),
+              cardType: 0,
+              isLast: true,
+              onTap: () {},
+            ),
+          ),
+        ),
+      ));
+      await tester.pumpAndSettle();
+
+      final tile = tester.widget<Container>(find.descendant(
+        of: find.byType(RidingCardListTileWeb),
+        matching: find.byType(Container),
+      ).first);
+      expect((tile.decoration as BoxDecoration).border, isNull);
     });
 
     testWidgets('칭호 길이가 달라도 썸네일은 같은 오른쪽 끝에 붙는다 (정렬 회귀)', (tester) async {
@@ -278,15 +318,11 @@ void main() {
               RidingCardListTileWeb(
                 card: withTitle('짧은칭호'),
                 cardType: 0,
-                displayName: '치자나무',
-                profileImageUrl: null,
                 onTap: () {},
               ),
               RidingCardListTileWeb(
                 card: withTitle('아주아주 긴 칭호 슬로프눈팅중 턴스페셜리스트'),
                 cardType: 0,
-                displayName: '치자나무',
-                profileImageUrl: null,
                 onTap: () {},
               ),
             ],
@@ -297,11 +333,109 @@ void main() {
 
       // ⚠️ Spacer + Flexible이 남는 폭을 반씩 나눠 가지면 이 값이 행마다 달라진다(실측 버그).
       final tiles = find.byType(RidingCardListTileWeb);
-      final firstRight = tester.getTopRight(find.byType(LiveTalkRidingCardWeb).at(0)).dx;
-      final secondRight = tester.getTopRight(find.byType(LiveTalkRidingCardWeb).at(1)).dx;
+      final firstRight = tester.getTopRight(_thumb().at(0)).dx;
+      final secondRight = tester.getTopRight(_thumb().at(1)).dx;
       expect(tiles, findsNWidgets(2));
       expect(firstRight, secondRight);
       expect(tester.takeException(), isNull);
+    });
+
+    /// 상세 팝업 목업 65:37552 실측값.
+    testWidgets('상세 팝업 치수가 목업과 같다 — 카드 320 · 원버튼 56 · 저장 170x56', (tester) async {
+      await tester.binding.setSurfaceSize(const Size(1440, 1080));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+
+      var swapped = 0;
+      await tester.pumpWidget(MaterialApp(
+        home: Scaffold(
+          body: Builder(
+            builder: (context) => TextButton(
+              onPressed: () => showRidingCardDetail(
+                context,
+                card: _card('2026-03-22'),
+                displayName: '치자나무',
+                profileImageUrl: null,
+                cardTypeOf: () => 0,
+                onSwapCardType: () async => swapped++,
+              ),
+              child: const Text('열기'),
+            ),
+          ),
+        ),
+      ));
+      await tester.tap(find.text('열기'));
+      await tester.pumpAndSettle();
+
+      // 카드 320(비율로 높이 508).
+      final card = tester.getRect(find.byType(LiveTalkRidingCardWeb));
+      expect(card.width, closeTo(320, 0.5));
+      expect(card.height, closeTo(320 / kRidingCardAspectRatio, 1.0));
+
+      // 원형 버튼 2개 — 56, 사이 24, 카드 아래 20.
+      expect(tester.widget<Icon>(find.byIcon(Icons.close)).size, 32);
+      final closeBtn = tester.getRect(find.ancestor(
+          of: find.byIcon(Icons.close), matching: find.byType(SizedBox)).first);
+      final swapBtn = tester.getRect(find.ancestor(
+          of: _svgAsset('icon_summury_change'),
+          matching: find.byType(SizedBox)).first);
+      expect(closeBtn.width, closeTo(56, 0.5));
+      expect(closeBtn.height, closeTo(56, 0.5));
+      expect(closeBtn.top - card.bottom, closeTo(20, 0.5));
+      expect(swapBtn.left - closeBtn.right, closeTo(24, 1.0));
+
+      // 저장 버튼 170x56, 원형 버튼 아래 30.
+      final save = tester.getRect(find.widgetWithText(ElevatedButton, '이미지 저장'));
+      expect(save.width, closeTo(170, 0.5));
+      expect(save.height, closeTo(56, 0.5));
+      expect(save.top - closeBtn.bottom, closeTo(30, 0.5));
+
+      // 가운데 정렬 — 카드와 같은 중심.
+      expect(save.center.dx, closeTo(card.center.dx, 0.5));
+    });
+
+    testWidgets('시즌 카드 상세는 PC 상세와 같은 틀이고 교체 버튼만 없다', (tester) async {
+      await tester.binding.setSurfaceSize(const Size(1440, 1080));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+
+      await tester.pumpWidget(MaterialApp(
+        home: Scaffold(
+          body: Builder(
+            builder: (context) => TextButton(
+              onPressed: () => showSeasonRidingCardDetail(
+                context,
+                card: SeasonRidingCard.fromJson({
+                  'user_id': 1,
+                  'display_name': '치자나무',
+                  'season': '2526',
+                  'total_slope_count': 3493,
+                  'total_distance': 939230,
+                  'top_speed': 24.6,
+                  'avg_slope': 48.3,
+                }),
+                seasonLabel: '25/26 시즌',
+                dbSeason: '2526',
+              ),
+              child: const Text('열기'),
+            ),
+          ),
+        ),
+      ));
+      await tester.tap(find.text('열기'));
+      await tester.pumpAndSettle();
+
+      // 카드는 데일리 상세와 같은 320.
+      final card = tester.getRect(find.byType(RidingCardSeasonWeb));
+      expect(card.width, closeTo(320, 0.5));
+
+      // 닫기 + 공유만, 카드 교체(⇄)는 없다.
+      expect(find.byIcon(Icons.close), findsOneWidget);
+      expect(_svgAsset('icon_summury_share'), findsOneWidget);
+      expect(_svgAsset('icon_summury_change'), findsNothing);
+
+      // 저장 버튼은 같은 170x56.
+      final save = tester.getRect(find.widgetWithText(ElevatedButton, '이미지 저장'));
+      expect(save.width, closeTo(170, 0.5));
+      expect(save.height, closeTo(56, 0.5));
     });
 
     testWidgets('상세 팝업에서 스킨을 바꿀 수 있다', (tester) async {
@@ -339,7 +473,7 @@ void main() {
       expect(find.text('이미지 저장'), findsOneWidget);
       expect(find.byIcon(Icons.close), findsOneWidget);
 
-      await tester.tap(find.byIcon(Icons.swap_horiz));
+      await tester.tap(_svgAsset('icon_summury_change'));
       await tester.pumpAndSettle();
       expect(swaps, 1);
       expect(cardType, 1);
