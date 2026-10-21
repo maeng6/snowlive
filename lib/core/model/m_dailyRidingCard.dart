@@ -55,7 +55,7 @@ class DailyRidingCard {
     mostRiddenCount = json['most_ridden_count'];
     topSpeed = json['top_speed']?.toDouble();
     avgSlope = json['avg_slope']?.toDouble();
-    riderTitle = json['rider_title'];
+    riderTitle = json['rider_title']; // 칭호는 서버에서 임시로 빈 값 발송 중(재정비 전까지 숨김).
     resorts = json['resorts'] == null
         ? null
         : (json['resorts'] as List).map((e) => '$e').toList();
