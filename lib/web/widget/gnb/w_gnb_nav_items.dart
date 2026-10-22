@@ -4,6 +4,7 @@ import 'package:com.snowlive/web/routes/routes_web.dart';
 import 'package:com.snowlive/web/viewmodel/alarm/vm_alarmCenter_web.dart';
 import 'package:com.snowlive/web/viewmodel/fleamarket/vm_fleamarketPagination_web.dart';
 import 'package:com.snowlive/web/viewmodel/home/vm_home_web.dart';
+import 'package:com.snowlive/web/viewmodel/liveTalk/vm_liveTalkBadge_web.dart';
 import 'package:com.snowlive/web/widget/gnb/w_gnb_current_route_web.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -31,6 +32,9 @@ class GnbNavItemData {
   /// 라벨 옆에 안 읽은 알림 빨간 점([GnbAlarmDot])을 붙인다(`알림` 항목).
   final bool showsAlarmDot;
 
+  /// 라벨 옆에 라이브톡 새 글 빨간 점([GnbLiveTalkDot])을 붙인다(`라이브톡` 항목).
+  final bool showsLiveTalkDot;
+
   const GnbNavItemData({
     required this.label,
     this.routePrefix,
@@ -41,6 +45,7 @@ class GnbNavItemData {
     this.assetIconSvgOff,
     this.isPlaceholder = false,
     this.showsAlarmDot = false,
+    this.showsLiveTalkDot = false,
   });
 }
 
@@ -76,6 +81,7 @@ const List<GnbNavItemData> kGnbPrimaryItems = [
     routePrefix: '/livetalk',
     assetIconSvgOn: 'assets/imgs/icons/icon_web_livetalk_select.svg',
     assetIconSvgOff: 'assets/imgs/icons/icon_web_livetalk.svg',
+    showsLiveTalkDot: true,
   ),
   GnbNavItemData(
     label: '랭킹',
@@ -211,6 +217,11 @@ class GnbNavRow extends StatelessWidget {
                     return;
                   }
                   openGnbSection(prefix);
+                  // 라이브톡 진입 시 즉시 읽음 처리(빨간 점 끄기).
+                  if (item.showsLiveTalkDot &&
+                      Get.isRegistered<LiveTalkBadgeWeb>()) {
+                    LiveTalkBadgeWeb.to.markSeen();
+                  }
                   onNavigate?.call();
                 },
           borderRadius: BorderRadius.circular(6),
@@ -258,6 +269,7 @@ class GnbNavRow extends StatelessWidget {
                               ),
                             ),
                             if (item.showsAlarmDot) const GnbAlarmDot(),
+                            if (item.showsLiveTalkDot) const GnbLiveTalkDot(),
                           ],
                         ),
                       ),
@@ -353,6 +365,45 @@ class _GnbAlarmDotState extends State<GnbAlarmDot> {
             ),
           );
         },
+      );
+    });
+  }
+}
+
+/// `라이브톡` 라벨 옆 빨간 점 — 마지막으로 본 뒤로 새 글이 올라왔을 때만.
+///
+/// 라이브톡은 REST라 실시간 푸시가 없으므로 [LiveTalkBadgeWeb]가 최신 글 id를
+/// 주기적으로 폴링해 점을 켜고/끈다. 사이드바가 처음 그려질 때 한 번 등록한다.
+class GnbLiveTalkDot extends StatelessWidget {
+  /// 라벨 옆에 붙일 땐 좌측 4px 간격을, 아이콘 모서리 배지로 쓸 땐 간격 없이.
+  final bool padLeft;
+
+  const GnbLiveTalkDot({super.key, this.padLeft = true});
+
+  @override
+  Widget build(BuildContext context) {
+    if (!Get.isRegistered<LiveTalkBadgeWeb>()) {
+      Get.put(LiveTalkBadgeWeb(), permanent: true);
+    }
+    final vm = LiveTalkBadgeWeb.to;
+    return Obx(() {
+      vm.seenRev.value; // markSeen 후 재계산 트리거
+      // 로그인/로그아웃으로 유저가 바뀌면 다시 계산되도록 user_id를 관찰.
+      final uid = Get.isRegistered<UserViewModel>()
+          ? Get.find<UserViewModel>().user.user_id as int?
+          : null;
+      if (!vm.hasUnreadFor(uid)) return const SizedBox.shrink();
+      return Padding(
+        padding: EdgeInsets.only(left: padLeft ? 4 : 0),
+        child: Container(
+          key: const ValueKey('gnb-livetalk-dot'),
+          width: 6,
+          height: 6,
+          decoration: const BoxDecoration(
+            color: SDSColor.red,
+            shape: BoxShape.circle,
+          ),
+        ),
       );
     });
   }

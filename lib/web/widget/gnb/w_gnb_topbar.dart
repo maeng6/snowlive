@@ -2,7 +2,7 @@ import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/core/viewmodel/vm_user.dart';
 import 'package:com.snowlive/web/routes/routes_web.dart';
 import 'package:com.snowlive/web/widget/gnb/w_gnb_nav_items.dart'
-    show reloadToHomeWeb;
+    show GnbLiveTalkDot, reloadToHomeWeb;
 import 'package:com.snowlive/web/view/friend/w_friend_live_popup_web.dart';
 import 'package:com.snowlive/web/util/responsive_web.dart';
 import 'package:flutter/material.dart';
@@ -94,23 +94,34 @@ class WebGnbTopbar extends StatelessWidget implements PreferredSizeWidget {
               ),
             );
           }),
-          IconButton(
-            onPressed: onMenuTap,
-            // 탭 시 파란 리플(테마 기본색)이 비치지 않게 효과를 전부 끈다.
-            splashColor: Colors.transparent,
-            highlightColor: Colors.transparent,
-            hoverColor: Colors.transparent,
-            focusColor: Colors.transparent,
-            // Material3 IconButton은 위 색 대신 style의 overlayColor를 쓴다
-            style: const ButtonStyle(
-              overlayColor: WidgetStatePropertyAll(Colors.transparent),
-              splashFactory: NoSplash.splashFactory,
-            ),
-            icon: AnimatedIcon(
-              icon: AnimatedIcons.menu_close,
-              progress: menuProgress,
-              color: SDSColor.gray900,
-            ),
+          // 햄버거 아이콘 + 라이브톡 새 글 빨간점(메뉴 안에 새 글 알림이 있음을 표시).
+          Stack(
+            clipBehavior: Clip.none,
+            children: [
+              IconButton(
+                onPressed: onMenuTap,
+                // 탭 시 파란 리플(테마 기본색)이 비치지 않게 효과를 전부 끈다.
+                splashColor: Colors.transparent,
+                highlightColor: Colors.transparent,
+                hoverColor: Colors.transparent,
+                focusColor: Colors.transparent,
+                // Material3 IconButton은 위 색 대신 style의 overlayColor를 쓴다
+                style: const ButtonStyle(
+                  overlayColor: WidgetStatePropertyAll(Colors.transparent),
+                  splashFactory: NoSplash.splashFactory,
+                ),
+                icon: AnimatedIcon(
+                  icon: AnimatedIcons.menu_close,
+                  progress: menuProgress,
+                  color: SDSColor.gray900,
+                ),
+              ),
+              const Positioned(
+                right: 10,
+                top: 10,
+                child: GnbLiveTalkDot(padLeft: false),
+              ),
+            ],
           ),
         ],
       ),

@@ -1,9 +1,11 @@
 import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/web/util/responsive_web.dart';
+import 'package:com.snowlive/web/viewmodel/liveTalk/vm_liveTalkBadge_web.dart';
 import 'package:com.snowlive/web/widget/gnb/w_gnb_nav_items.dart'
-    show GnbNavItemData, kGnbPrimaryItems, openGnbSection;
+    show GnbNavItemData, GnbLiveTalkDot, kGnbPrimaryItems, openGnbSection;
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
 
 /// 홈 **퀵메뉴**(태블릿·모바일 전용). 데스크탑은 좌측 사이드바가 그 역할을 한다.
 ///
@@ -125,7 +127,13 @@ class _QuickCell extends StatelessWidget {
     return Material(
       color: Colors.transparent,
       child: InkWell(
-        onTap: () => openGnbSection(item.routePrefix!),
+        onTap: () {
+          openGnbSection(item.routePrefix!);
+          // 라이브톡 진입 시 읽음 처리(빨간 점 끄기).
+          if (item.showsLiveTalkDot && Get.isRegistered<LiveTalkBadgeWeb>()) {
+            LiveTalkBadgeWeb.to.markSeen();
+          }
+        },
         // hover는 웹 공통 — 연회색 면(gray50)에 검정 4%만 덧칠한다.
         hoverColor: Colors.black.withValues(alpha: 0.04),
         borderRadius: BorderRadius.circular(6),
@@ -135,7 +143,20 @@ class _QuickCell extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             if (svg != null) ...[
-              SvgPicture.asset(svg, width: 24, height: 24, fit: BoxFit.contain),
+              // 아이콘 + (라이브톡이면) 우상단 새 글 빨간점.
+              Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  SvgPicture.asset(svg,
+                      width: 24, height: 24, fit: BoxFit.contain),
+                  if (item.showsLiveTalkDot)
+                    const Positioned(
+                      right: -2,
+                      top: -2,
+                      child: GnbLiveTalkDot(padLeft: false),
+                    ),
+                ],
+              ),
               // 아이콘 ↔ 라벨 4(사용자 확정, 6에서 줄임).
               const SizedBox(width: 4),
             ],

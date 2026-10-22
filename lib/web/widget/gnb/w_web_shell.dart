@@ -141,6 +141,8 @@ class _WebAppShellState extends State<WebAppShell>
                 // 홈에서만 스크롤에 따라 펼침/접힘. 그 외 화면에선 항상 접힌 아이콘.
                 child: Obx(() {
                   final r = currentRouteWeb.value;
+                  // 로그인 화면에서는 오픈채팅 플로팅 버튼을 숨긴다.
+                  if (r == WebRoutes.login) return const SizedBox.shrink();
                   final isHome = r == WebRoutes.home || r == '/';
                   return ValueListenableBuilder<bool>(
                     valueListenable: _chatScrolled,

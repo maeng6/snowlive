@@ -18,6 +18,7 @@ import 'package:com.snowlive/web/widget/w_web_more_menu_web.dart';
 import 'package:com.snowlive/web/widget/w_web_popup_web.dart' show showWebEditTextDialog;
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:com.snowlive/web/viewmodel/liveTalk/vm_liveTalkBadge_web.dart';
 
 /// 데스크탑 피드 열 폭(목업). SNS형 피드라 목록·상세(1136)보다 훨씬 좁다 —
 /// 넓히면 사진이 과하게 커지고 한 줄 글자수가 늘어 읽기 흐름이 깨진다.
@@ -71,6 +72,8 @@ class _LiveTalkHomeViewWebState extends State<LiveTalkHomeViewWeb> {
     _scrollController.addListener(_onScroll);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) _loadFirstPage();
+      // 라이브톡 진입 = 읽음 처리(사이드바 새 글 빨간 점 끄기).
+      if (Get.isRegistered<LiveTalkBadgeWeb>()) LiveTalkBadgeWeb.to.markSeen();
     });
   }
 
