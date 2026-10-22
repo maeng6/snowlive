@@ -2,14 +2,25 @@ import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/core/model/m_slope_rush.dart';
 import 'package:com.snowlive/web/data/slope_craft_maps_web.dart';
 import 'package:com.snowlive/web/widget/w_network_image_web.dart';
+import 'package:com.snowlive/web/util/crew_visual_web.dart';
 import 'package:com.snowlive/web/widget/w_web_filter_menu_web.dart';
 import 'package:flutter/material.dart';
 
-/// 지도 배경(에셋의 흰 여백을 덮는 색). 앱과 같은 값.
-const Color _kMapBackground = Color(0xFFC9DEE9);
+/// 지도 카드 배경.
+///
+/// 지도 PNG는 **배경이 투명**이고 그려진 지형의 바탕색이 `#D2E4EE`다
+/// (phoenix·high1·vivaldi·gonjiam 에셋에서 가장 많이 쓰인 불투명 색을 뽑은 값).
+/// 카드도 같은 색으로 깔아야 지도와 카드 사이에 경계선이 보이지 않는다
+/// — 그래서 목업의 그라데이션(#DFEAF0→#BCD4E2) 대신 이 단색을 쓴다.
+const Color kSlopeCraftMapBackground = Color(0xFFD2E4EE);
 
 /// 마커 한 개 크기(로고 지름).
-const double _kMarkerSize = 34;
+/// 마커 원 — 앱과 같이 고른 슬로프만 크다(`v_slope_rush.dart`).
+const double _kMarkerSize = 24;
+const double _kMarkerSizeSelected = 36;
+
+/// 라벨 최대폭(앱과 동일). 넘치면 말줄임.
+const double _kMarkerLabelMaxWidth = 38;
 
 /// 슬로프 점령 지도.
 ///
@@ -48,11 +59,12 @@ class SlopeCraftMapWeb extends StatelessWidget {
         : (slopeCraftSlopeName(resortId, selectedSlopeKey!) ?? '전체');
 
     return Container(
-      decoration: BoxDecoration(
-        color: SDSColor.gray50,
-        borderRadius: BorderRadius.circular(16),
+      decoration: const BoxDecoration(
+        color: kSlopeCraftMapBackground,
+        borderRadius: BorderRadius.all(Radius.circular(12)),
       ),
-      padding: const EdgeInsets.all(SDSSpacing.md),
+      // 목업 실측: 카드 640 안에서 상단 바가 600 → 안쪽 여백 20.
+      padding: const EdgeInsets.all(20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -70,7 +82,10 @@ class SlopeCraftMapWeb extends StatelessWidget {
               child: Center(
                 child: Text(
                   '이 스키장은 지도가 준비되지 않았어요.',
-                  style: SDSTextStyle.regular.copyWith(fontSize: 13, color: SDSColor.gray400),
+                  style: SDSTextStyle.regular.copyWith(
+                    fontSize: 13,
+                    color: SDSColor.gray400,
+                  ),
                 ),
               ),
             )
@@ -82,7 +97,8 @@ class SlopeCraftMapWeb extends StatelessWidget {
                   return Stack(
                     fit: StackFit.expand,
                     children: [
-                      Container(color: _kMapBackground),
+                      // 배경을 따로 깔지 않는다 — 카드 색이 그대로 비쳐야
+                      // 지도와 카드가 한 덩어리로 보인다.
                       Image.asset(defaultAsset, fit: BoxFit.cover),
                       if (selectedSlopeKey != null)
                         Image.asset(
@@ -120,16 +136,22 @@ class SlopeCraftMapWeb extends StatelessWidget {
       final leader = item == null ? null : leaderOf(item);
       final label = slopeCraftSlopeName(resortId, key) ?? key;
 
-      markers.add(Positioned(
-        left: offset.dx * constraints.maxWidth - _kMarkerSize / 2,
-        top: offset.dy * constraints.maxHeight - _kMarkerSize / 2,
-        child: _SlopeMarker(
-          label: label,
-          leader: leader,
-          isSelected: selectedSlopeKey == key,
-          onTap: () => onSelectSlope(key),
+      final isSelected = selectedSlopeKey == key;
+      // 고른 마커는 커지므로(24→36) 중심 보정도 그 크기로 해야 제자리에 선다.
+      final size = isSelected ? _kMarkerSizeSelected : _kMarkerSize;
+
+      markers.add(
+        Positioned(
+          left: offset.dx * constraints.maxWidth - size / 2,
+          top: offset.dy * constraints.maxHeight - size / 2,
+          child: _SlopeMarker(
+            label: label,
+            leader: leader,
+            isSelected: isSelected,
+            onTap: () => onSelectSlope(key),
+          ),
         ),
-      ));
+      );
     });
     return markers;
   }
@@ -155,14 +177,22 @@ class _MapHeader extends StatelessWidget {
         color: SDSColor.snowliveWhite,
         borderRadius: BorderRadius.circular(10),
       ),
-      padding: const EdgeInsets.symmetric(horizontal: SDSSpacing.md, vertical: 12),
+      // 목업 실측: 바 600x50 · 글자 좌우 24.
+      height: 50,
+      padding: const EdgeInsets.symmetric(horizontal: 24),
       child: Row(
         children: [
-          _ResortDropdown(resortName: resortName, onSelectResort: onSelectResort),
+          _ResortDropdown(
+            resortName: resortName,
+            onSelectResort: onSelectResort,
+          ),
           const Spacer(),
           Text(
             selectedLabel,
-            style: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray700),
+            style: SDSTextStyle.regular.copyWith(
+              fontSize: 14,
+              color: SDSColor.gray700,
+            ),
           ),
         ],
       ),
@@ -180,7 +210,10 @@ class _ResortDropdown extends StatefulWidget {
   final String resortName;
   final ValueChanged<int> onSelectResort;
 
-  const _ResortDropdown({required this.resortName, required this.onSelectResort});
+  const _ResortDropdown({
+    required this.resortName,
+    required this.onSelectResort,
+  });
 
   @override
   State<_ResortDropdown> createState() => _ResortDropdownState();
@@ -216,7 +249,10 @@ class _ResortDropdownState extends State<_ResortDropdown> {
             children: [
               Text(
                 widget.resortName,
-                style: SDSTextStyle.bold.copyWith(fontSize: 15, color: SDSColor.gray900),
+                style: SDSTextStyle.bold.copyWith(
+                  fontSize: 15,
+                  color: SDSColor.gray900,
+                ),
               ),
               const SizedBox(width: 2),
               Icon(Icons.expand_more, size: 18, color: SDSColor.gray900),
@@ -244,7 +280,11 @@ class _SlopeMarker extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final logoUrl = leader?.crewLogoUrl ?? '';
+    // 로고 없는 크루도 앱처럼 기본 `LIVE CREW` 마크를 쓴다(빈 회색 원 방지).
+    final logoUrl = leader == null
+        ? ''
+        : (crewLogoUrlOf(logoUrl: leader!.crewLogoUrl) ?? '');
+    final markerSize = isSelected ? _kMarkerSizeSelected : _kMarkerSize;
 
     return MouseRegion(
       cursor: SystemMouseCursors.click,
@@ -254,16 +294,14 @@ class _SlopeMarker extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
+            // 앱과 같이 **고른 슬로프만 크게**(36) 보이고 나머지는 24다.
             Container(
-              width: _kMarkerSize,
-              height: _kMarkerSize,
+              width: markerSize,
+              height: markerSize,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 color: SDSColor.snowliveWhite,
-                border: Border.all(
-                  color: isSelected ? SDSColor.snowliveBlue : SDSColor.snowliveWhite,
-                  width: 2,
-                ),
+                border: Border.all(color: SDSColor.snowliveWhite, width: 2),
                 boxShadow: [
                   BoxShadow(
                     color: SDSColor.gray900.withValues(alpha: 0.15),
@@ -277,26 +315,46 @@ class _SlopeMarker extends StatelessWidget {
                   ? Container(color: SDSColor.gray200)
                   : WebNetworkImage(
                       url: logoUrl,
-                      width: _kMarkerSize,
-                      height: _kMarkerSize,
+                      width: markerSize,
+                      height: markerSize,
                       isCircle: true,
                     ),
             ),
             const SizedBox(height: 2),
+            // 라벨도 앱과 같은 사각 캡슐이다 — 라운드 4 · 1px 테두리 · 옅은 그림자 ·
+            // 최대폭 38(긴 크루명은 말줄임). 선택 시 검정 바탕 + 흰 글자.
             Container(
-              decoration: BoxDecoration(
-                color: isSelected ? SDSColor.snowliveBlue : SDSColor.snowliveWhite,
-                borderRadius: BorderRadius.circular(50),
+              constraints: const BoxConstraints(
+                maxWidth: _kMarkerLabelMaxWidth,
               ),
-              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+              decoration: BoxDecoration(
+                color: isSelected
+                    ? SDSColor.snowliveBlack
+                    : SDSColor.snowliveWhite,
+                borderRadius: BorderRadius.circular(4),
+                border: Border.all(
+                  color: SDSColor.gray900.withValues(alpha: 0.26),
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: SDSColor.gray900.withValues(alpha: 0.1),
+                    blurRadius: 4,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+              ),
+              padding: const EdgeInsets.symmetric(horizontal: 3, vertical: 1),
               child: Text(
-                // 아무도 점령하지 않은 슬로프는 앱과 같이 `미점령`으로 적는다.
+                // 아무도 점령하지 않은 슬로프는 앱과 같이 `미점령`(흐린 글자)으로 적는다.
                 leader == null ? '미점령' : label,
                 maxLines: 1,
+                overflow: TextOverflow.ellipsis,
                 softWrap: false,
                 style: SDSTextStyle.bold.copyWith(
                   fontSize: 10,
-                  color: isSelected ? SDSColor.snowliveWhite : SDSColor.gray900,
+                  color: isSelected
+                      ? SDSColor.snowliveWhite
+                      : (leader == null ? SDSColor.gray500 : SDSColor.gray900),
                 ),
               ),
             ),

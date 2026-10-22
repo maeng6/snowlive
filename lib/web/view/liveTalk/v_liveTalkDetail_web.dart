@@ -6,7 +6,8 @@ import 'package:com.snowlive/web/view/liveTalk/w_livetalk_comment_list_web.dart'
 import 'package:com.snowlive/web/view/liveTalk/w_livetalk_detail_body_web.dart';
 import 'package:com.snowlive/web/viewmodel/liveTalk/vm_liveTalkDetail_web.dart';
 import 'package:com.snowlive/web/viewmodel/liveTalk/vm_liveTalk_web.dart';
-import 'package:com.snowlive/web/widget/w_web_popup_web.dart' show showWebEditTextDialog;
+import 'package:com.snowlive/web/widget/w_web_popup_web.dart'
+    show showWebEditTextDialog;
 import 'package:com.snowlive/web/widget/w_empty_state_web.dart';
 import 'package:com.snowlive/web/widget/w_web_comment_input_web.dart';
 import 'package:com.snowlive/web/widget/w_web_image_viewer_web.dart';
@@ -16,6 +17,7 @@ import 'package:com.snowlive/web/widget/w_web_icon_button_web.dart';
 import 'package:com.snowlive/web/util/responsive_web.dart';
 import 'package:com.snowlive/web/util/web_share_url.dart';
 import 'package:com.snowlive/web/util/web_share_link.dart';
+import 'package:com.snowlive/web/widget/w_web_bottom_fixed_web.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -32,8 +34,7 @@ class LiveTalkDetailViewWeb extends StatefulWidget {
   const LiveTalkDetailViewWeb({super.key});
 
   @override
-  State<LiveTalkDetailViewWeb> createState() =>
-      _LiveTalkDetailViewWebState();
+  State<LiveTalkDetailViewWeb> createState() => _LiveTalkDetailViewWebState();
 }
 
 class _LiveTalkDetailViewWebState extends State<LiveTalkDetailViewWeb> {
@@ -154,7 +155,13 @@ class _LiveTalkDetailViewWebState extends State<LiveTalkDetailViewWeb> {
             padding: EdgeInsets.only(bottom: barHeight),
             child: scrollArea,
           ),
-          Positioned(left: 0, right: 0, bottom: 0, child: _buildInputBar()),
+          Positioned(
+            left: 0,
+            right: 0,
+            bottom: 0,
+            // 셸의 오픈채팅이 입력창을 덮지 않게 높이를 알린다.
+            child: WebBottomFixedBar(child: _buildInputBar()),
+          ),
         ],
       ),
     );
@@ -264,7 +271,9 @@ class _LiveTalkDetailViewWebState extends State<LiveTalkDetailViewWeb> {
         // 목록도 반영되게 그 글만 다시 받는다(상세는 updatePost가 재조회).
         if (_vm.livetalkId != null &&
             Get.isRegistered<LiveTalkListPaginationViewModelWeb>()) {
-          await Get.find<LiveTalkListPaginationViewModelWeb>().reloadItem(_vm.livetalkId!);
+          await Get.find<LiveTalkListPaginationViewModelWeb>().reloadItem(
+            _vm.livetalkId!,
+          );
         }
       },
       onDelete: () async {
@@ -274,7 +283,9 @@ class _LiveTalkDetailViewWebState extends State<LiveTalkDetailViewWeb> {
           // 목록에 돌아갔을 때 지워진 글이 그대로 남지 않게 미리 뺀다.
           if (deletedId != null &&
               Get.isRegistered<LiveTalkListPaginationViewModelWeb>()) {
-            Get.find<LiveTalkListPaginationViewModelWeb>().removeItem(deletedId);
+            Get.find<LiveTalkListPaginationViewModelWeb>().removeItem(
+              deletedId,
+            );
           }
           // 지운 글의 상세에 남아 있을 이유가 없다.
           if (mounted) Get.back();

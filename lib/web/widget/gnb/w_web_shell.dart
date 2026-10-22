@@ -4,6 +4,7 @@ import 'package:com.snowlive/web/util/responsive_web.dart';
 import 'package:com.snowlive/web/view/home/w_home_open_chat_web.dart';
 import 'package:com.snowlive/web/viewmodel/home/vm_openChat_web.dart';
 import 'package:com.snowlive/web/widget/gnb/w_gnb_current_route_web.dart';
+import 'package:com.snowlive/web/widget/w_web_bottom_fixed_web.dart';
 import 'package:com.snowlive/web/widget/gnb/w_gnb_desktop_topbar.dart';
 import 'package:com.snowlive/web/widget/gnb/w_gnb_drawer.dart';
 import 'package:com.snowlive/web/widget/gnb/w_gnb_sidebar.dart';
@@ -118,7 +119,10 @@ class _WebAppShellState extends State<WebAppShell>
     // 오픈채팅은 이제 전 페이지에 뜨므로, 홈 바인딩이 안 돈 화면에서도
     // 뷰모델이 있도록 여기서 보장한다(홈 전용 바인딩에만 있으면 Get.find가 터진다).
     if (!Get.isRegistered<OpenChatViewModelWeb>()) {
-      Get.lazyPut<OpenChatViewModelWeb>(() => OpenChatViewModelWeb(), fenix: true);
+      Get.lazyPut<OpenChatViewModelWeb>(
+        () => OpenChatViewModelWeb(),
+        fenix: true,
+      );
     }
     return Stack(
       fit: StackFit.expand,
@@ -128,28 +132,35 @@ class _WebAppShellState extends State<WebAppShell>
           child: child,
         ),
         Positioned.fill(
-          child: Padding(
-            padding: EdgeInsets.only(
-              right: isMobile ? 16 : 24,
-              left: isMobile ? 16 : 0,
-              bottom: isMobile ? 16 : 24,
-            ),
-            child: Align(
-              alignment: Alignment.bottomRight,
-              child: SizedBox(
-                width: isMobile ? double.infinity : _chatWidth,
-                // 홈에서만 스크롤에 따라 펼침/접힘. 그 외 화면에선 항상 접힌 아이콘.
-                child: Obx(() {
-                  final r = currentRouteWeb.value;
-                  // 로그인 화면에서는 오픈채팅 플로팅 버튼을 숨긴다.
-                  if (r == WebRoutes.login) return const SizedBox.shrink();
-                  final isHome = r == WebRoutes.home || r == '/';
-                  return ValueListenableBuilder<bool>(
-                    valueListenable: _chatScrolled,
-                    builder: (_, scrolled, __) => HomeOpenChatWeb(
-                        isScrolled: isHome ? scrolled : true),
-                  );
-                }),
+          // 하단 고정 UI(플로팅 바·입력창)가 있는 화면에서는 그 위로 16 띄운다 —
+          // 안 그러면 보내기 버튼 같은 것을 오픈채팅이 덮는다.
+          child: ValueListenableBuilder<double>(
+            valueListenable: webBottomFixedInset,
+            builder: (context, bottomInset, chat) => Padding(
+              padding: EdgeInsets.only(
+                right: isMobile ? 16 : 24,
+                left: isMobile ? 16 : 0,
+                bottom: bottomInset > 0
+                    ? bottomInset + 16
+                    : (isMobile ? 16 : 24),
+              ),
+              child: Align(
+                alignment: Alignment.bottomRight,
+                child: SizedBox(
+                  width: isMobile ? double.infinity : _chatWidth,
+                  // 홈에서만 스크롤에 따라 펼침/접힘. 그 외 화면에선 항상 접힌 아이콘.
+                  child: Obx(() {
+                    final r = currentRouteWeb.value;
+                    // 로그인 화면에서는 오픈채팅 플로팅 버튼을 숨긴다.
+                    if (r == WebRoutes.login) return const SizedBox.shrink();
+                    final isHome = r == WebRoutes.home || r == '/';
+                    return ValueListenableBuilder<bool>(
+                      valueListenable: _chatScrolled,
+                      builder: (_, scrolled, __) =>
+                          HomeOpenChatWeb(isScrolled: isHome ? scrolled : true),
+                    );
+                  }),
+                ),
               ),
             ),
           ),
@@ -176,7 +187,9 @@ class _WebAppShellState extends State<WebAppShell>
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     const WebGnbSidebar(),
-                    Expanded(child: _withOpenChat(widget.child, isMobile: false)),
+                    Expanded(
+                      child: _withOpenChat(widget.child, isMobile: false),
+                    ),
                   ],
                 ),
               ),

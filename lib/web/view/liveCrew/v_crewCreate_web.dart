@@ -11,6 +11,7 @@ import 'package:com.snowlive/web/widget/w_web_form_fields_web.dart';
 import 'package:com.snowlive/web/widget/w_web_popup_web.dart';
 import 'package:com.snowlive/web/widget/w_web_back_icon_web.dart';
 import 'package:com.snowlive/web/widget/w_web_icon_button_web.dart';
+import 'package:com.snowlive/web/widget/w_web_bottom_fixed_web.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -183,7 +184,9 @@ class _CrewCreateViewWebState extends State<CrewCreateViewWeb> {
                 // 좁은 폭에서는 **페이지 여백(태블릿 20 / 모바일 16) 안쪽을 꽉 채운다** —
                 // 358로 묶으면 태블릿에서 가운데 좁은 기둥처럼 떠 보인다(다른 화면과 다름).
                 constraints: BoxConstraints(
-                  maxWidth: isDesktop ? kCrewCreateContentMaxWidth : double.infinity,
+                  maxWidth: isDesktop
+                      ? kCrewCreateContentMaxWidth
+                      : double.infinity,
                 ),
                 child: Obx(() => _buildStep(isMobile: isMobile)),
               ),
@@ -207,15 +210,20 @@ class _CrewCreateViewWebState extends State<CrewCreateViewWeb> {
             right: 0,
             bottom: 0,
             // 흰 배경을 깔지 않으면 셸의 표면 색이 배어 나온다.
-            child: Container(
-              color: SDSColor.snowliveWhite,
-              padding: const EdgeInsets.fromLTRB(
-                SDSSpacing.md,
-                SDSSpacing.sm,
-                SDSSpacing.md,
-                SDSSpacing.md,
+            // 셸의 오픈채팅이 덮지 않게 높이를 알린다.
+            child: WebBottomFixedBar(
+              child: Container(
+                color: SDSColor.snowliveWhite,
+                padding: const EdgeInsets.fromLTRB(
+                  SDSSpacing.md,
+                  SDSSpacing.sm,
+                  SDSSpacing.md,
+                  SDSSpacing.md,
+                ),
+                child: Obx(
+                  () => _buildPrimaryButton(fullWidth: true, isMobile: true),
+                ),
               ),
-              child: Obx(() => _buildPrimaryButton(fullWidth: true, isMobile: true)),
             ),
           ),
         ],
@@ -225,7 +233,10 @@ class _CrewCreateViewWebState extends State<CrewCreateViewWeb> {
 
   /// 단계별 진행 버튼. 모바일은 하단 고정, 그 외는 상단 우측(목업).
   /// 라벨이 폭에 따라 다르다 — 목업 그대로다.
-  Widget _buildPrimaryButton({required bool fullWidth, required bool isMobile}) {
+  Widget _buildPrimaryButton({
+    required bool fullWidth,
+    required bool isMobile,
+  }) {
     final label = switch (_step) {
       0 => isMobile ? '크루 만들기' : '라이브크루 만들기',
       1 => '다음',
@@ -256,7 +267,10 @@ class _CrewCreateViewWebState extends State<CrewCreateViewWeb> {
           // 토큰). 화면마다 다르면 바로 눈에 띈다(사용자 확정).
           if (states.contains(WidgetState.disabled)) return SDSColor.gray200;
           if (states.contains(WidgetState.hovered)) {
-            return Color.alphaBlend(Colors.black.withValues(alpha: 0.1), SDSColor.snowliveBlue);
+            return Color.alphaBlend(
+              Colors.black.withValues(alpha: 0.1),
+              SDSColor.snowliveBlue,
+            );
           }
           return SDSColor.snowliveBlue;
         }),
@@ -339,7 +353,11 @@ class _CrewCreateViewWebState extends State<CrewCreateViewWeb> {
         Text(
           '친구들과 함께 즐길 수 있는\n라이브 크루와 함께해요',
           textAlign: TextAlign.center,
-          style: SDSTextStyle.bold.copyWith(fontSize: 26, color: SDSColor.gray900, height: 36 / 26),
+          style: SDSTextStyle.bold.copyWith(
+            fontSize: 26,
+            color: SDSColor.gray900,
+            height: 36 / 26,
+          ),
         ),
         const SizedBox(height: _kTitleGap),
         Text(
@@ -370,14 +388,19 @@ class _CrewCreateViewWebState extends State<CrewCreateViewWeb> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        _StepTitle(title: '라이브크루 정보를 입력해 주세요', subtitle: '간단한 정보 입력 후 친구들과 즐거운 크루 활동을 시작해 보세요'),
+        _StepTitle(
+          title: '라이브크루 정보를 입력해 주세요',
+          subtitle: '간단한 정보 입력 후 친구들과 즐거운 크루 활동을 시작해 보세요',
+        ),
         const SizedBox(height: SDSSpacing.xl),
         WebFormTextField(
           label: '라이브크루 이름',
           controller: _nameController,
           hint: '이름을 입력해주세요(최대 $kCrewNameMaxLength자 이내)',
           maxLength: kCrewNameMaxLength,
-          inputFormatters: [LengthLimitingTextInputFormatter(kCrewNameMaxLength)],
+          inputFormatters: [
+            LengthLimitingTextInputFormatter(kCrewNameMaxLength),
+          ],
           onChanged: _vm.setCrewName,
           helperText: '크루명은 한 번 설정한 뒤에 수정이 불가능합니다.',
           errorText: _vm.nameError,
@@ -413,7 +436,10 @@ class _CrewCreateViewWebState extends State<CrewCreateViewWeb> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        _StepTitle(title: '라이브크루 이미지와 대표 색상을\n등록해 주세요', subtitle: '이미지와 대표 색상은 크루 설정에서 변경하실 수 있어요'),
+        _StepTitle(
+          title: '라이브크루 이미지와 대표 색상을\n등록해 주세요',
+          subtitle: '이미지와 대표 색상은 크루 설정에서 변경하실 수 있어요',
+        ),
         const SizedBox(height: SDSSpacing.xxl),
         // 모바일도 **고정 간격**으로 그냥 흐르게 둔다. 예전에는 색상 줄을 화면
         // 바닥(하단 버튼 바 위)으로 밀었는데, 제목 높이가 바뀌면 계산이 어긋나

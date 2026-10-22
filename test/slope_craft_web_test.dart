@@ -4,6 +4,7 @@ import 'package:com.snowlive/core/model/m_slope_rush.dart';
 import 'package:com.snowlive/web/data/slope_craft_maps_web.dart';
 import 'package:com.snowlive/web/view/ranking/w_slopecraft_list_web.dart';
 import 'package:com.snowlive/web/view/ranking/w_slopecraft_map_web.dart';
+import 'package:com.snowlive/web/widget/w_network_image_web.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -105,7 +106,10 @@ void main() {
           ),
         ),
       ));
-      await tester.pumpAndSettle();
+      // ⚠️ 크루 로고(기본 마크 포함)는 네트워크 이미지라 테스트에서는 영영 로딩 중이고,
+      // 로딩 스켈레톤이 무한 애니메이션이라 pumpAndSettle이 끝나지 않는다.
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 100));
     }
 
     for (final width in [1440.0, 800.0, 375.0]) {
@@ -147,7 +151,7 @@ void main() {
           ),
         );
         await tester.tap(find.text('휘닉스파크'));
-        await tester.pumpAndSettle();
+        await tester.pump(const Duration(milliseconds: 100));
         // ⚠️ 앵커 context를 헤더 전체로 넘기면 `BoxConstraints ... NOT NORMALIZED`로
         // 화면이 죽었다(실측) → 트리거만 앵커여야 한다.
         expect(tester.takeException(), isNull);
@@ -195,6 +199,77 @@ void main() {
       expect(find.text('GOM'), findsOneWidget);
       expect(find.text('스타크'), findsOneWidget);
       expect(find.text('30%'), findsOneWidget);
+    });
+
+    /// 목업 82:64717 실측값.
+    testWidgets('목록 줄 치수가 목업과 같다 — 줄 48 · 로고 48 · 제목 아래 30', (tester) async {
+      await pumpAt(
+        tester,
+        1440,
+        SizedBox(
+          width: 480,
+          child: SlopeCraftListWeb(
+            title: '휘닉스파크 점령 현황',
+            items: items,
+            selectedSlope: null,
+            leaderOf: leaderOf,
+            onSlopeTap: (_) {},
+            onShowAll: () {},
+          ),
+        ),
+      );
+
+      final title = tester.getRect(find.text('휘닉스파크 점령 현황'));
+      final rows = find.byType(InkWell);
+      final first = tester.getRect(rows.at(0));
+      final second = tester.getRect(rows.at(1));
+
+      // 줄 높이 48 + 위아래 6 = 피치 60.
+      expect(first.height, closeTo(48 + 12, 0.5));
+      expect(second.top - first.top, closeTo(60, 0.5));
+
+      // hover 배경(=줄 박스)은 내용 위아래로 **똑같이** 벌어진다.
+      final logo = tester.getRect(find.byType(WebNetworkImage).first);
+      expect(logo.top - first.top, closeTo(first.bottom - logo.bottom, 0.5));
+
+      // hover 배경은 목록 폭(480)보다 좌우 12씩 넓고, 글자는 제자리다.
+      expect(first.width, closeTo(480 + 24, 0.5));
+      final slopeName = tester.getRect(find.text('도도'));
+      expect(slopeName.left - first.left, closeTo(12, 0.5));
+
+      // 제목 글자 ↔ 첫 줄 내용 30.
+      expect(logo.top - title.bottom, closeTo(30, 2.0));
+    });
+
+    /// 슬로프 선택 상태 목업 82:67418.
+    testWidgets('슬로프 모드 — 제목 줄 36 · 전체 보기 버튼 36', (tester) async {
+      await pumpAt(
+        tester,
+        1440,
+        SizedBox(
+          width: 480,
+          child: SlopeCraftListWeb(
+            title: '파노라마 점령 현황',
+            items: items,
+            selectedSlope: items.first,
+            leaderOf: leaderOf,
+            onSlopeTap: (_) {},
+            onShowAll: () {},
+          ),
+        ),
+      );
+
+      final button = tester.getRect(find.widgetWithText(OutlinedButton, '전체 슬로프 보기'));
+      expect(button.height, closeTo(36, 0.5));
+      // 버튼은 제목 줄 오른쪽 끝에 붙는다.
+      final header = tester.getRect(find.text('파노라마 점령 현황'));
+      expect(button.center.dy, closeTo(header.center.dy, 1.0));
+
+      // 줄 높이는 전체 모드와 같다(버튼도 InkWell이라 크루 줄로 좁혀 찾는다).
+      final row = tester.getRect(find
+          .ancestor(of: find.text('GOM'), matching: find.byType(InkWell))
+          .first);
+      expect(row.height, closeTo(48 + 12, 0.5));
     });
 
     testWidgets('아무도 점령하지 않은 슬로프는 안내 문구', (tester) async {

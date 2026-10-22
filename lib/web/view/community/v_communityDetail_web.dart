@@ -20,6 +20,7 @@ import 'package:com.snowlive/web/widget/w_network_image_web.dart';
 import 'package:com.snowlive/web/widget/w_web_profile_tap_web.dart';
 import 'package:com.snowlive/web/widget/w_web_back_icon_web.dart';
 import 'package:com.snowlive/web/widget/w_web_icon_button_web.dart';
+import 'package:com.snowlive/web/widget/w_web_bottom_fixed_web.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -192,9 +193,7 @@ class _CommunityDetailViewWebState extends State<CommunityDetailViewWeb> {
             // PC만 800 고정 중앙(피그마 64:127458) — 태블릿·모바일은 제한 없이
             // 화면(패딩 제외)을 가득 채운다(중고거래 상세와 동일 규칙).
             constraints: BoxConstraints(
-              maxWidth: isDesktop
-                  ? kWebSubPageMaxWidth
-                  : double.infinity,
+              maxWidth: isDesktop ? kWebSubPageMaxWidth : double.infinity,
             ),
             child: Obx(_buildContent),
           ),
@@ -218,7 +217,13 @@ class _CommunityDetailViewWebState extends State<CommunityDetailViewWeb> {
           padding: EdgeInsets.only(bottom: barHeight),
           child: scrollArea,
         ),
-        Positioned(left: 0, right: 0, bottom: 0, child: _buildMobileInputBar()),
+        Positioned(
+          left: 0,
+          right: 0,
+          bottom: 0,
+          // 셸의 오픈채팅이 입력창을 덮지 않게 높이를 알린다.
+          child: WebBottomFixedBar(child: _buildMobileInputBar()),
+        ),
       ],
     );
   }
@@ -312,13 +317,9 @@ class _CommunityDetailViewWebState extends State<CommunityDetailViewWeb> {
         const SizedBox(height: 24),
         _buildAuthorCard(detail),
         // 프로필 ↔ 구분선 ↔ 본문: PC·태블릿 30 (피그마 64:127458) / 모바일 24
-        SizedBox(
-          height: context.screenType == WebScreenType.mobile ? 24 : 30,
-        ),
+        SizedBox(height: context.screenType == WebScreenType.mobile ? 24 : 30),
         Container(height: 1, color: SDSColor.gray100),
-        SizedBox(
-          height: context.screenType == WebScreenType.mobile ? 24 : 30,
-        ),
+        SizedBox(height: context.screenType == WebScreenType.mobile ? 24 : 30),
         CommunityBodyWeb(
           document: detail.description,
           onImageTap: _openImageViewer,
@@ -396,9 +397,7 @@ class _CommunityDetailViewWebState extends State<CommunityDetailViewWeb> {
     );
     // 모바일은 공유·⋯가 제목 줄이 아니라 뒤로가기 줄 우측에 온다(피그마 64:138413).
     if (isMobile) {
-      return Row(
-        children: [back, const Spacer(), _buildTitleActions()],
-      );
+      return Row(children: [back, const Spacer(), _buildTitleActions()]);
     }
     return Align(alignment: Alignment.centerLeft, child: back);
   }

@@ -23,6 +23,7 @@ import 'package:com.snowlive/web/widget/w_web_more_menu_web.dart';
 import 'package:com.snowlive/web/widget/w_web_profile_card_web.dart';
 import 'package:com.snowlive/web/widget/w_web_text_tabs_web.dart';
 import 'package:com.snowlive/web/widget/w_web_toast_web.dart';
+import 'package:com.snowlive/web/widget/w_web_bottom_fixed_web.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -203,36 +204,41 @@ class _ProfileDetailViewWebState extends State<ProfileDetailViewWeb> {
 
     // 콘텐츠가 짧으면 셸의 표면색이 하단에 배어 나오므로 스택 전체에 흰 배경을 깐다
     // (크루 만들기·설정에서 겪은 것과 같은 처리).
-    return _withHomeFallbackPop(Container(
-      color: SDSColor.snowliveWhite,
-      child: Stack(
-        children: [
-          scrollArea,
-          Positioned(
-            left: 0,
-            right: 0,
-            bottom: 0,
-            child: Container(
-              decoration: const BoxDecoration(
-                color: SDSColor.snowliveWhite,
-                // 목업(1:6636) — 바 위에 **1px gray50(#F5F5F5)** 라인. 방명록이 길어
-                // 바 뒤로 스크롤될 때 목록과 입력줄을 갈라 준다(사용자 요청).
-                // ⚠️ 연회색 라인 공통값(gray100)보다 한 단계 연한 색이다 — 목업 값
-                // 그대로 쓴다(바가 떠 있는 느낌을 해치지 않을 만큼만 구분).
-                border: Border(top: BorderSide(color: SDSColor.gray50)),
+    return _withHomeFallbackPop(
+      Container(
+        color: SDSColor.snowliveWhite,
+        child: Stack(
+          children: [
+            scrollArea,
+            Positioned(
+              left: 0,
+              right: 0,
+              bottom: 0,
+              // 셸의 오픈채팅이 덮지 않게 높이를 알린다.
+              child: WebBottomFixedBar(
+                child: Container(
+                  decoration: const BoxDecoration(
+                    color: SDSColor.snowliveWhite,
+                    // 목업(1:6636) — 바 위에 **1px gray50(#F5F5F5)** 라인. 방명록이 길어
+                    // 바 뒤로 스크롤될 때 목록과 입력줄을 갈라 준다(사용자 요청).
+                    // ⚠️ 연회색 라인 공통값(gray100)보다 한 단계 연한 색이다 — 목업 값
+                    // 그대로 쓴다(바가 떠 있는 느낌을 해치지 않을 만큼만 구분).
+                    border: Border(top: BorderSide(color: SDSColor.gray50)),
+                  ),
+                  // 좌우는 **위 콘텐츠와 같은 선**에 맞춘다 — 페이지 여백과 같은 값
+                  // (모바일 16 · 태블릿 20, 목업 1:6622도 모바일 16). 상하 12는 공통.
+                  padding: EdgeInsets.symmetric(
+                    horizontal: isMobile ? 16 : 20,
+                    vertical: 12,
+                  ),
+                  child: Obx(_buildGuestbookInput),
+                ),
               ),
-              // 좌우는 **위 콘텐츠와 같은 선**에 맞춘다 — 페이지 여백과 같은 값
-              // (모바일 16 · 태블릿 20, 목업 1:6622도 모바일 16). 상하 12는 공통.
-              padding: EdgeInsets.symmetric(
-                horizontal: isMobile ? 16 : 20,
-                vertical: 12,
-              ),
-              child: Obx(_buildGuestbookInput),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
-    ));
+    );
   }
 
   /// **브라우저 뒤로가기**도 화면 안 뒤로가기와 같게 만든다.
@@ -602,6 +608,7 @@ class _HeaderIconPill extends StatelessWidget {
 ButtonStyle _headerButtonStyle({
   required EdgeInsets padding,
   required Size minimumSize,
+
   /// 모서리를 **완전히 둥글게**(알약) 할지 — 모바일 `프로필 편집`만 true(사용자 확정).
   bool stadium = false,
 }) {
@@ -970,7 +977,9 @@ class _ModePill extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final background = isActive ? SDSColor.snowliveBlack : SDSColor.snowliveWhite;
+    final background = isActive
+        ? SDSColor.snowliveBlack
+        : SDSColor.snowliveWhite;
     // 목업(1:7991) — 비활성 테두리 gray100.
     final border = isActive ? SDSColor.snowliveBlack : SDSColor.gray100;
 
@@ -988,12 +997,17 @@ class _ModePill extends StatelessWidget {
         backgroundColor: WidgetStateProperty.resolveWith((states) {
           if (!states.contains(WidgetState.hovered)) return background;
           return isActive
-              ? Color.alphaBlend(Colors.black.withValues(alpha: 0.1), background)
+              ? Color.alphaBlend(
+                  Colors.black.withValues(alpha: 0.1),
+                  background,
+                )
               : SDSColor.gray50;
         }),
         side: WidgetStatePropertyAll(BorderSide(color: border)),
         // 목업(1:7991) — 패딩 좌 14 / 우 12 / 상하 10, Bold 14 글줄 16 → 78×36.
-        padding: const WidgetStatePropertyAll(EdgeInsets.fromLTRB(14, 10, 12, 10)),
+        padding: const WidgetStatePropertyAll(
+          EdgeInsets.fromLTRB(14, 10, 12, 10),
+        ),
         // ⚠️ 웹 기본 visualDensity(compact)가 패딩을 4씩 깎는다.
         visualDensity: VisualDensity.standard,
         minimumSize: const WidgetStatePropertyAll(Size(0, 36)),
