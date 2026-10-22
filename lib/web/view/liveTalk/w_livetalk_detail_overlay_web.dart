@@ -486,14 +486,16 @@ class _LiveTalkDetailCardState extends State<_LiveTalkDetailCard> {
         Padding(
           // 입력 바 66 = 여백 10 + 입력창 46 (피그마 80:221670).
           padding: const EdgeInsets.all(10),
-          child: WebCommentInput(
-            controller: _commentController,
-            hintText: target == null ? '댓글을 남겨주세요' : '답글을 남겨주세요',
-            isSubmitting: _vm.isSubmitting,
-            // onSubmit이 null이면 WebCommentInput이 게스트로 취급한다.
-            onSubmit: _vm.isGuest ? null : (_) => _submitComment(),
-            onGuestTap: () => Get.snackbar('알림', '로그인이 필요합니다.'),
-          ),
+          // 웹 자동로그인이 늦게 확정되면 처음엔 게스트로 보였다가 user_id가 채워진다.
+          // Obx로 감싸 로그인 상태가 확정되면 입력창이 바로 활성화되게 한다.
+          child: Obx(() => WebCommentInput(
+                controller: _commentController,
+                hintText: target == null ? '댓글을 남겨주세요' : '답글을 남겨주세요',
+                isSubmitting: _vm.isSubmitting,
+                // onSubmit이 null이면 WebCommentInput이 게스트로 취급한다.
+                onSubmit: _vm.isGuest ? null : (_) => _submitComment(),
+                onGuestTap: () => Get.snackbar('알림', '로그인이 필요합니다.'),
+              )),
         ),
       ],
     );
