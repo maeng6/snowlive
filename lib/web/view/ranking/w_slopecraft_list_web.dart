@@ -2,6 +2,7 @@ import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/core/model/m_crewHome.dart';
 import 'package:com.snowlive/core/model/m_slope_rush.dart';
 import 'package:com.snowlive/web/util/crew_visual_web.dart';
+import 'package:com.snowlive/web/util/responsive_web.dart';
 import 'package:com.snowlive/web/util/web_drag_scroll_web.dart';
 import 'package:com.snowlive/web/view/liveCrew/w_livecrew_crew_modal_web.dart';
 import 'package:com.snowlive/web/widget/w_network_image_web.dart';
@@ -134,8 +135,9 @@ class SlopeCraftListWeb extends StatelessWidget {
             ],
           ),
         ),
-        // 제목 줄 ↔ 첫 줄. 줄 위에 6이 붙으므로 그만큼 빼서 글자 기준 30을 맞춘다.
-        const SizedBox(height: 16),
+        // 제목 줄 ↔ 첫 줄. 목업은 글자 기준 30이지만 좁혀 쓴다(사용자 확정) —
+        // 줄 위에 6이 붙어 실제로는 글자 기준 20.5가 된다.
+        const SizedBox(height: 6),
         if (slope != null)
           ..._buildSlopeCrews(context, slope)
         else
@@ -395,19 +397,35 @@ class SlopeCraftTopCrewsWeb extends StatelessWidget {
         ),
         // 목업 실측: 소제목 ↔ 카드 16, 카드 224x58, 카드 사이 10.
         const SizedBox(height: 16),
-        SizedBox(
-          height: 58,
+        SizedBox(height: 58, child: _buildScroller(context)),
+      ],
+    );
+  }
+
+  /// 카드 줄은 **화면 끝까지** 흐른다 — 페이지 좌우 여백만큼 밖으로 넘겨 그리고,
+  /// 안쪽에서 같은 양을 되돌려 첫 카드는 제자리(여백 안)에서 시작한다.
+  /// 안 그러면 오른쪽 끝에서 카드가 여백만큼 일찍 잘려 어중간해 보인다.
+  Widget _buildScroller(BuildContext context) {
+    final bleed = webHomePagePadding(context).left;
+
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final width = constraints.maxWidth + bleed * 2;
+        return OverflowBox(
+          minWidth: width,
+          maxWidth: width,
           child: WebHorizontalDragScroll(
             child: ListView.separated(
               scrollDirection: Axis.horizontal,
+              padding: EdgeInsets.symmetric(horizontal: bleed),
               itemCount: crews.length,
               separatorBuilder: (_, __) => const SizedBox(width: 10),
               itemBuilder: (_, index) =>
                   _TopCrewCard(rank: index + 1, crew: crews[index]),
             ),
           ),
-        ),
-      ],
+        );
+      },
     );
   }
 }

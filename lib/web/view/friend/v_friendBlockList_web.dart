@@ -1,6 +1,5 @@
 import 'package:com.snowlive/core/viewmodel/friend/vm_friendList.dart';
 import 'package:com.snowlive/web/routes/routes_web.dart';
-import 'package:com.snowlive/web/util/responsive_web.dart';
 import 'package:com.snowlive/web/view/friend/w_friend_page_scaffold_web.dart';
 import 'package:com.snowlive/web/view/friend/w_friend_row_web.dart';
 import 'package:com.snowlive/web/viewmodel/auth/vm_authcheck_web.dart';
@@ -61,9 +60,6 @@ class _FriendBlockListViewWebState extends State<FriendBlockListViewWeb> {
       context,
       // ⚠️ 이 API는 body를 실은 DELETE라 서버 CORS가 막으면 여기로 떨어진다.
       done ? '차단을 해제했습니다.' : '잠시 후 다시 시도해 주세요.',
-      alignment: context.screenType == WebScreenType.mobile
-          ? Alignment.bottomCenter
-          : Alignment.topCenter,
     );
   }
 

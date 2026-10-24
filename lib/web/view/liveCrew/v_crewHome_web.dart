@@ -148,7 +148,7 @@ class _CrewHomeViewWebState extends State<CrewHomeViewWeb> {
     final crewId = _crewId;
     if (crewId == null) return;
     if (userId == null) {
-      Get.snackbar('알림', '로그인이 필요합니다.');
+      showWebToast(context, '로그인이 필요합니다.', title: '알림');
       return;
     }
     final done = await showLiveTalkUploadFlow(
@@ -211,7 +211,7 @@ class _CrewHomeViewWebState extends State<CrewHomeViewWeb> {
 
   Future<void> _onApply() async {
     if (_userVm.user.user_id == null) {
-      Get.snackbar('알림', '로그인이 필요합니다.');
+      showWebToast(context, '로그인이 필요합니다.', title: '알림');
       return;
     }
     final crewName = _vm.info?.crewName ?? '';
@@ -227,9 +227,6 @@ class _CrewHomeViewWebState extends State<CrewHomeViewWeb> {
           ? '가입 신청을 보냈습니다.'
           // 서버가 사유를 주면 그대로 보여준다(중복 신청 등).
           : (result.message ?? '이미 신청했거나 잠시 후 다시 시도해 주세요.'),
-      alignment: context.screenType == WebScreenType.mobile
-          ? Alignment.bottomCenter
-          : Alignment.topCenter,
     );
   }
 

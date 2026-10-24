@@ -11,6 +11,7 @@ import 'package:com.snowlive/web/widget/w_web_avatar_web.dart';
 import 'package:com.snowlive/web/util/web_features.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:com.snowlive/web/widget/w_web_toast_web.dart';
 
 /// 태블릿/모바일 전용 전체 화면 메뉴 패널(피그마 1:16330 비로그인 / 1:17339 로그인).
 ///
@@ -177,7 +178,7 @@ class _WebGnbMenuPanelState extends State<WebGnbMenuPanel>
                   _AccountRow(
                     label: '멤버십 업그레이드',
                     onTap: () =>
-                        Get.snackbar('준비 중입니다', '멤버십 업그레이드는 아직 준비 중이에요.'),
+                        showWebToast(context, '멤버십 업그레이드는 아직 준비 중이에요.', title: '준비 중입니다'),
                   ),
                 _AccountRow(label: '로그아웃', onTap: _signOut),
               ],

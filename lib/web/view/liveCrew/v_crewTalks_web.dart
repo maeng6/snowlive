@@ -19,6 +19,7 @@ import 'package:com.snowlive/web/widget/w_web_page_header_web.dart';
 import 'package:com.snowlive/web/widget/w_web_more_menu_web.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:com.snowlive/web/widget/w_web_toast_web.dart';
 
 /// 크루톡 목록은 **라이브톡 피드와 완전히 같은 규격**을 쓴다(사용자 확정) —
 /// 폭·간격·사이드바·하단 플로팅 바·끝 여백 전부 `v_liveTalkHome_web.dart`의
@@ -85,7 +86,7 @@ class _CrewTalksViewWebState extends State<CrewTalksViewWeb> {
     final crewId = _crewId;
     if (crewId == null) return;
     if (userId == null) {
-      Get.snackbar('알림', '로그인이 필요합니다.');
+      showWebToast(context, '로그인이 필요합니다.', title: '알림');
       return;
     }
     await showLiveTalkUploadFlow(context: context, userId: userId, crewId: crewId);
@@ -112,7 +113,7 @@ class _CrewTalksViewWebState extends State<CrewTalksViewWeb> {
   void _onMoreAction(LiveTalk item, WebMoreAction action) {
     final userId = _userVm.user.user_id;
     if (userId == null) {
-      Get.snackbar('알림', '로그인이 필요합니다.');
+      showWebToast(context, '로그인이 필요합니다.', title: '알림');
       return;
     }
     // 라이브톡 홈과 같은 처리 — 코어 VM의 신고/차단은 내부에서 Get.back()을 부른다.
@@ -242,7 +243,7 @@ class _CrewTalksViewWebState extends State<CrewTalksViewWeb> {
             item: talks[i],
             onTapImage: () => _openDetail(talks[i]),
             onTapComment: () => _openDetail(talks[i]),
-            onTapLike: () => Get.snackbar('알림', '준비 중이에요.'),
+            onTapLike: () => showWebToast(context, '준비 중이에요.', title: '알림'),
             moreActions: _isMine(talks[i])
                 ? const [WebMoreAction.delete]
                 : const [WebMoreAction.reportPost, WebMoreAction.hideUser],

@@ -16,6 +16,7 @@ import 'package:com.snowlive/web/widget/w_web_more_menu_web.dart';
 import 'package:com.snowlive/web/widget/w_web_overlay_modal_web.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:com.snowlive/web/widget/w_web_toast_web.dart';
 
 /// 라이브톡 상세 — 사진 + 글 + 댓글을 한 오버레이에 담는다(목업).
 /// 데스크탑은 좌 사진 / 우 댓글 패널, 태블릿은 1열(사진 위 · 댓글 아래).
@@ -132,7 +133,7 @@ class _LiveTalkDetailCardState extends State<_LiveTalkDetailCard> {
         ? await _vm.postComment(text)
         : await _vm.postReply(commentId: target.commentId!, content: text);
     if (!ok) {
-      Get.snackbar('오류', '등록에 실패했어요. 잠시 후 다시 시도해주세요.');
+      showWebToast(context, '등록에 실패했어요. 잠시 후 다시 시도해주세요.', title: '오류');
       return;
     }
     _commentController.clear();
@@ -147,7 +148,7 @@ class _LiveTalkDetailCardState extends State<_LiveTalkDetailCard> {
     if (_vm.detail == null) return;
     final updated = await _vm.toggleLike();
     if (updated == null) {
-      Get.snackbar('알림', '로그인이 필요합니다.');
+      showWebToast(context, '로그인이 필요합니다.', title: '알림');
       return;
     }
     if (mounted) setState(() => _changed = true);
@@ -494,7 +495,7 @@ class _LiveTalkDetailCardState extends State<_LiveTalkDetailCard> {
                 isSubmitting: _vm.isSubmitting,
                 // onSubmit이 null이면 WebCommentInput이 게스트로 취급한다.
                 onSubmit: _vm.isGuest ? null : (_) => _submitComment(),
-                onGuestTap: () => Get.snackbar('알림', '로그인이 필요합니다.'),
+                onGuestTap: () => showWebToast(context, '로그인이 필요합니다.', title: '알림'),
               )),
         ),
       ],
@@ -546,7 +547,7 @@ class _LiveTalkDetailCardState extends State<_LiveTalkDetailCard> {
         if (text == null) return;
         final ok = await _vm.updatePost(description: text);
         if (!ok) {
-          Get.snackbar('오류', '수정에 실패했어요.');
+          showWebToast(context, '수정에 실패했어요.', title: '오류');
           return;
         }
         // 상세는 updatePost가 재조회한다. 목록도 반영되게 그 글만 다시 받는다.

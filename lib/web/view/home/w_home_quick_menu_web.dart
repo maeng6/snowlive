@@ -2,10 +2,26 @@ import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/web/util/responsive_web.dart';
 import 'package:com.snowlive/web/viewmodel/liveTalk/vm_liveTalkBadge_web.dart';
 import 'package:com.snowlive/web/widget/gnb/w_gnb_nav_items.dart'
-    show GnbNavItemData, GnbLiveTalkDot, kGnbPrimaryItems, openGnbSection;
+    show
+        GnbNavItemData,
+        GnbLiveTalkDot,
+        kGnbDotGap,
+        kGnbDotSize,
+        kGnbPrimaryItems,
+        openGnbSection;
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+
+/// 퀵메뉴 아이콘이 24x24 안에서 **실제로 칠하는 범위는 x 3~20.75 · y 3.25~20.75**
+/// (라이브톡 SVG 실측). 새 글 점은 그 우상단 모서리에서 대각선으로 [kGnbDotGap]만큼
+/// 띄운다 — 햄버거 배지와 같은 규칙이다(사용자 확정). 예전 값(-2 · 6px 점)은
+/// 아이콘 모서리에 걸쳐 있었다.
+const double _kQuickGlyphRight = 20.75;
+const double _kQuickGlyphTop = 3.25;
+const double _kQuickDotRight =
+    24 - (_kQuickGlyphRight + kGnbDotGap + kGnbDotSize);
+const double _kQuickDotTop = _kQuickGlyphTop - kGnbDotGap - kGnbDotSize;
 
 /// 홈 **퀵메뉴**(태블릿·모바일 전용). 데스크탑은 좌측 사이드바가 그 역할을 한다.
 ///
@@ -151,8 +167,8 @@ class _QuickCell extends StatelessWidget {
                       width: 24, height: 24, fit: BoxFit.contain),
                   if (item.showsLiveTalkDot)
                     const Positioned(
-                      right: -2,
-                      top: -2,
+                      right: _kQuickDotRight,
+                      top: _kQuickDotTop,
                       child: GnbLiveTalkDot(padLeft: false),
                     ),
                 ],

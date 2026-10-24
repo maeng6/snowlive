@@ -15,6 +15,7 @@ import 'package:com.snowlive/web/widget/w_web_bottom_fixed_web.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:com.snowlive/web/widget/w_web_toast_web.dart';
 
 /// 목업 본문 폭(가운데 한 줄로 세우는 폼이라 좁다). PC 목업(174:90051)도 같은 358이다
 /// — 만들기 플로우는 세 폭 모두 **같은 레이아웃**을 쓴다(사용자 확정).
@@ -121,13 +122,13 @@ class _CrewCreateViewWebState extends State<CrewCreateViewWeb> {
 
   Future<void> _onCreate() async {
     if (_userVm.user.user_id == null) {
-      Get.snackbar('알림', '로그인이 필요합니다.');
+      showWebToast(context, '로그인이 필요합니다.', title: '알림');
       return;
     }
     final result = await _vm.create();
     if (!mounted) return;
     if (!result.ok) {
-      Get.snackbar('알림', result.message ?? '크루 생성에 실패했어요. 잠시 후 다시 시도해주세요.');
+      showWebToast(context, result.message ?? '크루 생성에 실패했어요. 잠시 후 다시 시도해주세요.', title: '알림');
       return;
     }
     await _showDoneDialog();

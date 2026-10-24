@@ -21,6 +21,7 @@ import 'package:com.snowlive/web/widget/w_web_bottom_fixed_web.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:com.snowlive/web/widget/w_web_toast_web.dart';
 
 /// 모바일 전용 라이브톡 **게시물 상세** 화면 — 사진·글·좋아요·댓글이 한 화면에
 /// 있고 입력창이 하단에 고정된다(인스타식, 사용자 확정). 피드에서 사진을 누르든
@@ -78,7 +79,7 @@ class _LiveTalkDetailViewWebState extends State<LiveTalkDetailViewWeb> {
         ? await _vm.postComment(text)
         : await _vm.postReply(commentId: target.commentId!, content: text);
     if (!ok) {
-      Get.snackbar('오류', '등록에 실패했어요. 잠시 후 다시 시도해주세요.');
+      showWebToast(context, '등록에 실패했어요. 잠시 후 다시 시도해주세요.', title: '오류');
       return;
     }
     _commentController.clear();
@@ -248,7 +249,7 @@ class _LiveTalkDetailViewWebState extends State<LiveTalkDetailViewWeb> {
   Future<void> _toggleLike() async {
     if (_vm.detail == null) return;
     final updated = await _vm.toggleLike();
-    if (updated == null) Get.snackbar('알림', '로그인이 필요합니다.');
+    if (updated == null) showWebToast(context, '로그인이 필요합니다.', title: '알림');
   }
 
   void _onPostMoreAction(WebMoreAction action) {
@@ -265,7 +266,7 @@ class _LiveTalkDetailViewWebState extends State<LiveTalkDetailViewWeb> {
         if (text == null) return;
         final ok = await _vm.updatePost(description: text);
         if (!ok) {
-          Get.snackbar('오류', '수정에 실패했어요.');
+          showWebToast(context, '수정에 실패했어요.', title: '오류');
           return;
         }
         // 목록도 반영되게 그 글만 다시 받는다(상세는 updatePost가 재조회).
@@ -360,7 +361,7 @@ class _LiveTalkDetailViewWebState extends State<LiveTalkDetailViewWeb> {
                 hintText: target == null ? '댓글을 남겨주세요' : '답글을 남겨주세요',
                 isSubmitting: _vm.isSubmitting,
                 onSubmit: _vm.isGuest ? null : (_) => _submit(),
-                onGuestTap: () => Get.snackbar('알림', '로그인이 필요합니다.'),
+                onGuestTap: () => showWebToast(context, '로그인이 필요합니다.', title: '알림'),
               ),
             ),
           ),

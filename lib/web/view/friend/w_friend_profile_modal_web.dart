@@ -101,7 +101,6 @@ class _FriendProfileSheetState extends State<_FriendProfileSheet> {
     showWebToast(
       context,
       ok ? '친구 요청을 보냈습니다.' : '이미 친구이거나 요청 중이에요.',
-      alignment: widget.isSheet ? Alignment.bottomCenter : Alignment.topCenter,
     );
   }
 

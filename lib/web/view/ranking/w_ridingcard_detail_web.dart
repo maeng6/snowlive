@@ -1,7 +1,6 @@
 import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/core/model/m_dailyRidingCard.dart';
 import 'package:com.snowlive/core/model/m_seasonRidingCard.dart';
-import 'package:com.snowlive/web/util/responsive_web.dart';
 import 'package:com.snowlive/web/view/liveTalk/w_livetalk_riding_card_web.dart';
 import 'package:com.snowlive/web/view/ranking/riding_card_sections_web.dart';
 import 'package:com.snowlive/web/view/ranking/w_ridingcard_season_web.dart';
@@ -95,9 +94,6 @@ class _SeasonCardDetailState extends State<_SeasonCardDetail> {
   void _toast(String message) => showWebToast(
         context,
         message,
-        alignment: context.screenType == WebScreenType.mobile
-            ? Alignment.bottomCenter
-            : Alignment.topCenter,
       );
 
   Future<void> _save() async {
@@ -214,9 +210,6 @@ class _RidingCardDetailState extends State<_RidingCardDetail> {
       toast: (message) => showWebToast(
         context,
         message,
-        alignment: context.screenType == WebScreenType.mobile
-            ? Alignment.bottomCenter
-            : Alignment.topCenter,
       ),
     );
     if (!mounted) return;

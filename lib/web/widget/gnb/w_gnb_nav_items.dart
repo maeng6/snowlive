@@ -9,6 +9,7 @@ import 'package:com.snowlive/web/widget/gnb/w_gnb_current_route_web.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:com.snowlive/web/widget/w_web_toast_web.dart';
 
 /// GNB(사이드바/드로어)에 표시되는 항목 하나를 표현.
 /// 전용 에셋이 없는 항목은 [materialIcon]을 임시로 사용하고,
@@ -212,7 +213,7 @@ class GnbNavRow extends StatelessWidget {
               : () {
                   final prefix = item.routePrefix;
                   if (prefix == null) {
-                    Get.snackbar('준비 중입니다', '${item.label} 화면은 아직 준비 중이에요.');
+                    showWebToast(context, '${item.label} 화면은 아직 준비 중이에요.', title: '준비 중입니다');
                     onNavigate?.call();
                     return;
                   }
@@ -254,6 +255,9 @@ class GnbNavRow extends StatelessWidget {
                         padding: EdgeInsets.only(left: icon != null ? 6 : 0),
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
+                          // 점을 라벨 **우상단 대각선**에 올리기 위한 위 정렬.
+                          // 라벨이 가장 높은 자식이라 라벨 위치는 그대로다.
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Flexible(
                               child: Text(
@@ -320,6 +324,13 @@ class GnbNavRow extends StatelessWidget {
   }
 }
 
+/// 라벨 ↔ 빨간 점 가로 간격. 점은 라벨 **우상단 대각선**에 올라가므로(위 정렬)
+/// 가로는 2만 띄워도 충분히 떨어져 보인다(사용자 확정).
+const double kGnbDotGap = 2;
+
+/// 빨간 점 지름(사용자 확정). 알림·라이브톡 점과 햄버거 모서리 배지가 같이 쓴다.
+const double kGnbDotSize = 4;
+
 /// `알림` 라벨 옆 빨간 점 — 안 읽은 알림이 있을 때만(Firestore `notificationCenter.total`).
 ///
 /// 로그인 전에는 그리지 않는다. 내 user_id가 바뀌면(로그인·로그아웃) 구독을 다시 건다.
@@ -353,11 +364,11 @@ class _GnbAlarmDotState extends State<GnbAlarmDot> {
         builder: (context, snap) {
           if (snap.data != true) return const SizedBox.shrink();
           return Padding(
-            padding: const EdgeInsets.only(left: 4),
+            padding: const EdgeInsets.only(left: kGnbDotGap),
             child: Container(
               key: const ValueKey('gnb-alarm-dot'),
-              width: 6,
-              height: 6,
+              width: kGnbDotSize,
+              height: kGnbDotSize,
               decoration: const BoxDecoration(
                 color: SDSColor.red,
                 shape: BoxShape.circle,
@@ -375,7 +386,7 @@ class _GnbAlarmDotState extends State<GnbAlarmDot> {
 /// 라이브톡은 REST라 실시간 푸시가 없으므로 [LiveTalkBadgeWeb]가 최신 글 id를
 /// 주기적으로 폴링해 점을 켜고/끈다. 사이드바가 처음 그려질 때 한 번 등록한다.
 class GnbLiveTalkDot extends StatelessWidget {
-  /// 라벨 옆에 붙일 땐 좌측 4px 간격을, 아이콘 모서리 배지로 쓸 땐 간격 없이.
+  /// 라벨 옆에 붙일 땐 [kGnbDotGap]만큼 띄우고, 아이콘 모서리 배지로 쓸 땐 붙인다.
   final bool padLeft;
 
   const GnbLiveTalkDot({super.key, this.padLeft = true});
@@ -394,11 +405,11 @@ class GnbLiveTalkDot extends StatelessWidget {
           : null;
       if (!vm.hasUnreadFor(uid)) return const SizedBox.shrink();
       return Padding(
-        padding: EdgeInsets.only(left: padLeft ? 4 : 0),
+        padding: EdgeInsets.only(left: padLeft ? kGnbDotGap : 0),
         child: Container(
           key: const ValueKey('gnb-livetalk-dot'),
-          width: 6,
-          height: 6,
+          width: kGnbDotSize,
+          height: kGnbDotSize,
           decoration: const BoxDecoration(
             color: SDSColor.red,
             shape: BoxShape.circle,

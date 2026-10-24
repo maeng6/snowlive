@@ -2,12 +2,22 @@ import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/core/viewmodel/vm_user.dart';
 import 'package:com.snowlive/web/routes/routes_web.dart';
 import 'package:com.snowlive/web/widget/gnb/w_gnb_nav_items.dart'
-    show GnbLiveTalkDot, reloadToHomeWeb;
+    show GnbLiveTalkDot, kGnbDotGap, kGnbDotSize, reloadToHomeWeb;
 import 'package:com.snowlive/web/view/friend/w_friend_live_popup_web.dart';
 import 'package:com.snowlive/web/util/responsive_web.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+
+/// 햄버거 글리프가 48 IconButton 안에서 **실제로 칠하는 범위는 x 15~32 · y 18~29**
+/// (AnimatedIcons.menu_close 24px 실측). 점은 그 우상단 모서리에서 대각선으로
+/// [kGnbDotGap]만큼 띄운다 — 예전 값(우측 10 · 상단 10 · 6px 점)은 글리프 오른쪽
+/// 끝에 딱 붙어 겹쳐 보였다.
+const double _kHamburgerGlyphRight = 32;
+const double _kHamburgerGlyphTop = 18;
+const double _kHamburgerDotRight =
+    48 - (_kHamburgerGlyphRight + kGnbDotGap + kGnbDotSize);
+const double _kHamburgerDotTop = _kHamburgerGlyphTop - kGnbDotGap - kGnbDotSize;
 
 /// 태블릿/모바일(<1024px) 전용 상단바: 로고 + (태블릿 로그인 시 프로필) + 햄버거.
 /// 햄버거는 메뉴 패널 상태에 따라 X로 모프된다(AnimatedIcon).
@@ -116,10 +126,16 @@ class WebGnbTopbar extends StatelessWidget implements PreferredSizeWidget {
                   color: SDSColor.gray900,
                 ),
               ),
-              const Positioned(
-                right: 10,
-                top: 10,
-                child: GnbLiveTalkDot(padLeft: false),
+              Positioned(
+                right: _kHamburgerDotRight,
+                top: _kHamburgerDotTop,
+                // 메뉴가 열려 X로 모프되면 점을 지운다(사용자 확정) — 열린 메뉴
+                // 안에 이미 `라이브톡` 항목의 점이 보이므로 X에 또 붙일 이유가 없다.
+                // 모프와 같은 진행도로 흐려져 따로 튀지 않는다.
+                child: FadeTransition(
+                  opacity: Tween<double>(begin: 1, end: 0).animate(menuProgress),
+                  child: const GnbLiveTalkDot(padLeft: false),
+                ),
               ),
             ],
           ),

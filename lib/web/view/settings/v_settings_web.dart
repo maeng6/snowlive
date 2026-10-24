@@ -196,9 +196,6 @@ class _SettingsViewWebState extends State<SettingsViewWeb> {
     showWebToast(
       context,
       message,
-      alignment: context.screenType == WebScreenType.mobile
-          ? Alignment.bottomCenter
-          : Alignment.topCenter,
     );
   }
 }

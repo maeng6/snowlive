@@ -553,8 +553,7 @@ class _CrewMemberProfileCardState extends State<_CrewMemberProfileCard> {
     if (targetId == null) return;
     final friendVm = Get.find<FriendViewModelWeb>();
     if (!friendVm.isLoggedIn) {
-      showWebToast(context, '로그인이 필요해요.',
-          alignment: widget.isSheet ? Alignment.bottomCenter : Alignment.topCenter);
+      showWebToast(context, '로그인이 필요해요.');
       return;
     }
     setState(() => _isSending = true);
@@ -567,7 +566,6 @@ class _CrewMemberProfileCardState extends State<_CrewMemberProfileCard> {
     showWebToast(
       context,
       ok ? '친구 요청을 보냈습니다.' : '이미 친구이거나 요청 중이에요.',
-      alignment: widget.isSheet ? Alignment.bottomCenter : Alignment.topCenter,
     );
   }
 

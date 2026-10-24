@@ -85,9 +85,6 @@ class _AlarmCenterViewWebState extends State<AlarmCenterViewWeb> {
     showWebToast(
       context,
       message,
-      alignment: context.screenType == WebScreenType.mobile
-          ? Alignment.bottomCenter
-          : Alignment.topCenter,
     );
   }
 

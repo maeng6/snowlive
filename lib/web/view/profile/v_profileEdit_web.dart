@@ -86,9 +86,6 @@ class _ProfileEditViewWebState extends State<ProfileEditViewWeb> {
     showWebToast(
       context,
       message,
-      alignment: context.screenType == WebScreenType.mobile
-          ? Alignment.bottomCenter
-          : Alignment.topCenter,
     );
   }
 

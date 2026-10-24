@@ -13,6 +13,7 @@ import 'package:com.snowlive/web/widget/w_web_profile_tap_web.dart';
 import 'package:com.snowlive/web/widget/w_web_icon_button_web.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:com.snowlive/web/widget/w_web_toast_web.dart';
 
 /// 판매자 아바타/이름 + 찜(북마크) 토글 + 공유(URL 복사) + 더보기(신고/차단) 메뉴.
 /// 공유는 웹에서는 현재 페이지 URL 복사로 동작한다(피그마 46:12903).
@@ -57,7 +58,7 @@ class FleamarketDetailSellerRowWeb extends StatelessWidget {
             onTap: () async {
               final userId = userVm.user.user_id;
               if (userId == null) {
-                Get.snackbar('알림', '로그인이 필요합니다.');
+                showWebToast(context, '로그인이 필요합니다.', title: '알림');
                 return;
               }
               if (detail.isFavorite == true) {
@@ -117,7 +118,7 @@ class FleamarketDetailSellerRowWeb extends StatelessWidget {
             onSelected: (action) {
               final userId = userVm.user.user_id;
               if (userId == null) {
-                Get.snackbar('알림', '로그인이 필요합니다.');
+                showWebToast(context, '로그인이 필요합니다.', title: '알림');
                 return;
               }
               handleWebMoreAction(

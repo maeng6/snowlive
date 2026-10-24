@@ -160,9 +160,6 @@ class _RidingCardsViewWebState extends State<RidingCardsViewWeb> {
     showWebToast(
       context,
       message,
-      alignment: context.screenType == WebScreenType.mobile
-          ? Alignment.bottomCenter
-          : Alignment.topCenter,
     );
   }
 

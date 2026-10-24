@@ -14,6 +14,7 @@ import 'package:com.snowlive/web/widget/w_web_floating_bottombar_web.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:com.snowlive/web/widget/w_web_toast_web.dart';
 
 /// 중고거래 글 올리기 진입 — 게스트면 로그인 안내 다이얼로그, 로그인 상태면 작성
 /// 화면으로 보낸다(키워드 알림 openFleamarketAlert와 동일한 패턴). 자동로그인
@@ -54,11 +55,11 @@ class FleamarketUploadViewWeb extends StatelessWidget {
   ) async {
     final userId = Get.find<UserViewModel>().user.user_id;
     if (userId == null) {
-      Get.snackbar('알림', '로그인이 필요합니다.');
+      showWebToast(context, '로그인이 필요합니다.', title: '알림');
       return;
     }
     if (!_canSubmit(vm)) {
-      Get.snackbar('알림', '필수 항목을 모두 입력해주세요.');
+      showWebToast(context, '필수 항목을 모두 입력해주세요.', title: '알림');
       return;
     }
     // 이미 제출 중이면 무시한다. 버튼 비활성화와 별개로, 연타/중복 호출이 실제로
@@ -95,7 +96,7 @@ class FleamarketUploadViewWeb extends StatelessWidget {
 
     await vm.uploadFleamarket(body);
     if (vm.pk == 0) {
-      Get.snackbar('오류', '등록에 실패했습니다. 잠시 후 다시 시도해주세요.');
+      showWebToast(context, '등록에 실패했습니다. 잠시 후 다시 시도해주세요.', title: '오류');
       return;
     }
 
@@ -118,7 +119,7 @@ class FleamarketUploadViewWeb extends StatelessWidget {
       );
     }
     Get.back();
-    Get.snackbar('완료', '게시글이 등록되었습니다.');
+    showWebToast(context, '게시글이 등록되었습니다.', title: '완료');
   }
 
   @override
@@ -356,7 +357,7 @@ class FleamarketUploadViewWeb extends StatelessWidget {
               canOpen: () {
                 if (vm.selectedCategoryMain ==
                     kFleamarketCategoryMainPlaceholder) {
-                  Get.snackbar('알림', '전체 카테고리를 먼저 선택해주세요.');
+                  showWebToast(context, '전체 카테고리를 먼저 선택해주세요.', title: '알림');
                   return false;
                 }
                 return true;

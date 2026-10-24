@@ -226,10 +226,6 @@ class _FriendHomeViewWebState extends State<FriendHomeViewWeb> {
     showWebToast(
       context,
       message,
-      // 목업: 데스크탑·태블릿은 상단, 모바일은 하단.
-      alignment: context.screenType == WebScreenType.mobile
-          ? Alignment.bottomCenter
-          : Alignment.topCenter,
     );
   }
 

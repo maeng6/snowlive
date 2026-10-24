@@ -29,7 +29,22 @@ const double _kSeasonChipsToContentGap = 20;
 
 /// 목업 실측 간격(82:64717).
 const double _kTabsToTopCrewsGap = 42;
-const double _kTopCrewsToContentGap = 48;
+
+/// 시즌 탭 줄 아래 여백. 목업은 세 폭 모두 42지만 모바일만 30으로 좁힌다(사용자 확정).
+double _tabsBottomGap(BuildContext context) =>
+    context.screenType == WebScreenType.mobile ? 30 : _kTabsToTopCrewsGap;
+
+/// TOP 5 줄 ↔ 지도 — PC 48(목업 82:64717) · 태블릿 40(82:53523) · 모바일 30(사용자 확정).
+double _topCrewsToContentGap(BuildContext context) {
+  switch (context.screenType) {
+    case WebScreenType.desktop:
+      return 48;
+    case WebScreenType.tablet:
+      return 40;
+    case WebScreenType.mobile:
+      return 30;
+  }
+}
 const double _kMapToListGap = 40;
 
 enum _SeasonTab { current, past }
@@ -91,6 +106,8 @@ class _SlopeCraftViewWebState extends State<SlopeCraftViewWeb> {
     final selectedKey = _vm.selectedSlopeKey;
     final selectedSlope = _vm.selectedSlope;
     final topCrews = _topCrews();
+    // TOP 5는 크루홈 집계에서 온다 — 지도와 **따로** 받아오므로 로딩도 따로 본다.
+    final topCrewsLoading = _crewHomeVm.isLoading;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -116,7 +133,11 @@ class _SlopeCraftViewWebState extends State<SlopeCraftViewWeb> {
         ),
         if (isPast) ...[
           // 목업 실측: 탭 ↔ 시즌 칩 줄 32.
-          const SizedBox(height: _kTabsToSeasonChipsGap),
+          SizedBox(
+            height: context.screenType == WebScreenType.mobile
+                ? 30
+                : _kTabsToSeasonChipsGap,
+          ),
           Row(
             children: [
               for (final entry in SlopeCraftViewModelWeb.kSeasons) ...[
@@ -134,14 +155,21 @@ class _SlopeCraftViewWebState extends State<SlopeCraftViewWeb> {
         // ⚠️ 목업(82:65604)에는 지난 시즌에도 `25/26 시즌 전체 스키장 점령 TOP 5 크루`
         // 줄이 있지만, 전용 API가 없어 크루홈의 **이번 시즌** 집계를 빌려 쓰는 중이라
         // 그대로 두면 지난 시즌 자리에 이번 시즌 순위가 나온다 → 숨기는 쪽으로 확정.
-        // 시즌별 TOP 5 API가 생기면 그때 되살린다.
+        // 시즌별 TOP 5 API가 생기면 그때 되살린다
         if (!isPast && topCrews.isNotEmpty) ...[
-          const SizedBox(height: _kTabsToTopCrewsGap),
+          SizedBox(height: _tabsBottomGap(context)),
           SlopeCraftTopCrewsWeb(crews: topCrews),
+        ] else if (!isPast && topCrewsLoading) ...[
+          // 아직 안 왔으면 같은 자리를 스켈레톤으로 잡아 둔다 — 지도가 먼저 그려진 뒤
+          // TOP 5가 나중에 끼어들면 화면이 통째로 밀린다.
+          SizedBox(height: _tabsBottomGap(context)),
+          const _TopCrewsSkeleton(),
         ],
-        // 지난 시즌 탭은 칩 줄 바로 아래가 지도라 간격을 좁게 둔다(사용자 확정).
+        // 지난 시즌 탭은 칩 줄 바로 아래가 지도라 간격을 좁게 둔다(사용자 확정)
         SizedBox(
-          height: isPast ? _kSeasonChipsToContentGap : _kTopCrewsToContentGap,
+          height: isPast
+              ? _kSeasonChipsToContentGap
+              : _topCrewsToContentGap(context),
         ),
         if (items.isEmpty && isLoading)
           const _SlopeCraftSkeleton()
@@ -162,7 +190,6 @@ class _SlopeCraftViewWebState extends State<SlopeCraftViewWeb> {
   }
 
   Widget _buildHeader() {
-    final isMobile = context.screenType == WebScreenType.mobile;
     final title = Text(
       '슬로프크래프트',
       // 홈 타이틀 공통: PC 32 / 태블릿·모바일 24 (중고거래 홈 기준).
@@ -179,12 +206,9 @@ class _SlopeCraftViewWebState extends State<SlopeCraftViewWeb> {
       ),
     );
 
-    if (isMobile) {
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [title, const SizedBox(height: 4), note],
-      );
-    }
+    // 안내 문구는 **PC에만** 둔다 — 태블릿 목업(82:53523)에는 없고,
+    // 좁은 폭에서 타이틀 옆에 붙이면 두 줄로 접힌다.
+    if (!context.isDesktop) return title;
     return Row(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [title, const Spacer(), note],
@@ -295,6 +319,44 @@ class _SeasonPill extends StatelessWidget {
             ),
           ),
         ),
+      ),
+    );
+  }
+}
+
+/// `전체 스키장 점령 TOP 5 크루` 줄의 로딩 자리.
+/// 실제와 같은 치수(소제목 19 · 카드 224x58 · 간격 10)로 둬야 데이터가 와도 안 밀린다.
+class _TopCrewsSkeleton extends StatelessWidget {
+  const _TopCrewsSkeleton();
+
+  @override
+  Widget build(BuildContext context) {
+    return SkeletonShimmer(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const SkeletonBox(width: 180, height: 19, radius: 6),
+          const SizedBox(height: 16),
+          SizedBox(
+            height: 58,
+            // 실제 줄처럼 화면 끝까지 흐르게 둔다(가로 스크롤 자리).
+            child: ClipRect(
+              child: OverflowBox(
+                alignment: Alignment.centerLeft,
+                maxWidth: double.infinity,
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    for (var i = 0; i < kSlopeCraftTopCrewCount; i++) ...[
+                      if (i > 0) const SizedBox(width: 10),
+                      const SkeletonBox(width: 224, height: 58, radius: 12),
+                    ],
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

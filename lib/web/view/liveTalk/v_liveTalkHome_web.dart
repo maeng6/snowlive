@@ -19,6 +19,7 @@ import 'package:com.snowlive/web/widget/w_web_popup_web.dart' show showWebEditTe
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:com.snowlive/web/viewmodel/liveTalk/vm_liveTalkBadge_web.dart';
+import 'package:com.snowlive/web/widget/w_web_toast_web.dart';
 
 /// 데스크탑 피드 열 폭(목업). SNS형 피드라 목록·상세(1136)보다 훨씬 좁다 —
 /// 넓히면 사진이 과하게 커지고 한 줄 글자수가 늘어 읽기 흐름이 깨진다.
@@ -204,13 +205,13 @@ class _LiveTalkHomeViewWebState extends State<LiveTalkHomeViewWeb> {
 
   Future<void> _onTapLike(LiveTalk item) async {
     final ok = await _vm.toggleLike(item);
-    if (!ok) Get.snackbar('알림', '로그인이 필요합니다.');
+    if (!ok) showWebToast(context, '로그인이 필요합니다.', title: '알림');
   }
 
   void _onMoreAction(LiveTalk item, WebMoreAction action) {
     final userId = _userVm.user.user_id;
     if (userId == null) {
-      Get.snackbar('알림', '로그인이 필요합니다.');
+      showWebToast(context, '로그인이 필요합니다.', title: '알림');
       return;
     }
     handleWebMoreAction(
@@ -228,7 +229,7 @@ class _LiveTalkHomeViewWebState extends State<LiveTalkHomeViewWeb> {
           livetalkId: item.livetalkId!,
           description: text,
         );
-        if (!ok) Get.snackbar('오류', '수정에 실패했어요.');
+        if (!ok) showWebToast(context, '수정에 실패했어요.', title: '오류');
       },
       onDelete: () async {
         final response = await LiveTalkAPI().delete({

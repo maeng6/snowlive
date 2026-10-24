@@ -9,6 +9,7 @@ import 'package:com.snowlive/web/viewmodel/liveTalk/vm_liveTalkUpload_web.dart';
 import 'package:com.snowlive/web/widget/w_web_overlay_modal_web.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:com.snowlive/web/widget/w_web_toast_web.dart';
 
 /// 카드 선택·글 작성 단계의 카드 높이(피그마 80:218042 551 / 80:218562 552).
 /// 1 차이라 큰 쪽으로 통일해 단계 전환 시 카드가 안 흔들리게 한다.
@@ -108,7 +109,7 @@ class _CardShareFlowState extends State<_CardShareFlow> {
       boundaryKey: _boundaryKey,
     );
     if (!ok) {
-      Get.snackbar('오류', '업로드에 실패했어요. 잠시 후 다시 시도해주세요.');
+      showWebToast(context, '업로드에 실패했어요. 잠시 후 다시 시도해주세요.', title: '오류');
       return;
     }
     widget.onClose(true);
@@ -173,7 +174,7 @@ class _CardShareFlowState extends State<_CardShareFlow> {
             child: LiveTalkWideButton(
               label: '앱 다운로드 받기',
               kind: LiveTalkWideButtonKind.quiet,
-              onTap: () => Get.snackbar('알림', '앱 다운로드 링크는 준비 중이에요.'),
+              onTap: () => showWebToast(context, '앱 다운로드 링크는 준비 중이에요.', title: '알림'),
             ),
           ),
           if (_isMobile) const SizedBox(height: 10),

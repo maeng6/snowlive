@@ -25,6 +25,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:com.snowlive/web/widget/w_web_toast_web.dart';
 
 /// 웹 커뮤니티 게시글 상세.
 ///
@@ -82,7 +83,7 @@ class _CommunityDetailViewWebState extends State<CommunityDetailViewWeb> {
   TextEditingController _replyControllerFor(int commentId) =>
       _replyControllers.putIfAbsent(commentId, TextEditingController.new);
 
-  void _requireLogin() => Get.snackbar('알림', '로그인이 필요해요.');
+  void _requireLogin() => showWebToast(context, '로그인이 필요해요.', title: '알림');
 
   Future<void> _submitComment(String text) async {
     setState(() => _isSubmitting = true);

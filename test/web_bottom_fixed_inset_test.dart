@@ -85,4 +85,66 @@ void main() {
     expect(webBottomFixedInset.value, 0, reason: '떠날 때 등록이 풀려야 한다');
     expect(chatBottomGap(tester), closeTo(16, 0.5));
   });
+
+  // 셸이 라우트 Navigator를 감싸는 구조라, 바가 있는 화면 위로 다른 화면을
+  // push하면 아래 화면이 **계속 mounted로 남는다** → mount 여부만 보면 바가 없는
+  // 화면에서도 오픈채팅이 올라간 채로 떠 있었다(실제 버그).
+  testWidgets('바 있는 화면 위로 push하면 내려오고, 돌아오면 다시 올라간다',
+      (tester) async {
+    tester.view.physicalSize = const Size(375, screenHeight);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.reset);
+
+    final navKey = GlobalKey<NavigatorState>();
+    await tester.pumpWidget(MaterialApp(
+      home: WebAppShell(
+        // 셸 **안쪽**에 Navigator를 둬 실제 구조와 같게 만든다.
+        child: Navigator(
+          key: navKey,
+          onGenerateRoute: (_) => MaterialPageRoute(
+            builder: (_) => const Stack(
+              children: [
+                Center(child: Text('바 있는 화면')),
+                Positioned(
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  child: WebBottomFixedBar(
+                    child: SizedBox(
+                        height: barHeight,
+                        child: ColoredBox(color: Colors.white)),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    ));
+    await tester.pumpAndSettle();
+    expect(webBottomFixedInset.value, barHeight);
+
+    // 바가 없는 화면을 위에 push — 아래 화면은 mounted로 남아 있다.
+    navKey.currentState!.push(MaterialPageRoute(
+      builder: (_) => const Scaffold(body: Center(child: Text('바 없는 화면'))),
+    ));
+    await tester.pumpAndSettle();
+    // 라우트 신호는 GetMaterialApp의 routingCallback이 갱신한다 → 테스트에서 직접.
+    currentRouteWeb.value = '/pushed';
+    await tester.pumpAndSettle();
+
+    expect(find.text('바 없는 화면'), findsOneWidget);
+    expect(webBottomFixedInset.value, 0,
+        reason: '위에 다른 화면이 떠 있으면 아래 바는 가리지 않는다');
+    expect(chatBottomGap(tester), closeTo(16, 0.5));
+
+    // 돌아오면 다시 올라간다.
+    navKey.currentState!.pop();
+    await tester.pumpAndSettle();
+    currentRouteWeb.value = '/fleamarket';
+    await tester.pumpAndSettle();
+
+    expect(webBottomFixedInset.value, barHeight);
+    expect(chatBottomGap(tester), closeTo(barHeight + 16, 0.5));
+  });
 }

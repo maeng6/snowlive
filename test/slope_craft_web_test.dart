@@ -237,8 +237,9 @@ void main() {
       final slopeName = tester.getRect(find.text('도도'));
       expect(slopeName.left - first.left, closeTo(12, 0.5));
 
-      // 제목 글자 ↔ 첫 줄 내용 30.
-      expect(logo.top - title.bottom, closeTo(30, 2.0));
+      // 제목 글자 ↔ 첫 줄 내용 20.5 — 목업은 30이지만 좁혀 쓴다(사용자 확정).
+      // (제목 줄 36 안에서 글자가 세로 중앙 8.5 + 제목 아래 6 + 줄 위 여백 6)
+      expect(logo.top - title.bottom, closeTo(20.5, 1.0));
     });
 
     /// 슬로프 선택 상태 목업 82:67418.
@@ -270,6 +271,46 @@ void main() {
           .ancestor(of: find.text('GOM'), matching: find.byType(InkWell))
           .first);
       expect(row.height, closeTo(48 + 12, 0.5));
+    });
+
+    /// 태블릿 목업 82:53523 — 지도 카드 안쪽이 카드 폭에 비례한다.
+    testWidgets('지도 카드 내부는 카드 폭에 비례한다 (PC 640 기준)', (tester) async {
+      // 환산값만 검증한다(실제 치수는 이 값을 곱해 나온다).
+      expect(slopeCraftMapScale(640), closeTo(1.0, 0.001));
+      expect(slopeCraftMapScale(760), closeTo(1.1875, 0.001));
+      // 목업 실측과 대조: 마커 36→42.8, 이름표 60→71.2, 여백 20→24.
+      expect(36 * slopeCraftMapScale(760), closeTo(42.75, 0.3));
+      expect(60 * slopeCraftMapScale(760), closeTo(71.25, 0.3));
+      expect(20 * slopeCraftMapScale(760), closeTo(23.75, 0.3));
+      // 모바일은 비례하지 않고 **앱과 같은 고정값**을 쓴다(목업 19.3은 너무 작다).
+      // SlopeCraftMarkerStyle 쪽에서 검증한다.
+    });
+
+    testWidgets('모바일 마커는 앱과 같은 고정 크기(24/36 · 글자 10)', (tester) async {
+      late SlopeCraftMarkerStyle mobile;
+      late SlopeCraftMarkerStyle desktop;
+      await pumpAt(
+        tester,
+        375,
+        Builder(builder: (context) {
+          mobile = SlopeCraftMarkerStyle.of(context, 343);
+          return const SizedBox();
+        }),
+      );
+      expect(mobile.size, 24);
+      expect(mobile.selectedSize, 36);
+      expect(mobile.labelScale, 1, reason: '이름표 글자는 앱과 같은 10px');
+
+      await pumpAt(
+        tester,
+        1440,
+        Builder(builder: (context) {
+          desktop = SlopeCraftMarkerStyle.of(context, 640);
+          return const SizedBox();
+        }),
+      );
+      expect(desktop.size, 36);
+      expect(desktop.labelScale, 1);
     });
 
     testWidgets('아무도 점령하지 않은 슬로프는 안내 문구', (tester) async {

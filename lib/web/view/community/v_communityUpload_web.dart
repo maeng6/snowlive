@@ -14,6 +14,7 @@ import 'package:com.snowlive/web/widget/w_web_more_menu_web.dart' show showWebCo
 import 'package:com.snowlive/web/widget/w_web_page_header_web.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:com.snowlive/web/widget/w_web_toast_web.dart';
 
 /// 커뮤니티 글 올리기 진입 — 게스트면 로그인 안내 다이얼로그, 로그인 상태면 작성
 /// 화면으로 보낸다(중고거래 openFleamarketUpload와 동일한 패턴). 자동로그인 확인
@@ -138,17 +139,17 @@ class _CommunityUploadViewWebState extends State<CommunityUploadViewWeb> {
     if (_isEdit) return _submitEdit();
     final userId = _userVm.user.user_id;
     if (userId == null) {
-      Get.snackbar('알림', '로그인이 필요합니다.');
+      showWebToast(context, '로그인이 필요합니다.', title: '알림');
       return;
     }
     if (!_vm.canSubmit) {
-      Get.snackbar('알림', '제목과 게시판 종류를 입력해주세요.');
+      showWebToast(context, '제목과 게시판 종류를 입력해주세요.', title: '알림');
       return;
     }
 
     final pk = await _vm.submit(userId: userId);
     if (pk == null) {
-      Get.snackbar('오류', '등록에 실패했습니다. 잠시 후 다시 시도해주세요.');
+      showWebToast(context, '등록에 실패했습니다. 잠시 후 다시 시도해주세요.', title: '오류');
       return;
     }
 
@@ -158,27 +159,27 @@ class _CommunityUploadViewWebState extends State<CommunityUploadViewWeb> {
       Get.find<CommunityListPaginationViewModelWeb>().gotoPage(1);
     }
     Get.back();
-    Get.snackbar('완료', '게시글이 등록되었습니다.');
+    showWebToast(context, '게시글이 등록되었습니다.', title: '완료');
   }
 
   Future<void> _submitEdit() async {
     final userId = _userVm.user.user_id;
     if (userId == null) {
-      Get.snackbar('알림', '로그인이 필요합니다.');
+      showWebToast(context, '로그인이 필요합니다.', title: '알림');
       return;
     }
     if (!_vm.canSubmit) {
-      Get.snackbar('알림', '제목과 게시판 종류를 입력해주세요.');
+      showWebToast(context, '제목과 게시판 종류를 입력해주세요.', title: '알림');
       return;
     }
     final ok = await _vm.submitEdit(userId: userId);
     if (!ok) {
-      Get.snackbar('오류', '수정에 실패했습니다. 잠시 후 다시 시도해주세요.');
+      showWebToast(context, '수정에 실패했습니다. 잠시 후 다시 시도해주세요.', title: '오류');
       return;
     }
     // 상세 화면이 돌아온 뒤 다시 조회한다(진입한 쪽이 처리).
     _goBackToDetail();
-    Get.snackbar('완료', '게시글이 수정되었습니다.');
+    showWebToast(context, '게시글이 수정되었습니다.', title: '완료');
   }
 
   /// 상세에서 들어왔으면 pop, 링크로 바로 들어왔으면 그 글 상세로.

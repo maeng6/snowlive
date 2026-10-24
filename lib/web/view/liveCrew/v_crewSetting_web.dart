@@ -1,6 +1,5 @@
 import 'package:com.snowlive/core/viewmodel/vm_user.dart';
 import 'package:com.snowlive/web/routes/routes_web.dart';
-import 'package:com.snowlive/web/util/responsive_web.dart';
 import 'package:com.snowlive/web/view/liveCrew/w_crew_setting_scaffold_web.dart';
 import 'package:com.snowlive/web/view/liveCrew/w_crew_setting_widgets_web.dart';
 import 'package:com.snowlive/web/viewmodel/crew/vm_crewSetting_web.dart';
@@ -85,9 +84,6 @@ class _CrewSettingViewWebState extends State<CrewSettingViewWeb> {
     showWebToast(
       context,
       message,
-      alignment: context.screenType == WebScreenType.mobile
-          ? Alignment.bottomCenter
-          : Alignment.topCenter,
     );
   }
 

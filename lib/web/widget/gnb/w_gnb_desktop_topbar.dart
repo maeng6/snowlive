@@ -13,6 +13,7 @@ import 'package:com.snowlive/web/util/web_features.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:com.snowlive/web/widget/w_web_toast_web.dart';
 
 const double kGnbDesktopTopBarHeight = 56;
 
@@ -244,7 +245,7 @@ class GnbProfileMenuButtonState extends State<GnbProfileMenuButton> {
         pushWebProfileRoute(widget.userId!);
       case _ProfileMenuAction.membership:
         // 화면이 아직 없어 준비 중 안내만 띄운다(드로어와 동일).
-        Get.snackbar('준비 중입니다', '멤버십 업그레이드는 아직 준비 중이에요.');
+        showWebToast(context, '멤버십 업그레이드는 아직 준비 중이에요.', title: '준비 중입니다');
       case _ProfileMenuAction.logout:
         await widget.onSignOut();
       case null:

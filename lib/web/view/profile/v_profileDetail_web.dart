@@ -127,9 +127,6 @@ class _ProfileDetailViewWebState extends State<ProfileDetailViewWeb> {
     showWebToast(
       context,
       message,
-      alignment: context.screenType == WebScreenType.mobile
-          ? Alignment.bottomCenter
-          : Alignment.topCenter,
     );
   }
 
