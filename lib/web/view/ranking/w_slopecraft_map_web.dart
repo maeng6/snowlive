@@ -46,10 +46,14 @@ class SlopeCraftMarkerStyle {
   /// 이름표(글자·패딩) 환산값. 모바일은 1.0(앱과 같은 10px).
   final double labelScale;
 
+  /// 정밀 좌표표를 쓸지. 모바일만 거짓 — 앱과 눈이 같아야 해서 손으로 찍은 표를 쓴다.
+  final bool precisePositions;
+
   const SlopeCraftMarkerStyle({
     required this.size,
     required this.selectedSize,
     required this.labelScale,
+    required this.precisePositions,
   });
 
   factory SlopeCraftMarkerStyle.of(BuildContext context, double mapWidth) {
@@ -59,6 +63,7 @@ class SlopeCraftMarkerStyle {
         size: 24,
         selectedSize: 36,
         labelScale: 1,
+        precisePositions: false,
       );
     }
     final scale = slopeCraftMapScale(mapWidth);
@@ -66,8 +71,18 @@ class SlopeCraftMarkerStyle {
       size: _kMarkerSize * scale,
       selectedSize: _kMarkerSizeSelected * scale,
       labelScale: scale,
+      precisePositions: true,
     );
   }
+
+  /// 원이 차지하는 **칸**의 크기.
+  ///
+  /// hover로 커질 자리를 미리 비워 두기 때문에 `원 크기 ≠ 칸 크기`다. 그래서
+  /// `Positioned.top` 보정도 원이 아니라 **이 값**으로 해야 원 중심이 `dy*h`에 온다
+  /// — 원 크기로 빼면 선택 안 된 마커가 `hoverGrow/2`만큼 아래로 밀린다.
+  /// 고른 마커는 hover가 없어 칸과 원이 같다.
+  double slotSizeFor(bool isSelected) =>
+      isSelected ? selectedSize : size + _kMarkerHoverGrow * labelScale;
 }
 
 /// 지도 카드 안쪽 여백 — 목업값이 폭마다 다르다(PC 20 · 태블릿 24 · 모바일 16).
@@ -198,7 +213,8 @@ class SlopeCraftMapWeb extends StatelessWidget {
 
   List<Widget> _buildMarkers(BuildContext context, BoxConstraints constraints) {
     final style = SlopeCraftMarkerStyle.of(context, constraints.maxWidth);
-    final positions = kSlopeCraftMarkerPos[resortId] ?? const {};
+    final positions =
+        slopeCraftMarkerPos(resortId, precise: style.precisePositions);
     if (positions.isEmpty) return const [];
 
     // 서버 응답을 이미지 키로 색인해 둔다(좌표표 기준으로 마커를 그리므로 없는 슬로프는
@@ -216,13 +232,13 @@ class SlopeCraftMapWeb extends StatelessWidget {
       final label = slopeCraftSlopeName(resortId, key) ?? key;
 
       final isSelected = selectedSlopeKey == key;
-      // 고른 마커는 커지므로 세로 중심 보정도 그 크기로 한다.
-      final size = isSelected ? style.selectedSize : style.size;
+      // 원이 아니라 **칸** 크기로 뺀다 — 이유는 [SlopeCraftMarkerStyle.slotSizeFor].
+      final slot = style.slotSizeFor(isSelected);
 
       markers.add(
         Positioned(
           left: offset.dx * constraints.maxWidth,
-          top: offset.dy * constraints.maxHeight - size / 2,
+          top: offset.dy * constraints.maxHeight - slot / 2,
           // ⚠️ 가로는 **자기 폭의 절반**만큼 당겨서 가운데를 맞춘다.
           // 마커 묶음의 폭은 원이 아니라 **이름표**가 정한다(이름표가 더 넓다)
           // → 원 크기로 빼면 이름이 길수록 원이 오른쪽으로 밀린다.
@@ -394,9 +410,8 @@ class _SlopeMarkerState extends State<_SlopeMarker> {
     final markerSize =
         (_hovered && canHover) ? baseSize + _kMarkerHoverGrow * scale : baseSize;
     // 커질 자리를 미리 잡아 둔다 — 안 그러면 원이 커질 때 중심이 아래로 밀리고
-    // 이름표도 따라 내려간다.
-    final slotSize =
-        canHover ? baseSize + _kMarkerHoverGrow * scale : baseSize;
+    // 이름표도 따라 내려간다. `Positioned.top` 보정과 **같은 값**이어야 한다.
+    final slotSize = style.slotSizeFor(isSelected);
 
     return MouseRegion(
       cursor: SystemMouseCursors.click,

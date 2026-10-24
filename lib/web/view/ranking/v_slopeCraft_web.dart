@@ -1,3 +1,4 @@
+import 'package:com.snowlive/web/data/slope_craft_maps_web.dart';
 import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/core/model/m_crewHome.dart';
 import 'package:com.snowlive/core/model/m_slope_rush.dart';
@@ -46,6 +47,16 @@ double _topCrewsToContentGap(BuildContext context) {
   }
 }
 const double _kMapToListGap = 40;
+
+/// 지도와 목록을 **나란히** 놓을지. 콘텐츠 열이 설계폭([kSlopeCraftContentMaxWidth])에
+/// 닿았을 때만 나란히 두고, 그 전에는 태블릿처럼 지도를 전체 폭으로 올린다.
+///
+/// 4:3으로 쪼개면 지도는 콘텐츠의 약 0.57배밖에 못 받는다. 1024~1440 구간에서는
+/// 사이드바(200)까지 빠져 지도가 362~600으로 줄고 이름표가 5.7~9.4px가 된다 —
+/// 1023폭(태블릿, 지도 935)에서 1024폭으로 넘어가는 순간 2.6배 급감했다(실측).
+/// 폭이 아니라 **실제 콘텐츠 폭**으로 판단하므로 사이드바 접힘(69)도 저절로 따라간다.
+bool slopeCraftUsesSideBySide(double contentWidth) =>
+    contentWidth >= kSlopeCraftContentMaxWidth;
 
 enum _SeasonTab { current, past }
 
@@ -248,25 +259,29 @@ class _SlopeCraftViewWebState extends State<SlopeCraftViewWeb> {
       onShowAll: _vm.clearSlope,
     );
 
-    if (!context.isDesktop) {
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          map,
-          // PC의 지도↔목록 간격과 같은 값으로 둔다(태블릿·모바일 목업은 아직 없음).
-          const SizedBox(height: _kMapToListGap),
-          list,
-        ],
-      );
-    }
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        // 목업 실측: 지도 640 · 간격 40 · 목록 480(= 1160 안에서 4:3).
-        Expanded(flex: 4, child: map),
-        const SizedBox(width: _kMapToListGap),
-        Expanded(flex: 3, child: list),
-      ],
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        if (!slopeCraftUsesSideBySide(constraints.maxWidth)) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              map,
+              // PC의 지도↔목록 간격과 같은 값으로 둔다(태블릿·모바일 목업은 아직 없음).
+              const SizedBox(height: _kMapToListGap),
+              list,
+            ],
+          );
+        }
+        return Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // 목업 실측: 지도 640 · 간격 40 · 목록 480(= 1160 안에서 4:3).
+            Expanded(flex: 4, child: map),
+            const SizedBox(width: _kMapToListGap),
+            Expanded(flex: 3, child: list),
+          ],
+        );
+      },
     );
   }
 
@@ -371,7 +386,7 @@ class _SlopeCraftSkeleton extends StatelessWidget {
     // 다른 조각들처럼 흰 `SkeletonBox`만 두고 색은 셰이머에 맡긴다.
     // 라운드만 실제 지도 카드와 같은 12로 맞춘다.
     const map = AspectRatio(
-      aspectRatio: 780 / 900,
+      aspectRatio: kSlopeCraftMapAspect,
       child: SkeletonBox(radius: 12),
     );
 
@@ -388,8 +403,10 @@ class _SlopeCraftSkeleton extends StatelessWidget {
       ],
     );
 
-    return SkeletonShimmer(
-      child: context.isDesktop
+    // 실제 화면과 **같은 기준**으로 갈라야 로딩이 끝날 때 레이아웃이 안 튄다.
+    return LayoutBuilder(
+      builder: (context, constraints) => SkeletonShimmer(
+      child: slopeCraftUsesSideBySide(constraints.maxWidth)
           ? Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -406,6 +423,7 @@ class _SlopeCraftSkeleton extends StatelessWidget {
                 list,
               ],
             ),
+      ),
     );
   }
 }

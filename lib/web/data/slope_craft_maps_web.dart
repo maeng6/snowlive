@@ -1,3 +1,4 @@
+import 'package:com.snowlive/web/data/slope_craft_marker_pos_generated_web.dart';
 import 'package:flutter/painting.dart';
 
 /// 슬로프크래프트 지도 정적 데이터.
@@ -7,8 +8,16 @@ import 'package:flutter/painting.dart';
 /// `assets/imgs/imgs/slopeRush/{슬러그}/{슬러그}_default.png` 위에 선택 슬로프
 /// `{슬러그}_{키}.png`를 겹쳐 그리는 방식이라 이 표가 없으면 아무것도 못 그린다.
 ///
-/// ⚠️ 앱 화면 안의 private 필드였고 그 화면은 `dart:io` 의존이 딸린 모바일 전용이라
-/// import할 수 없다 → 데이터만 이 파일로 복제했다. 슬로프가 추가되면 **양쪽을** 고쳐야 한다.
+/// ⚠️ 마커 좌표표는 저장소에 **4벌** 있다:
+///   1. [kSlopeCraftMarkerPos] (이 파일)      — 웹 **모바일** 전용. 앱과 눈이 같아야 해서 동결.
+///   2. [kSlopeCraftMarkerPosGenerated]       — 웹 **PC·태블릿**. 에셋에서 자동 생성.
+///   3. `lib/mobile/.../v_slope_rush.dart`         — 앱 (private 게터, import 불가)
+///   4. `lib/mobile/.../v_slope_rush_history.dart` — 앱 (private 게터, import 불가)
+///
+/// 1↔3은 7개, 1↔4는 6개 값이 **이미 다르다**(2026-10 실측). 알고 두는 것이며 이 파일에서
+/// 손대지 않는다 — 앱 좌표 통일은 실기기 눈검증이 필요한 별건이다.
+/// 슬로프가 **추가**되면: 1은 앱에서 복사, 2는 생성기 재실행, 3·4는 앱에서 각각.
+/// (1↔2 키 집합이 어긋나면 `test/slope_craft_web_test.dart`가 잡는다.)
 
 /// 지도 이미지의 가로세로 비(앱과 동일: 780×900).
 const double kSlopeCraftMapAspect = 780 / 900;
@@ -44,6 +53,10 @@ const Map<int, String> kSlopeCraftResortSlug = {
   4: 'alpensia',
   6: 'gangchon',
   7: 'oakvalley',
+  // TODO(art): o2_default.png가 780x909다 → 780x900 재추출 요청.
+  // 지도 틀이 780/900이라 cover가 기본지도 위아래를 4.5px씩 잘라내, 하이라이트
+  // (780x900, 정확)와 어긋난다. 정렬을 수치로 찾아봤지만 최적 보정이 슬로프마다
+  // +7/+14로 갈려(피크도 얕다) **숫자 보정은 하지 않는다** — 아트로 고쳐야 한다.
   8: 'o2',
   9: 'yongpyong',
   10: 'wellihilli',
@@ -226,16 +239,20 @@ const Map<int, Map<String, String>> kSlopeCraftSlopeKeys = {
   },
 };
 
-/// 마커 좌표(지도 폭·높이에 대한 0~1 비율).
+/// 마커 좌표(지도 폭·높이에 대한 0~1 비율) — **웹 모바일 전용**.
+///
+/// 앱에서 손으로 찍은 값이라 앱과 눈이 같다. 다만 하이라이트 이미지가 실제로
+/// 칠해진 영역의 중심과는 평균 0.09 어긋나 있어, 지도가 큰 PC에서는 그 오차가
+/// 54px이 되어 눈에 띈다 → PC·태블릿은 [kSlopeCraftMarkerPosPrecise]를 쓴다
 const Map<int, Map<String, Offset>> kSlopeCraftMarkerPos = {
   1: {
-    'cnp1': const Offset(0.29, 0.22),
-    'cnp2': const Offset(0.30, 0.68),
-    'puri1': const Offset(0.41, 0.05),
+    'cnp1': const Offset(0.31, 0.22),
+    'cnp2': const Offset(0.36, 0.68),
+    'puri1': const Offset(0.44, 0.10),
     'puri3': const Offset(0.47, 0.62),
     'puri2': const Offset(0.46, 0.32),
-    'puriB': const Offset(0.33, 0.47),
-    'thinq1': const Offset(0.48, 0.16),
+    'puriB': const Offset(0.43, 0.47),
+    'thinq1': const Offset(0.56, 0.22),
     'thinq2': const Offset(0.71, 0.20),
     'ixio': const Offset(0.69, 0.50),
     'gram': const Offset(0.68, 0.90),
@@ -397,9 +414,36 @@ const Map<int, Map<String, Offset>> kSlopeCraftMarkerPos = {
     'penguin': const Offset(0.40, 0.70),
     'slopestyle': const Offset(0.20, 0.76),
     'sparrow': const Offset(0.78, 0.56),
-    'valley': const Offset(0.34, 0.12),
+    'valley': const Offset(0.38, 0.16),
   },
 };
+
+/// [kSlopeCraftMarkerPosGenerated]의 손보정. **여기에만** 적는다 —
+/// 생성 파일은 재실행하면 통째로 덮이므로 거기에 적은 수정은 날아간다.
+/// 한 줄마다 사유를 남길 것(이름표가 아랫 슬로프를 덮음 / ㄱ자 런 꺾임점 등).
+const Map<int, Map<String, Offset>> kSlopeCraftMarkerPosOverride = {
+  10: {
+    // 알파3 이름표가 바로 아래 알파2 원에 걸쳤다(사용자 확인). 0.707→0.687로
+    // 올려 세로 간격을 38.8 → 52.6px로 벌린다(PC 기준, 필요 간격 약 49px).
+    // 그 줄에서도 코스는 x 0.219~0.322라 마커(0.289)는 코스 위에 남는다.
+    'alpha3': Offset(0.289, 0.687),
+  },
+};
+
+/// PC·태블릿용 정밀 좌표 = 생성값 + 손보정.
+final Map<int, Map<String, Offset>> kSlopeCraftMarkerPosPrecise = {
+  for (final entry in kSlopeCraftMarkerPosGenerated.entries)
+    entry.key: {...entry.value, ...?kSlopeCraftMarkerPosOverride[entry.key]},
+};
+
+/// 마커 좌표표를 고른다.
+///
+/// [precise]가 참이면 PC·태블릿 — 지도가 커서 같은 비율 오차가 큰 픽셀 오차가 되므로
+/// 하이라이트 이미지에서 뽑은 좌표를 쓴다. 거짓이면 모바일 — 앱과 눈이 같아야 해서
+/// 손으로 찍은 표를 그대로 쓴다.
+Map<String, Offset> slopeCraftMarkerPos(int resortId, {required bool precise}) =>
+    (precise ? kSlopeCraftMarkerPosPrecise : kSlopeCraftMarkerPos)[resortId] ??
+    const {};
 
 /// 지도 기본 이미지. 슬러그가 없는 리조트는 지도를 그릴 수 없다(null).
 String? slopeCraftDefaultAsset(int resortId) {
