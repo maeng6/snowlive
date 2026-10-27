@@ -37,6 +37,10 @@ target 'Runner' do
 
   # Firebase Analytics
   pod 'Firebase/Analytics', :modular_headers => true
+
+  # 네이버 로그인 SDK — AppDelegate에서 NidOAuth.handleURL 호출을 위해 Runner에 직접 노출
+  # (static framework라 flutter_naver_login의 transitive 의존만으론 import 불가)
+  pod 'NidThirdPartyLogin', '~> 5.0.0'
 end
 
 post_install do |installer|

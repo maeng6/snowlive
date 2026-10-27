@@ -1,4 +1,5 @@
 import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
+import 'package:com.snowlive/core/widget/w_fullScreenDialog.dart';
 import 'package:com.snowlive/web/routes/routes_web.dart';
 import 'package:com.snowlive/web/util/responsive_web.dart';
 import 'package:com.snowlive/web/view/onboarding/w_onboarding_scaffold_web.dart';
@@ -50,6 +51,12 @@ class _LoginViewWebState extends State<LoginViewWeb> {
     super.initState();
     _returnRoute = _captureReturnRoute();
     _worker = ever<WebLoginStatus>(vm.statusRx, (status) {
+      // 소셜 로그인 공백 로딩 다이얼로그는 '네비게이션 직전'에, 떠 있을 때만 닫는다.
+      if (status == WebLoginStatus.success ||
+          status == WebLoginStatus.needOnboarding ||
+          status == WebLoginStatus.error) {
+        if (Get.isDialogOpen ?? false) CustomFullScreenDialog.cancelDialog();
+      }
       if (status == WebLoginStatus.success) {
         // 자동로그인 상태를 함께 갱신해야 한다. 이걸 안 하면 세션 중에 로그인해도
         // AuthCheckViewModelWeb이 unauthenticated에 머물러서, 그 값을 보는 화면들이
@@ -62,6 +69,8 @@ class _LoginViewWebState extends State<LoginViewWeb> {
         Get.toNamed(WebRoutes.onboarding);
       }
     });
+    // 소셜 로그인(카카오/네이버) 리다이렉트로 돌아왔다면 URL의 토큰을 처리한다.
+    WidgetsBinding.instance.addPostFrameCallback((_) => vm.consumeSocialRedirect());
   }
 
   @override
@@ -135,6 +144,31 @@ class _LoginViewWebState extends State<LoginViewWeb> {
                     onTap: () {
                       setState(() => _pendingProvider = 'apple');
                       vm.signInWithApple();
+                    },
+                  ),
+                  const SizedBox(width: SDSSpacing.md),
+                  _RoundSocialButton(
+                    logoAsset: 'assets/imgs/logos/kakao_logo.png',
+                    backgroundColor: const Color(0xFFFEE500), // 카카오 브랜드 옐로
+                    spinnerColor: const Color(0xFF3C1E1E),    // 카카오 심볼 다크브라운
+                    enabled: !vm.isLoading,
+                    isLoading: vm.isLoading && _pendingProvider == 'kakao',
+                    onTap: () {
+                      setState(() => _pendingProvider = 'kakao');
+                      vm.signInWithKakao();
+                    },
+                  ),
+                  const SizedBox(width: SDSSpacing.md),
+                  _RoundSocialButton(
+                    logoAsset: 'assets/imgs/logos/naver_logo.png',
+                    backgroundColor: const Color(0xFF03C75A), // 네이버 브랜드 그린
+                    logoTint: SDSColor.snowliveWhite,          // 흰색 N
+                    spinnerColor: SDSColor.snowliveWhite,
+                    enabled: !vm.isLoading,
+                    isLoading: vm.isLoading && _pendingProvider == 'naver',
+                    onTap: () {
+                      setState(() => _pendingProvider = 'naver');
+                      vm.signInWithNaver();
                     },
                   ),
                 ],

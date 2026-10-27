@@ -190,6 +190,72 @@ class LoginView extends StatelessWidget {
                               ],
                             )
                                 : SizedBox(width: 0,),
+                            SizedBox(width: 12),
+                            Column(
+                              children: [
+                                if (_loginViewModel.signInMethod == 'kakao')
+                                  Padding(
+                                    padding: const EdgeInsets.only(bottom: 10),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        color: SDSColor.snowliveBlack.withOpacity(0.8),
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+                                      child: Text(
+                                        '마지막\n로그인',
+                                        style: SDSTextStyle.regular.copyWith(
+                                          color: SDSColor.snowliveWhite,
+                                          fontSize: 12,
+                                        ),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ),
+                                  ),
+                                LoginButton(
+                                  buttonText: '카카오로 로그인하기',
+                                  logoAddress: 'assets/imgs/logos/kakao_logo.png',
+                                  signInMethod: SignInMethod.kakao,
+                                  buttonColor: Color(0xFFFEE500),
+                                  borderColor: Colors.transparent,
+                                  textColor: Colors.transparent,
+                                  loginViewModel: _loginViewModel,
+                                ),
+                              ],
+                            ),
+                            SizedBox(width: 12),
+                            Column(
+                              children: [
+                                if (_loginViewModel.signInMethod == 'naver')
+                                  Padding(
+                                    padding: const EdgeInsets.only(bottom: 10),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        color: SDSColor.snowliveBlack.withOpacity(0.8),
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+                                      child: Text(
+                                        '마지막\n로그인',
+                                        style: SDSTextStyle.regular.copyWith(
+                                          color: SDSColor.snowliveWhite,
+                                          fontSize: 12,
+                                        ),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ),
+                                  ),
+                                LoginButton(
+                                  buttonText: '네이버로 로그인하기',
+                                  logoAddress: 'assets/imgs/logos/naver_logo.png',
+                                  signInMethod: SignInMethod.naver,
+                                  buttonColor: Color(0xFF03C75A),
+                                  borderColor: Colors.transparent,
+                                  textColor: Colors.transparent,
+                                  loginViewModel: _loginViewModel,
+                                ),
+                              ],
+                            ),
                           ],
                         ),
                         if (Platform.isAndroid && _loginViewModel.isAndroidEmailLogIn == true)
@@ -218,7 +284,7 @@ class LoginView extends StatelessWidget {
     );
   }
 }
-enum SignInMethod { google, facebook, apple }
+enum SignInMethod { google, facebook, apple, kakao, naver }
 class LoginButton extends StatelessWidget {
   final String? buttonText;
   final String? logoAddress;
@@ -257,7 +323,11 @@ class LoginButton extends StatelessWidget {
         try {
           if (signInMethod == SignInMethod.google) {
             await loginViewModel.signInWithGoogle();
-          }  else {
+          } else if (signInMethod == SignInMethod.kakao) {
+            await loginViewModel.signInWithKakao();
+          } else if (signInMethod == SignInMethod.naver) {
+            await loginViewModel.signInWithNaver();
+          } else {
             await loginViewModel.signInWithApple();
           }
         } catch (e) {
