@@ -7,6 +7,7 @@ import 'package:com.snowlive/web/viewmodel/auth/vm_authcheck_web.dart';
 import 'package:com.snowlive/web/viewmodel/auth/vm_login_web.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 /// 웹 로그인(=회원가입 진입) 화면. 온보딩 플로우의 0단계다.
 ///
@@ -135,6 +136,9 @@ class _LoginViewWebState extends State<LoginViewWeb> {
                   const SizedBox(width: SDSSpacing.md),
                   _RoundSocialButton(
                     logoAsset: 'assets/imgs/logos/logos_apple.png',
+                    // 글리프 무게가 아래로 쏠려 있다(무게중심이 bbox 중심보다
+                    // 높이의 8.8% 아래) → 그만큼 올려야 가운데로 보인다.
+                    logoOffsetY: -2,
                     backgroundColor: SDSColor.gray900,
                     // 에셋이 검정 글리프라 검정 원 위에 그대로 올리면 보이지 않는다.
                     logoTint: SDSColor.snowliveWhite,
@@ -148,9 +152,17 @@ class _LoginViewWebState extends State<LoginViewWeb> {
                   ),
                   const SizedBox(width: SDSSpacing.md),
                   _RoundSocialButton(
-                    logoAsset: 'assets/imgs/logos/kakao_logo.png',
+                    // PNG는 노란 배경이 꽉 찬 앱아이콘이라 둥근 버튼 위에
+                    // 각진 사각형이 얹혔다 → 배경 없는 심볼 SVG를 쓴다.
+                    logoAsset: 'assets/imgs/logos/kakao_logo.svg',
+                    // 말풍선이 가로로 넓어(16:15) 24칸에서는 넷 중 혼자 커 보인다.
+                    logoSize: 23,
+                    // 몸통은 위, 꼬리만 아래라 무게중심이 bbox 중심보다 높이의
+                    // 6.9% 위에 있다 → 그만큼 내려야 가운데로 보인다.
+                    logoOffsetY: 1.5,
                     backgroundColor: const Color(0xFFFEE500), // 카카오 브랜드 옐로
-                    spinnerColor: const Color(0xFF3C1E1E),    // 카카오 심볼 다크브라운
+                    logoTint: const Color(0xFF3C1E1E),        // 카카오 심볼 다크브라운
+                    spinnerColor: const Color(0xFF3C1E1E),
                     enabled: !vm.isLoading,
                     isLoading: vm.isLoading && _pendingProvider == 'kakao',
                     onTap: () {
@@ -160,8 +172,16 @@ class _LoginViewWebState extends State<LoginViewWeb> {
                   ),
                   const SizedBox(width: SDSSpacing.md),
                   _RoundSocialButton(
-                    logoAsset: 'assets/imgs/logos/naver_logo.png',
-                    backgroundColor: const Color(0xFF03C75A), // 네이버 브랜드 그린
+                    // 네이버 공식 가이드(NAVER_login_KR 4:82)에서 뽑은 심볼.
+                    // PNG는 120x120 캔버스에 N이 55x69로만 있어 24칸에 맞추면
+                    // 빈 여백까지 줄어들어 잉크가 11x13.8로 혼자 작았다.
+                    logoAsset: 'assets/imgs/logos/naver_logo.svg',
+                    // 가이드는 버튼 56에 N 20x20(여백 18)인데, 옆 로고들과 같이 놓으면
+                    // N이 조금 커 보여 19로 줄였다(사용자 확정).
+                    logoSize: 19,
+                    // 가이드 변수 color-primary-background-default.
+                    // 예전 브랜드 그린(#03C75A)보다 어둡다 — 가이드 기준으로 맞춘 값이다.
+                    backgroundColor: const Color(0xFF03A94D),
                     logoTint: SDSColor.snowliveWhite,          // 흰색 N
                     spinnerColor: SDSColor.snowliveWhite,
                     enabled: !vm.isLoading,
@@ -195,6 +215,13 @@ class _RoundSocialButton extends StatelessWidget {
   static const double _size = 56;
 
   final String logoAsset;
+
+  /// 로고가 차지하는 칸. 기본은 [_logoBox]이고, 글리프가 유독 넓은 것만 줄인다.
+  final double? logoSize;
+
+  /// 시각 중심 보정(양수 = 아래로). 글리프 무게가 한쪽으로 쏠린 로고만 쓴다.
+  final double logoOffsetY;
+
   final Color backgroundColor;
   final Color? borderColor;
   final Color? logoTint;
@@ -205,6 +232,8 @@ class _RoundSocialButton extends StatelessWidget {
 
   const _RoundSocialButton({
     required this.logoAsset,
+    this.logoSize,
+    this.logoOffsetY = 0,
     required this.backgroundColor,
     this.borderColor,
     this.logoTint,
@@ -213,6 +242,30 @@ class _RoundSocialButton extends StatelessWidget {
     required this.isLoading,
     required this.onTap,
   });
+
+  /// 로고가 차지하는 칸. 네 버튼이 같은 칸을 써야 서로 커 보이거나 작아 보이지 않는다.
+  ///
+  /// 잉크(실제로 칠해지는 크기)는 에셋 비율대로 이 칸 안에 맞춰진다 —
+  /// 구글 23.6x24 · 애플 19.6x24 · 카카오 24x22.5(말풍선이 가로로 넓다).
+  static const double _logoBox = 24;
+
+  Widget _buildLogo() {
+    final box = logoSize ?? _logoBox;
+    final logo = logoAsset.endsWith('.svg')
+        ? SvgPicture.asset(
+            logoAsset,
+            width: box,
+            height: box,
+            fit: BoxFit.contain,
+            colorFilter: logoTint == null
+                ? null
+                : ColorFilter.mode(logoTint!, BlendMode.srcIn),
+          )
+        : Image.asset(logoAsset, width: box, height: box, color: logoTint);
+    if (logoOffsetY == 0) return logo;
+    // 스피너는 그대로 가운데 둔다 — 로고만 옮긴다.
+    return Transform.translate(offset: Offset(0, logoOffsetY), child: logo);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -238,12 +291,7 @@ class _RoundSocialButton extends StatelessWidget {
                       valueColor: AlwaysStoppedAnimation<Color>(spinnerColor),
                     ),
                   )
-                : Image.asset(
-                    logoAsset,
-                    width: 24,
-                    height: 24,
-                    color: logoTint,
-                  ),
+                : _buildLogo(),
           ),
         ),
       ),

@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 final auth = FirebaseAuth.instance;
 final ref = FirebaseFirestore.instance;
@@ -181,6 +182,9 @@ class LoginView extends StatelessWidget {
                                 LoginButton(
                                   buttonText: 'Apple로 로그인하기',
                                   logoAddress: 'assets/imgs/logos/logos_apple.png',
+                                  // 글리프 무게가 아래로 쏠려 있다(무게중심이 bbox
+                                  // 중심보다 높이의 8.8% 아래) → 그만큼 올린다.
+                                  logoOffsetY: -1.67,
                                   signInMethod: SignInMethod.apple,
                                   buttonColor: Color(0xff111111),
                                   borderColor: Colors.transparent,
@@ -214,7 +218,14 @@ class LoginView extends StatelessWidget {
                                   ),
                                 LoginButton(
                                   buttonText: '카카오로 로그인하기',
-                                  logoAddress: 'assets/imgs/logos/kakao_logo.png',
+                                  // PNG는 노란 배경이 꽉 찬 앱아이콘이라 둥근 버튼 위에
+                                  // 각진 사각형이 얹혔다 → 배경 없는 심볼 SVG를 쓴다.
+                                  logoAddress: 'assets/imgs/logos/kakao_logo.svg',
+                                  logoTint: const Color(0xFF3C1E1E),
+                                  // 말풍선이 가로로 넓어(16:15) 기본 높이에서는 혼자 커 보인다.
+                                  logoHeight: 19.2,
+                                  // 몸통은 위, 꼬리만 아래라 무게중심이 위로 쏠려 있다.
+                                  logoOffsetY: 1.3,
                                   signInMethod: SignInMethod.kakao,
                                   buttonColor: Color(0xFFFEE500),
                                   borderColor: Colors.transparent,
@@ -247,9 +258,18 @@ class LoginView extends StatelessWidget {
                                   ),
                                 LoginButton(
                                   buttonText: '네이버로 로그인하기',
-                                  logoAddress: 'assets/imgs/logos/naver_logo.png',
+                                  // 네이버 공식 가이드(NAVER_login_KR 4:82)에서 뽑은 심볼.
+                                  // PNG는 120x120 캔버스에 N이 55x69로만 있어 빈 여백까지
+                                  // 줄어들어 실제 N이 9.2x11.5로 혼자 작았다.
+                                  logoAddress: 'assets/imgs/logos/naver_logo.svg',
+                                  logoTint: SDSColor.snowliveWhite,
+                                  // 가이드는 버튼 56에 N 20x20(여백 18)인데, 옆 로고들과
+                                  // 같이 놓으면 N이 조금 커 보여 19로 줄였다(사용자 확정).
+                                  logoHeight: 19,
                                   signInMethod: SignInMethod.naver,
-                                  buttonColor: Color(0xFF03C75A),
+                                  // 가이드 변수 color-primary-background-default.
+                                  // 예전 브랜드 그린(#03C75A)보다 어둡다.
+                                  buttonColor: Color(0xFF03A94D),
                                   borderColor: Colors.transparent,
                                   textColor: Colors.transparent,
                                   loginViewModel: _loginViewModel,
@@ -288,6 +308,16 @@ enum SignInMethod { google, facebook, apple, kakao, naver }
 class LoginButton extends StatelessWidget {
   final String? buttonText;
   final String? logoAddress;
+
+  /// 로고 높이. 기본 [_logoHeight]이고, 글리프가 유독 넓은 것만 줄인다.
+  final double? logoHeight;
+
+  /// 시각 중심 보정(양수 = 아래로). 글리프 무게가 한쪽으로 쏠린 로고만 쓴다.
+  final double logoOffsetY;
+
+  /// 단색 글리프(SVG)에 입힐 색.
+  final Color? logoTint;
+
   final SignInMethod? signInMethod;
   final Color? buttonColor;
   final Color? textColor;
@@ -300,6 +330,9 @@ class LoginButton extends StatelessWidget {
   LoginButton({
     this.buttonText,
     this.logoAddress,
+    this.logoHeight,
+    this.logoOffsetY = 0,
+    this.logoTint,
     this.signInMethod,
     this.buttonColor,
     this.textColor,
@@ -311,7 +344,9 @@ class LoginButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
-        fixedSize: const Size(58, 58),
+        // 웹 로그인·네이버 공식 가이드와 같은 56. 가이드가 "버튼 56에 N 20x20"을
+        // 전제하므로 버튼을 맞춰야 여백(18)까지 그대로 따라온다.
+        fixedSize: const Size(56, 56),
         padding: EdgeInsets.only(top: 15, bottom: 15),
         elevation: 0,
         backgroundColor: buttonColor,
@@ -337,14 +372,28 @@ class LoginButton extends StatelessWidget {
       },
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          Image.asset(
-            '$logoAddress',
-            height: 20,
-            scale: 1,
-          )
-        ],
+        children: [_buildLogo()],
       ),
     );
+  }
+
+  /// 로고 기준 높이. 웹 로그인(24)보다 작아서, 웹에서 정한 값은 5/6으로 환산해 쓴다.
+  static const double _logoHeight = 20;
+
+  Widget _buildLogo() {
+    final h = logoHeight ?? _logoHeight;
+    final path = '$logoAddress';
+    final logo = path.endsWith('.svg')
+        ? SvgPicture.asset(
+            path,
+            height: h,
+            fit: BoxFit.contain,
+            colorFilter: logoTint == null
+                ? null
+                : ColorFilter.mode(logoTint!, BlendMode.srcIn),
+          )
+        : Image.asset(path, height: h, scale: 1, color: logoTint);
+    if (logoOffsetY == 0) return logo;
+    return Transform.translate(offset: Offset(0, logoOffsetY), child: logo);
   }
 }
