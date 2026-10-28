@@ -4,6 +4,7 @@ import GoogleMaps
 import ActivityKit
 import UserNotifications
 import WidgetKit
+import NidThirdPartyLogin  // 네이버 로그인 복귀 URL 처리
 
 @main
 @objc class AppDelegate: FlutterAppDelegate {
@@ -240,6 +241,10 @@ import WidgetKit
   // MARK: - Deep Link (URL Scheme) 처리
   // 레거시(앱 생명주기) 경로 — UIScene에서는 SceneDelegate.scene(_:openURLContexts:)가 처리한다.
   override func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
+    // 네이버 로그인 복귀 URL은 네이버 SDK가 처리.
+    if NidOAuth.shared.handleURL(url) {
+      return true
+    }
     if let controller = window?.rootViewController as? FlutterViewController {
       handleDeepLink(url, controller: controller)
     }
@@ -359,8 +364,12 @@ class SceneDelegate: FlutterSceneDelegate {
 
   // 앱 실행 중 URL 스킴으로 열릴 때(UIScene 경로).
   override func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
+    guard let url = URLContexts.first?.url else { return }
+    // 네이버 로그인 복귀 URL은 네이버 SDK가 처리.
+    if NidOAuth.shared.handleURL(url) {
+      return
+    }
     guard
-      let url = URLContexts.first?.url,
       let controller = window?.rootViewController as? FlutterViewController,
       let appDelegate = UIApplication.shared.delegate as? AppDelegate
     else { return }

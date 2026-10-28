@@ -3,6 +3,8 @@ import 'package:get/get.dart';
 import 'package:com.snowlive/core/api/api_login.dart';
 import 'package:com.snowlive/core/api/ApiResponse.dart';
 import 'package:com.snowlive/core/viewmodel/vm_user.dart';
+import 'package:com.snowlive/core/widget/w_fullScreenDialog.dart';
+import 'package:com.snowlive/web/util/social_oauth_popup.dart';
 
 /// 웹 로그인 상태. UI(팀원)는 이 값을 Obx로 관찰해 라우팅한다.
 /// idle: 초기 / loading: 진행 / success: 로그인 완료(UserViewModel 세팅됨) /
@@ -38,6 +40,11 @@ class LoginViewModelWeb extends GetxController {
   String? pendingDisplayName;
   String? pendingPhotoUrl;
 
+  // 카카오/네이버 커스텀토큰 로그인은 Firebase User에 email/displayName이 없다.
+  // 팝업 메시지로 받은 프로필을 온보딩 프리필에 쓰기 위해 임시 보관.
+  String? _socialEmail;
+  String? _socialNickname;
+
   Future<void> signInWithGoogle() async {
     await _signIn(() {
       final provider = GoogleAuthProvider()
@@ -59,10 +66,85 @@ class LoginViewModelWeb extends GetxController {
     });
   }
 
+  /// 카카오 로그인 — 백엔드 OAuth로 Firebase 커스텀토큰을 받아 로그인.
+  /// 전체 페이지 리다이렉트 방식: 이 호출 직후 백엔드 start로 이동하고,
+  /// 돌아오면 [consumeSocialRedirect]가 URL의 토큰을 처리한다.
+  /// (팝업/opener/postMessage 미사용 → COOP·모바일 환경에서도 안정적)
+  Future<void> signInWithKakao() async {
+    _status.value = WebLoginStatus.loading;
+    _errorMessage.value = '';
+    const startUrl = '${LoginAPI.baseUrl}/oauth/kakao/start/';
+    startSocialLoginRedirect(startUrl); // 이 호출 직후 페이지가 떠난다
+  }
+
+  /// 네이버 로그인 — 카카오와 동일한 리다이렉트 방식. 돌아오면 consumeSocialRedirect()가 처리.
+  Future<void> signInWithNaver() async {
+    _status.value = WebLoginStatus.loading;
+    _errorMessage.value = '';
+    const startUrl = '${LoginAPI.baseUrl}/oauth/naver/start/';
+    startSocialLoginRedirect(startUrl);
+  }
+
+  /// 소셜 로그인 리다이렉트로 돌아왔을 때 URL(#/login?sl_token=..)의 토큰을 처리한다.
+  /// 로그인 화면 진입 시 1회 호출. 결과 없으면 아무것도 안 함.
+  Future<void> consumeSocialRedirect() async {
+    final result = readSocialRedirectResult();
+    if (result == null) return;
+    if (!result.ok) {
+      if ((result.error ?? '').isNotEmpty) _fail(result.error!);
+      return;
+    }
+    // 로그인~회원가입(또는 홈) 진입 전 공백 동안 전체화면 로딩.
+    // 닫기는 화면(워커)이 상태 변화(success/needOnboarding/error)에 맞춰,
+    // '네비게이션 직전'에 수행한다 — 여기서 finally로 닫으면 이미 온보딩으로
+    // 이동한 뒤라 다이얼로그 대신 온보딩 화면을 닫아버린다.
+    CustomFullScreenDialog.showDialog();
+    try {
+      _status.value = WebLoginStatus.loading;
+      _errorMessage.value = '';
+      _socialEmail = result.email;
+      _socialNickname = result.nickname;
+      final cred = await FirebaseAuth.instance.signInWithCustomToken(result.customToken!);
+      final fbUser = cred.user;
+      if (fbUser == null) {
+        _fail('로그인 정보를 가져오지 못했습니다.');
+        return;
+      }
+      await _afterFirebase(fbUser);
+      // 신규(온보딩) 상태면, 가입 미완료로 이탈 시 지우도록 언로드 비콘 등록.
+      if (_status.value == WebLoginStatus.needOnboarding) {
+        registerUnloadDiscard('${LoginAPI.baseUrl}/social-discard/', fbUser.uid);
+      }
+    } on FirebaseAuthException catch (e) {
+      _fail(_authErrorMessage(e));
+    } catch (e) {
+      _fail('카카오 로그인 실패: $e');
+    }
+  }
+
+  /// 온보딩(회원가입) 완료 — 이탈 정리(언로드 비콘)를 해제한다.
+  void markSignupComplete() {
+    clearUnloadDiscard();
+  }
+
+  /// 온보딩 미완료 이탈 — 미가입 소셜 계정의 Firebase 유저를 지우고 로그아웃한다.
+  Future<void> discardPendingSocialSignup() async {
+    final uid = FirebaseAuth.instance.currentUser?.uid ?? pendingUid;
+    if (uid == null || !(uid.startsWith('kakao_') || uid.startsWith('naver_'))) return;
+    clearUnloadDiscard();
+    await _loginAPI.socialDiscard({'uid': uid});
+    try {
+      await FirebaseAuth.instance.signOut();
+    } catch (_) {}
+    pendingUid = null;
+  }
+
   Future<void> _signIn(Future<UserCredential> Function() popup) async {
     try {
       _status.value = WebLoginStatus.loading;
       _errorMessage.value = '';
+      _socialEmail = null;
+      _socialNickname = null;
       final cred = await popup();
       final fbUser = cred.user;
       if (fbUser == null) {
@@ -113,8 +195,9 @@ class LoginViewModelWeb extends GetxController {
       final err = res.error as Map<String, dynamic>?;
       if (err != null && err['message'] == '온보딩이동') {
         pendingUid = fbUser.uid;
-        pendingEmail = fbUser.email;
-        pendingDisplayName = fbUser.displayName;
+        // 커스텀토큰(카카오/네이버) 로그인은 fbUser에 email/name이 없어 팝업 프로필로 보완.
+        pendingEmail = fbUser.email ?? _socialEmail;
+        pendingDisplayName = fbUser.displayName ?? _socialNickname;
         pendingPhotoUrl = fbUser.photoURL;
         _status.value = WebLoginStatus.needOnboarding;
       } else {
