@@ -1,11 +1,11 @@
 {
-    "name": "com.snowlive",
-    "short_name": "com.snowlive",
+    "name": "스라웹",
+    "short_name": "스라웹",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#0175C2",
-    "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "background_color": "#3B6EF5",
+    "theme_color": "#3B6EF5",
+    "description": "스키·스노보드 라이더를 위한 실시간 라이브 랭킹·라이딩 궤적·크루 소셜, 스노우라이브.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

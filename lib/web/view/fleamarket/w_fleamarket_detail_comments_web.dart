@@ -13,6 +13,7 @@ import 'package:com.snowlive/web/widget/w_web_more_menu_web.dart';
 import 'package:com.snowlive/web/widget/w_web_profile_tap_web.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:com.snowlive/web/widget/w_web_toast_web.dart';
 
 /// 댓글 입력(목록 위, 고정 아님) + 댓글 목록 + 댓글별 "답글 달기" 인라인 펼치기.
 /// core의 FleamarketCommentDetailViewModel은 단일 인스턴스라 한 번에 하나의
@@ -66,7 +67,7 @@ class _FleamarketDetailCommentsWebState extends State<FleamarketDetailCommentsWe
     if (text.isEmpty) return;
     final userId = _userVm.user.user_id;
     if (userId == null) {
-      Get.snackbar('알림', '로그인이 필요합니다.');
+      showWebToast(context, '로그인이 필요합니다.', title: '알림');
       return;
     }
     // 서버는 문자열 `'true'`/`'false'`를 받는다(앱과 동일: `v_fleaMarketDetail.dart:2144`).
@@ -106,7 +107,7 @@ class _FleamarketDetailCommentsWebState extends State<FleamarketDetailCommentsWe
     if (text.isEmpty) return;
     final userId = _userVm.user.user_id;
     if (userId == null) {
-      Get.snackbar('알림', '로그인이 필요합니다.');
+      showWebToast(context, '로그인이 필요합니다.', title: '알림');
       return;
     }
     final isSecret = _commentDetailVm.isSecret;
@@ -171,7 +172,7 @@ class _FleamarketDetailCommentsWebState extends State<FleamarketDetailCommentsWe
           controller: _newCommentController,
           hintText: _detailVm.isSecret ? '비밀 댓글을 남겨주세요' : '댓글을 남겨주세요',
           onSubmit: _userVm.user.user_id == null ? null : (_) => _postComment(),
-          onGuestTap: () => Get.snackbar('알림', '로그인이 필요합니다.'),
+          onGuestTap: () => showWebToast(context, '로그인이 필요합니다.', title: '알림'),
           leading: FleamarketSecretToggle(
             isSecret: _detailVm.isSecret,
             onTap: _detailVm.changeSecret,
@@ -348,7 +349,7 @@ class _FleamarketDetailCommentsWebState extends State<FleamarketDetailCommentsWe
       actions: canDelete ? const [WebMoreAction.delete] : const [WebMoreAction.report],
       onSelected: (action) {
         if (_userVm.user.user_id == null) {
-          Get.snackbar('알림', '로그인이 필요합니다.');
+          showWebToast(context, '로그인이 필요합니다.', title: '알림');
           return;
         }
         handleWebMoreAction(
@@ -389,7 +390,7 @@ class _FleamarketDetailCommentsWebState extends State<FleamarketDetailCommentsWe
                   focusNode: _replyInputFocus,
                   hintText: _commentDetailVm.isSecret ? '비밀 답글을 남겨주세요' : '답글을 남겨주세요',
                   onSubmit: _userVm.user.user_id == null ? null : (_) async => _postReply(comment),
-                  onGuestTap: () => Get.snackbar('알림', '로그인이 필요합니다.'),
+                  onGuestTap: () => showWebToast(context, '로그인이 필요합니다.', title: '알림'),
                   leading: FleamarketSecretToggle(
                     isSecret: _commentDetailVm.isSecret,
                     onTap: _commentDetailVm.changeSecret,

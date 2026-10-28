@@ -163,7 +163,13 @@ class WebAlarmBinding extends Bindings {
 class WebHomeBinding extends Bindings {
   @override
   void dependencies() {
-    Get.lazyPut(() => HomeViewModelWeb(), fenix: true);
+    // 홈 VM은 **영구 유지**(한 번만 생성, 재방문해도 재생성 안 함). fenix로 두면
+    // 다른 탭·로그인·로고 등으로 홈을 떠났다 올 때마다 VM이 지워졌다 다시 생기는데,
+    // 그때 배너(Firestore 실시간) 구독 재연결이 꼬여 "배너가 안 뜨는" 문제가 반복됐다.
+    // 영구 유지하면 배너 스트림이 네비게이션과 무관하게 계속 살아 있어 즉시 뜬다.
+    if (!Get.isRegistered<HomeViewModelWeb>()) {
+      Get.put(HomeViewModelWeb(), permanent: true);
+    }
     Get.lazyPut(() => OpenChatViewModelWeb(), fenix: true);
     // `우리 크루는요`는 크루홈 집계(공개 크루톡)를 그대로 쓴다.
     Get.lazyPut(() => CrewHomeViewModel(), fenix: true);

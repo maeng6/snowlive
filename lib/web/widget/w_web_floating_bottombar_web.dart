@@ -1,5 +1,6 @@
 import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/web/util/responsive_web.dart';
+import 'package:com.snowlive/web/widget/w_web_bottom_fixed_web.dart';
 import 'package:flutter/material.dart';
 
 /// 플로팅 바의 흰색 배경 구간 높이(버튼 줄 영역). 스크롤 콘텐츠 하단 패딩은
@@ -25,58 +26,63 @@ class WebFloatingBottomBar extends StatelessWidget {
     // 있는 Container는 반투명이어도 영역 전체의 히트를 가로채서, 이 바가 덮는
     // 124px 안에 걸친 콘텐츠(페이지네이션 등)가 클릭되지 않았다(실측).
     // 클릭은 아래 버튼 줄만 받는다.
-    return SizedBox(
-      height: kWebFloatingBottomBarHeight + 60,
-      child: Stack(
-        children: [
-          Positioned.fill(
-            child: IgnorePointer(
-              child: DecoratedBox(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [
-                      SDSColor.snowliveWhite.withValues(alpha: 0),
-                      SDSColor.snowliveWhite.withValues(alpha: 0.15),
-                      SDSColor.snowliveWhite.withValues(alpha: 0.45),
-                      SDSColor.snowliveWhite.withValues(alpha: 0.8),
-                      SDSColor.snowliveWhite,
-                      SDSColor.snowliveWhite,
-                    ],
-                    // 흰색 100% 지점을 버튼 상단(68px)보다 12px 아래(80px)로 내린다 —
-                    // 80~90% 알파도 이미 흰색처럼 보여서, 수학적으로 버튼 상단에 맞추면
-                    // 체감상 그보다 위에서 끝나 보였다(실측). 버튼이 불투명해서
-                    // 페이드가 버튼 뒤로 이어져도 보이지 않는다.
-                    stops: const [
-                      0,
-                      80 / 124 * 0.33,
-                      80 / 124 * 0.61,
-                      80 / 124 * 0.82,
-                      80 / 124,
-                      1,
-                    ],
+    // 셸의 오픈채팅이 이 바를 덮지 않도록 가리는 높이를 알린다.
+    // 위 60은 투명 페이드라 콘텐츠가 비치므로 **흰색 구간만** 넘긴다.
+    return WebBottomFixedBar(
+      opaqueHeight: kWebFloatingBottomBarHeight,
+      child: SizedBox(
+        height: kWebFloatingBottomBarHeight + 60,
+        child: Stack(
+          children: [
+            Positioned.fill(
+              child: IgnorePointer(
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        SDSColor.snowliveWhite.withValues(alpha: 0),
+                        SDSColor.snowliveWhite.withValues(alpha: 0.15),
+                        SDSColor.snowliveWhite.withValues(alpha: 0.45),
+                        SDSColor.snowliveWhite.withValues(alpha: 0.8),
+                        SDSColor.snowliveWhite,
+                        SDSColor.snowliveWhite,
+                      ],
+                      // 흰색 100% 지점을 버튼 상단(68px)보다 12px 아래(80px)로 내린다 —
+                      // 80~90% 알파도 이미 흰색처럼 보여서, 수학적으로 버튼 상단에 맞추면
+                      // 체감상 그보다 위에서 끝나 보였다(실측). 버튼이 불투명해서
+                      // 페이드가 버튼 뒤로 이어져도 보이지 않는다.
+                      stops: const [
+                        0,
+                        80 / 124 * 0.33,
+                        80 / 124 * 0.61,
+                        80 / 124 * 0.82,
+                        80 / 124,
+                        1,
+                      ],
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: Padding(
-              // 모바일: 좌우 10/하단 10 (피그마 32:19273). 태블릿: 기존 16/8 유지.
-              padding: context.screenType == WebScreenType.mobile
-                  ? const EdgeInsets.fromLTRB(10, 0, 10, 10)
-                  : const EdgeInsets.fromLTRB(
-                      SDSSpacing.md,
-                      0,
-                      SDSSpacing.md,
-                      SDSSpacing.sm,
-                    ),
-              child: child,
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: Padding(
+                // 모바일: 좌우 10/하단 10 (피그마 32:19273). 태블릿: 기존 16/8 유지.
+                padding: context.screenType == WebScreenType.mobile
+                    ? const EdgeInsets.fromLTRB(10, 0, 10, 10)
+                    : const EdgeInsets.fromLTRB(
+                        SDSSpacing.md,
+                        0,
+                        SDSSpacing.md,
+                        SDSSpacing.sm,
+                      ),
+                child: child,
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

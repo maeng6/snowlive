@@ -8,11 +8,12 @@
 /// 정답은 앱과 같은 `id6444235991` / `com.snowlive`.
 library;
 
-const String kTermsOfServiceUrl =
-    'https://sites.google.com/view/snowlive-termsofservice/%ED%99%88';
+// 약관·개인정보는 자사 도메인(snowlive.kr)에 정적 페이지로 둔다 — Google OAuth
+// 브랜딩 인증은 이 링크들이 '소유·인증한 도메인'에 있어야 통과되기 때문
+// (구글사이트 sites.google.com은 소유 인증 불가).
+const String kTermsOfServiceUrl = 'https://snowlive.kr/terms.html';
 
-const String kPrivacyPolicyUrl =
-    'https://sites.google.com/view/134creativelabprivacypolicy/%ED%99%88';
+const String kPrivacyPolicyUrl = 'https://snowlive.kr/privacy.html';
 
 const String kLocationTermsUrl =
     'https://sites.google.com/view/134creativelablocationinfo/%ED%99%88';
@@ -31,13 +32,13 @@ const String kInstagramUrl = 'https://www.instagram.com/snowlive_official/';
 /// 카카오톡 채널 1:1 채팅(앱 `스노우라이브 소개 > 카카오 채널`과 같은 링크).
 const String kKakaoChannelUrl = 'https://pf.kakao.com/_LxnDdG/';
 
-/// 가입 완료 모달에 띄울 QR 목록.
+/// 앱 설치 딥링크. **기기를 가려 스토어로 보내는 일은 이 서버가 한다.**
 ///
-/// QR 하나에는 URL 하나만 들어가고, **QR을 스캔하는 기기는 화면을 띄운 기기와 다르다**
-/// — 그래서 Flutter 쪽에서 UA로 분기해 하나만 띄우는 방법은 통하지 않는다
-/// (아이폰으로 스캔했는데 Play 스토어가 열리던 문제). **스토어별로 QR을 따로 띄워서
-/// 쓰는 사람이 고르게 한다.**
-const List<({String label, String url})> kAppDownloadQrTargets = [
-  (label: 'App Store', url: kAppStoreUrlIos),
-  (label: 'Google Play', url: kAppStoreUrlAndroid),
-];
+/// 예전에는 가입 완료 모달에 QR을 **두 장**(앱스토어·구글플레이) 띄웠다. QR 하나에는
+/// URL 하나만 들어가는데 **스캔하는 기기는 화면을 띄운 기기와 달라서**, 화면 쪽
+/// Flutter에서 UA로 갈라 한 장만 띄우면 아이폰으로 스캔했는데 Play 스토어가 열렸다.
+///
+/// 이 주소는 **스캔한 기기가 직접 접속**하므로 그 기기의 UA로 서버가 분기한다
+/// (실측: iOS → 앱스토어 `id6444235991`, Android → Play `com.snowlive`,
+/// 데스크탑 → 자체 랜딩). 그래서 QR을 한 장으로 합칠 수 있다.
+const String kAppDeepLinkUrl = 'https://app.snowlive.kr/';

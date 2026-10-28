@@ -63,14 +63,19 @@ class _FriendSettingsViewWebState extends State<FriendSettingsViewWeb> {
           : Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                // 유료기능 출시 전에는 테스트 대상에게만 노출.
-                Obx(() => PaidVisibilityControllerWeb.isVisible
-                    ? WebSettingsRow(
-                        label: '실시간 위치 공유',
-                        verticalPadding: _kRowVerticalPadding,
-                        onTap: () => Get.toNamed(WebRoutes.friendLocationShare),
-                      )
-                    : const SizedBox.shrink()),
+                // 위치공유는 이번 시즌 내부 테스트 중이라 화면에서 숨김(플래그).
+                // ⚠️ 관측값(isVisible)을 먼저 읽어 Obx에 등록(const 플래그를 앞에 두면 단락돼 터짐).
+                Obx(() {
+                  final show = PaidVisibilityControllerWeb.isVisible &&
+                      PaidVisibilityControllerWeb.locationShareEnabled;
+                  return show
+                      ? WebSettingsRow(
+                          label: '실시간 위치 공유',
+                          verticalPadding: _kRowVerticalPadding,
+                          onTap: () => Get.toNamed(WebRoutes.friendLocationShare),
+                        )
+                      : const SizedBox.shrink();
+                }),
                 Obx(() => WebSettingsRow(
                       label: '친구 요청 관리',
                       badgeCount: _listVm.friendsRequestList.length,

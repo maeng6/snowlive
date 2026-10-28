@@ -1,7 +1,9 @@
 import 'dart:async';
 
+import 'package:com.snowlive/web/widget/gnb/w_gnb_current_route_web.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
 
 /// 웹 팝업(모달/시트/알럿) 공통 호스트.
 ///
@@ -33,13 +35,30 @@ Future<T?> showWebOverlayModal<T>({
   late final OverlayEntry entry;
   var isClosed = false;
 
+  // 이 팝업은 라우트가 아니라 최상위 Overlay에 꽂혀 있어서, 뒤로가기(브라우저)로
+  // 아래 페이지가 바뀌어도 혼자 떠 있는다 → 라우트가 바뀌면 같이 닫는다.
+  // 띄우는 쪽이 팝업을 닫고 바로 이동하는 경우(`onClose()` 후 `Get.toNamed`)와도
+  // 충돌하지 않는다 — 이미 닫혔으면 아무 일도 하지 않는다.
+  String? openedOnRoute;
+  late final Worker routeWatcher;
+
   void close([T? result]) {
     // 배경 탭과 내부 버튼 탭이 한 프레임에 겹쳐도 remove가 두 번 불리지 않게 막는다.
     if (isClosed) return;
     isClosed = true;
+    routeWatcher.dispose();
     entry.remove();
     completer.complete(result);
   }
+
+  routeWatcher = ever<String>(currentRouteWeb, (route) {
+    if (openedOnRoute != null && route != openedOnRoute) close();
+  });
+  // 띄운 라우트는 다음 프레임에 잡는다 — 화면 진입과 동시에 뜨는 팝업이
+  // 진입 직후의 라우트 갱신에 걸려 바로 닫히는 일을 막는다.
+  WidgetsBinding.instance.addPostFrameCallback((_) {
+    if (!isClosed) openedOnRoute = currentRouteWeb.value;
+  });
 
   entry = OverlayEntry(
     // ESC로 닫기 — 배경 탭으로 닫히는 팝업은 ESC로도 닫는다(공통). 내부에

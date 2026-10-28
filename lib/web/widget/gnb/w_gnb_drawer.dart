@@ -2,6 +2,7 @@ import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/core/model/m_resortModel.dart';
 import 'package:com.snowlive/core/viewmodel/vm_user.dart';
 import 'package:com.snowlive/web/routes/routes_web.dart';
+import 'package:com.snowlive/web/util/web_profile_nav_web.dart';
 import 'package:com.snowlive/web/util/responsive_web.dart';
 import 'package:com.snowlive/web/viewmodel/auth/vm_authcheck_web.dart';
 import 'package:com.snowlive/web/widget/gnb/w_gnb_nav_items.dart';
@@ -10,6 +11,7 @@ import 'package:com.snowlive/web/widget/w_web_avatar_web.dart';
 import 'package:com.snowlive/web/util/web_features.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:com.snowlive/web/widget/w_web_toast_web.dart';
 
 /// 태블릿/모바일 전용 전체 화면 메뉴 패널(피그마 1:16330 비로그인 / 1:17339 로그인).
 ///
@@ -54,10 +56,12 @@ class _WebGnbMenuPanelState extends State<WebGnbMenuPanel>
 
   /// group 순번대로 120ms씩 늦게 350ms 동안 페이드인 + 8px 상승.
   Widget _groupFade(int group, Widget child) {
-    final double start =
-        ((group * _kDelayMs) / _kTotalMs).clamp(0.0, 1.0).toDouble();
-    final double end =
-        ((group * _kDelayMs + _kFadeMs) / _kTotalMs).clamp(0.0, 1.0).toDouble();
+    final double start = ((group * _kDelayMs) / _kTotalMs)
+        .clamp(0.0, 1.0)
+        .toDouble();
+    final double end = ((group * _kDelayMs + _kFadeMs) / _kTotalMs)
+        .clamp(0.0, 1.0)
+        .toDouble();
     final anim = CurvedAnimation(
       parent: _enter,
       curve: Interval(start, end, curve: Curves.easeOutCubic),
@@ -77,8 +81,8 @@ class _WebGnbMenuPanelState extends State<WebGnbMenuPanel>
 
   Future<void> _signOut() async {
     widget.onClose();
+    // signOut()이 세션·status·유저 모델을 모두 비운다.
     await Get.find<AuthCheckViewModelWeb>().signOut();
-    Get.find<UserViewModel>().resetUser();
     Get.offAllNamed(WebRoutes.home);
   }
 
@@ -114,15 +118,18 @@ class _WebGnbMenuPanelState extends State<WebGnbMenuPanel>
                 const SizedBox(height: 24),
               ],
               // 각 메뉴는 어드민 '메뉴 설정' 토글로 끄면 숨김(테스트 대상은 노출).
-              Obx(() => Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      for (final item in kGnbPrimaryItems)
-                        if (PaidVisibilityControllerWeb.menuVisible(
-                            item.routePrefix))
-                          GnbNavRow(item: item, onNavigate: widget.onClose),
-                    ],
-                  )),
+              Obx(
+                () => Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    for (final item in kGnbPrimaryItems)
+                      if (PaidVisibilityControllerWeb.menuVisible(
+                        item.routePrefix,
+                      ))
+                        GnbNavRow(item: item, onNavigate: widget.onClose),
+                  ],
+                ),
+              ),
             ],
           ),
           Column(
@@ -134,15 +141,17 @@ class _WebGnbMenuPanelState extends State<WebGnbMenuPanel>
               ),
               // 친구 / 알림 / 설정 — 사이드바와 같은 목록.
               // 유료기능 출시 전에는 '시즌권' 메뉴를 테스트 대상에게만 노출.
-              Obx(() => Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      for (final item in kGnbSecondaryItems)
-                        if (item.routePrefix != WebRoutes.seasonPass ||
-                            PaidVisibilityControllerWeb.isVisible)
-                          GnbNavRow(item: item, onNavigate: widget.onClose),
-                    ],
-                  )),
+              Obx(
+                () => Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    for (final item in kGnbSecondaryItems)
+                      if (item.routePrefix != WebRoutes.seasonPass ||
+                          PaidVisibilityControllerWeb.isVisible)
+                        GnbNavRow(item: item, onNavigate: widget.onClose),
+                  ],
+                ),
+              ),
             ],
           ),
           if (isLoggedIn)
@@ -159,22 +168,19 @@ class _WebGnbMenuPanelState extends State<WebGnbMenuPanel>
                   label: '마이페이지',
                   onTap: () {
                     widget.onClose();
-                    // 메뉴바 "마이페이지"는 탭 전환 성격(루트) — 스택을 리셋해
-                    // 내 프로필을 루트로 연다. 그래서 프로필에 뒤로가기가 뜨지 않는다
-                    // (타인 프로필을 탭해 들어온 경우와 구분).
-                    Get.offAllNamed('${WebRoutes.userProfile}?id=${user.user_id}');
+                    // 다른 상세 진입과 **같은 push 정책**(사용자 확정) — 스택을
+                    // 리셋하면 탭 이동 히스토리가 날아가 브라우저 뒤로가기가 먹통이 된다.
+                    // 프로필 위에서 또 누르면 교체되므로 중복으로 쌓이지 않는다.
+                    pushWebProfileRoute(user.user_id!);
                   },
                 ),
                 if (kWebMembershipEnabled)
                   _AccountRow(
                     label: '멤버십 업그레이드',
                     onTap: () =>
-                        Get.snackbar('준비 중입니다', '멤버십 업그레이드는 아직 준비 중이에요.'),
+                        showWebToast(context, '멤버십 업그레이드는 아직 준비 중이에요.', title: '준비 중입니다'),
                   ),
-                _AccountRow(
-                  label: '로그아웃',
-                  onTap: _signOut,
-                ),
+                _AccountRow(label: '로그아웃', onTap: _signOut),
               ],
             ),
         ];
@@ -188,8 +194,10 @@ class _WebGnbMenuPanelState extends State<WebGnbMenuPanel>
           children: [
             Expanded(
               child: ListView(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 8,
+                ),
                 children: items,
               ),
             ),
@@ -218,7 +226,10 @@ class _WebGnbMenuPanelState extends State<WebGnbMenuPanel>
         Text(
           '${user.display_name ?? ''}',
           textAlign: TextAlign.center,
-          style: SDSTextStyle.bold.copyWith(fontSize: 16, color: SDSColor.gray900),
+          style: SDSTextStyle.bold.copyWith(
+            fontSize: 16,
+            color: SDSColor.gray900,
+          ),
         ),
         if (resortName != null && resortName.isNotEmpty) ...[
           const SizedBox(height: 2),
@@ -227,7 +238,10 @@ class _WebGnbMenuPanelState extends State<WebGnbMenuPanel>
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             textAlign: TextAlign.center,
-            style: SDSTextStyle.regular.copyWith(fontSize: 13, color: SDSColor.gray700),
+            style: SDSTextStyle.regular.copyWith(
+              fontSize: 13,
+              color: SDSColor.gray700,
+            ),
           ),
         ],
         if (stateMsg != null && stateMsg.isNotEmpty) ...[
@@ -237,7 +251,10 @@ class _WebGnbMenuPanelState extends State<WebGnbMenuPanel>
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             textAlign: TextAlign.center,
-            style: SDSTextStyle.regular.copyWith(fontSize: 13, color: SDSColor.gray400),
+            style: SDSTextStyle.regular.copyWith(
+              fontSize: 13,
+              color: SDSColor.gray400,
+            ),
           ),
         ],
       ],
@@ -276,7 +293,10 @@ class _WebGnbMenuPanelState extends State<WebGnbMenuPanel>
             ),
             child: Text(
               '로그인',
-              style: SDSTextStyle.bold.copyWith(fontSize: 14, color: SDSColor.gray900),
+              style: SDSTextStyle.bold.copyWith(
+                fontSize: 14,
+                color: SDSColor.gray900,
+              ),
             ),
           ),
           const SizedBox(height: 10),
@@ -285,7 +305,10 @@ class _WebGnbMenuPanelState extends State<WebGnbMenuPanel>
             style: style(background: SDSColor.snowliveBlack),
             child: Text(
               '회원가입',
-              style: SDSTextStyle.bold.copyWith(fontSize: 14, color: SDSColor.snowliveWhite),
+              style: SDSTextStyle.bold.copyWith(
+                fontSize: 14,
+                color: SDSColor.snowliveWhite,
+              ),
             ),
           ),
         ],
@@ -317,7 +340,10 @@ class _AccountRow extends StatelessWidget {
           alignment: Alignment.centerLeft,
           child: Text(
             label,
-            style: SDSTextStyle.bold.copyWith(fontSize: 14, color: SDSColor.gray900),
+            style: SDSTextStyle.bold.copyWith(
+              fontSize: 14,
+              color: SDSColor.gray900,
+            ),
           ),
         ),
       ),

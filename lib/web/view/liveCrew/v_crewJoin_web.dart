@@ -83,9 +83,6 @@ class _CrewJoinViewWebState extends State<CrewJoinViewWeb> {
       showWebToast(
         context,
         '가입 신청을 보냈습니다.',
-        alignment: context.screenType == WebScreenType.mobile
-            ? Alignment.bottomCenter
-            : Alignment.topCenter,
       );
     }
   }
@@ -410,7 +407,6 @@ class _CrewJoinCardState extends State<_CrewJoinCard> {
     showWebToast(
       context,
       result.message ?? '이미 신청했거나 잠시 후 다시 시도해 주세요.',
-      alignment: widget.isSheet ? Alignment.bottomCenter : Alignment.topCenter,
     );
   }
 

@@ -13,9 +13,12 @@ void main() {
     expect(kAppStoreUrlAndroid, endsWith('details?id=com.snowlive'));
   });
 
+  /// 약관·개인정보는 자사 도메인에 둔다 — Google OAuth 브랜딩 인증이 '소유·인증한
+  /// 도메인'을 요구해서 구글사이트(sites.google.com)로는 통과되지 않는다.
+  /// 위치정보 약관만 아직 구글사이트에 남아 있다.
   test('약관 3종이 모두 정의돼 있다', () {
-    expect(kTermsOfServiceUrl, contains('snowlive-termsofservice'));
-    expect(kPrivacyPolicyUrl, contains('134creativelabprivacypolicy'));
+    expect(kTermsOfServiceUrl, 'https://snowlive.kr/terms.html');
+    expect(kPrivacyPolicyUrl, 'https://snowlive.kr/privacy.html');
     expect(kLocationTermsUrl, contains('134creativelablocationinfo'));
   });
 
@@ -31,6 +34,8 @@ void main() {
       'play.google.com/store',
       'instagram.com',
       'pf.kakao.com',
+      'snowlive.kr/terms',
+      'snowlive.kr/privacy',
       'snowlive-termsofservice',
       '134creativelabprivacypolicy',
       '134creativelablocationinfo',

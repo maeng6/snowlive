@@ -18,6 +18,12 @@ import 'dart:math' as math; // math 패키지 추가
 import 'package:crypto/crypto.dart'; // sha256을 위한 crypto 패키지 추가
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter/services.dart';
+// firebase_auth의 User와 이름이 겹쳐 카카오 User는 숨긴다(사용 안 함).
+import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart' hide User;
+import 'package:flutter_naver_login/flutter_naver_login.dart';
+import 'package:flutter_naver_login/interface/types/naver_login_result.dart';
+import 'package:flutter_naver_login/interface/types/naver_login_status.dart';
 
 final ref = FirebaseFirestore.instance;
 
@@ -186,6 +192,118 @@ class LoginViewModel extends GetxController {
     }
   }
 
+
+  /// 카카오 로그인 — 네이티브 SDK로 access_token을 받아 백엔드에서 Firebase 커스텀토큰을
+  /// 발급받고 로그인한다. 이후는 구글/애플과 동일하게 findUserAPI()가 홈/온보딩으로 보낸다.
+  Future<void> signInWithKakao() async {
+    CustomFullScreenDialog.showDialog();
+    try {
+      final OAuthToken kakaoToken = await _kakaoSdkLogin();
+
+      final ApiResponse res = await loginAPI.socialLogin({
+        'provider': 'kakao',
+        'access_token': kakaoToken.accessToken,
+      });
+      if (!res.success) {
+        CustomFullScreenDialog.cancelDialog();
+        print('카카오 서버 로그인 실패: ${res.error}');
+        return;
+      }
+      final data = res.data as Map<String, dynamic>;
+      final String customToken = data['custom_token'];
+
+      await auth.signInWithCustomToken(customToken);
+      User? currentUser = auth.currentUser;
+      if (currentUser != null) {
+        loginUid!.value = currentUser.uid;
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setString('signInMethod', 'kakao');
+        await getLocalSignInMethod();
+        await getSecureStorage().write(key: 'localUid', value: loginUid!.value);
+        await getSecureStorage().write(key: 'device_id', value: device_id!.value);
+        await getSecureStorage().write(key: 'device_token', value: device_token!.value);
+        await findUserAPI();
+        CustomFullScreenDialog.cancelDialog();
+        await getLocalSignInMethod();
+      } else {
+        CustomFullScreenDialog.cancelDialog();
+      }
+    } catch (e) {
+      CustomFullScreenDialog.cancelDialog();
+      print('Kakao sign-in failed: $e');
+    }
+  }
+
+  /// 네이버 로그인 — 네이티브 SDK로 access_token을 받아 백엔드에서 Firebase 커스텀토큰을
+  /// 발급받고 로그인한다. 이후는 구글/애플/카카오와 동일(findUserAPI → 홈/온보딩).
+  Future<void> signInWithNaver() async {
+    CustomFullScreenDialog.showDialog();
+    try {
+      // 자동 로그인 방지 — 기존 토큰을 지우고 로그인(매번 로그인 화면).
+      try {
+        await FlutterNaverLogin.logOutAndDeleteToken();
+      } catch (_) {}
+
+      final NaverLoginResult result = await FlutterNaverLogin.logIn();
+      final String? naverAccessToken = result.accessToken?.accessToken;
+      if (result.status != NaverLoginStatus.loggedIn ||
+          naverAccessToken == null || naverAccessToken.isEmpty) {
+        CustomFullScreenDialog.cancelDialog(); // 취소/실패
+        return;
+      }
+
+      final ApiResponse res = await loginAPI.socialLogin({
+        'provider': 'naver',
+        'access_token': naverAccessToken,
+      });
+      if (!res.success) {
+        CustomFullScreenDialog.cancelDialog();
+        print('네이버 서버 로그인 실패: ${res.error}');
+        return;
+      }
+      final data = res.data as Map<String, dynamic>;
+      final String customToken = data['custom_token'];
+
+      await auth.signInWithCustomToken(customToken);
+      User? currentUser = auth.currentUser;
+      if (currentUser != null) {
+        loginUid!.value = currentUser.uid;
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setString('signInMethod', 'naver');
+        await getLocalSignInMethod();
+        await getSecureStorage().write(key: 'localUid', value: loginUid!.value);
+        await getSecureStorage().write(key: 'device_id', value: device_id!.value);
+        await getSecureStorage().write(key: 'device_token', value: device_token!.value);
+        await findUserAPI();
+        CustomFullScreenDialog.cancelDialog();
+        await getLocalSignInMethod();
+      } else {
+        CustomFullScreenDialog.cancelDialog();
+      }
+    } catch (e) {
+      CustomFullScreenDialog.cancelDialog();
+      print('Naver sign-in failed: $e');
+    }
+  }
+
+  /// 카카오 로그인 토큰 획득.
+  /// - Android: 카카오톡 설치 시 카카오톡으로(매니페스트 리다이렉트 처리), 없으면 계정으로.
+  /// - iOS: 카카오톡 앱 복귀는 별도 네이티브 모듈 연결이 필요해, 그 없이도 동작하는
+  ///   카카오계정(웹) 로그인을 쓴다. (ASWebAuthenticationSession이 콜백을 자체 처리)
+  /// 계정 로그인은 prompt=login으로 자동 로그인을 막는다(웹과 동일한 취지).
+  Future<OAuthToken> _kakaoSdkLogin() async {
+    if (Platform.isAndroid && await isKakaoTalkInstalled()) {
+      try {
+        return await UserApi.instance.loginWithKakaoTalk();
+      } catch (error) {
+        // 사용자가 취소(뒤로가기)면 중단, 그 외 오류면 계정 로그인으로 폴백.
+        if (error is PlatformException && error.code == 'CANCELED') rethrow;
+        return await UserApi.instance
+            .loginWithKakaoAccount(prompts: [Prompt.login]);
+      }
+    }
+    return await UserApi.instance.loginWithKakaoAccount(prompts: [Prompt.login]);
+  }
 
   Future<void> findUserAPI() async {
     ApiResponse response = await LoginAPI().findUser({

@@ -55,14 +55,16 @@ class _HomeOpenChatWebState extends State<HomeOpenChatWeb>
   // 채팅이 닫힌 상태에서 새 메시지가 오면 true → '오픈 채팅' 옆 빨간점. 열면 false.
   bool _hasUnread = false;
   Worker? _latestWorker;
+  Worker? _unreadWorker;
 
   /// 모바일 바텀 시트(피그마 1:19330) — 앱바까지 딤으로 덮어야 해서
   /// 라우트 Navigator가 아니라 **루트 Overlay**에 직접 띄운다.
   OverlayEntry? _sheetEntry;
-  late final AnimationController _sheetCtrl = AnimationController(
-    vsync: this,
-    duration: const Duration(milliseconds: 250),
-  );
+  /// ⚠️ 선언부 지연 초기화(`late final ... = AnimationController(...)`)로 두면 안 된다 —
+  /// 시트를 한 번도 안 열면 생성되지 않은 채 `dispose()`가 그때 처음 초기화를 실행하고,
+  /// 그 안의 ticker가 이미 비활성인 조상을 조회해 예외가 난다
+  /// ("Looking up a deactivated widget's ancestor is unsafe"). initState에서 만든다.
+  late final AnimationController _sheetCtrl;
 
   /// 접힌 바 아래에 쌓인 말풍선들(오래된 것부터). 각자 3초 타이머로 사라진다.
   final List<_BubbleEntry> _bubbles = [];
@@ -72,14 +74,25 @@ class _HomeOpenChatWebState extends State<HomeOpenChatWeb>
   @override
   void initState() {
     super.initState();
+    _sheetCtrl = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 250),
+    );
+    // 미확인(빨간점) 상태는 VM이 보유 → 위젯이 재생성돼도 유지된다. 현재값으로 먼저 맞추고,
+    // 이후 변화는 worker로 반영한다.
+    _hasUnread = _vm.unread;
+    _unreadWorker = ever(_vm.unreadRx, (v) {
+      if (mounted) setState(() => _hasUnread = v);
+    });
     _latestWorker = ever(_vm.latestRx, (message) {
       if (message == null) return;
       if (_isOpen || _sheetEntry != null) {
-        // 펼쳐 놓은 상태면 목록이 이미 보이므로 아래로 붙여준다.
+        // 펼쳐 놓은 상태면 목록이 이미 보이므로 바로 읽음 처리하고 아래로 붙여준다.
+        _vm.markRead();
         _scrollToBottom();
         return;
       }
-      _hasUnread = true; // 닫힌 상태에서 새 글 → 안 읽음 표시(_pushBubble가 setState).
+      // 닫힌 상태: 말풍선만 띄운다(빨간점은 VM이 이미 켠다).
       _pushBubble(message);
     });
   }
@@ -99,6 +112,7 @@ class _HomeOpenChatWebState extends State<HomeOpenChatWeb>
       timer.cancel();
     }
     _latestWorker?.dispose();
+    _unreadWorker?.dispose();
     _input.dispose();
     _listController.dispose();
     _sheetEntry?.remove();
@@ -148,6 +162,7 @@ class _HomeOpenChatWebState extends State<HomeOpenChatWeb>
         _hasUnread = false;
       });
       _vm.clearLatest();
+      _vm.markRead(); // VM 미확인 상태도 내린다(setState 바깥 — 중첩 setState 방지).
       _openMobileSheet();
       return;
     }
@@ -161,6 +176,7 @@ class _HomeOpenChatWebState extends State<HomeOpenChatWeb>
     if (_isOpen) {
       // 펼치면 말풍선은 역할이 끝났다.
       _vm.clearLatest();
+      _vm.markRead();
       _scrollToBottom();
     }
   }

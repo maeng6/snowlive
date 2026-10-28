@@ -30,7 +30,7 @@ class EventListWeb extends StatelessWidget {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            if (!isMobileLoading) EventTableHeaderRow(widths: EventMetaWidths.skeleton),
+            if (!isMobileLoading) EventTableHeaderRow(widths: EventMetaWidths.skeletonOf(context)),
             const EventListSkeleton(),
           ],
         );
@@ -46,7 +46,7 @@ class EventListWeb extends StatelessWidget {
 
       final isMobile = context.screenType == WebScreenType.mobile;
       // 메타 열 폭은 이 페이지의 가장 긴 값에서 한 번만 재서 헤더·모든 행이 공유한다.
-      final widths = isMobile ? null : EventMetaWidths.of(items);
+      final widths = isMobile ? null : EventMetaWidths.of(context, items);
       return Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -63,8 +63,6 @@ class EventListWeb extends StatelessWidget {
             hasNext: vm.hasNext,
             pageWindow: vm.pageWindow(),
             onGotoPage: (page) => _gotoPage(context, vm, page),
-            // 커뮤니티와 동일 — 배경 없는 텍스트형.
-            textOnly: true,
           ),
         ],
       );

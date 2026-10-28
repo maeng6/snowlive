@@ -99,7 +99,7 @@ class _FriendLocationShareViewWebState
           ? '${res.data['message']}'
           : fallback;
 
-  void _toast(String m) => showWebToast(context, m, alignment: Alignment.topCenter);
+  void _toast(String m) => showWebToast(context, m);
 
   @override
   Widget build(BuildContext context) {

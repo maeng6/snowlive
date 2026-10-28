@@ -1,6 +1,7 @@
 import 'package:com.snowlive/core/api/api_liveTalk.dart';
 import 'package:com.snowlive/core/api/api_user.dart';
 import 'package:com.snowlive/core/model/m_liveTalk.dart';
+import 'package:com.snowlive/core/viewmodel/vm_user.dart';
 import 'package:com.snowlive/web/widget/w_web_more_menu_web.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
@@ -34,18 +35,31 @@ class LiveTalkDetailViewModelWeb extends GetxController {
   /// 목업의 `댓글 N`은 이 값을 쓴다.
   int get commentCount => _detail.value?.commentCount ?? 0;
 
+  /// 현재 유저 id — **항상 라이브로** 조회한다. 웹 자동로그인이 늦게 확정돼
+  /// 상세를 열 때(_userId 캡처 시점) user_id가 아직 없더라도, 확정된 뒤에는
+  /// UserViewModel에서 바로 읽어 게스트 오판을 막는다. (캡처값 _userId는 폴백)
+  int? get uid => _liveUid() ?? _userId;
+
+  int? _liveUid() {
+    if (!Get.isRegistered<UserViewModel>()) return null;
+    final id = Get.find<UserViewModel>().user.user_id;
+    if (id is int) return id;
+    return int.tryParse('$id');
+  }
+
   /// 게스트면 쓰기(댓글·좋아요)를 막고 로그인 안내만 띄운다.
-  bool get isGuest => _userId == null;
+  bool get isGuest => uid == null;
 
   bool get isAuthor =>
-      _userId != null && _detail.value?.userId != null && _detail.value!.userId == _userId;
+      uid != null && _detail.value?.userId != null && _detail.value!.userId == uid;
 
   bool isMyComment(int? commentUserId) =>
-      _userId != null && commentUserId != null && commentUserId == _userId;
+      uid != null && commentUserId != null && commentUserId == uid;
 
   Future<void> load({required int livetalkId, int? userId}) async {
     _livetalkId = livetalkId;
-    _userId = userId;
+    // 전달된 userId가 null이어도 로그인돼 있으면 실제 유저로 보강한다.
+    _userId = userId ?? _liveUid();
     _isLoading.value = true;
     _hasError.value = false;
     try {
@@ -73,14 +87,14 @@ class LiveTalkDetailViewModelWeb extends GetxController {
   Future<void> refreshDetail() async {
     final id = _livetalkId;
     if (id == null) return;
-    await load(livetalkId: id, userId: _userId);
+    await load(livetalkId: id, userId: uid);
   }
 
   /// 좋아요 토글. 응답의 {liked, like_count}로 즉시 반영한다.
   /// 성공하면 갱신된 글을 리턴해서 호출자(피드 목록)도 같은 값으로 맞출 수 있게 한다.
   Future<LiveTalk?> toggleLike() async {
     final id = _livetalkId;
-    final userId = _userId;
+    final userId = uid;
     final current = _detail.value;
     if (id == null || userId == null || current == null) return null;
 
@@ -105,7 +119,7 @@ class LiveTalkDetailViewModelWeb extends GetxController {
 
   Future<bool> postComment(String content) async {
     final id = _livetalkId;
-    final userId = _userId;
+    final userId = uid;
     if (id == null || userId == null) return false;
     return _write(() => _api.createComment({
           'livetalk_id': id,
@@ -115,7 +129,7 @@ class LiveTalkDetailViewModelWeb extends GetxController {
   }
 
   Future<bool> postReply({required int commentId, required String content}) async {
-    final userId = _userId;
+    final userId = uid;
     if (userId == null) return false;
     return _write(() => _api.createReply({
           'comment_id': commentId,
@@ -125,13 +139,13 @@ class LiveTalkDetailViewModelWeb extends GetxController {
   }
 
   Future<bool> deleteComment(int commentId) async {
-    final userId = _userId;
+    final userId = uid;
     if (userId == null) return false;
     return _write(() => _api.deleteComment({'comment_id': commentId, 'user_id': userId}));
   }
 
   Future<bool> deleteReply(int replyId) async {
-    final userId = _userId;
+    final userId = uid;
     if (userId == null) return false;
     return _write(() => _api.deleteReply({'reply_id': replyId, 'user_id': userId}));
   }
@@ -162,7 +176,7 @@ class LiveTalkDetailViewModelWeb extends GetxController {
 
   Future<WebActionResult> reportPost() {
     final id = _livetalkId;
-    final userId = _userId;
+    final userId = uid;
     return mapWebActionResponse(
         () => _api.report({'livetalk_id': id, 'user_id': userId}));
   }
@@ -170,24 +184,24 @@ class LiveTalkDetailViewModelWeb extends GetxController {
   Future<WebActionResult> reportComment(int commentId) =>
       mapWebActionResponse(() => _api.reportComment({
             'comment_id': commentId,
-            'user_id': _userId,
+            'user_id': uid,
           }));
 
   Future<WebActionResult> reportReply(int replyId) =>
       mapWebActionResponse(() => _api.reportReply({
             'reply_id': replyId,
-            'user_id': _userId,
+            'user_id': uid,
           }));
 
   Future<WebActionResult> blockAuthor(int? targetUserId) =>
       mapWebActionResponse(() => UserAPI().blockUser({
-            'user_id': _userId,
+            'user_id': uid,
             'block_user_id': targetUserId,
           }));
 
   Future<bool> deletePost() async {
     final id = _livetalkId;
-    final userId = _userId;
+    final userId = uid;
     if (id == null || userId == null) return false;
     try {
       final response = await _api.delete({'livetalk_id': id, 'user_id': userId});
@@ -201,7 +215,7 @@ class LiveTalkDetailViewModelWeb extends GetxController {
   /// 내 글 수정(본문만). 성공하면 상세가 자동 재조회된다(_write).
   Future<bool> updatePost({required String description}) {
     final id = _livetalkId;
-    final userId = _userId;
+    final userId = uid;
     if (id == null || userId == null) return Future.value(false);
     return _write(() => _api.update({
           'livetalk_id': id,

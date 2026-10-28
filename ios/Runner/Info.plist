@@ -42,6 +42,24 @@
 					<string>snowlive</string>
 				</array>
 			</dict>
+			<dict>
+				<key>CFBundleTypeRole</key>
+				<string>Editor</string>
+				<key>CFBundleURLSchemes</key>
+				<array>
+					<!-- kakao{NATIVE_APP_KEY} — 카카오 로그인 복귀 -->
+					<string>kakaofdf31779d822436a2a29a68b19619e45</string>
+				</array>
+			</dict>
+			<dict>
+				<key>CFBundleTypeRole</key>
+				<string>Editor</string>
+				<key>CFBundleURLSchemes</key>
+				<array>
+					<!-- 네이버 로그인 복귀(NidUrlScheme과 동일) -->
+					<string>snowlivenaver</string>
+				</array>
+			</dict>
 		</array>
 		<key>CFBundleVersion</key>
 		<string>$(FLUTTER_BUILD_NUMBER)</string>
@@ -52,7 +70,21 @@
 		<key>LSApplicationQueriesSchemes</key>
 		<array>
 			<string>paceface</string>
+			<string>kakaokompassauth</string>
+			<string>kakaotalk</string>
+			<string>kakaolink</string>
+			<string>kakaoplus</string>
+			<string>naversearchapp</string>
+			<string>naversearchthirdlogin</string>
 		</array>
+		<key>NidClientID</key>
+		<string>mmWrt2_nKHREEnI0KG25</string>
+		<key>NidClientSecret</key>
+		<string>ZwaNSuuDuL</string>
+		<key>NidAppName</key>
+		<string>스노우라이브</string>
+		<key>NidUrlScheme</key>
+		<string>snowlivenaver</string>
 		<key>LSRequiresIPhoneOS</key>
 		<true/>
 		<key>MinimumOSVersion</key>

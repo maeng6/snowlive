@@ -19,8 +19,9 @@ import 'package:get/get.dart';
 // (분류·이름·제목·작성일·조회수) 20에서는 빽빽해 보여 30으로 둔다(사용자 확정).
 const double kEventColGap = 30;
 
-/// 각종소식 표의 메타 열(이름·작성일·조회수) 폭. 커뮤니티 표와 같은 방식으로
-/// **그 페이지의 가장 긴 값**(헤더 글자 포함)을 재서 헤더·모든 행이 공유한다.
+/// 각종소식 표의 메타 열(이름·작성일·조회수) 폭. 커뮤니티 표와 **같은 규칙**으로
+/// 잡는다([metaColumnWidth]) — 이름은 그 페이지의 가장 긴 값, 날짜·조회수는 형식상
+/// 최악값, 둘 다 브라우저 글자 배율을 반영하고 폭은 캐시하지 않는다.
 class EventMetaWidths {
   final double name;
   final double date;
@@ -28,38 +29,42 @@ class EventMetaWidths {
 
   const EventMetaWidths({required this.name, required this.date, required this.views});
 
-  /// 로딩 스켈레톤이 쓰는 폭(커뮤니티 표와 같은 이유로 표본을 재둔다).
-  static final EventMetaWidths skeleton = EventMetaWidths._from(
-    const ['스노우라이브'],
-    const ['2026. 10. 03'],
-    const ['1234'],
-  );
+  /// 로딩 스켈레톤·헤더가 쓰는 폭(커뮤니티 표와 같은 이유로 표본을 재둔다).
+  static EventMetaWidths skeletonOf(BuildContext context) => EventMetaWidths._from(
+        const ['스노우라이브'],
+        const ['1234'],
+        MediaQuery.textScalerOf(context),
+      );
 
-  static final EventMetaWidths headerOnly = EventMetaWidths._from(const [], const [], const []);
-
-  factory EventMetaWidths._from(List<String> names, List<String> dates, List<String> views) {
-    final meta = SDSTextStyle.regular.copyWith(fontSize: 14);
-    final header = SDSTextStyle.bold.copyWith(fontSize: 14);
-    double widest(List<String> values, String headerText) {
-      var max = measureWebTextWidth(headerText, header);
-      for (final v in values) {
-        final w = measureWebTextWidth(v, meta);
-        if (w > max) max = w;
-      }
-      return max.ceilToDouble() + 2;
-    }
-
+  factory EventMetaWidths._from(
+      List<String> names, List<String> views, TextScaler textScaler) {
     return EventMetaWidths(
-      name: widest(names, '이름'),
-      date: widest(dates, '작성일'),
-      views: widest(views, '조회수'),
+      name: metaColumnWidth(
+        samples: names,
+        headerText: '이름',
+        textScaler: textScaler,
+      ),
+      date: metaColumnWidth(
+        samples: [worstCaseDateSample(textScaler)],
+        headerText: '작성일',
+        textScaler: textScaler,
+      ),
+      views: metaColumnWidth(
+        samples: [worstCaseNumberSample(views, textScaler)],
+        headerText: '조회수',
+        textScaler: textScaler,
+      ),
     );
   }
 
-  factory EventMetaWidths.of(List<EventModel> items) => EventMetaWidths._from(
-        [for (final e in items) e.crawlAccountName ?? e.crawlAccountUsername ?? ''],
-        [for (final e in items) communityDateLabelOf(e.uploadTime)],
+  factory EventMetaWidths.of(BuildContext context, List<EventModel> items) =>
+      EventMetaWidths._from(
+        [
+          for (final e in items)
+            e.crawlAccountName ?? e.crawlAccountUsername ?? ''
+        ],
         [for (final e in items) '${e.viewCount ?? 0}'],
+        MediaQuery.textScalerOf(context),
       );
 }
 
@@ -158,10 +163,10 @@ class EventTableHeaderRow extends StatelessWidget {
       padding: const EdgeInsets.only(top: 5, bottom: 13),
       border: Border(bottom: BorderSide(color: SDSColor.gray200)),
       categoryCell: Text('분류', style: style),
-      nameCell: Text('이름', style: style),
+      nameCell: webTableNoClipText('이름', style),
       titleCell: Text('제목', style: style),
-      dateCell: Text('작성일', style: style),
-      viewsCell: Text('조회수', style: style),
+      dateCell: webTableNoClipText('작성일', style),
+      viewsCell: webTableNoClipText('조회수', style),
     );
   }
 }
@@ -219,16 +224,11 @@ class EventTableRow extends StatelessWidget {
             style: metaStyle.copyWith(color: SDSColor.gray900),
           ),
           titleCell: _EventTitleLine(event: event, query: query),
-          dateCell: Text(
+          dateCell: webTableNoClipText(
             communityDateLabelOf(event.uploadTime),
-            maxLines: 1,
-            style: metaStyle,
+            metaStyle,
           ),
-          viewsCell: Text(
-            '${event.viewCount ?? 0}',
-            maxLines: 1,
-            style: metaStyle,
-          ),
+          viewsCell: webTableNoClipText('${event.viewCount ?? 0}', metaStyle),
         ),
       ),
     );
@@ -335,9 +335,9 @@ class EventCardRow extends StatelessWidget {
                             ),
                           ),
                           communityMetaDivider(),
-                          Text(
+                          webTableNoClipText(
                             communityDateLabelOf(event.uploadTime),
-                            style: metaStyle,
+                            metaStyle,
                           ),
                           communityMetaDivider(),
                           Icon(
@@ -346,7 +346,7 @@ class EventCardRow extends StatelessWidget {
                             color: SDSColor.gray400,
                           ),
                           const SizedBox(width: 2),
-                          Text('${event.viewCount ?? 0}', style: metaStyle),
+                          webTableNoClipText('${event.viewCount ?? 0}', metaStyle),
                         ],
                       ),
                     ],

@@ -4,10 +4,12 @@ import 'package:com.snowlive/web/routes/routes_web.dart';
 import 'package:com.snowlive/web/viewmodel/alarm/vm_alarmCenter_web.dart';
 import 'package:com.snowlive/web/viewmodel/fleamarket/vm_fleamarketPagination_web.dart';
 import 'package:com.snowlive/web/viewmodel/home/vm_home_web.dart';
+import 'package:com.snowlive/web/viewmodel/liveTalk/vm_liveTalkBadge_web.dart';
 import 'package:com.snowlive/web/widget/gnb/w_gnb_current_route_web.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:com.snowlive/web/widget/w_web_toast_web.dart';
 
 /// GNB(사이드바/드로어)에 표시되는 항목 하나를 표현.
 /// 전용 에셋이 없는 항목은 [materialIcon]을 임시로 사용하고,
@@ -31,6 +33,9 @@ class GnbNavItemData {
   /// 라벨 옆에 안 읽은 알림 빨간 점([GnbAlarmDot])을 붙인다(`알림` 항목).
   final bool showsAlarmDot;
 
+  /// 라벨 옆에 라이브톡 새 글 빨간 점([GnbLiveTalkDot])을 붙인다(`라이브톡` 항목).
+  final bool showsLiveTalkDot;
+
   const GnbNavItemData({
     required this.label,
     this.routePrefix,
@@ -41,6 +46,7 @@ class GnbNavItemData {
     this.assetIconSvgOff,
     this.isPlaceholder = false,
     this.showsAlarmDot = false,
+    this.showsLiveTalkDot = false,
   });
 }
 
@@ -76,6 +82,7 @@ const List<GnbNavItemData> kGnbPrimaryItems = [
     routePrefix: '/livetalk',
     assetIconSvgOn: 'assets/imgs/icons/icon_web_livetalk_select.svg',
     assetIconSvgOff: 'assets/imgs/icons/icon_web_livetalk.svg',
+    showsLiveTalkDot: true,
   ),
   GnbNavItemData(
     label: '랭킹',
@@ -106,9 +113,13 @@ const List<GnbNavItemData> kGnbPrimaryItems = [
 /// 2차 그룹: 친구 / 알림 / 설정(목업 순서). 사이드바·드로어가 같은 목록을 쓴다.
 /// 목업대로 **아이콘 없이 텍스트만** 쓴다(1차 그룹만 아이콘을 갖는다).
 const List<GnbNavItemData> kGnbSecondaryItems = [
-  GnbNavItemData(label: '시즌권', routePrefix: WebRoutes.seasonPass),
+  GnbNavItemData(label: '데이터랩', routePrefix: WebRoutes.seasonPass),
   GnbNavItemData(label: '친구', routePrefix: WebRoutes.friend),
-  GnbNavItemData(label: '알림', routePrefix: WebRoutes.alarm, showsAlarmDot: true),
+  GnbNavItemData(
+    label: '알림',
+    routePrefix: WebRoutes.alarm,
+    showsAlarmDot: true,
+  ),
   GnbNavItemData(label: '설정', routePrefix: WebRoutes.settings),
 ];
 
@@ -119,15 +130,16 @@ bool gnbItemIsActive(GnbNavItemData item, String currentRoute) {
 
 /// 이미 들어와 있는 섹션의 메뉴를 다시 눌렀을 때 메인 목록을 새로고침한다.
 ///
-/// 커뮤니티·각종소식 목록 화면은 StatefulWidget이라 [Get.offAllNamed]로 라우트가
-/// 새로 생성되며 initState에서 알아서 재조회한다. 반면 중고거래 목록은
+/// 커뮤니티·각종소식 목록 화면은 StatefulWidget이라 라우트를 새로 만들면(교체)
+/// initState에서 알아서 재조회한다. 반면 중고거래 목록은
 /// StatelessWidget이고 최초 로드가 뷰모델 onInit에서만 일어나므로, 재진입해도
 /// 자동 갱신되지 않는다 → 여기서 뷰모델을 직접 다시 로드해준다.
 void _reloadSectionList(String prefix) {
   if (prefix == WebRoutes.fleamarketList &&
       Get.isRegistered<FleamarketPaginationViewModelWeb>()) {
-    Get.find<FleamarketPaginationViewModelWeb>()
-        .loadFirstPage(userId: Get.find<UserViewModel>().user.user_id);
+    Get.find<FleamarketPaginationViewModelWeb>().loadFirstPage(
+      userId: Get.find<UserViewModel>().user.user_id,
+    );
   }
 }
 
@@ -146,11 +158,26 @@ void openGnbSection(String prefix) {
     return;
   }
   if (Get.currentRoute.startsWith(prefix)) {
-    Get.offAllNamed(prefix);
+    // ⚠️ `offAllNamed`로 **스택 전체를 날리지 않는다** — 그러면 그때까지의 탭 이동
+    // 히스토리가 통째로 사라져 브라우저 뒤로가기가 먹통이 된다(사용자 지적).
+    // 지금 라우트만 교체하면 섹션 메인으로 되돌리며 새로 그리고(스크롤도 맨 위),
+    // 아래 스택은 그대로 남아 뒤로가기가 직전 탭으로 간다.
+    Get.offNamed(prefix, preventDuplicates: false);
     _reloadSectionList(prefix);
   } else {
     Get.toNamed(prefix);
   }
+}
+
+/// 상단 로고 탭 = **사이드바 '홈' 탭과 완전히 동일 동작**.
+///
+/// 예전엔 `Get.offAllNamed(home)`로 스택을 통째로 날려 홈을 다시 만들었는데, 그러면
+/// 홈 뷰모델이 지워졌다 두 번 새로 생기면서(fenix) 배너 실시간 구독 재연결이 꼬여
+/// "다른 탭 거쳐 로고로 오면 배너가 안 뜨는" 문제가 있었다. 홈 탭이 쓰는
+/// [openGnbSection]을 그대로 재사용한다 — 다른 탭에선 스택 보존하며 toNamed, 홈이면
+/// refreshFromGnb(맨 위로 + 재조회)만.
+void reloadToHomeWeb() {
+  openGnbSection(WebRoutes.home);
 }
 
 /// 사이드바/드로어가 공유하는 항목 1개 행. 라우트가 있으면 이동하고,
@@ -162,7 +189,12 @@ class GnbNavRow extends StatelessWidget {
   /// LNB가 접힌 상태면 라벨 없이 아이콘만 가운데 정렬로 그린다.
   final bool collapsed;
 
-  const GnbNavRow({super.key, required this.item, this.onNavigate, this.collapsed = false});
+  const GnbNavRow({
+    super.key,
+    required this.item,
+    this.onNavigate,
+    this.collapsed = false,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -181,11 +213,16 @@ class GnbNavRow extends StatelessWidget {
               : () {
                   final prefix = item.routePrefix;
                   if (prefix == null) {
-                    Get.snackbar('준비 중입니다', '${item.label} 화면은 아직 준비 중이에요.');
+                    showWebToast(context, '${item.label} 화면은 아직 준비 중이에요.', title: '준비 중입니다');
                     onNavigate?.call();
                     return;
                   }
                   openGnbSection(prefix);
+                  // 라이브톡 진입 시 즉시 읽음 처리(빨간 점 끄기).
+                  if (item.showsLiveTalkDot &&
+                      Get.isRegistered<LiveTalkBadgeWeb>()) {
+                    LiveTalkBadgeWeb.to.markSeen();
+                  }
                   onNavigate?.call();
                 },
           borderRadius: BorderRadius.circular(6),
@@ -206,8 +243,7 @@ class GnbNavRow extends StatelessWidget {
               children: [
                 // 아이콘이 없는 항목(친구·설정)은 자리도 비우지 않고 글자만 둔다.
                 // 아이콘은 접힘/펼침과 무관하게 항상 같은 x 위치에 고정된다
-                if (icon != null)
-                  SizedBox(width: 24, height: 24, child: icon),
+                if (icon != null) SizedBox(width: 24, height: 24, child: icon),
                 // 라벨(과 아이콘-라벨 간격)은 트리에서 제거하지 않고 페이드+클리핑으로
                 // 자연스럽게 사라진다. 간격을 이 안에 넣어야 접힘 폭이 정확히 44가 된다
                 Flexible(
@@ -219,6 +255,9 @@ class GnbNavRow extends StatelessWidget {
                         padding: EdgeInsets.only(left: icon != null ? 6 : 0),
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
+                          // 점을 라벨 **우상단 대각선**에 올리기 위한 위 정렬.
+                          // 라벨이 가장 높은 자식이라 라벨 위치는 그대로다.
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Flexible(
                               child: Text(
@@ -226,13 +265,15 @@ class GnbNavRow extends StatelessWidget {
                                 maxLines: 1,
                                 softWrap: false,
                                 overflow: TextOverflow.clip,
-                                style: (active ? SDSTextStyle.bold : SDSTextStyle.bold).copyWith(
-                                  fontSize: 14,
-                                  color: fg,
-                                ),
+                                style:
+                                    (active
+                                            ? SDSTextStyle.bold
+                                            : SDSTextStyle.bold)
+                                        .copyWith(fontSize: 14, color: fg),
                               ),
                             ),
                             if (item.showsAlarmDot) const GnbAlarmDot(),
+                            if (item.showsLiveTalkDot) const GnbLiveTalkDot(),
                           ],
                         ),
                       ),
@@ -253,11 +294,20 @@ class GnbNavRow extends StatelessWidget {
   /// 구분되고, 슬로프크래프트·라이브톡처럼 안쪽에 흰 채움이 있는 그림은 단색으로
   /// 덧칠하면 그 겹침이 사라진다.
   /// 아이콘이 지정되지 않은 항목은 null을 돌려준다(2차 그룹은 텍스트만).
-  Widget? _buildIcon(GnbNavItemData item, {required bool active, required Color fg}) {
+  Widget? _buildIcon(
+    GnbNavItemData item, {
+    required bool active,
+    required Color fg,
+  }) {
     final svgOff = item.assetIconSvgOff;
     if (svgOff != null) {
       final svg = active ? (item.assetIconSvgOn ?? svgOff) : svgOff;
-      final icon = SvgPicture.asset(svg, width: 24, height: 24, fit: BoxFit.contain);
+      final icon = SvgPicture.asset(
+        svg,
+        width: 24,
+        height: 24,
+        fit: BoxFit.contain,
+      );
       return item.isPlaceholder ? Opacity(opacity: 0.35, child: icon) : icon;
     }
     if (item.assetIconOn != null) {
@@ -273,6 +323,13 @@ class GnbNavRow extends StatelessWidget {
     return Icon(materialIcon, size: 20, color: fg);
   }
 }
+
+/// 라벨 ↔ 빨간 점 가로 간격. 점은 라벨 **우상단 대각선**에 올라가므로(위 정렬)
+/// 가로는 2만 띄워도 충분히 떨어져 보인다(사용자 확정).
+const double kGnbDotGap = 2;
+
+/// 빨간 점 지름(사용자 확정). 알림·라이브톡 점과 햄버거 모서리 배지가 같이 쓴다.
+const double kGnbDotSize = 4;
 
 /// `알림` 라벨 옆 빨간 점 — 안 읽은 알림이 있을 때만(Firestore `notificationCenter.total`).
 ///
@@ -307,15 +364,57 @@ class _GnbAlarmDotState extends State<GnbAlarmDot> {
         builder: (context, snap) {
           if (snap.data != true) return const SizedBox.shrink();
           return Padding(
-            padding: const EdgeInsets.only(left: 4),
+            padding: const EdgeInsets.only(left: kGnbDotGap),
             child: Container(
               key: const ValueKey('gnb-alarm-dot'),
-              width: 6,
-              height: 6,
-              decoration: const BoxDecoration(color: SDSColor.red, shape: BoxShape.circle),
+              width: kGnbDotSize,
+              height: kGnbDotSize,
+              decoration: const BoxDecoration(
+                color: SDSColor.red,
+                shape: BoxShape.circle,
+              ),
             ),
           );
         },
+      );
+    });
+  }
+}
+
+/// `라이브톡` 라벨 옆 빨간 점 — 마지막으로 본 뒤로 새 글이 올라왔을 때만.
+///
+/// 라이브톡은 REST라 실시간 푸시가 없으므로 [LiveTalkBadgeWeb]가 최신 글 id를
+/// 주기적으로 폴링해 점을 켜고/끈다. 사이드바가 처음 그려질 때 한 번 등록한다.
+class GnbLiveTalkDot extends StatelessWidget {
+  /// 라벨 옆에 붙일 땐 [kGnbDotGap]만큼 띄우고, 아이콘 모서리 배지로 쓸 땐 붙인다.
+  final bool padLeft;
+
+  const GnbLiveTalkDot({super.key, this.padLeft = true});
+
+  @override
+  Widget build(BuildContext context) {
+    if (!Get.isRegistered<LiveTalkBadgeWeb>()) {
+      Get.put(LiveTalkBadgeWeb(), permanent: true);
+    }
+    final vm = LiveTalkBadgeWeb.to;
+    return Obx(() {
+      vm.seenRev.value; // markSeen 후 재계산 트리거
+      // 로그인/로그아웃으로 유저가 바뀌면 다시 계산되도록 user_id를 관찰.
+      final uid = Get.isRegistered<UserViewModel>()
+          ? Get.find<UserViewModel>().user.user_id as int?
+          : null;
+      if (!vm.hasUnreadFor(uid)) return const SizedBox.shrink();
+      return Padding(
+        padding: EdgeInsets.only(left: padLeft ? kGnbDotGap : 0),
+        child: Container(
+          key: const ValueKey('gnb-livetalk-dot'),
+          width: kGnbDotSize,
+          height: kGnbDotSize,
+          decoration: const BoxDecoration(
+            color: SDSColor.red,
+            shape: BoxShape.circle,
+          ),
+        ),
       );
     });
   }

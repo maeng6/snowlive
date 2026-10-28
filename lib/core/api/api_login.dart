@@ -101,6 +101,33 @@ class LoginAPI {
 
   /// 웹 전용 로그인: uid로만 유저 조회 (device_id/token 안 보냄).
   /// 성공(200/201): {message:'login'|'이관성공', user:{...}} / 404: {message:'온보딩이동'}
+  /// 앱 소셜 로그인 — 네이티브 SDK access_token을 보내 Firebase 커스텀 토큰을 받는다.
+  /// body: {provider:'kakao', access_token:'...'} → data: {ok, custom_token, email, nickname}
+  Future<ApiResponse> socialLogin(Map<String, dynamic> body) async {
+    final response = await http.post(
+      Uri.parse('$baseUrl/social-login/'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode(body),
+    );
+    final data = json.decode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
+    if (response.statusCode == 200 && data['ok'] == true) {
+      return ApiResponse.success(data, statusCode: response.statusCode);
+    }
+    return ApiResponse.error(data, statusCode: response.statusCode);
+  }
+
+  /// 온보딩 미완료 이탈 시 미가입 소셜(카카오/네이버) Firebase 유저 정리 요청.
+  /// 실패해도 조용히 무시(best-effort).
+  Future<void> socialDiscard(Map<String, dynamic> body) async {
+    try {
+      await http.post(
+        Uri.parse('$baseUrl/social-discard/'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode(body),
+      );
+    } catch (_) {}
+  }
+
   Future<ApiResponse> webLogin(Map<String, dynamic> body) async {
     final response = await http.post(
       Uri.parse('$baseUrl/web-login/'),

@@ -124,7 +124,7 @@ class _ResultBody extends StatelessWidget {
               shape:
                   RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
             ),
-            child: Text('시즌권으로 돌아가기',
+            child: Text('데이터랩으로 돌아가기',
                 style: SDSTextStyle.bold
                     .copyWith(fontSize: 15, color: SDSColor.snowliveWhite)),
           ),

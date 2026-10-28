@@ -21,9 +21,6 @@ class RideTrackPainter extends CustomPainter {
     this.smooth = false,
   });
 
-  /// smooth일 때 세그먼트당 보간 분할 수(5배).
-  static const int _subdiv = 5;
-
   static const Color _bg = Color(0xFF0B1220);
   static const Color _poly = Color(0xFF94A3B8);
   static const Color _axis = Color(0xFF334155);
@@ -115,7 +112,7 @@ class RideTrackPainter extends CustomPainter {
       final runStart = <int>{};
       for (final run in runs) {
         runStart.add(pts.length);
-        pts.addAll(smooth ? _smoothRun(run, _subdiv) : run);
+        pts.addAll(smooth ? _smoothRun(run) : run);
       }
       final n = pts.length;
       bool isRunStart(int k) => runStart.contains(k);
@@ -166,17 +163,31 @@ class RideTrackPainter extends CustomPainter {
     }
   }
 
-  /// 한 연속 구간을 Catmull-Rom 스플라인으로 [sub]배 촘촘히 보간한다.
-  List<Offset> _smoothRun(List<Offset> pRun, int sub) {
-    if (pRun.length < 3) return pRun;
+  /// 세그먼트 길이(px)에 비례해 분할 수를 정한다 — GPS가 성겨 점 간격이 멀어도
+  /// 픽셀상 균일(≈3px)하게 쪼개져 재생이 '점으로 뚝뚝' 끊기지 않고 선형으로 흐른다.
+  static int _stepsFor(double distPx) => (distPx / 3).ceil().clamp(2, 160);
+
+  /// 한 연속 구간을 Catmull-Rom 스플라인으로 **길이에 비례해** 촘촘히 보간한다.
+  /// 2점짜리(아주 성긴) 구간도 직선으로 촘촘히 나눠 끊김을 없앤다.
+  List<Offset> _smoothRun(List<Offset> pRun) {
+    if (pRun.length < 2) return pRun;
     final out = <Offset>[];
+    if (pRun.length == 2) {
+      final steps = _stepsFor((pRun[1] - pRun[0]).distance);
+      for (int s = 0; s < steps; s++) {
+        out.add(Offset.lerp(pRun[0], pRun[1], s / steps)!);
+      }
+      out.add(pRun[1]);
+      return out;
+    }
     for (int j = 0; j < pRun.length - 1; j++) {
       final p0 = pRun[j == 0 ? 0 : j - 1];
       final p1 = pRun[j];
       final p2 = pRun[j + 1];
       final p3 = pRun[j + 2 >= pRun.length ? pRun.length - 1 : j + 2];
-      for (int s = 0; s < sub; s++) {
-        out.add(_catmullRom(p0, p1, p2, p3, s / sub));
+      final steps = _stepsFor((p2 - p1).distance);
+      for (int s = 0; s < steps; s++) {
+        out.add(_catmullRom(p0, p1, p2, p3, s / steps));
       }
     }
     out.add(pRun.last);

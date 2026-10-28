@@ -27,6 +27,7 @@ import 'package:com.snowlive/web/widget/w_skeleton_web.dart';
 import 'package:com.snowlive/web/widget/w_web_more_menu_web.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:com.snowlive/web/widget/w_web_toast_web.dart';
 
 /// 크루 목록 열 폭(목업 161:38007 — 240..1114).
 const double kLiveCrewListMaxWidth = 874;
@@ -181,7 +182,7 @@ class _LiveCrewHomeViewWebState extends State<LiveCrewHomeViewWeb> {
   Future<void> _onPhotoMoreAction(LiveTalk talk, WebMoreAction action) async {
     final myUserId = _userVm.user.user_id;
     if (myUserId == null) {
-      Get.snackbar('알림', '로그인이 필요합니다.');
+      showWebToast(context, '로그인이 필요합니다.', title: '알림');
       return;
     }
     final detailVm = Get.find<LiveTalkDetailViewModelWeb>();

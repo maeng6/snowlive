@@ -225,9 +225,10 @@ class _ExpandableTextState extends State<_ExpandableText> {
 
   @override
   Widget build(BuildContext context) {
+    // 본문 글줄은 웹 공통 20(팝업 표준과 같은 값, 사용자 확정).
     final style = SDSTextStyle.regular.copyWith(
       fontSize: 14,
-      height: 22 / 14,
+      height: 20 / 14,
       color: SDSColor.gray800,
     );
 

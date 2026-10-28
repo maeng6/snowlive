@@ -291,7 +291,7 @@ class _FleamarketDetailViewState extends State<FleamarketDetailView> {
                     : (_) async => target == null
                         ? _postMobileComment(detail)
                         : _postMobileReply(detail, target),
-                onGuestTap: () => Get.snackbar('알림', '로그인이 필요합니다.'),
+                onGuestTap: () => showWebToast(context, '로그인이 필요합니다.', title: '알림'),
                 leading: FleamarketSecretToggle(
                   isSecret: isSecret,
                   onTap: target == null
@@ -311,7 +311,7 @@ class _FleamarketDetailViewState extends State<FleamarketDetailView> {
     if (text.isEmpty) return;
     final userId = _userVm.user.user_id;
     if (userId == null) {
-      Get.snackbar('알림', '로그인이 필요합니다.');
+      showWebToast(context, '로그인이 필요합니다.', title: '알림');
       return;
     }
     // 서버는 문자열 `'true'`/`'false'`를 받는다(댓글 위젯과 동일).
@@ -335,7 +335,7 @@ class _FleamarketDetailViewState extends State<FleamarketDetailView> {
     if (text.isEmpty) return;
     final userId = _userVm.user.user_id;
     if (userId == null) {
-      Get.snackbar('알림', '로그인이 필요합니다.');
+      showWebToast(context, '로그인이 필요합니다.', title: '알림');
       return;
     }
     final isSecret = _commentDetailVm.isSecret;

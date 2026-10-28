@@ -519,6 +519,8 @@ class _RankingArchiveViewWebState extends State<RankingArchiveViewWeb> {
                   '${_isResortScoped ? user.resortRank ?? '' : user.overallRank ?? ''}',
                   maxLines: 1,
                   softWrap: false,
+                  // 칸 폭이 한 끗 모자라도 끝자리가 사라지지 않게 잘라내지 않는다.
+                  overflow: TextOverflow.visible,
                   style: SDSTextStyle.bold.copyWith(fontSize: 14, color: SDSColor.gray900),
                 ),
               ),
@@ -634,6 +636,8 @@ class _RankingArchiveViewWebState extends State<RankingArchiveViewWeb> {
                     '${_isResortScoped ? crew.resortRank ?? '' : crew.overallRank ?? ''}',
                     maxLines: 1,
                     softWrap: false,
+                    // 칸 폭이 한 끗 모자라도 끝자리가 사라지지 않게 잘라내지 않는다.
+                    overflow: TextOverflow.visible,
                     style: SDSTextStyle.bold.copyWith(fontSize: 14, color: SDSColor.gray900),
                   ),
                 ),

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:com.snowlive/web/viewmodel/util/vm_imageController_web.dart';
+import 'package:com.snowlive/web/widget/w_web_toast_web.dart';
 
 class FleamarketUpdateViewModelWeb extends GetxController {
 
@@ -120,7 +121,7 @@ class FleamarketUpdateViewModelWeb extends GetxController {
       final remaining =
           5 - _existingImageUrls.length - _newImageFiles.length;
       if (imageList.length > remaining) {
-        Get.snackbar('알림', '사진은 최대 5장까지 등록할 수 있어요.');
+        showWebToast(null, '사진은 최대 5장까지 등록할 수 있어요.', title: '알림');
       }
       if (remaining > 0) {
         _newImageFiles.addAll(imageList.take(remaining));

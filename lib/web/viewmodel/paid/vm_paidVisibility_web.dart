@@ -7,6 +7,10 @@ import 'package:get/get.dart';
 /// 출시 전에는 테스트 대상에게만 true → 시즌권 메뉴·실시간위치 탭 등을 노출.
 /// 어드민에서 paid_features_live를 켜면 전체 유저 true.
 class PaidVisibilityControllerWeb extends GetxController {
+  /// 친구 실시간 위치공유는 이번 시즌 내부 테스트 중이라 화면에서 숨긴다.
+  /// (유료 노출 `isVisible`과 별개 — 출시 시 true로 바꾸면 위치공유 UI가 다시 노출.)
+  static const bool locationShareEnabled = false;
+
   final RxBool showPaid = false.obs;
   // 웹 GNB 메뉴 온오프 맵 {route_prefix: bool}. 키 없으면 노출(true).
   final RxMap<String, bool> menus = <String, bool>{}.obs;

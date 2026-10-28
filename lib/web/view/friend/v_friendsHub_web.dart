@@ -14,8 +14,12 @@ class FriendsHubViewWeb extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // 유료기능 출시 전(테스트 대상 외)에는 '실시간 위치' 탭 없이 친구 목록만 보인다.
+    // 위치공유는 이번 시즌 내부 테스트 중이라 플래그로 전면 숨김.
     return Obx(() {
-      if (!PaidVisibilityControllerWeb.isVisible) {
+      // ⚠️ 관측값(isVisible)을 **항상 먼저** 읽어 Obx에 등록한다. locationShareEnabled가
+      // const false라 `||`로 앞에 두면 단락되어 관측값을 안 읽고 'improper use of Obx'로 터진다.
+      final visible = PaidVisibilityControllerWeb.isVisible;
+      if (!visible || !PaidVisibilityControllerWeb.locationShareEnabled) {
         return const FriendHomeViewWeb();
       }
       return _buildTabbed();

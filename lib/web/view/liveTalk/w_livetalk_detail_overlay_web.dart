@@ -16,6 +16,8 @@ import 'package:com.snowlive/web/widget/w_web_more_menu_web.dart';
 import 'package:com.snowlive/web/widget/w_web_overlay_modal_web.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:com.snowlive/web/widget/w_web_toast_web.dart';
+import 'package:com.snowlive/web/widget/w_web_bottom_fixed_web.dart';
 
 /// 라이브톡 상세 — 사진 + 글 + 댓글을 한 오버레이에 담는다(목업).
 /// 데스크탑은 좌 사진 / 우 댓글 패널, 태블릿은 1열(사진 위 · 댓글 아래).
@@ -132,7 +134,7 @@ class _LiveTalkDetailCardState extends State<_LiveTalkDetailCard> {
         ? await _vm.postComment(text)
         : await _vm.postReply(commentId: target.commentId!, content: text);
     if (!ok) {
-      Get.snackbar('오류', '등록에 실패했어요. 잠시 후 다시 시도해주세요.');
+      showWebToast(context, '등록에 실패했어요. 잠시 후 다시 시도해주세요.', title: '오류');
       return;
     }
     _commentController.clear();
@@ -147,7 +149,7 @@ class _LiveTalkDetailCardState extends State<_LiveTalkDetailCard> {
     if (_vm.detail == null) return;
     final updated = await _vm.toggleLike();
     if (updated == null) {
-      Get.snackbar('알림', '로그인이 필요합니다.');
+      showWebToast(context, '로그인이 필요합니다.', title: '알림');
       return;
     }
     if (mounted) setState(() => _changed = true);
@@ -473,6 +475,8 @@ class _LiveTalkDetailCardState extends State<_LiveTalkDetailCard> {
   /// 댓글 입력 바. [floating]이면 댓글 위에 떠서 바닥에 붙는다 — 경계선 대신
   /// 투명→흰색 페이드를 위에 얹어 댓글이 바 아래로 녹아 사라지게 한다
   /// (목록 하단바와 같은 방식). 아니면 기존처럼 위에 구분선을 둔다.
+  /// [floating]이면 뷰포트 하단에 고정된다 → 셸의 오픈채팅이 덮지 않도록
+  /// [WebBottomFixedBar]로 감싼다(흐름 안에 놓일 때는 가릴 일이 없다).
   Widget _buildInputArea({required bool floating}) {
     final target = _replyTarget;
     final bar = Column(
@@ -486,14 +490,16 @@ class _LiveTalkDetailCardState extends State<_LiveTalkDetailCard> {
         Padding(
           // 입력 바 66 = 여백 10 + 입력창 46 (피그마 80:221670).
           padding: const EdgeInsets.all(10),
-          child: WebCommentInput(
-            controller: _commentController,
-            hintText: target == null ? '댓글을 남겨주세요' : '답글을 남겨주세요',
-            isSubmitting: _vm.isSubmitting,
-            // onSubmit이 null이면 WebCommentInput이 게스트로 취급한다.
-            onSubmit: _vm.isGuest ? null : (_) => _submitComment(),
-            onGuestTap: () => Get.snackbar('알림', '로그인이 필요합니다.'),
-          ),
+          // 웹 자동로그인이 늦게 확정되면 처음엔 게스트로 보였다가 user_id가 채워진다.
+          // Obx로 감싸 로그인 상태가 확정되면 입력창이 바로 활성화되게 한다.
+          child: Obx(() => WebCommentInput(
+                controller: _commentController,
+                hintText: target == null ? '댓글을 남겨주세요' : '답글을 남겨주세요',
+                isSubmitting: _vm.isSubmitting,
+                // onSubmit이 null이면 WebCommentInput이 게스트로 취급한다.
+                onSubmit: _vm.isGuest ? null : (_) => _submitComment(),
+                onGuestTap: () => showWebToast(context, '로그인이 필요합니다.', title: '알림'),
+              )),
         ),
       ],
     );
@@ -525,7 +531,11 @@ class _LiveTalkDetailCardState extends State<_LiveTalkDetailCard> {
             ),
           ),
         ),
-        ColoredBox(color: SDSColor.snowliveWhite, child: bar),
+        // 위 페이드는 콘텐츠가 비치므로 **불투명한 입력 바만** 가리는 높이로 알린다
+        // (WebFloatingBottomBar와 같은 규칙) → 셸의 오픈채팅이 그 위로 비켜선다.
+        WebBottomFixedBar(
+          child: ColoredBox(color: SDSColor.snowliveWhite, child: bar),
+        ),
       ],
     );
   }
@@ -544,7 +554,7 @@ class _LiveTalkDetailCardState extends State<_LiveTalkDetailCard> {
         if (text == null) return;
         final ok = await _vm.updatePost(description: text);
         if (!ok) {
-          Get.snackbar('오류', '수정에 실패했어요.');
+          showWebToast(context, '수정에 실패했어요.', title: '오류');
           return;
         }
         // 상세는 updatePost가 재조회한다. 목록도 반영되게 그 글만 다시 받는다.

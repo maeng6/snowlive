@@ -82,3 +82,6 @@ CLAUDE.md
 
 # Firebase CLI deploy cache
 .firebase/
+
+# Python 바이트코드 캐시 (tool/ 스크립트)
+__pycache__/

@@ -8,7 +8,7 @@ const double kWebPopupWidth = 288;
 
 /// 팝업 카드 셸 — 흰색, 라운드 16, 상단 30 / 좌우 24 패딩.
 /// 하단 패딩은 박스/텍스트 타입 공통 24 (눈으로 맞춘 확정값).
-/// 타이틀 bold 16 gray900(lh24) ↔ 8 ↔ 본문 regular 14 gray600(lh22).
+/// 타이틀 bold 16 gray900(lh24) ↔ 8 ↔ 본문 regular 14 gray600(**lh20**, 사용자 확정).
 /// 본문 색은 피그마 #666 대신 가장 가까운 토큰 gray600(#777) — 토큰 우선 규칙
 class _WebPopupCard extends StatelessWidget {
   final String title;
@@ -58,7 +58,7 @@ class _WebPopupCard extends StatelessWidget {
                   textAlign: TextAlign.center,
                   style: SDSTextStyle.regular.copyWith(
                     fontSize: 14,
-                    height: 22 / 14,
+                    height: 20 / 14,
                     color: SDSColor.gray600,
                   ),
                 ),
@@ -73,15 +73,59 @@ class _WebPopupCard extends StatelessWidget {
   }
 }
 
+/// 팝업 우상단 **닫기 X** 공통 — 목업 확정값(프로필 카드 기준):
+/// 아이콘 26 · gray900 **50%** · 카드 **우상단 16/16**.
+///
+/// hover에서는 **또렷해진다**(50% → 100%). 아이콘 버튼 공통 규칙은 흐려지는
+/// 방향(100% → 60%)이지만, 평소가 이미 50%라 더 흐려지면 거의 안 보인다.
+///
+/// 카드 안에서 `Stack`의 마지막 자식으로 쓰고 `Positioned`는 이 위젯이 들고 있다 —
+/// 흐름(Column) 안에 두면 줄을 차지해 타이틀이 아래로 밀린다.
+class WebPopupCloseButton extends StatefulWidget {
+  final VoidCallback onTap;
+
+  const WebPopupCloseButton({super.key, required this.onTap});
+
+  @override
+  State<WebPopupCloseButton> createState() => _WebPopupCloseButtonState();
+}
+
+class _WebPopupCloseButtonState extends State<WebPopupCloseButton> {
+  bool _hovered = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Positioned(
+      top: 16,
+      right: 16,
+      child: MouseRegion(
+        cursor: SystemMouseCursors.click,
+        onEnter: (_) => setState(() => _hovered = true),
+        onExit: (_) => setState(() => _hovered = false),
+        child: GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: widget.onTap,
+          child: AnimatedOpacity(
+            opacity: _hovered ? 1 : 0.5,
+            duration: const Duration(milliseconds: 150),
+            curve: Curves.easeOut,
+            child: const Icon(Icons.close, size: 26, color: SDSColor.gray900),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 /// 팝업 버튼 공통 — Material 리플 대신 웹 공통 인터랙션을 쓰기 위한 스타일.
 /// (스플래시·오버레이 제거. hover 반응은 [_HoverFade]/배경 블렌드가 담당.)
 ButtonStyle _noSplashStyle() => const ButtonStyle(
-      splashFactory: NoSplash.splashFactory,
-      overlayColor: WidgetStatePropertyAll(Colors.transparent),
-      shadowColor: WidgetStatePropertyAll(Colors.transparent),
-      // hover 색 전환을 애니메이션 없이 즉시 적용(사이드바 버튼과 동일).
-      animationDuration: Duration.zero,
-    );
+  splashFactory: NoSplash.splashFactory,
+  overlayColor: WidgetStatePropertyAll(Colors.transparent),
+  shadowColor: WidgetStatePropertyAll(Colors.transparent),
+  // hover 색 전환을 애니메이션 없이 즉시 적용(사이드바 버튼과 동일).
+  animationDuration: Duration.zero,
+);
 
 /// 텍스트류 hover 시 60% 투명 — 애니메이션 없이 즉시 전환.
 /// 버튼 child 안에서 MouseRegion만 감지하고 히트는 버튼이 그대로 가진다.
@@ -101,10 +145,7 @@ class _HoverFadeState extends State<_HoverFade> {
     return MouseRegion(
       onEnter: (_) => setState(() => _hovered = true),
       onExit: (_) => setState(() => _hovered = false),
-      child: Opacity(
-        opacity: _hovered ? 0.6 : 1.0,
-        child: widget.child,
-      ),
+      child: Opacity(opacity: _hovered ? 0.6 : 1.0, child: widget.child),
     );
   }
 }
@@ -136,7 +177,10 @@ Future<bool> showWebConfirmDialog({
               child: _HoverFade(
                 child: Text(
                   cancelLabel,
-                  style: SDSTextStyle.bold.copyWith(fontSize: 17, color: SDSColor.gray500),
+                  style: SDSTextStyle.bold.copyWith(
+                    fontSize: 17,
+                    color: SDSColor.gray500,
+                  ),
                 ),
               ),
             ),
@@ -199,7 +243,11 @@ Future<String?> showWebCrewApplyDialog({
                 Text(
                   crewName.isEmpty ? '가입 신청하기' : '$crewName에\n가입 신청하기',
                   textAlign: TextAlign.center,
-                  style: SDSTextStyle.bold.copyWith(fontSize: 16, height: 24 / 16, color: SDSColor.gray900),
+                  style: SDSTextStyle.bold.copyWith(
+                    fontSize: 16,
+                    height: 24 / 16,
+                    color: SDSColor.gray900,
+                  ),
                 ),
                 const SizedBox(height: 16),
                 Container(
@@ -207,21 +255,32 @@ Future<String?> showWebCrewApplyDialog({
                     color: const Color(0xFFF6F6F6),
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 10,
+                  ),
                   child: TextField(
                     controller: controller,
                     autofocus: true,
                     minLines: 3,
                     maxLines: 5,
                     maxLength: 200,
-                    style: SDSTextStyle.regular.copyWith(fontSize: 14, height: 1.4, color: SDSColor.gray900),
+                    style: SDSTextStyle.regular.copyWith(
+                      fontSize: 14,
+                      height: 1.4,
+                      color: SDSColor.gray900,
+                    ),
                     decoration: InputDecoration(
                       isDense: true,
                       border: InputBorder.none,
                       counterText: '',
                       hintText: defaultMessage,
                       // 웹 입력칸 공통 힌트색(gray400) · 본문과 같은 줄높이.
-                      hintStyle: SDSTextStyle.regular.copyWith(fontSize: 14, height: 1.4, color: SDSColor.gray400),
+                      hintStyle: SDSTextStyle.regular.copyWith(
+                        fontSize: 14,
+                        height: 1.4,
+                        color: SDSColor.gray400,
+                      ),
                     ),
                   ),
                 ),
@@ -233,8 +292,13 @@ Future<String?> showWebCrewApplyDialog({
                         onPressed: () => close(null),
                         style: _noSplashStyle(),
                         child: _HoverFade(
-                          child: Text('취소',
-                              style: SDSTextStyle.bold.copyWith(fontSize: 17, color: SDSColor.gray500)),
+                          child: Text(
+                            '취소',
+                            style: SDSTextStyle.bold.copyWith(
+                              fontSize: 17,
+                              color: SDSColor.gray500,
+                            ),
+                          ),
                         ),
                       ),
                     ),
@@ -244,8 +308,13 @@ Future<String?> showWebCrewApplyDialog({
                         onPressed: () => close(submitted()),
                         style: _noSplashStyle(),
                         child: _HoverFade(
-                          child: Text('신청하기',
-                              style: SDSTextStyle.bold.copyWith(fontSize: 17, color: SDSColor.snowliveBlue)),
+                          child: Text(
+                            '신청하기',
+                            style: SDSTextStyle.bold.copyWith(
+                              fontSize: 17,
+                              color: SDSColor.snowliveBlue,
+                            ),
+                          ),
                         ),
                       ),
                     ),
@@ -291,7 +360,11 @@ Future<String?> showWebEditTextDialog({
                 Text(
                   title,
                   textAlign: TextAlign.center,
-                  style: SDSTextStyle.bold.copyWith(fontSize: 16, height: 24 / 16, color: SDSColor.gray900),
+                  style: SDSTextStyle.bold.copyWith(
+                    fontSize: 16,
+                    height: 24 / 16,
+                    color: SDSColor.gray900,
+                  ),
                 ),
                 const SizedBox(height: 16),
                 Container(
@@ -299,20 +372,30 @@ Future<String?> showWebEditTextDialog({
                     color: const Color(0xFFF6F6F6),
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 10,
+                  ),
                   child: TextField(
                     controller: controller,
                     autofocus: true,
                     minLines: 3,
                     maxLines: 6,
                     maxLength: maxLength,
-                    style: SDSTextStyle.regular.copyWith(fontSize: 14, height: 1.4, color: SDSColor.gray900),
+                    style: SDSTextStyle.regular.copyWith(
+                      fontSize: 14,
+                      height: 1.4,
+                      color: SDSColor.gray900,
+                    ),
                     decoration: InputDecoration(
                       isDense: true,
                       border: InputBorder.none,
                       counterText: '',
                       hintText: hint,
-                      hintStyle: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray400),
+                      hintStyle: SDSTextStyle.regular.copyWith(
+                        fontSize: 14,
+                        color: SDSColor.gray400,
+                      ),
                     ),
                   ),
                 ),
@@ -324,8 +407,13 @@ Future<String?> showWebEditTextDialog({
                         onPressed: () => close(null),
                         style: _noSplashStyle(),
                         child: _HoverFade(
-                          child: Text('취소',
-                              style: SDSTextStyle.bold.copyWith(fontSize: 17, color: SDSColor.gray500)),
+                          child: Text(
+                            '취소',
+                            style: SDSTextStyle.bold.copyWith(
+                              fontSize: 17,
+                              color: SDSColor.gray500,
+                            ),
+                          ),
                         ),
                       ),
                     ),
@@ -335,8 +423,13 @@ Future<String?> showWebEditTextDialog({
                         onPressed: () => close(controller.text.trim()),
                         style: _noSplashStyle(),
                         child: _HoverFade(
-                          child: Text(confirmLabel,
-                              style: SDSTextStyle.bold.copyWith(fontSize: 17, color: SDSColor.snowliveBlue)),
+                          child: Text(
+                            confirmLabel,
+                            style: SDSTextStyle.bold.copyWith(
+                              fontSize: 17,
+                              color: SDSColor.snowliveBlue,
+                            ),
+                          ),
                         ),
                       ),
                     ),
@@ -390,32 +483,43 @@ Future<bool> showWebBoxPopup({
                     style: _noSplashStyle().copyWith(
                       elevation: const WidgetStatePropertyAll(0),
                       shape: WidgetStatePropertyAll(
-                        RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+                        RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(5),
+                        ),
                       ),
                       backgroundColor: WidgetStateProperty.resolveWith(
                         (states) => states.contains(WidgetState.hovered)
                             ? Color.alphaBlend(
-                                Colors.black.withValues(alpha: 0.1), SDSColor.snowliveBlue)
+                                Colors.black.withValues(alpha: 0.1),
+                                SDSColor.snowliveBlue,
+                              )
                             : SDSColor.snowliveBlue,
                       ),
                     ),
                     child: Text(
                       primaryLabel,
-                      style:
-                          SDSTextStyle.bold.copyWith(fontSize: 16, color: SDSColor.snowliveWhite),
+                      style: SDSTextStyle.bold.copyWith(
+                        fontSize: 16,
+                        color: SDSColor.snowliveWhite,
+                      ),
                     ),
                   )
                 : TextButton(
                     onPressed: () => close(true),
                     style: _noSplashStyle().copyWith(
                       shape: WidgetStatePropertyAll(
-                        RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+                        RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(5),
+                        ),
                       ),
                     ),
                     child: _HoverFade(
                       child: Text(
                         primaryLabel,
-                        style: SDSTextStyle.bold.copyWith(fontSize: 16, color: SDSColor.gray900),
+                        style: SDSTextStyle.bold.copyWith(
+                          fontSize: 16,
+                          color: SDSColor.gray900,
+                        ),
                       ),
                     ),
                   ),
@@ -428,13 +532,18 @@ Future<bool> showWebBoxPopup({
                 onPressed: () => close(false),
                 style: _noSplashStyle().copyWith(
                   shape: WidgetStatePropertyAll(
-                    RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(5),
+                    ),
                   ),
                 ),
                 child: _HoverFade(
                   child: Text(
                     secondaryLabel,
-                    style: SDSTextStyle.bold.copyWith(fontSize: 16, color: SDSColor.gray900),
+                    style: SDSTextStyle.bold.copyWith(
+                      fontSize: 16,
+                      color: SDSColor.gray900,
+                    ),
                   ),
                 ),
               ),

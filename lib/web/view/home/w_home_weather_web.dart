@@ -21,10 +21,9 @@ const double _kDesktopLeftMinGap = 24; // 리조트 ↔ 기온 (spaceBetween 최
 const int _kDesktopLeftFlex = 13; // 좌(리조트·기온) : 우(지표) = 13 : 12
 const int _kDesktopRightFlex = 12;
 // 태블릿(카드 + 링크)
-const double _kTabletCardMaxWidth = 375; // 접힌 카드 기본 폭(피그마)
 const double _kTabletCardPadL = 30;
 const double _kTabletCardPadR = 9; // 칩 터치영역(40) 안의 여백 11을 감안한 보정
-const double _kTabletGapToLinks = 16; // 접힌 카드 ↔ 링크 최소 간격
+const double _kTabletGapToLinks = 24; // 접힌 카드 ↔ 링크 간격(사용자 확정, 16 → 24)
 const double _kTabletMinSpacer = 16; // 리조트 ↔ 기온 최소 간격
 const double _kMetricsWindowWidth = 360; // 펼쳤을 때 지표 창
 const double _kChipGap = 3;
@@ -149,16 +148,16 @@ class _HomeWeatherBarWebState extends State<HomeWeatherBarWeb> {
         );
         if (width >= fit.desktopRowMinWidth) return _buildDesktop();
         if (width >= fit.tabletRowMinWidth) {
-          // 접힌 카드는 피그마 375가 기본이지만, 내용(긴 리조트명 등)이 더 필요하면 그만큼
-          // 늘리고, 링크와 겹치지 않는 폭을 넘지는 않는다. tabletRowMinWidth가 이미
-          // "내용 최소폭 + 간격 + 링크"를 보장하므로 아래 범위는 항상 비어 있지 않다.
+          // 접힌 카드는 **링크 앞까지 남은 폭을 다 채운다**(사용자 확정). 피그마 375로
+          // 고정하면 태블릿에서 카드가 모바일 폭처럼 보이고 링크 왼쪽에 빈 공간이 남는다.
+          // tabletRowMinWidth가 이미 "내용 최소폭 + 간격 + 링크"를 보장하므로 아래
+          // available은 내용 최소폭보다 작아지지 않는다(안전하게 한 번 더 막는다).
           final available = width - fit.linksWidth - _kTabletGapToLinks;
-          final wanted = fit.collapsedCardMinWidth > _kTabletCardMaxWidth
-              ? fit.collapsedCardMinWidth
-              : _kTabletCardMaxWidth;
           return _buildTabletRow(
             total: width,
-            collapsedWidth: wanted < available ? wanted : available,
+            collapsedWidth: available > fit.collapsedCardMinWidth
+                ? available
+                : fit.collapsedCardMinWidth,
           );
         }
         // 두 줄 구성이 다 안 들어가면 모바일처럼 쌓는다(접힌 카드가 링크를 덮지 않게).
@@ -173,7 +172,8 @@ class _HomeWeatherBarWebState extends State<HomeWeatherBarWeb> {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         _buildMobileCard(),
-        const SizedBox(height: SDSSpacing.md),
+        // 날씨 카드 ↔ 링크 줄 22(목업 16에서 6 더함 — 사용자 확정).
+        const SizedBox(height: 22),
         _HomeWeatherLinks(resort: widget.resort, linkUrls: widget.linkUrls, fillWidth: true),
       ],
     );

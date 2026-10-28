@@ -2,6 +2,7 @@ import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/web/routes/routes_web.dart';
 import 'package:com.snowlive/web/util/responsive_web.dart';
 import 'package:com.snowlive/web/widget/w_web_page_header_web.dart';
+import 'package:com.snowlive/web/widget/w_web_bottom_fixed_web.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -74,7 +75,9 @@ class CrewSettingScaffoldWeb extends StatelessWidget {
             // 채운다(웹 공통). 상한을 그대로 두면 폭이 넓은 태블릿에서 가운데 정렬
             // 때문에 여백이 20보다 넓어진다(기록 스캐폴드와 같은 처리).
             constraints: BoxConstraints(
-              maxWidth: context.isDesktop ? kWebSubPageMaxWidth : double.infinity,
+              maxWidth: context.isDesktop
+                  ? kWebSubPageMaxWidth
+                  : double.infinity,
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -88,7 +91,8 @@ class CrewSettingScaffoldWeb extends StatelessWidget {
                   // 들어오면 브라우저 뒤로가기도 갈 곳이 없어 PC에도 남긴다.
                   showBackOnDesktop: true,
                   actions: [
-                    if (hasAction && !isMobile) _buildActionButton(fullWidth: false),
+                    if (hasAction && !isMobile)
+                      _buildActionButton(fullWidth: false),
                   ],
                 ),
                 // 헤더 ↔ 본문 42 (목업 174:86001 — 타이틀 끝 151, 목록 193).
@@ -114,11 +118,18 @@ class CrewSettingScaffoldWeb extends StatelessWidget {
             left: 0,
             right: 0,
             bottom: 0,
-            child: Container(
-              color: SDSColor.snowliveWhite,
-              padding: const EdgeInsets.fromLTRB(
-                  SDSSpacing.md, SDSSpacing.sm, SDSSpacing.md, SDSSpacing.md),
-              child: _buildActionButton(fullWidth: true),
+            // 셸의 오픈채팅이 덮지 않게 높이를 알린다.
+            child: WebBottomFixedBar(
+              child: Container(
+                color: SDSColor.snowliveWhite,
+                padding: const EdgeInsets.fromLTRB(
+                  SDSSpacing.md,
+                  SDSSpacing.sm,
+                  SDSSpacing.md,
+                  SDSSpacing.md,
+                ),
+                child: _buildActionButton(fullWidth: true),
+              ),
             ),
           ),
         ],
@@ -132,8 +143,11 @@ class CrewSettingScaffoldWeb extends StatelessWidget {
   /// 비활성은 **gray200 배경 + 흰 글자**(gray300이 아니다 — 중고거래 `판매하기` 기준).
   Widget _buildActionButton({required bool fullWidth}) {
     final rx = submitting;
-    if (rx == null) return _actionButton(fullWidth: fullWidth, isSubmitting: false);
-    return Obx(() => _actionButton(fullWidth: fullWidth, isSubmitting: rx.value));
+    if (rx == null)
+      return _actionButton(fullWidth: fullWidth, isSubmitting: false);
+    return Obx(
+      () => _actionButton(fullWidth: fullWidth, isSubmitting: rx.value),
+    );
   }
 
   Widget _actionButton({required bool fullWidth, required bool isSubmitting}) {
@@ -145,8 +159,9 @@ class CrewSettingScaffoldWeb extends StatelessWidget {
         elevation: 0,
         shadowColor: Colors.transparent,
         overlayColor: Colors.transparent,
-        minimumSize:
-            fullWidth ? const Size(double.infinity, 48) : const Size(0, 40),
+        minimumSize: fullWidth
+            ? const Size(double.infinity, 48)
+            : const Size(0, 40),
         padding: const EdgeInsets.symmetric(horizontal: 16),
         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
         shape: RoundedRectangleBorder(
@@ -163,7 +178,9 @@ class CrewSettingScaffoldWeb extends StatelessWidget {
               height: 14,
               child: CircularProgressIndicator(
                 strokeWidth: 2,
-                valueColor: AlwaysStoppedAnimation<Color>(SDSColor.snowliveWhite),
+                valueColor: AlwaysStoppedAnimation<Color>(
+                  SDSColor.snowliveWhite,
+                ),
               ),
             ),
             const SizedBox(width: SDSSpacing.sm),
@@ -229,7 +246,10 @@ class _Message extends StatelessWidget {
         children: [
           Text(
             message,
-            style: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray500),
+            style: SDSTextStyle.regular.copyWith(
+              fontSize: 14,
+              color: SDSColor.gray500,
+            ),
           ),
           if (actionLabel != null) ...[
             const SizedBox(height: SDSSpacing.md),
@@ -237,12 +257,20 @@ class _Message extends StatelessWidget {
               onPressed: onAction,
               style: OutlinedButton.styleFrom(
                 side: BorderSide(color: SDSColor.gray200),
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 10,
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(6),
+                ),
               ),
               child: Text(
                 actionLabel!,
-                style: SDSTextStyle.bold.copyWith(fontSize: 14, color: SDSColor.gray900),
+                style: SDSTextStyle.bold.copyWith(
+                  fontSize: 14,
+                  color: SDSColor.gray900,
+                ),
               ),
             ),
           ],

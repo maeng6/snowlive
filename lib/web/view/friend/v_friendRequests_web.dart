@@ -2,7 +2,6 @@ import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/core/model/m_requestFriendList.dart';
 import 'package:com.snowlive/core/viewmodel/friend/vm_friendList.dart';
 import 'package:com.snowlive/web/routes/routes_web.dart';
-import 'package:com.snowlive/web/util/responsive_web.dart';
 import 'package:com.snowlive/web/view/friend/w_friend_page_scaffold_web.dart';
 import 'package:com.snowlive/web/view/friend/w_friend_row_web.dart';
 import 'package:com.snowlive/web/viewmodel/auth/vm_authcheck_web.dart';
@@ -61,9 +60,6 @@ class _FriendRequestsViewWebState extends State<FriendRequestsViewWeb> {
     showWebToast(
       context,
       message,
-      alignment: context.screenType == WebScreenType.mobile
-          ? Alignment.bottomCenter
-          : Alignment.topCenter,
     );
   }
 

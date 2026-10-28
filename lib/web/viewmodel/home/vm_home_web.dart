@@ -18,6 +18,7 @@ import 'package:com.snowlive/core/model/m_resortModel.dart';
 import 'package:com.snowlive/core/model/m_weatherModel.dart';
 import 'package:com.snowlive/core/viewmodel/crew/vm_crewHome.dart';
 import 'package:com.snowlive/core/viewmodel/vm_user.dart';
+import 'package:com.snowlive/web/util/web_image_preload.dart';
 import 'package:com.snowlive/web/view/home/home_sections_web.dart';
 import 'package:get/get.dart';
 
@@ -38,6 +39,7 @@ class HomeViewModelWeb extends GetxController {
   // ── 배너 ──
   final Rxn<Map<String, dynamic>> _bannerDoc = Rxn<Map<String, dynamic>>();
   StreamSubscription<DocumentSnapshot<Map<String, dynamic>>>? _bannerSub;
+  Timer? _bannerFallbackTimer;
 
   List<HomeBanner> get banners => homeVisibleBanners(_bannerDoc.value);
 
@@ -120,6 +122,7 @@ class HomeViewModelWeb extends GetxController {
   @override
   void onClose() {
     _bannerSub?.cancel();
+    _bannerFallbackTimer?.cancel();
     super.onClose();
   }
 
@@ -138,6 +141,7 @@ class HomeViewModelWeb extends GetxController {
 
   Future<void> refreshFromGnb() {
     scrollToTopTick.value++;
+    // 배너는 영구 유지되는 VM의 실시간 스트림이라 재구독이 필요 없다(자동 반영).
     return refreshAll();
   }
 
@@ -157,17 +161,34 @@ class HomeViewModelWeb extends GetxController {
   //     앱이 쓰는 `banner/home`과 분리돼 있어 서로 영향이 없다. ──
   void _listenBanner() {
     _bannerSub?.cancel();
+    _bannerFallbackTimer?.cancel();
+    // Firestore가 끝내 응답(데이터·에러)을 안 줘도 배너 영역이 스켈레톤에 영영
+    // 갇히지 않게, 일정 시간 내 첫 스냅샷이 없으면 기본 슬라이드(로컬 에셋)로 연다.
+    _bannerFallbackTimer = Timer(const Duration(seconds: 4), () {
+      if (!_isBannerLoaded.value) {
+        _bannerDoc.value = null;
+        _isBannerLoaded(true);
+      }
+    });
     _bannerSub = FirebaseFirestore.instance
         .collection(kHomeHeroBannerCollection)
         .doc(kHomeHeroBannerDoc)
         .snapshots()
         .listen(
           (snapshot) {
+            _bannerFallbackTimer?.cancel();
             _bannerDoc.value = snapshot.data();
             _isBannerLoaded(true);
+            // 첫 진입 때 브라우저 이미지 캐시를 데워둔다 → 로그인 후 홈 재진입에도
+            // 네트워크 없이 즉시 뜬다. 같은 URL은 한 번만, 이미지가 바뀌면 그때만 받음.
+            for (final b in banners) {
+              preloadImageWeb(b.imageUrl);
+              preloadImageWeb(b.imageUrlMobile);
+            }
           },
           // 규칙·네트워크 문제로 실패해도 홈의 다른 섹션은 살아 있어야 한다.
           onError: (_) {
+            _bannerFallbackTimer?.cancel();
             _bannerDoc.value = null;
             _isBannerLoaded(true);
           },

@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 import 'package:com.snowlive/firebase_options.dart';
 import 'package:com.snowlive/mobile/util/ride_log_recorder.dart';
 import 'package:com.snowlive/core/util/pushNoitification.dart';
@@ -88,6 +89,8 @@ void main() {
 
   await initializeDateFormatting('ko', null);
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  // 카카오 로그인 SDK 초기화(네이티브 앱 키). 네이티브 앱 키는 클라이언트용이라 포함 가능.
+  KakaoSdk.init(nativeAppKey: 'fdf31779d822436a2a29a68b19619e45');
   await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
 
   Get.put(UserViewModel(), permanent: true);

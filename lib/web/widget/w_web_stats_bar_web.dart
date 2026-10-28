@@ -288,7 +288,7 @@ class _WebStatsBarLinkState extends State<WebStatsBarLink> {
                 ),
               ),
               const SizedBox(width: 10),
-              const _CircleArrow(),
+              const WebCircleGlyph(icon: Icons.chevron_right),
             ],
           ),
         ),
@@ -297,22 +297,30 @@ class _WebStatsBarLinkState extends State<WebStatsBarLink> {
   }
 }
 
-/// 검정 원(16) 안의 흰 꺾쇠 — 목업 `Group 646`. 지표 바 진입 링크에 쓴다.
-class _CircleArrow extends StatelessWidget {
-  const _CircleArrow();
+/// 검정 원(16) 안의 흰 글리프 — 목업 `Group 646`.
+///
+/// 지표 바 진입 링크의 꺾쇠(`가입 신청하기 ❯`)와 크루 소개글 펼치기(`+`/`−`)가
+/// **같은 원 규격**을 쓴다(사용자 확정).
+class WebCircleGlyph extends StatelessWidget {
+  final IconData icon;
+
+  const WebCircleGlyph({super.key, required this.icon});
+
+  /// 원 지름. 호출부가 자리를 잴 때 쓴다(소개글 한 줄 판정 등).
+  static const double size = 16;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 16,
-      height: 16,
+      width: size,
+      height: size,
       decoration: const BoxDecoration(
         color: SDSColor.snowliveBlack,
         shape: BoxShape.circle,
       ),
       alignment: Alignment.center,
       // 원 안에 꽉 차지 않게 12로 그린다(목업 꺾쇠가 원 지름의 약 7/16을 차지한다).
-      child: const Icon(Icons.chevron_right, size: 12, color: SDSColor.snowliveWhite),
+      child: Icon(icon, size: 12, color: SDSColor.snowliveWhite),
     );
   }
 }

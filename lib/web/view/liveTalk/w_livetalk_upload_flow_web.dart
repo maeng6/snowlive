@@ -8,6 +8,7 @@ import 'package:com.snowlive/web/widget/w_web_switch_web.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:com.snowlive/web/widget/w_web_toast_web.dart';
 
 /// `라이브톡 올리기` — 사진 선택 → 글 작성 2단계(목업).
 /// 등록에 성공하면 true를 리턴해 호출자가 피드를 새로고침한다.
@@ -115,7 +116,7 @@ class _UploadFlowState extends State<_UploadFlow> {
       secret: _isCrewTalk ? !_isPublic : null,
     );
     if (!ok) {
-      Get.snackbar('오류', '업로드에 실패했어요. 잠시 후 다시 시도해주세요.');
+      showWebToast(context, '업로드에 실패했어요. 잠시 후 다시 시도해주세요.', title: '오류');
       return;
     }
     widget.onClose(true);

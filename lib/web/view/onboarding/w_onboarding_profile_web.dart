@@ -1,5 +1,6 @@
 import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/core/model/m_resortModel.dart';
+import 'package:com.snowlive/web/util/responsive_web.dart';
 import 'package:com.snowlive/web/view/onboarding/w_onboarding_profile_image_picker_web.dart';
 import 'package:com.snowlive/web/viewmodel/auth/vm_onboarding_web.dart';
 import 'package:com.snowlive/web/widget/w_network_image_web.dart';
@@ -11,7 +12,20 @@ import 'package:image_picker/image_picker.dart';
 
 /// 온보딩에서 고를 수 있는 리조트 index. index 4(에덴밸리리조트)는 제외한다 —
 /// 모바일 `w_favoriteResort.dart:58`의 `if (index != 4)`와 같은 규칙이다.
-const List<int> kOnboardingSelectableResortIndexes = [0, 1, 2, 3, 5, 6, 7, 8, 9, 10, 11, 12];
+const List<int> kOnboardingSelectableResortIndexes = [
+  0,
+  1,
+  2,
+  3,
+  5,
+  6,
+  7,
+  8,
+  9,
+  10,
+  11,
+  12,
+];
 
 const double _kProfileCircleSize = 120;
 const double _kProfileBadgeSize = 28;
@@ -32,82 +46,122 @@ class OnboardingProfileStepWeb extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        const SizedBox(height: SDSSpacing.md),
         Center(
-          child: Obx(() => ProfileImageCircleWeb(
-                image: vm.profileImage,
-                onPick: () => _pickImage(context),
-                onRemove: () => vm.setProfileImage(null),
-              )),
+          child: Obx(
+            () => ProfileImageCircleWeb(
+              image: vm.profileImage,
+              onPick: () => _pickImage(context),
+              onRemove: () => vm.setProfileImage(null),
+            ),
+          ),
+        ),
+        // 목업(31:1903 → 31:1858) — 프로필 원 바닥 312 → 폼 342 = 30.
+        const SizedBox(height: 30),
+        Obx(
+          () => WebFormTextField(
+            label: '닉네임',
+            isRequired: true,
+            controller: vm.nicknameController,
+            hint: '이름을 입력해주세요(최대 10자 이내)',
+            maxLength: 10,
+            // 앱과 동일하게 공백 입력을 막는다(v_setProfile.dart:267).
+            inputFormatters: [FilteringTextInputFormatter.deny(RegExp(r'\s'))],
+            errorText: vm.nicknameError,
+          ),
+        ),
+        // 목업(31:1858) — 필드 사이 32(그룹 아래 16 + 간격 6 + 그룹 위 10).
+        const SizedBox(height: SDSSpacing.xl),
+        Obx(
+          () => WebFormDropdownField<int>(
+            label: '자주가는 스키장',
+            isRequired: true,
+            value: vm.hasResortSelected
+                ? (resortNameList[vm.selectedResortIndex] ?? '')
+                : '자주가는 스키장을 선택해주세요.',
+            placeholder: '자주가는 스키장을 선택해주세요.',
+            values: kOnboardingSelectableResortIndexes,
+            labelOf: (index) => resortNameList[index] ?? '',
+            onSelected: vm.selectResort,
+            helperText: '자주가는 스키장의 날씨와 스키장 정보 확인과 그 외 맞춤 서비스를 제공받으실 수 있습니다',
+            sheetShowsLabelTitle: true,
+            sheetAlignStart: true,
+          ),
         ),
         const SizedBox(height: SDSSpacing.xl),
-        Obx(() => WebFormTextField(
-              label: '닉네임',
-              isRequired: true,
-              controller: vm.nicknameController,
-              hint: '이름을 입력해주세요(최대 10자 이내)',
-              maxLength: 10,
-              // 앱과 동일하게 공백 입력을 막는다(v_setProfile.dart:267).
-              inputFormatters: [FilteringTextInputFormatter.deny(RegExp(r'\s'))],
-              errorText: vm.nicknameError,
-            )),
-        const SizedBox(height: SDSSpacing.md),
-        Obx(() => WebFormDropdownField<int>(
-              label: '자주가는 스키장',
-              isRequired: true,
-              value: vm.hasResortSelected
-                  ? (resortNameList[vm.selectedResortIndex] ?? '')
-                  : '자주가는 스키장을 선택해주세요.',
-              placeholder: '자주가는 스키장을 선택해주세요.',
-              values: kOnboardingSelectableResortIndexes,
-              labelOf: (index) => resortNameList[index] ?? '',
-              onSelected: vm.selectResort,
-              helperText: '자주가는 스키장의 날씨와 스키장 정보 확인과 그 외 맞춤 서비스를 제공받으실 수 있습니다',
-              sheetShowsLabelTitle: true,
-              sheetAlignStart: true,
-            )),
-        const SizedBox(height: SDSSpacing.md),
         // 목업에는 닉네임·스키장에만 `*`가 있지만 4개 모두 없으면 가입이 안 된다
         // (서버가 skiorboard/sex를 blank로 거부한다) → 전부 필수로 표시한다.
-        Obx(() => WebFormDropdownField<String>(
-              label: '스키를 타시나요? 보드를 타시나요?',
-              isRequired: true,
-              value: vm.skiOrBoard.isEmpty ? '선택하기' : vm.skiOrBoard,
-              placeholder: '선택하기',
-              values: kOnboardingSkiOrBoardOptions,
-              labelOf: (value) => value,
-              onSelected: vm.selectSkiOrBoard,
-              sheetShowsLabelTitle: true,
-              sheetAlignStart: true,
-            )),
-        const SizedBox(height: SDSSpacing.md),
-        Obx(() => WebFormDropdownField<String>(
-              label: '성별은요?',
-              isRequired: true,
-              value: vm.sex.isEmpty ? '선택하기' : vm.sex,
-              placeholder: '선택하기',
-              values: kOnboardingSexOptions,
-              labelOf: (value) => value,
-              onSelected: vm.selectSex,
-              sheetShowsLabelTitle: true,
-              sheetAlignStart: true,
-            )),
-        const SizedBox(height: SDSSpacing.xxl),
+        Obx(
+          () => WebFormDropdownField<String>(
+            label: '스키를 타시나요? 보드를 타시나요?',
+            isRequired: true,
+            value: vm.skiOrBoard.isEmpty ? '선택하기' : vm.skiOrBoard,
+            placeholder: '선택하기',
+            values: kOnboardingSkiOrBoardOptions,
+            labelOf: (value) => value,
+            onSelected: vm.selectSkiOrBoard,
+            sheetShowsLabelTitle: true,
+            sheetAlignStart: true,
+          ),
+        ),
+        const SizedBox(height: SDSSpacing.xl),
+        Obx(
+          () => WebFormDropdownField<String>(
+            label: '성별은요?',
+            isRequired: true,
+            value: vm.sex.isEmpty ? '선택하기' : vm.sex,
+            placeholder: '선택하기',
+            values: kOnboardingSexOptions,
+            labelOf: (value) => value,
+            onSelected: vm.selectSex,
+            sheetShowsLabelTitle: true,
+            sheetAlignStart: true,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+/// 폼 아래 안내문(+ 제출 오류). **태블릿·모바일은 버튼 바로 위**에 붙고(사용자 확정),
+/// 데스크탑은 폼 흐름에 이어진다 → 스캐폴드의 `bottomContent`로 넘긴다.
+class OnboardingProfileNoteWeb extends StatelessWidget {
+  final OnboardingViewModelWeb vm;
+
+  const OnboardingProfileNoteWeb({super.key, required this.vm});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        // 데스크탑만 폼 바닥과의 간격이 필요하다(목업 31:1925 — 794 → 819 = 25).
+        if (context.isDesktop) const SizedBox(height: 25),
         Text(
           '입력해주신 정보들은 이후에도 변경이 가능합니다.',
-          style: SDSTextStyle.regular.copyWith(fontSize: 12, color: SDSColor.gray400),
+          // 목업(31:1925) — Regular 13, 글줄 1.4. 색은 gray400(사용자 확정).
+          style: SDSTextStyle.regular.copyWith(
+            fontSize: 13,
+            height: 1.4,
+            color: SDSColor.gray400,
+          ),
           textAlign: TextAlign.center,
         ),
-        Obx(() => vm.errorMessage.isEmpty
-            ? const SizedBox.shrink()
-            : Padding(
-                padding: const EdgeInsets.only(top: SDSSpacing.sm),
-                child: Text(
-                  vm.errorMessage,
-                  style: SDSTextStyle.regular.copyWith(fontSize: 13, color: SDSColor.red),
-                  textAlign: TextAlign.center,
+        Obx(
+          () => vm.errorMessage.isEmpty
+              ? const SizedBox.shrink()
+              : Padding(
+                  padding: const EdgeInsets.only(top: SDSSpacing.sm),
+                  child: Text(
+                    vm.errorMessage,
+                    style: SDSTextStyle.regular.copyWith(
+                      fontSize: 13,
+                      color: SDSColor.red,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
                 ),
-              )),
+        ),
       ],
     );
   }
@@ -136,8 +190,10 @@ class ProfileImageCircleWeb extends StatelessWidget {
     final hasImage = image != null || url.isNotEmpty;
 
     return SizedBox(
-      width: _kProfileCircleSize + 4,
-      height: _kProfileCircleSize + 4,
+      // 앱과 같게 **원 크기 그대로**(120) — 예전에는 124로 두고 배지를 바깥에
+      // 걸쳤는데, 앱은 원 안쪽 가장자리에 물려 있다.
+      width: _kProfileCircleSize,
+      height: _kProfileCircleSize,
       child: Stack(
         children: [
           GestureDetector(
@@ -150,28 +206,31 @@ class ProfileImageCircleWeb extends StatelessWidget {
                     // 웹에서 XFile.path는 blob URL이다. dart:io FileImage는 못 쓴다.
                     ? Image.network(image!.path, fit: BoxFit.cover)
                     : url.isNotEmpty
-                        ? WebNetworkImage(url: url, fit: BoxFit.cover)
-                        : Image.asset('assets/imgs/profile/img_profile_default_circle.png',
-                            fit: BoxFit.cover),
+                    ? WebNetworkImage(url: url, fit: BoxFit.cover)
+                    : Image.asset(
+                        'assets/imgs/profile/img_profile_default_circle.png',
+                        fit: BoxFit.cover,
+                      ),
               ),
             ),
           ),
+          // 삭제 / 추가 배지 — **앱과 같은 에셋·크기·위치**(사용자 확정).
+          // 앱(`v_friendDetailUpdate.dart`)은 112px PNG를 scale 4로 그려 28이 되고,
+          // 원 안쪽 오른쪽 아래 4에 물려 있다. Material 아이콘을 색 원에 넣던
+          // 예전 방식은 앱과 모양이 달랐다.
           Positioned(
-            right: 0,
-            bottom: 0,
-            child: GestureDetector(
-              onTap: hasImage ? onRemove : onPick,
-              child: Container(
-                width: _kProfileBadgeSize,
-                height: _kProfileBadgeSize,
-                decoration: BoxDecoration(
-                  color: hasImage ? SDSColor.snowliveBlack : SDSColor.snowliveBlue,
-                  shape: BoxShape.circle,
-                ),
-                child: Icon(
-                  hasImage ? Icons.close : Icons.add,
-                  size: 18,
-                  color: SDSColor.snowliveWhite,
+            right: 4,
+            bottom: 4,
+            child: MouseRegion(
+              cursor: SystemMouseCursors.click,
+              child: GestureDetector(
+                onTap: hasImage ? onRemove : onPick,
+                child: Image.asset(
+                  hasImage
+                      ? 'assets/imgs/icons/icon_profile_delete.png'
+                      : 'assets/imgs/icons/icon_profile_add.png',
+                  width: _kProfileBadgeSize,
+                  height: _kProfileBadgeSize,
                 ),
               ),
             ),

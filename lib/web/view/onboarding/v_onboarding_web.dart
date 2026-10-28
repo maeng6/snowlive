@@ -4,6 +4,7 @@ import 'package:com.snowlive/web/view/onboarding/w_onboarding_profile_web.dart';
 import 'package:com.snowlive/web/view/onboarding/w_onboarding_scaffold_web.dart';
 import 'package:com.snowlive/web/view/onboarding/w_onboarding_terms_web.dart';
 import 'package:com.snowlive/web/viewmodel/auth/vm_authcheck_web.dart';
+import 'package:com.snowlive/web/viewmodel/auth/vm_login_web.dart';
 import 'package:com.snowlive/web/viewmodel/auth/vm_onboarding_web.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -36,6 +37,8 @@ class _OnboardingViewWebState extends State<OnboardingViewWeb> {
     _worker = ever<WebOnboardingStatus>(vm.statusRx, (status) {
       if (status != WebOnboardingStatus.success || _completeShown) return;
       _completeShown = true;
+      // 가입 완료 → 소셜 이탈 정리(언로드 비콘) 해제.
+      Get.find<LoginViewModelWeb>().markSignupComplete();
       // 가입이 끝나면 로그인된 상태다. 자동로그인 상태도 맞춰줘야 이 값을 보는
       // 화면들이 로그인 전으로 남지 않는다(로그인 화면과 같은 이유).
       Get.find<AuthCheckViewModelWeb>().markAuthenticated();
@@ -46,6 +49,10 @@ class _OnboardingViewWebState extends State<OnboardingViewWeb> {
   @override
   void dispose() {
     _worker?.dispose();
+    // 가입을 끝내지 않고 온보딩을 벗어나면(뒤로가기·화면 이동) 미가입 소셜 계정을 정리.
+    if (!_completeShown) {
+      Get.find<LoginViewModelWeb>().discardPendingSocialSignup();
+    }
     super.dispose();
   }
 
@@ -66,20 +73,30 @@ class _OnboardingViewWebState extends State<OnboardingViewWeb> {
   @override
   Widget build(BuildContext context) {
     if (_step == 0) {
-      return Obx(() => OnboardingScaffoldWeb(
-            onBack: _onBack,
-            primaryLabel: '다음',
-            onPrimary: vm.canProceedTerms ? () => setState(() => _step = 1) : null,
-            child: OnboardingTermsStepWeb(vm: vm),
-          ));
-    }
-
-    return Obx(() => OnboardingScaffoldWeb(
+      return Obx(
+        () => OnboardingScaffoldWeb(
           onBack: _onBack,
           primaryLabel: '다음',
-          onPrimary: vm.canSubmitProfile ? vm.submit : null,
-          isSubmitting: vm.isSubmitting,
-          child: OnboardingProfileStepWeb(vm: vm),
-        ));
+          onPrimary: vm.canProceedTerms
+              ? () => setState(() => _step = 1)
+              : null,
+          // 태블릿·모바일은 약관 블록이 버튼과 함께 화면 하단에 붙는다(목업).
+          bottomContent: OnboardingTermsAgreementsWeb(vm: vm),
+          child: OnboardingTermsStepWeb(vm: vm),
+        ),
+      );
+    }
+
+    return Obx(
+      () => OnboardingScaffoldWeb(
+        onBack: _onBack,
+        primaryLabel: '다음',
+        onPrimary: vm.canSubmitProfile ? vm.submit : null,
+        isSubmitting: vm.isSubmitting,
+        // 태블릿·모바일은 안내문이 버튼 바로 위에 붙는다(사용자 확정).
+        bottomContent: OnboardingProfileNoteWeb(vm: vm),
+        child: OnboardingProfileStepWeb(vm: vm),
+      ),
+    );
   }
 }

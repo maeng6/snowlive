@@ -2,7 +2,6 @@ import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/core/model/m_crewApplyList.dart';
 import 'package:com.snowlive/web/routes/routes_web.dart';
 import 'package:com.snowlive/web/util/crew_visual_web.dart';
-import 'package:com.snowlive/web/util/responsive_web.dart';
 import 'package:com.snowlive/web/view/liveCrew/w_crew_setting_scaffold_web.dart';
 import 'package:com.snowlive/web/view/liveCrew/w_crew_setting_widgets_web.dart';
 import 'package:com.snowlive/web/viewmodel/crew/vm_crewJoin_web.dart';
@@ -43,9 +42,6 @@ class _CrewMyApplicationsViewWebState extends State<CrewMyApplicationsViewWeb> {
     showWebToast(
       context,
       message,
-      alignment: context.screenType == WebScreenType.mobile
-          ? Alignment.bottomCenter
-          : Alignment.topCenter,
     );
   }
 

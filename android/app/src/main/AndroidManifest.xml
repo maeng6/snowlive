@@ -18,6 +18,12 @@
     <!-- 배터리 최적화 제외 요청 권한 (백그라운드 위치 서비스 안정적 실행) -->
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
 
+    <!-- 카카오톡/네이버앱 설치 확인(Android 11+ 패키지 가시성) -->
+    <queries>
+        <package android:name="com.kakao.talk" />
+        <package android:name="com.nhn.android.search" />
+    </queries>
+
     <!-- 앱 설정 -->
     <application
         android:usesCleartextTraffic="true"
@@ -30,6 +36,24 @@
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_channel_id"
             android:value="high_importance_channel" />
+
+        <!-- 카카오 로그인 리다이렉트(카카오계정 웹 로그인 복귀) -->
+        <activity
+            android:name="com.kakao.sdk.flutter.AuthCodeCustomTabsActivity"
+            android:exported="true">
+            <intent-filter android:label="flutter_web_auth">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <!-- kakao{NATIVE_APP_KEY}://oauth -->
+                <data android:scheme="kakaofdf31779d822436a2a29a68b19619e45" android:host="oauth" />
+            </intent-filter>
+        </activity>
+
+        <!-- 네이버 로그인 SDK 설정 -->
+        <meta-data android:name="com.naver.sdk.clientId" android:value="@string/naver_client_id" />
+        <meta-data android:name="com.naver.sdk.clientSecret" android:value="@string/naver_client_secret" />
+        <meta-data android:name="com.naver.sdk.clientName" android:value="@string/naver_client_name" />
 
         <!-- 메인 액티비티 설정 -->
         <activity

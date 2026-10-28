@@ -3,6 +3,7 @@ import 'package:com.snowlive/web/widget/w_web_popup_web.dart' show showWebConfir
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:com.snowlive/web/widget/w_web_toast_web.dart';
 
 export 'package:com.snowlive/web/widget/w_web_popup_web.dart' show showWebConfirmDialog;
 
@@ -150,7 +151,7 @@ Future<void> handleWebMoreAction(
       );
       if (!ok) return;
       final done = await onDelete();
-      Get.snackbar(done ? '삭제 완료' : '삭제 실패', done ? '삭제되었어요.' : '잠시 후 다시 시도해 주세요.');
+      showWebToast(context, done ? '삭제되었어요.' : '잠시 후 다시 시도해 주세요.', title: done ? '삭제 완료' : '삭제 실패');
 
     case WebMoreAction.report:
     case WebMoreAction.reportPost:
@@ -208,11 +209,11 @@ void _showResult(
 }) {
   switch (result) {
     case WebActionResult.done:
-      Get.snackbar(doneTitle, doneMessage);
+      showWebToast(null, doneMessage, title: doneTitle);
     case WebActionResult.duplicated:
-      Get.snackbar(duplicatedTitle, duplicatedMessage);
+      showWebToast(null, duplicatedMessage, title: duplicatedTitle);
     case WebActionResult.failed:
-      Get.snackbar('처리 실패', '잠시 후 다시 시도해 주세요.');
+      showWebToast(null, '잠시 후 다시 시도해 주세요.', title: '처리 실패');
   }
 }
 
