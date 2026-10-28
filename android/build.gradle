@@ -1,5 +1,5 @@
 buildscript {
-    ext.kotlin_version = '2.1.0'  // ✅ Kotlin 버전 업그레이드
+    ext.kotlin_version = '2.2.20'  // ✅ Kotlin 버전 업그레이드
 
     ext {
         compileSdkVersion   = 36    // ✅ compileSdk 상향 (mobile_scanner 요구)
@@ -16,7 +16,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:8.6.1'             // ⬅️ 업그레이드
+        classpath 'com.android.tools.build:gradle:8.11.1'             // ⬅️ 업그레이드
         classpath 'com.google.gms:google-services:4.4.0'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
