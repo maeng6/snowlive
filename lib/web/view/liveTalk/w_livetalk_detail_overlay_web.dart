@@ -17,6 +17,7 @@ import 'package:com.snowlive/web/widget/w_web_overlay_modal_web.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:com.snowlive/web/widget/w_web_toast_web.dart';
+import 'package:com.snowlive/web/widget/w_web_bottom_fixed_web.dart';
 
 /// 라이브톡 상세 — 사진 + 글 + 댓글을 한 오버레이에 담는다(목업).
 /// 데스크탑은 좌 사진 / 우 댓글 패널, 태블릿은 1열(사진 위 · 댓글 아래).
@@ -474,6 +475,8 @@ class _LiveTalkDetailCardState extends State<_LiveTalkDetailCard> {
   /// 댓글 입력 바. [floating]이면 댓글 위에 떠서 바닥에 붙는다 — 경계선 대신
   /// 투명→흰색 페이드를 위에 얹어 댓글이 바 아래로 녹아 사라지게 한다
   /// (목록 하단바와 같은 방식). 아니면 기존처럼 위에 구분선을 둔다.
+  /// [floating]이면 뷰포트 하단에 고정된다 → 셸의 오픈채팅이 덮지 않도록
+  /// [WebBottomFixedBar]로 감싼다(흐름 안에 놓일 때는 가릴 일이 없다).
   Widget _buildInputArea({required bool floating}) {
     final target = _replyTarget;
     final bar = Column(
@@ -528,7 +531,11 @@ class _LiveTalkDetailCardState extends State<_LiveTalkDetailCard> {
             ),
           ),
         ),
-        ColoredBox(color: SDSColor.snowliveWhite, child: bar),
+        // 위 페이드는 콘텐츠가 비치므로 **불투명한 입력 바만** 가리는 높이로 알린다
+        // (WebFloatingBottomBar와 같은 규칙) → 셸의 오픈채팅이 그 위로 비켜선다.
+        WebBottomFixedBar(
+          child: ColoredBox(color: SDSColor.snowliveWhite, child: bar),
+        ),
       ],
     );
   }

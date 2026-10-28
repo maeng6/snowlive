@@ -54,13 +54,12 @@ void main() {
     expect(find.text('앱 다운로드'), findsOneWidget);
   });
 
-  testWidgets('PC 카드는 QR이 한 장이 되면서 팝업 표준 폭으로 돌아왔다', (tester) async {
+  testWidgets('PC 카드 폭은 390 — QR이 한 장이 돼도 좁히지 않는다', (tester) async {
     await pumpModal(tester, 1440);
-    // 카드 폭 288 — 예전에는 QR 2장 때문에 390이었다.
     final card = tester.getSize(find.ancestor(
       of: find.byType(QrImageView),
       matching: find.byType(ConstrainedBox),
     ).last);
-    expect(card.width, lessThanOrEqualTo(288));
+    expect(card.width, 390);
   });
 }

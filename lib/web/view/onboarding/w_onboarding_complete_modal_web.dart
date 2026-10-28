@@ -81,8 +81,10 @@ class _DesktopCompleteCard extends StatelessWidget {
       borderRadius: BorderRadius.circular(16),
       clipBehavior: Clip.antiAlias,
       child: ConstrainedBox(
-        // QR이 한 장이 되면서 팝업 표준 폭으로 돌아왔다(예전엔 2장 때문에 390).
-        constraints: const BoxConstraints(maxWidth: kWebPopupWidth),
+        // PC 카드만 팝업 표준(288)보다 넓은 390을 쓴다. QR이 한 장이 되고도
+        // 좁히지 않는다 — 본문이 두 줄로 들어가고 QR 블록도 여유가 있어야 한다
+        // (사용자 확정).
+        constraints: const BoxConstraints(maxWidth: 390),
         child: Stack(
           children: [
             Padding(
@@ -129,7 +131,7 @@ class _DesktopCompleteCard extends StatelessWidget {
 /// 앱 설치 QR 한 장 + 아래 라벨 — **라벨까지 한 박스**로 묶는다(사용자 확정).
 /// 박스는 gray100 라인 · 라운드 8 · 패딩 12.
 ///
-/// 두 장일 때는 QR이 100이었다. 한 장이 되면서 카드 안쪽(288 − 좌우 24 = 240)에
+/// 두 장일 때는 QR이 100이었다. 한 장이 되면서 카드 안쪽(390 − 좌우 24 = 342)에
 /// 여유가 생겨 140으로 키운다 — 멀리서도 스캔이 잘 된다.
 class _AppDownloadQr extends StatelessWidget {
   static const double _qrSize = 140;
@@ -182,7 +184,7 @@ class _MobileCompleteCard extends StatelessWidget {
       borderRadius: BorderRadius.circular(16),
       clipBehavior: Clip.antiAlias,
       child: ConstrainedBox(
-        // 웹 팝업 표준 폭 288 — PC 카드도 QR이 한 장이 되면서 같은 폭이다.
+        // 모바일은 웹 팝업 표준 폭 288(PC 카드만 390을 쓴다).
         constraints: const BoxConstraints(maxWidth: kWebPopupWidth),
         child: Padding(
           // 웹 팝업 표준 패딩 — 좌우 24 · 위 30 · 아래 24.
@@ -208,13 +210,17 @@ class _MobileCompleteCard extends StatelessWidget {
               // 팝업 표준 — 본문 ↔ 버튼 30.
               const SizedBox(height: 30),
               _CompleteButton(label: '로그인하기', onTap: onClose),
-              const SizedBox(height: SDSSpacing.xs),
+              // 4로는 위 버튼에 붙어 보였다 → 8(사용자 확정).
+              // TextButton이 세로 패딩을 더 가지므로 체감 간격은 이보다 넓다.
+              const SizedBox(height: SDSSpacing.sm),
               TextButton(
                 onPressed: openAppStoreForCurrentPlatform,
                 child: Text(
                   '앱 다운로드',
+                  // 위 `로그인하기`와 같은 Bold 16 — 나란히 놓인 두 버튼이라
+                  // 글자 크기가 다르면 아래쪽이 덜 중요한 것처럼 보인다(사용자 확정).
                   style: SDSTextStyle.bold.copyWith(
-                    fontSize: 14,
+                    fontSize: 16,
                     color: SDSColor.gray900,
                   ),
                 ),

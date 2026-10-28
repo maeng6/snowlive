@@ -15,6 +15,7 @@ import 'package:com.snowlive/web/widget/w_web_page_header_web.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:com.snowlive/web/widget/w_web_toast_web.dart';
+import 'package:com.snowlive/web/widget/w_web_bottom_fixed_web.dart';
 
 /// 커뮤니티 글 올리기 진입 — 게스트면 로그인 안내 다이얼로그, 로그인 상태면 작성
 /// 화면으로 보낸다(중고거래 openFleamarketUpload와 동일한 패턴). 자동로그인 확인
@@ -274,7 +275,10 @@ class _CommunityUploadViewWebState extends State<CommunityUploadViewWeb> {
             right: 0,
             bottom: 0,
             child: Obx(
-              () => _showActions ? _buildBottomBar(context) : const SizedBox.shrink(),
+              // 뷰포트 하단 고정이라 셸의 오픈채팅이 버튼을 덮는다 → 감싼다.
+              () => _showActions
+                  ? WebBottomFixedBar(child: _buildBottomBar(context))
+                  : const SizedBox.shrink(),
             ),
           ),
         ],

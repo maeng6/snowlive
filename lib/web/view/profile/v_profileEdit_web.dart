@@ -18,6 +18,7 @@ import 'package:com.snowlive/web/widget/w_web_toast_web.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:com.snowlive/web/widget/w_web_bottom_fixed_web.dart';
 
 /// PC 폼 폭. 입력 항목이 짧아(닉네임 10자 등) 글쓰기 폼(800)처럼 넓히면 칸만 길어진다 →
 /// 온보딩 프로필 단계(360)보다 조금 넓은 한 열.
@@ -174,16 +175,19 @@ class _ProfileEditViewWebState extends State<ProfileEditViewWeb> {
       if (!_showActions) return const SizedBox.shrink();
       if (isMobile)
         return WebFloatingBottomBar(child: _buildSaveButton(expand: true));
-      return Container(
-        decoration: BoxDecoration(
-          color: SDSColor.snowliveWhite,
-          border: Border(top: BorderSide(color: SDSColor.gray100)),
+      // PC도 뷰포트 하단 고정이라 오픈채팅이 저장 버튼을 덮는다 → 감싼다.
+      return WebBottomFixedBar(
+        child: Container(
+          decoration: BoxDecoration(
+            color: SDSColor.snowliveWhite,
+            border: Border(top: BorderSide(color: SDSColor.gray100)),
+          ),
+          padding: const EdgeInsets.symmetric(
+            horizontal: 20,
+            vertical: SDSSpacing.md,
+          ),
+          child: _buildSaveButton(expand: true),
         ),
-        padding: const EdgeInsets.symmetric(
-          horizontal: 20,
-          vertical: SDSSpacing.md,
-        ),
-        child: _buildSaveButton(expand: true),
       );
     });
 

@@ -11,13 +11,19 @@ import 'package:get/get.dart';
 
 /// 햄버거 글리프가 48 IconButton 안에서 **실제로 칠하는 범위는 x 15~32 · y 18~29**
 /// (AnimatedIcons.menu_close 24px 실측). 점은 그 우상단 모서리에서 대각선으로
-/// [kGnbDotGap]만큼 띄운다 — 예전 값(우측 10 · 상단 10 · 6px 점)은 글리프 오른쪽
-/// 끝에 딱 붙어 겹쳐 보였다.
+/// [_kHamburgerDotGap]만큼 띄운다 — 예전 값(우측 10 · 상단 10 · 6px 점)은 글리프
+/// 오른쪽 끝에 딱 붙어 겹쳐 보였다.
 const double _kHamburgerGlyphRight = 32;
 const double _kHamburgerGlyphTop = 18;
+
+/// 햄버거만 1로 둔다(사용자 확정). 라벨 옆 점은 글자와 떨어뜨려야 해서 [kGnbDotGap]
+/// (2)이지만, 아이콘 모서리 배지는 더 붙어야 한 덩어리로 읽힌다.
+const double _kHamburgerDotGap = 1;
+
 const double _kHamburgerDotRight =
-    48 - (_kHamburgerGlyphRight + kGnbDotGap + kGnbDotSize);
-const double _kHamburgerDotTop = _kHamburgerGlyphTop - kGnbDotGap - kGnbDotSize;
+    48 - (_kHamburgerGlyphRight + _kHamburgerDotGap + kGnbDotSize);
+const double _kHamburgerDotTop =
+    _kHamburgerGlyphTop - _kHamburgerDotGap - kGnbDotSize;
 
 /// 태블릿/모바일(<1024px) 전용 상단바: 로고 + (태블릿 로그인 시 프로필) + 햄버거.
 /// 햄버거는 메뉴 패널 상태에 따라 X로 모프된다(AnimatedIcon).
