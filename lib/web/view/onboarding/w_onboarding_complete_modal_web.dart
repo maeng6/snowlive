@@ -81,8 +81,8 @@ class _DesktopCompleteCard extends StatelessWidget {
       borderRadius: BorderRadius.circular(16),
       clipBehavior: Clip.antiAlias,
       child: ConstrainedBox(
-        // 폭만 390을 유지한다(QR 2장이 들어가야 한다) — 나머지는 팝업 표준.
-        constraints: const BoxConstraints(maxWidth: 390),
+        // QR이 한 장이 되면서 팝업 표준 폭으로 돌아왔다(예전엔 2장 때문에 390).
+        constraints: const BoxConstraints(maxWidth: kWebPopupWidth),
         child: Stack(
           children: [
             Padding(
@@ -109,20 +109,9 @@ class _DesktopCompleteCard extends StatelessWidget {
                   ),
                   // 팝업 표준 — 본문 ↔ 다음 블록 30.
                   const SizedBox(height: 30),
-                  // 스토어별로 QR을 따로 띄운다 — 스캔하는 기기가 화면을 띄운 기기와 달라서
-                  // 하나만 띄우고 OS로 분기하는 건 불가능하다.
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      for (final target in kAppDownloadQrTargets)
-                        Padding(
-                          // QR 박스 두 장 사이 24(양쪽 12).
-                          padding: const EdgeInsets.symmetric(horizontal: 12),
-                          child: _StoreQr(label: target.label, url: target.url),
-                        ),
-                    ],
-                  ),
+                  // 딥링크 한 장이면 된다 — 스캔한 기기가 직접 접속하므로 그 기기의
+                  // UA로 서버가 스토어를 가른다([kAppDeepLinkUrl]).
+                  const Center(child: _AppDownloadQr()),
                   const SizedBox(height: 30),
                   _CompleteButton(label: '로그인 하기', onTap: onClose),
                 ],
@@ -137,16 +126,15 @@ class _DesktopCompleteCard extends StatelessWidget {
   }
 }
 
-/// 스토어 QR 한 장 + 아래 라벨 — **라벨까지 한 박스**로 묶는다(사용자 확정).
-/// 박스는 gray100 라인 · 라운드 8 · 패딩 12, QR은 100.
-/// 박스 폭 126(100 + 12*2 + 라인 2) → 두 장 + 사이 24 = 276로 카드 안쪽 342에 들어간다.
-class _StoreQr extends StatelessWidget {
-  static const double _qrSize = 100;
+/// 앱 설치 QR 한 장 + 아래 라벨 — **라벨까지 한 박스**로 묶는다(사용자 확정).
+/// 박스는 gray100 라인 · 라운드 8 · 패딩 12.
+///
+/// 두 장일 때는 QR이 100이었다. 한 장이 되면서 카드 안쪽(288 − 좌우 24 = 240)에
+/// 여유가 생겨 140으로 키운다 — 멀리서도 스캔이 잘 된다.
+class _AppDownloadQr extends StatelessWidget {
+  static const double _qrSize = 140;
 
-  final String label;
-  final String url;
-
-  const _StoreQr({required this.label, required this.url});
+  const _AppDownloadQr();
 
   @override
   Widget build(BuildContext context) {
@@ -162,7 +150,7 @@ class _StoreQr extends StatelessWidget {
         children: [
           // 박스 패딩 12이 QR의 여백(quiet zone) 역할도 한다 → QR 자체 패딩은 0.
           QrImageView(
-            data: url,
+            data: kAppDeepLinkUrl,
             size: _qrSize,
             padding: EdgeInsets.zero,
             backgroundColor: SDSColor.snowliveWhite,
@@ -170,7 +158,7 @@ class _StoreQr extends StatelessWidget {
           const SizedBox(height: SDSSpacing.sm),
           Text(
             // 라벨은 Regular 13 · gray500(사용자 확정).
-            label,
+            '앱 다운로드',
             style: SDSTextStyle.regular.copyWith(
               fontSize: 13,
               color: SDSColor.gray500,
@@ -194,7 +182,7 @@ class _MobileCompleteCard extends StatelessWidget {
       borderRadius: BorderRadius.circular(16),
       clipBehavior: Clip.antiAlias,
       child: ConstrainedBox(
-        // 웹 팝업 표준 폭 288(PC는 QR 2장이 들어가야 해서 390을 유지한다).
+        // 웹 팝업 표준 폭 288 — PC 카드도 QR이 한 장이 되면서 같은 폭이다.
         constraints: const BoxConstraints(maxWidth: kWebPopupWidth),
         child: Padding(
           // 웹 팝업 표준 패딩 — 좌우 24 · 위 30 · 아래 24.
