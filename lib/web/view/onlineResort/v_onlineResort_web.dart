@@ -27,7 +27,9 @@ class _OnlineResortViewWebState extends State<OnlineResortViewWeb> {
       final q = (uid != null && uid.isNotEmpty)
           ? '?uid=${Uri.encodeQueryComponent(uid)}'
           : '';
-      html.window.location.assign('/mountain/$q');
+      // 파일명까지 적어야 `flutter run` 개발 서버에서도 스키장이 열린다
+      // (개발 서버는 `/mountain/`에 Flutter 앱의 index.html을 돌려준다).
+      html.window.location.assign('/mountain/index.html$q');
     });
   }
 

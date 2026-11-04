@@ -3,17 +3,18 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
-<title>스노우라이브 마운틴 — 온라인 스키장 프로토타입</title>
+<title>스노우라이브 마운틴</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=Silkscreen&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Gowun+Dodum&family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
 <style>
 :root{
-  --ink:#12263A; --panel:rgba(16,28,42,.86); --panel2:#24364A; --line:#3A4E63;
+  --ink:#2A2140; --panel:rgba(40,30,58,.6); --panel2:#3B3156; --line:#5A4E75;
   --sub:#B8CCDD; --blue:#2F6FD6; --blue2:#1F56AE; --ok:#5BD69A;
 }
 *{box-sizing:border-box}
-html,body{margin:0;height:100%;overflow:hidden;background:#0E1A2B;font-family:'Noto Sans KR',system-ui,sans-serif;color:#fff;-webkit-tap-highlight-color:transparent;user-select:none}
+html,body{margin:0;height:100%;overflow:hidden;background:#0E1A2B;font-family:'Gowun Dodum','Noto Sans KR',system-ui,sans-serif;color:#fff;-webkit-tap-highlight-color:transparent;user-select:none}
 #c{position:fixed;inset:0;width:100%;height:100%;display:block;touch-action:none}
+#spdfx{position:fixed;inset:0;width:100%;height:100%;pointer-events:none}
 .hidden{display:none!important}
 button{font-family:inherit;cursor:pointer}
 .pill{background:var(--panel);border-radius:12px;height:42px;padding:0 14px;display:flex;align-items:center;gap:8px;font-size:14px;color:#fff;border:0}
@@ -23,7 +24,7 @@ button{font-family:inherit;cursor:pointer}
 .btn.primary:hover{background:var(--blue2)}
 .btn.ghost{background:var(--panel2)}
 .dot{width:8px;height:8px;border-radius:4px;background:var(--ok);display:inline-block}
-.num{font-family:'Silkscreen',monospace}
+.num{font-family:'Gowun Batang','Noto Serif KR',serif}
 .panel{position:fixed;background:rgba(16,28,42,.93);border-radius:18px;padding:22px;color:#fff;box-shadow:0 10px 40px rgba(0,0,0,.25)}
 .panel h2{margin:0 0 4px;font-size:19px}
 .panel p.sub{margin:0;color:var(--sub);font-size:13px}
@@ -32,7 +33,7 @@ button{font-family:inherit;cursor:pointer}
 /* gate */
 #gate{flex-direction:column;gap:10px;text-align:center;pointer-events:none}
 #gateHead{display:flex;flex-direction:column;align-items:center;gap:8px;background:rgba(16,28,42,.55);border-radius:20px;padding:18px 28px 14px;margin-bottom:6px}
-#gate .tag{font-family:'Silkscreen',monospace;letter-spacing:4px;font-size:13px;color:#DCEBFA;text-shadow:0 2px 6px rgba(0,0,0,.35)}
+#gate .tag{font-family:'Gowun Batang','Noto Serif KR',serif;letter-spacing:4px;font-size:13px;color:#DCEBFA;text-shadow:0 2px 6px rgba(0,0,0,.35)}
 #gate h1{margin:0;font-size:clamp(34px,6vw,58px);font-weight:900;letter-spacing:-1px;text-shadow:0 4px 18px rgba(0,0,0,.35)}
 #gate .lead{margin:0;font-size:18px;color:#EAF3FB;text-shadow:0 2px 8px rgba(0,0,0,.35)}
 #gateCard{pointer-events:auto;background:var(--panel);border-radius:18px;padding:20px 22px;width:min(400px,92vw);display:flex;flex-direction:column;gap:14px;align-items:center}
@@ -41,7 +42,11 @@ button{font-family:inherit;cursor:pointer}
 #gateCard small{color:var(--sub);font-size:12px}
 
 /* maker */
-#maker{right:20px;top:20px;bottom:20px;width:min(420px,calc(100vw - 40px));overflow:auto;display:flex;flex-direction:column;gap:18px}
+#maker{right:20px;top:20px;bottom:20px;width:min(420px,calc(100vw - 40px));overflow:auto;display:flex;flex-direction:column;gap:14px}
+.sw.none{background:linear-gradient(135deg,transparent 44%,#E86A5A 44%,#E86A5A 56%,transparent 56%),#2E2640}
+#segHat{margin-bottom:8px}
+.wear{display:flex;flex-direction:column;gap:12px;padding:14px;border-radius:14px;background:rgba(255,255,255,.06)}
+.wear-hd{display:flex;flex-direction:column;gap:3px}.wear-hd b{font-family:'Gowun Batang','Noto Serif KR',serif;font-size:17px}.wear-hd span{font-size:12px;color:var(--sub)}
 .sw-row{display:grid;grid-template-columns:repeat(6,1fr);gap:8px}
 .sw{height:38px;border-radius:9px;border:3px solid transparent}
 .sw.on{border-color:#fff}
@@ -55,7 +60,7 @@ button{font-family:inherit;cursor:pointer}
 #makerTitle{position:fixed;left:20px;top:20px;background:rgba(16,28,42,.62);border-radius:16px;padding:14px 18px}
 #makerDone{position:sticky;bottom:0;flex:none;box-shadow:0 -12px 16px rgba(16,28,42,.93)}
 #maker .sw{height:34px}
-#makerTitle .tag{font-family:'Silkscreen',monospace;letter-spacing:3px;font-size:12px;color:#DCEBFA}
+#makerTitle .tag{font-family:'Gowun Batang','Noto Serif KR',serif;letter-spacing:3px;font-size:12px;color:#DCEBFA}
 #makerTitle h1{margin:4px 0;font-size:30px;font-weight:900}
 #makerTitle p{margin:0;color:#EAF3FB}
 
@@ -64,15 +69,13 @@ button{font-family:inherit;cursor:pointer}
 #hud .tl{position:fixed;left:16px;top:16px;display:flex;gap:8px}
 #hud .tr{position:fixed;right:16px;top:16px;display:flex;gap:8px}
 #hud .bl{position:fixed;left:16px;bottom:150px}
-#joystick{position:fixed;left:16px;bottom:16px;width:120px;height:120px;border-radius:60px;background:rgba(16,28,42,.32);border:2px solid rgba(255,255,255,.55);touch-action:none;z-index:4}
-#joyKnob{position:absolute;left:33px;top:33px;width:54px;height:54px;border-radius:27px;background:var(--blue);box-shadow:0 3px 8px rgba(0,0,0,.28);pointer-events:none}
 #hud .br{position:fixed;right:16px;bottom:16px;display:flex;gap:8px}
 #counters{gap:14px}
 #counters .k{font-size:12px;color:var(--sub)}
 #banner{position:fixed;left:50%;top:16px;transform:translateX(-50%);background:var(--panel);border-radius:14px;padding:0 20px;height:50px;display:flex;align-items:center;gap:16px;font-size:15px;white-space:nowrap}
 #banner .sep{width:1px;height:20px;background:var(--line)}
-#prompt{position:fixed;left:50%;bottom:86px;transform:translateX(-50%);background:#fff;color:var(--ink);border-radius:14px;padding:10px 10px 10px 18px;display:flex;align-items:center;gap:14px;font-weight:700;font-size:15px;box-shadow:0 6px 24px rgba(0,0,0,.2)}
-#prompt kbd{font-family:'Silkscreen',monospace;font-size:11px;background:#EEF3F8;border-radius:5px;padding:2px 6px;margin-left:6px;color:#4A6075}
+#prompt{position:fixed;left:50%;bottom:206px;transform:translateX(-50%);background:#fff;color:var(--ink);border-radius:14px;padding:10px 10px 10px 18px;display:flex;align-items:center;gap:14px;font-weight:700;font-size:15px;box-shadow:0 6px 24px rgba(0,0,0,.2)}
+#prompt kbd{font-family:'Gowun Batang','Noto Serif KR',serif;font-size:11px;background:#EEF3F8;border-radius:5px;padding:2px 6px;margin-left:6px;color:#4A6075}
 #promptBtn{height:40px;padding:0 16px;border-radius:10px;border:0;background:var(--blue);color:#fff;font-weight:700;font-size:14px}
 
 /* summit */
@@ -86,12 +89,13 @@ button{font-family:inherit;cursor:pointer}
 
 /* ski */
 #skiBar{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:var(--panel);border-radius:14px;height:54px;padding:0 8px 0 18px;display:flex;align-items:center;gap:12px;font-size:14px;white-space:nowrap}
-#skiBar kbd{font-family:'Silkscreen',monospace;font-size:11px;background:#fff;color:var(--ink);border-radius:5px;padding:3px 7px}
+#skiBar kbd{font-family:'Gowun Batang','Noto Serif KR',serif;font-size:11px;background:#fff;color:var(--ink);border-radius:5px;padding:3px 7px}
 #progress{position:fixed;right:22px;top:90px;width:12px;height:min(420px,50vh);background:rgba(16,28,42,.35);border-radius:6px}
 #progFill{position:absolute;left:0;top:0;width:12px;background:#fff;border-radius:6px}
 #progDot{position:absolute;left:-6px;width:24px;height:16px;background:var(--blue);border:2px solid #fff;border-radius:4px}
 #touch{position:fixed;left:0;right:0;bottom:0;height:42vh;display:flex}
-#touch div{flex:1;display:flex;align-items:flex-end;justify-content:center;padding-bottom:90px;color:rgba(255,255,255,.85);font-weight:700;font-size:14px;background:rgba(16,28,42,.10)}
+#touch div{flex:1;display:flex;align-items:flex-end;justify-content:center;padding-bottom:calc(64px + env(safe-area-inset-bottom,0px));color:#12263A;font-weight:700;font-size:14px;background:rgba(16,28,42,.05)}
+#touch div::after{content:'';}
 #touch div:first-child{border-right:1px dashed rgba(255,255,255,.5)}
 #touch div.on{background:rgba(47,111,214,.22)}
 
@@ -110,13 +114,31 @@ button{font-family:inherit;cursor:pointer}
 #lodgeFrame::before{content:'';position:absolute;left:50%;top:0;bottom:0;width:clamp(10px,1.6vw,18px);transform:translateX(-50%);background:#6B4A35;box-shadow:0 0 0 3px #4A2F21}
 #lodgeFrame::after{content:'';position:absolute;left:0;right:0;top:46%;height:clamp(10px,1.6vw,18px);background:#6B4A35;box-shadow:0 0 0 3px #4A2F21}
 #lodge .menu{display:flex;gap:8px}
+#lodge .menu button:disabled{opacity:.55;cursor:default}
+/* 스키하우스 먹기 연출: 창에 김이 서리고, 화면 가장자리가 따뜻해지고, 테이블 위 음식에서 김이 올라와요 */
+#mist{position:fixed;inset:0;pointer-events:none;opacity:0;transition:opacity 4.5s ease-out;background:radial-gradient(ellipse 70% 55% at 50% 78%,rgba(255,250,244,.62),rgba(255,250,244,.32) 45%,rgba(255,250,244,.08) 75%);-webkit-backdrop-filter:blur(5px);backdrop-filter:blur(5px)}
+#mist.on{opacity:1;transition:opacity .9s ease-in}
+#warm{position:fixed;inset:0;pointer-events:none;opacity:0;transition:opacity 6s ease-out;box-shadow:inset 0 0 180px 60px rgba(255,150,80,.32)}
+#warm.on{opacity:1;transition:opacity 1.2s ease-in}
+#lodgeTable{position:fixed;left:calc(50% - 190px);bottom:clamp(26px,5vh,54px);transform:translateX(-50%);pointer-events:none;display:flex;flex-direction:column;align-items:center;gap:10px}
+#foodWrap{position:relative;width:170px;height:170px;transform-origin:50% 90%}
+#food svg{width:100%;height:100%;display:block;filter:drop-shadow(0 10px 14px rgba(40,20,30,.35))}
+#foodWrap .steam{position:absolute;left:50%;top:-6px;width:110px;height:120px;transform:translateX(-50%);opacity:0;transition:opacity 1s}
+#foodWrap.hot .steam{opacity:1}
+#foodWrap .steam i{position:absolute;bottom:0;width:18px;height:60px;border-radius:50%;background:radial-gradient(ellipse at 50% 60%,rgba(255,255,255,.75),rgba(255,255,255,0) 70%);filter:blur(3px);animation:steam 2.6s ease-in infinite}
+#foodWrap .steam i:nth-child(1){left:22px;animation-delay:0s}#foodWrap .steam i:nth-child(2){left:44px;animation-delay:.7s}
+#foodWrap .steam i:nth-child(3){left:66px;animation-delay:1.3s}#foodWrap .steam i:nth-child(4){left:34px;animation-delay:1.9s}
+@keyframes steam{0%{transform:translate(0,10px) scale(.6);opacity:0}25%{opacity:.9}60%{transform:translate(8px,-40px) scale(1.1)}100%{transform:translate(-6px,-80px) scale(1.5);opacity:0}}
+#ramenTimer{display:flex;align-items:center;gap:8px;padding:6px 14px;border-radius:999px;background:var(--panel);font-size:13px;color:#fff;-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+#ramenTimer b{font-family:'Gowun Batang','Noto Serif KR',serif;font-size:18px;font-variant-numeric:tabular-nums}
+@media (prefers-reduced-motion:reduce){ #foodWrap .steam i{animation:none;opacity:.6} }
 #lodge .menu button{flex:1;height:46px;border-radius:10px;border:2px solid var(--line);background:#1B2938;color:#fff;font-weight:700}
 #lodge .menu button.on{border-color:#fff;background:var(--blue)}
 #ticket,#soundP{right:20px;top:72px;width:min(380px,calc(100vw - 40px));display:flex;flex-direction:column;gap:14px;max-height:calc(100vh - 100px);overflow:auto}
 .stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .stat{background:#1B2938;border-radius:12px;padding:10px 12px}
 .stat .k{font-size:12px;color:var(--sub)}
-.stat .v{font-family:'Silkscreen',monospace;font-size:24px}
+.stat .v{font-family:'Gowun Batang','Noto Serif KR',serif;font-size:24px}
 .ch{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border-radius:10px;background:#1B2938;border:2px solid transparent;color:#fff;width:100%;font-size:14px}
 .ch.on{border-color:#fff}
 .ch[disabled]{opacity:.45;cursor:not-allowed}
@@ -133,10 +155,10 @@ select{height:40px;border-radius:10px;border:2px solid var(--line);background:#1
 #cardBody{padding:16px 18px;display:flex;flex-direction:column;gap:12px}
 #cardBody .hd{display:flex;justify-content:space-between;align-items:baseline}
 #cardBody .hd b{font-size:20px;font-weight:900}
-#cardBody .hd span{font-family:'Silkscreen',monospace;font-size:12px;color:#4A6075}
+#cardBody .hd span{font-family:'Gowun Batang','Noto Serif KR',serif;font-size:12px;color:#4A6075}
 #cardBody .g{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 #cardBody .g .k{font-size:12px;color:#4A6075}
-#cardBody .g .v{font-family:'Silkscreen',monospace;font-size:26px}
+#cardBody .g .v{font-family:'Gowun Batang','Noto Serif KR',serif;font-size:26px}
 #cardBody small{font-size:11px;color:#4A6075}
 #cardSide{width:320px;display:flex;flex-direction:column;gap:12px}
 #cardSide h1{margin:0;font-size:30px;font-weight:900}
@@ -156,6 +178,39 @@ select{height:40px;border-radius:10px;border:2px solid var(--line);background:#1
 #loading .bar{width:220px;height:12px;background:#24364A;padding:2px}
 #loading .bar i{display:block;height:8px;width:30%;background:#fff;animation:ld 1.2s infinite alternate}
 @keyframes ld{to{width:100%}}
+html,body{overscroll-behavior:none}
+:root{color-scheme:dark}
+#hud .tl{left:calc(16px + env(safe-area-inset-left,0px));top:calc(16px + env(safe-area-inset-top,0px))}
+#hud .tr{right:calc(16px + env(safe-area-inset-right,0px));top:calc(16px + env(safe-area-inset-top,0px))}
+#hud .bl{left:calc(16px + env(safe-area-inset-left,0px));bottom:calc(16px + env(safe-area-inset-bottom,0px))}
+#hud .br{right:calc(16px + env(safe-area-inset-right,0px));bottom:calc(16px + env(safe-area-inset-bottom,0px))}
+#banner{top:calc(16px + env(safe-area-inset-top,0px))}
+#skiBar{bottom:calc(22px + env(safe-area-inset-bottom,0px))}
+#touch,#joy{touch-action:none}
+#joy{position:fixed;left:calc(22px + env(safe-area-inset-left,0px));bottom:calc(26px + env(safe-area-inset-bottom,0px));width:128px;height:128px;border-radius:50%;background:rgba(16,28,42,.32);border:2px solid rgba(255,255,255,.6);z-index:4}
+#joyKnob{position:absolute;left:50%;top:50%;width:54px;height:54px;margin:-27px 0 0 -27px;border-radius:50%;background:rgba(255,255,255,.92);box-shadow:0 2px 8px rgba(0,0,0,.25)}
+.modal{z-index:30}
+#imgModal img{width:100%;border-radius:10px;display:block;-webkit-touch-callout:default;-webkit-user-select:auto;user-select:auto}
+@media (pointer:coarse){ #prompt kbd{display:none} }
+@media (max-width:720px){
+  #hud .bl{top:calc(66px + env(safe-area-inset-top,0px));bottom:auto}
+  #counters{height:34px;font-size:12px;gap:10px;padding:0 12px}
+  #banner{top:calc(110px + env(safe-area-inset-top,0px));max-width:calc(100% - 24px);overflow:hidden}
+  #toasts{top:calc(164px + env(safe-area-inset-top,0px));width:calc(100% - 32px)}
+  .toast{text-align:center}
+  #prompt{bottom:calc(176px + env(safe-area-inset-bottom,0px))}
+  #skiBar{top:calc(110px + env(safe-area-inset-top,0px));bottom:auto;height:46px;font-size:12px;padding:0 6px 0 12px;gap:8px}
+  #skiBar .btn{height:36px!important;padding:0 10px;font-size:12px}
+  #hud .br{flex-direction:column;align-items:flex-end}
+  #hud .br .btn{height:42px;font-size:13px}
+  #summitPanel{max-height:72vh;overflow:auto;padding:16px;gap:10px}
+  #cardBox,#cardSide{width:min(340px,100%)}
+  #ticket,#soundP{top:calc(64px + env(safe-area-inset-top,0px))}
+  #maker{top:auto;height:52vh;left:12px;right:12px;width:auto;bottom:12px;gap:14px;padding:18px}
+  #makerTitle{top:12px;left:12px;padding:10px 14px}
+  #makerTitle p{display:none}
+  #makerTitle h1{font-size:22px}
+  #summitPanel{left:12px;right:12px;top:auto;bottom:12px;width:auto}
 .spin{width:12px;height:12px;border-radius:50%;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;display:inline-block;vertical-align:-2px;margin-right:6px;animation:spin .7s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 /* ===== 반응형: 태블릿(≤1024px) — 사이드 패널 유지하되 살짝 좁게 ===== */
@@ -174,6 +229,8 @@ select{height:40px;border-radius:10px;border:2px solid var(--line);background:#1
   #makerTitle h1{font-size:20px}
   #summitPanel{left:10px;right:10px;top:auto;bottom:calc(10px + env(safe-area-inset-bottom));width:auto;max-height:70vh;overflow:auto}
   #lodge{left:10px;right:10px;bottom:calc(10px + env(safe-area-inset-bottom));width:auto}
+  #lodgeTable{left:50%;bottom:calc(250px + env(safe-area-inset-bottom))}
+  #foodWrap{width:130px;height:130px}
   #ticket,#soundP{left:10px;right:10px;width:auto;top:calc(60px + env(safe-area-inset-top));max-height:calc(100vh - 150px)}
   #counters .k{display:none}
   #banner{font-size:12px;height:42px;top:calc(58px + env(safe-area-inset-top));padding:0 14px;gap:10px}
@@ -181,9 +238,7 @@ select{height:40px;border-radius:10px;border:2px solid var(--line);background:#1
   #hud .tr{right:calc(10px + env(safe-area-inset-right));top:calc(10px + env(safe-area-inset-top))}
   #hud .br{right:calc(10px + env(safe-area-inset-right));bottom:calc(12px + env(safe-area-inset-bottom))}
   #hud .br .btn{padding:0 12px}
-  #joystick{left:calc(12px + env(safe-area-inset-left));bottom:calc(12px + env(safe-area-inset-bottom));width:104px;height:104px;border-radius:52px}
-  #joyKnob{left:29px;top:29px;width:46px;height:46px;border-radius:23px}
-  #prompt{bottom:calc(84px + env(safe-area-inset-bottom));font-size:14px}
+  #prompt{bottom:calc(176px + env(safe-area-inset-bottom));font-size:14px}
   #skiBar{bottom:calc(16px + env(safe-area-inset-bottom));font-size:13px}
   #progress{right:calc(14px + env(safe-area-inset-right))}
   #card{gap:20px}
@@ -202,7 +257,7 @@ select{height:40px;border-radius:10px;border:2px solid var(--line);background:#1
 /* ───────── UI 폴리시(세련화 오버라이드) ───────── */
 :root{ --blue:#3B82F6; --blue2:#2563EB; --panel:rgba(14,22,34,.72); --panel2:rgba(40,58,78,.72); }
 body{ font-weight:500; }
-.pill,.icon-btn,.btn,.panel,#banner,#skiBar,.modal .box,#gateCard,#gateHead,#prompt,.toast,#joystick{ backdrop-filter:blur(16px) saturate(1.3); -webkit-backdrop-filter:blur(16px) saturate(1.3); }
+.pill,.icon-btn,.btn,.panel,#banner,#skiBar,.modal .box,#gateCard,#gateHead,#prompt,.toast,#joy{ backdrop-filter:blur(16px) saturate(1.3); -webkit-backdrop-filter:blur(16px) saturate(1.3); }
 .pill{ height:40px;border-radius:14px;background:var(--panel);border:1px solid rgba(255,255,255,.1);box-shadow:0 8px 24px rgba(0,0,0,.3);font-weight:600; }
 .icon-btn{ width:42px;height:42px;border-radius:14px;background:var(--panel);border:1px solid rgba(255,255,255,.1);box-shadow:0 8px 24px rgba(0,0,0,.3);transition:transform .12s ease,background .15s ease; }
 .icon-btn:hover{ background:var(--panel2);transform:translateY(-1px); }
@@ -256,20 +311,21 @@ body{ font-weight:500; }
 .bub::after{ content:''; position:absolute; left:50%; bottom:-4px; width:9px; height:9px; background:#fff; transform:translateX(-50%) rotate(45deg); }
 .bub.emo{ background:none; box-shadow:none; padding:0; font-size:30px; filter:drop-shadow(0 3px 5px rgba(0,0,0,.35)); }
 .bub.emo::after{ display:none; }
-@media (max-width:720px){ #social{ bottom:calc(150px + env(safe-area-inset-bottom)); } #chatInput{ width:52vw; } }
+@media (max-width:720px){ #social{ bottom:calc(236px + env(safe-area-inset-bottom)); } #chatInput{ width:52vw; } }
 /* 조이스틱 */
-#joystick{ background:rgba(14,22,34,.3);border:1.5px solid rgba(255,255,255,.42);box-shadow:0 12px 34px rgba(0,0,0,.28); }
+#joy{ background:rgba(14,22,34,.3);border:1.5px solid rgba(255,255,255,.42);box-shadow:0 12px 34px rgba(0,0,0,.28); }
 #joyKnob{ background:linear-gradient(180deg,var(--blue),var(--blue2));box-shadow:0 5px 14px rgba(0,0,0,.4); }
 </style>
 </head>
 <body>
 <canvas id="c"></canvas>
-<div id="loading"><div class="bar"><i></i></div><span>리조트 문을 여는 중</span></div>
+<canvas id="spdfx"></canvas>
+<div id="loading"><div class="bar"><i></i></div><span>스키장 문을 여는 중</span></div>
 <div id="labels"></div>
 
 <div id="gate" class="screen hidden">
   <div id="gateHead">
-    <span class="tag">ONLINE SKI RESORT</span>
+    <span class="tag">ONLINE SKI AREA</span>
     <h1>스노우라이브 마운틴</h1>
     <p class="lead">잠깐 타고 가요</p>
   </div>
@@ -287,11 +343,20 @@ body{ font-weight:500; }
 </div>
 <div id="maker" class="panel hidden">
   <div><h2>꾸미기</h2><p class="sub">바꿀 때마다 바로 보여요</p></div>
-  <div><div class="field"><label>재킷</label></div><div class="sw-row" id="swJacket"></div></div>
-  <div><div class="field"><label>모자</label></div><div class="sw-row" id="swCap"></div></div>
-  <div><div class="field"><label>바지</label></div><div class="sw-row" id="swPants"></div></div>
-  <div><div class="field"><label>피부</label></div><div class="sw-row" id="swSkin"></div></div>
+  <div class="field"><label>체형</label><div class="seg" id="segBody"><button data-v="male">남성</button><button data-v="female">여성</button></div></div>
   <div class="field"><label>장비</label><div class="seg" id="segGear"><button data-v="ski">스키</button><button data-v="board">스노보드</button></div></div>
+  <div class="wear">
+    <div class="wear-hd"><b id="wearTitle">스키복</b><span id="wearSub"></span></div>
+    <div class="seg" id="segFit"></div>
+    <div><div class="field"><label>재킷</label></div><div class="sw-row" id="swJacket"></div></div>
+    <div><div class="field"><label>포인트 색</label></div><div class="sw-row" id="swAccent"></div></div>
+    <div><div class="field"><label>바지</label></div><div class="sw-row" id="swPants"></div></div>
+  </div>
+  <div class="field"><label>머리</label><div class="seg" id="segHat"><button data-v="helmet">헬멧</button><button data-v="beanie">비니</button></div><div class="sw-row" id="swCap"></div></div>
+  <div><div class="field"><label>고글 렌즈</label></div><div class="sw-row" id="swLens"></div></div>
+  <div><div class="field"><label>넥워머</label></div><div class="sw-row" id="swNeck"></div></div>
+  <div><div class="field"><label>장갑</label></div><div class="sw-row" id="swGlove"></div></div>
+  <div><div class="field"><label>피부</label></div><div class="sw-row" id="swSkin"></div></div>
   <div class="field"><label>닉네임</label><input id="nameInput" type="text" maxlength="12" value="스노우라이브닉네임">
     <label class="check"><input id="anonInput" type="checkbox"> 익명으로 보이기</label></div>
   <div class="seg"><button id="rerollBtn">다시 뽑기</button></div>
@@ -301,7 +366,7 @@ body{ font-weight:500; }
 <div id="hud" class="hidden">
   <div class="tl"><button id="chPill" class="pill"><span class="dot"></span><span id="chText">3번 채널 · 47/60명</span></button></div>
   <div class="tr">
-    <button class="icon-btn" id="camReset" aria-label="시점 처음으로" title="시점 처음으로"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/><circle cx="12" cy="12" r="8"/></svg></button>
+    <button class="pill" id="viewBtn" aria-label="1인칭·3인칭 바꾸기" title="시점 바꾸기 (V)" style="height:44px">3인칭</button>
     <button class="icon-btn" id="sndBtn" aria-label="소리·화면 설정"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H2v6h4l5 4V5z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M19 5a10 10 0 0 1 0 14"/></svg></button>
     <button class="icon-btn" id="exitBtn" aria-label="나가기"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5"/><path d="M21 12H9"/></svg></button>
   </div>
@@ -336,7 +401,6 @@ body{ font-weight:500; }
 <div id="skiBar" class="hidden"></div>
 <div id="progress" class="hidden"><div id="progFill"></div><div id="progDot"></div></div>
 <div id="touch" class="hidden"><div id="tL">왼쪽으로</div><div id="tR">오른쪽으로</div></div>
-<div id="joystick" class="hidden"><div id="joyKnob"></div></div>
 
 <div id="finish" class="modal hidden"><div class="box">
   <h2 id="finTitle">오늘 1번째로 내려왔어요</h2>
@@ -345,7 +409,13 @@ body{ font-weight:500; }
   <div class="row"><button class="btn light" id="finBase">베이스로</button><button class="btn light" id="finExit">오늘은 여기까지</button></div>
 </div></div>
 
+<div id="mist" aria-hidden="true"></div>
 <div id="lodgeFrame" class="hidden"></div>
+<div id="warm" aria-hidden="true"></div>
+<div id="lodgeTable" class="hidden" aria-hidden="true">
+  <div id="ramenTimer" class="hidden"><b id="ramenClock">3:00</b><span>뚜껑 덮고 기다리는 중</span></div>
+  <div id="foodWrap"><div class="steam"><i></i><i></i><i></i><i></i></div><div id="food"></div></div>
+</div>
 <div id="lodge" class="panel hidden">
   <div><h2>스키하우스</h2><p class="sub" id="lodgeSeats">창가 자리 · 자리 8/12</p></div>
   <div class="menu" id="lodgeMenu"><button data-v="0">핫초코</button><button data-v="1">어묵</button><button data-v="2">컵라면</button></div>
@@ -388,10 +458,25 @@ body{ font-weight:500; }
   </div>
 </div>
 
+<div id="joy" class="hidden" aria-label="이동 조이스틱"><div id="joyKnob"></div></div>
+<div id="imgModal" class="modal hidden"><div class="box">
+  <h2 id="imgTitle">사진</h2>
+  <img id="imgView" alt="저장할 이미지">
+  <p>이미지를 길게 누르면 저장할 수 있어요 · PC는 이미지 위에서 우클릭 → 이미지 저장</p>
+  <button class="btn primary" id="imgClose">닫기</button>
+</div></div>
 <div id="toasts"></div>
 <div id="fade"></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/CopyShader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/LuminosityHighPassShader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/EffectComposer.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/RenderPass.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/ShaderPass.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/UnrealBloomPass.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/utils/SkeletonUtils.js"></script>
 <script type="module">
   import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
   import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
@@ -413,6 +498,7 @@ if (!window.THREE) { document.querySelector('#loading span').textContent = '3D �
 const $ = (s) => document.querySelector(s);
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 const lerp = (a, b, t) => a + (b - a) * t;
+function lerpAngle(a, b, t) { const d = ((b - a + Math.PI) % (2 * Math.PI) + 2 * Math.PI) % (2 * Math.PI) - Math.PI; return a + d * t; }
 function rng(seed) { let a = seed >>> 0; return function () { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
 const R = rng(20261102);
 const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
@@ -430,15 +516,59 @@ function groundH(x, z) { let y = slopeY(z); const ax = Math.abs(x); if (ax > 330
 function slopeAt(z) { return (slopeY(z - 0.5) - slopeY(z + 0.5)); }
 
 const TRAILS = [
-  { id: 'g', name: '솜사탕', level: '초급', color: '#3BA776', w: 84, base: -160, amp: 55, per: 120, ph: 0.3, auto: 11, vmax: 17, desc: '넓고 완만해요. 경치 보며 천천히' },
-  { id: 'b', name: '자작나무', level: '중급', color: '#2F6FD6', w: 58, base: 0, amp: 80, per: 92, ph: 2.468, auto: 12.5, vmax: 21, desc: '숲 사이로 굽이굽이' },
-  { id: 'k', name: '설원', level: '상급', color: '#26313C', w: 46, base: 160, amp: 42, per: 70, ph: 4.21, auto: 14, vmax: 25, desc: '가파르고 모굴이 있어요' }
+  { id: 'g', name: '솜사탕', level: '초급', color: '#3BA776', w: 84, base: -160, amp: 55, per: 120, ph: 0.3, auto: 10, vmax: 17, turnW: 0.045, turnA: 0.6, desc: '넓고 완만해요. 경치 보며 천천히' },
+  { id: 'b', name: '자작나무', level: '중급', color: '#2F6FD6', w: 58, base: 0, amp: 80, per: 92, ph: 2.468, auto: 14, vmax: 21, turnW: 0.065, turnA: 0.7, desc: '숲 사이로 굽이굽이' },
+  { id: 'k', name: '설원', level: '상급', color: '#26313C', w: 46, base: 160, amp: 42, per: 70, ph: 4.21, auto: 17, vmax: 25, turnW: 0.09, turnA: 0.78, desc: '가파르고 모굴이 있어요' }
 ];
 function trailX(t, z) {
   const u = clamp(-z / L, 0, 1);
   const env = Math.min(1, u * 6);
   return t.base + t.amp * Math.sin(-z / t.per + t.ph) * env;
 }
+/* 하강 물리
+   - 가속: 진행 방향의 경사(g·sinθ·cos(헤딩)) − 눈 마찰 − 공기 저항
+   - 카빙: 스키/보드 사이드컷 반경(R)보다 크게 도는 턴은 엣지로 깎아 돌아 속도를 거의 안 잃어요
+   - 스키딩: 그보다 급하게 돌면 판이 미끄러지며 속도를 깎아요(스피드 컨트롤)
+   - 몸은 원심력과 균형이 맞도록 턴 안쪽으로 기울어요(tanθ = v·ω / g) */
+const SKI = { G: 9.8, drag: 0.0045, tuckDrag: 0.0028, mu: 0.04, rSki: 9, rBoard: 7.5, wCap: 1.9 };
+function trailDir(t, z) { const a = Math.min(0, z), b = Math.min(0, z + 4); return Math.atan2(trailX(t, b) - trailX(t, a), 4); }
+function carveInit(t, z, x, v) { return { x: x, z: z, h: trailDir(t, z), v: v || 4, ph: Math.random() * 6.28, A: t.turnA, roll: 0, turn: 0, skid: 0, plantT: 0, plantSide: 1, lastSide: 0, hop: 0 }; }
+function plantTick(c, dt) {
+  const side = Math.abs(c.turn) > 0.08 ? Math.sign(c.turn) : 0;
+  if (side && side !== c.lastSide) { c.plantT = 0.45; c.plantSide = side; c.lastSide = side; }
+  c.plantT = Math.max(0, c.plantT - dt);
+}
+function skiPhysics(c, dt, steer, brake, tuck, gear, check) {
+  const wReq = clamp(steer, -1, 1) * SKI.wCap;
+  const R = gear === 'board' ? SKI.rBoard : SKI.rSki;
+  const wCarve = Math.max(0.15, c.v) / R;
+  const wAbs = Math.abs(wReq);
+  let skid = wAbs > wCarve ? (wAbs - wCarve) / wAbs : 0;
+  const h0 = c.h;
+  c.h = clamp(c.h + wReq * dt, -2.3, 2.3);
+  const sl = slopeAt(c.z), sinS = sl / Math.sqrt(1 + sl * sl);
+  let a = SKI.G * sinS * Math.cos(c.h) - SKI.mu * SKI.G - (tuck ? SKI.tuckDrag : SKI.drag) * c.v * c.v - skid * (3 + 0.45 * c.v) - (brake ? 7 : 0);
+  if (check && c.v > check) { a -= (c.v - check) * 0.8; skid = Math.max(skid, Math.min(0.6, (c.v - check) * 0.15)); }
+  if (brake) skid = Math.max(skid, 0.8);
+  c.v = Math.max(0, c.v + a * dt);
+  c.x += Math.sin(c.h) * c.v * dt; c.z += Math.cos(c.h) * c.v * dt;
+  c.turn = (c.h - h0) / Math.max(dt, 1e-4);
+  const wEff = Math.sign(c.turn) * Math.min(Math.abs(c.turn), wCarve);
+  c.roll = lerp(c.roll, clamp(-Math.atan(wEff * c.v / SKI.G), -1, 1) * (1 - skid * 0.4), Math.min(1, dt * 6));
+  c.skid = lerp(c.skid, skid, Math.min(1, dt * 6));
+  c.tuck = !!tuck; c.brake = !!brake;
+  plantTick(c, dt);
+}
+function autoSteer(c, t, dt) {
+  const dir = trailDir(t, c.z);
+  c.A = lerp(c.A, clamp(t.turnA + (c.v - t.auto) * 0.25, 0.3, 1.6), Math.min(1, dt * 1.5));
+  c.ph += t.turnW * Math.max(4, c.v) * dt;
+  const ahead = trailX(t, Math.min(0, c.z + 18));
+  const corr = clamp((ahead - c.x) * 0.08, -0.5, 0.5);
+  const want = dir + corr + c.A * Math.sin(c.ph);
+  return clamp((want - c.h) * 2.2, -1, 1);
+}
+function carveStep(c, t, dt, vTarget, gear) { skiPhysics(c, dt, autoSteer(c, t, dt), false, false, gear || 'ski', vTarget); }
 function autoX(t, z, ph) {
   const u = clamp(-z / L, 0, 1);
   const carve = t.w * 0.27 * Math.min(1, u * 5) * Math.min(1, (1 - u) * 20);
@@ -446,17 +576,19 @@ function autoX(t, z, ph) {
 }
 
 /* ───────────── 렌더러 · 장면 ───────────── */
+const IS_TOUCH = (window.matchMedia && matchMedia('(pointer: coarse)').matches) || ('ontouchstart' in window);
 const canvas = $('#c');
-const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, preserveDrawingBuffer: true });
-renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: !IS_TOUCH, preserveDrawingBuffer: true });
+const DPR = Math.min(window.devicePixelRatio || 1, IS_TOUCH ? 1.25 : 1.75);
+renderer.setPixelRatio(DPR);
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 const scene = new THREE.Scene();
-scene.fog = new THREE.Fog(0xCFE6F6, 220, 1150);
-const camera = new THREE.PerspectiveCamera(50, 1, 0.5, 2400);
+scene.fog = new THREE.FogExp2(0xE3A48F, 0.0011);
+const camera = new THREE.PerspectiveCamera(50, 1, 0.12, 4200);
 const hemi = new THREE.HemisphereLight(0xffffff, 0xB8C9D6, 0.75); scene.add(hemi);
 const sun = new THREE.DirectionalLight(0xffffff, 0.9);
-sun.castShadow = true; sun.shadow.mapSize.set(2048, 2048);
+sun.castShadow = true; sun.shadow.mapSize.set(IS_TOUCH ? 1024 : 2048, IS_TOUCH ? 1024 : 2048);
 Object.assign(sun.shadow.camera, { left: -80, right: 80, top: 80, bottom: -80, near: 1, far: 500 });
 sun.shadow.bias = -0.0006;
 scene.add(sun); scene.add(sun.target);
@@ -479,9 +611,98 @@ function box(w, h, d, color, x, y, z, parent, opts) {
 const windowMat = new THREE.MeshLambertMaterial({ color: 0xFFD98A, emissive: 0xFFB84D, emissiveIntensity: 0.15 });
 const lampMat = new THREE.MeshLambertMaterial({ color: 0xFFF1C9, emissive: 0xFFE2A0, emissiveIntensity: 0.1 });
 
+/* 설면 재질(저니풍)
+   - 햇빛을 감싸듯 받는 면은 시간대의 빛 색, 등진 면과 그림자는 라벤더·남색 같은 그림자 색
+   - 비스듬히 보이는 면은 테두리가 빛나고, 눈 결정이 보는 각도에 따라 반짝여요
+   - 바람결 잔물결 무늬로 매끈한 설원에도 흐름이 보여요. 정설면엔 결(코듀로이)이 살짝 */
+const SNOWU = {
+  uSunDir: { value: new THREE.Vector3(0.3, 0.1, -1).normalize() }, uLit: { value: new THREE.Color('#F0C9B4') }, uShade: { value: new THREE.Color('#6B649E') },
+  uRim: { value: new THREE.Color('#FFB590') }, uSpec: { value: new THREE.Color('#FFE2C2') }, uGlitter: { value: 1 },
+  uSunCol: { value: new THREE.Color('#FFC08A') }, uTime: { value: 0 }
+};
+function snowMaterial(groom, fogMul) {
+  const u = THREE.UniformsUtils.merge([THREE.UniformsLib.fog, THREE.UniformsLib.lights, { uGroom: { value: groom ? 1 : 0 }, uFogMul: { value: fogMul || 1 } }]);
+  Object.assign(u, SNOWU);
+  return new THREE.ShaderMaterial({
+    uniforms: u, fog: true, lights: true,
+    vertexShader: `
+      varying vec3 vW; varying vec3 vN; varying vec3 vVN; varying vec3 vVP;
+      #include <common>
+      #include <fog_pars_vertex>
+      #include <shadowmap_pars_vertex>
+      void main(){
+        vec3 transformedNormal = normalMatrix * normal;
+        vec4 worldPosition = modelMatrix * vec4(position, 1.0);
+        vW = worldPosition.xyz; vN = normalize(mat3(modelMatrix) * normal); vVN = normalize(transformedNormal);
+        vec4 mvPosition = viewMatrix * worldPosition; vVP = mvPosition.xyz;
+        gl_Position = projectionMatrix * mvPosition;
+        #include <shadowmap_vertex>
+        #include <fog_vertex>
+      }`,
+    fragmentShader: `
+      uniform vec3 uSunDir, uLit, uShade, uRim, uSpec, uSunCol; uniform float uGlitter, uGroom, uTime, uFogMul;
+      varying vec3 vW; varying vec3 vN; varying vec3 vVN; varying vec3 vVP;
+      #include <common>
+      #include <packing>
+      #include <fog_pars_fragment>
+      #include <bsdfs>
+      #include <lights_pars_begin>
+      #include <shadowmap_pars_fragment>
+      #include <shadowmask_pars_fragment>
+      float hash3(vec3 p){ p = fract(p * 0.3183099 + 0.1); p *= 17.0; return fract(p.x * p.y * p.z * (p.x + p.y + p.z)); }
+      float vnoise(vec2 p){ vec2 i = floor(p), f = fract(p); f = f * f * (3.0 - 2.0 * f);
+        return mix(mix(hash3(vec3(i, 0.0)), hash3(vec3(i + vec2(1.0, 0.0), 0.0)), f.x), mix(hash3(vec3(i + vec2(0.0, 1.0), 0.0)), hash3(vec3(i + vec2(1.0, 1.0), 0.0)), f.x), f.y); }
+      void main(){
+        vec3 V = normalize(cameraPosition - vW), L = normalize(uSunDir);
+        float d = length(cameraPosition - vW);
+        vec2 q = vW.xz;
+        // 바람결 물결: 바람에 직각으로 줄이 서고, 가파른 면일수록 또렷해요(가까운 잔물결 + 먼 큰 물결)
+        vec2 wd = normalize(vec2(1.0, 0.35));
+        float steep = clamp(1.0 - vN.y, 0.0, 1.0);
+        float u1 = dot(q, wd) * 1.6 + vnoise(q * 0.08) * 6.0, u2 = dot(q, wd) * 0.42 + vnoise(q * 0.03) * 4.0;
+        float fine = (1.0 - smoothstep(10.0, 40.0, d)) * (0.5 + steep * 1.5), coarse = 1.0 - smoothstep(60.0, 220.0, d);
+        vec2 g = wd * (cos(u1) * 0.05 * fine + cos(u2) * 0.035 * coarse);
+        // 눈 결정 입자: 가까이서만 미세하게
+        vec3 cell = floor(vW * 24.0);
+        vec3 grain = (vec3(hash3(cell + 1.3), 0.0, hash3(cell + 5.1)) - 0.5) * 0.035 * (1.0 - smoothstep(2.0, 9.0, d));
+        vec3 n = normalize(vN + vec3(g.x, 0.0, g.y) + grain);
+        float sh = getShadowMask();
+        // 확산광: 부드럽게 감싸는 빛 + 법선 y를 눌러 능선 명암을 또렷하게(저니식 대비)
+        float wrap = clamp(dot(n, L) * 0.55 + 0.45, 0.0, 1.0); wrap = wrap * wrap * (3.0 - 2.0 * wrap);
+        float con = clamp(4.0 * dot(normalize(n * vec3(1.0, 0.3, 1.0)), L), 0.0, 1.0);
+        vec3 col = mix(uShade, uLit, mix(wrap, con, 0.45) * mix(0.3, 1.0, sh));
+        // 역광 테두리
+        float fres = pow(1.0 - clamp(dot(n, V), 0.0, 1.0), 4.0);
+        col += uRim * fres * 0.32;
+        // 오션 스페큘러: 해 쪽을 보면 물비늘처럼 뻗는 빛의 길
+        col += uSunCol * pow(clamp(dot(n, normalize(L + V)), 0.0, 1.0), 320.0) * (0.08 + fres * 0.55) * sh;
+        // 글리터: 드물지만 아주 밝게, 그늘에서도 약하게, 보는 각도와 시간에 따라 깜빡여요
+        vec3 rn = normalize(vec3(hash3(cell + 3.1) - 0.5, 0.9, hash3(cell + 7.7) - 0.5) + vN * 0.6);
+        float tw = 0.6 + 0.4 * sin(uTime * 3.0 + hash3(cell + 9.2) * 40.0);
+        float gl = pow(clamp(dot(reflect(-L, rn), V), 0.0, 1.0), 90.0) * step(0.92, hash3(cell)) * tw * smoothstep(0.42, 0.12, length(fract(vW.xz * 24.0) - 0.5));   // 칸 안에서 둥근 점으로
+        col += uSpec * gl * uGlitter * 2.6 * mix(0.3, 1.0, sh) * smoothstep(1.5, 5.0, d) * (1.0 - smoothstep(10.0, 45.0, d));
+        col *= 1.0 - uGroom * 0.035 * (0.5 + 0.5 * sin(vW.x * 26.0)) * (1.0 - smoothstep(4.0, 22.0, d));
+        #if NUM_POINT_LIGHTS > 0
+        for (int i = 0; i < NUM_POINT_LIGHTS; i++) {
+          vec3 lv = pointLights[i].position - vVP; float ld = length(lv);
+          col += pointLights[i].color * punctualLightIntensityToIrradianceFactor(ld, pointLights[i].distance, pointLights[i].decay) * max(dot(normalize(vVN), lv / ld), 0.0) * 0.5;
+        }
+        #endif
+        gl_FragColor = vec4(col, 1.0);
+        // 대기 원근: 멀수록 안개에 녹고, 해 쪽 안개는 햇빛을 머금어 밝아요
+        #if defined(USE_FOG) && defined(FOG_EXP2)
+        float fd = fogDensity * uFogMul, ff = 1.0 - exp(-fd * fd * fogDepth * fogDepth);
+        vec3 fc = mix(fogColor, uSunCol, pow(max(dot(-V, L), 0.0), 5.0) * 0.55);
+        gl_FragColor.rgb = mix(gl_FragColor.rgb, fc, ff);
+        #endif
+      }`
+  });
+}
+const SNOW_MAT = snowMaterial(false), GROOM_MAT = snowMaterial(true), FAR_MAT = snowMaterial(false, 0.55), PEAK_MAT = snowMaterial(false, 0.3);   // 먼 산은 안개를 덜 받아 겹겹이 보여요
+
 /* 지형 */
 (function terrain() {
-  const geo = new THREE.PlaneGeometry(1100, 1200, 110, 120);
+  const geo = new THREE.PlaneGeometry(1100, 1200, IS_TOUCH ? 140 : 220, IS_TOUCH ? 150 : 240);
   geo.rotateX(-Math.PI / 2);
   geo.translate(0, 0, -300);
   const pos = geo.attributes.position;
@@ -494,35 +715,135 @@ const lampMat = new THREE.MeshLambertMaterial({ color: 0xFFF1C9, emissive: 0xFFE
   }
   geo.setAttribute('color', new THREE.BufferAttribute(col, 3));
   geo.computeVertexNormals();
-  const m = new THREE.Mesh(geo, new THREE.MeshLambertMaterial({ vertexColors: true }));
+  const m = new THREE.Mesh(geo, SNOW_MAT);
   m.receiveShadow = true; m.name = 'terrain';
   scene.add(m);
   window.__terrain = m;
 })();
 const terrainMesh = window.__terrain;
 
+/* 하늘: 지평선에서 천정까지 그라데이션 + 해(달) + 밤엔 별 */
+const skyMat = new THREE.ShaderMaterial({
+  uniforms: { uZen: { value: new THREE.Color('#2E3B6C') }, uHor: { value: new THREE.Color('#F3AE8A') }, uSunCol: { value: new THREE.Color('#FFC08A') }, uSunDir: SNOWU.uSunDir, uStars: { value: 0 }, uTime: { value: 0 }, uCloud: { value: 0.9 } },
+  side: THREE.BackSide, depthWrite: false, fog: false,
+  vertexShader: 'varying vec3 vDir; void main(){ vDir = (modelMatrix * vec4(position, 1.0)).xyz - cameraPosition; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); gl_Position.z = gl_Position.w; }',
+  fragmentShader: `
+    uniform vec3 uZen, uHor, uSunCol, uSunDir; uniform float uStars, uTime, uCloud; varying vec3 vDir;
+    float h2(vec2 p){ return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
+    float n2(vec2 p){ vec2 i = floor(p), f = fract(p); f = f * f * (3.0 - 2.0 * f); return mix(mix(h2(i), h2(i + vec2(1.0, 0.0)), f.x), mix(h2(i + vec2(0.0, 1.0)), h2(i + vec2(1.0, 1.0)), f.x), f.y); }
+    float fbm(vec2 p){ float v = 0.0, a = 0.5; for (int i = 0; i < 4; i++) { v += a * n2(p); p *= 2.03; a *= 0.5; } return v; }
+    void main(){
+      vec3 d = normalize(vDir); float h = d.y;
+      vec3 col = mix(uHor, uZen, pow(clamp(h, 0.0, 1.0), 0.45));
+      col += uHor * 0.18 * exp(-abs(h) * 14.0);
+      float s = max(dot(d, normalize(uSunDir)), 0.0);
+      col += uSunCol * (pow(s, 1400.0) * 1.6 + pow(s, 40.0) * 0.25 + pow(s, 6.0) * 0.1);
+      // 새털구름: 하늘 평면에 투영해 결을 늘이고, 해 가까운 쪽은 햇빛을 받아 금빛
+      vec2 cp = d.xz / (h + 0.08); cp = vec2(cp.x * 0.35 + cp.y * 0.12, cp.y * 1.4 - cp.x * 0.1);
+      float c = fbm(cp * 0.9 + vec2(uTime * 0.006, 0.0));
+      c = smoothstep(0.52, 0.82, c) * smoothstep(0.02, 0.12, h) * (1.0 - smoothstep(0.35, 0.65, h));
+      col = mix(col, mix(mix(uHor, vec3(1.0), 0.3), uSunCol * 1.15, pow(s, 3.0)), c * uCloud * 0.7);
+      vec2 ci = floor(vec2(atan(d.z, d.x) * 120.0, h * 240.0));
+      col += vec3(step(0.996, h2(ci)) * smoothstep(0.04, 0.35, h)) * uStars * (0.6 + 0.4 * sin(uTime * 2.0 + h2(ci + 1.0) * 20.0));
+      gl_FragColor = vec4(col, 1.0);
+    }`
+});
+const sky = new THREE.Mesh(new THREE.SphereGeometry(2000, 32, 16), skyMat); sky.renderOrder = -1; sky.frustumCulled = false; scene.add(sky);
+
+/* 먼 산: 안개에 녹아 실루엣만 겹겹이(정상 뒤 · 양옆) */
+(function mountains() {
+  const r = rng(77);
+  for (let i = 0; i < 30; i++) {
+    const back = i < 16, rad = 180 + r() * 220, hgt = 120 + r() * 220;
+    const x = back ? (r() - 0.5) * 1800 : (r() < 0.5 ? -1 : 1) * (560 + rad * 0.6 + r() * 300);
+    const z = back ? -950 - rad * 0.7 - r() * 500 : 200 - r() * 1100;
+    const g = new THREE.SphereGeometry(1, 28, 14, 0, Math.PI * 2, 0, Math.PI / 2), pa = g.attributes.position, sd = r() * 10;
+    for (let k = 0; k < pa.count; k++) {
+      const vx = pa.getX(k), vy = pa.getY(k), vz = pa.getZ(k), a = Math.atan2(vz, vx);
+      const ridge = 1 + 0.18 * Math.sin(a * 3 + sd) + 0.08 * Math.sin(a * 7 + sd * 2);
+      pa.setXYZ(k, vx * rad, Math.pow(vy, 1.6) * hgt * ridge, vz * rad);
+    }
+    g.computeVertexNormals();
+    const m = new THREE.Mesh(g, FAR_MAT);
+    m.position.set(x, groundH(clamp(x, -550, 550), clamp(z, -L, 0)) - 40, z); m.rotation.y = r() * 3;
+    scene.add(m);
+  }
+})();
+
+/* 저 멀리 우뚝 솟은 봉우리: 노을을 가장 늦게까지 받아요(알펜글로) */
+(function greatPeak() {
+  const r = rng(303);
+  [[160, -2500, 760, 1250, 1.0], [-520, -2250, 520, 760, 1.25], [720, -2150, 480, 680, 1.3]].forEach(([x, z, rad, hgt, sharp]) => {
+    const g = new THREE.SphereGeometry(1, 48, 24, 0, Math.PI * 2, 0, Math.PI / 2), pa = g.attributes.position, sd = r() * 10;
+    for (let k = 0; k < pa.count; k++) {
+      const vx = pa.getX(k), vy = pa.getY(k), vz = pa.getZ(k), a = Math.atan2(vz, vx);
+      const ridge = 1 + 0.22 * Math.sin(a * 3 + sd) + 0.12 * Math.sin(a * 5 + sd * 1.7) + 0.06 * Math.sin(a * 11 + sd * 3);
+      const crest = Math.pow(vy, sharp) * (1 - 0.18 * Math.pow(1 - vy, 3) * Math.sin(a * 9 + sd));
+      pa.setXYZ(k, vx * rad * (1 - vy * 0.15), crest * hgt * ridge, vz * rad * (1 - vy * 0.15));
+    }
+    g.computeVertexNormals();
+    const m = new THREE.Mesh(g, PEAK_MAT); m.position.set(x, TOP_Y - 160, z); m.rotation.y = r() * 3; scene.add(m);
+  });
+})();
+
+/* 안개 띠: 산허리(낮은 곳·중턱)에 걸친 안개. 지면에서 0~60m 위에만 깔리고, 가까이선 사라져요 */
+const MIST = [];
+(function mists() {
+  const mistFrag = `
+    uniform float uTime, uAmt, uY; uniform vec3 uCol, uSun, uSunDir; varying vec3 vW;
+    float h2(vec2 p){ return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
+    float n2(vec2 p){ vec2 i = floor(p), f = fract(p); f = f * f * (3.0 - 2.0 * f); return mix(mix(h2(i), h2(i + vec2(1.0, 0.0)), f.x), mix(h2(i + vec2(0.0, 1.0)), h2(i + vec2(1.0, 1.0)), f.x), f.y); }
+    float fbm(vec2 p){ float v = 0.0, a = 0.5; for (int i = 0; i < 4; i++) { v += a * n2(p); p *= 2.05; a *= 0.5; } return v; }
+    float slopeY(float z){ if (z >= 0.0) return 0.0; if (z > -${BLEND.toFixed(1)}) return ${TAN} * z * z / ${(2 * BLEND).toFixed(1)}; if (z <= -${L.toFixed(1)}) return ${TOP_Y.toFixed(2)}; return (-z - ${(BLEND / 2).toFixed(1)}) * ${TAN}; }
+    float gH(vec2 p){ float y = slopeY(p.y); float ax = abs(p.x); if (ax > 330.0) y += (ax - 330.0) * 0.55; return y; }
+    void main(){
+      vec2 q = vW.xz * 0.0045 + vec2(uTime * 0.005, uTime * 0.002);
+      float n = fbm(q) * 0.65 + fbm(q * 3.3 - vec2(uTime * 0.012, 0.0)) * 0.35;
+      float a = smoothstep(0.4, 0.85, n) * uAmt;
+      float above = uY - gH(vW.xz);
+      a *= smoothstep(0.0, 14.0, above) * (1.0 - smoothstep(40.0, 90.0, above));
+      a *= smoothstep(30.0, 160.0, length(cameraPosition - vW));
+      vec3 V = normalize(vW - cameraPosition);
+      gl_FragColor = vec4(mix(uCol, uSun, pow(max(dot(V, normalize(uSunDir)), 0.0), 4.0) * 0.6), a);
+    }`;
+  [[38, 0.55], [150, 0.75]].slice(IS_TOUCH ? 1 : 0).forEach(([y, amt]) => {
+    const g = new THREE.PlaneGeometry(3000, 3000, 1, 1); g.rotateX(-Math.PI / 2);
+    const m = new THREE.Mesh(g, new THREE.ShaderMaterial({
+      uniforms: { uTime: SNOWU.uTime, uCol: { value: new THREE.Color() }, uSun: SNOWU.uSunCol, uSunDir: SNOWU.uSunDir, uAmt: { value: amt }, uY: { value: y } },
+      transparent: true, depthWrite: false, side: THREE.DoubleSide, fog: false,
+      vertexShader: 'varying vec3 vW; void main(){ vec4 w = modelMatrix * vec4(position, 1.0); vW = w.xyz; gl_Position = projectionMatrix * viewMatrix * w; }',
+      fragmentShader: mistFrag
+    }));
+    m.position.set(0, y, -600); m.renderOrder = 2; m.frustumCulled = false; m.userData.base = amt; scene.add(m); MIST.push(m);
+  });
+})();
+
 /* 슬로프(정설면 리본) */
 TRAILS.forEach((t) => {
-  const pts = [], idx = [];
+  const pts = [], idx = [], uvs = [];
   let n = 0;
   for (let z = 6; z >= -L - 6; z -= 5) {
     const c = trailX(t, Math.min(0, z)), y = groundH(c, z) + 0.08;
     pts.push(c - t.w / 2, y, z, c + t.w / 2, y, z);
+    uvs.push(0, z / 6, t.w / 6, z / 6);
     if (n > 0) { const a = (n - 1) * 2; idx.push(a, a + 2, a + 1, a + 1, a + 2, a + 3); }
     n++;
   }
   const g = new THREE.BufferGeometry();
   g.setAttribute('position', new THREE.Float32BufferAttribute(pts, 3));
+  g.setAttribute('uv', new THREE.Float32BufferAttribute(uvs, 2));
   g.setIndex(idx); g.computeVertexNormals();
-  const m = new THREE.Mesh(g, new THREE.MeshLambertMaterial({ color: 0xFCFEFF }));
+  const m = new THREE.Mesh(g, GROOM_MAT);
   m.receiveShadow = true; scene.add(m);
-  for (let z = -20; z > -L; z -= 40) {
+  // 코스 경계 폴대: 가까이 스쳐 가는 물체가 많을수록 빠르게 느껴져요
+  const poles = [];
+  for (let z = -8; z > -L + 6; z -= 8) {
     const c = trailX(t, z);
-    [-1, 1].forEach((s) => {
-      const x = c + s * (t.w / 2 + 1.5);
-      box(0.35, 2.2, 0.35, t.color, x, groundH(x, z) + 1.1, z);
-    });
+    [-1, 1].forEach((s) => { const x = c + s * (t.w / 2 + 1.5); poles.push([x, groundH(x, z), z]); });
   }
+  const pm = new THREE.InstancedMesh(boxGeo(0.3, 2, 0.3), mat(t.color), poles.length), pmx = new THREE.Matrix4();
+  poles.forEach((q, i) => { pmx.makeTranslation(q[0], q[1] + 1, q[2]); pm.setMatrixAt(i, pmx); });
+  pm.castShadow = true; scene.add(pm);
   for (let i = 0; i < 6; i++) {
     const z = -80 - i * 90, c = trailX(t, z), x = c + (i % 2 ? 1 : -1) * t.w * 0.18;
     box(0.25, 3.4, 0.25, '#12263A', x, groundH(x, z) + 1.7, z);
@@ -536,14 +857,14 @@ TRAILS.forEach((t) => {
   const banner2 = banner.clone(); banner2.rotation.y = Math.PI; banner2.position.z = zt - 0.35; scene.add(banner2);
 });
 
-/* 모굴(상급) */
+/* 모굴(상급): 둥근 눈 둔덕 */
 const MOGULS = [];
+const MOGUL_GEO = new THREE.SphereGeometry(1, 16, 8, 0, Math.PI * 2, 0, Math.PI / 2);
 for (let i = 0; i < 70; i++) {
   const t = TRAILS[2];
   const z = -40 - R() * (L - 80), c = trailX(t, z), x = c + (R() - 0.5) * t.w * 0.8;
   MOGULS.push({ x, z });
-  const m = box(2.6, 0.55, 1.8, '#EEF4F9', x, groundH(x, z) + 0.25, z);
-  m.castShadow = false;
+  const m = new THREE.Mesh(MOGUL_GEO, GROOM_MAT); m.position.set(x, groundH(x, z) + 0.02, z); m.scale.set(1.5, 0.55, 1.1); m.receiveShadow = true; scene.add(m);
 }
 
 /* 텍스트 표지판 */
@@ -562,6 +883,16 @@ function signMesh(text, w, h, bg) {
 
 /* 나무(인스턴스) */
 const TREE_BUCKET = new Map();
+function shaggy(g, amt, seed) {   // 원뿔 가장자리를 들쭉날쭉하게 + 가지 끝이 아래로 처지게
+  const pa = g.attributes.position;
+  for (let i = 0; i < pa.count; i++) {
+    const x = pa.getX(i), y = pa.getY(i), z = pa.getZ(i), rr = Math.hypot(x, z); if (rr < 0.01) continue;
+    const a = Math.atan2(z, x), w = Math.sin(a * 7 + seed) * 0.6 + Math.sin(a * 13 + y * 2 + seed) * 0.4, kk = 1 + amt * w;
+    pa.setXYZ(i, x * kk, y - (rr > 1 ? Math.abs(Math.sin(a * 7 + seed)) * amt * 2.2 : 0), z * kk);
+  }
+  g.computeVertexNormals(); return g;
+}
+const TREE_MAT = new THREE.MeshLambertMaterial({ color: '#3B3F5E' }), TREE_SNOW = new THREE.MeshLambertMaterial({ color: '#F0C9B4' }), TREE_TRUNK = new THREE.MeshLambertMaterial({ color: '#4A3A40' });
 (function trees() {
   const list = [];
   const ok = (x, z) => {
@@ -572,27 +903,26 @@ const TREE_BUCKET = new Map();
     if (z <= 0) for (const t of TRAILS) { if (Math.abs(x - trailX(t, z)) < t.w / 2 + 7) return false; }
     return true;
   };
-  for (let i = 0; i < 2600 && list.length < 900; i++) {
+  for (let i = 0; i < 2600 && list.length < (IS_TOUCH ? 620 : 900); i++) {
     const x = (R() - 0.5) * 860, z = 250 - R() * (L + 360);
     if (ok(x, z)) list.push({ x, z, s: 0.8 + R() * 0.7 });
   }
   // 둥근 원뿔형 침엽수(포근한 톤) — 각진 복셀 대신 부드러운 전나무
   const parts = [
-    { g: boxGeo(0.95, 2.0, 0.95), c: '#8A6A4C', y: 1.0, s: 1 },                 // 나무기둥
-    { g: new THREE.ConeGeometry(3.5, 3.6, 8), c: '#6FA585', y: 3.5, s: 1 },     // 아래 가지
-    { g: new THREE.ConeGeometry(2.7, 3.1, 8), c: '#5E957A', y: 5.5, s: 1 },     // 가운데
-    { g: new THREE.ConeGeometry(1.8, 2.7, 8), c: '#52886E', y: 7.3, s: 1 },     // 꼭대기
-    { g: new THREE.ConeGeometry(1.95, 1.3, 8), c: '#F4F9FC', y: 8.25, s: 1 },   // 눈 모자
-    { g: new THREE.ConeGeometry(3.55, 0.9, 8), c: '#F1F7FB', y: 4.35, s: 1 }    // 아래가지 눈
+    { g: new THREE.CylinderGeometry(0.35, 0.5, 2.0, 8), m: TREE_TRUNK, y: 1.0 },          // 나무기둥
+    { g: shaggy(new THREE.ConeGeometry(3.5, 3.8, 28, 2), 0.14, 1), m: TREE_MAT, y: 3.6 },                    // 아래 가지
+    { g: shaggy(new THREE.ConeGeometry(2.7, 3.3, 28, 2), 0.14, 2.3), m: TREE_MAT, y: 5.6 },                    // 가운데
+    { g: shaggy(new THREE.ConeGeometry(1.8, 2.9, 24, 2), 0.12, 4.1), m: TREE_MAT, y: 7.4 },                    // 꼭대기
+    { g: shaggy(new THREE.ConeGeometry(1.9, 1.2, 24, 1), 0.1, 4.1), m: TREE_SNOW, y: 8.35 }                   // 눈 모자
   ];
   const dummy = new THREE.Object3D();
   parts.forEach((p) => {
-    const im = new THREE.InstancedMesh(p.g, mat(p.c), list.length);
+    const im = new THREE.InstancedMesh(p.g, p.m, list.length);
     im.castShadow = true; im.receiveShadow = true;
     list.forEach((t, i) => {
-      dummy.position.set(t.x, groundH(t.x, t.z) + p.y * t.s, t.z);
+      dummy.position.set(t.x, groundH(t.x, t.z) + p.y * t.s - 0.2, t.z);
       dummy.scale.set(t.s, t.s, t.s);
-      dummy.rotation.y = (t.x * 13 + t.z * 7) % 1.2;
+      dummy.rotation.set(((t.x * 7) % 1 - 0.5) * 0.08, (t.x * 13 + t.z * 7) % 6.28, ((t.z * 5) % 1 - 0.5) * 0.08);   // 나무마다 살짝 다르게 기울어요
       dummy.updateMatrix();
       im.setMatrixAt(i, dummy.matrix);
     });
@@ -655,7 +985,7 @@ box(0.4, 1.2, 14, '#2F6FD6', 258.6, 0.6, 50); box(0.4, 1.2, 14, '#2F6FD6', 265.4
   s.material.map.image.getContext('2d');
   const cv = document.createElement('canvas'); cv.width = 1120; cv.height = 88;
   const c2 = cv.getContext('2d'); c2.fillStyle = '#F4F8FB'; c2.fillRect(0, 0, cv.width, cv.height);
-  c2.fillStyle = '#12263A'; c2.font = '64px Silkscreen, monospace'; c2.textAlign = 'center'; c2.textBaseline = 'middle'; c2.fillText('SNOWLIVE MOUNTAIN', 560, 46);
+  c2.fillStyle = '#12263A'; c2.font = '64px "Gowun Batang", serif'; c2.textAlign = 'center'; c2.textBaseline = 'middle'; c2.fillText('SNOWLIVE MOUNTAIN', 560, 46);
   s.material.map = new THREE.CanvasTexture(cv);
   s.position.set(0, 11, 0.75); g.add(s);
   const s2 = s.clone(); s2.rotation.y = Math.PI; s2.position.z = -0.75; g.add(s2);
@@ -669,7 +999,7 @@ const lamps = [];
 /* 광장 소품 */
 function snowman(x, z, s) {
   const g = new THREE.Group(); g.position.set(x, 0, z); g.scale.setScalar(s || 1); scene.add(g);
-  box(2.4, 2.2, 2.4, '#FBFDFF', 0, 1.1, 0, g); box(1.7, 1.6, 1.7, '#FBFDFF', 0, 3, 0, g);
+  [[1.35, 1.1], [0.95, 3.0]].forEach(([r, y]) => { const b = new THREE.Mesh(new THREE.SphereGeometry(r, 20, 14), TREE_SNOW); b.position.y = y; b.castShadow = b.receiveShadow = true; g.add(b); });
   box(0.3, 0.3, 0.8, '#F28C38', 0, 3.1, 1.1, g); box(1.9, 0.3, 1.9, '#26313C', 0, 3.95, 0, g); box(1.2, 0.9, 1.2, '#26313C', 0, 4.5, 0, g);
   box(2, 0.35, 0.35, '#E4572E', 0, 2.25, 0.9, g);
 }
@@ -800,138 +1130,656 @@ const LIFT = (function () {
   return { P0, P1, len, speed, spacing, chairs, posAt, count };
 })();
 
-/* ───────────── 캐릭터(복셀) ───────────── */
+/* ───────────── 캐릭터 ─────────────
+   저니처럼 길고 가는 실루엣: 머리는 작게(키의 약 1/7), 다리는 길고 가늘게,
+   허벅지까지 내려오는 롱 파카는 밑단이 넓게 퍼지고 바람과 속도에 따라 펄럭여요.
+   관절(골반·고관절·무릎·발목·어깨)마다 둥근 덮개를 둬서 어떤 자세에서도 몸이 갈라지지 않아요.
+   장비는 실제 스키·보드 복장 기준: 헬멧 또는 비니, 고글(렌즈 색), 넥워머(선택), 장갑 */
 const K = 0.11;
+const KK_S = 0.75;                            // 캐릭터 모델(KayKit) 단위 → m. 키 약 1.65m
+const LEG = (0.519 - 0.145) / 2 * KK_S, HIP = 0.519 * KK_S;   // 모델 기준(고관절 0.39m, 허벅지+종아리 0.28m). 발목 높이 = HIP - 2·LEG ≈ 0.11m
+const GEAR_UP = 2 * K - (HIP - 2 * LEG);      // 부츠·스키는 예전 발목 높이(2K) 기준으로 만들어서 그만큼 올려 붙여요
+const LS = LEG / (3 * K);
+const SPH = new THREE.SphereGeometry(1, 18, 14);
+const TRIM = '#EBDDB8';
+const BOOT_SHELL = '#E9EBEE', BIND = '#1E2026', STRAP = '#3A3F47';   // 스키 부츠 셸 · 바인딩 · 스트랩                        // 파카 밑단·소매 끝 반사 띠
+function part(geo, color, parent, x, y, z, sx, sy, sz) {
+  const m = new THREE.Mesh(geo, typeof color === 'string' ? mat(color) : color);
+  m.position.set(x || 0, y || 0, z || 0); if (sx) m.scale.set(sx, sy, sz);
+  m.castShadow = true; parent.add(m); return m;
+}
+function limb(rt, rb, len, color, parent) {
+  const g = new THREE.CylinderGeometry(rt, rb, len, 14); g.translate(0, -len / 2, 0);
+  return part(g, color, parent);
+}
+function lathe(pts, color, parent, seg) {
+  return part(new THREE.LatheGeometry(pts.map(([r, y]) => new THREE.Vector2(r * K, y * K)), seg || 24), color, parent);
+}
+const coatMat = (hex) => mat(hex, { side: THREE.DoubleSide });
+// 근육 곡선이 있는 팔다리(아래→위 단면 반지름, K 단위). 관절 구는 위아래 끝을 덮어요
+function muscle(pts, color, parent) { return lathe(pts, color, parent, 16); }
+// 몸통을 사람답게: 어깨는 바깥으로 갈수록 내려가고(경사), 가슴은 앞으로, 등은 살짝 둥글게
+function humanize(g) {
+  const pa = g.attributes.position;
+  for (let i = 0; i < pa.count; i++) {
+    let x = pa.getX(i), y = pa.getY(i), z = pa.getZ(i); const yk = y / K, ax = Math.abs(x) / K;
+    if (yk > 3.9) y -= ax * 0.28 * K * Math.min(1, (yk - 3.9) / 1.2);
+    if (z > 0 && yk > 2.2 && yk < 4.9) z *= 1 + 0.12 * Math.sin((yk - 2.2) / 2.7 * Math.PI);
+    if (z < 0 && yk > 0.6 && yk < 4.6) z *= 1 + 0.06 * Math.sin((yk - 0.6) / 4.0 * Math.PI);
+    pa.setXYZ(i, x, y, z);
+  }
+  g.computeVertexNormals(); return g;
+}
 function makeChar(o) {
-  const root = new THREE.Group();
+  const root = new THREE.Group(); root.rotation.order = 'YXZ';
   const tilt = new THREE.Group(); root.add(tilt);
-  const hip = 4.6 * K;
+  const pantsParts = [], gloves = [], skinParts = [];
   const legs = [];
   [-1, 1].forEach((s) => {
-    const lg = new THREE.Group(); lg.position.set(s * 1.2 * K, hip, 0); tilt.add(lg);
-    lg.userData.leg = box(2 * K, 2.6 * K, 2 * K, o.pants, 0, -1.3 * K, 0, lg);
-    box(2.4 * K, 1.4 * K, 2.8 * K, '#1E2A36', 0, -3.3 * K, 0.2 * K, lg);
-    lg.userData.ski = box(1.6 * K, 0.6 * K, 15 * K, o.ski || '#F2B134', 0, -4.3 * K, 1 * K, lg);
-    legs.push(lg);
+    const hipG = new THREE.Group(); hipG.position.set(s * 1.2 * K, HIP, 0); tilt.add(hipG);
+    const hipS = part(SPH, o.pants, hipG, 0, 0, 0, 0.95 * K, 0.95 * K, 0.95 * K); pantsParts.push(hipS);
+    const thigh = muscle([[0.74, -3.0], [0.8, -2.6], [0.93, -1.8], [1.0, -0.9], [0.98, -0.3], [0.92, 0]].map(([r, y]) => [r, y * LS]), o.pants, hipG); pantsParts.push(thigh);
+    const knee = new THREE.Group(); knee.position.set(0, -LEG, 0); hipG.add(knee);
+    const kneeS = part(SPH, o.pants, knee, 0, 0, 0, 0.76 * K, 0.76 * K, 0.76 * K); pantsParts.push(kneeS);
+    const shin = muscle([[0.56, -3.0], [0.6, -2.5], [0.73, -1.6], [0.8, -1.0], [0.76, -0.4], [0.74, 0]].map(([r, y]) => [r, y * LS]), o.pants, knee); pantsParts.push(shin);   // 종아리 곡선
+    const gearG = new THREE.Group();
+    const ankle = new THREE.Group(); ankle.position.set(0, -LEG, 0); knee.add(ankle); gearG.position.y = GEAR_UP; ankle.add(gearG);
+    // 보드 부츠: 발목까지 오는 푹신하고 둥근 부츠
+    const sbCuff = lathe([[0, -0.9], [1.0, -0.9], [1.08, -0.2], [0.95, 0.9], [0, 0.9]], '#2A2D34', gearG, 16);
+    const sbBoot = part(SPH, '#2A2D34', gearG, 0, -1.0 * K, 0.45 * K, 1.12 * K, 0.62 * K, 1.8 * K);
+    sbCuff.userData.gearOnly = sbBoot.userData.gearOnly = 'board';
+    // 스키 부츠: 정강이 중간까지 오는 단단한 셸 + 바깥쪽 버클 4개 + 평평한 밑창
+    const skB = new THREE.Group(); gearG.add(skB); skB.userData.gearOnly = 'ski';
+    const shellLow = lathe([[0, -1.1], [0.9, -1.1], [0.95, -0.45], [0, -0.45]], BOOT_SHELL, skB, 18); shellLow.scale.z = 1.25;
+    const cuffG = new THREE.Group(); cuffG.position.y = -GEAR_UP; skB.add(cuffG);   // 발목 관절을 축으로 앞뒤로 기울어요
+    const GU = GEAR_UP / K;
+    const shell = lathe([[0, -0.8], [0.95, -0.8], [0.93, 0.6], [0.88, 1.6], [0.93, 1.95], [0, 1.95]].map(([r, y]) => [r, y + GU]), BOOT_SHELL, cuffG, 20); shell.scale.z = 1.32; shell.position.z = 0.12 * K;
+    part(boxGeo(1.6 * K, 0.55 * K, 3.3 * K), BOOT_SHELL, skB, 0, -1.1 * K, 0.4 * K);
+    part(boxGeo(1.65 * K, 0.22 * K, 3.4 * K), '#1E2026', skB, 0, -1.38 * K, 0.4 * K);
+    [-0.7, 0.1, 0.85, 1.5].forEach((y) => part(boxGeo(0.18 * K, 0.18 * K, 0.9 * K), '#9AA0A8', cuffG, s * 0.94 * K, (y + GU) * K, 0.3 * K));
+    const strapM = part(new THREE.CylinderGeometry(0.95 * K, 0.95 * K, 0.28 * K, 20), '#1E2026', cuffG, 0, (1.78 + GU) * K, 0.12 * K); strapM.scale.z = 1.32;   // 파워 스트랩
+    // 와이드 팬츠 밑단(보드): 부츠를 덮고 바닥에 끌려요
+    const pool = part(new THREE.CylinderGeometry(1.4 * K, 1.62 * K, 1.3 * K, 18), o.pants, gearG, 0, -0.45 * K, 0.05 * K); pantsParts.push(pool); pool.userData.gearOnly = 'board';
+    // 스키 + 바인딩(플레이트 · 토피스 · 힐피스 · 브레이크)
+    const ski = new THREE.Group(); gearG.add(ski);
+    part(boxGeo(1.4 * K, 0.35 * K, 14 * K), o.ski || '#F2B134', ski, 0, -1.83 * K, 0.6 * K);
+    const tip = part(boxGeo(1.4 * K, 0.35 * K, 1.6 * K), o.ski || '#F2B134', ski, 0, -1.5 * K, 8.2 * K); tip.rotation.x = -0.5;
+    part(boxGeo(1.2 * K, 0.18 * K, 4.4 * K), '#3A3F47', ski, 0, -1.57 * K, 0.4 * K);
+    part(boxGeo(1.35 * K, 0.55 * K, 0.95 * K), BIND, ski, 0, -1.22 * K, 2.6 * K);
+    part(boxGeo(1.35 * K, 0.75 * K, 1.2 * K), BIND, ski, 0, -1.12 * K, -1.85 * K);
+    [-1, 1].forEach((e) => part(boxGeo(0.12 * K, 0.12 * K, 0.9 * K), '#9AA0A8', ski, e * 0.78 * K, -1.62 * K, -1.55 * K));
+    hipG.userData = { thigh, shin, knee, ankle, gearG, cuffG, ski, side: s, restX: s * 1.2 * K, skB, sb: [sbCuff, sbBoot], pp: { hipS, thigh, kneeS, shin, pool }, fp: [hipS, thigh, kneeS, shin, pool, sbCuff, sbBoot, skB] };   // 1인칭에선 숨기고 스키·보드 앞코만 보여요
+    legs.push(hipG);
   });
-  const board = box(3.6 * K, 0.6 * K, 12 * K, o.boardColor || '#8E6BD8', 0, -4.3 * K, 1 * K, legs[0]);
-  const body = new THREE.Group(); body.position.set(0, hip, 0); tilt.add(body);
-  const torso = box(6 * K, 5 * K, 3.2 * K, o.jacket, 0, 2.5 * K, 0, body);
-  box(0.6 * K, 4.6 * K, 0.2 * K, '#F4F8FB', 0, 2.5 * K, 1.65 * K, body);
+  const bc = o.boardColor || '#8E6BD8';
+  // 스노보드 바인딩: 베이스플레이트 · 하이백(뒤꿈치 쪽) · 발목 스트랩 · 발가락 스트랩. 발끝은 +z
+  const bindings = [];
+  function binding(g, x, z) {
+    const b = new THREE.Group(); b.position.set(x, 0.25 * K, z); g.add(b); bindings.push(b);
+    part(boxGeo(2.1 * K, 0.3 * K, 3.3 * K), BIND, b, 0, 0.15 * K, 0.2 * K);
+    const hb = part(boxGeo(2.0 * K, 2.6 * K, 0.28 * K), BIND, b, 0, 1.6 * K, -1.8 * K); hb.rotation.x = 0.2;   // 와이드 팬츠 뒤로 하이백이 보여요
+    [-1, 1].forEach((e) => part(boxGeo(0.18 * K, 1.2 * K, 2.6 * K), BIND, b, e * 1.05 * K, 0.75 * K, -0.2 * K));   // 힐컵 옆판
+    const as = part(boxGeo(2.5 * K, 0.5 * K, 1.4 * K), STRAP, b, 0, 1.25 * K, 0.6 * K); as.rotation.x = 0.4;
+    part(boxGeo(2.15 * K, 0.35 * K, 0.6 * K), STRAP, b, 0, 0.95 * K, 1.5 * K);
+  }
+  function boardMesh(alongX, parent, x, y, z) {
+    const g = new THREE.Group(); g.position.set(x, y, z); parent.add(g);
+    const bm = mat(bc);
+    const deck = part(alongX ? boxGeo(9 * K, 0.5 * K, 3.4 * K) : boxGeo(3.4 * K, 0.5 * K, 9 * K), bm, g);
+    const caps = [-1, 1].map((e) => part(new THREE.CylinderGeometry(1.7 * K, 1.7 * K, 0.5 * K, 18), bm, g, alongX ? e * 4.5 * K : 0, 0, alongX ? 0 : e * 4.5 * K));
+    g.userData.deck = { deck, caps, alongX };
+    return g;
+  }
+  // 보드 윗면 = 바인딩 베이스플레이트 아래 = 부츠 밑창 높이에 맞춰 보드를 살짝 눈에 묻어요
+  const boardSkate = boardMesh(false, legs[0].userData.gearG, 0, -2.17 * K, 1 * K); binding(boardSkate, 0, -1.0 * K);
+  const boardStance = boardMesh(true, tilt, 0, -0.17 * K, 0); binding(boardStance, -2.3 * K, 0); binding(boardStance, 2.3 * K, 0);
+  const body = new THREE.Group(); body.position.set(0, HIP, 0); tilt.add(body);
+  const pelvis = part(SPH, o.pants, body, 0, 0.2 * K, 0, 2.0 * K, 1.1 * K, 1.5 * K); pantsParts.push(pelvis);   // 골반: 두 고관절을 덮어요(옷 핏에 맞춰 크기 조절)
+  // 옷(실제 착용 사진 참고)
+  //  스키복: 엉덩이를 덮는 길이에 허리가 잡힌 핏 재킷 + 슬림 일자 팬츠
+  //    · 슬림핏: 옆구리·팔 대비색 패널
+  //  보드복: 엉덩이 길이의 박시한 블루종(밑단·소매 조임, 떨어지는 어깨) + 바닥까지 끌리는 와이드 팬츠
+  //    · 트랙 셋업: 스탠드칼라 · 어깨~소매 파이핑   · 아노락: 캥거루 포켓 · 하프집 · 내린 후드
+  const outfits = {}, ds = (m) => { m.userData.ds = true; return m; };
+  function outfit(key, torsoPts, zT, build) {
+    const g = new THREE.Group(); body.add(g);
+    const o2 = { g, main: [], acc: [] };
+    const t = lathe(torsoPts, o.jacket, g); humanize(t.geometry); t.scale.z = zT; o2.main.push(t);
+    o2.skirt = new THREE.Group(); o2.skirt.position.y = -0.4 * K; g.add(o2.skirt);
+    build(o2, g);
+    outfits[key] = o2;
+  }
+  const zipper = (g, y, h, z) => part(boxGeo(0.16 * K, h * K, 0.12 * K), '#E9E4EC', g, 0, y * K, z * K);
+  const ringAt = (o2, parent, r, y0, y1, zs) => { const m = ds(lathe([[r, y0], [r + 0.08, y1], [r - 0.02, y1 + 0.02], [r - 0.1, y0 + 0.02]], coatMat(o.jacket), parent)); m.scale.z = zs; o2.acc.push(m); return m; };
+  // 스키: 몸에 딱 붙는 스키니 재킷(허리 잘록)
+  outfit('slim', [[1.98, -1.3], [1.88, -0.4], [1.76, 0.8], [1.7, 1.6], [1.94, 2.9], [2.08, 3.9], [1.94, 4.7], [1.38, 5.3], [0.82, 5.62], [0, 5.68]], 0.7, (o2, g) => {
+    [-1, 1].forEach((sd) => o2.acc.push(part(boxGeo(0.24 * K, 4.4 * K, 0.85 * K), o.jacket, g, sd * 1.84 * K, 1.2 * K, 0)));
+    ringAt(o2, o2.skirt, 1.97, -0.95, -0.85, 0.7);
+    zipper(g, 2.1, 7.0, 1.44);
+  });
+  // 보드: 어깨가 몸 밖으로 떨어지는 박스형 오버핏
+  outfit('track', [[2.85, -1.0], [3.15, -0.6], [3.35, 0.4], [3.38, 2.0], [3.35, 3.5], [3.2, 4.3], [2.25, 5.1], [1.05, 5.56], [0, 5.62]], 0.8, (o2, g) => {
+    ringAt(o2, o2.skirt, 2.9, -0.65, -0.2, 0.8);                         // 밑단 조임 밴드
+    o2.acc.push(part(boxGeo(0.22 * K, 6.4 * K, 0.14 * K), o.jacket, g, 0, 2.2 * K, 2.68 * K));  // 대비색 지퍼 라인
+  });
+  outfit('anorak', [[2.9, -1.5], [3.2, -1.1], [3.38, 0.2], [3.4, 2.0], [3.36, 3.5], [3.2, 4.3], [2.25, 5.1], [1.05, 5.56], [0, 5.62]], 0.82, (o2, g) => {
+    ringAt(o2, o2.skirt, 2.95, -1.15, -0.75, 0.82);                      // 밑단 스트링 조임
+    o2.acc.push(part(boxGeo(3.8 * K, 1.8 * K, 0.3 * K), o.jacket, g, 0, 1.2 * K, 2.78 * K));    // 캥거루 포켓
+    o2.acc.push(part(boxGeo(0.5 * K, 1.7 * K, 0.14 * K), o.jacket, g, 0, 4.25 * K, 2.6 * K));   // 하프집
+    o2.main.push(part(SPH, o.jacket, g, 0, 5.15 * K, -2.0 * K, 2.2 * K, 1.2 * K, 1.4 * K));    // 내린 후드
+  });
+  // 스탠드칼라(재킷)
+  const collar = ds(lathe([[1.0, 5.45], [1.12, 5.9], [1.02, 6.4], [0.9, 6.42]], coatMat(o.jacket), body, 18));
   const arms = [];
   [-1, 1].forEach((s) => {
-    const ag = new THREE.Group(); ag.position.set(s * 3.65 * K, 4.6 * K, 0); body.add(ag);
-    ag.userData.arm = box(1.3 * K, 4.2 * K, 2 * K, o.jacket, 0, -2.1 * K, 0, ag);
-    box(1.3 * K, 1 * K, 2 * K, '#24384F', 0, -4.7 * K, 0, ag);
+    const ag = new THREE.Group(); ag.position.set(s * 2.1 * K, 4.45 * K, 0); body.add(ag);   // 어깨는 몸통 안쪽에서 둥글게 내려와요
+    const sh = part(SPH, o.jacket, ag, 0, 0, 0, 0.8 * K, 0.8 * K, 0.8 * K);
+    // 위팔 · 팔꿈치 · 아래팔(팔꿈치가 굽어야 사람처럼 보여요)
+    ag.userData.arm = muscle([[0.6, -2.75], [0.66, -2.2], [0.76, -1.2], [0.78, -0.4], [0.74, 0]], o.jacket, ag); ag.userData.sh = sh;
+    const el = new THREE.Group(); el.position.y = -2.75 * K; ag.add(el); ag.userData.elbow = el;
+    ag.userData.elS = part(SPH, o.jacket, el, 0, 0, 0, 0.62 * K, 0.62 * K, 0.62 * K);
+    ag.userData.fore = muscle([[0.5, -2.6], [0.53, -2.1], [0.62, -1.0], [0.62, -0.2], [0.6, 0]], o.jacket, el);
+    ag.userData.cuff = part(new THREE.CylinderGeometry(0.6 * K, 0.58 * K, 0.38 * K, 14), TRIM, el, 0, -2.42 * K, 0);  // 소매 끝(조임 밴드)
+    ag.userData.band = part(new THREE.CylinderGeometry(0.8 * K, 0.78 * K, 0.6 * K, 14), TRIM, ag, 0, -1.4 * K, 0);   // 스키 슬림핏: 팔 대비색 밴드
+    ag.userData.pipe = part(boxGeo(0.12 * K, 2.7 * K, 0.12 * K), TRIM, ag, s * 0.78 * K, -1.35 * K, 0);              // 보드 트랙: 어깨에서 소매로 이어지는 파이핑
+    ag.userData.pipe2 = part(boxGeo(0.12 * K, 2.4 * K, 0.12 * K), TRIM, el, s * 0.62 * K, -1.2 * K, 0);
+    // 벙어리장갑: 손바닥 + 엄지
+    gloves.push(part(SPH, o.glove || '#26313C', el, 0, -2.95 * K, 0.06 * K, 0.58 * K, 0.78 * K, 0.62 * K));
+    gloves.push(part(SPH, o.glove || '#26313C', el, -s * 0.42 * K, -2.7 * K, 0.32 * K, 0.24 * K, 0.36 * K, 0.24 * K));
+    const pg = new THREE.Group(); pg.position.set(0, -3.0 * K, 0.1 * K); pg.rotation.x = 0.3; el.add(pg);
+    box(0.04, 0.85, 0.04, '#3B4A5A', 0, -0.4, 0, pg);
+    box(0.16, 0.02, 0.16, '#26313C', 0, -0.78, 0, pg);
+    ag.userData.pole = pg;
     arms.push(ag);
   });
-  const head = new THREE.Group(); head.position.set(0, 5 * K, 0); body.add(head);
-  const face = box(5.4 * K, 4.6 * K, 4.8 * K, o.skin, 0, 2.3 * K, 0, head);
-  box(5.6 * K, 2.6 * K, 1.2 * K, '#3A2A22', 0, 2.9 * K, -2 * K, head);
-  box(5.6 * K, 1.5 * K, 0.4 * K, '#24384F', 0, 2.4 * K, 2.45 * K, head);
-  box(1.8 * K, 1.1 * K, 0.2 * K, '#8FD3FF', -1.15 * K, 2.4 * K, 2.7 * K, head, { emissive: 0x2A6A90, emissiveIntensity: 0.3 });
-  box(1.8 * K, 1.1 * K, 0.2 * K, '#8FD3FF', 1.15 * K, 2.4 * K, 2.7 * K, head, { emissive: 0x2A6A90, emissiveIntensity: 0.3 });
-  box(6 * K, 0.9 * K, 5.4 * K, '#F4F8FB', 0, 4.95 * K, 0, head);
-  const cap = box(5.8 * K, 1.8 * K, 5.2 * K, o.cap, 0, 6.3 * K, 0, head);
-  box(1.6 * K, 1.4 * K, 1.6 * K, '#F4F8FB', 0, 7.9 * K, 0, head);
-  const c = { root, tilt, legs, arms, body, head, board, torso, face, cap, pose: 'stand', t: Math.random() * 10, opts: o };
-  setGear(c, o.gear || 'ski');
+  // 목 · 넥워머(선택: 얼굴 아래를 덮어 얼굴 없는 실루엣이 돼요)
+  skinParts.push(part(new THREE.CylinderGeometry(0.55 * K, 0.6 * K, 0.9 * K, 14), o.skin, body, 0, 6.2 * K, 0));
+  const neck = part(new THREE.CylinderGeometry(1.0 * K, 1.08 * K, 1.5 * K, 18), o.neck || '#26313C', body, 0, 6.45 * K, 0.06 * K);
+  const head = new THREE.Group(); head.position.set(0, 6.3 * K, 0); body.add(head);
+  const face = part(SPH, o.skin, head, 0, 1.32 * K, 0.08 * K, 1.2 * K, 1.46 * K, 1.32 * K); skinParts.push(face);   // 달걀형 머리
+  skinParts.push(part(SPH, o.skin, head, 0, 1.0 * K, 1.36 * K, 0.2 * K, 0.26 * K, 0.22 * K));                            // 코
+  // 헬멧: 뒤로 살짝 길게 빠진 매끈한 쉘
+  const helmet = new THREE.Group(); head.add(helmet);
+  const helmShell = part(new THREE.SphereGeometry(1.48 * K, 24, 14, 0, Math.PI * 2, 0, Math.PI * 0.6), o.cap, helmet, 0, 1.4 * K, -0.12 * K);
+  helmShell.scale.set(1, 1, 1.1);
+  // 비니(접단 + 방울)
+  const beanie = new THREE.Group(); head.add(beanie);
+  const beanieTop = part(new THREE.SphereGeometry(1.36 * K, 22, 12, 0, Math.PI * 2, 0, Math.PI * 0.5), o.cap, beanie, 0, 1.7 * K, -0.04 * K);
+  beanieTop.scale.set(1, 1.15, 1);
+  const beanieCuff = part(new THREE.CylinderGeometry(1.4 * K, 1.4 * K, 0.55 * K, 22), o.cap, beanie, 0, 1.78 * K, -0.04 * K);
+  const pom = part(SPH, o.cap, beanie, 0, 3.4 * K, -0.04 * K, 0.42 * K, 0.42 * K, 0.42 * K);
+  // 고글: 밴드 + 앞쪽 곡면 렌즈(은은하게 빛나요)
+  const strap = part(new THREE.CylinderGeometry(1.46 * K, 1.46 * K, 0.42 * K, 24, 1, true), '#22262F', head, 0, 1.55 * K, -0.05 * K);
+  strap.material = mat('#22262F', { side: THREE.DoubleSide });
+  const lens = part(new THREE.CylinderGeometry(1.55 * K, 1.42 * K, 0.78 * K, 22, 1, true, -1.05, 2.1), mat('#F2B134'), head, 0, 1.45 * K, 0.02 * K);
+  const c = { root, tilt, legs, arms, body, head, boardSkate, boardStance, outfits, skirt: outfits.slim.skirt, collar, pelvis, face, cap: helmShell, helmet, beanie, beanieParts: [beanieTop, beanieCuff, pom], strap, lens, neck, skinParts, pantsParts, gloves, bindings, pose: 'stand', t: Math.random() * 10, seed: Math.random() * 6, opts: o, cloth: 0 };
+  setGear(c, o.gear || 'ski'); setColors(c, o);
+  markGear(c); fitGear(c); attachModel(c);
   return c;
 }
+/* 장비에 맞는 옷: 스키면 스키복(jacket·accent·pants·skiFit), 보드면 보드복(bJacket·bAccent·bPants·boardFit) */
+const FIT_ALIAS = { race: 'slim', shell: 'slim', block: 'slim', long: 'track' };   // 예전에 저장된 핏 이름
+function wearOf(op) {
+  const fit = (v, d) => FIT_ALIAS[v] || v || d;
+  return op.gear === 'board'
+    ? { fit: fit(op.boardFit, 'track'), main: op.bJacket || '#232C4E', acc: op.bAccent || '#E9E3D3', pants: op.bPants || '#232C4E', baggy: true }
+    : { fit: fit(op.skiFit, 'slim'), main: op.jacket || '#111418', acc: op.accent || '#F2F2EE', pants: op.pants || '#111418', baggy: false };
+}
 function setColors(c, o) {
-  c.torso.material = mat(o.jacket); c.arms.forEach((a) => a.userData.arm.material = mat(o.jacket));
-  c.legs.forEach((l) => l.userData.leg.material = mat(o.pants));
-  c.cap.material = mat(o.cap); c.face.material = mat(o.skin);
-  c.opts = Object.assign({}, c.opts, o);
+  const op = Object.assign({}, c.opts, o), w = wearOf(op);
+  Object.keys(c.outfits).forEach((k) => { c.outfits[k].g.visible = k === w.fit; });
+  const of = c.outfits[w.fit]; c.skirt = of.skirt;
+  const paint = (m, hex) => { m.material = m.userData.ds ? coatMat(hex) : mat(hex); };
+  of.main.forEach((m) => paint(m, w.main)); of.acc.forEach((m) => paint(m, w.acc)); paint(c.collar, w.main);
+  // 보드복: 어깨가 떨어지고(낮고 바깥) 소매가 넓어요. 스키복: 몸에 맞게
+  const f = w.baggy ? 1.62 : 0.86;   // 소매: 보드는 아주 넉넉하게, 스키는 팔에 붙게
+  c.arms.forEach((a, i) => {
+    const sd = i ? 1 : -1; a.position.set(sd * (w.baggy ? 2.85 : 1.95) * K, (w.baggy ? 3.95 : 4.5) * K, 0);
+    a.userData.arm.material = mat(w.main); a.userData.sh.material = mat(w.main); a.userData.arm.scale.set(f, 1, f); a.userData.sh.scale.setScalar(0.8 * K * f);
+    a.userData.cuff.material = mat(w.baggy ? w.main : w.acc); a.userData.cuff.scale.set(w.baggy ? 1.05 : 1, 1, w.baggy ? 1.05 : 1);   // 보드는 소매 끝을 조여요
+    a.userData.band.visible = w.fit === 'slim'; a.userData.band.material = mat(w.acc);
+    a.userData.pipe.visible = w.fit === 'track'; a.userData.pipe.material = mat(w.acc); a.userData.pipe.position.x = sd * 0.78 * K * f;
+    a.userData.pipe2.visible = w.fit === 'track'; a.userData.pipe2.material = mat(w.acc); a.userData.pipe2.position.x = sd * 0.62 * K * f;
+    a.userData.fore.material = mat(w.main); a.userData.fore.scale.set(f, 1, f); a.userData.elS.material = mat(w.main); a.userData.elS.scale.setScalar(0.62 * K * f);
+  });
+  c.pantsParts.forEach((m) => m.material = mat(w.pants));
+  c.legs.forEach((l) => {
+    const pp = l.userData.pp, b = w.baggy;
+    // 바지: 보드는 허벅지부터 밑단까지 통이 아주 넓고, 스키는 다리에 붙는 스키니
+    pp.hipS.scale.setScalar(0.95 * K * (b ? 1.5 : 0.9)); pp.thigh.scale.set(b ? 1.75 : 0.84, 1, b ? 1.75 : 0.84);
+    pp.kneeS.scale.setScalar(0.76 * K * (b ? 2.0 : 0.86)); pp.shin.scale.set(b ? 2.3 : 0.84, 1, b ? 2.3 : 0.84);
+    pp.pool.visible = b;
+  });
+  c.pelvis.scale.set((w.baggy ? 2.7 : 1.72) * K, 1.1 * K, (w.baggy ? 2.0 : 1.3) * K);   // 스키니는 재킷 안으로 쏙, 오버핏은 넉넉하게
+  c.skinParts.forEach((m) => m.material = mat(op.skin));
+  c.gloves.forEach((m) => m.material = mat(op.glove || '#26313C'));
+  c.cap.material = mat(op.cap); c.beanieParts.forEach((m) => m.material = mat(op.cap));
+  const beanie = op.hat === 'beanie'; c.helmet.visible = !beanie; c.beanie.visible = beanie;
+  c.strap.scale.setScalar(beanie ? 0.97 : 1.03);
+  const ln = op.lens || '#F2B134'; c.lens.material = mat(ln, { emissive: new THREE.Color(ln).multiplyScalar(0.4).getHex(), side: THREE.DoubleSide });
+  c.lens.scale.setScalar(beanie ? 0.97 : 1.03);
+  c.neck.visible = !!op.neck; if (op.neck) c.neck.material = mat(op.neck);
+  c.opts = op;
+  if (c.model) {
+    if (op.body && op.body !== c.model.kind && MODEL.src[op.body]) { attachModel(c); return; }   // 체형이 바뀌면 모델을 바꿔 입어요
+    const Mm = c.model, jk = w.baggy ? (w.fit === 'anorak' ? 'anorak' : 'track') : 'slim', pk = w.baggy ? 'pantsB' : 'pantsS';
+    Object.keys(Mm.shells).forEach((k) => { Mm.shells[k].visible = k === jk || k === pk || k === 'gloves'; });
+    Mm.shells[jk].material = [matS(w.main, true), matS(w.acc, true)];
+    Mm.shells[pk].material = [matS(w.pants, true), matS(w.pants, true)];
+    Mm.shells.gloves.material = [matS(op.glove || '#26313C'), matS(op.glove || '#26313C')];
+    fitGear(c);
+  }
 }
 function setGear(c, gear) {
   c.gear = gear;
-  c.legs.forEach((l) => l.userData.ski.visible = gear === 'ski');
-  c.board.visible = gear === 'board';
+  c.legs.forEach((l) => { l.userData.ski.visible = l.userData.skB.visible = gear === 'ski'; l.userData.sb.forEach((m) => { m.visible = gear === 'board'; }); });
+  c.boardSkate.visible = gear === 'board'; c.boardStance.visible = false;
+  c.arms.forEach((a) => a.userData.pole.visible = gear === 'ski');
+  if (c.outfits) setColors(c, { gear });   // 장비를 바꾸면 그 장비의 옷으로 갈아입어요
+}
+/* ───────────── 캐릭터 모델(KayKit Adventurers, Kay Lousberg, CC0) ─────────────
+   2~3등신 저폴리 캐릭터. 모델에서는 머리(얼굴·머리카락)와 뼈대만 쓰고 몸·팔·다리 메시는 숨겨요.
+   옷·장갑은 링 단면을 이어 붙여 직접 설계해 입혀요(스키 = 슬림, 보드 = 오버핏).
+   관절 리그(골반·다리·팔·머리 그룹)가 계산한 자세를 모델 뼈대에 그대로 옮겨요. 리그의 다리 길이(LEG)·골반 높이(HIP)도 이 모델 기준이에요. */
+const MODEL = { ready: false, src: {}, shells: {}, pending: [] };
+const KK_FILES = { male: 'models/kaykit/kk_mage.glb', female: 'models/kaykit/kk_rogue.glb' };   // 남: 검은 머리 · 여: 갈색 머리
+const KK_H = 2.2 * KK_S;   // 머리 꼭대기까지 키(m)
+const BONE_MAP = { 'upperleg_r': 'L0', 'lowerleg_r': 'K0', 'foot_r': 'F0', 'upperleg_l': 'L1', 'lowerleg_l': 'K1', 'foot_l': 'F1', 'upperarm_r': 'A0', 'lowerarm_r': 'E0', 'upperarm_l': 'A1', 'lowerarm_l': 'E1', spine: 'B', head: 'H' };
+const HEAD_GEAR = 2.6, HEAD_GEAR_Y = -0.04, HEAD_GEAR_Z = 0.04;   // 헬멧·비니·고글 크기(기존 부품 대비)와 높이 보정
+const ARM_DOWN = 0.72;   // 모델은 T자세라 팔을 이만큼 내린 상태를 '차렷'으로 봐요(몸통이 통통해 팔은 살짝 벌어져요)
+const MATS = {};
+// 옷은 픽셀 단위로 빛을 계산해요
+function matS(hex, ds) { const k = hex + (ds ? 'd' : ''); if (!MATS[k]) MATS[k] = new THREE.MeshPhongMaterial({ color: hex, specular: 0x000000, shininess: 0, skinning: true, side: ds ? THREE.DoubleSide : THREE.FrontSide }); return MATS[k]; }
+/* 옷 만들기(모델 단위). 링 하나 = 중심 c, 단면 축 u·v(v = 진행방향 × u), 반폭 a·반두께 b, 둥근 사각 정도 p, 뼈 가중치 sk
+   링 전체가 같은 뼈 가중치를 써서 옷감이 구겨지지 않아요 */
+function buildKK(parts, skeleton) {
+  const names = skeleton.bones.map((b) => b.name), BI = {}; names.forEach((nm, i) => { BI[nm] = i; });
+  const J = {}; skeleton.bones.forEach((b, i) => { J[b.name] = new THREE.Vector3().setFromMatrixPosition(new THREE.Matrix4().copy(skeleton.boneInverses[i]).invert()); });
+  const V3 = THREE.Vector3, UP = new V3(0, 1, 0), XA = new V3(1, 0, 0), ZB = new V3(0, 0, -1), ZF = new V3(0, 0, 1);
+  const lerp = (a, b, t) => a + (b - a) * t;
+  const hipsY = J.hips.y, legY = J['upperleg_l'].y, spineY = J.spine.y, chestY = J.chest.y, shY = J['upperarm_l'].y, headY = J.head.y, footY = J['foot_l'].y;
+  // 팔·손 굵기는 모델 팔 메시에서 재요(손은 벙어리장갑으로 감싸요)
+  let rArm = 0, rHand = 0, tipX = 0; const ap = parts.armL.geometry.attributes.position, wX = J['wrist_l'].x;
+  for (let i = 0; i < ap.count; i++) {
+    const x = ap.getX(i), r = Math.hypot(ap.getY(i) - shY, ap.getZ(i));
+    if (x > J['upperarm_l'].x + 0.05 && x < wX - 0.05) rArm = Math.max(rArm, r); else if (x >= wX - 0.02) { rHand = Math.max(rHand, r); tipX = Math.max(tipX, x); }
+  }
+  function skinOf(list) {
+    const L = list.filter(([nm, w]) => w > 1e-4 && BI[nm] !== undefined).sort((x, y) => y[1] - x[1]).slice(0, 4), t = L.reduce((q, x) => q + x[1], 0) || 1;
+    const I = [0, 0, 0, 0], W = [0, 0, 0, 0]; L.forEach(([nm, w], k) => { I[k] = BI[nm]; W[k] = w / t; }); return [I, W];
+  }
+  function tube(G, kind, rings, N, cap) {
+    const b0 = G.P.length / 3;
+    rings.forEach((R) => {
+      const [I, W] = skinOf(R.sk), e = 2 / (R.p || 2);
+      for (let j = 0; j < N; j++) {
+        const th = (2 * Math.PI * (j + 0.5)) / N, cs = Math.cos(th), sn = Math.sin(th);
+        const x = R.a * Math.sign(cs) * Math.pow(Math.abs(cs), e), z = R.b * Math.sign(sn) * Math.pow(Math.abs(sn), e);
+        G.P.push(R.c.x + R.u.x * x + R.v.x * z, R.c.y + R.u.y * x + R.v.y * z, R.c.z + R.u.z * x + R.v.z * z); G.SI.push(...I); G.SW.push(...W);
+      }
+    });
+    for (let r = 0; r < rings.length - 1; r++) for (let j = 0; j < N; j++) {
+      const R = rings[r], tc = (2 * Math.PI * (j + 1)) / N, dz = R.u.z * Math.cos(tc) + R.v.z * Math.sin(tc);   // 면이 앞(+z)을 보는 정도
+      const a = b0 + r * N + j, b = b0 + r * N + ((j + 1) % N), c = b0 + (r + 1) * N + j, d = b0 + (r + 1) * N + ((j + 1) % N);
+      ((G.acc_ && G.acc_(kind, R, dz)) ? G.acc : G.main).push(a, b, c, b, d, c);
+    }
+    if (cap) {   // 끝을 둥글게 막아요
+      const R = rings[rings.length - 1], ci = G.P.length / 3, [I, W] = skinOf(R.sk), dd = R.v.clone().cross(R.u).negate();
+      G.P.push(R.c.x + dd.x * cap, R.c.y + dd.y * cap, R.c.z + dd.z * cap); G.SI.push(...I); G.SW.push(...W);
+      const l0 = b0 + (rings.length - 1) * N; for (let j = 0; j < N; j++) G.main.push(l0 + j, l0 + ((j + 1) % N), ci);
+    }
+  }
+  function finish(G) {
+    const g = new THREE.BufferGeometry();
+    g.setAttribute('position', new THREE.BufferAttribute(new Float32Array(G.P), 3));
+    g.setAttribute('skinIndex', new THREE.BufferAttribute(new Uint16Array(G.SI), 4)); g.setAttribute('skinWeight', new THREE.BufferAttribute(new Float32Array(G.SW), 4));
+    g.setIndex(G.main.concat(G.acc)); g.addGroup(0, G.main.length, 0); g.addGroup(G.main.length, G.acc.length, 1);
+    g.computeVertexNormals(); return g;
+  }
+  const torsoSk = (y) => y <= hipsY ? [['hips', 1]] : y <= spineY ? [['hips', (spineY - y) / (spineY - hipsY)], ['spine', (y - hipsY) / (spineY - hipsY)]]
+    : y <= chestY ? [['spine', (chestY - y) / (chestY - spineY)], ['chest', (y - spineY) / (chestY - spineY)]] : [['chest', 1]];
+  const along = (sd, d) => { const u = UP.clone().sub(d.clone().multiplyScalar(UP.dot(d))).normalize(); return [u, d.clone().cross(u)]; };
+  // 재킷 = 몸판(밑단→어깨→목) + 양 소매 + 칼라
+  function jacket(o) {
+    const G = { P: [], SI: [], SW: [], main: [], acc: [], acc_: o.acc }, R = [];
+    const y0 = shY - 0.06, yTop = headY + 0.02, aN = 0.15, bN = 0.14;
+    const aOf = (y) => o.a * (1 - o.waist * Math.sin(Math.PI * Math.min(1, Math.max(0, (y - o.hem) / (y0 - o.hem))))) + Math.max(0, legY - y) * (o.flare || 0);
+    for (let y = o.hem; y < y0; y += 0.03) R.push({ c: new V3(0, y, o.z), u: XA, v: ZB, a: aOf(y), b: o.b, p: o.p, sk: torsoSk(y) });
+    const a0 = aOf(y0);
+    for (let k = 0; k <= 10; k++) { const f = (k / 10) * (Math.PI / 2), y = lerp(y0, yTop, Math.sin(f)); R.push({ c: new V3(0, y, lerp(o.z, 0, Math.sin(f))), u: XA, v: ZB, a: aN + (a0 - aN) * Math.cos(f), b: bN + (o.b - bN) * Math.cos(f), p: lerp(o.p, 2, Math.sin(f)), sk: torsoSk(y) }); }
+    tube(G, 'torso', R, 96);
+    const C = []; for (let k = 0; k <= 3; k++) { const y = lerp(headY - 0.05, headY + o.collar, k / 3); C.push({ c: new V3(0, y, 0), u: XA, v: ZB, a: aN + 0.01, b: bN + 0.01, p: 2, sk: k < 2 ? [['chest', 1]] : [['chest', 0.5], ['head', 0.5]] }); }
+    tube(G, 'collar', C, 40);
+    ['l', 'r'].forEach((sd) => {
+      const S = J['upperarm_' + sd], E = J['lowerarm_' + sd], Wr = J['wrist_' + sd], d = Wr.clone().sub(S).normalize(), [u, v] = along(sd, d);
+      const L1 = S.distanceTo(E), Lend = L1 + E.distanceTo(Wr) - 0.01, [rS, rE, rW] = o.arm.map((x) => rArm + x), Sr = [];
+      const rad = (s) => (s < L1 ? lerp(rS, rE, s / L1) : lerp(rE, rW, (s - L1) / (Lend - L1)));
+      const skA = (s) => (s < 0 ? [['upperarm_' + sd, 0.7], ['chest', 0.3]] : s < L1 - 0.05 ? [['upperarm_' + sd, 1]] : s < L1 + 0.05 ? [['upperarm_' + sd, 1 - (s - L1 + 0.05) / 0.1], ['lowerarm_' + sd, (s - L1 + 0.05) / 0.1]] : [['lowerarm_' + sd, 1]]);
+      [[-0.95, 0.3], [-0.75, 0.68], [-0.45, 0.9], [-0.15, 0.98]].forEach(([q, f]) => Sr.push({ c: S.clone().addScaledVector(d, q * rS), u, v, a: rS * f, b: rS * f, p: 2, sk: skA(-1) }));
+      for (let s = 0; s <= Lend + 1e-6; s += Lend / 14) Sr.push({ c: S.clone().addScaledVector(d, s), u, v, a: rad(s), b: rad(s), p: 2, sk: skA(s), cuff: s > Lend - 0.07 });
+      tube(G, 'sleeve', Sr, 28);
+    });
+    return finish(G);
+  }
+  // 바지 = 골반부(허리→가랑이, 재킷 안쪽) + 양 다리 통
+  function pants(o) {
+    const G = { P: [], SI: [], SW: [], main: [], acc: [], acc_: null }, R = [];
+    for (let y = spineY + 0.02; y >= o.crotch - 1e-6; y -= 0.03) R.push({ c: new V3(0, y, 0.0), u: XA, v: ZF, a: o.hipA, b: o.hipB, p: 2.4, sk: [['hips', 1]] });
+    tube(G, 'hip', R, 48, 0.06);
+    ['l', 'r'].forEach((sd) => {
+      const T = J['upperleg_' + sd], K2 = J['lowerleg_' + sd], A = J['foot_' + sd], top = T.clone().add(new V3(0, 0.04, 0));
+      const L1 = top.distanceTo(K2), L2 = K2.distanceTo(A) - o.end, [rT, rK, rA] = o.leg, Lr = [], st = (L1 + L2) / 12;
+      for (let s = 0; s <= L1 + L2 + 1e-6; s += st) {
+        const onThigh = s < L1, P0 = onThigh ? top : K2, P1 = onThigh ? K2 : A, d = P1.clone().sub(P0).normalize(), c = P0.clone().addScaledVector(d, onThigh ? s : s - L1);
+        const u = XA.clone().sub(d.clone().multiplyScalar(XA.dot(d))).normalize(), v = d.clone().cross(u);
+        const r = onThigh ? lerp(rT, rK, s / L1) : lerp(rK, rA, (s - L1) / L2);
+        const kb = (s - L1) / 0.08;
+        const sk = s < 0.06 ? [['hips', 0.5 * (1 - s / 0.06)], ['upperleg_' + sd, 0.5 + 0.5 * (s / 0.06)]] : Math.abs(kb) < 1 ? [['upperleg_' + sd, 0.5 - kb / 2], ['lowerleg_' + sd, 0.5 + kb / 2]] : onThigh ? [['upperleg_' + sd, 1]] : [['lowerleg_' + sd, 1]];
+        Lr.push({ c, u, v, a: r, b: r * 1.06, p: 2, sk });
+      }
+      tube(G, 'leg', Lr, 32);
+    });
+    return finish(G);
+  }
+  // 벙어리장갑: 손목(소매 안쪽)에서 손끝까지 둥글게
+  function gloves() {
+    const G = { P: [], SI: [], SW: [], main: [], acc: [], acc_: null };
+    ['l', 'r'].forEach((sd) => {
+      const Wr = J['wrist_' + sd], H = J['hand_' + sd], d = H.clone().sub(Wr).normalize(), [u, v] = along(sd, d), len = Math.abs(tipX - Math.abs(Wr.x)) + 0.015, Gr = [];
+      const r0 = rArm + 0.012, r1 = rHand + 0.012;
+      [[-0.07, r0], [-0.02, r0 * 1.04], [len * 0.25, r1 * 0.95], [len * 0.5, r1], [len * 0.72, r1 * 0.95], [len * 0.88, r1 * 0.75], [len * 0.97, r1 * 0.42], [len, r1 * 0.12]].forEach(([s, r]) =>
+        Gr.push({ c: Wr.clone().addScaledVector(d, s), u, v, a: r, b: r * 0.92, p: 2, sk: s < 0.02 ? [['lowerarm_' + sd, 0.4], ['wrist_' + sd, 0.6]] : [['wrist_' + sd, 0.4], ['hand_' + sd, 0.6]] }));
+      tube(G, 'glove', Gr, 24);
+    });
+    return finish(G);
+  }
+  return {
+    // 스키복: 슬림. 엉덩이 덮는 기장 · 칼라 · 소맷단 포인트
+    slim: jacket({ hem: hipsY - 0.01, a: 0.33, b: 0.29, z: 0.01, waist: 0.05, arm: [0.035, 0.03, 0.028], collar: 0.06, p: 2.4,
+      acc: (k, R) => k === 'sleeve' && R.cuff }),
+    // 보드 트랙 셋업: 박시 · 넉넉한 소매 · 밑단·소맷단·지퍼 포인트
+    track: jacket({ hem: hipsY - 0.07, a: 0.4, b: 0.34, z: 0.01, waist: -0.02, flare: 0.25, arm: [0.075, 0.068, 0.06], collar: 0.05, p: 2.8,
+      acc: (k, R, dz) => (k === 'sleeve' && R.cuff) || (k === 'torso' && (R.c.y < hipsY - 0.07 + 0.07 || dz > 0.999)) }),
+    // 보드 아노락: 더 길고 박시 · 캥거루 포켓 · 하프 지퍼
+    anorak: jacket({ hem: hipsY - 0.11, a: 0.41, b: 0.35, z: 0.01, waist: -0.02, flare: 0.3, arm: [0.08, 0.072, 0.064], collar: 0.045, p: 2.9,
+      acc: (k, R, dz) => (k === 'sleeve' && R.cuff) || (k === 'torso' && (R.c.y < hipsY - 0.11 + 0.08 || (dz > 0.8 && R.c.y > hipsY && R.c.y < hipsY + 0.24) || (dz > 0.999 && R.c.y > chestY - 0.12))) }),
+    pantsS: pants({ crotch: hipsY - 0.02, hipA: 0.27, hipB: 0.24, leg: [0.12, 0.105, 0.1], end: 0 }),   // 스키 바지: 슬림, 부츠 안으로
+    pantsB: pants({ crotch: hipsY - 0.02, hipA: 0.29, hipB: 0.25, leg: [0.15, 0.16, 0.17], end: -0.08 }),   // 보드 바지: 통 넓게, 부츠를 덮어요
+    gloves: gloves(),
+    _J: J
+  };
+}
+(function loadModels() {
+  if (!THREE.GLTFLoader || !THREE.SkeletonUtils) return;
+  const ld = new THREE.GLTFLoader(), keys = Object.keys(KK_FILES); let left = keys.length;
+  const done = () => { if (--left > 0) return; MODEL.ready = Object.keys(MODEL.src).length > 0; const list = MODEL.pending; MODEL.pending = []; if (MODEL.ready) list.forEach(attachModel); };
+  keys.forEach((k) => ld.load(KK_FILES[k], (g) => {
+    const parts = {}; g.scene.traverse((o) => { if (!o.isSkinnedMesh) return; if (/_Head/.test(o.name)) parts.head = o; else if (/ArmLeft/.test(o.name)) parts.armL = o; });
+    if (parts.head && parts.armL) { MODEL.src[k] = { scene: g.scene, headName: parts.head.name }; MODEL.shells[k] = buildKK(parts, parts.head.skeleton); }
+    done();
+  }, undefined, done));
+})();
+function markGear(c) {
+  const tag = (o) => o && o.traverse((m) => { m.userData.gear = true; });
+  c.legs.forEach((l) => { tag(l.userData.skB); tag(l.userData.ski); l.userData.sb.forEach(tag); });
+  tag(c.boardSkate); tag(c.boardStance); c.arms.forEach((a) => tag(a.userData.pole));
+  tag(c.helmet); tag(c.beanie); tag(c.strap); tag(c.lens); tag(c.neck);
+}
+function muteProc(c) {   // 모델을 쓰면 원기둥·구로 만든 몸은 숨겨요(장비는 그대로)
+  c.tilt.traverse((o) => {
+    if (o.isMesh && !o.isSkinnedMesh && !o.userData.gear && !o.userData.muted) { o.userData.muted = true; Object.defineProperty(o, 'visible', { get: () => false, set: () => {}, configurable: true }); }
+  });
+}
+function attachModel(c) {
+  if (!MODEL.ready) { MODEL.pending.push(c); return; }
+  const kind = MODEL.src[c.opts.body] ? c.opts.body : Object.keys(MODEL.src)[0], src = MODEL.src[kind];
+  if (c.model) c.tilt.remove(c.model.inst);
+  const inst = THREE.SkeletonUtils.clone(src.scene); inst.scale.setScalar(KK_S);
+  let head = null; inst.traverse((o) => { if (o.isSkinnedMesh) { o.frustumCulled = false; o.castShadow = true; if (o.name === src.headName) head = o; else o.visible = false; } });   // 얼굴·머리카락만 보여요
+  const bones = {}; head.skeleton.bones.forEach((b) => { bones[b.name] = b; b.userData.bindQ = b.quaternion.clone(); b.userData.bindP = b.position.clone(); });
+  const shells = {};
+  Object.keys(MODEL.shells[kind]).filter((k) => k[0] !== '_').forEach((k) => { const m = new THREE.SkinnedMesh(MODEL.shells[kind][k], [matS('#888888', true), matS('#cccccc', true)]); m.bind(head.skeleton, head.bindMatrix); m.frustumCulled = false; m.castShadow = true; head.parent.add(m); shells[k] = m; });
+  c.tilt.add(inst);
+  // 쉼 자세(틸트 기준 회전)와 '팔 내린 차렷' 보정
+  const rest = {}, restAdj = {};
+  const walk = (b, qp) => { const q = qp.clone().multiply(b.userData.bindQ); rest[b.name] = q; b.children.forEach((ch) => { if (ch.isBone) walk(ch, q); }); };
+  walk(bones.root, new THREE.Quaternion());
+  Object.keys(BONE_MAP).forEach((nm) => {
+    const r = rest[nm].clone(), side = /_l$/.test(nm) ? -1 : 1;
+    restAdj[nm] = /arm/.test(nm) ? new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 0, 1), side * ARM_DOWN).multiply(r) : r;
+  });
+  const J = MODEL.shells[kind]._J, s = KK_S;
+  c.model = { kind, inst, head, bones, shells, restAdj, rootInv: rest.root.clone().invert(), h: KK_H };
+  // 리그 팔 길이·어깨를 모델에 맞춰요(폴·손 위치). 머리 장비는 큰 머리에 맞게 키워요
+  c.arms.forEach((a, i) => { const sd = i ? 1 : -1; a.userData.elbow.position.y = -Math.abs(J['lowerarm_l'].x - J['upperarm_l'].x) * s; a.userData.pole.position.y = -(Math.abs(J['wrist_l'].x - J['lowerarm_l'].x) * s + 0.05); a.userData.shoulderX = sd * J['upperarm_l'].x * s; });
+  c.head.scale.set(HEAD_GEAR, HEAD_GEAR, HEAD_GEAR * 1.08); c.head.position.set(0, J.head.y * s - HIP + HEAD_GEAR_Y, HEAD_GEAR_Z);   // 머리카락이 앞뒤로 길어 살짝 깊게
+  c.neck.position.y = J.head.y * s - HIP + 0.02; c.neck.scale.set(2.0, 1.0, 2.0);
+  muteProc(c); setColors(c, {});
+}
+const _qa = new THREE.Quaternion(), _qb = new THREE.Quaternion(), _qz = new THREE.Quaternion(), _qx = new THREE.Quaternion(), _vd = new THREE.Vector3(), AXZ = new THREE.Vector3(0, 0, 1), AXX = new THREE.Vector3(1, 0, 0);
+function driveModel(c) {
+  const M = c.model; if (!M) return;
+  const Q = M.Q || (M.Q = {}), get = (k) => Q[k] || (Q[k] = new THREE.Quaternion());
+  get('B').copy(c.body.quaternion); get('H').copy(c.body.quaternion).multiply(c.head.quaternion);
+  c.arms.forEach((a, i) => { get('A' + i).copy(c.body.quaternion).multiply(a.quaternion); get('E' + i).copy(Q['A' + i]).multiply(a.userData.elbow.quaternion); });
+  c.legs.forEach((l, i) => {
+    // 다리 벌림(보드 스탠스·체중 이동)과 앞뒤 이동을 고관절 회전으로 옮겨요
+    _qz.setFromAxisAngle(AXZ, Math.atan2(l.position.x - l.userData.restX - c.body.position.x, 2 * LEG)); _qx.setFromAxisAngle(AXX, -Math.atan2(l.position.z - c.body.position.z, 2 * LEG));
+    get('L' + i).copy(_qz).multiply(_qx).multiply(l.quaternion); get('K' + i).copy(Q['L' + i]).multiply(l.userData.knee.quaternion); get('F' + i).copy(Q['K' + i]).multiply(l.userData.ankle.quaternion);
+  });
+  const walk = (b, qp) => {
+    const key = BONE_MAP[b.name]; let q;
+    if (key) { q = _qa.copy(Q[key]).multiply(M.restAdj[b.name]).clone(); b.quaternion.copy(_qb.copy(qp).invert().multiply(q)); }
+    else q = qp.clone().multiply(b.quaternion);
+    for (let k = 0; k < b.children.length; k++) if (b.children[k].isBone) walk(b.children[k], q);
+  };
+  // 골반 이동(무릎을 굽혀 낮아진 만큼, 체중 이동, 앞뒤). 모델은 KK_S배로 줄여 붙였으니 그만큼 나눠요
+  const pv = M.bones.hips; _vd.set(c.body.position.x, c.body.position.y - HIP, c.body.position.z).applyQuaternion(M.rootInv).multiplyScalar(1 / KK_S); pv.position.copy(pv.userData.bindP).add(_vd);
+  walk(M.bones.root, new THREE.Quaternion());
+  // 장비를 모델 몸에 맞춰요: 부츠·스키·바인딩은 모델 발목에, 폴은 모델 손(쥐는 자리)에
+  c.root.updateMatrixWorld(true);
+  c.legs.forEach((l, i) => { M.bones[i ? 'foot_l' : 'foot_r'].getWorldPosition(_wp); l.userData.ankle.worldToLocal(_wp); l.userData.gearG.position.set(_wp.x, _wp.y + GEAR_UP, _wp.z); });
+  c.arms.forEach((a, i) => {
+    const sd = i ? '_l' : '_r'; M.bones['hand' + sd].getWorldPosition(_wp); M.bones['handslot' + sd].getWorldPosition(_wp2); _wp.lerp(_wp2, 0.5);
+    a.userData.elbow.worldToLocal(_wp); a.userData.pole.position.copy(_wp);
+  });
+}
+const _wp = new THREE.Vector3(), _wp2 = new THREE.Vector3();
+/* 키에 맞춘 장비: 스키 ≈ 키 − 12cm, 보드 ≈ 키 × 0.87, 폴은 손 높이에 맞게.
+   다리가 짧은 체형이라 부츠·바인딩은 높이만 줄여 무릎 아래로(낮고 통통한 부츠) */
+const BOOT_Y = 0.45;
+function fitGear(c) {
+  const h = c.model ? c.model.h : 1.75, skiLen = h - 0.12, boardLen = h * 0.87, by = c.model ? BOOT_Y : 1;
+  c.legs.forEach((l) => {
+    l.userData.ski.scale.z = skiLen / (15.4 * K);
+    [l.userData.skB, ...l.userData.sb].forEach((m) => { const u = m.userData; if (u.y0 == null) { u.y0 = m.position.y; u.sy0 = m.scale.y; } m.scale.y = u.sy0 * by; m.position.y = u.y0 * by - 2 * K * (1 - by); });   // 발바닥(땅)을 기준으로 높이만 줄여요
+  });
+  (c.bindings || []).forEach((b) => { b.scale.y = by; });
+  c.arms.forEach((a) => { a.userData.pole.scale.setScalar(c.model ? 0.62 : 1); });
+  [c.boardSkate, c.boardStance].forEach((g) => {
+    const d = g.userData.deck, f = (boardLen - 3.4 * K) / (9 * K), e = boardLen / 2 - 1.7 * K;
+    if (d.alongX) { d.deck.scale.x = f; d.caps[0].position.x = -e; d.caps[1].position.x = e; } else { d.deck.scale.z = f; d.caps[0].position.z = -e; d.caps[1].position.z = e; }
+  });
+}
+
+/* 다리 IK: 발을 엉덩이 바로 아래(눈 위)에 둔 채 무릎을 앞으로 굽혀요. 내려간 엉덩이 높이를 돌려줘요 */
+function legFlex(Lg, a, swing) {
+  const sw = swing || 0;
+  Lg.rotation.x = -a + sw; Lg.userData.knee.rotation.x = 2 * a; Lg.userData.ankle.rotation.x = -a - sw;
+  return 2 * LEG * (1 - Math.cos(a));
+}
+function setHips(c, drop, dz) {
+  c.legs.forEach((l) => { l.position.y = HIP - drop; l.position.z = dz || 0; });
+  c.body.position.y = HIP - drop; c.body.position.z = dz || 0;
+}
+/* 관절을 목표 자세로 부드럽게 따라가게 해요(자세가 툭툭 바뀌면 로봇처럼 보여요) */
+function jointsOf(c) {
+  if (!c.joints) {
+    c.joints = [c.tilt, c.body, c.head].concat(c.legs, c.legs.map((l) => l.userData.knee), c.legs.map((l) => l.userData.ankle), c.arms, c.arms.map((a) => a.userData.elbow));
+    c.jPrev = c.joints.map(() => ({ r: new THREE.Vector3(), p: new THREE.Vector3() }));
+  }
+  return c.joints;
 }
 function animChar(c, dt, extra) {
   c.t += dt;
-  const t = c.t;
+  const t = c.t, e = extra || {};
   const L0 = c.legs[0], L1 = c.legs[1], A0 = c.arms[0], A1 = c.arms[1];
-  L0.rotation.set(0, 0, 0); L1.rotation.set(0, 0, 0);
-  A0.rotation.set(0, 0, 0.08); A1.rotation.set(0, 0, -0.08);
-  c.body.rotation.set(0, 0, 0); c.body.position.y = 4.6 * K;
+  const J = jointsOf(c);
+  if (c.jReady) J.forEach((o, i) => { c.jPrev[i].r.set(o.rotation.x, o.rotation.y, o.rotation.z); c.jPrev[i].p.copy(o.position); });
+  const E0 = A0.userData.elbow, E1 = A1.userData.elbow;
+  E0.rotation.set(-0.32, 0, 0); E1.rotation.set(-0.3, 0, 0);   // 팔꿈치는 늘 살짝 굽어 있어요
+  c.legs.forEach((l) => { l.rotation.set(0, 0, 0); l.userData.knee.rotation.set(0, 0, 0); l.userData.ankle.rotation.set(0, 0, 0); l.position.set(l.userData.side * 1.2 * K, HIP, 0); });
+  A0.rotation.set(0, 0, -0.08); A1.rotation.set(0, 0, 0.08);
+  c.body.rotation.set(0, 0, 0); c.body.position.set(0, HIP, 0); c.head.rotation.set(0, 0, 0);
   c.tilt.rotation.set(0, 0, 0); c.tilt.position.set(0, 0, 0);
-  c.board.position.set(0, -4.3 * K, 1 * K); c.board.rotation.set(0, 0, 0);
   const board = c.gear === 'board';
+  if (board) { c.boardSkate.visible = true; c.boardStance.visible = false; }
   const p = c.pose;
   if (p === 'stand') {
-    c.body.position.y = 4.6 * K + Math.sin(t * 2) * 0.012;
-    if (board) { L1.rotation.x = 0.12; L1.rotation.z = 0.08; }
-  }
-  else if (p === 'skate') {
-    const ph = t * 5.2, s = Math.sin(ph);
+    // 가만히 서 있어도 살아 있게: 숨쉬기 · 한쪽 다리로 체중 옮기기 · 두리번거리기
+    const sh = Math.sin(t * 0.45 + c.seed), br = Math.sin(t * 1.7 + c.seed);
+    const dA = legFlex(L0, 0.1 + Math.max(0, sh) * 0.16), dB = legFlex(L1, 0.1 + Math.max(0, -sh) * 0.16);
+    setHips(c, Math.min(dA, dB), 0);
+    const sx = -sh * 0.28 * K; L0.position.x += sx; L1.position.x += sx; c.body.position.x = sx;
+    c.body.rotation.z = sh * 0.035; c.body.rotation.x = 0.03 + br * 0.012; c.body.position.y += br * 0.006;
+    c.head.rotation.y = Math.sin(t * 0.31 + c.seed * 2) * 0.45 + Math.sin(t * 0.11 + c.seed) * 0.2; c.head.rotation.x = Math.sin(t * 0.23 + c.seed) * 0.07 - c.body.rotation.x;
+    A0.rotation.set(0.05, 0, -0.12 - br * 0.02); A1.rotation.set(-0.03, 0, 0.12 + br * 0.02);
+    E0.rotation.x = -0.28 - br * 0.03; E1.rotation.x = -0.36 + br * 0.03;
+    if (board) { L1.rotation.z = 0.1; }
+  } else if (p === 'skate') {
+    const ph = t * 5.2, sn = Math.sin(ph);
     if (board) {
-      // 앞발(왼발)은 보드에 묶고, 뒷발(오른발)로 눈을 밀어요
-      const push = Math.max(0, s);
-      L0.rotation.x = -0.06; L1.rotation.x = 0.05 + push * 0.85; L1.rotation.z = 0.1;
-      c.body.rotation.x = 0.16 + push * 0.08; c.body.rotation.y = -0.18;
-      A0.rotation.z = 0.5; A1.rotation.z = -0.5; A0.rotation.x = -0.2 - push * 0.3; A1.rotation.x = 0.2 + push * 0.3;
-      c.tilt.position.y = Math.abs(Math.cos(ph)) * 0.025;
+      // 앞발은 보드에 묶고 뒷발로 눈을 밀어요(원 풋 스케이팅)
+      const push = Math.max(0, sn);
+      const d = legFlex(L0, 0.3); legFlex(L1, 0.18, 0.15 + push * 0.75); L1.rotation.z = 0.12;
+      setHips(c, d, 0);
+      c.body.rotation.x = 0.2 + push * 0.08; c.body.rotation.y = -0.18;
+      A0.rotation.z = -0.5; A1.rotation.z = 0.5; A0.rotation.x = -0.2 - push * 0.3; A1.rotation.x = 0.2 + push * 0.3;
+      E0.rotation.x = -0.5; E1.rotation.x = -0.35 - push * 0.3;
+      c.head.rotation.y = 0.35;
     } else {
-      // 스키 스케이팅: V자로 발을 번갈아 바깥으로 밀어요
-      const pl = Math.max(0, s), pr = Math.max(0, -s);
-      L0.rotation.set(-0.05, -0.34, -0.1 - pl * 0.34);
-      L1.rotation.set(-0.05, 0.34, 0.1 + pr * 0.34);
-      c.body.rotation.x = 0.34;
-      c.tilt.rotation.z = s * 0.13;
-      c.tilt.position.y = -0.04 + Math.abs(s) * 0.03;
-      A0.rotation.x = -0.35 + s * 0.75; A1.rotation.x = -0.35 - s * 0.75; A0.rotation.z = 0.2; A1.rotation.z = -0.2;
+      // 스키 스케이팅: 미는 발은 펴고(바깥으로 V), 미끄러지는 발은 굽혀 체중을 실어요
+      const pl = Math.max(0, sn), pr = Math.max(0, -sn);
+      const d0 = legFlex(L0, 0.38 - pl * 0.22), d1 = legFlex(L1, 0.38 - pr * 0.22);
+      L0.rotation.y = -0.34; L0.rotation.z = -0.08 - pl * 0.3;
+      L1.rotation.y = 0.34; L1.rotation.z = 0.08 + pr * 0.3;
+      setHips(c, Math.min(d0, d1), 0);
+      c.body.rotation.x = 0.36; c.tilt.rotation.z = sn * 0.12;
+      A0.rotation.x = -0.35 + sn * 0.75; A1.rotation.x = -0.35 - sn * 0.75; A0.rotation.z = -0.22; A1.rotation.z = 0.22;
+      E0.rotation.x = -0.45 - Math.max(0, -sn) * 0.4; E1.rotation.x = -0.45 - Math.max(0, sn) * 0.4;
+      c.head.rotation.x = -0.25;
     }
-  }
-  else if (p === 'walk') {
-    const s = Math.sin(t * 9) * 0.55;
-    L0.rotation.x = s; L1.rotation.x = -s; A0.rotation.x = -s * 0.8; A1.rotation.x = s * 0.8;
-    c.body.position.y = 4.6 * K + Math.abs(Math.cos(t * 9)) * 0.05;
+  } else if (p === 'walk') {
+    const sw = Math.sin(t * 9) * 0.55;
+    L0.rotation.x = sw; L1.rotation.x = -sw; A0.rotation.x = -sw * 0.8; A1.rotation.x = sw * 0.8;
+    E0.rotation.x = -0.35 - Math.max(0, sw) * 0.4; E1.rotation.x = -0.35 - Math.max(0, -sw) * 0.4;
   } else if (p === 'sit') {
-    // 리프트 탑승: 다리를 앞으로 내려 발받침대에 걸치고, 스키/보드를 그 위에 얹은 자세(살짝 흔들흔들)
-    const sw = (extra && extra.swing) ? 0.2 : 0.045;
-    L0.rotation.x = -0.52 + Math.sin(t * 2.2) * sw;
-    L1.rotation.x = -0.52 - Math.sin(t * 2.2) * sw;
-    c.body.rotation.x = 0.06;                 // 등받이에 기댐
-    A0.rotation.x = -0.22; A1.rotation.x = -0.22;  // 손은 무릎/안전바 쪽
-    if (board) { L1.rotation.z = 0; c.board.position.set(0, -4.3 * K, 1 * K); c.board.rotation.set(0, 0, 0); }
+    // 리프트 탑승: 등받이에 기대고 정강이를 앞으로 내밀어 발받침대 쪽으로(살짝 흔들흔들)
+    const sw = Math.sin(t * 2.2) * (e.swing ? 0.2 : 0.045);
+    [L0, L1].forEach((l, i) => { l.rotation.x = -1.3; l.userData.knee.rotation.x = 0.9 + (i ? -sw : sw); });
+    c.body.rotation.x = 0.06;
+    A0.rotation.x = -0.22; A1.rotation.x = -0.22; E0.rotation.x = -1.15; E1.rotation.x = -1.1;   // 손은 무릎 위에
+    c.head.rotation.y = Math.sin(t * 0.27 + c.seed) * 0.5; c.head.rotation.x = 0.08;
   } else if (p === 'ski') {
-    const lean = extra ? extra.lean || 0 : 0;
-    c.tilt.position.y = -0.08 + (extra && extra.hop ? extra.hop : 0);
+    const roll = e.roll || 0, ar = Math.abs(roll), tuck = e.tuck ? 1 : 0, skid = e.skid || 0;
+    const v = e.v || 0;
     if (board) {
-      // 보드는 옆으로 서서(스탠스) 타요. 보드는 두 발에 걸쳐 진행 방향으로 놓여요
-      c.tilt.rotation.set(0, Math.PI / 2, lean * 0.4);
-      c.board.position.set(1.2 * K, -4.3 * K, 0); c.board.rotation.y = Math.PI / 2;
-      L0.rotation.x = 0.18; L1.rotation.x = 0.18;
-      c.body.rotation.x = 0.2; c.body.rotation.y = -0.35;
-      A0.rotation.z = 0.9; A1.rotation.z = -0.9;
+      // 스노보드 카빙(레퍼런스): 체중은 두 발 가운데, 어깨·골반은 보드와 나란히.
+      // 토사이드: 무릎·골반을 발끝 쪽(턴 안쪽)으로 밀어 낮게. 힐사이드: 낮은 의자에 앉듯 골반을 낮추고 상체는 세워요.
+      c.boardSkate.visible = false; c.boardStance.visible = true;
+      c.tilt.rotation.y = Math.PI / 2;
+      const toe = roll < 0 ? ar : 0, heel = roll > 0 ? ar : 0;
+      const a = 0.5 + toe * 0.45 + heel * 0.65 + tuck * 0.2 + skid * 0.15;
+      L0.userData.side = -2.3; L1.userData.side = 2.3;
+      L0.position.x = -2.3 * K; L1.position.x = 2.3 * K;
+      const dz = (toe * 0.5 - heel * 0.55) * K;
+      const sw = -dz / (2 * LEG);
+      const d = legFlex(L0, a, sw); legFlex(L1, a, sw);
+      L0.position.y = L1.position.y = HIP - d; L0.position.z = L1.position.z = dz;
+      c.body.position.set(0, HIP - d, dz);
+      L0.userData.side = -1; L1.userData.side = 1;
+      c.body.rotation.x = 0.28 - toe * 0.5 + heel * 0.55;
+      c.body.rotation.y = -0.15;
+      c.head.rotation.y = -1.2; c.head.rotation.x = -c.body.rotation.x * 0.6;
+      A0.rotation.z = -0.85; A0.rotation.x = -0.35 - heel * 0.4; A1.rotation.z = 0.55; A1.rotation.x = 0.1 - heel * 0.5;
+      E0.rotation.x = -0.5 - toe * 0.3; E1.rotation.x = -0.75 - heel * 0.3;
     } else {
-      L0.rotation.x = 0.28; L1.rotation.x = 0.28;
-      c.body.rotation.x = 0.32; A0.rotation.x = -0.5; A1.rotation.x = -0.5; A0.rotation.z = 0.35; A1.rotation.z = -0.35;
-      c.tilt.rotation.z = -lean * 0.45;
+      // 스키 카빙(레퍼런스): 엉덩이는 발 위, 바깥발 길게·안쪽발 짧게,
+      // 상체는 폴라인을 향하고(카운터) 다리보다 덜 기울여요(앵귤레이션). 손은 앞에, 엣지 전환 때 폴 플랜트
+      const inside = roll < 0 ? L1 : L0, outside = roll < 0 ? L0 : L1;
+      L0.position.x = -1.35 * K; L1.position.x = 1.35 * K;
+      const dOut = legFlex(outside, 0.38 + tuck * 0.5 - ar * 0.08 + skid * 0.1);
+      legFlex(inside, 0.42 + ar * 0.75 + tuck * 0.5 + skid * 0.1);
+      L0.position.y = L1.position.y = HIP - dOut; c.body.position.y = HIP - dOut;
+      c.body.rotation.x = 0.32 + tuck * 0.6;
+      c.body.rotation.y = clamp(e.counter || 0, -0.6, 0.6);
+      c.body.rotation.z = -roll * 0.45;
+      c.head.rotation.z = roll * 0.3; c.head.rotation.x = -c.body.rotation.x * 0.5;
+      if (tuck) { A0.rotation.set(-1.0, 0, -0.15); A1.rotation.set(-1.0, 0, 0.15); E0.rotation.x = E1.rotation.x = -1.7; }
+      else {
+        A0.rotation.x = -0.45; A1.rotation.x = -0.45; A0.rotation.z = -0.3; A1.rotation.z = 0.3;
+        E0.rotation.x = E1.rotation.x = -0.95;   // 손은 허리 앞에
+        if (e.plantT > 0) { const pa = e.plantSide > 0 ? A1 : A0; pa.rotation.x = -0.8; pa.userData.elbow.rotation.x = -0.55; }
+      }
     }
+    // 설면 위를 미끄러지는 미세한 진동
+    c.tilt.position.y = Math.sin(t * 31) * 0.008 * Math.min(1, v / 12) + (e.hop || 0);
   } else if (p === 'fall') {
-    const k = extra ? extra.k : 1;
+    const k = e.k == null ? 1 : e.k;
     c.tilt.rotation.x = Math.sin(Math.min(1, k) * Math.PI / 2) * 1.35;
     c.tilt.position.y = -0.2 * k;
-    A0.rotation.z = 1.2; A1.rotation.z = -1.2;
+    A0.rotation.z = -1.2; A1.rotation.z = 1.2; E0.rotation.x = E1.rotation.x = -0.2;
   }
   if (c.waveT > 0) {
     c.waveT -= dt;
-    A1.rotation.z = 2.7 + Math.sin(t * 12) * 0.35; A1.rotation.x = 0;
+    A1.rotation.z = 2.6; A1.rotation.x = 0; E1.rotation.x = -0.35; E1.rotation.z = Math.sin(t * 11) * 0.5;   // 아래팔로 손 흔들기
   }
+  // 스키 부츠 커프는 정강이 각도만큼 앞으로 기울어 다리를 감싸요
+  c.legs.forEach((l) => { if (l.userData.cuffG) l.userData.cuffG.rotation.x = -l.userData.ankle.rotation.x; });
+  // 목표 자세를 부드럽게 따라가요
+  if (c.jReady) {
+    const k = 1 - Math.exp(-dt * 13);
+    J.forEach((o, i) => { const q = c.jPrev[i]; o.rotation.set(q.r.x + (o.rotation.x - q.r.x) * k, q.r.y + (o.rotation.y - q.r.y) * k, q.r.z + (o.rotation.z - q.r.z) * k); o.position.lerpVectors(q.p, o.position, k); });
+  }
+  c.jReady = true;
+  // 폴은 팔이 어떻게 굽든 아래·뒤를 향해요(턴할 땐 앞을 찍고, 웅크리면 뒤로 눕혀요)
+  c.arms.forEach((a, i) => {
+    const plant = p === 'ski' && e.plantT > 0 && (e.plantSide > 0) === (i === 1);
+    const want = p === 'ski' ? (e.tuck ? 1.35 : plant ? -0.35 : 0.45) : 0.25;
+    a.userData.pole.rotation.x = want - (a.rotation.x + a.userData.elbow.rotation.x);
+    if (a.userData.shoulderX) a.position.x = a.userData.shoulderX;
+  });
+  driveModel(c);
+  const speed = p === 'ski' ? (e.v || 0) : (p === 'skate' ? 4 : p === 'walk' ? 2 : 0);
+  c.cloth = lerp(c.cloth, clamp(speed / 16, 0, 1), Math.min(1, dt * 3));
+  const flap = Math.sin(t * (5 + c.cloth * 9)) * (0.03 + c.cloth * 0.07);
+  c.skirt.rotation.set(-c.body.rotation.x * 0.7 - c.cloth * 0.42 + flap, 0, -(e.roll || 0) * 0.35 + Math.sin(t * 3.1) * 0.02 * (1 + c.cloth));
+  if (p === 'sit') c.skirt.rotation.x = -1.0;     // 앉으면 밑단이 허벅지 위로 얹혀요
+  const fl = 1 + c.cloth * 0.08 + Math.sin(t * 7.3) * 0.015 * c.cloth;
+  c.skirt.scale.set(fl, 1 - c.cloth * 0.06, fl);
 }
 
 /* 팔레트 */
-const JACKETS = ['#E4572E', '#F2B134', '#3BA776', '#8E6BD8', '#2F6FD6', '#F07AA6', '#6EC1E4', '#F28C38', '#26313C', '#F4F8FB', '#7FD8BE', '#8A5A3C'];
-const CAPS = ['#2F6FD6', '#E4572E', '#F2B134', '#F4F8FB', '#3BA776', '#26313C'];
-const PANTS = ['#33475B', '#4E5D6C', '#1F2B38', '#5E6B4E', '#C8B79A', '#6EC1E4'];
+// 스키복: 원에잇 스키복 착용 사진 참고. 네이비·블랙·오렌지·포레스트 그린 등, 대비색 패널
+const SKI_JACKETS = ['#111418', '#0E2340', '#E2552A', '#2E4A3E', '#F2F2EE', '#7A1F2B', '#1F4FA8', '#C9B79C'];
+const SKI_ACCENTS = ['#F2F2EE', '#111418', '#D7262E', '#0E2340', '#E2552A', '#9AA4AE'];
+const SKI_PANTS = ['#111418', '#0E2340', '#2E4A3E', '#3A3F46', '#F2F2EE'];
+const SKI_FITS = [['slim', '슬림핏']];   // 스키복은 몸에 붙는 슬림핏 하나
+// 보드복: 비에스래빗·스페셜게스트 착용 사진 참고. 블랙·네이비·코발트·카키·차콜·크림, 위아래 같은 색 셋업이 기본
+const BOARD_JACKETS = ['#15171B', '#232C4E', '#2E6DA4', '#7C7A5A', '#4A4E55', '#E9E3D3', '#8E8A82', '#5E6F55', '#B3542F', '#C9C3E6'];
+const BOARD_ACCENTS = ['#E9E3D3', '#15171B', '#C9C3E6', '#2E6DA4', '#B3542F', '#8E8A82'];
+const BOARD_PANTS = ['#15171B', '#232C4E', '#7C7A5A', '#4A4E55', '#A49A86', '#E9E3D3', '#2E6DA4'];
+const BOARD_FITS = [['track', '트랙 셋업'], ['anorak', '아노락']];
+const CAPS = ['#F4F1EC', '#26313C', '#E4572E', '#2F6FD6', '#F2B134', '#3BA776', '#8E6BD8', '#C9B79C'];
+const LENSES = ['#F2B134', '#5FA8E8', '#E97C9A', '#7FD8A6', '#C9D3DC', '#2B2F3A'];   // 골드·블루·로즈·그린 미러, 클리어, 스모크
+const NECKS = ['', '#26313C', '#E4572E', '#F4F1EC', '#2F6FD6', '#8E6BD8'];          // '' = 없음
+const GLOVES = ['#26313C', '#F4F1EC', '#E4572E', '#2F6FD6', '#C9B79C', '#3BA776'];
 const SKINS = ['#F6D5B8', '#F1C7A0', '#E0AC85', '#C98E66', '#9A6A4A', '#FBE3CF'];
 const NAMES = ['작은 솔잎', '포근한 눈사람', '느긋한 곤돌라', '반짝이는 설원', '스키조아', '보드타는곰', '하얀 토끼', '첫눈', '설질요정', '리프트왕', '눈송이', '자작나무숲', '핫초코러버', '야간스키', '곤지암러', '모굴장인', '설경멍', '카빙연습중'];
 const ANON = ['포근한 눈사람', '작은 솔잎', '느긋한 곤돌라', '반짝이는 설원', '하얀 토끼', '조용한 눈꽃'];
 function randOpts() {
-  return { jacket: pick(JACKETS), cap: pick(CAPS), pants: pick(PANTS), skin: pick(SKINS), gear: Math.random() < 0.3 ? 'board' : 'ski', ski: pick(['#F2B134', '#E4572E', '#2F6FD6', '#26313C', '#3BA776']), boardColor: pick(['#8E6BD8', '#26313C', '#E4572E', '#3BA776']) };
+  const bj = pick(BOARD_JACKETS);   // 보드복은 절반쯤 위아래 같은 색 셋업
+  return { body: Math.random() < 0.5 ? 'male' : 'female', jacket: pick(SKI_JACKETS), accent: pick(SKI_ACCENTS), pants: pick(SKI_PANTS), skiFit: pick(SKI_FITS)[0], bJacket: bj, bAccent: pick(BOARD_ACCENTS), bPants: Math.random() < 0.55 && BOARD_PANTS.includes(bj) ? bj : pick(BOARD_PANTS), boardFit: pick(BOARD_FITS)[0], cap: pick(CAPS), skin: pick(SKINS), hat: Math.random() < 0.72 ? 'helmet' : 'beanie', lens: pick(LENSES), neck: Math.random() < 0.45 ? pick(NECKS.slice(1)) : '', glove: pick(GLOVES), gear: Math.random() < 0.3 ? 'board' : 'ski', ski: pick(['#F2B134', '#E4572E', '#2F6FD6', '#26313C', '#3BA776']), boardColor: pick(['#8E6BD8', '#26313C', '#E4572E', '#3BA776']) };
 }
 
 /* ───────────── 플레이어 · 봇 ───────────── */
@@ -961,7 +1809,7 @@ LIFT.chairs.forEach((ch, i) => {
     const n = 1 + (i % 2);
     for (let k = 0; k < n; k++) {
       const c = makeChar(randOpts()); c.pose = 'sit';
-      c.root.rotation.y = Math.PI; c.root.position.set(-1.6 + k * 1.3, -3.05 - 4.6 * K, 0.1);
+      c.root.rotation.y = Math.PI; c.root.position.set(-1.6 + k * 1.3, -3.05 - HIP, 0.1);
       ch.g.add(c.root); ch.riders.push({ c, name: pick(NAMES) });
     }
   }
@@ -986,7 +1834,7 @@ const touch = { l: false, r: false };
 const SND = {
   ctx: null, vol: { bgm: 0.5, amb: 0.8, sfx: 0.8 },
   init() {
-    if (this.ctx) return;
+    if (this.ctx) { if (this.ctx.state === 'suspended') this.ctx.resume(); return; }
     const AC = window.AudioContext || window.webkitAudioContext; if (!AC) return;
     const ctx = this.ctx = new AC();
     this.master = ctx.createGain(); this.master.gain.value = 0.9; this.master.connect(ctx.destination);
@@ -1034,6 +1882,16 @@ const SND = {
     const g = ctx.createGain(); g.gain.setValueAtTime(0.5, now); g.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
     s.connect(lp); lp.connect(g); g.connect(this.sfxG); s.start(now); s.stop(now + 0.45);
   },
+  noiseSweep(type, f0, f1, v, dur, delay) {
+    if (!this.ctx) return; const ctx = this.ctx, now = ctx.currentTime + (delay || 0);
+    const s = ctx.createBufferSource(); s.buffer = this.noise; const f = ctx.createBiquadFilter(); f.type = type; f.Q.value = 1.4;
+    f.frequency.setValueAtTime(f0, now); f.frequency.exponentialRampToValueAtTime(f1, now + dur);
+    const g = ctx.createGain(); g.gain.setValueAtTime(0.0001, now); g.gain.linearRampToValueAtTime(v, now + dur * 0.25); g.gain.exponentialRampToValueAtTime(0.0001, now + dur);
+    s.connect(f); f.connect(g); g.connect(this.sfxG); s.start(now); s.stop(now + dur + 0.05);
+  },
+  blow() { this.noiseSweep('lowpass', 900, 380, 0.18, 0.7); },
+  sip() { this.noiseSweep('bandpass', 2600, 900, 0.22, 0.42); this.noiseSweep('bandpass', 2200, 800, 0.16, 0.36, 0.5); },
+  clink() { this.tone(2093, 0.06, 0.4, this.sfxG, 'sine'); this.tone(3136, 0.03, 0.3, this.sfxG, 'sine', 0.01); },
   setSwoosh(v) { if (this.swG) this.swG.gain.value = v; },
   setWind(v) { if (this.windG) this.windG.gain.value = v; }
 };
@@ -1054,21 +1912,39 @@ function hideAllPanels() { ['#summitPanel', '#lodge', '#ticket', '#soundP', '#fi
 function buildSwatches(id, list, key) {
   const row = $(id); row.innerHTML = '';
   list.forEach((c) => {
-    const b = document.createElement('button'); b.className = 'sw'; b.style.background = c; b.setAttribute('aria-label', key + ' ' + c);
+    const b = document.createElement('button'); b.className = 'sw' + (c ? '' : ' none'); if (c) b.style.background = c; b.setAttribute('aria-label', c ? key + ' ' + c : '없음');
     b.onclick = () => { me.opts[key] = c; setColors(me.c, me.opts); syncMaker(); };
     row.appendChild(b);
   });
 }
 function syncMaker() {
-  [['#swJacket', 'jacket', JACKETS], ['#swCap', 'cap', CAPS], ['#swPants', 'pants', PANTS], ['#swSkin', 'skin', SKINS]].forEach(([id, key, list]) => {
+  const W = wearMap();
+  [...$('#segFit').children].forEach((b) => b.classList.toggle('on', b.dataset.v === (FIT_ALIAS[me.opts[W.f]] || me.opts[W.f] || W.fits[0][0])));
+  [['#swJacket', W.j, W.jl], ['#swAccent', W.a, W.al], ['#swPants', W.p, W.pl], ['#swCap', 'cap', CAPS], ['#swSkin', 'skin', SKINS], ['#swLens', 'lens', LENSES], ['#swNeck', 'neck', NECKS], ['#swGlove', 'glove', GLOVES]].forEach(([id, key, list]) => {
     [...$(id).children].forEach((b, i) => b.classList.toggle('on', list[i] === me.opts[key]));
   });
   [...$('#segGear').children].forEach((b) => b.classList.toggle('on', b.dataset.v === me.opts.gear));
+  [...$('#segHat').children].forEach((b) => b.classList.toggle('on', b.dataset.v === (me.opts.hat || 'helmet')));
+  [...$('#segBody').children].forEach((b) => b.classList.toggle('on', b.dataset.v === (me.opts.body || 'male')));
   $('#anonInput').checked = me.opts.anon;
 }
-buildSwatches('#swJacket', JACKETS, 'jacket'); buildSwatches('#swCap', CAPS, 'cap'); buildSwatches('#swPants', PANTS, 'pants'); buildSwatches('#swSkin', SKINS, 'skin');
-[...$('#segGear').children].forEach((b) => b.onclick = () => { me.opts.gear = b.dataset.v; S.gearEdited = true; setGear(me.c, me.opts.gear); syncMaker(); });
-$('#rerollBtn').onclick = () => { const r = randOpts(); Object.assign(me.opts, { jacket: r.jacket, cap: r.cap, pants: r.pants, skin: r.skin }); setColors(me.c, me.opts); syncMaker(); SND.blip(); };
+function wearMap() {
+  return me.opts.gear === 'board'
+    ? { j: 'bJacket', a: 'bAccent', p: 'bPants', f: 'boardFit', jl: BOARD_JACKETS, al: BOARD_ACCENTS, pl: BOARD_PANTS, fits: BOARD_FITS, title: '보드복', sub: '박시한 블루종 + 바닥까지 끌리는 와이드 팬츠. 위아래 같은 색이면 셋업' }
+    : { j: 'jacket', a: 'accent', p: 'pants', f: 'skiFit', jl: SKI_JACKETS, al: SKI_ACCENTS, pl: SKI_PANTS, fits: SKI_FITS, title: '스키복', sub: '허리가 잡힌 핏 재킷 + 슬림 일자 팬츠, 대비색 패널' };
+}
+function buildWear() {
+  const W = wearMap(); $('#wearTitle').textContent = W.title; $('#wearSub').textContent = W.sub;
+  buildSwatches('#swJacket', W.jl, W.j); buildSwatches('#swAccent', W.al, W.a); buildSwatches('#swPants', W.pl, W.p);
+  const seg = $('#segFit'); seg.innerHTML = ''; show(seg, W.fits.length > 1);   // 고를 핏이 하나뿐이면 숨겨요
+  W.fits.forEach(([v, label]) => { const b = document.createElement('button'); b.dataset.v = v; b.textContent = label; b.onclick = () => { me.opts[W.f] = v; setColors(me.c, me.opts); syncMaker(); }; seg.appendChild(b); });
+}
+buildWear(); buildSwatches('#swCap', CAPS, 'cap'); buildSwatches('#swSkin', SKINS, 'skin');
+buildSwatches('#swLens', LENSES, 'lens'); buildSwatches('#swNeck', NECKS, 'neck'); buildSwatches('#swGlove', GLOVES, 'glove');
+[...$('#segHat').children].forEach((b) => b.onclick = () => { me.opts.hat = b.dataset.v; setColors(me.c, me.opts); syncMaker(); });
+[...$('#segBody').children].forEach((b) => b.onclick = () => { me.opts.body = b.dataset.v; setColors(me.c, me.opts); syncMaker(); });
+[...$('#segGear').children].forEach((b) => b.onclick = () => { me.opts.gear = b.dataset.v; S.gearEdited = true; setGear(me.c, me.opts.gear); buildWear(); syncMaker(); });
+$('#rerollBtn').onclick = () => { const r = randOpts(); ['body', 'jacket', 'accent', 'pants', 'skiFit', 'bJacket', 'bAccent', 'bPants', 'boardFit', 'cap', 'skin', 'hat', 'lens', 'neck', 'glove'].forEach((k) => { me.opts[k] = r[k]; }); setColors(me.c, me.opts); syncMaker(); SND.blip(); };
 $('#nameInput').oninput = (e) => { me.opts.name = e.target.value.trim(); S.nameEdited = true; };
 $('#anonInput').onchange = (e) => { me.opts.anon = e.target.checked; };
 
@@ -1080,12 +1956,13 @@ function setMode(m) {
   show('#maker', m === 'maker'); show('#makerTitle', m === 'maker');
   show('#hud', ['base', 'queue', 'lift', 'summit', 'ski', 'lodge'].includes(m));
   show('#card', m === 'card');
-  show('#lodgeFrame', m === 'lodge');
+  show('#lodgeFrame', m === 'lodge'); if (m !== 'lodge' && (LODGE.busy || !$('#lodgeTable').classList.contains('hidden'))) lodgeReset();
   show('#actions', ['base', 'summit', 'lift', 'queue'].includes(m));
-  show('#joystick', ['base', 'summit'].includes(m));
   show('#sitBtn', m === 'base' || m === 'summit');
+  show('#viewBtn', ['base', 'summit', 'queue', 'lift', 'ski'].includes(m));
+  show('#joy', IS_TOUCH && (m === 'base' || m === 'summit' || m === 'ski'));
+  if (S.look) { S.look.yaw = 0; }
   show('#social', ['base', 'summit', 'queue', 'lift'].includes(m));  // 이모트·채팅 바
-  show('#camReset', ['base', 'summit', 'queue', 'lift'].includes(m));
   const ctx = camCtx(m); if (ctx !== S.ctx) { if (S.ctx) cut(); S.ctx = ctx; }
   me.c.root.visible = m !== 'lodge' && m !== 'gate';
 }
@@ -1113,17 +1990,17 @@ $('#makerDone').onclick = () => {
   if (!S.stats.start) S.stats.start = performance.now();
   goBase(new THREE.Vector3(0, 0, 150)); me.yaw = Math.PI;
   toast('스노우라이브 마운틴에 오신 걸 환영해요');
-  setTimeout(() => toast('바닥을 누르거나 WASD로 이동 · 드래그로 시점 돌리기 · 휠(두 손가락)로 확대'), 2400);
+  setTimeout(() => toast(IS_TOUCH ? '조이스틱으로 이동·방향 전환 · 화면을 끌어 둘러보기 · 오른쪽 위 버튼으로 1인칭/3인칭' : 'W/↑ 앞으로 · A D/← → 방향 전환 · 드래그로 둘러보기 · V로 1인칭/3인칭'), 2400);
   setTimeout(() => toast('리프트 승강장은 오른쪽이에요'), 5600);
   if (currentTod() === 'night') setTimeout(() => toast('지금은 야간 개장 중이에요'), 1200);
 };
 
 /* HUD 버튼 */
-$('#camReset').onclick = () => { const k = camKey(S.mode); if (k) Object.assign(S.cams[k], CAM_DEFAULT[k]); };
+$('#viewBtn').onclick = () => setView(S.view === 'fp' ? 'tp' : 'fp');
 $('#sndBtn').onclick = () => { const on = $('#soundP').classList.contains('hidden'); show('#soundP', on); show('#ticket', false); };
 $('#soundClose').onclick = () => show('#soundP', false);
 ['bgm', 'amb', 'sfx'].forEach((k) => { $('#v' + k[0].toUpperCase() + k.slice(1)).oninput = (e) => { SND.vol[k] = +e.target.value; SND.apply(); }; });
-$('#todSel').onchange = (e) => { S.tod = e.target.value; applyTod(); };
+$('#todSel').onchange = (e) => { S.tod = e.target.value; };
 $('#chPill').onclick = () => openTicket();
 $('#exitBtn').onclick = () => openCard();
 $('#waveBtn').onclick = () => wave();
@@ -1147,7 +2024,7 @@ $('#chatForm').addEventListener('submit', (e) => {
 const bubPool = [];
 function bubbleAt(i, text, cls, wp) {
   let d = bubPool[i];
-  if (!d) { d = document.createElement('div'); d._t = ''; d._c = ''; $('#bubbles').appendChild(d); bubPool[i] = d; }
+  if (!d) { d = document.createElement('div'); d._t = ''; d._c = null; $('#bubbles').appendChild(d); bubPool[i] = d; }   // _c를 null로 시작해야 일반 말풍선(cls '')에도 'bub' 클래스가 붙어요
   const dist = camera.position.distanceTo(wp);
   const v = wp.clone().project(camera);
   if (v.z > 1 || Math.abs(v.x) > 1.1 || Math.abs(v.y) > 1.1) { d.style.display = 'none'; return; }
@@ -1159,6 +2036,16 @@ function bubbleAt(i, text, cls, wp) {
   d.style.left = Math.round((v.x + 1) / 2 * innerWidth) + 'px';
   d.style.top = Math.round((1 - v.y) / 2 * innerHeight) + 'px';
 }
+function myScreenBubble(b) {
+  let d = $('#myBub');
+  if (!d) { d = document.createElement('div'); d.id = 'myBub'; $('#bubbles').appendChild(d); }
+  if (!b) { d.style.display = 'none'; return; }
+  const cls = 'bub' + (b.cls ? ' ' + b.cls : ''); if (d.className !== cls) d.className = cls;
+  if (d.textContent !== b.text) d.textContent = b.text;
+  const soc = $('#social'), r = soc && !soc.classList.contains('hidden') ? soc.getBoundingClientRect() : null;
+  d.style.display = 'block'; d.style.transform = 'translate(-50%,-100%)';
+  d.style.left = Math.round(innerWidth / 2) + 'px'; d.style.top = Math.round(r ? r.top - 14 : innerHeight * 0.62) + 'px';
+}
 function activeBubble(em, emT, ms, msT) {
   const t = nowS();
   if (ms && t - msT < 5) return { text: ms, cls: '' };
@@ -1169,8 +2056,10 @@ function updateBubbles() {
   let i = 0;
   const up = new THREE.Vector3(0, 2.75, 0);
   const addFor = (o, wp) => { const b = activeBubble(o.em, o.emT, o.ms, o.msT); if (b) bubbleAt(i++, b.text, b.cls, wp.add(up.clone())); };
+  const fpMe = S.view === 'fp' && !me.c.body.visible;   // 1인칭: 내 머리 위는 화면 밖이라 채팅창 위에 띄워요
+  myScreenBubble(fpMe && ['base', 'queue', 'lift', 'summit', 'ski'].includes(S.mode) ? activeBubble(me.em, me.emT, me.ms, me.msT) : null);
   if (['base', 'queue', 'lift', 'summit', 'ski'].includes(S.mode)) {
-    addFor(me, me.c.root.getWorldPosition(new THREE.Vector3()));
+    if (!fpMe) addFor(me, me.c.root.getWorldPosition(new THREE.Vector3()));
     (S.companions || []).forEach((cp) => addFor(cp, cp.c.root.getWorldPosition(new THREE.Vector3())));
   }
   if (typeof NET !== 'undefined' && NET.remotes) {
@@ -1213,19 +2102,62 @@ function openTicket() {
 $('#ticketClose').onclick = () => show('#ticket', false);
 
 /* 스키하우스 */
-const LODGE_MSG = ['핫초코를 홀짝이는 중. 창밖으로 사람들이 지나가요', '따뜻한 어묵 국물 한 모금', '컵라면이 익기를 기다리는 중'];
-function enterLodge() { setMode('lodge'); show('#lodge', true); [...$('#lodgeMenu').children].forEach((b) => b.classList.remove('on')); $('#lodgeMsg').textContent = '창밖으로 사람들이 지나가요. 천천히 쉬다 가세요'; $('#lodgeSeats').textContent = '창가 자리 · 자리 ' + (6 + Math.floor(Math.random() * 5)) + '/12'; }
-[...$('#lodgeMenu').children].forEach((b) => b.onclick = () => { [...$('#lodgeMenu').children].forEach((x) => x.classList.toggle('on', x === b)); $('#lodgeMsg').textContent = LODGE_MSG[+b.dataset.v]; SND.blip(); });
-$('#lodgeOut').onclick = () => goBase(new THREE.Vector3(0, 0, 108));
+function enterLodge() { lodgeReset(); setMode('lodge'); show('#lodge', true); [...$('#lodgeMenu').children].forEach((b) => b.classList.remove('on')); $('#lodgeMsg').textContent = '창밖으로 사람들이 지나가요. 천천히 쉬다 가세요'; $('#lodgeSeats').textContent = '창가 자리 · 자리 ' + (6 + Math.floor(Math.random() * 5)) + '/12'; }
+/* 먹기 연출: 테이블에 음식 → 김 → (컵라면은 3분 대기) → 들어 올려 한 모금 → 창에 김 서림 · 몸이 따뜻해짐 */
+const FOOD_SVG = {
+  cocoa: `<svg viewBox="0 0 200 200"><ellipse cx="100" cy="176" rx="64" ry="10" fill="#2A1F2E" opacity=".25"/><path d="M142 92c22 0 30 12 30 26s-10 28-34 28" fill="none" stroke="#C4563F" stroke-width="13" stroke-linecap="round"/><path d="M48 70h96v78c0 16-12 26-26 26H74c-14 0-26-10-26-26z" fill="#D9654C"/><path d="M48 70h96v14H48z" fill="#E98B6E"/><ellipse cx="96" cy="70" rx="48" ry="11" fill="#6E3A2A"/><rect x="70" y="60" width="16" height="13" rx="4" fill="#FFF6EE"/><rect x="92" y="63" width="15" height="12" rx="4" fill="#FFEFE2" transform="rotate(14 99 69)"/><rect x="110" y="59" width="14" height="12" rx="4" fill="#FFF6EE" transform="rotate(-10 117 65)"/><path d="M62 98v44" stroke="#F2A58C" stroke-width="5" stroke-linecap="round" opacity=".6"/></svg>`,
+  odeng: `<svg viewBox="0 0 200 200"><ellipse cx="100" cy="178" rx="58" ry="9" fill="#2A1F2E" opacity=".25"/><path d="M84 18l6 112M116 22l-8 108" stroke="#C9A77C" stroke-width="5" stroke-linecap="round"/><path d="M78 36c14-6 18 6 30 0s16 6 6 12-18-4-30 2-18 2-6-14z" fill="#E7B783"/><path d="M76 58c14-6 18 6 30 0s18 6 8 12-20-4-32 2-18 2-6-14z" fill="#DCA56E"/><path d="M104 46c14-5 18 6 28 1s14 7 4 12-16-3-27 2-15 1-5-15z" fill="#E7B783"/><path d="M104 68c14-5 18 6 28 1s14 7 4 12-16-3-27 2-15 1-5-15z" fill="#DCA56E"/><path d="M50 96h100l-12 70c-2 8-8 12-16 12H78c-8 0-14-4-16-12z" fill="#F4EBDD"/><path d="M53 112h94M56 130h88M59 148h82" stroke="#D9573F" stroke-width="5" opacity=".75"/><ellipse cx="100" cy="96" rx="50" ry="10" fill="#C98E4E"/><ellipse cx="100" cy="96" rx="40" ry="6" fill="#DDA764"/></svg>`,
+  ramenShut: `<svg viewBox="0 0 200 200"><ellipse cx="100" cy="180" rx="60" ry="9" fill="#2A1F2E" opacity=".25"/><path d="M44 74h112l-14 92c-1 8-7 12-15 12H73c-8 0-14-4-15-12z" fill="#F6F1E8"/><path d="M47 96h106l-3 22H50z" fill="#D9493A"/><text x="100" y="113" text-anchor="middle" font-size="14" font-weight="700" fill="#FFF6EE" font-family="sans-serif">라면</text><ellipse cx="100" cy="74" rx="58" ry="12" fill="#E3DDD0"/><ellipse cx="100" cy="72" rx="58" ry="12" fill="#ECE7DC"/><path d="M60 70c10 4 70 4 80 0" stroke="#C9C1B1" stroke-width="2" fill="none"/><rect x="88" y="54" width="24" height="10" rx="3" fill="#D9493A" transform="rotate(-8 100 59)"/></svg>`,
+  ramenOpen: `<svg viewBox="0 0 200 200"><ellipse cx="100" cy="180" rx="60" ry="9" fill="#2A1F2E" opacity=".25"/><path d="M44 74h112l-14 92c-1 8-7 12-15 12H73c-8 0-14-4-15-12z" fill="#F6F1E8"/><path d="M47 96h106l-3 22H50z" fill="#D9493A"/><text x="100" y="113" text-anchor="middle" font-size="14" font-weight="700" fill="#FFF6EE" font-family="sans-serif">라면</text><ellipse cx="100" cy="74" rx="58" ry="12" fill="#C4572F"/><path d="M58 74c8-8 14 6 22-2s14 6 22-2 14 6 22-2 12 4 18 0" stroke="#F2C66A" stroke-width="5" fill="none" stroke-linecap="round"/><path d="M62 80c8-6 14 4 22-2s14 4 22-2 14 4 22-2" stroke="#E8B552" stroke-width="4" fill="none" stroke-linecap="round"/><circle cx="76" cy="70" r="5" fill="#7FB069"/><circle cx="122" cy="72" r="4" fill="#E86A5A"/><path d="M140 20l-30 58M152 26l-34 54" stroke="#C9A77C" stroke-width="4" stroke-linecap="round"/></svg>`
+};
+const FOODS = [
+  { svg: 'cocoa', steps: ['후— 불어서 식히는 중', '달콤하고 따뜻해요. 손끝까지 녹았어요'] },
+  { svg: 'odeng', steps: ['국물부터 한 모금', '속까지 뜨끈해요. 하나 더 먹고 싶어요'] },
+  { svg: 'ramenShut', open: 'ramenOpen', wait: true, steps: ['다 익었어요! 후루룩', '국물까지 싹. 다시 탈 힘이 나요'] }
+];
+const LODGE = { busy: false, timers: [] };
+function lodgeLater(ms, fn) { LODGE.timers.push(setTimeout(fn, ms)); }
+function lodgeReset() {
+  LODGE.timers.forEach(clearTimeout); LODGE.timers = []; LODGE.busy = false;
+  show('#lodgeTable', false); show('#ramenTimer', false); $('#foodWrap').classList.remove('hot');
+  $('#mist').classList.remove('on'); $('#warm').classList.remove('on');
+  [...$('#lodgeMenu').children].forEach((x) => { x.disabled = false; });
+}
+function eatFood(k) {
+  if (LODGE.busy) return; LODGE.busy = true;
+  const f = FOODS[k], wrap = $('#foodWrap'), msg = $('#lodgeMsg');
+  [...$('#lodgeMenu').children].forEach((x) => { x.classList.toggle('on', +x.dataset.v === k); x.disabled = true; });
+  $('#food').innerHTML = FOOD_SVG[f.svg]; show('#lodgeTable', true); wrap.classList.add('hot'); SND.clink();
+  wrap.animate([{ transform: 'translateY(46px)', opacity: 0 }, { transform: 'none', opacity: 1 }], { duration: 550, easing: 'cubic-bezier(.2,.8,.3,1)' });
+  let t = 900;
+  if (f.wait) {
+    // 컵라면: 3분을 3초로 빨리 감아 기다려요
+    msg.textContent = '뚜껑 덮고 3분 기다리는 중'; show('#ramenTimer', true);
+    for (let i = 0; i <= 30; i++) lodgeLater(t + i * 100, () => { const left = 180 - i * 6; $('#ramenClock').textContent = Math.floor(left / 60) + ':' + String(left % 60).padStart(2, '0'); });
+    t += 3200;
+    lodgeLater(t, () => { show('#ramenTimer', false); $('#food').innerHTML = FOOD_SVG[f.open]; SND.pop(); wrap.animate([{ transform: 'scale(1)' }, { transform: 'scale(1.08)' }, { transform: 'scale(1)' }], { duration: 380 }); });
+    t += 700;
+  } else { lodgeLater(t - 500, () => { msg.textContent = f.steps[0]; SND.blow(); }); t += 900; }
+  lodgeLater(t, () => {
+    if (f.wait) msg.textContent = f.steps[0];
+    wrap.animate([{ transform: 'none' }, { transform: 'translateY(-34px) scale(1.32) rotate(-6deg)', offset: 0.35 }, { transform: 'translateY(-34px) scale(1.32) rotate(-6deg)', offset: 0.72 }, { transform: 'none' }], { duration: 2000, easing: 'ease-in-out' });
+  });
+  lodgeLater(t + 700, () => { SND.sip(); $('#mist').classList.add('on'); $('#warm').classList.add('on'); });
+  lodgeLater(t + 2300, () => { $('#mist').classList.remove('on'); msg.textContent = f.steps[1]; SND.chime(); });
+  lodgeLater(t + 4200, () => { $('#warm').classList.remove('on'); });
+  lodgeLater(t + 2600, () => { LODGE.busy = false; [...$('#lodgeMenu').children].forEach((x) => { x.disabled = false; }); });
+}
+[...$('#lodgeMenu').children].forEach((b) => b.onclick = () => eatFood(+b.dataset.v));
+$('#lodgeOut').onclick = () => { lodgeReset(); goBase(new THREE.Vector3(0, 0, 108)); };
 
 /* 포토존 */
 function takePhoto() {
   me.c.waveT = 1.6; show('#hud', false); show('#prompt', false);
   setTimeout(() => {
-    renderer.render(scene, camera);
+    camPhoto(); renderFrame();
     const url = canvas.toDataURL('image/png');
-    const a = document.createElement('a'); a.href = url; a.download = 'snowlive-mountain-photo.png'; a.click();
-    show('#hud', true); SND.tone(1400, 0.1, 0.15); toast('사진을 저장했어요');
+    show('#hud', true); SND.tone(1400, 0.1, 0.15);
+    showImage('포토존 사진', url);
   }, 350);
 }
 
@@ -1236,7 +2168,7 @@ function joinQueue() {
   toast('줄을 섰어요. 4인 체어가 곧 와요');
 }
 const CHAIR_SLOTS = [-2.4, -0.8, 0.8, 2.4];     // 4인 체어 좌석 x좌표
-const SEAT_Y = -3.05 - 4.6 * K;
+const SEAT_Y = -3.05 - HIP;
 function board(ch) {
   S.chair = ch; S.stats.lift++; updateCounters();
   ch.riders.forEach((r) => { r.c.root.visible = false; });
@@ -1284,7 +2216,7 @@ function unboard() {
 
 /* 정상 */
 function openSummit() {
-  show('#summitPanel', true); show('#prompt', false);
+  show('#summitPanel', true); show('#prompt', false); show('#joy', false); show('#actions', false);
   const list = $('#slopeList'); list.innerHTML = '';
   TRAILS.forEach((t, i) => {
     const b = document.createElement('button'); b.className = 'slope-btn' + (S.slope === i ? ' on' : '');
@@ -1293,31 +2225,31 @@ function openSummit() {
     list.appendChild(b);
   });
   [...$('#segMode').children].forEach((b) => { b.classList.toggle('on', b.dataset.v === S.skiMode); b.onclick = () => { S.skiMode = b.dataset.v; openSummit(); }; });
-  $('#modeHint').textContent = S.skiMode === 'auto' ? '가만히 있어도 느긋하게 내려가요. 넘어지지 않아요' : '← → 방향, ↓ 제동 (모바일: 화면 왼쪽/오른쪽 누르기). 넘어져도 벌점은 없어요';
+  $('#modeHint').textContent = S.skiMode === 'auto' ? '가만히 있어도 카빙으로 내려가요. 방향키나 조이스틱을 쓰면 직접 타기로 바뀌어요' : '← → 턴 · ↓ 감속 · ↑ 웅크리기 (모바일: 조이스틱). 크게 돌면 속도가 줄고, 급하게 꺾으면 미끄러져요';
   $('#goSki').textContent = TRAILS[S.slope].name + (S.skiMode === 'auto' ? '로 자동 하강' : '로 직접 타기');
 }
 $('#goSki').onclick = () => startSki();
-$('#stayTop').onclick = () => { show('#summitPanel', false); toast('전망 데크에서 쉬어가요. 슬로프 입구로 가면 다시 고를 수 있어요'); };
+$('#stayTop').onclick = () => { show('#summitPanel', false); show('#joy', IS_TOUCH); show('#actions', true); toast('전망 데크에서 쉬어가요. 슬로프 입구로 가면 다시 고를 수 있어요'); };
 
 /* 하강 */
 function startSki() {
   const t = TRAILS[S.slope];
   const z = -L + 2;
-  const h0 = Math.atan2(trailX(t, z + 4) - trailX(t, z), 4);
-  S.ski = { t, mode: S.skiMode, z, x: trailX(t, z), h: h0, v: 3, ph: Math.random() * 6, fallT: 0, falls: 0, steer: 0 };
+  const h0 = trailDir(t, z);
+  S.ski = Object.assign(carveInit(t, z, trailX(t, z), 3), { t, mode: S.skiMode, h: h0, fallT: 0, falls: 0, steer: 0, camH: h0, tx: null });
   me.c.pose = 'ski';
   setMode('ski'); show('#progress', true); renderSkiBar();
-  show('#touch', S.skiMode === 'manual' && ('ontouchstart' in window));
   SND.blip();
 }
 function renderSkiBar() {
   const s = S.ski; show('#skiBar', true);
+  const spd = '<span><b class="num" id="spd">0</b> km/h</span>';
   if (s.mode === 'auto') {
-    $('#skiBar').innerHTML = '<span>' + s.t.name + ' · 자동으로 내려가는 중</span><button class="btn primary" id="toManual" style="height:40px">직접 타기로 바꾸기</button>';
-    $('#toManual').onclick = () => { s.mode = 'manual'; s.h = 0; S.skiMode = 'manual'; renderSkiBar(); show('#touch', 'ontouchstart' in window); };
+    $('#skiBar').innerHTML = spd + '<span>' + s.t.name + ' · 자동</span><button class="btn primary" id="toManual" style="height:40px">직접 타기</button>';
+    $('#toManual').onclick = () => { s.mode = 'manual'; S.skiMode = 'manual'; renderSkiBar(); };
   } else {
-    $('#skiBar').innerHTML = '<span><kbd>←</kbd> <kbd>→</kbd> 방향 · <kbd>↓</kbd> 제동</span><span style="color:#B8CCDD" id="fallTxt">넘어짐 ' + s.falls + '번</span><button class="btn ghost" id="toAuto" style="height:40px">자동으로</button>';
-    $('#toAuto').onclick = () => { s.mode = 'auto'; S.skiMode = 'auto'; s.fallT = 0; renderSkiBar(); show('#touch', false); };
+    $('#skiBar').innerHTML = spd + (IS_TOUCH ? '<span>조이스틱 좌우 턴 · 아래 감속 · 위 웅크리기</span>' : '<span><kbd>←</kbd><kbd>→</kbd> 턴 · <kbd>↓</kbd> 감속 · <kbd>↑</kbd> 웅크리기</span>') + '<span style="color:#B8CCDD" id="fallTxt">넘어짐 ' + s.falls + '번</span><button class="btn ghost" id="toAuto" style="height:40px">자동으로</button>';
+    $('#toAuto').onclick = () => { s.mode = 'auto'; S.skiMode = 'auto'; s.fallT = 0; renderSkiBar(); };
   }
 }
 function finishRun() {
@@ -1343,7 +2275,7 @@ function openCard() {
   if (S.mode === 'lodge' || S.mode === 'gate' || S.mode === 'maker') goBase(new THREE.Vector3(0, 0, 150));
   me.c.waveT = 3;
   camPhoto();
-  renderer.render(scene, camera);
+  renderFrame();
   const url = canvas.toDataURL('image/jpeg', 0.9);
   $('#cardImg').src = url;
   const d = new Date();
@@ -1357,7 +2289,7 @@ function openCard() {
 }
 function camPhoto() {
   const p = me.c.root.getWorldPosition(new THREE.Vector3());
-  const az = S.cams.base.az;
+  const az = me.yaw; me.c.body.visible = true; if (me.c.model) me.c.model.inst.visible = true; me.c.legs.forEach((l) => l.userData.fp.forEach((m) => { m.visible = !m.userData.gearOnly || m.userData.gearOnly === me.c.gear; }));
   camera.position.set(p.x + Math.sin(az + 0.5) * 4.6, p.y + 2.1, p.z + Math.cos(az + 0.5) * 4.6); camera.lookAt(p.x, p.y + 1.15, p.z);
 }
 $('#cardSave').onclick = () => {
@@ -1369,17 +2301,16 @@ $('#cardSave').onclick = () => {
   img.onload = () => {
     const r = Math.max(688 / img.width, 520 / img.height), w = img.width * r, h = img.height * r;
     g.save(); g.beginPath(); g.rect(16, 16, 688, 520); g.clip(); g.drawImage(img, 16 + (688 - w) / 2, 16 + (520 - h) / 2, w, h); g.restore();
-    g.fillStyle = '#ffffff'; g.font = '28px Silkscreen, monospace'; g.fillText('SNOWLIVE MOUNTAIN', 40, 60);
+    g.fillStyle = '#ffffff'; g.font = '28px "Gowun Batang", serif'; g.fillText('SNOWLIVE MOUNTAIN', 40, 60);
     g.fillStyle = '#12263A'; g.font = '900 44px "Noto Sans KR", sans-serif'; g.fillText('오늘의 라이딩', 40, 616);
-    g.fillStyle = '#4A6075'; g.font = '26px Silkscreen, monospace'; g.textAlign = 'right'; g.fillText(cardData.date, 680, 616); g.textAlign = 'left';
+    g.fillStyle = '#4A6075'; g.font = '26px "Gowun Batang", serif'; g.textAlign = 'right'; g.fillText(cardData.date, 680, 616); g.textAlign = 'left';
     [['리프트', cardData.lift], ['하강', cardData.runs], ['머문 시간', cardData.mins + '분'], ['같이 탄 사람', cardData.comp + '명']].forEach(([k, v], i) => {
       const x = 40 + (i % 2) * 330, y = 690 + Math.floor(i / 2) * 120;
       g.fillStyle = '#4A6075'; g.font = '500 24px "Noto Sans KR", sans-serif'; g.fillText(k, x, y);
       g.fillStyle = '#12263A'; g.font = '900 52px "Noto Sans KR", sans-serif'; g.fillText(String(v), x, y + 60);
     });
     g.fillStyle = '#4A6075'; g.font = '20px "Noto Sans KR", sans-serif'; g.fillText('온라인 스키장 기록 · 실제 라이딩 기록·랭킹과는 별개예요', 40, 960);
-    const a = document.createElement('a'); a.href = cv.toDataURL('image/png'); a.download = 'snowlive-mountain-card.png'; a.click();
-    toast('카드를 저장했어요');
+    showImage('오늘의 산행 카드', cv.toDataURL('image/png'));
   };
   img.src = cardData.url;
 };
@@ -1395,6 +2326,7 @@ window.addEventListener('keydown', (e) => {
   keys[e.key.toLowerCase()] = true;
   if (['arrowup', 'arrowdown', 'arrowleft', 'arrowright', ' '].includes(e.key.toLowerCase())) e.preventDefault();
   if ((e.key === 'e' || e.key === 'E' || e.key === 'Enter') && !$('#prompt').classList.contains('hidden')) $('#promptBtn').click();
+  if ((e.key === 'v' || e.key === 'V') && $('#viewBtn') && !$('#viewBtn').classList.contains('hidden')) setView(S.view === 'fp' ? 'tp' : 'fp');
   if (e.key === 'Escape') { ['#ticket', '#soundP'].forEach((s) => show(s, false)); }
 });
 window.addEventListener('keyup', (e) => { keys[e.key.toLowerCase()] = false; });
@@ -1408,66 +2340,70 @@ function clickMove(e) {
 }
 function orbitBy(dx, dy) {
   if (S.mode === 'maker') { S.makerDrag = true; me.yaw += dx * 0.012; return; }
-  const c = camCur(); if (!c) return;
-  c.az -= dx * 0.0052;
-  c.pitch = clamp(c.pitch + dy * 0.004, 0.03, 1.25);
+  if (S.mode === 'lift' && S.view === 'tp') { const c = S.cams.lift; c.az -= dx * 0.0052; c.pitch = clamp(c.pitch + dy * 0.004, 0.03, 1.25); return; }
+  S.look.yaw -= dx * 0.005;
+  S.look.pitch = clamp(S.look.pitch + (S.view === 'fp' ? -dy : dy) * 0.004, -0.9, 0.9);
 }
-const ptrs = new Map(); let dragMoved = false, pinch0 = 0, dist0 = 0;
+function zoomBy(f) {
+  if (S.mode === 'lift' && S.view === 'tp') { S.cams.lift.dist = clamp(S.cams.lift.dist * f, 6, 46); return; }
+  if (!['base', 'summit', 'queue', 'ski', 'lift'].includes(S.mode)) return;
+  if (S.view === 'fp') { if (f > 1.02) { setView('tp'); S.tp.dist = 4.5; } return; }
+  S.tp.dist = clamp(S.tp.dist * f, 3.5, 40);
+  if (S.tp.dist <= 3.5 && f < 0.98) setView('fp');
+}
+let camDragging = false;
+const ptrs = new Map(); let dragMoved = false, lastPinch = 0;
 canvas.addEventListener('pointerdown', (e) => {
   try { canvas.setPointerCapture(e.pointerId); } catch (_) { }
   ptrs.set(e.pointerId, { x: e.clientX, y: e.clientY, sx: e.clientX, sy: e.clientY });
   if (ptrs.size === 1) dragMoved = false;
-  if (ptrs.size === 2) {
-    const [a, b] = [...ptrs.values()]; pinch0 = Math.hypot(a.x - b.x, a.y - b.y);
-    const c = camCur(); dist0 = c ? c.dist : 0; dragMoved = true;
-  }
+  if (ptrs.size === 2) { const [a, b] = [...ptrs.values()]; lastPinch = Math.hypot(a.x - b.x, a.y - b.y); dragMoved = true; }
 });
 canvas.addEventListener('pointermove', (e) => {
   const p = ptrs.get(e.pointerId); if (!p) return;
   const dx = e.clientX - p.x, dy = e.clientY - p.y; p.x = e.clientX; p.y = e.clientY;
   if (ptrs.size === 1) {
     if (Math.hypot(e.clientX - p.sx, e.clientY - p.sy) > 6) dragMoved = true;
-    if (dragMoved) orbitBy(dx, dy);
-  } else if (ptrs.size === 2 && pinch0) {
+    if (dragMoved) { camDragging = true; orbitBy(dx, dy); }
+  } else if (ptrs.size === 2 && lastPinch) {
     const [a, b] = [...ptrs.values()]; const d = Math.hypot(a.x - b.x, a.y - b.y);
-    const c = camCur(); if (c && d > 0) c.dist = clamp(dist0 * pinch0 / d, 6, 46);
+    if (d > 0) { zoomBy(lastPinch / d); lastPinch = d; }
   }
 });
 function ptrEnd(e) {
   const p = ptrs.get(e.pointerId); ptrs.delete(e.pointerId);
   if (p && !dragMoved && ptrs.size === 0 && e.type === 'pointerup') clickMove(e);
-  if (ptrs.size < 2) pinch0 = 0;
+  if (ptrs.size < 2) lastPinch = 0;
+  if (ptrs.size === 0) camDragging = false;
 }
 canvas.addEventListener('pointerup', ptrEnd); canvas.addEventListener('pointercancel', ptrEnd);
 canvas.addEventListener('wheel', (e) => {
-  const c = camCur(); if (!c) return;
-  e.preventDefault(); c.dist = clamp(c.dist * (1 + clamp(e.deltaY, -120, 120) * 0.0008), 6, 46);
+  if (!['base', 'summit', 'queue', 'ski', 'lift'].includes(S.mode)) return;
+  e.preventDefault(); zoomBy(1 + clamp(e.deltaY, -120, 120) * 0.0012);
 }, { passive: false });
 function bindTouch(el, side) {
   const on = (v) => (e) => { e.preventDefault(); touch[side] = v; el.classList.toggle('on', v); };
   el.addEventListener('pointerdown', on(true)); el.addEventListener('pointerup', on(false)); el.addEventListener('pointerleave', on(false)); el.addEventListener('pointercancel', on(false));
 }
 bindTouch($('#tL'), 'l'); bindTouch($('#tR'), 'r');
-
-/* ── 이동 조이스틱(베이스·정상 걷기) ── */
-const JOY = { active: false, x: 0, y: 0 };
-(function () {
-  const base = $('#joystick'), knob = $('#joyKnob'); if (!base || !knob) return;
-  const R = 33; let pid = null;
-  function setFrom(cx, cy) {
-    const r = base.getBoundingClientRect();
-    let dx = cx - (r.left + r.width / 2), dy = cy - (r.top + r.height / 2);
-    const m = Math.hypot(dx, dy); let kx = dx, ky = dy;
-    if (m > R) { kx = dx / m * R; ky = dy / m * R; }
-    knob.style.transform = 'translate(' + kx + 'px,' + ky + 'px)';
-    JOY.x = kx / R; JOY.y = ky / R; JOY.active = true;
+const JOY = { on: false, x: 0, y: 0, id: null };
+(function joystick() {
+  const el = $('#joy'), knob = $('#joyKnob');
+  const R0 = 46;
+  function setFrom(e) {
+    const r = el.getBoundingClientRect(), cx = r.left + r.width / 2, cy = r.top + r.height / 2;
+    let dx = e.clientX - cx, dy = e.clientY - cy; const d = Math.hypot(dx, dy);
+    if (d > R0) { dx = dx / d * R0; dy = dy / d * R0; }
+    JOY.x = dx / R0; JOY.y = dy / R0;
+    knob.style.transform = 'translate(' + dx + 'px,' + dy + 'px)';
   }
-  function end() { JOY.active = false; JOY.x = 0; JOY.y = 0; knob.style.transform = 'translate(0,0)'; pid = null; }
-  base.addEventListener('pointerdown', (e) => { e.preventDefault(); e.stopPropagation(); pid = e.pointerId; try { base.setPointerCapture(pid); } catch (_) {} setFrom(e.clientX, e.clientY); });
-  base.addEventListener('pointermove', (e) => { if (pid === null || e.pointerId !== pid) return; e.preventDefault(); setFrom(e.clientX, e.clientY); });
-  base.addEventListener('pointerup', (e) => { if (e.pointerId === pid) { e.stopPropagation(); end(); } });
-  base.addEventListener('pointercancel', () => end());
+  el.addEventListener('pointerdown', (e) => { e.preventDefault(); JOY.on = true; JOY.id = e.pointerId; try { el.setPointerCapture(e.pointerId); } catch (_) { } setFrom(e); me.target = null; S.sitting = false; });
+  el.addEventListener('pointermove', (e) => { if (JOY.on && e.pointerId === JOY.id) setFrom(e); });
+  const end = (e) => { if (e.pointerId !== JOY.id) return; JOY.on = false; JOY.x = JOY.y = 0; knob.style.transform = ''; };
+  el.addEventListener('pointerup', end); el.addEventListener('pointercancel', end);
 })();
+function showImage(title, url) { $('#imgTitle').textContent = title; $('#imgView').src = url; show('#imgModal', true); }
+$('#imgClose').onclick = () => show('#imgModal', false);
 
 /* ───────────── 시간대 ───────────── */
 function currentTod() {
@@ -1476,29 +2412,161 @@ function currentTod() {
   if (h >= 9 && h < 16) return 'day'; if (h >= 16 && h < 18) return 'sunset'; if (h >= 18) return 'night'; return 'dawn';
 }
 const TOD = {
-  day: { sky: 0xB3DCF2, fog: 0xDEEBF4, hs: 0xFFFBF2, hg: 0xCBD8E0, hi: 0.82, sc: 0xFFF2DC, si: 0.82, win: 0.15, lamp: 0 },
-  sunset: { sky: 0xF0A47E, fog: 0xF4C6A6, hs: 0xFFE0C8, hg: 0x8A90A8, hi: 0.62, sc: 0xFFB070, si: 0.75, win: 0.6, lamp: 0.6 },
-  night: { sky: 0x0E1A33, fog: 0x1A2A4C, hs: 0x7A8FC0, hg: 0x1A2238, hi: 0.42, sc: 0xAFC2FF, si: 0.32, win: 1, lamp: 1.6 },
-  dawn: { sky: 0x8FA6D6, fog: 0xB9C6E6, hs: 0xD6E0FF, hg: 0x6A7898, hi: 0.6, sc: 0xD0DCFF, si: 0.5, win: 0.4, lamp: 0.4 }
+  day:    { zen: '#557FB4', hor: '#C6D8E6', sun: '#FFF1DC', dir: [0.35, 0.68, -0.5], lit: '#DCE3EB', shade: '#8A9FC0', rim: '#C9D9EC', spec: '#EEF3FA', fog: '#C3D4E2', hs: '#DFE8F2', hg: '#8799B3', hi: 0.62, si: 0.62, tree: '#3E5F57', glit: 0.35, bloom: 0.1, stars: 0, win: 0.15, lamp: 0, cloud: 0.45, dust: 0.45, shaft: 0.22, mist: 0.35 },
+  sunset: { zen: '#2E3B6C', hor: '#F3AE8A', sun: '#FFC08A', dir: [0.32, 0.1, -1], lit: '#F0C9B4', shade: '#6B649E', rim: '#FFB590', spec: '#FFE2C2', fog: '#E3A48F', hs: '#F6CDB4', hg: '#615C94', hi: 0.68, si: 0.78, tree: '#3B3F5E', glit: 1.0, bloom: 0.42, stars: 0, win: 0.6, lamp: 0.6, cloud: 0.95, dust: 1, shaft: 0.75, mist: 0.75 },
+  night:  { zen: '#050A1E', hor: '#22376C', sun: '#C2D2FF', dir: [-0.42, 0.32, -1], lit: '#AABDEB', shade: '#1D2956', rim: '#6E86C8', spec: '#DDE7FF', fog: '#1B2A52', hs: '#5468A8', hg: '#131B39', hi: 0.5, si: 0.42, tree: '#0F1832', glit: 1.5, bloom: 0.6, stars: 1, win: 1, lamp: 1.6, cloud: 0.2, dust: 0.55, shaft: 0.18, mist: 0.45 },
+  dawn:   { zen: '#3B4C86', hor: '#E6B9C8', sun: '#FFD9E0', dir: [-0.5, 0.14, -1], lit: '#E3D3E6', shade: '#6F78AE', rim: '#F3C5D8', spec: '#FFEAF2', fog: '#C9B5CF', hs: '#E8D7EC', hg: '#6A6E9E', hi: 0.62, si: 0.58, tree: '#36405F', glit: 0.9, bloom: 0.32, stars: 0.3, win: 0.4, lamp: 0.4, cloud: 0.8, dust: 0.9, shaft: 0.6, mist: 0.85 }
 };
-function applyTod() {
-  const p = TOD[currentTod()];
-  scene.background = new THREE.Color(p.sky); scene.fog.color.setHex(p.fog);
-  hemi.color.setHex(p.hs); hemi.groundColor.setHex(p.hg); hemi.intensity = p.hi;
-  sun.color.setHex(p.sc); sun.intensity = p.si;
-  windowMat.emissiveIntensity = p.win; lampMat.emissiveIntensity = p.lamp > 0 ? 0.9 : 0.1;
-  lamps.forEach((l) => l.intensity = p.lamp);
+const TODC = ['zen', 'hor', 'sun', 'lit', 'shade', 'rim', 'spec', 'fog', 'hs', 'hg', 'tree'], TODN = ['hi', 'si', 'glit', 'bloom', 'stars', 'win', 'lamp', 'cloud', 'dust', 'shaft', 'mist'];
+const todCur = (() => { const p = TOD.sunset, o = { dir: new THREE.Vector3().fromArray(p.dir).normalize() }; TODC.forEach((k) => o[k] = new THREE.Color(p[k])); TODN.forEach((k) => o[k] = p[k]); return o; })();
+let todSnap = true;
+function applyTod() { todSnap = todSnap || false; }
+function blendTod(dt) {
+  const p = TOD[currentTod()], k = todSnap ? 1 : Math.min(1, dt * 1.5); todSnap = false;
+  TODC.forEach((n) => todCur[n].lerp(tmpC.set(p[n]), k)); TODN.forEach((n) => todCur[n] = lerp(todCur[n], p[n], k));
+  todCur.dir.lerp(tmpV.fromArray(p.dir).normalize(), k).normalize();
+  SNOWU.uSunDir.value.copy(todCur.dir); SNOWU.uLit.value.copy(todCur.lit); SNOWU.uShade.value.copy(todCur.shade); SNOWU.uRim.value.copy(todCur.rim); SNOWU.uSpec.value.copy(todCur.spec); SNOWU.uGlitter.value = todCur.glit;
+  skyMat.uniforms.uZen.value.copy(todCur.zen); skyMat.uniforms.uHor.value.copy(todCur.hor); skyMat.uniforms.uSunCol.value.copy(todCur.sun); skyMat.uniforms.uStars.value = todCur.stars; skyMat.uniforms.uCloud.value = todCur.cloud; SNOWU.uSunCol.value.copy(todCur.sun);
+  DUST.mat.uniforms.uAmt.value = todCur.dust; DUST.mat.uniforms.uColor.value.copy(todCur.spec); DRIFT.mat.color.copy(todCur.lit);
+  scene.fog.color.copy(todCur.fog); renderer.setClearColor(todCur.fog);
+  hemi.color.copy(todCur.hs); hemi.groundColor.copy(todCur.hg); hemi.intensity = todCur.hi;
+  sun.color.copy(todCur.sun); sun.intensity = todCur.si;
+  TREE_MAT.color.copy(todCur.tree); TREE_SNOW.color.copy(todCur.lit);
+  windowMat.emissiveIntensity = todCur.win; lampMat.emissiveIntensity = todCur.lamp > 0.3 ? 0.9 : 0.1;
+  lamps.forEach((l) => l.intensity = todCur.lamp);
+  snow.material.color.copy(todCur.lit); fxPts.material.color.copy(todCur.lit); trkMat.color.copy(todCur.shade);
+  if (POST.bloom) POST.bloom.strength = todCur.bloom;
+  MIST.forEach((m) => { m.material.uniforms.uCol.value.copy(todCur.fog).lerp(tmpC.set('#ffffff'), 0.25); m.material.uniforms.uAmt.value = m.userData.base * todCur.mist; });
 }
-applyTod();
+const tmpC = new THREE.Color(), tmpV = new THREE.Vector3();
 
+/* 눈송이·스프레이는 둥글고 부드러운 점으로 */
+const SOFT_DOT = (() => {
+  const cv = document.createElement('canvas'); cv.width = cv.height = 64; const g = cv.getContext('2d');
+  const gr = g.createRadialGradient(32, 32, 0, 32, 32, 32); gr.addColorStop(0, 'rgba(255,255,255,1)'); gr.addColorStop(0.45, 'rgba(255,255,255,.6)'); gr.addColorStop(1, 'rgba(255,255,255,0)');
+  g.fillStyle = gr; g.fillRect(0, 0, 64, 64); return new THREE.CanvasTexture(cv);
+})();
 /* 눈 */
-const SNOW_N = 1800;
+const SNOW_N = IS_TOUCH ? 900 : 1800;
 const snowGeo = new THREE.BufferGeometry();
 const snowPos = new Float32Array(SNOW_N * 3);
 for (let i = 0; i < SNOW_N; i++) { snowPos[i * 3] = (Math.random() - 0.5) * 160; snowPos[i * 3 + 1] = Math.random() * 90; snowPos[i * 3 + 2] = (Math.random() - 0.5) * 160; }
 snowGeo.setAttribute('position', new THREE.BufferAttribute(snowPos, 3));
-const snow = new THREE.Points(snowGeo, new THREE.PointsMaterial({ color: 0xffffff, size: 0.55, transparent: true, opacity: 0.9, depthWrite: false }));
-scene.add(snow);
+const snow = new THREE.Points(snowGeo, new THREE.PointsMaterial({ color: 0xffffff, size: 0.45, map: SOFT_DOT, transparent: true, opacity: 0.9, depthWrite: false }));
+snow.frustumCulled = false; scene.add(snow);
+
+/* 다이아몬드 더스트: 공기 중 얼음 결정이 해 쪽을 볼 때 반짝여요 */
+const DUST = (() => {
+  const n = IS_TOUCH ? 90 : 180, pos = new Float32Array(n * 3), ph = new Float32Array(n);
+  for (let i = 0; i < n; i++) { pos[i * 3] = (Math.random() - 0.5) * 50; pos[i * 3 + 1] = Math.random() * 16; pos[i * 3 + 2] = (Math.random() - 0.5) * 50; ph[i] = Math.random(); }
+  const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.BufferAttribute(pos, 3)); g.setAttribute('aPh', new THREE.BufferAttribute(ph, 1));
+  const mat = new THREE.ShaderMaterial({
+    uniforms: { uTime: { value: 0 }, uAmt: { value: 1 }, uColor: { value: new THREE.Color('#FFE2C2') }, uSunDir: SNOWU.uSunDir, uSize: { value: 26 * DPR } },
+    transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
+    vertexShader: `attribute float aPh; uniform float uTime, uSize; uniform vec3 uSunDir; varying float vA;
+      void main(){ vec4 wp = modelMatrix * vec4(position, 1.0); vec4 mv = viewMatrix * wp;
+        float sunward = pow(max(dot(normalize(wp.xyz - cameraPosition), normalize(uSunDir)), 0.0), 4.0);
+        vA = pow(0.5 + 0.5 * sin(uTime * (1.5 + aPh * 3.0) + aPh * 40.0), 6.0) * (0.25 + 1.5 * sunward);
+        gl_PointSize = uSize / max(1.0, -mv.z); gl_Position = projectionMatrix * mv; }`,
+    fragmentShader: `uniform vec3 uColor; uniform float uAmt; varying float vA;
+      void main(){ vec2 p = gl_PointCoord - 0.5; float r = length(p);
+        float core = smoothstep(0.5, 0.0, r) * 0.6, cross = max(0.0, 1.0 - abs(p.x) * 16.0) * max(0.0, 1.0 - abs(p.y) * 2.2) + max(0.0, 1.0 - abs(p.y) * 16.0) * max(0.0, 1.0 - abs(p.x) * 2.2);
+        gl_FragColor = vec4(uColor, (core + cross * 0.5) * vA * uAmt); }`
+  });
+  const pts = new THREE.Points(g, mat); pts.frustumCulled = false; scene.add(pts);
+  return { n, pos, g, mat, pts };
+})();
+/* 설면 위로 바람에 흩날리는 눈가루(물결무늬와 같은 바람 방향) */
+const DRIFT = (() => {
+  const n = IS_TOUCH ? 140 : 260, pos = new Float32Array(n * 3).fill(-9999);
+  const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+  const mat = new THREE.PointsMaterial({ color: 0xffffff, size: 0.5, map: SOFT_DOT, transparent: true, opacity: 0.32, depthWrite: false });
+  const pts = new THREE.Points(g, mat); pts.frustumCulled = false; scene.add(pts);
+  return { n, pos, g, mat, pts };
+})();
+const WIND = new THREE.Vector2(1, 0.35).normalize();
+function updateAir(dt) {
+  const cam = camera.position, T = performance.now() / 1000, outdoor = !['lodge', 'card', 'maker'].includes(S.mode);
+  DUST.pts.visible = outdoor; DRIFT.pts.visible = outdoor && S.mode !== 'gate';
+  DUST.mat.uniforms.uTime.value = T;
+  for (let i = 0; i < DUST.n; i++) {
+    const j = i * 3; DUST.pos[j] += WIND.x * dt * 0.6; DUST.pos[j + 1] += dt * (0.15 + (i % 5) * 0.05); DUST.pos[j + 2] += WIND.y * dt * 0.6;
+    if (DUST.pos[j] - cam.x > 25) DUST.pos[j] -= 50; else if (DUST.pos[j] - cam.x < -25) DUST.pos[j] += 50;
+    if (DUST.pos[j + 2] - cam.z > 25) DUST.pos[j + 2] -= 50; else if (DUST.pos[j + 2] - cam.z < -25) DUST.pos[j + 2] += 50;
+    if (DUST.pos[j + 1] - cam.y > 12) DUST.pos[j + 1] -= 16; else if (DUST.pos[j + 1] - cam.y < -4) DUST.pos[j + 1] += 16;
+  }
+  DUST.g.attributes.position.needsUpdate = true;
+  if (!DRIFT.pts.visible) return;
+  const f = me.c.root.getWorldPosition(tmpV2);
+  for (let i = 0; i < DRIFT.n; i++) {
+    const j = i * 3; let x = DRIFT.pos[j], z = DRIFT.pos[j + 2];
+    if (x < -9000 || Math.abs(x - f.x) > 40 || Math.abs(z - f.z) > 40) { x = f.x + (Math.random() - 0.5) * 80; z = f.z + (Math.random() - 0.5) * 80; }
+    const sp = 3 + (i % 6) * 0.6; x += WIND.x * sp * dt; z += WIND.y * sp * dt + Math.sin(T * 0.8 + i) * dt * 0.5;
+    DRIFT.pos[j] = x; DRIFT.pos[j + 2] = z; DRIFT.pos[j + 1] = groundH(x, z) + 0.12 + (i % 7) * 0.09 + Math.sin(T * 2 + i) * 0.06;
+  }
+  DRIFT.g.attributes.position.needsUpdate = true;
+}
+const tmpV2 = new THREE.Vector3();
+
+/* 설면 효과: 엣지에서 튀는 스프레이 + 지나간 자리의 엣지 자국 */
+const FX_N = IS_TOUCH ? 420 : 900;
+const fxGeo = new THREE.BufferGeometry();
+const fxPos = new Float32Array(FX_N * 3), fxVel = new Float32Array(FX_N * 3), fxLife = new Float32Array(FX_N);
+for (let i = 0; i < FX_N; i++) fxPos[i * 3 + 1] = -9999;
+fxGeo.setAttribute('position', new THREE.BufferAttribute(fxPos, 3));
+const fxPts = new THREE.Points(fxGeo, new THREE.PointsMaterial({ color: 0xD4E4F2, size: 0.42, map: SOFT_DOT, transparent: true, opacity: 0.95, depthWrite: false }));
+fxPts.frustumCulled = false; scene.add(fxPts);
+let fxHead = 0;
+function emit(x, y, z, vx, vy, vz, life) { const i = fxHead; fxHead = (fxHead + 1) % FX_N; fxPos[i * 3] = x; fxPos[i * 3 + 1] = y; fxPos[i * 3 + 2] = z; fxVel[i * 3] = vx; fxVel[i * 3 + 1] = vy; fxVel[i * 3 + 2] = vz; fxLife[i] = life; }
+function sprayFrom(c, x, y, z, dt, gear) {
+  // 턴 바깥쪽 뒤로 눈이 흩뿌려져요. 엣지를 세울수록(roll), 미끄러질수록(skid) 많이
+  const rate = c.v * (0.6 + Math.abs(c.roll) * 6 + c.skid * 22) * (IS_TOUCH ? 0.6 : 1);
+  c.fxAcc = (c.fxAcc || 0) + rate * dt;
+  const side = c.turn > 0.02 ? 1 : (c.turn < -0.02 ? -1 : (Math.random() < 0.5 ? 1 : -1));
+  const fx_ = Math.sin(c.h), fz = Math.cos(c.h), rx = Math.cos(c.h), rz = -Math.sin(c.h);
+  let n = 0;
+  while (c.fxAcc >= 1 && n < 30) {
+    c.fxAcc -= 1; n++;
+    const out = -side * (1.2 + Math.random() * 2.2 + c.v * 0.12) * (0.5 + c.skid);
+    const back = -(0.4 + Math.random() * 0.25) * c.v * 0.5;
+    const up = 1.2 + Math.random() * 2.2 + c.skid * 2;
+    const off = (Math.random() - 0.5) * (gear === 'board' ? 1.2 : 0.8);
+    emit(x + fx_ * off - rx * side * 0.2, y + 0.08, z + fz * off - rz * side * 0.2,
+      rx * out + fx_ * back + (Math.random() - 0.5), up, rz * out + fz * back + (Math.random() - 0.5), 0.45 + Math.random() * 0.45);
+  }
+}
+function puff(x, y, z, n, power) { for (let i = 0; i < n; i++) { const a = Math.random() * 6.28, r = Math.random() * power; emit(x, y + 0.2, z, Math.cos(a) * r, 1 + Math.random() * power, Math.sin(a) * r, 0.5 + Math.random() * 0.6); } }
+function updateFx(dt) {
+  const dmp = 1 - 1.6 * dt;
+  for (let i = 0; i < FX_N; i++) {
+    if (fxLife[i] <= 0) continue;
+    fxLife[i] -= dt;
+    if (fxLife[i] <= 0) { fxPos[i * 3 + 1] = -9999; continue; }
+    fxVel[i * 3 + 1] -= 6 * dt; fxVel[i * 3] *= dmp; fxVel[i * 3 + 2] *= dmp;
+    fxPos[i * 3] += fxVel[i * 3] * dt; fxPos[i * 3 + 1] += fxVel[i * 3 + 1] * dt; fxPos[i * 3 + 2] += fxVel[i * 3 + 2] * dt;
+  }
+  fxGeo.attributes.position.needsUpdate = true;
+}
+const TRK_N = IS_TOUCH ? 1400 : 3000;
+const trkGeo = new THREE.PlaneGeometry(1, 1); trkGeo.rotateX(-Math.PI / 2);
+const trkMat = new THREE.MeshBasicMaterial({ color: 0x6B649E, map: (() => { const cv = document.createElement('canvas'); cv.width = 64; cv.height = 4; const g = cv.getContext('2d'), gr = g.createLinearGradient(0, 0, 64, 0); gr.addColorStop(0, 'rgba(255,255,255,0)'); gr.addColorStop(0.3, 'rgba(255,255,255,.9)'); gr.addColorStop(0.5, 'rgba(255,255,255,1)'); gr.addColorStop(0.7, 'rgba(255,255,255,.9)'); gr.addColorStop(1, 'rgba(255,255,255,0)'); g.fillStyle = gr; g.fillRect(0, 0, 64, 4); return new THREE.CanvasTexture(cv); })(), transparent: true, opacity: 0.45, depthWrite: false, polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -2 });
+const trk = new THREE.InstancedMesh(trkGeo, trkMat, TRK_N); trk.frustumCulled = false; trk.receiveShadow = true;
+const _m = new THREE.Matrix4(), _q = new THREE.Quaternion(), _e = new THREE.Euler(0, 0, 0, 'YXZ'), _p = new THREE.Vector3(), _sc = new THREE.Vector3();
+_m.makeScale(0.0001, 0.0001, 0.0001); for (let i = 0; i < TRK_N; i++) trk.setMatrixAt(i, _m);
+scene.add(trk); let trkHead = 0;
+function trackSeg(x, z, h, pitch, w, len) {
+  _e.set(pitch, h, 0, 'YXZ'); _q.setFromEuler(_e); _p.set(x, groundH(x, z) + 0.13, z); _sc.set(w, 1, len);
+  _m.compose(_p, _q, _sc); trk.setMatrixAt(trkHead, _m); trkHead = (trkHead + 1) % TRK_N; trk.instanceMatrix.needsUpdate = true;
+}
+function leaveTracks(c, gear) {
+  if (c.tx == null) { c.tx = c.x; c.tz = c.z; return; }
+  const dx = c.x - c.tx, dz = c.z - c.tz, d = Math.hypot(dx, dz);
+  if (d < 0.7) return;
+  const mx = (c.x + c.tx) / 2, mz = (c.z + c.tz) / 2, h = Math.atan2(dx, dz), pitch = Math.atan(slopeAt(mz) * Math.cos(h));
+  if (gear === 'board') trackSeg(mx, mz, h, pitch, 0.34 + c.skid * 0.5, d + 0.05);
+  else { const rx = Math.cos(h) * 0.16, rz = -Math.sin(h) * 0.16, w = 0.12 + c.skid * 0.3; trackSeg(mx + rx, mz + rz, h, pitch, w, d + 0.05); trackSeg(mx - rx, mz - rz, h, pitch, w, d + 0.05); }
+  c.tx = c.x; c.tz = c.z;
+}
 
 /* 이름표 */
 const lblPool = [];
@@ -1556,17 +2624,17 @@ const NET = {
   },
   /* 저장된 아바타(재킷/모자/바지/피부/장비)를 RTDB에서 복원 — 로그인 유저만 */
   loadAvatar(){ const fb=window.__fb; if(!fb||!this.realUid||!fb.get) return;
-    try{ fb.get(fb.ref('resort/avatars/'+this.uid)).then((snap)=>{ const a=snap&&snap.val(); if(a&&a.jacket){ ['jacket','cap','pants','skin','gear','ski','boardColor'].forEach((k)=>{ if(a[k]) me.opts[k]=a[k]; }); if(a.gear) S.gearEdited=true; setColors(me.c,me.opts); setGear(me.c,me.opts.gear); if(typeof syncMaker==='function') syncMaker(); } }).catch(()=>{}); }catch(e){}
+    try{ fb.get(fb.ref('resort/avatars/'+this.uid)).then((snap)=>{ const a=snap&&snap.val(); if(a&&a.jacket){ ['body','jacket','cap','pants','skin','gear','ski','boardColor','hat','lens','glove','accent','skiFit','bJacket','bAccent','bPants','boardFit'].forEach((k)=>{ if(a[k]) me.opts[k]=a[k]; }); if(a.neck!==undefined) me.opts.neck=a.neck; if(a.gear) S.gearEdited=true; setColors(me.c,me.opts); setGear(me.c,me.opts.gear); if(typeof syncMaker==='function') syncMaker(); } }).catch(()=>{}); }catch(e){}
   },
   /* 꾸민 아바타를 RTDB에 저장(이대로 입장 시) — 로그인 유저만 */
   saveAvatar(){ const fb=window.__fb; if(!fb||!this.realUid) return; const o=me.opts;
-    try{ fb.set(fb.ref('resort/avatars/'+this.uid), { jacket:o.jacket, cap:o.cap, pants:o.pants, skin:o.skin, gear:o.gear, ski:o.ski, boardColor:o.boardColor, t:fb.serverTimestamp() }); }catch(e){}
+    try{ fb.set(fb.ref('resort/avatars/'+this.uid), { body:o.body||'male', jacket:o.jacket, cap:o.cap, pants:o.pants, skin:o.skin, gear:o.gear, ski:o.ski, boardColor:o.boardColor, hat:o.hat||'helmet', lens:o.lens||'', neck:o.neck||'', glove:o.glove||'', accent:o.accent||'', skiFit:o.skiFit||'slim', bJacket:o.bJacket||'', bAccent:o.bAccent||'', bPants:o.bPants||'', boardFit:o.boardFit||'track', t:fb.serverTimestamp() }); }catch(e){}
   },
-  optsFrom(d){ return { jacket:d.j||'#2F6FD6', cap:d.cp||'#2F6FD6', pants:d.pt||'#33475B', skin:d.sk||'#F6D5B8', gear:d.g||'ski', ski:d.ski||'#F2B134', boardColor:d.bc||'#8E6BD8' }; },
+  optsFrom(d){ return { body:d.bd||'male', jacket:d.j||'#2F6FD6', cap:d.cp||'#2F6FD6', pants:d.pt||'#33475B', skin:d.sk||'#F6D5B8', gear:d.g||'ski', ski:d.ski||'#F2B134', boardColor:d.bc||'#8E6BD8', hat:d.ht||'helmet', lens:d.ln||'#F2B134', neck:d.nk||'', glove:d.gv||'#26313C', accent:d.ac||'#F2F2EE', skiFit:d.sf||'slim', bJacket:d.bj||'#232C4E', bAccent:d.ba||'#E9E3D3', bPants:d.bp||'#232C4E', boardFit:d.bf||'track' }; },
   upsert(uid,d){
     let rm=this.remotes.get(uid); const opts=this.optsFrom(d), os=JSON.stringify(opts);
     if(!rm){ const c=makeChar(opts); scene.add(c.root); rm={ c, tpos:new THREE.Vector3(d.x||0,d.y||0,d.z||0), tyaw:d.yw||0, pose:d.p||'stand', name:d.n||'', pi:d.pi||'', opts:os, em:'', emT:-9, ms:'', msT:-9, lastT:0, stableSince:performance.now() }; c.root.position.copy(rm.tpos); this.remotes.set(uid,rm); }
-    rm.tpos.set(d.x||0,d.y||0,d.z||0); rm.tyaw=d.yw||0; rm.pose=d.p||'stand'; rm.name=d.n||''; rm.pi=d.pi||'';
+    rm.tpos.set(d.x||0,d.y||0,d.z||0); rm.tyaw=d.yw||0; rm.pose=d.p||'stand'; rm.troll=d.rl||0; rm.tuck=!!d.tk; rm.v=d.v||0; rm.name=d.n||''; rm.pi=d.pi||'';
     // 이모트·채팅: 새 값이 들어올 때만 수신시각 갱신(과거 값 재표시 방지)
     const em=d.em||'', ms=d.ms||'';
     if(em && em!==rm.em){ rm.em=em; rm.emT=performance.now()/1000; } else if(!em){ rm.em=''; }
@@ -1588,7 +2656,10 @@ const NET = {
         rm.c.root.position.lerp(rm.tpos, Math.min(1,dt*10));
         let dy=rm.tyaw-rm.c.root.rotation.y; while(dy>Math.PI)dy-=2*Math.PI; while(dy<-Math.PI)dy+=2*Math.PI;
         rm.c.root.rotation.y += dy*Math.min(1,dt*10);
-        rm.c.pose=rm.pose; animChar(rm.c,dt, rm.pose==='ski'?{lean:0}:undefined);
+        // 하강 중엔 내 캐릭터와 같게: 경사에 맞춰 앞뒤로, 턴 안쪽으로 기울여 카빙 자세
+        const sk=rm.pose==='ski'; rm.roll=lerp(rm.roll||0, sk?rm.troll:0, Math.min(1,dt*8));
+        rm.c.root.rotation.x = sk ? Math.atan(slopeAt(rm.c.root.position.z)*Math.cos(rm.c.root.rotation.y)) : 0; rm.c.root.rotation.z = rm.roll;
+        rm.c.pose=rm.pose; animChar(rm.c,dt, sk?{ roll:rm.roll, tuck:rm.tuck, v:rm.v }:undefined);
       });
     }
   },
@@ -1599,7 +2670,7 @@ const NET = {
     const ts=performance.now()/1000;
     const emOut=(ts-(me.emT||-9)<3)?(me.em||''):'';
     const msOut=(ts-(me.msT||-9)<5)?(me.ms||''):'';
-    try{ fb.set(this.selfRef,{ x:+wp.x.toFixed(2), y:+wp.y.toFixed(2), z:+wp.z.toFixed(2), yw:+me.yaw.toFixed(3), p:me.c.pose, m:S.mode, n:myName(), pi:(me.pi||''), j:o.jacket, cp:o.cap, pt:o.pants, sk:o.skin, g:o.gear, ski:o.ski, bc:o.boardColor, em:emOut, ms:msOut, t:fb.serverTimestamp() }); }catch(e){}
+    try{ fb.set(this.selfRef,{ x:+wp.x.toFixed(2), y:+wp.y.toFixed(2), z:+wp.z.toFixed(2), yw:+me.yaw.toFixed(3), p:me.c.pose, m:S.mode, n:myName(), pi:(me.pi||''), j:o.jacket, cp:o.cap, pt:o.pants, sk:o.skin, bd:o.body||'male', g:o.gear, ski:o.ski, bc:o.boardColor, ht:o.hat||'helmet', ln:o.lens||'', nk:o.neck||'', gv:o.glove||'', ac:o.accent||'', sf:o.skiFit||'slim', bj:o.bJacket||'', ba:o.bAccent||'', bp:o.bPants||'', bf:o.boardFit||'track', rl:+((S.mode==='ski'&&S.ski)?S.ski.roll:0).toFixed(3), tk:(S.mode==='ski'&&S.ski&&S.ski.tuck)?1:0, v:+((S.mode==='ski'&&S.ski)?S.ski.v:0).toFixed(1), em:emOut, ms:msOut, t:fb.serverTimestamp() }); }catch(e){}
   },
   labels(labelAt, box, maxDist){
     const d=maxDist||40, mp=me.c.root.getWorldPosition(new THREE.Vector3());
@@ -1673,23 +2744,26 @@ function update(dt) {
   }
   /* 걷기(베이스 · 정상) */
   if (S.mode === 'base' || S.mode === 'summit' || S.mode === 'maker') {
-    let mx = 0, mz = 0;
+    let fwd = 0, turn = 0;
     if (S.mode !== 'maker') {
-      if (keys['w'] || keys['arrowup']) mz -= 1; if (keys['s'] || keys['arrowdown']) mz += 1;
-      if (keys['a'] || keys['arrowleft']) mx -= 1; if (keys['d'] || keys['arrowright']) mx += 1;
-      if (JOY.active && Math.hypot(JOY.x, JOY.y) > 0.15) { mx += JOY.x; mz += JOY.y; }
+      if (keys['w'] || keys['arrowup']) fwd += 1; if (keys['s'] || keys['arrowdown']) fwd -= 1;
+      if (keys['a'] || keys['arrowleft']) turn += 1; if (keys['d'] || keys['arrowright']) turn -= 1;
+      if (JOY.on) { fwd += -JOY.y; turn += -JOY.x * 0.9; }
     }
+    fwd = clamp(fwd, -1, 1); turn = clamp(turn, -1, 1);
     let moving = false;
-    if (mx || mz) {
-      const az = (camCur() || S.cams.base).az, c = Math.cos(az), s = Math.sin(az);
-      const vx = mx * c + mz * s, vz = -mx * s + mz * c, n = Math.hypot(vx, vz);
-      me.pos.x += vx / n * 10 * dt; me.pos.z += vz / n * 10 * dt; me.yaw = Math.atan2(vx, vz); moving = true; me.target = null; S.sitting = false;
+    if (Math.abs(turn) > 0.12) { me.yaw += turn * 2.3 * dt; me.target = null; }
+    if (Math.abs(fwd) > 0.12) {
+      const sp = fwd > 0 ? 10 : 5;
+      me.pos.x += Math.sin(me.yaw) * sp * fwd * dt; me.pos.z += Math.cos(me.yaw) * sp * fwd * dt; moving = true; me.target = null; S.sitting = false;
     } else if (me.target) {
       const yw = moveWalker(me.pos, me.target, dt, 10);
-      if (yw === null) me.target = null; else { me.yaw = yw; moving = true; }
+      if (yw === null) me.target = null; else { me.yaw = lerpAngle(me.yaw, yw, Math.min(1, dt * 8)); moving = true; }
     }
+    me.moving = moving || Math.abs(turn) > 0.12;
     walkBounds(me.pos);
     me.c.pose = S.sitting ? 'sit' : (moving ? 'skate' : 'stand');
+    if (moving && Math.random() < dt * 5) puff(me.pos.x + (Math.random() - 0.5), me.pos.y, me.pos.z + (Math.random() - 0.5), 3, 0.8);
     if (S.mode === 'maker') { if (!S.makerDrag) me.yaw += dt * 0.6; me.c.pose = 'stand'; }
     /* 시설 프롬프트 */
     let near = null;
@@ -1711,53 +2785,66 @@ function update(dt) {
   }
   /* 하강 */
   if (S.mode === 'ski' && S.ski) {
-    const s = S.ski, t = s.t;
-    let lean = 0, hop = 0;
+    const s = S.ski, t = s.t, gear = me.c.gear;
+    const dir = trailDir(t, s.z);
+    // 입력: 데스크탑 방향키 · 모바일 조이스틱(같은 조작)
+    let steer = 0, brake = false, tuck = false, input = false;
+    if (keys['arrowleft'] || keys['a']) { steer += 0.8; input = true; }
+    if (keys['arrowright'] || keys['d']) { steer -= 0.8; input = true; }
+    if (keys['arrowdown'] || keys['s']) { brake = true; input = true; }
+    if (keys['arrowup'] || keys['w']) { tuck = true; input = true; }
+    if (JOY.on) { steer += -(Math.abs(JOY.x) > 0.12 ? JOY.x : 0); if (JOY.y > 0.55) brake = true; if (JOY.y < -0.55) tuck = true; input = true; }
+    if (input && s.mode === 'auto' && s.fallT <= 0) { s.mode = 'manual'; S.skiMode = 'manual'; renderSkiBar(); }
+    s.hop = Math.max(0, (s.hop || 0) - dt * 1.6);
     if (s.fallT > 0) {
-      s.fallT -= dt; me.c.pose = 'fall';
+      s.fallT -= dt; me.c.pose = 'fall'; s.roll = 0; s.v = 0;
       animChar(me.c, dt, { k: s.fallT > 0.7 ? 1 : s.fallT / 0.7 });
-      if (s.fallT <= 0) { me.c.pose = 'ski'; s.h = Math.atan2(trailX(t, Math.min(0, s.z + 4)) - trailX(t, Math.min(0, s.z)), 4); s.v = 2; }
+      if (s.fallT <= 0) { me.c.pose = 'ski'; s.h = dir; s.v = 2; }
     } else if (s.mode === 'auto') {
-      s.z = Math.min(0, s.z + t.auto * dt);
-      const x0 = autoX(t, s.z, s.ph), x1 = autoX(t, s.z + 0.6, s.ph);
-      s.x = x0; s.h = Math.atan2(x1 - x0, 0.6); s.v = t.auto;
-      lean = clamp(Math.sin(-s.z / 9 + s.ph + Math.PI / 2) * 1.0, -1, 1) * -0.8;
+      carveStep(s, t, dt, t.auto, gear);
     } else {
-      const left = keys['arrowleft'] || keys['a'] || touch.l, right = keys['arrowright'] || keys['d'] || touch.r;
-      const brake = keys['arrowdown'] || keys['s'] || (touch.l && touch.r);
-      const steer = brake && touch.l && touch.r ? 0 : (right ? 1 : 0) - (left ? 1 : 0);
-      s.steer = lerp(s.steer, steer, Math.min(1, dt * 8));
-      s.h = clamp(s.h + s.steer * 1.9 * dt, -1.45, 1.45);
-      const g = 9.8 * slopeAt(s.z) * 1.6;
-      let a = g * Math.cos(s.h) - 0.0125 * s.v * s.v - 0.35 - (brake ? 9 : 0) - Math.abs(Math.sin(s.h)) * 1.5;
-      s.v = clamp(s.v + a * dt, 0, t.vmax);
-      s.x += Math.sin(s.h) * s.v * dt; s.z += Math.cos(s.h) * s.v * dt;
-      s.z = Math.min(0.5, s.z);
+      s.steer = lerp(s.steer || 0, clamp(steer, -1, 1), Math.min(1, dt * 7));
+      // 입력 0.8까지는 엣지 그립 안에서 카빙(속도 유지), 그 이상(조이스틱 끝까지)은 급하게 꺾으며 스키딩
+      const wC = Math.max(s.v < 3 ? 1.2 : 0, Math.max(0.15, s.v) / (gear === 'board' ? SKI.rBoard : SKI.rSki));
+      const st = s.steer, ast = Math.abs(st), wc = Math.min(wC, SKI.wCap);
+      const rate = ast <= 0.8 ? st / 0.8 * wc : Math.sign(st) * (wc + (ast - 0.8) / 0.2 * Math.max(0, SKI.wCap - wc));
+      skiPhysics(s, dt, rate / SKI.wCap, brake, tuck, gear, 0);
       const off = s.x - trailX(t, Math.min(0, s.z)), lim = t.w / 2 + 6;
-      if (Math.abs(off) > lim) { s.v *= 1 - 1.2 * dt; s.h -= Math.sign(off) * 0.9 * dt; }
+      if (Math.abs(off) > lim) s.v = Math.max(0, s.v - 1.1 * dt); // 정설 밖 깊은 눈: 마찰만 조금 더해요
       s.x = clamp(s.x, -320, 320);
-      if (s.z < -L + 4) s.z = Math.max(s.z, -L + 2);
-      lean = s.steer;
-      if (t.id === 'k') for (const m of MOGULS) { if (Math.abs(m.z - s.z) < 1.4 && Math.abs(m.x - s.x) < 1.6) { hop = 0.35; break; } }
+      if (s.z < -L + 2) { s.z = -L + 2; s.v *= 0.5; }
       if (s.v > 4 && hitTree(s.x, s.z)) {
-        s.fallT = 1.7; s.falls++; S.stats.falls++; s.v = 0; SND.pop(); toast('푹! 괜찮아요, 금방 일어나요');
-        s.x -= Math.sin(s.h) * 2.2; s.z -= Math.cos(s.h) * 2.2;
+        s.fallT = 1.7; s.falls++; S.stats.falls++; SND.pop(); toast('푹! 괜찮아요, 금방 일어나요');
+        puff(s.x, groundH(s.x, s.z), s.z, 40, 3);
+        s.x -= Math.sin(s.h) * 2.2; s.z -= Math.cos(s.h) * 2.2; s.v = 0;
         const fx = $('#fallTxt'); if (fx) fx.textContent = '넘어짐 ' + s.falls + '번';
       }
     }
+    if (t.id === 'k' && s.fallT <= 0) for (const m of MOGULS) { if (Math.abs(m.z - s.z) < 1.4 && Math.abs(m.x - s.x) < 1.6) { if (s.hop < 0.05) { s.hop = 0.3; puff(s.x, groundH(s.x, s.z), s.z, 10, 1.5); } break; } }
+    s.z = Math.min(0.5, s.z);
     me.pos.set(s.x, groundH(s.x, s.z), s.z);
     me.yaw = s.h;
-    if (s.fallT <= 0) animChar(me.c, dt, { lean, hop });
-    SND.setSwoosh(clamp(s.v / 26, 0, 1) * (0.12 + Math.abs(lean) * 0.18));
+    s.camH = lerpAngle(s.camH == null ? s.h : s.camH, s.h, Math.min(1, dt * 2.2));
+    if (s.fallT <= 0) {
+      animChar(me.c, dt, { hop: Math.sin(Math.min(1, s.hop / 0.3) * Math.PI) * 0.25, roll: s.roll, counter: -(s.h - dir) * 0.55, plantT: s.plantT, plantSide: s.plantSide, tuck: s.tuck, skid: s.skid, v: s.v });
+      if (s.v > 1.5) { sprayFrom(s, s.x, me.pos.y, s.z, dt, gear); leaveTracks(s, gear); }
+    }
+    SND.setSwoosh(clamp(s.v / 26, 0, 1) * (0.3 + Math.abs(s.roll) * 0.25 + s.skid * 0.5));
+    const spdEl = $('#spd'); if (spdEl) spdEl.textContent = Math.round(s.v * 3.6);
     const f = clamp((s.z + L) / L, 0, 1);
     $('#progFill').style.height = (f * 100) + '%'; $('#progDot').style.top = 'calc(' + (f * 100) + '% - 8px)';
     if (s.z >= -5) finishRun();
   } else SND.setSwoosh(0);
 
-  if (S.mode !== 'lift' && S.mode !== 'ski' && !(S.mode === 'ski')) {
-    if (me.c.root.parent === scene) { me.c.root.position.copy(me.pos); me.c.root.rotation.y = me.yaw; }
-    if (S.mode !== 'lift') animChar(me.c, dt);
-  } else if (S.mode === 'ski') { me.c.root.position.copy(me.pos); me.c.root.rotation.y = me.yaw; }
+  if (S.mode !== 'lift' && S.mode !== 'ski') {
+    if (me.c.root.parent === scene) { me.c.root.position.copy(me.pos); me.c.root.rotation.set(0, me.yaw, 0); }
+    animChar(me.c, dt);
+  } else if (S.mode === 'ski') {
+    // 판을 설면 경사에 맞춰 세워요(꼬리가 눈에 박히지 않게) + 턴 안쪽 기울기
+    const s = S.ski; me.c.root.position.copy(me.pos);
+    const pitch = Math.atan(slopeAt(me.pos.z) * Math.cos(me.yaw));
+    me.c.root.rotation.set(pitch, me.yaw, s && s.fallT <= 0 ? s.roll : 0);
+  }
 
   /* 봇 */
   bots.forEach((b) => {
@@ -1772,12 +2859,14 @@ function update(dt) {
       b.pos.y = groundH(b.pos.x, b.pos.z);
       b.c.root.position.copy(b.pos); b.c.root.rotation.y = b.yaw; animChar(b.c, dt);
     } else if (b.kind === 'skier') {
-      b.z += b.speed * dt;
-      if (b.z > -4) { b.z = -L + 4; b.trail = pick(TRAILS); b.speed = b.trail.auto * (0.85 + Math.random() * 0.3); b.name = pick(NAMES); }
-      const x0 = autoX(b.trail, b.z, b.ph), x1 = autoX(b.trail, b.z + 0.6, b.ph);
-      b.pos.set(x0, groundH(x0, b.z), b.z); b.yaw = Math.atan2(x1 - x0, 0.6);
-      b.c.pose = 'ski'; b.c.root.position.copy(b.pos); b.c.root.rotation.y = b.yaw;
-      animChar(b.c, dt, { lean: -Math.sin(-b.z / 9 + b.ph + Math.PI / 2) * 0.8 });
+      if (!b.cv) b.cv = carveInit(b.trail, b.z, trailX(b.trail, b.z), b.speed);
+      if (b.cv.z > -4) { b.trail = pick(TRAILS); b.speed = b.trail.auto * (0.85 + Math.random() * 0.3); b.name = pick(NAMES); b.cv = carveInit(b.trail, -L + 4, trailX(b.trail, -L + 4), 4); }
+      const cv = b.cv; carveStep(cv, b.trail, dt, b.speed, b.c.gear);
+      b.pos.set(cv.x, groundH(cv.x, cv.z), cv.z); b.yaw = cv.h;
+      b.c.pose = 'ski'; b.c.root.position.copy(b.pos);
+      b.c.root.rotation.set(Math.atan(slopeAt(cv.z) * Math.cos(cv.h)), cv.h, cv.roll);
+      animChar(b.c, dt, { roll: cv.roll, counter: -(cv.h - trailDir(b.trail, cv.z)) * 0.55, plantT: cv.plantT, plantSide: cv.plantSide, skid: cv.skid, v: cv.v });
+      if (b.pos.distanceToSquared(camera.position) < 8100) { sprayFrom(cv, cv.x, b.pos.y, cv.z, dt, b.c.gear); leaveTracks(cv, b.c.gear); } else cv.tx = null;
     } else if (b.kind === 'queue') {
       const idx = queueBots.indexOf(b);
       // 리프트 줄은 밖(베이스/정상/리프트)에서도 항상 보이게. 큐에 들어가면 내 앞 인원(S.queue)만큼,
@@ -1797,14 +2886,18 @@ function update(dt) {
   SND.setWind(0.06 + clamp(camH / TOP_Y, 0, 1) * 0.1);
 
   /* 눈 */
-  const arr = snowGeo.attributes.position.array;
+  // 눈송이는 세상에 고정돼 있고 카메라 주변 상자 안에서만 돌아요: 빠르게 달리면 눈발이 얼굴로 쏟아져요
+  const arr = snowGeo.attributes.position.array, cx = camera.position.x, cy = camera.position.y, cz = camera.position.z;
   for (let i = 0; i < SNOW_N; i++) {
-    arr[i * 3 + 1] -= dt * (3 + (i % 5));
-    arr[i * 3] += Math.sin(T * 0.5 + i) * dt * 0.6;
-    if (arr[i * 3 + 1] < -10) arr[i * 3 + 1] = 80;
+    const j = i * 3;
+    arr[j + 1] -= dt * (3 + (i % 5));
+    arr[j] += Math.sin(T * 0.5 + i) * dt * 0.6;
+    if (arr[j] - cx > 80) arr[j] -= 160; else if (arr[j] - cx < -80) arr[j] += 160;
+    if (arr[j + 2] - cz > 80) arr[j + 2] -= 160; else if (arr[j + 2] - cz < -80) arr[j + 2] += 160;
+    if (arr[j + 1] - cy < -40) arr[j + 1] += 90; else if (arr[j + 1] - cy > 50) arr[j + 1] -= 90;
   }
   snowGeo.attributes.position.needsUpdate = true;
-  snow.position.set(camera.position.x, camera.position.y - 40, camera.position.z);
+  updateFx(dt); updateAir(dt);
   NET.tick(dt);
 }
 
@@ -1831,10 +2924,25 @@ function cut() {
 function orbitPos(center, c, out) {
   return out.set(center.x + Math.sin(c.az) * Math.cos(c.pitch) * c.dist, center.y + Math.sin(c.pitch) * c.dist, center.z + Math.cos(c.az) * Math.cos(c.pitch) * c.dist);
 }
+S.view = 'tp'; S.look = { yaw: 0, pitch: 0 }; S.tp = { dist: 8.5, pitch: 0.42 };
+function setView(v) {
+  S.view = v; S.look.pitch = 0;
+  const b = $('#viewBtn'); if (b) b.textContent = v === 'fp' ? '1인칭' : '3인칭';
+  toast(v === 'fp' ? '1인칭 시점 · 휠/핀치로 3인칭' : '3인칭 시점 · 끝까지 확대하면 1인칭');
+}
+function followHeading() {
+  if (S.mode === 'ski' && S.ski) return S.ski.camH == null ? S.ski.h : S.ski.camH;
+  if (S.mode === 'lift') return Math.PI;
+  return me.yaw;
+}
 function updateCamera(dt) {
   let k = Math.min(1, dt * 3.5);
   const wantPos = new THREE.Vector3(), wantLook = new THREE.Vector3();
   const T = performance.now() / 1000;
+  const follow = ['base', 'summit', 'queue', 'ski'].includes(S.mode) || (S.mode === 'lift' && S.view === 'fp');
+  me.c.body.visible = !(follow && S.view === 'fp'); if (me.c.model) me.c.model.inst.visible = me.c.body.visible;
+  // 1인칭에선 다리·부츠를 숨기고 스키/보드 앞코만 보여요
+  me.c.legs.forEach((l) => l.userData.fp.forEach((m) => { m.visible = me.c.body.visible && (!m.userData.gearOnly || m.userData.gearOnly === me.c.gear); }));
   if (S.mode === 'gate' || S.mode === 'loading') {
     const a = T * 0.05;
     wantPos.set(Math.sin(a) * 160, 70, 330 + Math.cos(a) * 40); wantLook.set(0, 60, -200);
@@ -1847,40 +2955,62 @@ function updateCamera(dt) {
     // 스키하우스 창 → 슬로프 뷰. 창 앞 슬로프를 비스듬히 내려다봐, 라이딩하며
     // 지나가는 실제 유저가 가까울수록 크게 보인다(이름표+프사는 updateLabels).
     wantPos.set(0, 7, 62); wantLook.set(6, 34, -150);
-  } else if (S.mode === 'lift' && S.chair) {
+  } else if (S.mode === 'lift' && S.chair && S.view === 'tp') {
     const center = S.chair.g.position.clone().add(new THREE.Vector3(0, -2.8, 0));
     orbitPos(center, S.cams.lift, wantPos); wantLook.copy(center); k = Math.min(1, dt * 10);
-  } else if (S.mode === 'ski' && S.ski) {
-    const s = S.ski, p = me.pos, h = s.mode === 'auto' ? s.h * 0.4 : s.h * 0.7;
-    wantPos.set(p.x - Math.sin(h) * 13, p.y + 9.5, p.z - Math.cos(h) * 13);
-    wantLook.set(p.x + Math.sin(h) * 20, p.y - 7, p.z + Math.cos(h) * 20);
   } else if (S.mode === 'card') {
     return;
-  } else {
-    const c = camCur() || S.cams.base, center = me.pos.clone().add(new THREE.Vector3(0, 1.6, 0));
-    orbitPos(center, c, wantPos); wantLook.copy(center); k = Math.min(1, dt * 10);
+  } else if (follow) {
+    // 움직이면 둘러보던 시선이 진행 방향으로 돌아와요(시선이 몸을 따라가요)
+    if ((me.moving || S.mode === 'ski') && !camDragging) S.look.yaw = lerp(S.look.yaw, 0, Math.min(1, dt * 1.8));
+    const H = followHeading() + S.look.yaw;
+    const ski = S.mode === 'ski' && S.ski;
+    if (S.view === 'fp') {
+      const eye = S.mode === 'lift' ? me.c.head.getWorldPosition(new THREE.Vector3()).add(new THREE.Vector3(0, 0.25, 0))
+        : me.pos.clone().add(new THREE.Vector3(0, ski ? (ski.tuck ? 0.78 : 1.0) : 1.2, 0));   // 캐릭터 눈높이(키 약 1.65m, 머리가 커요)
+      eye.x += Math.sin(H) * 0.35; eye.z += Math.cos(H) * 0.35;
+      const P = clamp((ski ? -0.22 - Math.atan(slopeAt(me.pos.z)) * 0.6 : -0.1) + S.look.pitch, -1.2, 0.9);
+      wantPos.copy(eye);
+      wantLook.set(eye.x + Math.sin(H) * Math.cos(P) * 10, eye.y + Math.sin(P) * 10, eye.z + Math.cos(H) * Math.cos(P) * 10);
+      k = Math.min(1, dt * 14);
+    } else {
+      const center = me.pos.clone().add(new THREE.Vector3(0, ski ? 1.2 : 1.5, 0));
+      const P = clamp(S.tp.pitch + (ski ? 0.15 : 0) + S.look.pitch, 0.02, 1.3), D = S.tp.dist;
+      wantPos.set(center.x - Math.sin(H) * Math.cos(P) * D, center.y + Math.sin(P) * D, center.z - Math.cos(H) * Math.cos(P) * D);
+      wantLook.copy(center); if (ski) { wantLook.x += Math.sin(H) * 6; wantLook.z += Math.cos(H) * 6; wantLook.y -= 1.5; }
+      k = Math.min(1, dt * 8);
+    }
   }
   if (S.snap) { camPos.copy(wantPos); camLook.copy(wantLook); S.snap = false; }
   else { camPos.lerp(wantPos, k); camLook.lerp(wantLook, k); }
   camera.position.copy(camPos); camera.lookAt(camLook);
+  // 속도감: 빠를수록 시야가 넓어지고, 1인칭에서는 설면 진동이 카메라에 전해져요
+  const sv = S.mode === 'ski' && S.ski && S.ski.fallT <= 0 ? S.ski.v : 0, wantFov = (innerWidth < innerHeight ? 64 : 50) + clamp((sv - 6) / 22, 0, 1) * 26;
+  if (Math.abs(camera.fov - wantFov) > 0.05) { camera.fov = lerp(camera.fov, wantFov, Math.min(1, dt * 3)); camera.updateProjectionMatrix(); }
+  if (sv > 9) {
+    const j = (sv - 9) * (S.view === 'fp' ? 0.0016 : 0.0009), now = performance.now() / 1000;
+    camera.rotation.x += (Math.random() - 0.5) * j + Math.sin(now * 23) * j * 0.4;
+    camera.rotation.z += (Math.random() - 0.5) * j + Math.sin(now * 17) * j * 0.5;
+  }
+  drawSpeedFx(sv, dt);
   // 라벨 투영이 이번 프레임의 카메라와 정확히 일치하도록 월드/역행렬을 즉시 동기화
   // (안 하면 렌더 직전 라벨이 이전 프레임 카메라로 투영돼 드래그 시 닉네임이 흔들림)
   camera.updateMatrixWorld();
   camera.matrixWorldInverse.copy(camera.matrixWorld).invert();
   const fp = (S.mode === 'gate' || S.mode === 'loading') ? new THREE.Vector3(0, 0, 100) : me.c.root.getWorldPosition(tmp2);
-  sun.position.set(fp.x + 70, fp.y + 140, fp.z + 50); sun.target.position.copy(fp);
+  sun.position.copy(fp).addScaledVector(todCur.dir, 180); sun.target.position.copy(fp);
 }
 
 function updateLabels() {
   let i = 0;
   if (['base', 'queue', 'lift', 'summit', 'ski'].includes(S.mode)) {
     const mp = me.c.root.getWorldPosition(new THREE.Vector3());
-    labelAt(i++, myName(), 'me', mp.clone().add(new THREE.Vector3(0, 2.15, 0)), me.pi);
+    if (S.view !== 'fp' || S.mode === 'lift' && S.view === 'tp') labelAt(i++, myName(), 'me', mp.clone().add(new THREE.Vector3(0, 1.95, 0)), me.pi);
     const cand = [];
     bots.forEach((b) => { if (b.c.root.visible) { const wp = b.c.root.getWorldPosition(new THREE.Vector3()); const d = wp.distanceTo(mp); if (d < 34) cand.push({ wp, d, name: b.name, wave: b.waveTag > 0 }); } });
     LIFT.chairs.forEach((ch) => ch.riders.forEach((r) => { if (r.c.root.visible) { const wp = r.c.root.getWorldPosition(new THREE.Vector3()); const d = wp.distanceTo(mp); if (d < 30) cand.push({ wp, d, name: r.name }); } }));
     (S.companions || []).forEach((cp) => cand.push({ wp: cp.c.root.getWorldPosition(new THREE.Vector3()), d: 0, name: cp.name }));
-    cand.sort((a, b) => a.d - b.d).slice(0, 10).forEach((c) => labelAt(i++, c.wave ? '👋 ' + c.name : c.name, c.wave ? 'wave' : '', c.wp.add(new THREE.Vector3(0, 2.15, 0))));
+    cand.sort((a, b) => a.d - b.d).slice(0, 10).forEach((c) => labelAt(i++, c.wave ? '👋 ' + c.name : c.name, c.wave ? 'wave' : '', c.wp.add(new THREE.Vector3(0, 1.95, 0))));
     { const _ib = { v: i }; NET.labels(labelAt, _ib); i = _ib.v; }
   } else if (S.mode === 'lodge') {
     // 창밖(슬로프)에서 라이딩하며 지나가는 실제 유저만 이름표+프사 표시(내 라벨은 숨김).
@@ -1889,8 +3019,88 @@ function updateLabels() {
   for (; i < lblPool.length; i++) lblPool[i].style.display = 'none';
 }
 
+/* 속도선 · 비네팅: 빠를수록 화면 가장자리로 바람결이 흘러가요 */
+const spdCv = document.getElementById('spdfx'), spdG = spdCv.getContext('2d');
+const SPD_LINES = Array.from({ length: IS_TOUCH ? 46 : 80 }, () => ({ a: Math.random() * 6.283, r: Math.random(), w: 0.5 + Math.random() }));
+let spdK = 0, spdOn = false;
+function drawSpeedFx(v, dt) {
+  spdK = lerp(spdK, clamp((v - 9) / 17, 0, 1), Math.min(1, dt * 4));
+  if (spdK < 0.01) { if (spdOn) { spdG.clearRect(0, 0, spdCv.width, spdCv.height); spdOn = false; } return; }
+  spdOn = true;
+  const W = Math.round(innerWidth * 0.75), H = Math.round(innerHeight * 0.75);
+  if (spdCv.width !== W || spdCv.height !== H) { spdCv.width = W; spdCv.height = H; }
+  spdG.clearRect(0, 0, W, H);
+  const cx = W / 2, cy = H * 0.46, R = Math.hypot(W, H) / 2;
+  const vg = spdG.createRadialGradient(cx, cy, R * (0.62 - spdK * 0.2), cx, cy, R * 1.05);
+  vg.addColorStop(0, 'rgba(12,24,40,0)'); vg.addColorStop(1, 'rgba(12,24,40,' + (0.5 * spdK).toFixed(3) + ')');
+  spdG.fillStyle = vg; spdG.fillRect(0, 0, W, H);
+  spdG.lineCap = 'round';
+  for (const l of SPD_LINES) {
+    l.r += dt * (0.9 + spdK * 2.6) * (0.6 + l.w * 0.4);
+    if (l.r > 1) { l.r = 0.32 + Math.random() * 0.2; l.a = Math.random() * 6.283; l.w = 0.5 + Math.random(); }
+    const r0 = l.r * R, r1 = r0 + R * (0.06 + spdK * 0.2) * l.w, ca = Math.cos(l.a), sa = Math.sin(l.a);
+    const al = spdK * 0.55 * Math.min(1, (l.r - 0.32) * 4) * (1 - l.r * 0.5);
+    spdG.strokeStyle = 'rgba(235,244,252,' + al.toFixed(3) + ')'; spdG.lineWidth = 1 + l.w * 1.6;
+    spdG.beginPath(); spdG.moveTo(cx + ca * r0, cy + sa * r0); spdG.lineTo(cx + ca * r1, cy + sa * r1); spdG.stroke();
+  }
+}
+
+/* ───────────── 후처리: 빛 번짐(블룸) + 비네팅 + 필름 질감 ───────────── */
+const POST = { composer: null, bloom: null, grade: null };
+if (THREE.EffectComposer && THREE.UnrealBloomPass) {
+  try {
+    POST.composer = new THREE.EffectComposer(renderer);
+    POST.composer.addPass(new THREE.RenderPass(scene, camera));
+    POST.bloom = new THREE.UnrealBloomPass(new THREE.Vector2(256, 256), 0.42, 0.5, 0.94); POST.composer.addPass(POST.bloom);
+    // 빛줄기: 해 쪽으로 밝은 부분을 끌어당겨 산·나무 사이로 쏟아지는 빛을 만들어요
+    const SH_N = IS_TOUCH ? 14 : 30;
+    POST.shafts = new THREE.ShaderPass({
+      uniforms: { tDiffuse: { value: null }, uSun: { value: new THREE.Vector2(0.5, 0.8) }, uAmt: { value: 0 }, uCol: { value: new THREE.Color(1, 1, 1) } },
+      vertexShader: 'varying vec2 vUv; void main(){ vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }',
+      fragmentShader: `uniform sampler2D tDiffuse; uniform vec2 uSun; uniform float uAmt; uniform vec3 uCol; varying vec2 vUv;
+        void main(){ vec3 base = texture2D(tDiffuse, vUv).rgb;
+          if (uAmt < 0.001) { gl_FragColor = vec4(base, 1.0); return; }
+          vec2 d = (vUv - uSun) / ${SH_N}.0 * 0.9; vec2 uv = vUv; float w = 1.0; vec3 acc = vec3(0.0);
+          for (int i = 0; i < ${SH_N}; i++) { uv -= d; acc += max(texture2D(tDiffuse, uv).rgb - 0.74, 0.0) * w; w *= 0.93; }
+          gl_FragColor = vec4(base + acc * uCol * uAmt * (5.0 / ${SH_N}.0), 1.0); }`
+    });
+    POST.composer.addPass(POST.shafts);
+    POST.grade = new THREE.ShaderPass({
+      uniforms: { tDiffuse: { value: null }, uTime: { value: 0 } },
+      vertexShader: 'varying vec2 vUv; void main(){ vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }',
+      fragmentShader: `uniform sampler2D tDiffuse; uniform float uTime; varying vec2 vUv;
+        void main(){ vec3 c = clamp(texture2D(tDiffuse, vUv).rgb, 0.0, 1.0); vec2 d = vUv - 0.5;
+          float lum = dot(c, vec3(0.299, 0.587, 0.114));
+          c = mix(c, c * c * (3.0 - 2.0 * c), 0.22);
+          c += mix(vec3(-0.012, -0.004, 0.028), vec3(0.028, 0.012, -0.018), smoothstep(0.2, 0.8, lum));
+          c = mix(vec3(lum), c, 1.06);
+          c *= mix(0.8, 1.0, smoothstep(0.85, 0.25, length(d * vec2(1.15, 1.0))));
+          float n = fract(sin(dot(vUv * vec2(812.3, 233.1) + uTime, vec2(12.9898, 78.233))) * 43758.5453);
+          gl_FragColor = vec4(c + (n - 0.5) * 0.02, 1.0); }`
+    });
+    POST.composer.addPass(POST.grade);
+  } catch (e) { POST.composer = null; }
+}
+const sunScr = new THREE.Vector3();
+function renderFrame() {
+  sky.position.copy(camera.position);
+  if (POST.shafts) {   // 해의 화면 위치: 화면 밖으로 멀어질수록, 실내에선 빛줄기를 줄여요
+    sunScr.copy(camera.position).addScaledVector(todCur.dir, 1500).project(camera);
+    const off = Math.max(Math.abs(sunScr.x), Math.abs(sunScr.y)), on = sunScr.z < 1 && !['lodge', 'card'].includes(S.mode);
+    POST.shafts.uniforms.uSun.value.set(sunScr.x * 0.5 + 0.5, sunScr.y * 0.5 + 0.5);
+    POST.shafts.uniforms.uAmt.value = on ? todCur.shaft * clamp(1.7 - off * 0.7, 0, 1) : 0;
+    POST.shafts.uniforms.uCol.value.copy(todCur.sun);
+  }
+  skyMat.uniforms.uTime.value = SNOWU.uTime.value = performance.now() / 1000;
+  if (POST.composer) { POST.grade.uniforms.uTime.value = (performance.now() / 1000) % 10; POST.composer.render(); }
+  else renderer.render(scene, camera);
+}
+
 /* ───────────── 루프 ───────────── */
-function resize() { renderer.setSize(innerWidth, innerHeight, false); camera.aspect = innerWidth / innerHeight; camera.updateProjectionMatrix(); }
+function resize() {
+  renderer.setSize(innerWidth, innerHeight, false); camera.aspect = innerWidth / innerHeight; camera.fov = innerWidth < innerHeight ? 64 : 50; camera.updateProjectionMatrix();
+  if (POST.composer) { POST.composer.setPixelRatio(DPR); POST.composer.setSize(innerWidth, innerHeight); }
+}
 window.addEventListener('resize', resize); resize();
 let last = performance.now();
 // 탭 복귀 시 dt 폭주 방지. 리프트는 벽시계(liftClock) 기반이라 그동안의 진행만큼 자동으로 스냅된다.
@@ -1899,8 +3109,8 @@ let todTimer = 0;
 function loop(now) {
   const dt = Math.min(0.05, (now - last) / 1000); last = now;
   if (S.mode !== 'card') {
-    update(dt); updateCamera(dt); updateLabels(); updateBubbles();
-    renderer.render(scene, camera);
+    blendTod(dt); update(dt); updateCamera(dt); updateLabels(); updateBubbles();
+    renderFrame();
   }
   todTimer += dt; if (todTimer > 30) { todTimer = 0; applyTod(); }
   requestAnimationFrame(loop);
@@ -1909,7 +3119,7 @@ requestAnimationFrame(loop);
 setTimeout(() => { $('#loading').remove(); setMode('gate'); }, 400);
 /* 접속이 끝내 안 되면(오프라인 등) 스피너만 돌지 않게 10초 후 혼자 타는 상태로 표시 */
 setTimeout(() => { const ll=document.getElementById('liveLoad'), lr=document.getElementById('liveReal'); if(ll&&lr&&!ll.hidden){ const lc=document.getElementById('liveCount'); if(lc) lc.textContent=Math.max(1,S.live); ll.hidden=true; lr.hidden=false; } }, 10000);
-window.__resort = { S, me, LIFT, joinQueue, startSki, goBase, openSummit, unboard, enterLodge };
+window.__resort = { S, me, LIFT, joinQueue, startSki, goBase, openSummit, unboard, enterLodge, setColors, setGear };
 })();
 </script>
 </body>
