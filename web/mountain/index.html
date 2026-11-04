@@ -1,0 +1,1916 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>스노우라이브 마운틴 — 온라인 스키장 프로토타입</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=Silkscreen&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#12263A; --panel:rgba(16,28,42,.86); --panel2:#24364A; --line:#3A4E63;
+  --sub:#B8CCDD; --blue:#2F6FD6; --blue2:#1F56AE; --ok:#5BD69A;
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;overflow:hidden;background:#0E1A2B;font-family:'Noto Sans KR',system-ui,sans-serif;color:#fff;-webkit-tap-highlight-color:transparent;user-select:none}
+#c{position:fixed;inset:0;width:100%;height:100%;display:block;touch-action:none}
+.hidden{display:none!important}
+button{font-family:inherit;cursor:pointer}
+.pill{background:var(--panel);border-radius:12px;height:42px;padding:0 14px;display:flex;align-items:center;gap:8px;font-size:14px;color:#fff;border:0}
+.icon-btn{width:44px;height:44px;border-radius:12px;border:0;background:var(--panel);color:#fff;display:flex;align-items:center;justify-content:center}
+.btn{height:48px;padding:0 18px;border-radius:12px;border:0;background:var(--panel);color:#fff;font-size:14px;font-weight:700}
+.btn.primary{background:var(--blue)}
+.btn.primary:hover{background:var(--blue2)}
+.btn.ghost{background:var(--panel2)}
+.dot{width:8px;height:8px;border-radius:4px;background:var(--ok);display:inline-block}
+.num{font-family:'Silkscreen',monospace}
+.panel{position:fixed;background:rgba(16,28,42,.93);border-radius:18px;padding:22px;color:#fff;box-shadow:0 10px 40px rgba(0,0,0,.25)}
+.panel h2{margin:0 0 4px;font-size:19px}
+.panel p.sub{margin:0;color:var(--sub);font-size:13px}
+.screen{position:fixed;inset:0;display:flex;align-items:center;justify-content:center}
+
+/* gate */
+#gate{flex-direction:column;gap:10px;text-align:center;pointer-events:none}
+#gateHead{display:flex;flex-direction:column;align-items:center;gap:8px;background:rgba(16,28,42,.55);border-radius:20px;padding:18px 28px 14px;margin-bottom:6px}
+#gate .tag{font-family:'Silkscreen',monospace;letter-spacing:4px;font-size:13px;color:#DCEBFA;text-shadow:0 2px 6px rgba(0,0,0,.35)}
+#gate h1{margin:0;font-size:clamp(34px,6vw,58px);font-weight:900;letter-spacing:-1px;text-shadow:0 4px 18px rgba(0,0,0,.35)}
+#gate .lead{margin:0;font-size:18px;color:#EAF3FB;text-shadow:0 2px 8px rgba(0,0,0,.35)}
+#gateCard{pointer-events:auto;background:var(--panel);border-radius:18px;padding:20px 22px;width:min(400px,92vw);display:flex;flex-direction:column;gap:14px;align-items:center}
+#gateCard .live{font-size:14px;color:#D6E4F0;display:flex;align-items:center;gap:8px}
+#enterBtn{width:100%;height:54px;font-size:17px}
+#gateCard small{color:var(--sub);font-size:12px}
+
+/* maker */
+#maker{right:20px;top:20px;bottom:20px;width:min(420px,calc(100vw - 40px));overflow:auto;display:flex;flex-direction:column;gap:18px}
+.sw-row{display:grid;grid-template-columns:repeat(6,1fr);gap:8px}
+.sw{height:38px;border-radius:9px;border:3px solid transparent}
+.sw.on{border-color:#fff}
+.seg{display:flex;gap:8px}
+.seg button{flex:1;height:42px;border-radius:10px;border:2px solid var(--line);background:#1B2938;color:#fff;font-weight:700;font-size:14px}
+.seg button.on{border-color:#fff;background:var(--blue)}
+.field label{font-size:13px;color:var(--sub);display:block;margin-bottom:6px}
+.field input[type=text]{width:100%;height:42px;border-radius:10px;border:2px solid var(--line);background:#1B2938;color:#fff;padding:0 12px;font-size:15px;font-family:inherit}
+.check{display:flex;align-items:center;gap:8px;font-size:14px;margin-top:8px}
+.check input{width:18px;height:18px}
+#makerTitle{position:fixed;left:20px;top:20px;background:rgba(16,28,42,.62);border-radius:16px;padding:14px 18px}
+#makerDone{position:sticky;bottom:0;flex:none;box-shadow:0 -12px 16px rgba(16,28,42,.93)}
+#maker .sw{height:34px}
+#makerTitle .tag{font-family:'Silkscreen',monospace;letter-spacing:3px;font-size:12px;color:#DCEBFA}
+#makerTitle h1{margin:4px 0;font-size:30px;font-weight:900}
+#makerTitle p{margin:0;color:#EAF3FB}
+
+/* hud */
+#hud .tl,#hud .tr,#hud .bl,#hud .br{z-index:3}
+#hud .tl{position:fixed;left:16px;top:16px;display:flex;gap:8px}
+#hud .tr{position:fixed;right:16px;top:16px;display:flex;gap:8px}
+#hud .bl{position:fixed;left:16px;bottom:150px}
+#joystick{position:fixed;left:16px;bottom:16px;width:120px;height:120px;border-radius:60px;background:rgba(16,28,42,.32);border:2px solid rgba(255,255,255,.55);touch-action:none;z-index:4}
+#joyKnob{position:absolute;left:33px;top:33px;width:54px;height:54px;border-radius:27px;background:var(--blue);box-shadow:0 3px 8px rgba(0,0,0,.28);pointer-events:none}
+#hud .br{position:fixed;right:16px;bottom:16px;display:flex;gap:8px}
+#counters{gap:14px}
+#counters .k{font-size:12px;color:var(--sub)}
+#banner{position:fixed;left:50%;top:16px;transform:translateX(-50%);background:var(--panel);border-radius:14px;padding:0 20px;height:50px;display:flex;align-items:center;gap:16px;font-size:15px;white-space:nowrap}
+#banner .sep{width:1px;height:20px;background:var(--line)}
+#prompt{position:fixed;left:50%;bottom:86px;transform:translateX(-50%);background:#fff;color:var(--ink);border-radius:14px;padding:10px 10px 10px 18px;display:flex;align-items:center;gap:14px;font-weight:700;font-size:15px;box-shadow:0 6px 24px rgba(0,0,0,.2)}
+#prompt kbd{font-family:'Silkscreen',monospace;font-size:11px;background:#EEF3F8;border-radius:5px;padding:2px 6px;margin-left:6px;color:#4A6075}
+#promptBtn{height:40px;padding:0 16px;border-radius:10px;border:0;background:var(--blue);color:#fff;font-weight:700;font-size:14px}
+
+/* summit */
+#summitPanel{right:20px;top:20px;width:min(420px,calc(100vw - 40px));display:flex;flex-direction:column;gap:14px}
+.slope-btn{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:12px;border:2px solid #2C3F54;background:#1B2938;color:#fff;text-align:left;width:100%}
+.slope-btn.on{border-color:#fff;background:var(--panel2)}
+.slope-btn .flag{width:14px;height:14px;border:2px solid #fff;flex:none}
+.slope-btn .t{font-size:15px;font-weight:700}
+.slope-btn .t small{font-size:12px;font-weight:500;color:var(--sub)}
+.slope-btn .d{font-size:12px;color:var(--sub)}
+
+/* ski */
+#skiBar{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:var(--panel);border-radius:14px;height:54px;padding:0 8px 0 18px;display:flex;align-items:center;gap:12px;font-size:14px;white-space:nowrap}
+#skiBar kbd{font-family:'Silkscreen',monospace;font-size:11px;background:#fff;color:var(--ink);border-radius:5px;padding:3px 7px}
+#progress{position:fixed;right:22px;top:90px;width:12px;height:min(420px,50vh);background:rgba(16,28,42,.35);border-radius:6px}
+#progFill{position:absolute;left:0;top:0;width:12px;background:#fff;border-radius:6px}
+#progDot{position:absolute;left:-6px;width:24px;height:16px;background:var(--blue);border:2px solid #fff;border-radius:4px}
+#touch{position:fixed;left:0;right:0;bottom:0;height:42vh;display:flex}
+#touch div{flex:1;display:flex;align-items:flex-end;justify-content:center;padding-bottom:90px;color:rgba(255,255,255,.85);font-weight:700;font-size:14px;background:rgba(16,28,42,.10)}
+#touch div:first-child{border-right:1px dashed rgba(255,255,255,.5)}
+#touch div.on{background:rgba(47,111,214,.22)}
+
+/* modal */
+.modal{position:fixed;inset:0;background:rgba(10,18,30,.45);display:flex;align-items:center;justify-content:center}
+.modal .box{width:min(420px,92vw);background:#fff;color:var(--ink);border-radius:18px;padding:26px;display:flex;flex-direction:column;gap:12px;align-items:center;text-align:center}
+.modal h2{margin:0;font-size:22px;font-weight:900}
+.modal p{margin:0;color:#4A6075;font-size:14px}
+.modal .row{display:flex;gap:8px;width:100%}
+.modal .btn.light{background:#EEF3F8;color:var(--ink);flex:1}
+.modal .btn.primary{width:100%}
+
+/* side panels */
+#lodge{right:20px;bottom:20px;width:min(360px,calc(100vw - 40px));display:flex;flex-direction:column;gap:12px;z-index:2}
+#lodgeFrame{position:fixed;inset:0;pointer-events:none;border:clamp(18px,4vw,46px) solid #6B4A35;box-shadow:inset 0 0 0 6px #4A2F21}
+#lodgeFrame::before{content:'';position:absolute;left:50%;top:0;bottom:0;width:clamp(10px,1.6vw,18px);transform:translateX(-50%);background:#6B4A35;box-shadow:0 0 0 3px #4A2F21}
+#lodgeFrame::after{content:'';position:absolute;left:0;right:0;top:46%;height:clamp(10px,1.6vw,18px);background:#6B4A35;box-shadow:0 0 0 3px #4A2F21}
+#lodge .menu{display:flex;gap:8px}
+#lodge .menu button{flex:1;height:46px;border-radius:10px;border:2px solid var(--line);background:#1B2938;color:#fff;font-weight:700}
+#lodge .menu button.on{border-color:#fff;background:var(--blue)}
+#ticket,#soundP{right:20px;top:72px;width:min(380px,calc(100vw - 40px));display:flex;flex-direction:column;gap:14px;max-height:calc(100vh - 100px);overflow:auto}
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.stat{background:#1B2938;border-radius:12px;padding:10px 12px}
+.stat .k{font-size:12px;color:var(--sub)}
+.stat .v{font-family:'Silkscreen',monospace;font-size:24px}
+.ch{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border-radius:10px;background:#1B2938;border:2px solid transparent;color:#fff;width:100%;font-size:14px}
+.ch.on{border-color:#fff}
+.ch[disabled]{opacity:.45;cursor:not-allowed}
+.ch .fr{font-size:11px;background:#F07AA6;color:#fff;border-radius:6px;padding:2px 6px;margin-left:6px}
+.slider{display:flex;align-items:center;gap:10px;font-size:14px}
+.slider span{width:64px}
+.slider input{flex:1}
+select{height:40px;border-radius:10px;border:2px solid var(--line);background:#1B2938;color:#fff;padding:0 10px;font-family:inherit;font-size:14px;width:100%}
+
+/* card */
+#card{background:#16264A;gap:56px;flex-wrap:wrap;padding:24px;overflow:auto}
+#cardBox{width:340px;background:#fff;border:8px solid #fff;color:var(--ink);display:flex;flex-direction:column}
+#cardImg{width:100%;height:240px;object-fit:cover;background:#21345E;display:block}
+#cardBody{padding:16px 18px;display:flex;flex-direction:column;gap:12px}
+#cardBody .hd{display:flex;justify-content:space-between;align-items:baseline}
+#cardBody .hd b{font-size:20px;font-weight:900}
+#cardBody .hd span{font-family:'Silkscreen',monospace;font-size:12px;color:#4A6075}
+#cardBody .g{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+#cardBody .g .k{font-size:12px;color:#4A6075}
+#cardBody .g .v{font-family:'Silkscreen',monospace;font-size:26px}
+#cardBody small{font-size:11px;color:#4A6075}
+#cardSide{width:320px;display:flex;flex-direction:column;gap:12px}
+#cardSide h1{margin:0;font-size:30px;font-weight:900}
+#cardSide p{margin:0 0 8px;color:var(--sub)}
+
+/* labels / toasts */
+#labels{position:fixed;inset:0;pointer-events:none;overflow:hidden}
+#fade{position:fixed;inset:0;background:#0E1A2B;opacity:0;pointer-events:none;z-index:50}
+#c{cursor:grab}#c:active{cursor:grabbing}
+.lbl{position:absolute;transform:translate(-50%,-100%);padding:2px 7px;border-radius:6px;background:rgba(16,28,42,.78);color:#fff;font-size:11px;white-space:nowrap}
+.lbl.me{background:var(--blue);font-weight:700}
+.lbl.wave{background:#fff;color:var(--ink);font-weight:700}
+#toasts{position:fixed;left:50%;top:76px;transform:translateX(-50%);display:flex;flex-direction:column;gap:8px;align-items:center;pointer-events:none}
+.toast{background:rgba(16,28,42,.9);color:#fff;border-radius:12px;padding:10px 16px;font-size:14px;animation:tin .25s ease-out}
+@keyframes tin{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+#loading{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:#9CC9EA;color:var(--ink);font-size:15px;flex-direction:column;gap:10px}
+#loading .bar{width:220px;height:12px;background:#24364A;padding:2px}
+#loading .bar i{display:block;height:8px;width:30%;background:#fff;animation:ld 1.2s infinite alternate}
+@keyframes ld{to{width:100%}}
+.spin{width:12px;height:12px;border-radius:50%;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;display:inline-block;vertical-align:-2px;margin-right:6px;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+/* ===== 반응형: 태블릿(≤1024px) — 사이드 패널 유지하되 살짝 좁게 ===== */
+@media (max-width:1024px) and (min-width:721px){
+  #maker{width:min(380px,calc(100vw - 32px));padding:18px;gap:14px}
+  #summitPanel,#ticket,#soundP{width:min(360px,calc(100vw - 32px))}
+  #lodge{width:min(340px,calc(100vw - 32px))}
+  #banner{font-size:14px}
+  #makerTitle h1{font-size:26px}
+}
+/* ===== 반응형: 모바일(≤720px) — 하단 시트 + 노치 safe-area ===== */
+@media (max-width:720px){
+  #maker{top:auto;height:min(62vh,540px);left:10px;right:10px;width:auto;bottom:calc(10px + env(safe-area-inset-bottom));gap:12px;padding:16px}
+  #makerTitle{top:calc(10px + env(safe-area-inset-top));left:calc(10px + env(safe-area-inset-left));padding:9px 13px}
+  #makerTitle p{display:none}
+  #makerTitle h1{font-size:20px}
+  #summitPanel{left:10px;right:10px;top:auto;bottom:calc(10px + env(safe-area-inset-bottom));width:auto;max-height:70vh;overflow:auto}
+  #lodge{left:10px;right:10px;bottom:calc(10px + env(safe-area-inset-bottom));width:auto}
+  #ticket,#soundP{left:10px;right:10px;width:auto;top:calc(60px + env(safe-area-inset-top));max-height:calc(100vh - 150px)}
+  #counters .k{display:none}
+  #banner{font-size:12px;height:42px;top:calc(58px + env(safe-area-inset-top));padding:0 14px;gap:10px}
+  #hud .tl{left:calc(10px + env(safe-area-inset-left));top:calc(10px + env(safe-area-inset-top))}
+  #hud .tr{right:calc(10px + env(safe-area-inset-right));top:calc(10px + env(safe-area-inset-top))}
+  #hud .br{right:calc(10px + env(safe-area-inset-right));bottom:calc(12px + env(safe-area-inset-bottom))}
+  #hud .br .btn{padding:0 12px}
+  #joystick{left:calc(12px + env(safe-area-inset-left));bottom:calc(12px + env(safe-area-inset-bottom));width:104px;height:104px;border-radius:52px}
+  #joyKnob{left:29px;top:29px;width:46px;height:46px;border-radius:23px}
+  #prompt{bottom:calc(84px + env(safe-area-inset-bottom));font-size:14px}
+  #skiBar{bottom:calc(16px + env(safe-area-inset-bottom));font-size:13px}
+  #progress{right:calc(14px + env(safe-area-inset-right))}
+  #card{gap:20px}
+}
+/* ===== 반응형: 가로 모바일 · 낮은 높이(≤480px) — 세로 공간 절약 ===== */
+@media (max-height:480px){
+  #maker{top:10px;bottom:10px;height:auto}
+  #gateHead{padding:10px 20px 8px;margin-bottom:2px}
+  #gate h1{font-size:30px}
+  #gate .lead{font-size:14px}
+  #gateCard{padding:14px 18px;gap:10px}
+  #enterBtn{height:46px}
+}
+</style>
+<style>
+/* ───────── UI 폴리시(세련화 오버라이드) ───────── */
+:root{ --blue:#3B82F6; --blue2:#2563EB; --panel:rgba(14,22,34,.72); --panel2:rgba(40,58,78,.72); }
+body{ font-weight:500; }
+.pill,.icon-btn,.btn,.panel,#banner,#skiBar,.modal .box,#gateCard,#gateHead,#prompt,.toast,#joystick{ backdrop-filter:blur(16px) saturate(1.3); -webkit-backdrop-filter:blur(16px) saturate(1.3); }
+.pill{ height:40px;border-radius:14px;background:var(--panel);border:1px solid rgba(255,255,255,.1);box-shadow:0 8px 24px rgba(0,0,0,.3);font-weight:600; }
+.icon-btn{ width:42px;height:42px;border-radius:14px;background:var(--panel);border:1px solid rgba(255,255,255,.1);box-shadow:0 8px 24px rgba(0,0,0,.3);transition:transform .12s ease,background .15s ease; }
+.icon-btn:hover{ background:var(--panel2);transform:translateY(-1px); }
+.icon-btn:active{ transform:scale(.95); }
+.btn{ height:46px;border-radius:14px;font-weight:700;letter-spacing:-.2px;box-shadow:0 8px 24px rgba(0,0,0,.26);transition:transform .12s ease,filter .15s ease,background .15s ease; }
+.btn:hover{ filter:brightness(1.07);transform:translateY(-1px); }
+.btn:active{ transform:scale(.98); }
+.btn.primary{ background:linear-gradient(180deg,var(--blue),var(--blue2));box-shadow:0 10px 28px rgba(37,99,235,.42); }
+.btn.ghost{ background:var(--panel2);border:1px solid rgba(255,255,255,.12); }
+.panel{ border-radius:22px;background:var(--panel);border:1px solid rgba(255,255,255,.09);box-shadow:0 24px 70px rgba(0,0,0,.42);padding:22px; }
+.panel h2{ font-size:20px;letter-spacing:-.4px; }
+.panel p.sub{ color:#A9BED2; }
+#gateHead{ background:rgba(14,22,34,.42);border-radius:26px;border:1px solid rgba(255,255,255,.07);padding:20px 30px 16px; }
+#gate h1{ letter-spacing:-1.6px; }
+#gateCard{ border-radius:24px;background:var(--panel);border:1px solid rgba(255,255,255,.12);box-shadow:0 28px 80px rgba(0,0,0,.5);gap:16px;padding:22px 24px; }
+#enterBtn{ height:56px;border-radius:16px;font-size:17px; }
+.sw{ border-radius:11px;transition:transform .1s ease,box-shadow .15s ease;box-shadow:0 2px 6px rgba(0,0,0,.22); }
+.sw:hover{ transform:translateY(-1px); }
+.sw.on{ box-shadow:0 0 0 3px #fff,0 4px 12px rgba(0,0,0,.3);border-color:transparent; }
+.seg button{ border-radius:12px;transition:background .15s ease,border-color .15s ease; }
+.seg button.on{ background:linear-gradient(180deg,var(--blue),var(--blue2));border-color:transparent; }
+.field input[type=text]{ border-radius:12px;background:rgba(27,41,56,.85);border-color:rgba(255,255,255,.12); }
+.slope-btn{ border-radius:14px;transition:border-color .15s ease,background .15s ease,transform .1s ease; }
+.slope-btn:hover{ transform:translateY(-1px); }
+#banner,#skiBar{ border-radius:16px;background:var(--panel);border:1px solid rgba(255,255,255,.1);box-shadow:0 12px 34px rgba(0,0,0,.32); }
+#prompt{ border-radius:16px;box-shadow:0 12px 34px rgba(0,0,0,.24); }
+#promptBtn{ border-radius:12px;background:linear-gradient(180deg,var(--blue),var(--blue2));transition:filter .15s ease; }
+#promptBtn:hover{ filter:brightness(1.08); }
+.toast{ border-radius:14px;background:rgba(14,22,34,.82);border:1px solid rgba(255,255,255,.1);box-shadow:0 12px 34px rgba(0,0,0,.38); }
+.modal{ background:rgba(8,14,24,.5);backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px); }
+.modal .box{ border-radius:24px;box-shadow:0 28px 90px rgba(0,0,0,.45); }
+.modal .btn.light{ background:#EEF3F8; }
+#counters{ border-radius:14px; }
+/* 이름표 — 도형 배경 없이 프사 + 닉네임만(텍스트 그림자로 가독성). 멀수록 JS가 scale 축소 */
+.lbl{ border:none;border-radius:0;padding:0;background:none;backdrop-filter:none;-webkit-backdrop-filter:none;box-shadow:none;color:#fff;font-weight:700;font-size:12px;display:flex;align-items:center;gap:4px;line-height:1;transform-origin:50% 100%;text-shadow:0 1px 3px rgba(0,0,0,.95),0 0 3px rgba(0,0,0,.85),0 0 1px rgba(0,0,0,.9); }
+.lbl.me{ background:none;color:#BFE0FF; }
+.lbl.wave{ background:none;color:#FFE08A; }
+.lblimg{ width:17px;height:17px;border-radius:50%;object-fit:cover;background:#2A3A4D;flex:none;border:1.5px solid rgba(255,255,255,.85);box-shadow:0 1px 3px rgba(0,0,0,.55); }
+.lbltxt{ padding:0; }
+/* 이모트·채팅 바 */
+#social{ position:fixed; left:50%; bottom:86px; transform:translateX(-50%); display:flex; flex-direction:column; align-items:center; gap:8px; z-index:4; }
+#emotes{ display:flex; gap:6px; background:var(--panel); border-radius:999px; padding:6px 8px; backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px); box-shadow:0 8px 24px rgba(0,0,0,.28); }
+#emotes button{ width:40px; height:40px; border:0; border-radius:50%; background:rgba(255,255,255,.1); font-size:20px; line-height:1; cursor:pointer; transition:transform .08s; }
+#emotes button:active{ transform:scale(.86); background:rgba(255,255,255,.2); }
+#chatForm{ display:flex; gap:6px; background:var(--panel); border-radius:14px; padding:6px; backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px); box-shadow:0 8px 24px rgba(0,0,0,.28); }
+#chatInput{ width:min(54vw,280px); height:38px; border:0; border-radius:10px; background:rgba(27,41,56,.9); color:#fff; padding:0 12px; font-size:14px; font-family:inherit; }
+#chatForm button{ width:38px; height:38px; flex:none; border:0; border-radius:10px; background:var(--blue); color:#fff; font-weight:800; font-size:16px; }
+/* 머리 위 말풍선(채팅·이모트) */
+#bubbles{ position:fixed; inset:0; pointer-events:none; overflow:hidden; z-index:5; }
+.bub{ position:absolute; transform:translate(-50%,-100%); transform-origin:50% 130%; background:#fff; color:#16283C; border-radius:14px; padding:5px 11px; font-size:13px; font-weight:700; white-space:nowrap; max-width:220px; overflow:hidden; text-overflow:ellipsis; box-shadow:0 4px 14px rgba(0,0,0,.28); }
+.bub::after{ content:''; position:absolute; left:50%; bottom:-4px; width:9px; height:9px; background:#fff; transform:translateX(-50%) rotate(45deg); }
+.bub.emo{ background:none; box-shadow:none; padding:0; font-size:30px; filter:drop-shadow(0 3px 5px rgba(0,0,0,.35)); }
+.bub.emo::after{ display:none; }
+@media (max-width:720px){ #social{ bottom:calc(150px + env(safe-area-inset-bottom)); } #chatInput{ width:52vw; } }
+/* 조이스틱 */
+#joystick{ background:rgba(14,22,34,.3);border:1.5px solid rgba(255,255,255,.42);box-shadow:0 12px 34px rgba(0,0,0,.28); }
+#joyKnob{ background:linear-gradient(180deg,var(--blue),var(--blue2));box-shadow:0 5px 14px rgba(0,0,0,.4); }
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="loading"><div class="bar"><i></i></div><span>리조트 문을 여는 중</span></div>
+<div id="labels"></div>
+
+<div id="gate" class="screen hidden">
+  <div id="gateHead">
+    <span class="tag">ONLINE SKI RESORT</span>
+    <h1>스노우라이브 마운틴</h1>
+    <p class="lead">잠깐 타고 가요</p>
+  </div>
+  <div id="gateCard">
+    <div class="live"><span class="dot"></span><span id="liveLoad"><i class="spin"></i>접속 중…</span><span id="liveReal" hidden>지금 <b id="liveCount">0</b>명이 타고 있어요</span></div>
+    <button id="enterBtn" class="btn primary">입장하기</button>
+    <small>소리를 켜고 들어오면 더 좋아요 · 프로토타입(로그인 없이 체험)</small>
+  </div>
+</div>
+
+<div id="makerTitle" class="hidden">
+  <div class="tag">RENTAL SHOP</div>
+  <h1>오늘의 내 스키어</h1>
+  <p>마음에 들면 그대로 들어가도 돼요</p>
+</div>
+<div id="maker" class="panel hidden">
+  <div><h2>꾸미기</h2><p class="sub">바꿀 때마다 바로 보여요</p></div>
+  <div><div class="field"><label>재킷</label></div><div class="sw-row" id="swJacket"></div></div>
+  <div><div class="field"><label>모자</label></div><div class="sw-row" id="swCap"></div></div>
+  <div><div class="field"><label>바지</label></div><div class="sw-row" id="swPants"></div></div>
+  <div><div class="field"><label>피부</label></div><div class="sw-row" id="swSkin"></div></div>
+  <div class="field"><label>장비</label><div class="seg" id="segGear"><button data-v="ski">스키</button><button data-v="board">스노보드</button></div></div>
+  <div class="field"><label>닉네임</label><input id="nameInput" type="text" maxlength="12" value="스노우라이브닉네임">
+    <label class="check"><input id="anonInput" type="checkbox"> 익명으로 보이기</label></div>
+  <div class="seg"><button id="rerollBtn">다시 뽑기</button></div>
+  <button id="makerDone" class="btn primary" style="height:54px;font-size:16px">이대로 입장</button>
+</div>
+
+<div id="hud" class="hidden">
+  <div class="tl"><button id="chPill" class="pill"><span class="dot"></span><span id="chText">3번 채널 · 47/60명</span></button></div>
+  <div class="tr">
+    <button class="icon-btn" id="camReset" aria-label="시점 처음으로" title="시점 처음으로"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/><circle cx="12" cy="12" r="8"/></svg></button>
+    <button class="icon-btn" id="sndBtn" aria-label="소리·화면 설정"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H2v6h4l5 4V5z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M19 5a10 10 0 0 1 0 14"/></svg></button>
+    <button class="icon-btn" id="exitBtn" aria-label="나가기"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5"/><path d="M21 12H9"/></svg></button>
+  </div>
+  <div class="bl"><div id="counters" class="pill"><span class="k">오늘</span><span>리프트 <b class="num" id="cLift">0</b></span><span>하강 <b class="num" id="cRun">0</b></span><span>머문 시간 <b class="num" id="cTime">0</b>분</span></div></div>
+  <div class="br" id="actions"><button class="btn" id="waveBtn">손 흔들기</button><button class="btn" id="sitBtn">앉기</button></div>
+</div>
+
+<div id="social" class="hidden">
+  <form id="chatForm" autocomplete="off"><input id="chatInput" maxlength="40" placeholder="메시지 보내기…"><button type="submit" aria-label="전송">↑</button></form>
+  <div id="emotes">
+    <button type="button" data-e="👋" title="인사">👋</button>
+    <button type="button" data-e="😮" title="놀람">😮</button>
+    <button type="button" data-e="✌️" title="브이">✌️</button>
+    <button type="button" data-e="👏" title="박수">👏</button>
+    <button type="button" data-e="❤️" title="하트">❤️</button>
+  </div>
+</div>
+<div id="bubbles"></div>
+<div id="banner" class="hidden"></div>
+<div id="prompt" class="hidden"><span id="promptText"></span><button id="promptBtn"></button></div>
+
+<div id="summitPanel" class="panel hidden">
+  <div><h2>어디로 내려갈까요?</h2><p class="sub">정상에서 잠깐 쉬어도 괜찮아요</p></div>
+  <div id="slopeList" style="display:flex;flex-direction:column;gap:8px"></div>
+  <div><p class="sub" style="margin-bottom:8px">내려가는 방식</p>
+    <div class="seg" id="segMode"><button data-v="auto">자동으로 내려가기</button><button data-v="manual">직접 타기</button></div>
+    <p class="sub" id="modeHint" style="margin-top:8px"></p></div>
+  <button id="goSki" class="btn primary" style="height:52px;font-size:16px"></button>
+  <button id="stayTop" class="btn ghost">정상에서 조금 쉬기</button>
+</div>
+
+<div id="skiBar" class="hidden"></div>
+<div id="progress" class="hidden"><div id="progFill"></div><div id="progDot"></div></div>
+<div id="touch" class="hidden"><div id="tL">왼쪽으로</div><div id="tR">오른쪽으로</div></div>
+<div id="joystick" class="hidden"><div id="joyKnob"></div></div>
+
+<div id="finish" class="modal hidden"><div class="box">
+  <h2 id="finTitle">오늘 1번째로 내려왔어요</h2>
+  <p id="finSub"></p>
+  <button class="btn primary" id="finAgain">한 번 더 타기</button>
+  <div class="row"><button class="btn light" id="finBase">베이스로</button><button class="btn light" id="finExit">오늘은 여기까지</button></div>
+</div></div>
+
+<div id="lodgeFrame" class="hidden"></div>
+<div id="lodge" class="panel hidden">
+  <div><h2>스키하우스</h2><p class="sub" id="lodgeSeats">창가 자리 · 자리 8/12</p></div>
+  <div class="menu" id="lodgeMenu"><button data-v="0">핫초코</button><button data-v="1">어묵</button><button data-v="2">컵라면</button></div>
+  <p class="sub" id="lodgeMsg">창밖으로 사람들이 지나가요. 천천히 쉬다 가세요</p>
+  <button class="btn ghost" id="lodgeOut">밖으로 나가기</button>
+</div>
+
+<div id="ticket" class="panel hidden">
+  <div><h2>매표소</h2><p class="sub">온라인 스키장 기록 · 실제 라이딩 기록과는 별개예요</p></div>
+  <div class="stat-grid" id="statGrid"></div>
+  <div><p class="sub" style="margin-bottom:8px">채널 이동</p><div id="chList" style="display:flex;flex-direction:column;gap:6px"></div></div>
+  <button class="btn ghost" id="ticketClose">닫기</button>
+</div>
+
+<div id="soundP" class="panel hidden">
+  <div><h2>소리 · 화면</h2><p class="sub">볼륨은 따로 조절할 수 있어요</p></div>
+  <div class="slider"><span>BGM</span><input type="range" min="0" max="1" step="0.05" value="0.5" id="vBgm"></div>
+  <div class="slider"><span>환경음</span><input type="range" min="0" max="1" step="0.05" value="0.8" id="vAmb"></div>
+  <div class="slider"><span>효과음</span><input type="range" min="0" max="1" step="0.05" value="0.8" id="vSfx"></div>
+  <div><p class="sub" style="margin-bottom:8px">시간대(미리보기)</p>
+    <select id="todSel"><option value="real">실제 시간 따라가기</option><option value="day">낮</option><option value="sunset">노을</option><option value="night">야간 개장</option><option value="dawn">새벽</option></select></div>
+  <button class="btn ghost" id="soundClose">닫기</button>
+</div>
+
+<div id="card" class="screen hidden">
+  <div id="cardBox">
+    <img id="cardImg" alt="오늘의 라이딩 사진">
+    <div id="cardBody">
+      <div class="hd"><b>오늘의 라이딩</b><span id="cardDate"></span></div>
+      <div class="g" id="cardStats"></div>
+      <small>온라인 스키장 기록이에요 · 실제 라이딩 기록·랭킹과는 별개예요</small>
+    </div>
+  </div>
+  <div id="cardSide">
+    <h1>오늘도 잘 타고 가요</h1>
+    <p>카드를 저장하거나 친구에게 보여주세요</p>
+    <button class="btn primary" id="cardSave">이미지로 저장</button>
+    <button class="btn ghost" id="cardShare">공유하기</button>
+    <button class="btn ghost" id="cardBack">다시 입장</button>
+  </div>
+</div>
+
+<div id="toasts"></div>
+<div id="fade"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script type="module">
+  import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+  import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+  import { getDatabase, ref, onValue, get, set, onDisconnect, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js';
+  const cfg = { apiKey:'AIzaSyDz-PHqOm8BA3WCf77je9YgmNNl2sXWiOs', authDomain:'snowlive-cf446.firebaseapp.com', databaseURL:'https://snowlive-cf446-default-rtdb.firebaseio.com', projectId:'snowlive-cf446', storageBucket:'snowlive-cf446.appspot.com', messagingSenderId:'591302786053', appId:'1:591302786053:web:fd1a1e296d44a6e1efb06c' };
+  try {
+    const app = initializeApp(cfg);
+    const auth = getAuth(app);
+    const db = getDatabase(app, cfg.databaseURL);
+    window.__fb = { ready:false, user:null, uid:null, ref:(p)=>ref(db,p), onValue, get, set, onDisconnect, serverTimestamp };
+    onAuthStateChanged(auth, (u)=>{ window.__fb.user=u; window.__fb.uid = u?u.uid:null; window.__fb.ready=true; });
+    setTimeout(()=>{ if(window.__fb && !window.__fb.ready) window.__fb.ready=true; }, 3000);
+  } catch(e){ /* 멀티플레이 불가 시 게임은 솔로로 동작 */ }
+</script>
+<script>
+(function () {
+'use strict';
+if (!window.THREE) { document.querySelector('#loading span').textContent = '3D 엔진을 불러오지 못했어요. 인터넷 연결을 확인해 주세요.'; return; }
+const $ = (s) => document.querySelector(s);
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const lerp = (a, b, t) => a + (b - a) * t;
+function rng(seed) { let a = seed >>> 0; return function () { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+const R = rng(20261102);
+const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
+
+/* ───────────── 월드 수치 ───────────── */
+const L = 640, TAN = 0.36, BLEND = 30;
+const TOP_Y = (L - BLEND / 2) * TAN;
+function slopeY(z) {
+  if (z >= 0) return 0;
+  if (z > -BLEND) return TAN * z * z / (2 * BLEND);
+  if (z <= -L) return TOP_Y;
+  return (-z - BLEND / 2) * TAN;
+}
+function groundH(x, z) { let y = slopeY(z); const ax = Math.abs(x); if (ax > 330) y += (ax - 330) * 0.55; return y; }
+function slopeAt(z) { return (slopeY(z - 0.5) - slopeY(z + 0.5)); }
+
+const TRAILS = [
+  { id: 'g', name: '솜사탕', level: '초급', color: '#3BA776', w: 84, base: -160, amp: 55, per: 120, ph: 0.3, auto: 11, vmax: 17, desc: '넓고 완만해요. 경치 보며 천천히' },
+  { id: 'b', name: '자작나무', level: '중급', color: '#2F6FD6', w: 58, base: 0, amp: 80, per: 92, ph: 2.468, auto: 12.5, vmax: 21, desc: '숲 사이로 굽이굽이' },
+  { id: 'k', name: '설원', level: '상급', color: '#26313C', w: 46, base: 160, amp: 42, per: 70, ph: 4.21, auto: 14, vmax: 25, desc: '가파르고 모굴이 있어요' }
+];
+function trailX(t, z) {
+  const u = clamp(-z / L, 0, 1);
+  const env = Math.min(1, u * 6);
+  return t.base + t.amp * Math.sin(-z / t.per + t.ph) * env;
+}
+function autoX(t, z, ph) {
+  const u = clamp(-z / L, 0, 1);
+  const carve = t.w * 0.27 * Math.min(1, u * 5) * Math.min(1, (1 - u) * 20);
+  return trailX(t, z) + carve * Math.sin(-z / 9 + ph);
+}
+
+/* ───────────── 렌더러 · 장면 ───────────── */
+const canvas = $('#c');
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, preserveDrawingBuffer: true });
+renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+const scene = new THREE.Scene();
+scene.fog = new THREE.Fog(0xCFE6F6, 220, 1150);
+const camera = new THREE.PerspectiveCamera(50, 1, 0.5, 2400);
+const hemi = new THREE.HemisphereLight(0xffffff, 0xB8C9D6, 0.75); scene.add(hemi);
+const sun = new THREE.DirectionalLight(0xffffff, 0.9);
+sun.castShadow = true; sun.shadow.mapSize.set(2048, 2048);
+Object.assign(sun.shadow.camera, { left: -80, right: 80, top: 80, bottom: -80, near: 1, far: 500 });
+sun.shadow.bias = -0.0006;
+scene.add(sun); scene.add(sun.target);
+
+const MAT = {};
+function mat(hex, opts) {
+  const key = hex + (opts ? JSON.stringify(opts) : '');
+  if (!MAT[key]) MAT[key] = new THREE.MeshLambertMaterial(Object.assign({ color: hex }, opts || {}));
+  return MAT[key];
+}
+const GEO = {};
+function boxGeo(w, h, d) { const k = w.toFixed(3) + 'x' + h.toFixed(3) + 'x' + d.toFixed(3); if (!GEO[k]) GEO[k] = new THREE.BoxGeometry(w, h, d); return GEO[k]; }
+function box(w, h, d, color, x, y, z, parent, opts) {
+  const m = new THREE.Mesh(boxGeo(w, h, d), typeof color === 'string' ? mat(color, opts) : color);
+  m.position.set(x || 0, y || 0, z || 0);
+  m.castShadow = true; m.receiveShadow = true;
+  (parent || scene).add(m);
+  return m;
+}
+const windowMat = new THREE.MeshLambertMaterial({ color: 0xFFD98A, emissive: 0xFFB84D, emissiveIntensity: 0.15 });
+const lampMat = new THREE.MeshLambertMaterial({ color: 0xFFF1C9, emissive: 0xFFE2A0, emissiveIntensity: 0.1 });
+
+/* 지형 */
+(function terrain() {
+  const geo = new THREE.PlaneGeometry(1100, 1200, 110, 120);
+  geo.rotateX(-Math.PI / 2);
+  geo.translate(0, 0, -300);
+  const pos = geo.attributes.position;
+  const col = new Float32Array(pos.count * 3);
+  for (let i = 0; i < pos.count; i++) {
+    const x = pos.getX(i), z = pos.getZ(i);
+    pos.setY(i, groundH(x, z));
+    const shoulder = Math.abs(x) > 330 ? 0.93 : 0.97;
+    col[i * 3] = 0.88 * shoulder; col[i * 3 + 1] = 0.92 * shoulder; col[i * 3 + 2] = 0.96 * shoulder;
+  }
+  geo.setAttribute('color', new THREE.BufferAttribute(col, 3));
+  geo.computeVertexNormals();
+  const m = new THREE.Mesh(geo, new THREE.MeshLambertMaterial({ vertexColors: true }));
+  m.receiveShadow = true; m.name = 'terrain';
+  scene.add(m);
+  window.__terrain = m;
+})();
+const terrainMesh = window.__terrain;
+
+/* 슬로프(정설면 리본) */
+TRAILS.forEach((t) => {
+  const pts = [], idx = [];
+  let n = 0;
+  for (let z = 6; z >= -L - 6; z -= 5) {
+    const c = trailX(t, Math.min(0, z)), y = groundH(c, z) + 0.08;
+    pts.push(c - t.w / 2, y, z, c + t.w / 2, y, z);
+    if (n > 0) { const a = (n - 1) * 2; idx.push(a, a + 2, a + 1, a + 1, a + 2, a + 3); }
+    n++;
+  }
+  const g = new THREE.BufferGeometry();
+  g.setAttribute('position', new THREE.Float32BufferAttribute(pts, 3));
+  g.setIndex(idx); g.computeVertexNormals();
+  const m = new THREE.Mesh(g, new THREE.MeshLambertMaterial({ color: 0xFCFEFF }));
+  m.receiveShadow = true; scene.add(m);
+  for (let z = -20; z > -L; z -= 40) {
+    const c = trailX(t, z);
+    [-1, 1].forEach((s) => {
+      const x = c + s * (t.w / 2 + 1.5);
+      box(0.35, 2.2, 0.35, t.color, x, groundH(x, z) + 1.1, z);
+    });
+  }
+  for (let i = 0; i < 6; i++) {
+    const z = -80 - i * 90, c = trailX(t, z), x = c + (i % 2 ? 1 : -1) * t.w * 0.18;
+    box(0.25, 3.4, 0.25, '#12263A', x, groundH(x, z) + 1.7, z);
+    box(1.6, 1.1, 0.12, t.color, x + 0.9, groundH(x, z) + 2.8, z);
+  }
+  const zt = -L + 4, ct = trailX(t, zt);
+  box(0.6, 16, 0.6, '#12263A', ct - 9, TOP_Y + 8, zt);
+  box(0.6, 16, 0.6, '#12263A', ct + 9, TOP_Y + 8, zt);
+  const banner = signMesh(t.name + ' · ' + t.level, 18, 2.6, t.color);
+  banner.position.set(ct, TOP_Y + 14.6, zt + 0.35); scene.add(banner);
+  const banner2 = banner.clone(); banner2.rotation.y = Math.PI; banner2.position.z = zt - 0.35; scene.add(banner2);
+});
+
+/* 모굴(상급) */
+const MOGULS = [];
+for (let i = 0; i < 70; i++) {
+  const t = TRAILS[2];
+  const z = -40 - R() * (L - 80), c = trailX(t, z), x = c + (R() - 0.5) * t.w * 0.8;
+  MOGULS.push({ x, z });
+  const m = box(2.6, 0.55, 1.8, '#EEF4F9', x, groundH(x, z) + 0.25, z);
+  m.castShadow = false;
+}
+
+/* 텍스트 표지판 */
+function signMesh(text, w, h, bg) {
+  const cv = document.createElement('canvas');
+  cv.width = Math.round(w * 40); cv.height = Math.round(h * 40);
+  const g = cv.getContext('2d');
+  g.fillStyle = bg || '#12263A'; g.fillRect(0, 0, cv.width, cv.height);
+  g.fillStyle = '#ffffff';
+  g.font = '900 ' + Math.round(cv.height * 0.56) + 'px "Noto Sans KR", sans-serif';
+  g.textAlign = 'center'; g.textBaseline = 'middle';
+  g.fillText(text, cv.width / 2, cv.height / 2 + 2);
+  const tex = new THREE.CanvasTexture(cv);
+  return new THREE.Mesh(new THREE.PlaneGeometry(w, h), new THREE.MeshBasicMaterial({ map: tex }));
+}
+
+/* 나무(인스턴스) */
+const TREE_BUCKET = new Map();
+(function trees() {
+  const list = [];
+  const ok = (x, z) => {
+    if (z > 245 || z < -L - 100) return false;
+    if (z > -12) { if (Math.abs(x) < 300 && z < 235) return false; }
+    if (Math.abs(x - 260) < 18 && z < 40 && z > -L - 30) return false;
+    if (z < -L + 8 && Math.abs(x) < 300) return false;
+    if (z <= 0) for (const t of TRAILS) { if (Math.abs(x - trailX(t, z)) < t.w / 2 + 7) return false; }
+    return true;
+  };
+  for (let i = 0; i < 2600 && list.length < 900; i++) {
+    const x = (R() - 0.5) * 860, z = 250 - R() * (L + 360);
+    if (ok(x, z)) list.push({ x, z, s: 0.8 + R() * 0.7 });
+  }
+  // 둥근 원뿔형 침엽수(포근한 톤) — 각진 복셀 대신 부드러운 전나무
+  const parts = [
+    { g: boxGeo(0.95, 2.0, 0.95), c: '#8A6A4C', y: 1.0, s: 1 },                 // 나무기둥
+    { g: new THREE.ConeGeometry(3.5, 3.6, 8), c: '#6FA585', y: 3.5, s: 1 },     // 아래 가지
+    { g: new THREE.ConeGeometry(2.7, 3.1, 8), c: '#5E957A', y: 5.5, s: 1 },     // 가운데
+    { g: new THREE.ConeGeometry(1.8, 2.7, 8), c: '#52886E', y: 7.3, s: 1 },     // 꼭대기
+    { g: new THREE.ConeGeometry(1.95, 1.3, 8), c: '#F4F9FC', y: 8.25, s: 1 },   // 눈 모자
+    { g: new THREE.ConeGeometry(3.55, 0.9, 8), c: '#F1F7FB', y: 4.35, s: 1 }    // 아래가지 눈
+  ];
+  const dummy = new THREE.Object3D();
+  parts.forEach((p) => {
+    const im = new THREE.InstancedMesh(p.g, mat(p.c), list.length);
+    im.castShadow = true; im.receiveShadow = true;
+    list.forEach((t, i) => {
+      dummy.position.set(t.x, groundH(t.x, t.z) + p.y * t.s, t.z);
+      dummy.scale.set(t.s, t.s, t.s);
+      dummy.rotation.y = (t.x * 13 + t.z * 7) % 1.2;
+      dummy.updateMatrix();
+      im.setMatrixAt(i, dummy.matrix);
+    });
+    scene.add(im);
+  });
+  list.forEach((t) => {
+    const k = Math.floor(t.z / 10);
+    if (!TREE_BUCKET.has(k)) TREE_BUCKET.set(k, []);
+    TREE_BUCKET.get(k).push(t);
+  });
+})();
+function hitTree(x, z) {
+  const k = Math.floor(z / 10);
+  for (let d = -1; d <= 1; d++) {
+    const arr = TREE_BUCKET.get(k + d); if (!arr) continue;
+    for (const t of arr) { const dx = t.x - x, dz = t.z - z; if (dx * dx + dz * dz < (2.1 * t.s) * (2.1 * t.s)) return true; }
+  }
+  return false;
+}
+
+/* 베이스 건물 */
+const FAC = [];
+function building(o) {
+  const g = new THREE.Group(); g.position.set(o.x, 0, o.z); scene.add(g);
+  box(o.w, o.h, o.d, o.wall, 0, o.h / 2, 0, g);
+  box(o.w + 3, 1.6, o.d + 3, o.roof, 0, o.h + 0.8, 0, g);
+  box(o.w + 3.4, 0.8, o.d + 3.4, '#F7FAFC', 0, o.h + 2, 0, g);
+  const n = Math.max(2, Math.floor(o.w / 7));
+  for (let i = 0; i < n; i++) {
+    const wx = -o.w / 2 + (i + 0.5) * (o.w / n);
+    if (Math.abs(wx) < 2.4) continue;
+    const m = box(2.6, 2.2, 0.3, windowMat, wx, 3.4, o.d / 2 + 0.1, g); m.castShadow = false;
+  }
+  box(3, 4.4, 0.3, '#6B4A35', 0, 2.2, o.d / 2 + 0.12, g);
+  const s = signMesh(o.label, Math.min(o.w - 2, o.label.length * 2.4 + 3), 2.4);
+  s.position.set(0, o.h - 1.6, o.d / 2 + 0.2); g.add(s);
+  if (o.chimney) box(2.2, 4, 2.2, '#3B2A20', o.w / 2 - 4, o.h + 3, -o.d / 4, g);
+  FAC.push({ id: o.id, label: o.label, x: o.x, z: o.z + o.d / 2 + 4, r: 9, action: o.action });
+  return g;
+}
+building({ id: 'ticket', label: '매표소', x: -170, z: 90, w: 18, d: 12, h: 9, wall: '#B9875F', roof: '#4D6A86', action: '기록 보기 · 채널 이동' });
+building({ id: 'rental', label: '렌탈샵', x: -95, z: 96, w: 22, d: 14, h: 10, wall: '#D9C3A5', roof: '#A9473A', action: '캐릭터 꾸미기' });
+building({ id: 'lodge', label: '스키하우스', x: 0, z: 92, w: 34, d: 18, h: 12, wall: '#E8D3B4', roof: '#6B4A35', action: '들어가서 쉬기', chimney: true });
+building({ id: 'liftst', label: '리프트', x: 286, z: 34, w: 16, d: 12, h: 8, wall: '#C9D7E3', roof: '#33475B', action: '' });
+FAC.pop();
+FAC.push({ id: 'lift', label: '리프트 승강장', x: 262, z: 52, r: 11, action: '줄 서기' });
+box(0.4, 1.2, 14, '#2F6FD6', 258.6, 0.6, 50); box(0.4, 1.2, 14, '#2F6FD6', 265.4, 0.6, 50);
+(function photo() {
+  const g = new THREE.Group(); g.position.set(110, 0, 120); scene.add(g);
+  box(0.8, 9, 0.8, '#2F6FD6', -6, 4.5, 0, g); box(0.8, 9, 0.8, '#2F6FD6', 6, 4.5, 0, g);
+  box(13.6, 0.8, 0.8, '#2F6FD6', 0, 9, 0, g); box(13.6, 0.8, 0.8, '#2F6FD6', 0, 1.2, 0, g);
+  const s = signMesh('포토존', 7, 1.8, '#2F6FD6'); s.position.set(0, 10.6, 0); g.add(s);
+  FAC.push({ id: 'photo', label: '포토존', x: 110, z: 126, r: 8, action: '사진 찍기' });
+})();
+(function gateArch() {
+  const g = new THREE.Group(); g.position.set(0, 0, 238); scene.add(g);
+  box(1.6, 12, 1.6, '#6B4A35', -14, 6, 0, g); box(1.6, 12, 1.6, '#6B4A35', 14, 6, 0, g);
+  box(32, 3.2, 1.4, '#3B2A20', 0, 11, 0, g); box(32, 0.6, 1.6, '#F7FAFC', 0, 12.8, 0, g);
+  const s = signMesh('SNOWLIVE MOUNTAIN', 28, 2.2, '#F4F8FB');
+  s.material.map.image.getContext('2d');
+  const cv = document.createElement('canvas'); cv.width = 1120; cv.height = 88;
+  const c2 = cv.getContext('2d'); c2.fillStyle = '#F4F8FB'; c2.fillRect(0, 0, cv.width, cv.height);
+  c2.fillStyle = '#12263A'; c2.font = '64px Silkscreen, monospace'; c2.textAlign = 'center'; c2.textBaseline = 'middle'; c2.fillText('SNOWLIVE MOUNTAIN', 560, 46);
+  s.material.map = new THREE.CanvasTexture(cv);
+  s.position.set(0, 11, 0.75); g.add(s);
+  const s2 = s.clone(); s2.rotation.y = Math.PI; s2.position.z = -0.75; g.add(s2);
+})();
+const lamps = [];
+[[-130, 150], [-40, 150], [50, 150], [150, 150], [200, 80], [-60, 60]].forEach(([x, z]) => {
+  box(0.5, 7, 0.5, '#26313C', x, 3.5, z);
+  box(1.4, 1, 1.4, lampMat, x, 7.4, z);
+  const p = new THREE.PointLight(0xFFD9A0, 0, 40); p.position.set(x, 7, z); scene.add(p); lamps.push(p);
+});
+/* 광장 소품 */
+function snowman(x, z, s) {
+  const g = new THREE.Group(); g.position.set(x, 0, z); g.scale.setScalar(s || 1); scene.add(g);
+  box(2.4, 2.2, 2.4, '#FBFDFF', 0, 1.1, 0, g); box(1.7, 1.6, 1.7, '#FBFDFF', 0, 3, 0, g);
+  box(0.3, 0.3, 0.8, '#F28C38', 0, 3.1, 1.1, g); box(1.9, 0.3, 1.9, '#26313C', 0, 3.95, 0, g); box(1.2, 0.9, 1.2, '#26313C', 0, 4.5, 0, g);
+  box(2, 0.35, 0.35, '#E4572E', 0, 2.25, 0.9, g);
+}
+snowman(-40, 150); snowman(160, 180, 0.8); snowman(-210, 200, 1.1);
+[[-120, 140, 0], [-20, 128, 0], [70, 140, 0], [190, 120, 0.5]].forEach(([x, z, r]) => {
+  const g = new THREE.Group(); g.position.set(x, 0, z); g.rotation.y = r; scene.add(g);
+  box(5, 0.4, 1.4, '#8A5A3C', 0, 1.1, 0, g); box(5, 1.2, 0.3, '#8A5A3C', 0, 1.9, -0.6, g);
+  box(0.4, 1.1, 1.2, '#3B2A20', -2.2, 0.55, 0, g); box(0.4, 1.1, 1.2, '#3B2A20', 2.2, 0.55, 0, g);
+});
+[[-150, 116], [-60, 118], [40, 116], [215, 70]].forEach(([x, z]) => {
+  const g = new THREE.Group(); g.position.set(x, 0, z); scene.add(g);
+  box(8, 0.3, 0.3, '#4E5D6C', 0, 1.6, 0, g); box(0.3, 1.8, 0.3, '#4E5D6C', -3.8, 0.9, 0, g); box(0.3, 1.8, 0.3, '#4E5D6C', 3.8, 0.9, 0, g);
+  for (let i = 0; i < 6; i++) { const c = pick(['#E4572E', '#F2B134', '#2F6FD6', '#3BA776', '#26313C', '#F4F8FB']); const m = box(0.3, 2.8, 0.12, c, -3 + i * 1.2, 1.4, 0.25, g); m.rotation.x = -0.12; }
+});
+[-230, -110, 10, 130, 230].forEach((x, i) => {
+  box(0.35, 9, 0.35, '#E3EDF5', x, 4.5, 228);
+  box(2.6, 3.4, 0.12, ['#2F6FD6', '#E4572E', '#F2B134', '#3BA776', '#8E6BD8'][i], x + 1.4, 7, 228);
+});
+
+/* ───── 스키 베이스(슬로프 하단) 꾸미기 — 안전펜스·피니시배너·간판·스키랙·슬라럼깃발 ───── */
+(function skiBaseDeco() {
+  const baseZ = 11;
+  // 1) 주황 안전망 펜스: 슬로프 하단을 가로지르되 트레일 출구(±)엔 통로를 둠
+  function netPanel(x0, x1, z) {
+    const g = new THREE.Group(); scene.add(g);
+    const len = x1 - x0, posts = Math.max(2, Math.round(len / 9));
+    for (let i = 0; i <= posts; i++) box(0.4, 2.4, 0.4, '#C94B2B', x0 + len * i / posts, 1.2, z, g);
+    const net = box(len, 1.7, 0.1, '#F4622E', x0 + len / 2, 1.35, z, g, { transparent: true, opacity: 0.5 }); net.castShadow = false;
+    box(len, 0.16, 0.16, '#EDEDED', x0 + len / 2, 2.25, z, g);
+  }
+  let segs = [[-250, 250]];
+  [[-160, 26], [0, 24], [160, 24]].forEach(([c, hw]) => {       // 트레일 출구 통로
+    const ns = []; segs.forEach(([a, b]) => {
+      if (c - hw <= a && c + hw >= b) return;                    // 전부 통로
+      if (c + hw <= a || c - hw >= b) { ns.push([a, b]); return; } // 안 겹침
+      if (a < c - hw) ns.push([a, c - hw]); if (c + hw < b) ns.push([c + hw, b]);
+    }); segs = ns;
+  });
+  segs.forEach(([a, b]) => { if (b - a > 4) netPanel(a, b, baseZ); });
+
+  // 2) 트레일 피니시 배너(출구 위 아치) — 트레일 색
+  TRAILS.forEach((t) => {
+    const g = new THREE.Group(); g.position.set(t.base, 0, baseZ - 2); scene.add(g);
+    box(0.8, 6.6, 0.8, '#20303F', -12, 3.3, 0, g); box(0.8, 6.6, 0.8, '#20303F', 12, 3.3, 0, g);
+    box(25.4, 2.2, 0.7, t.color, 0, 6.2, 0, g); box(25.4, 0.5, 0.9, '#F7FAFC', 0, 7.45, 0, g);
+    const s = signMesh('FINISH · ' + t.name, 17, 1.5, '#16283C'); s.position.set(0, 6.2, 0.5); g.add(s);
+  });
+
+  // 3) 베이스 안내 A-프레임 간판
+  function aFrame(x, z, txt, col) {
+    const g = new THREE.Group(); g.position.set(x, 0, z); scene.add(g);
+    box(0.3, 2.4, 0.3, '#5A4632', -1.6, 1.2, 0, g); box(0.3, 2.4, 0.3, '#5A4632', 1.6, 1.2, 0, g);
+    box(3.8, 2, 0.25, col, 0, 1.9, 0, g); const s = signMesh(txt, 3.3, 1.1, col); s.position.set(0, 1.9, 0.18); g.add(s);
+  }
+  aFrame(-58, 38, '슬로프 안내', '#2F6FD6'); aFrame(66, 42, '안전 수칙', '#E4572E');
+
+  // 4) 스키/보드 거치대
+  function skiRack(x, z) {
+    const g = new THREE.Group(); g.position.set(x, 0, z); scene.add(g);
+    box(6, 0.3, 1.2, '#6B4A35', 0, 1.5, 0, g); box(0.3, 1.6, 0.3, '#6B4A35', -2.8, 0.8, 0, g); box(0.3, 1.6, 0.3, '#6B4A35', 2.8, 0.8, 0, g);
+    for (let i = 0; i < 5; i++) { const c = pick(['#F2B134', '#E4572E', '#2F6FD6', '#3BA776', '#26313C']); const m = box(0.28, 3, 0.12, c, -2.4 + i * 1.2, 2.4, 0.3, g); m.rotation.x = -0.1; }
+  }
+  skiRack(-94, 46); skiRack(94, 48);
+
+  // 5) 하단 슬로프 슬라럼 깃발(연출)
+  [[-162, -34], [-150, -74], [6, -42], [-12, -92], [162, -36], [150, -82]].forEach(([x, z]) => {
+    const y = slopeY(z); box(0.25, 3.2, 0.25, '#C9CED4', x, y + 1.6, z);
+    const f = box(1.9, 1.2, 0.08, pick(['#E4572E', '#2F6FD6', '#F2B134']), x + 0.95, y + 2.5, z); f.castShadow = false;
+  });
+})();
+
+/* 포근한 눈더미·둥근 덤불(힐링 질감) */
+(function cozyMounds() {
+  const snowGeoDome = new THREE.SphereGeometry(1, 10, 8);
+  const snowMat = mat('#F2F8FC'), bushMat = mat('#6FA585');
+  function mound(x, z, r, m, flat) {
+    const s = new THREE.Mesh(snowGeoDome, m); s.position.set(x, groundH(x, z) - r * (flat || 0.45), z);
+    s.scale.set(r, r * 0.7, r); s.castShadow = false; s.receiveShadow = true; scene.add(s);
+  }
+  const R2 = () => (R() - 0.5);
+  for (let i = 0; i < 26; i++) { const x = R2() * 520, z = 60 + R() * 170; if (Math.abs(x - 260) < 24) continue; mound(x, z, 1.6 + R() * 2.6, snowMat); }
+  for (let i = 0; i < 14; i++) { const x = R2() * 440, z = 70 + R() * 150; if (Math.abs(x - 260) < 24) continue; mound(x, z, 1.2 + R() * 1.4, bushMat, 0.5); }
+})();
+
+/* 정상 데크 */
+box(26, 1.2, 14, '#B9875F', -40, TOP_Y + 0.6, -L - 40);
+box(26, 2, 0.5, '#8A5A3C', -40, TOP_Y + 2, -L - 33);
+
+/* ───────────── 리프트 ───────────── */
+const LIFT = (function () {
+  const P0 = new THREE.Vector3(257, 9.5, 36), P1 = new THREE.Vector3(257, TOP_Y + 9.5, -L - 24);
+  const R0 = new THREE.Vector3(263, 9.5, 36), R1 = new THREE.Vector3(263, TOP_Y + 9.5, -L - 24);
+  const len = P0.distanceTo(P1), speed = len / 46, spacing = 70;
+  const count = Math.round((2 * len) / spacing);
+  [[P0, P1], [R0, R1]].forEach(([a, b]) => {
+    const mid = a.clone().add(b).multiplyScalar(0.5);
+    const m = new THREE.Mesh(boxGeo(0.25, 0.25, a.distanceTo(b)), mat('#26313C'));
+    m.position.copy(mid); m.lookAt(b); scene.add(m);
+  });
+  for (let f = 0.12; f < 0.95; f += 0.135) {
+    const p = P0.clone().lerp(P1, f), gy = groundH(260, p.z);
+    box(1.4, p.y + 1 - gy, 1.4, '#4E5D6C', 260, gy + (p.y + 1 - gy) / 2, p.z);
+    box(10, 0.8, 1.6, '#4E5D6C', 260, p.y + 1, p.z);
+  }
+  const topSt = new THREE.Group(); topSt.position.set(262, TOP_Y, -L - 30); scene.add(topSt);
+  box(20, 8, 14, '#C9D7E3', 0, 4, 0, topSt); box(23, 1.4, 17, '#33475B', 0, 8.7, 0, topSt); box(23.4, 0.8, 17.4, '#F7FAFC', 0, 9.8, 0, topSt);
+  const chairs = [];
+  for (let i = 0; i < count; i++) {
+    const g = new THREE.Group(); scene.add(g);
+    box(0.22, 3.2, 0.22, '#26313C', 0, -1.6, 0, g);
+    box(5.2, 0.35, 1.6, '#E4572E', 0, -3.2, 0, g);
+    box(5.2, 1.6, 0.25, '#C44A26', 0, -2.4, 0.85, g);
+    box(0.16, 0.16, 1.6, '#26313C', -2.6, -2.25, 0.05, g); box(0.16, 0.16, 1.6, '#26313C', 2.6, -2.25, 0.05, g);
+    box(0.16, 1, 0.16, '#26313C', -2.6, -2.75, -0.7, g); box(0.16, 1, 0.16, '#26313C', 2.6, -2.75, -0.7, g);
+    box(0.16, 0.16, 5.2, '#26313C', 0, 0, 0, g).rotation.y = Math.PI / 2;
+    // 안전바(무릎 앞 가로바)
+    box(5.4, 0.18, 0.18, '#C44A26', 0, -2.0, -1.25, g);
+    box(0.16, 0.16, 1.3, '#C44A26', -2.5, -2.0, -0.6, g); box(0.16, 0.16, 1.3, '#C44A26', 2.5, -2.0, -0.6, g);
+    // 발받침대(footrest) — 스키/보드를 얹는 가로 발판 + 걸이
+    box(5.6, 0.22, 0.9, '#2B3A49', 0, -4.75, -1.7, g);
+    box(0.16, 1.9, 0.16, '#2B3A49', -2.5, -3.9, -1.2, g); box(0.16, 1.9, 0.16, '#2B3A49', 2.5, -3.9, -1.2, g);
+    chairs.push({ g, i, s: (i * spacing) % (2 * len), riders: [] });
+  }
+  function posAt(s, out) {
+    if (s < len) return out.copy(P0).lerp(P1, s / len);
+    return out.copy(R1).lerp(R0, (s - len) / len);
+  }
+  return { P0, P1, len, speed, spacing, chairs, posAt, count };
+})();
+
+/* ───────────── 캐릭터(복셀) ───────────── */
+const K = 0.11;
+function makeChar(o) {
+  const root = new THREE.Group();
+  const tilt = new THREE.Group(); root.add(tilt);
+  const hip = 4.6 * K;
+  const legs = [];
+  [-1, 1].forEach((s) => {
+    const lg = new THREE.Group(); lg.position.set(s * 1.2 * K, hip, 0); tilt.add(lg);
+    lg.userData.leg = box(2 * K, 2.6 * K, 2 * K, o.pants, 0, -1.3 * K, 0, lg);
+    box(2.4 * K, 1.4 * K, 2.8 * K, '#1E2A36', 0, -3.3 * K, 0.2 * K, lg);
+    lg.userData.ski = box(1.6 * K, 0.6 * K, 15 * K, o.ski || '#F2B134', 0, -4.3 * K, 1 * K, lg);
+    legs.push(lg);
+  });
+  const board = box(3.6 * K, 0.6 * K, 12 * K, o.boardColor || '#8E6BD8', 0, -4.3 * K, 1 * K, legs[0]);
+  const body = new THREE.Group(); body.position.set(0, hip, 0); tilt.add(body);
+  const torso = box(6 * K, 5 * K, 3.2 * K, o.jacket, 0, 2.5 * K, 0, body);
+  box(0.6 * K, 4.6 * K, 0.2 * K, '#F4F8FB', 0, 2.5 * K, 1.65 * K, body);
+  const arms = [];
+  [-1, 1].forEach((s) => {
+    const ag = new THREE.Group(); ag.position.set(s * 3.65 * K, 4.6 * K, 0); body.add(ag);
+    ag.userData.arm = box(1.3 * K, 4.2 * K, 2 * K, o.jacket, 0, -2.1 * K, 0, ag);
+    box(1.3 * K, 1 * K, 2 * K, '#24384F', 0, -4.7 * K, 0, ag);
+    arms.push(ag);
+  });
+  const head = new THREE.Group(); head.position.set(0, 5 * K, 0); body.add(head);
+  const face = box(5.4 * K, 4.6 * K, 4.8 * K, o.skin, 0, 2.3 * K, 0, head);
+  box(5.6 * K, 2.6 * K, 1.2 * K, '#3A2A22', 0, 2.9 * K, -2 * K, head);
+  box(5.6 * K, 1.5 * K, 0.4 * K, '#24384F', 0, 2.4 * K, 2.45 * K, head);
+  box(1.8 * K, 1.1 * K, 0.2 * K, '#8FD3FF', -1.15 * K, 2.4 * K, 2.7 * K, head, { emissive: 0x2A6A90, emissiveIntensity: 0.3 });
+  box(1.8 * K, 1.1 * K, 0.2 * K, '#8FD3FF', 1.15 * K, 2.4 * K, 2.7 * K, head, { emissive: 0x2A6A90, emissiveIntensity: 0.3 });
+  box(6 * K, 0.9 * K, 5.4 * K, '#F4F8FB', 0, 4.95 * K, 0, head);
+  const cap = box(5.8 * K, 1.8 * K, 5.2 * K, o.cap, 0, 6.3 * K, 0, head);
+  box(1.6 * K, 1.4 * K, 1.6 * K, '#F4F8FB', 0, 7.9 * K, 0, head);
+  const c = { root, tilt, legs, arms, body, head, board, torso, face, cap, pose: 'stand', t: Math.random() * 10, opts: o };
+  setGear(c, o.gear || 'ski');
+  return c;
+}
+function setColors(c, o) {
+  c.torso.material = mat(o.jacket); c.arms.forEach((a) => a.userData.arm.material = mat(o.jacket));
+  c.legs.forEach((l) => l.userData.leg.material = mat(o.pants));
+  c.cap.material = mat(o.cap); c.face.material = mat(o.skin);
+  c.opts = Object.assign({}, c.opts, o);
+}
+function setGear(c, gear) {
+  c.gear = gear;
+  c.legs.forEach((l) => l.userData.ski.visible = gear === 'ski');
+  c.board.visible = gear === 'board';
+}
+function animChar(c, dt, extra) {
+  c.t += dt;
+  const t = c.t;
+  const L0 = c.legs[0], L1 = c.legs[1], A0 = c.arms[0], A1 = c.arms[1];
+  L0.rotation.set(0, 0, 0); L1.rotation.set(0, 0, 0);
+  A0.rotation.set(0, 0, 0.08); A1.rotation.set(0, 0, -0.08);
+  c.body.rotation.set(0, 0, 0); c.body.position.y = 4.6 * K;
+  c.tilt.rotation.set(0, 0, 0); c.tilt.position.set(0, 0, 0);
+  c.board.position.set(0, -4.3 * K, 1 * K); c.board.rotation.set(0, 0, 0);
+  const board = c.gear === 'board';
+  const p = c.pose;
+  if (p === 'stand') {
+    c.body.position.y = 4.6 * K + Math.sin(t * 2) * 0.012;
+    if (board) { L1.rotation.x = 0.12; L1.rotation.z = 0.08; }
+  }
+  else if (p === 'skate') {
+    const ph = t * 5.2, s = Math.sin(ph);
+    if (board) {
+      // 앞발(왼발)은 보드에 묶고, 뒷발(오른발)로 눈을 밀어요
+      const push = Math.max(0, s);
+      L0.rotation.x = -0.06; L1.rotation.x = 0.05 + push * 0.85; L1.rotation.z = 0.1;
+      c.body.rotation.x = 0.16 + push * 0.08; c.body.rotation.y = -0.18;
+      A0.rotation.z = 0.5; A1.rotation.z = -0.5; A0.rotation.x = -0.2 - push * 0.3; A1.rotation.x = 0.2 + push * 0.3;
+      c.tilt.position.y = Math.abs(Math.cos(ph)) * 0.025;
+    } else {
+      // 스키 스케이팅: V자로 발을 번갈아 바깥으로 밀어요
+      const pl = Math.max(0, s), pr = Math.max(0, -s);
+      L0.rotation.set(-0.05, -0.34, -0.1 - pl * 0.34);
+      L1.rotation.set(-0.05, 0.34, 0.1 + pr * 0.34);
+      c.body.rotation.x = 0.34;
+      c.tilt.rotation.z = s * 0.13;
+      c.tilt.position.y = -0.04 + Math.abs(s) * 0.03;
+      A0.rotation.x = -0.35 + s * 0.75; A1.rotation.x = -0.35 - s * 0.75; A0.rotation.z = 0.2; A1.rotation.z = -0.2;
+    }
+  }
+  else if (p === 'walk') {
+    const s = Math.sin(t * 9) * 0.55;
+    L0.rotation.x = s; L1.rotation.x = -s; A0.rotation.x = -s * 0.8; A1.rotation.x = s * 0.8;
+    c.body.position.y = 4.6 * K + Math.abs(Math.cos(t * 9)) * 0.05;
+  } else if (p === 'sit') {
+    // 리프트 탑승: 다리를 앞으로 내려 발받침대에 걸치고, 스키/보드를 그 위에 얹은 자세(살짝 흔들흔들)
+    const sw = (extra && extra.swing) ? 0.2 : 0.045;
+    L0.rotation.x = -0.52 + Math.sin(t * 2.2) * sw;
+    L1.rotation.x = -0.52 - Math.sin(t * 2.2) * sw;
+    c.body.rotation.x = 0.06;                 // 등받이에 기댐
+    A0.rotation.x = -0.22; A1.rotation.x = -0.22;  // 손은 무릎/안전바 쪽
+    if (board) { L1.rotation.z = 0; c.board.position.set(0, -4.3 * K, 1 * K); c.board.rotation.set(0, 0, 0); }
+  } else if (p === 'ski') {
+    const lean = extra ? extra.lean || 0 : 0;
+    c.tilt.position.y = -0.08 + (extra && extra.hop ? extra.hop : 0);
+    if (board) {
+      // 보드는 옆으로 서서(스탠스) 타요. 보드는 두 발에 걸쳐 진행 방향으로 놓여요
+      c.tilt.rotation.set(0, Math.PI / 2, lean * 0.4);
+      c.board.position.set(1.2 * K, -4.3 * K, 0); c.board.rotation.y = Math.PI / 2;
+      L0.rotation.x = 0.18; L1.rotation.x = 0.18;
+      c.body.rotation.x = 0.2; c.body.rotation.y = -0.35;
+      A0.rotation.z = 0.9; A1.rotation.z = -0.9;
+    } else {
+      L0.rotation.x = 0.28; L1.rotation.x = 0.28;
+      c.body.rotation.x = 0.32; A0.rotation.x = -0.5; A1.rotation.x = -0.5; A0.rotation.z = 0.35; A1.rotation.z = -0.35;
+      c.tilt.rotation.z = -lean * 0.45;
+    }
+  } else if (p === 'fall') {
+    const k = extra ? extra.k : 1;
+    c.tilt.rotation.x = Math.sin(Math.min(1, k) * Math.PI / 2) * 1.35;
+    c.tilt.position.y = -0.2 * k;
+    A0.rotation.z = 1.2; A1.rotation.z = -1.2;
+  }
+  if (c.waveT > 0) {
+    c.waveT -= dt;
+    A1.rotation.z = 2.7 + Math.sin(t * 12) * 0.35; A1.rotation.x = 0;
+  }
+}
+
+/* 팔레트 */
+const JACKETS = ['#E4572E', '#F2B134', '#3BA776', '#8E6BD8', '#2F6FD6', '#F07AA6', '#6EC1E4', '#F28C38', '#26313C', '#F4F8FB', '#7FD8BE', '#8A5A3C'];
+const CAPS = ['#2F6FD6', '#E4572E', '#F2B134', '#F4F8FB', '#3BA776', '#26313C'];
+const PANTS = ['#33475B', '#4E5D6C', '#1F2B38', '#5E6B4E', '#C8B79A', '#6EC1E4'];
+const SKINS = ['#F6D5B8', '#F1C7A0', '#E0AC85', '#C98E66', '#9A6A4A', '#FBE3CF'];
+const NAMES = ['작은 솔잎', '포근한 눈사람', '느긋한 곤돌라', '반짝이는 설원', '스키조아', '보드타는곰', '하얀 토끼', '첫눈', '설질요정', '리프트왕', '눈송이', '자작나무숲', '핫초코러버', '야간스키', '곤지암러', '모굴장인', '설경멍', '카빙연습중'];
+const ANON = ['포근한 눈사람', '작은 솔잎', '느긋한 곤돌라', '반짝이는 설원', '하얀 토끼', '조용한 눈꽃'];
+function randOpts() {
+  return { jacket: pick(JACKETS), cap: pick(CAPS), pants: pick(PANTS), skin: pick(SKINS), gear: Math.random() < 0.3 ? 'board' : 'ski', ski: pick(['#F2B134', '#E4572E', '#2F6FD6', '#26313C', '#3BA776']), boardColor: pick(['#8E6BD8', '#26313C', '#E4572E', '#3BA776']) };
+}
+
+/* ───────────── 플레이어 · 봇 ───────────── */
+const me = { opts: Object.assign(randOpts(), { name: '스노우라이브닉네임', anon: false, anonName: pick(ANON) }) };
+me.c = makeChar(me.opts); scene.add(me.c.root);
+me.pos = new THREE.Vector3(0, 0, 196); me.yaw = Math.PI; me.target = null;
+function myName() { return me.opts.anon ? me.opts.anonName : (me.opts.name || '나'); }
+
+const bots = [];
+function addBot(kind, extra) {
+  const o = randOpts();
+  const c = makeChar(o); scene.add(c.root);
+  const b = Object.assign({ kind, c, name: pick(NAMES), pos: new THREE.Vector3(), yaw: 0, t: Math.random() * 5 }, extra || {});
+  bots.push(b); return b;
+}
+for (let i = 0; i < 12; i++) {
+  const b = addBot('walker');
+  b.pos.set((Math.random() - 0.5) * 300, 0, 100 + Math.random() * 90);
+  b.target = null; b.idle = Math.random() * 4;
+}
+for (let i = 0; i < 6; i++) {
+  const b = addBot('skier');
+  b.trail = TRAILS[i % 3]; b.z = -L + 10 + Math.random() * (L - 60); b.ph = Math.random() * 6; b.speed = b.trail.auto * (0.85 + Math.random() * 0.3);
+}
+LIFT.chairs.forEach((ch, i) => {
+  if (i % 3 === 0 || i % 5 === 0) {
+    const n = 1 + (i % 2);
+    for (let k = 0; k < n; k++) {
+      const c = makeChar(randOpts()); c.pose = 'sit';
+      c.root.rotation.y = Math.PI; c.root.position.set(-1.6 + k * 1.3, -3.05 - 4.6 * K, 0.1);
+      ch.g.add(c.root); ch.riders.push({ c, name: pick(NAMES) });
+    }
+  }
+});
+const queueBots = [];
+for (let i = 0; i < 6; i++) { const b = addBot('queue'); b.c.root.visible = false; queueBots.push(b); }
+
+/* ───────────── 상태 ───────────── */
+const S = {
+  mode: 'loading', snap: false, ctx: '', makerDrag: false,
+  cams: { base: { az: 0, pitch: 0.36, dist: 16 }, summit: { az: Math.PI, pitch: 0.34, dist: 18 }, lift: { az: -2.36, pitch: 0.26, dist: 12.5 } },
+  stats: { lift: 0, runs: 0, auto: 0, manual: 0, falls: 0, companions: new Set(), start: 0, lodgeSec: 0 },
+  ch: 3, chCount: 47, live: 1,
+  slope: 1, skiMode: 'auto',
+  queue: 0, chair: null, companion: null, companions: [],
+  ski: null, sitting: false, tod: 'real'
+};
+const keys = {};
+const touch = { l: false, r: false };
+
+/* ───────────── 사운드(Web Audio 합성) ───────────── */
+const SND = {
+  ctx: null, vol: { bgm: 0.5, amb: 0.8, sfx: 0.8 },
+  init() {
+    if (this.ctx) return;
+    const AC = window.AudioContext || window.webkitAudioContext; if (!AC) return;
+    const ctx = this.ctx = new AC();
+    this.master = ctx.createGain(); this.master.gain.value = 0.9; this.master.connect(ctx.destination);
+    this.bgmG = ctx.createGain(); this.ambG = ctx.createGain(); this.sfxG = ctx.createGain();
+    [this.bgmG, this.ambG, this.sfxG].forEach((g) => g.connect(this.master));
+    this.apply();
+    const len = ctx.sampleRate * 2, buf = ctx.createBuffer(1, len, ctx.sampleRate), d = buf.getChannelData(0);
+    for (let i = 0; i < len; i++) d[i] = Math.random() * 2 - 1;
+    this.noise = buf;
+    const wind = ctx.createBufferSource(); wind.buffer = buf; wind.loop = true;
+    const bp = ctx.createBiquadFilter(); bp.type = 'bandpass'; bp.frequency.value = 420; bp.Q.value = 0.5;
+    this.windG = ctx.createGain(); this.windG.gain.value = 0.08;
+    wind.connect(bp); bp.connect(this.windG); this.windG.connect(this.ambG); wind.start();
+    const sw = ctx.createBufferSource(); sw.buffer = buf; sw.loop = true;
+    const hp = ctx.createBiquadFilter(); hp.type = 'highpass'; hp.frequency.value = 1400;
+    this.swG = ctx.createGain(); this.swG.gain.value = 0;
+    sw.connect(hp); hp.connect(this.swG); this.swG.connect(this.ambG); sw.start();
+    const chords = [[261.6, 329.6, 392, 493.9], [220, 261.6, 329.6, 392], [174.6, 220, 261.6, 329.6], [196, 246.9, 293.7, 370]];
+    let ci = 0;
+    const play = () => {
+      const now = ctx.currentTime;
+      chords[ci % 4].forEach((f, k) => {
+        const o = ctx.createOscillator(); o.type = 'triangle'; o.frequency.value = f / 2 * (k === 3 ? 2 : 1);
+        const g = ctx.createGain(); g.gain.setValueAtTime(0, now); g.gain.linearRampToValueAtTime(0.035, now + 1.2); g.gain.linearRampToValueAtTime(0, now + 4.6);
+        o.connect(g); g.connect(this.bgmG); o.start(now); o.stop(now + 4.8);
+      });
+      if (ci % 2 === 0) { const f = chords[ci % 4][Math.floor(Math.random() * 4)] * 2; this.tone(f, 0.02, 1.4, this.bgmG, 'sine', 0.6); }
+      ci++;
+    };
+    play(); this.bgmTimer = setInterval(play, 4000);
+  },
+  apply() { if (!this.ctx) return; this.bgmG.gain.value = this.vol.bgm; this.ambG.gain.value = this.vol.amb; this.sfxG.gain.value = this.vol.sfx; },
+  tone(f, v, dur, dest, type, delay) {
+    if (!this.ctx) return; const ctx = this.ctx, now = ctx.currentTime + (delay || 0);
+    const o = ctx.createOscillator(); o.type = type || 'sine'; o.frequency.value = f;
+    const g = ctx.createGain(); g.gain.setValueAtTime(0, now); g.gain.linearRampToValueAtTime(v, now + 0.02); g.gain.exponentialRampToValueAtTime(0.0001, now + dur);
+    o.connect(g); g.connect(dest || this.sfxG); o.start(now); o.stop(now + dur + 0.05);
+  },
+  chime() { [784, 988, 1175].forEach((f, i) => this.tone(f, 0.12, 0.9, this.sfxG, 'sine', i * 0.12)); },
+  blip() { this.tone(660, 0.1, 0.25); this.tone(880, 0.08, 0.3, this.sfxG, 'sine', 0.08); },
+  clack() { this.tone(110, 0.18, 0.18, this.sfxG, 'square'); this.tone(82, 0.12, 0.25, this.sfxG, 'square', 0.09); },
+  pop() {
+    if (!this.ctx) return; const ctx = this.ctx, now = ctx.currentTime;
+    const s = ctx.createBufferSource(); s.buffer = this.noise; const lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 700;
+    const g = ctx.createGain(); g.gain.setValueAtTime(0.5, now); g.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
+    s.connect(lp); lp.connect(g); g.connect(this.sfxG); s.start(now); s.stop(now + 0.45);
+  },
+  setSwoosh(v) { if (this.swG) this.swG.gain.value = v; },
+  setWind(v) { if (this.windG) this.windG.gain.value = v; }
+};
+
+/* ───────────── UI 헬퍼 ───────────── */
+function show(el, on) { (typeof el === 'string' ? $(el) : el).classList.toggle('hidden', !on); }
+function toast(msg) {
+  const d = document.createElement('div'); d.className = 'toast'; d.textContent = msg; $('#toasts').appendChild(d);
+  setTimeout(() => d.remove(), 2600);
+}
+function updateCounters() {
+  $('#cLift').textContent = S.stats.lift; $('#cRun').textContent = S.stats.runs;
+  $('#cTime').textContent = Math.floor((performance.now() - S.stats.start) / 60000);
+}
+function hideAllPanels() { ['#summitPanel', '#lodge', '#ticket', '#soundP', '#finish', '#prompt', '#banner', '#skiBar', '#progress', '#touch'].forEach((s) => show(s, false)); }
+
+/* 캐릭터 메이커 */
+function buildSwatches(id, list, key) {
+  const row = $(id); row.innerHTML = '';
+  list.forEach((c) => {
+    const b = document.createElement('button'); b.className = 'sw'; b.style.background = c; b.setAttribute('aria-label', key + ' ' + c);
+    b.onclick = () => { me.opts[key] = c; setColors(me.c, me.opts); syncMaker(); };
+    row.appendChild(b);
+  });
+}
+function syncMaker() {
+  [['#swJacket', 'jacket', JACKETS], ['#swCap', 'cap', CAPS], ['#swPants', 'pants', PANTS], ['#swSkin', 'skin', SKINS]].forEach(([id, key, list]) => {
+    [...$(id).children].forEach((b, i) => b.classList.toggle('on', list[i] === me.opts[key]));
+  });
+  [...$('#segGear').children].forEach((b) => b.classList.toggle('on', b.dataset.v === me.opts.gear));
+  $('#anonInput').checked = me.opts.anon;
+}
+buildSwatches('#swJacket', JACKETS, 'jacket'); buildSwatches('#swCap', CAPS, 'cap'); buildSwatches('#swPants', PANTS, 'pants'); buildSwatches('#swSkin', SKINS, 'skin');
+[...$('#segGear').children].forEach((b) => b.onclick = () => { me.opts.gear = b.dataset.v; S.gearEdited = true; setGear(me.c, me.opts.gear); syncMaker(); });
+$('#rerollBtn').onclick = () => { const r = randOpts(); Object.assign(me.opts, { jacket: r.jacket, cap: r.cap, pants: r.pants, skin: r.skin }); setColors(me.c, me.opts); syncMaker(); SND.blip(); };
+$('#nameInput').oninput = (e) => { me.opts.name = e.target.value.trim(); S.nameEdited = true; };
+$('#anonInput').onchange = (e) => { me.opts.anon = e.target.checked; };
+
+/* ───────────── 모드 전환 ───────────── */
+function setMode(m) {
+  S.mode = m;
+  hideAllPanels();
+  show('#gate', m === 'gate');
+  show('#maker', m === 'maker'); show('#makerTitle', m === 'maker');
+  show('#hud', ['base', 'queue', 'lift', 'summit', 'ski', 'lodge'].includes(m));
+  show('#card', m === 'card');
+  show('#lodgeFrame', m === 'lodge');
+  show('#actions', ['base', 'summit', 'lift', 'queue'].includes(m));
+  show('#joystick', ['base', 'summit'].includes(m));
+  show('#sitBtn', m === 'base' || m === 'summit');
+  show('#social', ['base', 'summit', 'queue', 'lift'].includes(m));  // 이모트·채팅 바
+  show('#camReset', ['base', 'summit', 'queue', 'lift'].includes(m));
+  const ctx = camCtx(m); if (ctx !== S.ctx) { if (S.ctx) cut(); S.ctx = ctx; }
+  me.c.root.visible = m !== 'lodge' && m !== 'gate';
+}
+function leaveChair() {
+  const ch = S.chair; if (!ch) return;
+  (S.companions || []).forEach((cp) => { if (cp.temp) ch.g.remove(cp.c.root); });
+  ch.riders.forEach((r) => { r.c.root.visible = true; });
+  S.companions = []; S.companion = null; S.chair = null;
+}
+function goBase(at) {
+  leaveChair(); S.ski = null; S.sitting = false;
+  if (me.c.root.parent !== scene) scene.add(me.c.root);
+  me.c.root.rotation.set(0, 0, 0);
+  me.pos.copy(at || new THREE.Vector3(0, 0, 150)); me.target = null; me.c.pose = 'stand';
+  setMode('base');
+}
+
+/* 게이트 */
+$('#enterBtn').onclick = () => { SND.init(); SND.blip(); setMode('maker'); syncMaker(); me.pos.set(0, 0, 196); me.yaw = 0; };
+$('#makerDone').onclick = () => {
+  me.opts.name = $('#nameInput').value.trim() || '스노우라이브닉네임';
+  NET.saveAvatar();
+  SND.chime();
+  if (S.makerFrom) { goBase(S.makerFrom); S.makerFrom = null; toast('새 모습으로 갈아입었어요'); return; }
+  if (!S.stats.start) S.stats.start = performance.now();
+  goBase(new THREE.Vector3(0, 0, 150)); me.yaw = Math.PI;
+  toast('스노우라이브 마운틴에 오신 걸 환영해요');
+  setTimeout(() => toast('바닥을 누르거나 WASD로 이동 · 드래그로 시점 돌리기 · 휠(두 손가락)로 확대'), 2400);
+  setTimeout(() => toast('리프트 승강장은 오른쪽이에요'), 5600);
+  if (currentTod() === 'night') setTimeout(() => toast('지금은 야간 개장 중이에요'), 1200);
+};
+
+/* HUD 버튼 */
+$('#camReset').onclick = () => { const k = camKey(S.mode); if (k) Object.assign(S.cams[k], CAM_DEFAULT[k]); };
+$('#sndBtn').onclick = () => { const on = $('#soundP').classList.contains('hidden'); show('#soundP', on); show('#ticket', false); };
+$('#soundClose').onclick = () => show('#soundP', false);
+['bgm', 'amb', 'sfx'].forEach((k) => { $('#v' + k[0].toUpperCase() + k.slice(1)).oninput = (e) => { SND.vol[k] = +e.target.value; SND.apply(); }; });
+$('#todSel').onchange = (e) => { S.tod = e.target.value; applyTod(); };
+$('#chPill').onclick = () => openTicket();
+$('#exitBtn').onclick = () => openCard();
+$('#waveBtn').onclick = () => wave();
+$('#sitBtn').onclick = () => { if (S.mode === 'base' || S.mode === 'summit') { S.sitting = !S.sitting; me.target = null; $('#sitBtn').textContent = S.sitting ? '일어나기' : '앉기'; } };
+
+/* ───── 이모트 · 채팅 (리프트/베이스/정상) ───── */
+const EMO_LIST = ['👋', '😮', '✌️', '👏', '❤️'];
+me.em = ''; me.emT = -9; me.ms = ''; me.msT = -9;
+function nowS() { return performance.now() / 1000; }
+function myEmote(k) { me.em = k; me.emT = nowS(); SND.blip(); try { NET.publish(); } catch (e) {} }
+[...$('#emotes').children].forEach((b) => b.onclick = () => myEmote(b.dataset.e));
+$('#chatInput').addEventListener('keydown', (e) => e.stopPropagation());   // 입력 중엔 이동키로 안 샘
+$('#chatForm').addEventListener('submit', (e) => {
+  e.preventDefault();
+  const v = $('#chatInput').value.trim().slice(0, 40); $('#chatInput').value = '';
+  if (!v) return;
+  me.ms = v; me.msT = nowS(); SND.blip(); try { NET.publish(); } catch (e2) {}
+  $('#chatInput').blur();
+});
+/* 머리 위 말풍선 풀 */
+const bubPool = [];
+function bubbleAt(i, text, cls, wp) {
+  let d = bubPool[i];
+  if (!d) { d = document.createElement('div'); d._t = ''; d._c = ''; $('#bubbles').appendChild(d); bubPool[i] = d; }
+  const dist = camera.position.distanceTo(wp);
+  const v = wp.clone().project(camera);
+  if (v.z > 1 || Math.abs(v.x) > 1.1 || Math.abs(v.y) > 1.1) { d.style.display = 'none'; return; }
+  if (d._t !== text) { d.textContent = text; d._t = text; }
+  if (d._c !== cls) { d.className = 'bub ' + cls; d._c = cls; }
+  const sc = Math.max(0.55, Math.min(1, 46 / dist));
+  d.style.display = 'block';
+  d.style.transform = 'translate(-50%,-100%) scale(' + sc.toFixed(3) + ')';
+  d.style.left = Math.round((v.x + 1) / 2 * innerWidth) + 'px';
+  d.style.top = Math.round((1 - v.y) / 2 * innerHeight) + 'px';
+}
+function activeBubble(em, emT, ms, msT) {
+  const t = nowS();
+  if (ms && t - msT < 5) return { text: ms, cls: '' };
+  if (em && t - emT < 3) return { text: em, cls: 'emo' };
+  return null;
+}
+function updateBubbles() {
+  let i = 0;
+  const up = new THREE.Vector3(0, 2.75, 0);
+  const addFor = (o, wp) => { const b = activeBubble(o.em, o.emT, o.ms, o.msT); if (b) bubbleAt(i++, b.text, b.cls, wp.add(up.clone())); };
+  if (['base', 'queue', 'lift', 'summit', 'ski'].includes(S.mode)) {
+    addFor(me, me.c.root.getWorldPosition(new THREE.Vector3()));
+    (S.companions || []).forEach((cp) => addFor(cp, cp.c.root.getWorldPosition(new THREE.Vector3())));
+  }
+  if (typeof NET !== 'undefined' && NET.remotes) {
+    const mp = me.c.root.getWorldPosition(new THREE.Vector3());
+    const maxD = S.mode === 'lodge' ? 900 : 70;
+    NET.remotes.forEach((rm) => { if (!rm.c.root.visible) return; const wp = rm.c.root.getWorldPosition(new THREE.Vector3()); if (wp.distanceTo(mp) < maxD) addFor(rm, wp); });
+  }
+  for (; i < bubPool.length; i++) bubPool[i].style.display = 'none';
+}
+
+function wave() {
+  me.c.waveT = 1.6; SND.blip();
+  let near = [];
+  const mp = me.c.root.getWorldPosition(new THREE.Vector3());
+  bots.forEach((b) => { if (b.c.root.visible && b.c.root.getWorldPosition(new THREE.Vector3()).distanceTo(mp) < 26) near.push(b); });
+  if (S.mode === 'lift' && S.companions && S.companions.length) near = S.companions.slice();
+  if (near.length) {
+    const b = pick(near);
+    setTimeout(() => { b.c.waveT = 1.6; b.waveTag = 2.2; toast(b.name + '님이 손을 흔들어 줬어요'); SND.tone(990, 0.08, 0.3); }, 900);
+  }
+}
+
+/* 매표소 */
+function openTicket() {
+  hideAllPanels(); show('#ticket', true);
+  const st = S.stats;
+  const mins = st.start ? Math.floor((performance.now() - st.start) / 60000) : 0;
+  $('#statGrid').innerHTML = [['리프트', st.lift], ['하강', st.runs], ['자동 / 직접', st.auto + ' / ' + st.manual], ['넘어짐', st.falls], ['머문 시간', mins + '분'], ['같이 탄 사람', st.companions.size + '명']]
+    .map(([k, v]) => '<div class="stat"><div class="k">' + k + '</div><div class="v">' + v + '</div></div>').join('');
+  const chs = [[1, 60, false], [2, 31, true], [3, S.chCount, false], [4, 12, false], [5, 6, false]];
+  $('#chList').innerHTML = '';
+  chs.forEach(([n, c, fr]) => {
+    const b = document.createElement('button'); b.className = 'ch' + (n === S.ch ? ' on' : '');
+    b.innerHTML = '<span>' + n + '번 채널' + (fr ? '<span class="fr">친구 1명</span>' : '') + '</span><span>' + (c >= 60 ? '꽉 찼어요' : c + '/60명') + '</span>';
+    if (c >= 60) b.disabled = true;
+    b.onclick = () => { if (n === S.ch) return; S.ch = n; S.chCount = c + 1; $('#chText').textContent = n + '번 채널 · ' + S.chCount + '/60명'; bots.forEach((x) => x.name = pick(NAMES)); toast(n + '번 채널로 이동했어요'); openTicket(); };
+    $('#chList').appendChild(b);
+  });
+}
+$('#ticketClose').onclick = () => show('#ticket', false);
+
+/* 스키하우스 */
+const LODGE_MSG = ['핫초코를 홀짝이는 중. 창밖으로 사람들이 지나가요', '따뜻한 어묵 국물 한 모금', '컵라면이 익기를 기다리는 중'];
+function enterLodge() { setMode('lodge'); show('#lodge', true); [...$('#lodgeMenu').children].forEach((b) => b.classList.remove('on')); $('#lodgeMsg').textContent = '창밖으로 사람들이 지나가요. 천천히 쉬다 가세요'; $('#lodgeSeats').textContent = '창가 자리 · 자리 ' + (6 + Math.floor(Math.random() * 5)) + '/12'; }
+[...$('#lodgeMenu').children].forEach((b) => b.onclick = () => { [...$('#lodgeMenu').children].forEach((x) => x.classList.toggle('on', x === b)); $('#lodgeMsg').textContent = LODGE_MSG[+b.dataset.v]; SND.blip(); });
+$('#lodgeOut').onclick = () => goBase(new THREE.Vector3(0, 0, 108));
+
+/* 포토존 */
+function takePhoto() {
+  me.c.waveT = 1.6; show('#hud', false); show('#prompt', false);
+  setTimeout(() => {
+    renderer.render(scene, camera);
+    const url = canvas.toDataURL('image/png');
+    const a = document.createElement('a'); a.href = url; a.download = 'snowlive-mountain-photo.png'; a.click();
+    show('#hud', true); SND.tone(1400, 0.1, 0.15); toast('사진을 저장했어요');
+  }, 350);
+}
+
+/* 리프트 줄 */
+function joinQueue() {
+  setMode('queue'); S.queue = 2 + Math.floor(Math.random() * 5); S.companion = null;
+  me.pos.set(262, 0, 46 + S.queue * 2.2); me.target = null; me.yaw = Math.PI;
+  toast('줄을 섰어요. 4인 체어가 곧 와요');
+}
+const CHAIR_SLOTS = [-2.4, -0.8, 0.8, 2.4];     // 4인 체어 좌석 x좌표
+const SEAT_Y = -3.05 - 4.6 * K;
+function board(ch) {
+  S.chair = ch; S.stats.lift++; updateCounters();
+  ch.riders.forEach((r) => { r.c.root.visible = false; });
+  ch.g.add(me.c.root);
+  // 근처에 서 있는 사람들을 승강장 기준 가까운 순으로 묶어 같은 체어(최대 4인)에 태움
+  const base = new THREE.Vector3(262, 0, 46);
+  const cand = [];
+  // 실제 접속자(원격)가 리프트 근처에 있으면 우선으로 함께 태움
+  try { if (typeof NET !== 'undefined' && NET.remotes) NET.remotes.forEach((rm) => { if (rm.c.root.visible && rm.name) { const wp = rm.c.root.getWorldPosition(new THREE.Vector3()); const d = wp.distanceTo(base); if (d < 90) cand.push({ d, src: rm.c, name: rm.name }); } }); } catch (e) {}
+  cand.sort((a, b) => a.d - b.d);
+  // 모자란 인원은 줄 서 있던 사람들(큐 봇)로 채워 '함께 탑승' 느낌을 준다(표시 여부 무관)
+  const fill = queueBots.slice().sort(() => Math.random() - 0.5);
+  let fi = 0;
+  const groupSize = 1 + Math.floor(Math.random() * 3);   // 나 포함 2~4인
+  while (cand.length < groupSize - 1 && fi < fill.length) { cand.push({ d: 99, src: fill[fi].c, name: fill[fi].name }); fi++; }
+  // 좌석 배치: 나를 가운데 자리, 나머지를 가까운 순으로 채움
+  const mine = 1;
+  me.c.root.position.set(CHAIR_SLOTS[mine], SEAT_Y, 0.1); me.c.root.rotation.set(0, Math.PI, 0); me.c.pose = 'sit';
+  S.companions = [];
+  let si = 0;
+  for (const cd of cand) {
+    if (S.companions.length >= 3) break;
+    if (si === mine) si++;
+    if (si > 3) break;
+    const c = makeChar(Object.assign({}, cd.src.opts, { gear: cd.src.gear }));
+    c.pose = 'sit'; c.root.rotation.y = Math.PI; c.root.position.set(CHAIR_SLOTS[si], SEAT_Y, 0.1);
+    ch.g.add(c.root);
+    S.companions.push({ c, name: cd.name, temp: true, emT: 0 });
+    S.stats.companions.add(cd.name);
+    si++;
+  }
+  S.companion = S.companions[0] || null;
+  if (S.companions.length) {
+    const nm = S.companions.map((c) => c.name).join(', ');
+    setTimeout(() => toast(nm + '님과 같이 타요'), 600);
+  }
+  setMode('lift'); SND.clack();
+}
+function unboard() {
+  leaveChair();
+  scene.add(me.c.root); me.c.root.rotation.set(0, 0, 0);
+  me.pos.set(236, TOP_Y, -L - 6); me.yaw = 0; me.c.pose = 'stand';
+  setMode('summit'); openSummit(); SND.chime();
+}
+
+/* 정상 */
+function openSummit() {
+  show('#summitPanel', true); show('#prompt', false);
+  const list = $('#slopeList'); list.innerHTML = '';
+  TRAILS.forEach((t, i) => {
+    const b = document.createElement('button'); b.className = 'slope-btn' + (S.slope === i ? ' on' : '');
+    b.innerHTML = '<span class="flag" style="background:' + t.color + '"></span><span style="flex:1"><div class="t">' + t.name + ' <small>' + t.level + '</small></div><div class="d">' + t.desc + '</div></span><span class="num" style="font-size:12px">' + Math.round(L / t.auto) + 's</span>';
+    b.onclick = () => { S.slope = i; openSummit(); };
+    list.appendChild(b);
+  });
+  [...$('#segMode').children].forEach((b) => { b.classList.toggle('on', b.dataset.v === S.skiMode); b.onclick = () => { S.skiMode = b.dataset.v; openSummit(); }; });
+  $('#modeHint').textContent = S.skiMode === 'auto' ? '가만히 있어도 느긋하게 내려가요. 넘어지지 않아요' : '← → 방향, ↓ 제동 (모바일: 화면 왼쪽/오른쪽 누르기). 넘어져도 벌점은 없어요';
+  $('#goSki').textContent = TRAILS[S.slope].name + (S.skiMode === 'auto' ? '로 자동 하강' : '로 직접 타기');
+}
+$('#goSki').onclick = () => startSki();
+$('#stayTop').onclick = () => { show('#summitPanel', false); toast('전망 데크에서 쉬어가요. 슬로프 입구로 가면 다시 고를 수 있어요'); };
+
+/* 하강 */
+function startSki() {
+  const t = TRAILS[S.slope];
+  const z = -L + 2;
+  const h0 = Math.atan2(trailX(t, z + 4) - trailX(t, z), 4);
+  S.ski = { t, mode: S.skiMode, z, x: trailX(t, z), h: h0, v: 3, ph: Math.random() * 6, fallT: 0, falls: 0, steer: 0 };
+  me.c.pose = 'ski';
+  setMode('ski'); show('#progress', true); renderSkiBar();
+  show('#touch', S.skiMode === 'manual' && ('ontouchstart' in window));
+  SND.blip();
+}
+function renderSkiBar() {
+  const s = S.ski; show('#skiBar', true);
+  if (s.mode === 'auto') {
+    $('#skiBar').innerHTML = '<span>' + s.t.name + ' · 자동으로 내려가는 중</span><button class="btn primary" id="toManual" style="height:40px">직접 타기로 바꾸기</button>';
+    $('#toManual').onclick = () => { s.mode = 'manual'; s.h = 0; S.skiMode = 'manual'; renderSkiBar(); show('#touch', 'ontouchstart' in window); };
+  } else {
+    $('#skiBar').innerHTML = '<span><kbd>←</kbd> <kbd>→</kbd> 방향 · <kbd>↓</kbd> 제동</span><span style="color:#B8CCDD" id="fallTxt">넘어짐 ' + s.falls + '번</span><button class="btn ghost" id="toAuto" style="height:40px">자동으로</button>';
+    $('#toAuto').onclick = () => { s.mode = 'auto'; S.skiMode = 'auto'; s.fallT = 0; renderSkiBar(); show('#touch', false); };
+  }
+}
+function finishRun() {
+  const s = S.ski; S.ski = null;
+  S.stats.runs++; if (s.mode === 'auto') S.stats.auto++; else S.stats.manual++;
+  updateCounters(); SND.chime(); SND.setSwoosh(0);
+  me.c.pose = 'stand'; me.c.waveT = 1.6;
+  me.pos.set(me.pos.x, 0, 6);
+  setMode('base');
+  show('#finish', true);
+  $('#finTitle').textContent = '오늘 ' + S.stats.runs + '번째로 내려왔어요';
+  const comp = S.lastCompanion ? S.lastCompanion + '님과 같이 탔어요 · ' : '';
+  $('#finSub').textContent = comp + (s.mode === 'auto' ? '자동 하강' : '넘어진 횟수 ' + s.falls + '번');
+}
+$('#finAgain').onclick = () => { show('#finish', false); joinQueue(); };
+$('#finBase').onclick = () => { show('#finish', false); goBase(new THREE.Vector3(me.pos.x, 0, 20)); };
+$('#finExit').onclick = () => { show('#finish', false); openCard(); };
+
+/* 산행 카드 */
+let cardData = null;
+function openCard() {
+  const prev = S.mode;
+  if (S.mode === 'lodge' || S.mode === 'gate' || S.mode === 'maker') goBase(new THREE.Vector3(0, 0, 150));
+  me.c.waveT = 3;
+  camPhoto();
+  renderer.render(scene, camera);
+  const url = canvas.toDataURL('image/jpeg', 0.9);
+  $('#cardImg').src = url;
+  const d = new Date();
+  $('#cardDate').textContent = d.getFullYear() + '.' + String(d.getMonth() + 1).padStart(2, '0') + '.' + String(d.getDate()).padStart(2, '0');
+  const st = S.stats, mins = st.start ? Math.max(1, Math.round((performance.now() - st.start) / 60000)) : 0;
+  cardData = { url, lift: st.lift, runs: st.runs, mins, comp: st.companions.size, date: $('#cardDate').textContent };
+  $('#cardStats').innerHTML = [['리프트', st.lift], ['하강', st.runs], ['머문 시간', mins + '분'], ['같이 탄 사람', st.companions.size + '명']]
+    .map(([k, v]) => '<div><div class="k">' + k + '</div><div class="v">' + v + '</div></div>').join('');
+  setMode('card');
+  S.prevMode = prev;
+}
+function camPhoto() {
+  const p = me.c.root.getWorldPosition(new THREE.Vector3());
+  const az = S.cams.base.az;
+  camera.position.set(p.x + Math.sin(az + 0.5) * 4.6, p.y + 2.1, p.z + Math.cos(az + 0.5) * 4.6); camera.lookAt(p.x, p.y + 1.15, p.z);
+}
+$('#cardSave').onclick = () => {
+  if (!cardData) return;
+  const cv = document.createElement('canvas'); cv.width = 720; cv.height = 1000;
+  const g = cv.getContext('2d');
+  g.fillStyle = '#ffffff'; g.fillRect(0, 0, 720, 1000);
+  const img = new Image();
+  img.onload = () => {
+    const r = Math.max(688 / img.width, 520 / img.height), w = img.width * r, h = img.height * r;
+    g.save(); g.beginPath(); g.rect(16, 16, 688, 520); g.clip(); g.drawImage(img, 16 + (688 - w) / 2, 16 + (520 - h) / 2, w, h); g.restore();
+    g.fillStyle = '#ffffff'; g.font = '28px Silkscreen, monospace'; g.fillText('SNOWLIVE MOUNTAIN', 40, 60);
+    g.fillStyle = '#12263A'; g.font = '900 44px "Noto Sans KR", sans-serif'; g.fillText('오늘의 라이딩', 40, 616);
+    g.fillStyle = '#4A6075'; g.font = '26px Silkscreen, monospace'; g.textAlign = 'right'; g.fillText(cardData.date, 680, 616); g.textAlign = 'left';
+    [['리프트', cardData.lift], ['하강', cardData.runs], ['머문 시간', cardData.mins + '분'], ['같이 탄 사람', cardData.comp + '명']].forEach(([k, v], i) => {
+      const x = 40 + (i % 2) * 330, y = 690 + Math.floor(i / 2) * 120;
+      g.fillStyle = '#4A6075'; g.font = '500 24px "Noto Sans KR", sans-serif'; g.fillText(k, x, y);
+      g.fillStyle = '#12263A'; g.font = '900 52px "Noto Sans KR", sans-serif'; g.fillText(String(v), x, y + 60);
+    });
+    g.fillStyle = '#4A6075'; g.font = '20px "Noto Sans KR", sans-serif'; g.fillText('온라인 스키장 기록 · 실제 라이딩 기록·랭킹과는 별개예요', 40, 960);
+    const a = document.createElement('a'); a.href = cv.toDataURL('image/png'); a.download = 'snowlive-mountain-card.png'; a.click();
+    toast('카드를 저장했어요');
+  };
+  img.src = cardData.url;
+};
+$('#cardShare').onclick = async () => {
+  const text = '스노우라이브 마운틴에서 리프트 ' + (cardData ? cardData.lift : 0) + '번, 하강 ' + (cardData ? cardData.runs : 0) + '번 탔어요';
+  if (navigator.share) { try { await navigator.share({ title: '스노우라이브 마운틴', text }); } catch (e) { } }
+  else { try { await navigator.clipboard.writeText(text); toast('공유 문구를 복사했어요'); } catch (e) { toast(text); } }
+};
+$('#cardBack').onclick = () => goBase(new THREE.Vector3(0, 0, 150));
+
+/* ───────────── 입력 ───────────── */
+window.addEventListener('keydown', (e) => {
+  keys[e.key.toLowerCase()] = true;
+  if (['arrowup', 'arrowdown', 'arrowleft', 'arrowright', ' '].includes(e.key.toLowerCase())) e.preventDefault();
+  if ((e.key === 'e' || e.key === 'E' || e.key === 'Enter') && !$('#prompt').classList.contains('hidden')) $('#promptBtn').click();
+  if (e.key === 'Escape') { ['#ticket', '#soundP'].forEach((s) => show(s, false)); }
+});
+window.addEventListener('keyup', (e) => { keys[e.key.toLowerCase()] = false; });
+const ray = new THREE.Raycaster(), mouse = new THREE.Vector2();
+function clickMove(e) {
+  if (S.mode !== 'base' && S.mode !== 'summit') return;
+  mouse.set((e.clientX / innerWidth) * 2 - 1, -(e.clientY / innerHeight) * 2 + 1);
+  ray.setFromCamera(mouse, camera);
+  const hit = ray.intersectObject(terrainMesh)[0];
+  if (hit) { me.target = hit.point.clone(); S.sitting = false; $('#sitBtn').textContent = '앉기'; }
+}
+function orbitBy(dx, dy) {
+  if (S.mode === 'maker') { S.makerDrag = true; me.yaw += dx * 0.012; return; }
+  const c = camCur(); if (!c) return;
+  c.az -= dx * 0.0052;
+  c.pitch = clamp(c.pitch + dy * 0.004, 0.03, 1.25);
+}
+const ptrs = new Map(); let dragMoved = false, pinch0 = 0, dist0 = 0;
+canvas.addEventListener('pointerdown', (e) => {
+  try { canvas.setPointerCapture(e.pointerId); } catch (_) { }
+  ptrs.set(e.pointerId, { x: e.clientX, y: e.clientY, sx: e.clientX, sy: e.clientY });
+  if (ptrs.size === 1) dragMoved = false;
+  if (ptrs.size === 2) {
+    const [a, b] = [...ptrs.values()]; pinch0 = Math.hypot(a.x - b.x, a.y - b.y);
+    const c = camCur(); dist0 = c ? c.dist : 0; dragMoved = true;
+  }
+});
+canvas.addEventListener('pointermove', (e) => {
+  const p = ptrs.get(e.pointerId); if (!p) return;
+  const dx = e.clientX - p.x, dy = e.clientY - p.y; p.x = e.clientX; p.y = e.clientY;
+  if (ptrs.size === 1) {
+    if (Math.hypot(e.clientX - p.sx, e.clientY - p.sy) > 6) dragMoved = true;
+    if (dragMoved) orbitBy(dx, dy);
+  } else if (ptrs.size === 2 && pinch0) {
+    const [a, b] = [...ptrs.values()]; const d = Math.hypot(a.x - b.x, a.y - b.y);
+    const c = camCur(); if (c && d > 0) c.dist = clamp(dist0 * pinch0 / d, 6, 46);
+  }
+});
+function ptrEnd(e) {
+  const p = ptrs.get(e.pointerId); ptrs.delete(e.pointerId);
+  if (p && !dragMoved && ptrs.size === 0 && e.type === 'pointerup') clickMove(e);
+  if (ptrs.size < 2) pinch0 = 0;
+}
+canvas.addEventListener('pointerup', ptrEnd); canvas.addEventListener('pointercancel', ptrEnd);
+canvas.addEventListener('wheel', (e) => {
+  const c = camCur(); if (!c) return;
+  e.preventDefault(); c.dist = clamp(c.dist * (1 + clamp(e.deltaY, -120, 120) * 0.0008), 6, 46);
+}, { passive: false });
+function bindTouch(el, side) {
+  const on = (v) => (e) => { e.preventDefault(); touch[side] = v; el.classList.toggle('on', v); };
+  el.addEventListener('pointerdown', on(true)); el.addEventListener('pointerup', on(false)); el.addEventListener('pointerleave', on(false)); el.addEventListener('pointercancel', on(false));
+}
+bindTouch($('#tL'), 'l'); bindTouch($('#tR'), 'r');
+
+/* ── 이동 조이스틱(베이스·정상 걷기) ── */
+const JOY = { active: false, x: 0, y: 0 };
+(function () {
+  const base = $('#joystick'), knob = $('#joyKnob'); if (!base || !knob) return;
+  const R = 33; let pid = null;
+  function setFrom(cx, cy) {
+    const r = base.getBoundingClientRect();
+    let dx = cx - (r.left + r.width / 2), dy = cy - (r.top + r.height / 2);
+    const m = Math.hypot(dx, dy); let kx = dx, ky = dy;
+    if (m > R) { kx = dx / m * R; ky = dy / m * R; }
+    knob.style.transform = 'translate(' + kx + 'px,' + ky + 'px)';
+    JOY.x = kx / R; JOY.y = ky / R; JOY.active = true;
+  }
+  function end() { JOY.active = false; JOY.x = 0; JOY.y = 0; knob.style.transform = 'translate(0,0)'; pid = null; }
+  base.addEventListener('pointerdown', (e) => { e.preventDefault(); e.stopPropagation(); pid = e.pointerId; try { base.setPointerCapture(pid); } catch (_) {} setFrom(e.clientX, e.clientY); });
+  base.addEventListener('pointermove', (e) => { if (pid === null || e.pointerId !== pid) return; e.preventDefault(); setFrom(e.clientX, e.clientY); });
+  base.addEventListener('pointerup', (e) => { if (e.pointerId === pid) { e.stopPropagation(); end(); } });
+  base.addEventListener('pointercancel', () => end());
+})();
+
+/* ───────────── 시간대 ───────────── */
+function currentTod() {
+  if (S.tod !== 'real') return S.tod;
+  const h = new Date(Date.now() + (new Date().getTimezoneOffset() + 540) * 60000).getHours();
+  if (h >= 9 && h < 16) return 'day'; if (h >= 16 && h < 18) return 'sunset'; if (h >= 18) return 'night'; return 'dawn';
+}
+const TOD = {
+  day: { sky: 0xB3DCF2, fog: 0xDEEBF4, hs: 0xFFFBF2, hg: 0xCBD8E0, hi: 0.82, sc: 0xFFF2DC, si: 0.82, win: 0.15, lamp: 0 },
+  sunset: { sky: 0xF0A47E, fog: 0xF4C6A6, hs: 0xFFE0C8, hg: 0x8A90A8, hi: 0.62, sc: 0xFFB070, si: 0.75, win: 0.6, lamp: 0.6 },
+  night: { sky: 0x0E1A33, fog: 0x1A2A4C, hs: 0x7A8FC0, hg: 0x1A2238, hi: 0.42, sc: 0xAFC2FF, si: 0.32, win: 1, lamp: 1.6 },
+  dawn: { sky: 0x8FA6D6, fog: 0xB9C6E6, hs: 0xD6E0FF, hg: 0x6A7898, hi: 0.6, sc: 0xD0DCFF, si: 0.5, win: 0.4, lamp: 0.4 }
+};
+function applyTod() {
+  const p = TOD[currentTod()];
+  scene.background = new THREE.Color(p.sky); scene.fog.color.setHex(p.fog);
+  hemi.color.setHex(p.hs); hemi.groundColor.setHex(p.hg); hemi.intensity = p.hi;
+  sun.color.setHex(p.sc); sun.intensity = p.si;
+  windowMat.emissiveIntensity = p.win; lampMat.emissiveIntensity = p.lamp > 0 ? 0.9 : 0.1;
+  lamps.forEach((l) => l.intensity = p.lamp);
+}
+applyTod();
+
+/* 눈 */
+const SNOW_N = 1800;
+const snowGeo = new THREE.BufferGeometry();
+const snowPos = new Float32Array(SNOW_N * 3);
+for (let i = 0; i < SNOW_N; i++) { snowPos[i * 3] = (Math.random() - 0.5) * 160; snowPos[i * 3 + 1] = Math.random() * 90; snowPos[i * 3 + 2] = (Math.random() - 0.5) * 160; }
+snowGeo.setAttribute('position', new THREE.BufferAttribute(snowPos, 3));
+const snow = new THREE.Points(snowGeo, new THREE.PointsMaterial({ color: 0xffffff, size: 0.55, transparent: true, opacity: 0.9, depthWrite: false }));
+scene.add(snow);
+
+/* 이름표 */
+const lblPool = [];
+function labelAt(i, text, cls, wp, img) {
+  let d = lblPool[i];
+  if (!d) { d = document.createElement('div'); d._mode = ''; d._img = ''; d._txt = ''; $('#labels').appendChild(d); lblPool[i] = d; }
+  const dist = camera.position.distanceTo(wp);           // 멀수록 라벨을 작게
+  const v = wp.clone().project(camera);
+  if (v.z > 1 || v.x < -1.1 || v.x > 1.1 || v.y < -1.1 || v.y > 1.1) { d.style.display = 'none'; return; }
+  const want = img ? 'i' : 't';
+  if (d._mode !== want) {
+    d.innerHTML = img ? '<img class="lblimg" alt=""><span class="lbltxt"></span>' : '<span class="lbltxt"></span>';
+    d._mode = want; d._img = ''; d._txt = '';
+  }
+  if (img) { const im = d.querySelector('.lblimg'); if (d._img !== img) { im.src = img; d._img = img; } }
+  const sp = d.querySelector('.lbltxt'); if (d._txt !== text) { sp.textContent = text; d._txt = text; }
+  d.className = 'lbl ' + (cls || ''); d.style.display = 'flex';
+  const sc = Math.max(0.5, Math.min(1, 44 / dist));      // 44m 이내 원본크기 → 멀수록 0.5까지 축소
+  d.style.transform = 'translate(-50%,-100%) scale(' + sc.toFixed(3) + ')';
+  d.style.left = Math.round((v.x + 1) / 2 * innerWidth) + 'px'; d.style.top = Math.round((1 - v.y) / 2 * innerHeight) + 'px';
+}
+
+/* ───────────── 업데이트 ───────────── */
+const tmp = new THREE.Vector3(), tmp2 = new THREE.Vector3();
+
+/* ───────────── 멀티플레이(RTDB) ───────────── */
+const API='https://snowlive-api-c617725e2b78.herokuapp.com/api/online-resort/';
+const NET = {
+  ready:false, root:'resort/channels', ch:'ch1', cap:30,
+  remotes:new Map(), acc:0, count:1, uid:null, selfRef:null, playersRef:null, nameTried:false,
+  async init(){ try{ const r=await fetch(API+'config/',{cache:'no-store'}); if(r.ok){ const c=await r.json(); this.root=c.rtdb_root||this.root; this.ch=c.default_channel||this.ch; this.cap=c.render_cap||this.cap; } }catch(e){} },
+  connect(){
+    const fb=window.__fb; if(!fb||!fb.ready||this.ready) return;
+    const urlUid=(new URLSearchParams(location.search).get('uid')||'').trim();
+    this.realUid = !!(fb.uid || urlUid);
+    this.uid = fb.uid || urlUid || ('guest_'+Date.now()+'_'+Math.floor(Math.random()*1e4));
+    this.playersRef = fb.ref(this.root+'/'+this.ch+'/players');
+    this.selfRef = fb.ref(this.root+'/'+this.ch+'/players/'+this.uid);
+    try{ fb.onDisconnect(this.selfRef).remove(); }catch(e){}
+    fb.onValue(this.playersRef,(snap)=>{
+      const val=snap.val()||{}, keys=Object.keys(val); this.count=keys.length||1; const seen=new Set();
+      for(const k of keys){ if(k===this.uid) continue; const d=val[k]; if(!d) continue; seen.add(k); this.upsert(k,d); }
+      for(const k of [...this.remotes.keys()]){ if(!seen.has(k)){ const rm=this.remotes.get(k); scene.remove(rm.c.root); this.remotes.delete(k); } }
+      S.live=this.count; const lc=document.getElementById('liveCount'); if(lc) lc.textContent=this.count;
+      const ll=document.getElementById('liveLoad'), lr=document.getElementById('liveReal'); if(ll&&lr){ ll.hidden=true; lr.hidden=false; }
+      const ct=document.getElementById('chText'); if(ct) ct.textContent=(this.ch.replace('ch',''))+'번 채널 · '+this.count+'/60명';
+    },()=>{ this.ready=false; });
+    this.ready=true; if(this.realUid){ this.fetchName(); this.loadAvatar(); }
+  },
+  fetchName(){ if(this.nameTried) return; this.nameTried=true;
+    fetch(API+'me/?uid='+encodeURIComponent(this.uid)).then(r=>r.json()).then(j=>{ if(j&&j.found){ if(j.display_name){ me.opts.name=j.display_name; const ni=document.getElementById('nameInput'); if(ni&&!S.nameEdited) ni.value=j.display_name; } if(j.profile_image) me.pi=j.profile_image;
+      /* 유저 테이블의 스키/보드를 캐릭터 장비로 반영(직접 바꾸거나 저장아바타가 있으면 그걸 우선) */
+      if((j.gear==='ski'||j.gear==='board') && !S.gearEdited){ me.opts.gear=j.gear; setGear(me.c, me.opts.gear); if(typeof syncMaker==='function') syncMaker(); }
+    } }).catch(()=>{});
+  },
+  /* 저장된 아바타(재킷/모자/바지/피부/장비)를 RTDB에서 복원 — 로그인 유저만 */
+  loadAvatar(){ const fb=window.__fb; if(!fb||!this.realUid||!fb.get) return;
+    try{ fb.get(fb.ref('resort/avatars/'+this.uid)).then((snap)=>{ const a=snap&&snap.val(); if(a&&a.jacket){ ['jacket','cap','pants','skin','gear','ski','boardColor'].forEach((k)=>{ if(a[k]) me.opts[k]=a[k]; }); if(a.gear) S.gearEdited=true; setColors(me.c,me.opts); setGear(me.c,me.opts.gear); if(typeof syncMaker==='function') syncMaker(); } }).catch(()=>{}); }catch(e){}
+  },
+  /* 꾸민 아바타를 RTDB에 저장(이대로 입장 시) — 로그인 유저만 */
+  saveAvatar(){ const fb=window.__fb; if(!fb||!this.realUid) return; const o=me.opts;
+    try{ fb.set(fb.ref('resort/avatars/'+this.uid), { jacket:o.jacket, cap:o.cap, pants:o.pants, skin:o.skin, gear:o.gear, ski:o.ski, boardColor:o.boardColor, t:fb.serverTimestamp() }); }catch(e){}
+  },
+  optsFrom(d){ return { jacket:d.j||'#2F6FD6', cap:d.cp||'#2F6FD6', pants:d.pt||'#33475B', skin:d.sk||'#F6D5B8', gear:d.g||'ski', ski:d.ski||'#F2B134', boardColor:d.bc||'#8E6BD8' }; },
+  upsert(uid,d){
+    let rm=this.remotes.get(uid); const opts=this.optsFrom(d), os=JSON.stringify(opts);
+    if(!rm){ const c=makeChar(opts); scene.add(c.root); rm={ c, tpos:new THREE.Vector3(d.x||0,d.y||0,d.z||0), tyaw:d.yw||0, pose:d.p||'stand', name:d.n||'', pi:d.pi||'', opts:os, em:'', emT:-9, ms:'', msT:-9, lastT:0, stableSince:performance.now() }; c.root.position.copy(rm.tpos); this.remotes.set(uid,rm); }
+    rm.tpos.set(d.x||0,d.y||0,d.z||0); rm.tyaw=d.yw||0; rm.pose=d.p||'stand'; rm.name=d.n||''; rm.pi=d.pi||'';
+    // 이모트·채팅: 새 값이 들어올 때만 수신시각 갱신(과거 값 재표시 방지)
+    const em=d.em||'', ms=d.ms||'';
+    if(em && em!==rm.em){ rm.em=em; rm.emT=performance.now()/1000; } else if(!em){ rm.em=''; }
+    if(ms && ms!==rm.ms){ rm.ms=ms; rm.msT=performance.now()/1000; } else if(!ms){ rm.ms=''; }
+    // 자리비움(AFK) 감지: 서버 타임스탬프가 멈춘 지 오래면 표시
+    if(d.t!==rm.lastT){ rm.lastT=d.t; rm.stableSince=performance.now(); }
+    if(os!==rm.opts){ setColors(rm.c,opts); setGear(rm.c,opts.gear); rm.opts=os; }
+  },
+  tick(dt){
+    const fb=window.__fb;
+    if(!this.ready){ this.connect(); if(!this.ready) return; }
+    this.acc+=dt;
+    if(this.acc>=0.1 && this.selfRef){ this.acc=0; this.publish(); }
+    if(this.remotes.size){
+      const mp=me.c.root.getWorldPosition(new THREE.Vector3());
+      const arr=[...this.remotes.values()]; arr.sort((a,b)=>a.tpos.distanceToSquared(mp)-b.tpos.distanceToSquared(mp));
+      arr.forEach((rm,idx)=>{
+        const vis=idx<this.cap; rm.c.root.visible=vis; if(!vis) return;
+        rm.c.root.position.lerp(rm.tpos, Math.min(1,dt*10));
+        let dy=rm.tyaw-rm.c.root.rotation.y; while(dy>Math.PI)dy-=2*Math.PI; while(dy<-Math.PI)dy+=2*Math.PI;
+        rm.c.root.rotation.y += dy*Math.min(1,dt*10);
+        rm.c.pose=rm.pose; animChar(rm.c,dt, rm.pose==='ski'?{lean:0}:undefined);
+      });
+    }
+  },
+  publish(){
+    const fb=window.__fb; if(!fb||!this.selfRef) return;
+    if(!['base','queue','lift','summit','ski','lodge'].includes(S.mode)) return;
+    const o=me.opts, wp=me.c.root.getWorldPosition(new THREE.Vector3());
+    const ts=performance.now()/1000;
+    const emOut=(ts-(me.emT||-9)<3)?(me.em||''):'';
+    const msOut=(ts-(me.msT||-9)<5)?(me.ms||''):'';
+    try{ fb.set(this.selfRef,{ x:+wp.x.toFixed(2), y:+wp.y.toFixed(2), z:+wp.z.toFixed(2), yw:+me.yaw.toFixed(3), p:me.c.pose, m:S.mode, n:myName(), pi:(me.pi||''), j:o.jacket, cp:o.cap, pt:o.pants, sk:o.skin, g:o.gear, ski:o.ski, bc:o.boardColor, em:emOut, ms:msOut, t:fb.serverTimestamp() }); }catch(e){}
+  },
+  labels(labelAt, box, maxDist){
+    const d=maxDist||40, mp=me.c.root.getWorldPosition(new THREE.Vector3());
+    [...this.remotes.values()].forEach((rm)=>{ if(!rm.c.root.visible||!rm.name) return; const wp=rm.c.root.getWorldPosition(new THREE.Vector3()); if(wp.distanceTo(mp)<d){ const afk=(performance.now()-rm.stableSince)>4000; labelAt(box.v++, (afk?'💤 ':'')+rm.name, '', wp.add(new THREE.Vector3(0,2.15,0)), rm.pi); } });
+  }
+};
+NET.init();
+
+let lastChairS = LIFT.chairs.map((c) => c.s);
+let liftClock = 0, clackT = 0, liveT = 0;
+
+function moveWalker(pos, target, dt, speed) {
+  tmp.set(target.x - pos.x, 0, target.z - pos.z);
+  const d = tmp.length();
+  if (d < 0.4) return null;
+  tmp.multiplyScalar(Math.min(d, speed * dt) / d);
+  pos.add(tmp);
+  return Math.atan2(tmp.x, tmp.z);
+}
+function walkBounds(p) {
+  if (S.mode === 'summit') { p.x = clamp(p.x, -300, 300); p.z = clamp(p.z, -L - 80, -L + 6); p.y = TOP_Y; }
+  else { p.x = clamp(p.x, -300, 300); p.z = clamp(p.z, -20, 236); p.y = groundH(p.x, p.z); }
+}
+
+function update(dt) {
+  const T = performance.now() / 1000;
+  liftClock = T;   // 벽시계 기반 — 탭을 벗어나 프레임이 멈춰도 리프트는 계속 진행(복귀 시 현재 위치로 스냅)
+  /* 리프트 체어 */
+  const departs = [];
+  LIFT.chairs.forEach((ch, i) => {
+    const s = (ch.i * LIFT.spacing + liftClock * LIFT.speed) % (2 * LIFT.len);
+    if (s < lastChairS[i]) departs.push(ch);
+    lastChairS[i] = s; ch.s = s;
+    LIFT.posAt(s, ch.g.position);
+    ch.g.rotation.y = 0;
+    ch.riders.forEach((r) => { if (r.c.root.visible) animChar(r.c, dt); });
+  });
+  /* 줄 · 탑승 */
+  if (S.mode === 'queue') {
+    departs.forEach((ch) => {
+      if (S.queue <= 0 && S.mode === 'queue') { S.lastCompanion = null; board(ch); if (S.companion) S.lastCompanion = S.companion.name; }
+      else { S.queue = Math.max(0, S.queue - (1 + Math.floor(Math.random() * 3))); }
+    });
+    if (S.mode === 'queue') {
+      const spot = new THREE.Vector3(262, 0, 46 + S.queue * 2.2);
+      const yw = moveWalker(me.pos, spot, dt, 4); me.c.pose = yw === null ? 'stand' : 'skate'; if (yw !== null) me.yaw = yw;
+      const next = Math.min(...LIFT.chairs.map((c) => (2 * LIFT.len - c.s) / LIFT.speed));
+      const wait = Math.round(next + S.queue * (LIFT.spacing / LIFT.speed) / 2);
+      show('#banner', true);
+      $('#banner').innerHTML = '<b>' + (S.queue > 0 ? '앞에 ' + S.queue + '명' : '다음 체어에 타요') + '</b><span class="sep"></span><span>약 <b class="num">' + wait + '</b>초</span><span class="sep"></span><span style="color:#B8CCDD;font-size:13px">4인 체어 · 체어 간격 ' + Math.round(LIFT.spacing / LIFT.speed) + '초</span>';
+    }
+  }
+  if (S.mode === 'lift' && S.chair) {
+    const f = S.chair.s / LIFT.len;
+    clackT += dt; if (clackT > 4.2) { clackT = 0; SND.clack(); }
+    show('#banner', true);
+    const comps = S.companions || [];
+    const compTxt = comps.length ? (comps.length > 1 ? comps[0].name + ' 외 ' + (comps.length - 1) + '명' : comps[0].name) + '과 같이 타는 중' : '';
+    $('#banner').innerHTML = (compTxt ? '<span>' + compTxt + '</span><span class="sep"></span>' : '') + '<span>정상까지 <b class="num">' + Math.max(0, Math.round((LIFT.len - S.chair.s) / LIFT.speed)) + '</b>초</span><span class="sep"></span><span style="width:120px;height:8px;background:#3A4E63;display:inline-block;position:relative"><i style="position:absolute;left:0;top:0;bottom:0;width:' + Math.round(f * 100) + '%;background:#fff"></i></span>';
+    animChar(me.c, dt, { swing: keys['arrowdown'] || keys['s'] });
+    (S.companions || []).forEach((cp) => {
+      animChar(cp.c, dt);
+      // 동승자도 가끔 이모트로 반응(내가 이모트하면 더 자주 화답)
+      cp.emClock = (cp.emClock || Math.random() * 4) + dt;
+      const react = (nowS() - (me.emT || -9) < 1.2);
+      if (cp.emClock > (react ? 0.6 + Math.random() * 0.8 : 5 + Math.random() * 6)) {
+        cp.emClock = 0; cp.em = react ? pick(['👋', '✌️', '❤️', '👏']) : pick(EMO_LIST); cp.emT = nowS();
+      }
+    });
+    if (S.chair.s >= LIFT.len - 1.5) unboard();
+  }
+  /* 걷기(베이스 · 정상) */
+  if (S.mode === 'base' || S.mode === 'summit' || S.mode === 'maker') {
+    let mx = 0, mz = 0;
+    if (S.mode !== 'maker') {
+      if (keys['w'] || keys['arrowup']) mz -= 1; if (keys['s'] || keys['arrowdown']) mz += 1;
+      if (keys['a'] || keys['arrowleft']) mx -= 1; if (keys['d'] || keys['arrowright']) mx += 1;
+      if (JOY.active && Math.hypot(JOY.x, JOY.y) > 0.15) { mx += JOY.x; mz += JOY.y; }
+    }
+    let moving = false;
+    if (mx || mz) {
+      const az = (camCur() || S.cams.base).az, c = Math.cos(az), s = Math.sin(az);
+      const vx = mx * c + mz * s, vz = -mx * s + mz * c, n = Math.hypot(vx, vz);
+      me.pos.x += vx / n * 10 * dt; me.pos.z += vz / n * 10 * dt; me.yaw = Math.atan2(vx, vz); moving = true; me.target = null; S.sitting = false;
+    } else if (me.target) {
+      const yw = moveWalker(me.pos, me.target, dt, 10);
+      if (yw === null) me.target = null; else { me.yaw = yw; moving = true; }
+    }
+    walkBounds(me.pos);
+    me.c.pose = S.sitting ? 'sit' : (moving ? 'skate' : 'stand');
+    if (S.mode === 'maker') { if (!S.makerDrag) me.yaw += dt * 0.6; me.c.pose = 'stand'; }
+    /* 시설 프롬프트 */
+    let near = null;
+    if (S.mode === 'base') {
+      for (const f of FAC) { const d = Math.hypot(f.x - me.pos.x, f.z - me.pos.z); if (d < f.r && (!near || d < near.d)) near = Object.assign({ d }, f); }
+    } else if (S.mode === 'summit' && $('#summitPanel').classList.contains('hidden')) {
+      if (me.pos.z > -L - 14) near = { id: 'summit', label: '슬로프 입구', action: '슬로프 고르기' };
+    }
+    const anyPanel = !$('#ticket').classList.contains('hidden') || !$('#soundP').classList.contains('hidden') || !$('#finish').classList.contains('hidden');
+    if (near && !anyPanel && S.mode !== 'maker') {
+      show('#prompt', true);
+      if ($('#promptText').dataset.id !== near.id) {
+        $('#promptText').dataset.id = near.id;
+        $('#promptText').innerHTML = near.label + '<kbd>E</kbd>';
+        $('#promptBtn').textContent = near.action;
+        $('#promptBtn').onclick = () => facility(near.id);
+      }
+    } else { show('#prompt', false); $('#promptText').dataset.id = ''; }
+  }
+  /* 하강 */
+  if (S.mode === 'ski' && S.ski) {
+    const s = S.ski, t = s.t;
+    let lean = 0, hop = 0;
+    if (s.fallT > 0) {
+      s.fallT -= dt; me.c.pose = 'fall';
+      animChar(me.c, dt, { k: s.fallT > 0.7 ? 1 : s.fallT / 0.7 });
+      if (s.fallT <= 0) { me.c.pose = 'ski'; s.h = Math.atan2(trailX(t, Math.min(0, s.z + 4)) - trailX(t, Math.min(0, s.z)), 4); s.v = 2; }
+    } else if (s.mode === 'auto') {
+      s.z = Math.min(0, s.z + t.auto * dt);
+      const x0 = autoX(t, s.z, s.ph), x1 = autoX(t, s.z + 0.6, s.ph);
+      s.x = x0; s.h = Math.atan2(x1 - x0, 0.6); s.v = t.auto;
+      lean = clamp(Math.sin(-s.z / 9 + s.ph + Math.PI / 2) * 1.0, -1, 1) * -0.8;
+    } else {
+      const left = keys['arrowleft'] || keys['a'] || touch.l, right = keys['arrowright'] || keys['d'] || touch.r;
+      const brake = keys['arrowdown'] || keys['s'] || (touch.l && touch.r);
+      const steer = brake && touch.l && touch.r ? 0 : (right ? 1 : 0) - (left ? 1 : 0);
+      s.steer = lerp(s.steer, steer, Math.min(1, dt * 8));
+      s.h = clamp(s.h + s.steer * 1.9 * dt, -1.45, 1.45);
+      const g = 9.8 * slopeAt(s.z) * 1.6;
+      let a = g * Math.cos(s.h) - 0.0125 * s.v * s.v - 0.35 - (brake ? 9 : 0) - Math.abs(Math.sin(s.h)) * 1.5;
+      s.v = clamp(s.v + a * dt, 0, t.vmax);
+      s.x += Math.sin(s.h) * s.v * dt; s.z += Math.cos(s.h) * s.v * dt;
+      s.z = Math.min(0.5, s.z);
+      const off = s.x - trailX(t, Math.min(0, s.z)), lim = t.w / 2 + 6;
+      if (Math.abs(off) > lim) { s.v *= 1 - 1.2 * dt; s.h -= Math.sign(off) * 0.9 * dt; }
+      s.x = clamp(s.x, -320, 320);
+      if (s.z < -L + 4) s.z = Math.max(s.z, -L + 2);
+      lean = s.steer;
+      if (t.id === 'k') for (const m of MOGULS) { if (Math.abs(m.z - s.z) < 1.4 && Math.abs(m.x - s.x) < 1.6) { hop = 0.35; break; } }
+      if (s.v > 4 && hitTree(s.x, s.z)) {
+        s.fallT = 1.7; s.falls++; S.stats.falls++; s.v = 0; SND.pop(); toast('푹! 괜찮아요, 금방 일어나요');
+        s.x -= Math.sin(s.h) * 2.2; s.z -= Math.cos(s.h) * 2.2;
+        const fx = $('#fallTxt'); if (fx) fx.textContent = '넘어짐 ' + s.falls + '번';
+      }
+    }
+    me.pos.set(s.x, groundH(s.x, s.z), s.z);
+    me.yaw = s.h;
+    if (s.fallT <= 0) animChar(me.c, dt, { lean, hop });
+    SND.setSwoosh(clamp(s.v / 26, 0, 1) * (0.12 + Math.abs(lean) * 0.18));
+    const f = clamp((s.z + L) / L, 0, 1);
+    $('#progFill').style.height = (f * 100) + '%'; $('#progDot').style.top = 'calc(' + (f * 100) + '% - 8px)';
+    if (s.z >= -5) finishRun();
+  } else SND.setSwoosh(0);
+
+  if (S.mode !== 'lift' && S.mode !== 'ski' && !(S.mode === 'ski')) {
+    if (me.c.root.parent === scene) { me.c.root.position.copy(me.pos); me.c.root.rotation.y = me.yaw; }
+    if (S.mode !== 'lift') animChar(me.c, dt);
+  } else if (S.mode === 'ski') { me.c.root.position.copy(me.pos); me.c.root.rotation.y = me.yaw; }
+
+  /* 봇 */
+  bots.forEach((b) => {
+    if (b.kind === 'walker') {
+      b.idle -= dt;
+      if (!b.target && b.idle <= 0) { b.target = new THREE.Vector3((Math.random() - 0.5) * 360, 0, 70 + Math.random() * 140); }
+      if (b.target) {
+        const yw = moveWalker(b.pos, b.target, dt, 6);
+        if (yw === null) { b.target = null; b.idle = 2 + Math.random() * 6; b.c.pose = 'stand'; if (Math.random() < 0.15) b.c.waveT = 1.4; }
+        else { b.yaw = yw; b.c.pose = 'skate'; }
+      }
+      b.pos.y = groundH(b.pos.x, b.pos.z);
+      b.c.root.position.copy(b.pos); b.c.root.rotation.y = b.yaw; animChar(b.c, dt);
+    } else if (b.kind === 'skier') {
+      b.z += b.speed * dt;
+      if (b.z > -4) { b.z = -L + 4; b.trail = pick(TRAILS); b.speed = b.trail.auto * (0.85 + Math.random() * 0.3); b.name = pick(NAMES); }
+      const x0 = autoX(b.trail, b.z, b.ph), x1 = autoX(b.trail, b.z + 0.6, b.ph);
+      b.pos.set(x0, groundH(x0, b.z), b.z); b.yaw = Math.atan2(x1 - x0, 0.6);
+      b.c.pose = 'ski'; b.c.root.position.copy(b.pos); b.c.root.rotation.y = b.yaw;
+      animChar(b.c, dt, { lean: -Math.sin(-b.z / 9 + b.ph + Math.PI / 2) * 0.8 });
+    } else if (b.kind === 'queue') {
+      const idx = queueBots.indexOf(b);
+      // 리프트 줄은 밖(베이스/정상/리프트)에서도 항상 보이게. 큐에 들어가면 내 앞 인원(S.queue)만큼,
+      // 평소엔 미리 줄 서 있는 사람들(기본 4명)을 승강장에 세워둔다.
+      const lineN = S.mode === 'queue' ? S.queue : (['base', 'summit', 'lift'].includes(S.mode) ? 4 : 0);
+      const show_ = idx < lineN;
+      b.c.root.visible = show_;
+      if (show_) { b.pos.set(262 + (idx % 2 ? 0.8 : -0.8), 0, 42 + idx * 2.2); b.c.root.position.copy(b.pos); b.c.root.rotation.y = Math.PI; b.c.pose = 'stand'; animChar(b.c, dt); }
+    }
+    if (b.waveTag > 0) b.waveTag -= dt;
+  });
+
+  if (S.stats.start) updateCounters();
+
+  /* 바람 소리 높이 */
+  const camH = camera.position.y;
+  SND.setWind(0.06 + clamp(camH / TOP_Y, 0, 1) * 0.1);
+
+  /* 눈 */
+  const arr = snowGeo.attributes.position.array;
+  for (let i = 0; i < SNOW_N; i++) {
+    arr[i * 3 + 1] -= dt * (3 + (i % 5));
+    arr[i * 3] += Math.sin(T * 0.5 + i) * dt * 0.6;
+    if (arr[i * 3 + 1] < -10) arr[i * 3 + 1] = 80;
+  }
+  snowGeo.attributes.position.needsUpdate = true;
+  snow.position.set(camera.position.x, camera.position.y - 40, camera.position.z);
+  NET.tick(dt);
+}
+
+function facility(id) {
+  show('#prompt', false);
+  if (id === 'lift') joinQueue();
+  else if (id === 'lodge') enterLodge();
+  else if (id === 'ticket') openTicket();
+  else if (id === 'rental') { S.makerFrom = me.pos.clone(); setMode('maker'); syncMaker(); }
+  else if (id === 'photo') takePhoto();
+  else if (id === 'summit') openSummit();
+}
+
+/* ───────────── 카메라 ───────────── */
+const camPos = new THREE.Vector3(0, 300, 700), camLook = new THREE.Vector3(0, 100, -300);
+const CAM_DEFAULT = JSON.parse(JSON.stringify(S.cams));
+function camCtx(m) { return m === 'queue' ? 'base' : m; }
+function camKey(m) { const c = camCtx(m); return S.cams[c] ? c : null; }
+function camCur() { const k = camKey(S.mode); return k ? S.cams[k] : null; }
+function cut() {
+  const f = $('#fade'); f.style.transition = 'none'; f.style.opacity = '1'; S.snap = true;
+  requestAnimationFrame(() => requestAnimationFrame(() => { f.style.transition = 'opacity .45s ease-out'; f.style.opacity = '0'; }));
+}
+function orbitPos(center, c, out) {
+  return out.set(center.x + Math.sin(c.az) * Math.cos(c.pitch) * c.dist, center.y + Math.sin(c.pitch) * c.dist, center.z + Math.cos(c.az) * Math.cos(c.pitch) * c.dist);
+}
+function updateCamera(dt) {
+  let k = Math.min(1, dt * 3.5);
+  const wantPos = new THREE.Vector3(), wantLook = new THREE.Vector3();
+  const T = performance.now() / 1000;
+  if (S.mode === 'gate' || S.mode === 'loading') {
+    const a = T * 0.05;
+    wantPos.set(Math.sin(a) * 160, 70, 330 + Math.cos(a) * 40); wantLook.set(0, 60, -200);
+  } else if (S.mode === 'maker') {
+    const p = me.c.root.position;
+    const narrow = innerWidth < 720;
+    if (narrow) { wantPos.set(p.x, p.y + 2.4, p.z + 9); wantLook.set(p.x, p.y - 1.4, p.z); }
+    else { wantPos.set(p.x - 1, p.y + 2.4, p.z + 6.5); wantLook.set(p.x + 1.8, p.y + 1.1, p.z); }
+  } else if (S.mode === 'lodge') {
+    // 스키하우스 창 → 슬로프 뷰. 창 앞 슬로프를 비스듬히 내려다봐, 라이딩하며
+    // 지나가는 실제 유저가 가까울수록 크게 보인다(이름표+프사는 updateLabels).
+    wantPos.set(0, 7, 62); wantLook.set(6, 34, -150);
+  } else if (S.mode === 'lift' && S.chair) {
+    const center = S.chair.g.position.clone().add(new THREE.Vector3(0, -2.8, 0));
+    orbitPos(center, S.cams.lift, wantPos); wantLook.copy(center); k = Math.min(1, dt * 10);
+  } else if (S.mode === 'ski' && S.ski) {
+    const s = S.ski, p = me.pos, h = s.mode === 'auto' ? s.h * 0.4 : s.h * 0.7;
+    wantPos.set(p.x - Math.sin(h) * 13, p.y + 9.5, p.z - Math.cos(h) * 13);
+    wantLook.set(p.x + Math.sin(h) * 20, p.y - 7, p.z + Math.cos(h) * 20);
+  } else if (S.mode === 'card') {
+    return;
+  } else {
+    const c = camCur() || S.cams.base, center = me.pos.clone().add(new THREE.Vector3(0, 1.6, 0));
+    orbitPos(center, c, wantPos); wantLook.copy(center); k = Math.min(1, dt * 10);
+  }
+  if (S.snap) { camPos.copy(wantPos); camLook.copy(wantLook); S.snap = false; }
+  else { camPos.lerp(wantPos, k); camLook.lerp(wantLook, k); }
+  camera.position.copy(camPos); camera.lookAt(camLook);
+  // 라벨 투영이 이번 프레임의 카메라와 정확히 일치하도록 월드/역행렬을 즉시 동기화
+  // (안 하면 렌더 직전 라벨이 이전 프레임 카메라로 투영돼 드래그 시 닉네임이 흔들림)
+  camera.updateMatrixWorld();
+  camera.matrixWorldInverse.copy(camera.matrixWorld).invert();
+  const fp = (S.mode === 'gate' || S.mode === 'loading') ? new THREE.Vector3(0, 0, 100) : me.c.root.getWorldPosition(tmp2);
+  sun.position.set(fp.x + 70, fp.y + 140, fp.z + 50); sun.target.position.copy(fp);
+}
+
+function updateLabels() {
+  let i = 0;
+  if (['base', 'queue', 'lift', 'summit', 'ski'].includes(S.mode)) {
+    const mp = me.c.root.getWorldPosition(new THREE.Vector3());
+    labelAt(i++, myName(), 'me', mp.clone().add(new THREE.Vector3(0, 2.15, 0)), me.pi);
+    const cand = [];
+    bots.forEach((b) => { if (b.c.root.visible) { const wp = b.c.root.getWorldPosition(new THREE.Vector3()); const d = wp.distanceTo(mp); if (d < 34) cand.push({ wp, d, name: b.name, wave: b.waveTag > 0 }); } });
+    LIFT.chairs.forEach((ch) => ch.riders.forEach((r) => { if (r.c.root.visible) { const wp = r.c.root.getWorldPosition(new THREE.Vector3()); const d = wp.distanceTo(mp); if (d < 30) cand.push({ wp, d, name: r.name }); } }));
+    (S.companions || []).forEach((cp) => cand.push({ wp: cp.c.root.getWorldPosition(new THREE.Vector3()), d: 0, name: cp.name }));
+    cand.sort((a, b) => a.d - b.d).slice(0, 10).forEach((c) => labelAt(i++, c.wave ? '👋 ' + c.name : c.name, c.wave ? 'wave' : '', c.wp.add(new THREE.Vector3(0, 2.15, 0))));
+    { const _ib = { v: i }; NET.labels(labelAt, _ib); i = _ib.v; }
+  } else if (S.mode === 'lodge') {
+    // 창밖(슬로프)에서 라이딩하며 지나가는 실제 유저만 이름표+프사 표시(내 라벨은 숨김).
+    const _ib = { v: i }; NET.labels(labelAt, _ib, 800); i = _ib.v;
+  }
+  for (; i < lblPool.length; i++) lblPool[i].style.display = 'none';
+}
+
+/* ───────────── 루프 ───────────── */
+function resize() { renderer.setSize(innerWidth, innerHeight, false); camera.aspect = innerWidth / innerHeight; camera.updateProjectionMatrix(); }
+window.addEventListener('resize', resize); resize();
+let last = performance.now();
+// 탭 복귀 시 dt 폭주 방지. 리프트는 벽시계(liftClock) 기반이라 그동안의 진행만큼 자동으로 스냅된다.
+document.addEventListener('visibilitychange', () => { if (!document.hidden) last = performance.now(); });
+let todTimer = 0;
+function loop(now) {
+  const dt = Math.min(0.05, (now - last) / 1000); last = now;
+  if (S.mode !== 'card') {
+    update(dt); updateCamera(dt); updateLabels(); updateBubbles();
+    renderer.render(scene, camera);
+  }
+  todTimer += dt; if (todTimer > 30) { todTimer = 0; applyTod(); }
+  requestAnimationFrame(loop);
+}
+requestAnimationFrame(loop);
+setTimeout(() => { $('#loading').remove(); setMode('gate'); }, 400);
+/* 접속이 끝내 안 되면(오프라인 등) 스피너만 돌지 않게 10초 후 혼자 타는 상태로 표시 */
+setTimeout(() => { const ll=document.getElementById('liveLoad'), lr=document.getElementById('liveReal'); if(ll&&lr&&!ll.hidden){ const lc=document.getElementById('liveCount'); if(lc) lc.textContent=Math.max(1,S.live); ll.hidden=true; lr.hidden=false; } }, 10000);
+window.__resort = { S, me, LIFT, joinQueue, startSki, goBase, openSummit, unboard, enterLodge };
+})();
+</script>
+</body>
+</html>

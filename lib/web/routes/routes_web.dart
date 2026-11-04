@@ -41,6 +41,7 @@ import 'package:com.snowlive/web/view/liveTalk/v_liveTalkDetail_web.dart';
 import 'package:com.snowlive/web/view/liveTalk/v_liveTalkHome_web.dart';
 import 'package:com.snowlive/web/view/login/v_login_web.dart';
 import 'package:com.snowlive/web/view/onboarding/v_onboarding_web.dart';
+import 'package:com.snowlive/web/view/onlineResort/v_onlineResort_web.dart';
 import 'package:com.snowlive/web/view/ranking/v_rankingArchive_web.dart';
 import 'package:com.snowlive/web/view/ranking/v_rankingHome_web.dart';
 import 'package:com.snowlive/web/view/seasonpass/v_seasonPassHome_web.dart';
@@ -149,6 +150,9 @@ class WebRoutes {
   static const rideDetail = '/ride-detail';
   // 친구 실시간 위치 지도(유료).
   static const liveMap = '/live-map';
+
+  /// 온라인 스키장(웹 전용, 2D 도트 멀티플레이). Flame 기반. 개발 중.
+  static const onlineResort = '/online-resort';
 
   static final pages = [
     GetPage(
@@ -262,6 +266,10 @@ class WebRoutes {
       name: liveMap,
       page: () => const LiveMapViewWeb(),
       binding: WebLiveMapBinding(),
+    ),
+    GetPage(
+      name: onlineResort,
+      page: () => const OnlineResortViewWeb(),
     ),
     GetPage(
       name: event,

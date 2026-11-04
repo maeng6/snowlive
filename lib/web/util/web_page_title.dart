@@ -62,6 +62,8 @@ const Map<String, String> kWebPageNames = {
   // 계정
   WebRoutes.login: '로그인',
   WebRoutes.onboarding: '회원가입',
+  // 온라인 스키장
+  WebRoutes.onlineResort: '온라인 스키장',
 };
 
 /// 라우트(쿼리 포함 가능) → 브라우저 탭 제목. `중고거래 | 스노우라이브`.
