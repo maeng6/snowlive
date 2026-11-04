@@ -108,6 +108,13 @@ const List<GnbNavItemData> kGnbPrimaryItems = [
     assetIconSvgOn: 'assets/imgs/icons/icon_web_ridingcard_select.svg',
     assetIconSvgOff: 'assets/imgs/icons/icon_web_ridingcard.svg',
   ),
+  // 온라인 스키장은 순수 웹 앱(/mountain/)이다. 이 라우트로 들어오면 전체 페이지가
+  // /mountain/으로 이동한다(v_onlineResort_web의 리다이렉트).
+  GnbNavItemData(
+    label: '온라인 스키장',
+    routePrefix: WebRoutes.onlineResort,
+    materialIcon: Icons.downhill_skiing,
+  ),
 ];
 
 /// 2차 그룹: 친구 / 알림 / 설정(목업 순서). 사이드바·드로어가 같은 목록을 쓴다.
