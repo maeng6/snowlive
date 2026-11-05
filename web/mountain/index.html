@@ -306,6 +306,8 @@ body{ font-weight:500; }
 .lbl{ border:none;border-radius:0;padding:0;background:none;backdrop-filter:none;-webkit-backdrop-filter:none;box-shadow:none;color:#fff;font-weight:700;font-size:12px;display:flex;align-items:center;gap:4px;line-height:1;transform-origin:50% 100%;text-shadow:0 1px 3px rgba(0,0,0,.95),0 0 3px rgba(0,0,0,.85),0 0 1px rgba(0,0,0,.9); }
 .lbl.me{ background:none;color:#BFE0FF; }
 .lbl.wave{ background:none;color:#FFE08A; }
+.lbl.npc{ color:#BDEBD2; }
+.lbl.npc::before{ content:'STAFF'; font-size:9px; font-weight:900; letter-spacing:.04em; padding:2px 4px; border-radius:3px; background:#2E7F6E; color:#fff; text-shadow:none; }   /* 직원 NPC: 실제 유저와 구분 */
 .lblimg{ width:17px;height:17px;border-radius:50%;object-fit:cover;background:#2A3A4D;flex:none;border:1.5px solid rgba(255,255,255,.85);box-shadow:0 1px 3px rgba(0,0,0,.55); }
 .lbltxt{ padding:0; }
 /* 이모트·채팅 바 */
@@ -579,7 +581,7 @@ body.modal-open #joy, body.modal-open #jumpBtn, body.modal-open #actions, body.m
 </div>
 
 <div id="hud" class="hidden">
-  <div class="tl"><button id="chPill" class="pill"><span class="dot"></span><span id="chText">3번 채널 · 47/60명</span></button></div>
+  <div class="tl"><button id="chPill" class="pill"><span class="dot"></span><span id="chText">1번 채널 · 접속 중</span></button></div>
   <div class="tr">
     <button class="pill" id="viewBtn" aria-label="1인칭·3인칭 바꾸기" title="시점 바꾸기 (V)" style="height:44px">3인칭</button>
     <button class="icon-btn" id="sndBtn" aria-label="소리·화면 설정"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H2v6h4l5 4V5z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M19 5a10 10 0 0 1 0 14"/></svg></button>
@@ -633,7 +635,7 @@ body.modal-open #joy, body.modal-open #jumpBtn, body.modal-open #actions, body.m
   <div id="foodWrap"><div class="steam"><i></i><i></i><i></i><i></i></div><div id="food"></div></div>
 </div>
 <div id="lodge" class="panel hidden">
-  <div><h2>스키하우스</h2><p class="sub" id="lodgeSeats">창가 자리 · 자리 8/12</p></div>
+  <div><h2>스키하우스</h2><p class="sub" id="lodgeSeats">창가 자리 · 슬로프가 보여요</p></div>
   <div class="menu" id="lodgeMenu"><button data-v="0">핫초코</button><button data-v="1">어묵</button><button data-v="2">컵라면</button></div>
   <p class="sub" id="lodgeMsg">창밖으로 사람들이 지나가요. 천천히 쉬다 가세요</p>
   <button class="btn ghost" id="lodgeOut">밖으로 나가기</button>
@@ -785,7 +787,7 @@ function groundRaw(x, z) {   // 자연 지형(봉우리·안장·주름)
 const sstep = (a, b, v) => { const t = clamp((v - a) / (b - a), 0, 1); return t * t * (3 - 2 * t); };
 function begW(x, z) { return sstep(-556, -540, x) * (1 - sstep(-320, -290, x)) * sstep(-440, -340, z); }
 /* 슬로프는 옆으로 기울지 않게 다듬어요(실제로 정설해서 폭 방향은 평평): 코스 안은 중심선 높이로, 가장자리 바깥 9m에서 원래 지형과 이어져요 */
-function groundH(x, z) {
+function groundLevel(x, z) {
   const h0 = groundRaw(x, z); if (z > 2) return h0;
   let best = 0, bd = 1e9, hb = 0;
   for (const t of TRAILS) {
@@ -798,6 +800,21 @@ function groundH(x, z) {
     const zc = Math.min(0, z + s * dx / nn); best = wgt; bd = d; hb = groundRaw(trailX(t, zc), zc);   // 진행 방향에 수직으로 잰 중심선 높이
   }
   return best ? h0 + (hb - h0) * best : h0;
+}
+/* 리프트·곤돌라 하차장은 평지(실제처럼 하차장 둘레를 다져요). 가장자리 바깥에서 원래 지형과 부드럽게 이어져요 */
+let LIFT_PADS = null;
+function liftPads() {
+  if (!LIFT_PADS) { LIFT_PADS = LIFT_DEFS.concat([GONDOLA_DEF]).map((d) => { const r = d.top === 'mid' ? 8 : 20, b = d.top === 'mid' ? 9 : 16; return { x: d.x1, z: d.z1, r, b, R2: (r + b) ** 2, h: groundLevel(d.x1, d.z1) }; }); }   // 중턱 하차장은 옆 코스에 닿지 않게 작게
+  return LIFT_PADS;
+}
+function groundH(x, z) {
+  let h = groundLevel(x, z); if (z > -150) return h;
+  for (const p of liftPads()) { const dx = x - p.x, dz = z - p.z; if (dx * dx + dz * dz <= p.r * p.r) return p.h; }   // 하차장 안은 완전히 평평
+  for (const p of liftPads()) {
+    const dx = x - p.x, dz = z - p.z, d2 = dx * dx + dz * dz; if (d2 >= p.R2) continue;
+    const d = Math.sqrt(d2), w = d <= p.r ? 1 : 1 - sstep(0, 1, (d - p.r) / p.b); h += (p.h - h) * w;
+  }
+  return h;
 }
 function slopeZ(x, z) { return groundH(x, z - 0.5) - groundH(x, z + 0.5); }              // 베이스 쪽(+z)으로 내려가는 기울기
 function slopeAlong(x, z, h) { const e = 0.5, gx = (groundH(x + e, z) - groundH(x - e, z)) / (2 * e), gz = (groundH(x, z + e) - groundH(x, z - e)) / (2 * e); return -(gx * Math.sin(h) + gz * Math.cos(h)); }   // 진행 방향으로 내려가는 기울기
@@ -1113,28 +1130,57 @@ function forestAt(x, z) {
 })();
 
 /* 하늘: 지평선에서 천정까지 그라데이션 + 해(달) + 밤엔 별 */
+/* 하늘(저니처럼 환상적으로): 지평선 빛띠 → 해 쪽으로 번지는 큰 후광 → 깊은 천정. 해 원반·코로나·햇살 줄기,
+   두 층 구름(높은 새털구름 + 낮은 뭉게구름, 해 쪽 가장자리는 금빛으로 빛나요). 밤엔 반짝이는 별 · 은하수 · 오로라 */
 const skyMat = new THREE.ShaderMaterial({
-  uniforms: { uZen: { value: new THREE.Color('#2E3B6C') }, uHor: { value: new THREE.Color('#F3AE8A') }, uSunCol: { value: new THREE.Color('#FFC08A') }, uSunDir: SNOWU.uSunDir, uStars: { value: 0 }, uTime: { value: 0 }, uCloud: { value: 0.9 } },
+  uniforms: { uZen: { value: new THREE.Color('#2E3B6C') }, uHor: { value: new THREE.Color('#F3AE8A') }, uSunCol: { value: new THREE.Color('#FFC08A') }, uSunDir: SNOWU.uSunDir, uStars: { value: 0 }, uTime: { value: 0 }, uCloud: { value: 0.9 }, uAur: { value: 0 }, uGlow: { value: 1 } },
   side: THREE.BackSide, depthWrite: false, fog: false,
   vertexShader: 'varying vec3 vDir; void main(){ vDir = (modelMatrix * vec4(position, 1.0)).xyz - cameraPosition; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); gl_Position.z = gl_Position.w; }',
   fragmentShader: `
-    uniform vec3 uZen, uHor, uSunCol, uSunDir; uniform float uStars, uTime, uCloud; varying vec3 vDir;
+    uniform vec3 uZen, uHor, uSunCol, uSunDir; uniform float uStars, uTime, uCloud, uAur, uGlow; varying vec3 vDir;
     float h2(vec2 p){ return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
     float n2(vec2 p){ vec2 i = floor(p), f = fract(p); f = f * f * (3.0 - 2.0 * f); return mix(mix(h2(i), h2(i + vec2(1.0, 0.0)), f.x), mix(h2(i + vec2(0.0, 1.0)), h2(i + vec2(1.0, 1.0)), f.x), f.y); }
-    float fbm(vec2 p){ float v = 0.0, a = 0.5; for (int i = 0; i < 4; i++) { v += a * n2(p); p *= 2.03; a *= 0.5; } return v; }
+    float fbm(vec2 p){ float v = 0.0, a = 0.5; for (int i = 0; i < 5; i++) { v += a * n2(p); p = p * 2.03 + vec2(1.7, 9.2); a *= 0.5; } return v; }
     void main(){
-      vec3 d = normalize(vDir); float h = d.y;
-      vec3 col = mix(uHor, uZen, pow(clamp(h, 0.0, 1.0), 0.45));
-      col += uHor * 0.18 * exp(-abs(h) * 14.0);
-      float s = max(dot(d, normalize(uSunDir)), 0.0);
-      col += uSunCol * (pow(s, 1400.0) * 1.6 + pow(s, 40.0) * 0.25 + pow(s, 6.0) * 0.1);
-      // 새털구름: 하늘 평면에 투영해 결을 늘이고, 해 가까운 쪽은 햇빛을 받아 금빛
-      vec2 cp = d.xz / (h + 0.08); cp = vec2(cp.x * 0.35 + cp.y * 0.12, cp.y * 1.4 - cp.x * 0.1);
-      float c = fbm(cp * 0.9 + vec2(uTime * 0.006, 0.0));
-      c = smoothstep(0.52, 0.82, c) * smoothstep(0.02, 0.12, h) * (1.0 - smoothstep(0.35, 0.65, h));
-      col = mix(col, mix(mix(uHor, vec3(1.0), 0.3), uSunCol * 1.15, pow(s, 3.0)), c * uCloud * 0.7);
-      vec2 ci = floor(vec2(atan(d.z, d.x) * 120.0, h * 240.0));
-      col += vec3(step(0.996, h2(ci)) * smoothstep(0.04, 0.35, h)) * uStars * (0.6 + 0.4 * sin(uTime * 2.0 + h2(ci + 1.0) * 20.0));
+      vec3 d = normalize(vDir); float h = d.y, hh = clamp(h, 0.0, 1.0);
+      vec3 sd = normalize(uSunDir); float s = max(dot(d, sd), 0.0);
+      // 3단 그라데이션: 지평선(따뜻한 빛) → 중간(두 색이 섞인 몽환적인 띠) → 천정(깊은 색)
+      vec3 mid = mix(uHor, uZen, 0.5) + vec3(0.06, 0.02, 0.08);
+      vec3 col = mix(uHor, mid, smoothstep(0.0, 0.22, hh));
+      col = mix(col, uZen, smoothstep(0.15, 0.95, hh));
+      col = mix(col, uZen * 0.82, smoothstep(0.7, 1.0, hh));                           // 천정은 더 깊게
+      // 해 쪽 하늘 전체가 은은하게 물드는 큰 후광
+      col = mix(col, mix(uHor, uSunCol, 0.55) * 1.12, pow(s, 3.0) * 0.55 * uGlow * (1.0 - hh * 0.5));
+      col += uHor * 0.22 * exp(-max(h, 0.0) * 16.0);                                    // 지평선 빛띠
+      // 해: 원반 + 코로나 + 넓은 빛무리
+      col += uSunCol * (smoothstep(0.99935, 0.99965, s) * 2.2 + pow(s, 420.0) * 0.9 + pow(s, 36.0) * 0.32 + pow(s, 6.0) * 0.16) * uGlow;
+      // 햇살 줄기: 해 둘레 방사형
+      vec3 t1 = normalize(cross(sd, vec3(0.0, 1.0, 0.0)) + 1e-4), t2 = cross(t1, sd);
+      float ang = atan(dot(d, t2), dot(d, t1));
+      float rays = pow(max(0.0, sin(ang * 9.0 + n2(vec2(ang * 3.0, uTime * 0.05)) * 3.0)), 5.0) * pow(s, 10.0) * (1.0 - smoothstep(0.995, 1.0, s));
+      col += uSunCol * rays * 0.22 * uGlow * smoothstep(-0.05, 0.1, h);
+      // 구름 2층
+      vec2 cp = d.xz / (h + 0.14);
+      float ci = fbm(vec2(cp.x * 0.22 + cp.y * 0.08, cp.y * 1.5 - cp.x * 0.05) + vec2(uTime * 0.004, 0.0));
+      float cir = smoothstep(0.56, 0.86, ci) * smoothstep(0.04, 0.22, h);
+      float cu0 = fbm(cp * 0.55 + vec2(uTime * 0.007, 0.0)), cu1 = fbm(cp * 0.55 + vec2(uTime * 0.007, 0.0) + sd.xz * 0.12);
+      float cu = smoothstep(0.45, 0.7, cu0) * smoothstep(0.0, 0.08, h) * (1.0 - smoothstep(0.5, 0.85, h));   // 뭉게구름을 조금 더 풍성하게
+      float lit = clamp((cu0 - cu1) * 6.0 + 0.5, 0.0, 1.0);                               // 해 쪽 가장자리가 밝게(은빛 테두리)
+      vec3 cBright = mix(mix(uHor, vec3(1.0), 0.45), uSunCol * 1.35, pow(s, 3.0));
+      vec3 cShade = mix(uZen, uHor, 0.55) * 0.92;
+      vec3 cuCol = mix(cShade, cBright, 0.35 + 0.65 * lit) + uSunCol * pow(s, 8.0) * (1.0 - smoothstep(0.55, 0.75, cu0)) * 0.6;
+      col = mix(col, cuCol, cu * uCloud * 0.9);
+      col = mix(col, cBright, cir * uCloud * 0.45);
+      // 밤: 반짝이는 별(크기 제각각) · 은하수 · 오로라
+      vec2 ci2 = floor(vec2(atan(d.z, d.x) * 160.0, h * 300.0));
+      float st = step(0.9965, h2(ci2)) * (0.55 + 0.45 * sin(uTime * 2.3 + h2(ci2 + 1.0) * 30.0));
+      vec3 mwAx = normalize(vec3(0.35, 0.55, 0.76));
+      float band = exp(-pow(dot(d, mwAx), 2.0) * 22.0) * fbm(d.xz * 9.0 + d.y * 4.0);
+      col += (vec3(st) + vec3(0.55, 0.6, 0.95) * band * 0.5) * uStars * smoothstep(0.02, 0.3, h);
+      float az = atan(d.x, -d.z);
+      float cur = fbm(vec2(az * 2.6 + uTime * 0.03, uTime * 0.02)) ;
+      float aur = smoothstep(0.42, 0.75, cur) * smoothstep(0.08, 0.22, h) * (1.0 - smoothstep(0.35, 0.62, h)) * (0.6 + 0.4 * sin(az * 14.0 + uTime * 0.6 + cur * 8.0));
+      col += mix(vec3(0.15, 0.95, 0.6), vec3(0.75, 0.3, 0.95), smoothstep(0.15, 0.5, h)) * aur * uAur * 0.6;
       gl_FragColor = vec4(col, 1.0);
     }`
 });
@@ -1321,6 +1367,136 @@ function shaggy(g, amt, seed) {   // 원뿔 가장자리를 들쭉날쭉하게 +
   g.computeVertexNormals(); return g;
 }
 const TREE_MAT = new THREE.MeshLambertMaterial({ color: '#3B3F5E' }), TREE_SNOW = new THREE.MeshLambertMaterial({ color: '#F0C9B4' }), TREE_TRUNK = new THREE.MeshLambertMaterial({ color: '#4A3A40' });
+/* ───── 소나무 모델(Quaternius, CC0): 원뿔 나무를 실제 소나무 모델로 바꿔요(불러오기 전엔 원뿔이 자리를 지켜요).
+   수천 그루를 인스턴스로 한 번에 그리고, 가지 윗면엔 눈이 쌓여요. 그림자는 바닥의 둥근 그림자로 가볍게 ───── */
+const PINE_FILES = IS_TOUCH ? ['models/trees/pine_bushy.glb'] : ['models/trees/pine_tall.glb', 'models/trees/pine_bushy.glb'];
+const PINE_SRC = { list: null, wait: [] };
+function pineMats(src) {
+  const leaf = /Lea(f|ves)/i.test(src.material.name || '');
+  const m = new THREE.MeshLambertMaterial({ map: src.material.map, color: leaf ? new THREE.Color(1.55, 1.75, 1.6) : '#B8A08C', side: leaf ? THREE.DoubleSide : THREE.FrontSide, alphaTest: leaf ? 0.5 : 0 });
+  if (m.map) { m.map.encoding = THREE.LinearEncoding; m.map.needsUpdate = true; }   // 렌더러가 선형 출력이라 텍스처 색을 그대로 써요
+  if (leaf) m.onBeforeCompile = (sh) => {   // 가지 윗면(위를 향한 잎)에 쌓인 눈
+    sh.vertexShader = 'attribute float aSnow;\nvarying float vSnow;\n' + sh.vertexShader.replace('#include <begin_vertex>', '#include <begin_vertex>\n vSnow = aSnow;');
+    sh.fragmentShader = 'varying float vSnow;\n' + sh.fragmentShader.replace('#include <map_fragment>', '#include <map_fragment>\n diffuseColor.rgb = mix(diffuseColor.rgb, vec3(0.97, 0.98, 1.0), vSnow);');
+  };
+  return { m, leaf };
+}
+function pineLoad(cb) {
+  if (PINE_SRC.list) { cb(PINE_SRC.list); return; }
+  PINE_SRC.wait.push(cb); if (PINE_SRC.wait.length > 1) return;
+  if (!THREE.GLTFLoader) return;
+  const ld = new THREE.GLTFLoader(), got = []; let left = PINE_FILES.length;
+  const done = () => { if (--left) return; PINE_SRC.list = got.filter(Boolean); PINE_SRC.wait.forEach((f) => f(PINE_SRC.list)); PINE_SRC.wait = []; };
+  PINE_FILES.forEach((f, i) => ld.load(f, (g) => {
+    g.scene.updateMatrixWorld(true); const parts = [], box = new THREE.Box3().setFromObject(g.scene);
+    g.scene.traverse((o) => {
+      if (!o.isMesh) return;
+      const geo = o.geometry.clone(); geo.applyMatrix4(o.matrixWorld); geo.translate(0, -box.min.y, 0); geo.deleteAttribute('color');
+      const pm = pineMats(o);
+      if (pm.leaf) {   // 위를 향한 잎일수록 눈이 많이(조금씩 들쭉날쭉)
+        const n = geo.attributes.normal, pz = geo.attributes.position, a = new Float32Array(n.count);
+        for (let k = 0; k < n.count; k++) { const r = Math.sin(pz.getX(k) * 12.9 + pz.getZ(k) * 78.2 + pz.getY(k) * 3.7) * 0.5 + 0.5; a[k] = clamp((n.getY(k) - 0.05) / 0.5, 0, 1) * (0.7 + 0.3 * r); }
+        geo.setAttribute('aSnow', new THREE.BufferAttribute(a, 1));
+      }
+      parts.push({ geo, m: pm.m, leaf: pm.leaf });
+    });
+    got[i] = { parts, h: box.max.y - box.min.y };
+    done();
+  }, undefined, done));
+}
+const BLOB_TEX = canvasTex(64, 64, (g, w, h) => { const gr = g.createRadialGradient(32, 32, 2, 32, 32, 31); gr.addColorStop(0, 'rgba(20,30,50,0.55)'); gr.addColorStop(1, 'rgba(20,30,50,0)'); g.fillStyle = gr; g.fillRect(0, 0, w, h); });
+/* ───── 산 전체 숲도 같은 소나무로: 멀리 있는 나무는 '임포스터'(소나무 모델을 옆에서 찍은 그림을 십자 판 2장에 붙여요, 한 그루에 면 4개),
+   내 주변(데스크톱 120m · 모바일 90m) 나무는 0.25초마다 진짜 모델로 바꿔 그려요(LOD) ───── */
+const CROSS_GEO = (() => {
+  const a = new THREE.PlaneGeometry(1, 1), b = new THREE.PlaneGeometry(1, 1); b.rotateY(Math.PI / 2);
+  const P = [], U = [], N = [];
+  [a, b].forEach((g) => { g.translate(0, 0.5, 0); const ng = g.toNonIndexed(); P.push(...ng.attributes.position.array); U.push(...ng.attributes.uv.array); for (let k = 0; k < ng.attributes.position.count; k++) N.push(0, 1, 0); });   // 법선은 위로: 어느 방향에서 봐도 같은 밝기
+  const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.Float32BufferAttribute(P, 3)); g.setAttribute('uv', new THREE.Float32BufferAttribute(U, 2)); g.setAttribute('normal', new THREE.Float32BufferAttribute(N, 3));
+  return g;
+})();
+function pineImpostors(vars) {   // 모델을 조명 없이(색 그대로 · 눈 포함) 옆에서 찍어 알파 텍스처로
+  return vars.map((v) => {
+    const sc = new THREE.Scene(), bb = new THREE.Box3();
+    v.parts.forEach((pt) => {
+      const m = new THREE.MeshBasicMaterial({ map: pt.m.map, color: pt.m.color, alphaTest: pt.leaf ? 0.5 : 0, side: THREE.DoubleSide });
+      if (pt.leaf) m.onBeforeCompile = pt.m.onBeforeCompile;
+      const mesh = new THREE.Mesh(pt.geo, m); sc.add(mesh); pt.geo.computeBoundingBox(); bb.union(pt.geo.boundingBox);
+    });
+    const W = Math.max(bb.max.x - bb.min.x, bb.max.z - bb.min.z) * 1.04, H = (bb.max.y - bb.min.y) * 1.02;
+    const cam = new THREE.OrthographicCamera(-W / 2, W / 2, H, 0, -60, 60);
+    const rt = new THREE.WebGLRenderTarget(256, Math.min(512, Math.round(256 * H / W / 2) * 2));
+    rt.texture.generateMipmaps = true; rt.texture.minFilter = THREE.LinearMipmapLinearFilter;
+    const cc = renderer.getClearColor(new THREE.Color()), ca = renderer.getClearAlpha();
+    renderer.setRenderTarget(rt); renderer.setClearColor(0x000000, 0); renderer.clear(); renderer.render(sc, cam); renderer.setRenderTarget(null); renderer.setClearColor(cc, ca);
+    const mat = new THREE.MeshLambertMaterial({ map: rt.texture, alphaTest: 0.42, side: THREE.DoubleSide });
+    return { W, H, mat, h: v.h };
+  });
+}
+const FOREST = { list: [], hold: [], ready: false, near: new Set(), t: 0, R: IS_TOUCH ? 85 : 110, CAP: IS_TOUCH ? 200 : 480, grid: new Map(), CELL: 40, asked: false };
+// 숲 등록: 모든 숲(슬로프 가장자리·산 전체·베이스 뒤)이 한 LOD로 — 멀리는 임포스터, 내 주변만 모델
+FOREST.add = (list, placeholders, h) => {
+  list.forEach((t) => {
+    t.H = h * t.s; if (t.ry == null) t.ry = ((t.x * 12.9898 + t.z * 78.233) % 6.283 + 6.283) % 6.283;
+    const i = FOREST.list.length; FOREST.list.push(t);
+    const gk = Math.floor(t.x / FOREST.CELL) + ',' + Math.floor(t.z / FOREST.CELL); if (!FOREST.grid.has(gk)) FOREST.grid.set(gk, []); FOREST.grid.get(gk).push(i);
+  });
+  FOREST.hold.push(...placeholders);
+  if (!FOREST.asked) { FOREST.asked = true; pineLoad(FOREST.build); }
+};
+FOREST.build = (vars) => {
+  if (!vars.length) return;
+  const list = FOREST.list, nv = vars.length, imps = pineImpostors(vars);
+  FOREST.vars = vars; FOREST.imps = imps;
+  FOREST.imp = imps.map((imp, vi) => {
+    const idx = []; list.forEach((t, i) => { if (i % nv === vi) idx.push(i); });
+    const im = new THREE.InstancedMesh(CROSS_GEO, imp.mat, idx.length); im.castShadow = false; im.receiveShadow = false;
+    idx.forEach((i, j) => { list[i].slot = j; im.setMatrixAt(j, forestMatrix(list[i], vi, false)); });
+    scene.add(im); return im;
+  });
+  FOREST.pool = vars.map((v) => v.parts.map((pt) => { const im = new THREE.InstancedMesh(pt.geo, pt.m, FOREST.CAP); im.count = 0; im.castShadow = false; im.receiveShadow = false; im.frustumCulled = false; scene.add(im); return im; }));
+  FOREST.hold.forEach((m) => scene.remove(m)); FOREST.hold = [];
+  FOREST.ready = true; FOREST.t = 9;
+};
+const _fd = new THREE.Object3D(), _fe = new THREE.Euler(), _fz = new THREE.Matrix4().makeScale(0, 0, 0);
+function forestMatrix(t, vi, model) {   // 같은 나무는 임포스터·모델이 같은 자리·크기·방향
+  const k = t.H / FOREST.vars[vi].h, imp = FOREST.imps[vi];
+  _fd.position.set(t.x, groundH(t.x, t.z) - 0.3, t.z); _fd.rotation.set(0, t.ry, 0);
+  if (model) _fd.scale.set(k, k, k); else _fd.scale.set(imp.W * k, imp.H * k, imp.W * k);
+  _fd.updateMatrix(); return _fd.matrix;
+}
+function forestLOD(dt) {
+  if (!FOREST.ready || (FOREST.t += dt) < 0.25) return; FOREST.t = 0;
+  const cx = camera.position.x, cz = camera.position.z, R = FOREST.R, nv = FOREST.vars.length, C = FOREST.CELL;
+  const cand = [];
+  for (let gx = Math.floor((cx - R) / C); gx <= Math.floor((cx + R) / C); gx++) for (let gz = Math.floor((cz - R) / C); gz <= Math.floor((cz + R) / C); gz++) {
+    const arr = FOREST.grid.get(gx + ',' + gz); if (!arr) continue;
+    for (const i of arr) { const t = FOREST.list[i], d2 = (t.x - cx) ** 2 + (t.z - cz) ** 2; if (d2 < R * R) cand.push([d2, i]); }
+  }
+  cand.sort((a, b) => a[0] - b[0]);
+  const want = new Set(), per = new Array(nv).fill(0);
+  for (const [, i] of cand) { const vi = i % nv; if (per[vi] >= FOREST.CAP) continue; per[vi]++; want.add(i); }
+  let dirty = false;
+  FOREST.near.forEach((i) => { if (!want.has(i)) { const vi = i % nv; FOREST.imp[vi].setMatrixAt(FOREST.list[i].slot, forestMatrix(FOREST.list[i], vi, false)); dirty = true; } });   // 멀어지면 다시 임포스터로
+  want.forEach((i) => { if (!FOREST.near.has(i)) { FOREST.imp[i % nv].setMatrixAt(FOREST.list[i].slot, _fz); dirty = true; } });                                                     // 가까워지면 임포스터는 숨겨요
+  if (dirty) FOREST.imp.forEach((im) => { im.instanceMatrix.needsUpdate = true; });
+  FOREST.near = want;
+  const n = new Array(nv).fill(0);   // 가까운 나무를 진짜 모델로
+  want.forEach((i) => { const vi = i % nv, m = forestMatrix(FOREST.list[i], vi, true); FOREST.pool[vi].forEach((im) => im.setMatrixAt(n[vi], m)); n[vi]++; });
+  FOREST.pool.forEach((parts, vi) => parts.forEach((im) => { im.count = n[vi]; im.instanceMatrix.needsUpdate = true; }));
+}
+function pineForest(list, placeholders, opt) {
+  opt = opt || {};
+  // 바닥 둥근 그림자(나무마다): 비탈을 따라 눕혀요
+  const bg = new THREE.PlaneGeometry(1, 1); bg.rotateX(-Math.PI / 2);
+  const blob = new THREE.InstancedMesh(bg, new THREE.MeshBasicMaterial({ map: BLOB_TEX, transparent: true, depthWrite: false, fog: true }), list.length);
+  const d = new THREE.Object3D(), up = new THREE.Vector3(0, 1, 0), nrm = new THREE.Vector3();
+  list.forEach((t, i) => {
+    const y = groundH(t.x, t.z), gx = groundH(t.x + 1, t.z) - groundH(t.x - 1, t.z), gz = groundH(t.x, t.z + 1) - groundH(t.x, t.z - 1);
+    nrm.set(-gx / 2, 1, -gz / 2).normalize(); d.quaternion.setFromUnitVectors(up, nrm); d.position.set(t.x, y + 0.06, t.z); d.scale.set(7 * t.s, 1, 7 * t.s); d.updateMatrix(); blob.setMatrixAt(i, d.matrix);
+  });
+  blob.renderOrder = 1; scene.add(blob);
+  FOREST.add(list, placeholders, opt.h || 9.2);   // 멀리는 임포스터 · 가까이는 모델
+}
 (function trees() {
   const list = [];
   const ok = (x, z) => {
@@ -1346,9 +1522,9 @@ const TREE_MAT = new THREE.MeshLambertMaterial({ color: '#3B3F5E' }), TREE_SNOW 
     { g: shaggy(new THREE.ConeGeometry(1.8, 2.9, 24, 2), 0.12, 4.1), m: TREE_MAT, y: 7.4 },                    // 꼭대기
     { g: shaggy(new THREE.ConeGeometry(1.9, 1.2, 24, 1), 0.1, 4.1), m: TREE_SNOW, y: 8.35 }                   // 눈 모자
   ];
-  const dummy = new THREE.Object3D();
+  const dummy = new THREE.Object3D(), cones = [];
   parts.forEach((p) => {
-    const im = new THREE.InstancedMesh(p.g, p.m, list.length);
+    const im = new THREE.InstancedMesh(p.g, p.m, list.length); cones.push(im);
     im.castShadow = true; im.receiveShadow = true;
     list.forEach((t, i) => {
       dummy.position.set(t.x, groundH(t.x, t.z) + p.y * t.s - 0.2, t.z);
@@ -1359,6 +1535,7 @@ const TREE_MAT = new THREE.MeshLambertMaterial({ color: '#3B3F5E' }), TREE_SNOW 
     });
     scene.add(im);
   });
+  pineForest(list, cones);
   list.forEach((t) => {
     colCircle(t.x, t.z, 1.3 * t.s);   // 걸을 때(탈 땐 hitTree가 가지 폭까지 봐요)
     const k = Math.floor(t.z / 10);
@@ -1372,16 +1549,18 @@ const TREE_MAT = new THREE.MeshLambertMaterial({ color: '#3B3F5E' }), TREE_SNOW 
     const x = (r() - 0.5) * (SIDE * 2 + 420), z = -8 - r() * (L + 300);
     if (inLiftCorridor(x, z) || PEAKS.some((p) => Math.hypot(x - p.x, z - p.z) < 64)) continue;
     if (forestAt(x, z) < 0.85 && Math.abs(x) < SIDE) continue;
-    list.push({ x, z, s: 0.75 + r() * 0.6 });
+    list.push({ x, z, s: 0.75 + r() * 0.6, ry: r() * 6.283 });
   }
+  // 모델을 불러오기 전엔 원뿔 나무가 자리를 지켜요
   const parts = [[new THREE.ConeGeometry(2.6, 6.2, 8, 1), new THREE.MeshLambertMaterial({ color: '#33404F' }), 3.4], [new THREE.ConeGeometry(1.3, 1.6, 8, 1), TREE_SNOW, 6.0]];
-  const d = new THREE.Object3D();
+  const d = new THREE.Object3D(), cones = [];
   parts.forEach(([g, m, y]) => {
-    const im = new THREE.InstancedMesh(g, m, list.length); im.castShadow = false; im.receiveShadow = false;
+    const im = new THREE.InstancedMesh(g, m, list.length); im.castShadow = false; im.receiveShadow = false; cones.push(im);
     list.forEach((t, i) => { d.position.set(t.x, groundH(t.x, t.z) + y * t.s - 0.3, t.z); d.scale.set(t.s, t.s * (0.9 + (i % 5) * 0.06), t.s); d.rotation.y = i; d.updateMatrix(); im.setMatrixAt(i, d.matrix); });
     scene.add(im);
   });
   list.forEach((t) => { const k = Math.floor(t.z / 10); if (!TREE_BUCKET.has(k)) TREE_BUCKET.set(k, []); TREE_BUCKET.get(k).push(t); });   // 숲으로 들어가면 부딪혀요
+  FOREST.add(list, cones, 8.4);
 })();
 function hitTree(x, z) {
   const k = Math.floor(z / 10);
@@ -1392,31 +1571,230 @@ function hitTree(x, z) {
   return false;
 }
 
-/* 베이스 건물 */
-const FAC = [];
-function building(o) {
+/* ───────────── 건물 도구: 실제 건물처럼(레고 상자 대신) ─────────────
+   부품(기초·벽·지붕·창틀·난간…)을 재질별로 한 메시로 합쳐 그려요(그리기 호출이 늘지 않게).
+   텍스처는 실제 재료처럼: 돌 기초 · 통나무/판자/회벽 · 슬레이트 지붕. 한 장이 덮는 미터(uvm)로 크기를 맞춰요 */
+function MergeBag() {
+  const groups = new Map();
+  const put = (geo, m) => { if (!groups.has(m)) groups.set(m, []); groups.get(m).push(geo); };
+  const M4 = new THREE.Matrix4(), Q = new THREE.Quaternion(), E = new THREE.Euler(), V = new THREE.Vector3(), SC = new THREE.Vector3(1, 1, 1);
+  const mtx = (x, y, z, rx, ry, rz) => M4.compose(V.set(x, y, z), Q.setFromEuler(E.set(rx || 0, ry || 0, rz || 0, 'YXZ')), SC);
+  const M = (m) => (typeof m === 'string' ? mat(m) : m);
+  return {
+    box(w, h, d, m, x, y, z, rx, ry, rz, uvm) {
+      const g = new THREE.BoxGeometry(w, h, d).toNonIndexed();
+      if (uvm) { const uv = g.attributes.uv, dims = [[d, h], [d, h], [w, d], [w, d], [w, h], [w, h]]; for (let f = 0; f < 6; f++) for (let k = 0; k < 6; k++) { const i = f * 6 + k; uv.setXY(i, uv.getX(i) * dims[f][0] / uvm, uv.getY(i) * dims[f][1] / uvm); } }
+      g.applyMatrix4(mtx(x, y, z, rx, ry, rz)); put(g, M(m));
+    },
+    geo(g0, m, x, y, z, rx, ry, rz) { const g = g0.index ? g0.toNonIndexed() : g0.clone(); g.applyMatrix4(mtx(x, y, z, rx, ry, rz)); put(g, M(m)); },
+    build(parent, o) {
+      o = o || {};
+      groups.forEach((list, m) => {
+        let n = 0; list.forEach((g) => { n += g.attributes.position.count; });
+        const P = new Float32Array(n * 3), N = new Float32Array(n * 3), U = new Float32Array(n * 2); let off = 0;
+        list.forEach((g) => { P.set(g.attributes.position.array, off * 3); N.set(g.attributes.normal.array, off * 3); if (g.attributes.uv) U.set(g.attributes.uv.array, off * 2); off += g.attributes.position.count; g.dispose(); });
+        const bg = new THREE.BufferGeometry(); bg.setAttribute('position', new THREE.BufferAttribute(P, 3)); bg.setAttribute('normal', new THREE.BufferAttribute(N, 3)); bg.setAttribute('uv', new THREE.BufferAttribute(U, 2));
+        const mesh = new THREE.Mesh(bg, m); mesh.castShadow = o.shadow !== false && !m.transparent; mesh.receiveShadow = !m.transparent; parent.add(mesh);
+      });
+    }
+  };
+}
+function repTex(w, h, draw) { const t = canvasTex(w, h, draw); t.wrapS = t.wrapT = THREE.RepeatWrapping; return t; }
+const _rnd = rng(7331);
+const BTEX = {
+  stone: () => repTex(256, 256, (g, W, H) => {   // 자연석 기초(줄눈 사이 둥근 돌)
+    g.fillStyle = '#6E6A64'; g.fillRect(0, 0, W, H);
+    for (let y = 0; y < H; y += 32) for (let x = -(y % 64 ? 20 : 0); x < W; x += 40 + _rnd() * 14) {
+      const w = 34 + _rnd() * 16, h = 26 + _rnd() * 4, c = 128 + _rnd() * 40 | 0;
+      g.fillStyle = 'rgb(' + c + ',' + (c - 4) + ',' + (c - 10) + ')'; g.beginPath(); g.roundRect ? g.roundRect(x + 2, y + 3, w - 4, h - 4, 8) : g.rect(x + 2, y + 3, w - 4, h - 4); g.fill();
+      g.fillStyle = 'rgba(255,255,255,.12)'; g.fillRect(x + 5, y + 5, w - 12, 3);
+    }
+  }),
+  log: (col) => repTex(128, 256, (g, W, H) => {   // 통나무 벽(가로 통나무 · 둥근 음영 · 틈)
+    const n = 8, lh = H / n;
+    for (let i = 0; i < n; i++) {
+      const gr = g.createLinearGradient(0, i * lh, 0, (i + 1) * lh); gr.addColorStop(0, shade(col, 0.82)); gr.addColorStop(0.35, shade(col, 1.08)); gr.addColorStop(1, shade(col, 0.62));
+      g.fillStyle = gr; g.fillRect(0, i * lh, W, lh); g.fillStyle = 'rgba(30,18,10,.55)'; g.fillRect(0, (i + 1) * lh - 2, W, 2);
+      for (let k = 0; k < 6; k++) { g.fillStyle = 'rgba(40,24,12,.18)'; g.fillRect(_rnd() * W, i * lh + 4 + _rnd() * (lh - 8), 10 + _rnd() * 30, 1); }
+    }
+  }),
+  board: (col) => repTex(256, 128, (g, W, H) => {   // 세로 판자
+    for (let x = 0; x < W; x += 32) { g.fillStyle = shade(col, 0.88 + _rnd() * 0.22); g.fillRect(x, 0, 32, H); g.fillStyle = 'rgba(25,15,8,.5)'; g.fillRect(x + 30, 0, 2, H); g.fillStyle = 'rgba(255,255,255,.1)'; g.fillRect(x + 2, 0, 2, H); }
+  }),
+  timber: (col) => repTex(256, 256, (g, W, H) => {   // 회벽 + 목조 골조(하프팀버)
+    g.fillStyle = col; g.fillRect(0, 0, W, H);
+    for (let i = 0; i < 600; i++) { g.fillStyle = 'rgba(0,0,0,' + (_rnd() * 0.04) + ')'; g.fillRect(_rnd() * W, _rnd() * H, 3, 3); }
+    g.fillStyle = '#4A3426'; g.fillRect(0, 0, W, 14); g.fillRect(0, H - 14, W, 14); g.fillRect(0, 0, 14, H); g.fillRect(W / 2 - 7, 0, 14, H);
+    g.strokeStyle = '#4A3426'; g.lineWidth = 12; g.beginPath(); g.moveTo(10, H - 10); g.lineTo(W / 2 - 6, 10); g.moveTo(W / 2 + 6, 10); g.lineTo(W - 10, H - 10); g.stroke();
+  }),
+  slate: () => repTex(256, 256, (g, W, H) => {   // 지붕 슬레이트(엇갈린 너와)
+    g.fillStyle = '#BDBDBD'; g.fillRect(0, 0, W, H);
+    for (let r = 0; r < 8; r++) for (let x = (r % 2) * -16; x < W; x += 32) { const c = 170 + _rnd() * 50 | 0; g.fillStyle = 'rgb(' + c + ',' + c + ',' + c + ')'; g.fillRect(x + 1, r * 32 + 1, 30, 30); g.fillStyle = 'rgba(0,0,0,.25)'; g.fillRect(x, r * 32 + 28, 32, 4); }
+  })
+};
+function shade(hex, k) { const c = new THREE.Color(hex); c.multiplyScalar(k); return '#' + c.getHexString(); }
+const BMAT_CACHE = {};
+function bmat(kind, col, color) { const k = kind + (col || '') + (color || ''); if (!BMAT_CACHE[k]) BMAT_CACHE[k] = new THREE.MeshLambertMaterial({ map: BTEX[kind](col), color: color || '#ffffff' }); return BMAT_CACHE[k]; }
+const ICE_M = new THREE.MeshLambertMaterial({ color: '#E3F2FF', transparent: true, opacity: 0.8, emissive: 0x223344, emissiveIntensity: 0.3 });
+const GLASS_M = new THREE.MeshLambertMaterial({ color: '#BFD9EC', transparent: true, opacity: 0.35, depthWrite: false });
+const ICICLE_GEO = (() => { const g = new THREE.ConeGeometry(0.07, 1, 5); g.rotateX(Math.PI); g.translate(0, -0.5, 0); return g; })();
+function icicles(list) {   // [x, y, z, 길이] — 처마 끝 고드름
+  if (!list.length) return;
+  const im = new THREE.InstancedMesh(ICICLE_GEO, ICE_M, list.length), d = new THREE.Object3D();
+  list.forEach(([x, y, z, l], i) => { d.position.set(x, y, z); d.scale.set(1, l, 1); d.updateMatrix(); im.setMatrixAt(i, d.matrix); });
+  scene.add(im);
+}
+// 면(face) 좌표계: u = 벽을 따라 오른쪽, v = 높이, n = 바깥쪽
+function faceOf(cx, cz, ry, half) { return { x: cx + Math.sin(ry) * half, z: cz + Math.cos(ry) * half, ry, rx: Math.cos(ry), rz: -Math.sin(ry), nx: Math.sin(ry), nz: Math.cos(ry) }; }
+function onFace(F, u, n) { return [F.x + F.rx * u + F.nx * n, F.z + F.rz * u + F.nz * n]; }
+function windowUnit(bag, F, u, v, ww, wh, o) {   // 창: 창틀 · 유리 · 십자 창살 · 창턱 · (덧문)
+  const fm = o.frame || '#3B2A20', T = 0.16;
+  let [x, z] = onFace(F, u, 0.1);
+  bag.box(ww, T, 0.24, fm, x, v + wh / 2 - T / 2, z, 0, F.ry); bag.box(ww, T, 0.24, fm, x, v - wh / 2 + T / 2, z, 0, F.ry);
+  [-1, 1].forEach((s) => { const [a, b] = onFace(F, u + s * (ww / 2 - T / 2), 0.1); bag.box(T, wh, 0.24, fm, a, v, b, 0, F.ry); });
+  [x, z] = onFace(F, u, 0.07); bag.box(ww - 0.2, wh - 0.2, 0.04, windowMat, x, v, z, 0, F.ry);   // 벽에서 살짝 띄워 깜빡임 없게
+  [x, z] = onFace(F, u, 0.12); bag.box(0.08, wh - 0.2, 0.08, fm, x, v, z, 0, F.ry); bag.box(ww - 0.2, 0.08, 0.08, fm, x, v + wh * 0.12, z, 0, F.ry);
+  [x, z] = onFace(F, u, 0.22); bag.box(ww + 0.35, 0.12, 0.36, o.sill || '#D9D2C5', x, v - wh / 2 - 0.06, z, 0, F.ry);
+  if (o.shutter) [-1, 1].forEach((s) => { const [a, b] = onFace(F, u + s * (ww / 2 + ww * 0.24), 0.08); bag.box(ww * 0.44, wh, 0.08, o.shutter, a, v, b, 0, F.ry); });
+}
+/* 알프스 샬레풍 베이스 건물(스키하우스·렌탈샵·매표소): 돌 기초 · 통나무/판자/회벽 · 가파른 박공지붕(처마·눈·고드름) ·
+   창틀과 덧문 · 현관 지붕과 랜턴 · 2층 발코니 · 돌 굴뚝 */
+function chalet(o) {
   const g = new THREE.Group(); g.position.set(o.x, 0, o.z); scene.add(g);
-  box(o.w, o.h, o.d, o.wall, 0, o.h / 2, 0, g);
-  box(o.w + 3, 1.6, o.d + 3, o.roof, 0, o.h + 0.8, 0, g);
-  box(o.w + 3.4, 0.8, o.d + 3.4, '#F7FAFC', 0, o.h + 2, 0, g);
-  const n = Math.max(2, Math.floor(o.w / 7));
-  for (let i = 0; i < n; i++) {
-    const wx = -o.w / 2 + (i + 0.5) * (o.w / n);
-    if (Math.abs(wx) < 2.4) continue;
-    const m = box(2.6, 2.2, 0.3, windowMat, wx, 3.4, o.d / 2 + 0.1, g); m.castShadow = false;
+  const bag = MergeBag(), W = o.w, D = o.d, H = o.h, PL = 1.1, fh = o.fh || 4.8;
+  const wallM = bmat(o.style || 'log', o.wall), stoneM = bmat('stone'), roofM = bmat('slate', '', o.roof), trim = o.trim || '#4A3426', snowM = TREE_SNOW;
+  bag.box(W + 0.5, PL, D + 0.5, stoneM, 0, PL / 2, 0, 0, 0, 0, 2.2);                               // 돌 기초
+  bag.box(W, H - PL, D, wallM, 0, PL + (H - PL) / 2, 0, 0, 0, 0, 2.6);                              // 벽
+  [[-1, -1], [1, -1], [-1, 1], [1, 1]].forEach(([sx, sz]) => bag.box(0.5, H - PL, 0.5, trim, sx * W / 2, PL + (H - PL) / 2, sz * D / 2));   // 모서리 기둥
+  if (o.floors > 1) bag.box(W + 0.35, 0.32, D + 0.35, trim, 0, PL + fh, 0);                           // 층 구분 띠
+  // 박공지붕(용마루는 x 방향): 두 지붕판 + 눈 + 처마 끝판 + 용마루
+  const pitch = o.pitch || 0.62, OV = 1.5, run = D / 2 + OV, tn = Math.tan(pitch), rise = (D / 2) * tn, plen = run / Math.cos(pitch), RW = W + 2.4, T = 0.38;
+  const eaveY = H - OV * tn, ice = [];
+  [-1, 1].forEach((sd) => {
+    const ny = Math.cos(pitch), nz = sd * Math.sin(pitch), cy = H + rise - run * tn / 2, cz = sd * run / 2;
+    bag.box(RW, T, plen, roofM, 0, cy + ny * T / 2, cz + nz * T / 2, sd * pitch, 0, 0, 2.4);
+    bag.box(RW - 0.5, 0.5, plen - 0.7, snowM, 0, cy + ny * (T + 0.22), cz + nz * (T + 0.22) - sd * 0.1, sd * pitch);   // 지붕 위 눈(처마 쪽은 조금 남겨요)
+    bag.box(RW, 0.55, 0.22, trim, 0, eaveY - 0.12, sd * run);                                        // 처마 끝판
+    for (let x = -RW / 2 + 0.4; x < RW / 2 - 0.3; x += 0.5 + _rnd() * 0.4) ice.push([o.x + x, eaveY - 0.35, o.z + sd * (run - 0.05), 0.25 + _rnd() * 0.7]);
+  });
+  bag.box(RW, 0.45, 0.7, trim, 0, H + rise + 0.25, 0); bag.box(RW - 0.4, 0.4, 0.9, snowM, 0, H + rise + 0.55, 0);   // 용마루
+  const tri = new THREE.Shape(); tri.moveTo(-D / 2, 0); tri.lineTo(D / 2, 0); tri.lineTo(0, rise); tri.closePath();
+  const tg = new THREE.ShapeGeometry(tri), tuv = tg.attributes.uv; for (let i = 0; i < tuv.count; i++) tuv.setXY(i, tuv.getX(i) / 2.6, tuv.getY(i) / 2.6);
+  [-1, 1].forEach((sx) => { bag.geo(tg, wallM, sx * (W / 2 + 0.02), H, 0, 0, sx * Math.PI / 2, 0); bag.geo(tg, wallM, sx * (W / 2 - 0.02), H, 0, 0, sx * Math.PI / 2 + Math.PI, 0); });   // 박공 벽(삼각형)
+  // 창: 앞·뒤(긴 면) · 양옆(박공 면)
+  const wo = { frame: trim, shutter: o.shutter, sill: '#E2DBCF' };
+  const front = faceOf(0, 0, 0, D / 2), back = faceOf(0, 0, Math.PI, D / 2), left = faceOf(0, 0, -Math.PI / 2, W / 2), right = faceOf(0, 0, Math.PI / 2, W / 2);
+  const row = (F, len, v, ww, wh, gap, skipDoor) => { const n = Math.max(1, Math.floor((len - 3) / gap)); for (let i = 0; i < n; i++) { const u = -((n - 1) * gap) / 2 + i * gap; if (skipDoor && Math.abs(u) < (o.door || 2.6) / 2 + ww / 2 + 0.4) continue; windowUnit(bag, F, u, v, ww, wh, wo); } };
+  const w1 = o.win1 || [2.2, 2.2], v1 = PL + 0.7 + w1[1] / 2;
+  row(front, W, v1, w1[0], w1[1], w1[0] + 1.4, true); row(back, W, v1, w1[0] * 1.15, w1[1] * 1.15, w1[0] * 1.15 + 1.1, false);
+  row(left, D, v1, w1[0], w1[1], w1[0] + 1.6, false); row(right, D, v1, w1[0], w1[1], w1[0] + 1.6, false);
+  if (o.floors > 1) {
+    const v2 = PL + fh + 0.7 + 1.0; row(front, W, v2, 1.7, 2.0, 3.0, !o.balcony);   // 간판 자리는 비워요 row(back, W, v2, 1.7, 2.0, 3.0, false);
+    row(left, D, v2, 1.5, 1.8, 3.2, false); row(right, D, v2, 1.5, 1.8, 3.2, false);
   }
-  box(3, 4.4, 0.3, '#6B4A35', 0, 2.2, o.d / 2 + 0.12, g);
-  const s = signMesh(o.label, Math.min(o.w - 2, o.label.length * 2.4 + 3), 2.4);
-  s.position.set(0, o.h - 1.6, o.d / 2 + 0.2); g.add(s);
-  if (o.chimney) box(2.2, 4, 2.2, '#3B2A20', o.w / 2 - 4, o.h + 3, -o.d / 4, g);
-  FAC.push({ id: o.id, label: o.label, x: o.x, z: o.z + o.d / 2 + 4, r: 9, action: o.action });
-  colBox(o.x, o.z, o.w + 0.6, o.d + 0.6, 0);   // 벽을 통과하지 않아요(입구 앞에서 상호작용)
-  BLD_BOX.push([o.x - o.w / 2 - 1, o.z - o.d / 2 - 1, o.x + o.w / 2 + 1, o.z + o.d / 2 + 1, o.h + 2, 0]);
+  [left, right].forEach((F) => windowUnit(bag, F, 0, H + rise * 0.38, 1.2, 1.5, wo));                 // 박공 다락 창
+  // 현관: 유리 문 · 문틀 · 돌계단 · 작은 박공 현관지붕 · 랜턴
+  const DW = o.door || 2.6, dz = D / 2;
+  bag.box(DW + 0.5, 3.3, 0.3, trim, 0, PL + 1.6, dz + 0.1); bag.box(DW, 3.0, 0.08, windowMat, 0, PL + 1.5, dz + 0.3); bag.box(0.08, 3.0, 0.14, trim, 0, PL + 1.5, dz + 0.26);
+  for (let k = 0; k < 3; k++) bag.box(DW + 2.4 - k * 0.5, PL / 3, 1.0 + (2 - k) * 0.6, stoneM, 0, PL / 6 + k * PL / 3, dz + 0.25 + (2 - k) * 0.3 + 0.2, 0, 0, 0, 2.2);
+  const py = PL + 3.6, pd = 2.8, pp = 0.55, prs = (DW / 2 + 1.2) * Math.tan(pp);
+  [-1, 1].forEach((sx) => { bag.box(DW / 2 + 1.5, 0.22, pd, roofM, sx * (DW / 2 + 1.2) / 2, py + prs / 2, dz + pd / 2, 0, 0, -sx * pp, 2.4); bag.box(DW / 2 + 1.3, 0.25, pd - 0.3, snowM, sx * (DW / 2 + 1.2) / 2, py + prs / 2 + 0.22, dz + pd / 2, 0, 0, -sx * pp); });
+  [-1, 1].forEach((sx) => { bag.box(0.28, py, 0.28, trim, sx * (DW / 2 + 1.0), py / 2, dz + pd - 0.2); bag.box(0.36, 0.5, 0.36, lampMat, sx * (DW / 2 + 0.5), PL + 2.7, dz + 0.35); });
+  // 2층 발코니(나무 난간)
+  if (o.balcony) {
+    const bw = W - 6, by = PL + fh, bd = 1.8;
+    bag.box(bw, 0.28, bd, trim, 0, by, dz + bd / 2);
+    for (let x = -bw / 2; x <= bw / 2 + 0.01; x += 0.9) bag.box(0.12, 1.0, 0.12, trim, x, by + 0.6, dz + bd - 0.08);
+    bag.box(bw, 0.14, 0.18, trim, 0, by + 1.12, dz + bd - 0.08); bag.box(bw, 0.1, 0.12, trim, 0, by + 0.4, dz + bd - 0.08);
+    for (let x = -bw / 2 + 0.6; x < bw / 2; x += 1.2 + _rnd() * 0.6) ice.push([o.x + x, by - 0.15, o.z + dz + bd, 0.2 + _rnd() * 0.35]);
+  }
+  if (o.chimney) {   // 돌 굴뚝(지붕을 뚫고 올라와요)
+    const cx = W / 2 - 4, cz = -D / 4, top = H + rise / 2 + 3.2;
+    bag.box(2.0, top - H + 1, 2.0, stoneM, cx, (H - 1 + top) / 2, cz, 0, 0, 0, 2.2); bag.box(2.5, 0.35, 2.5, trim, cx, top + 0.15, cz); bag.box(2.2, 0.4, 2.2, snowM, cx, top + 0.5, cz);
+  }
+  bag.build(g); icicles(ice);
+  return { g, signY: o.floors > 1 && o.balcony ? PL + fh + 0.75 : py + prs + 1.0 };   // 발코니가 있으면 난간에 간판
+}
+/* 콘도·호텔 외벽 텍스처: 층마다 슬래브 띠 · 창틀 · 하늘이 비친 유리 · 커튼. 밤 조명은 따로(켜진 창만 빛나요) */
+function makeFacade(cols, rows, o) {
+  const cw = 40, rh = Math.min(56, Math.floor(1600 / rows)), W = cols * cw, H = rows * rh;
+  const a = document.createElement('canvas'), e = document.createElement('canvas'); a.width = e.width = W; a.height = e.height = H;
+  const g = a.getContext('2d'), ge = e.getContext('2d'); ge.fillStyle = '#000'; ge.fillRect(0, 0, W, H);
+  g.fillStyle = o.base; g.fillRect(0, 0, W, H);
+  for (let x = 0; x < W; x += cw) { g.fillStyle = 'rgba(0,0,0,.06)'; g.fillRect(x, 0, 1, H); }
+  const lobbyRow = o.lobby === false ? -1 : rows - 1;
+  for (let r = 0; r < rows; r++) {
+    const y0 = r * rh;
+    g.fillStyle = o.slab || shade(o.base, 1.08); g.fillRect(0, y0 + rh - 7, W, 7); g.fillStyle = 'rgba(0,0,0,.18)'; g.fillRect(0, y0 + rh, W, 2);
+    if (r === lobbyRow) {   // 1층 로비: 통유리
+      g.fillStyle = '#2A3A4C'; g.fillRect(0, y0 + 6, W, rh - 14);
+      for (let x = 0; x < W; x += cw / 2) { g.fillStyle = o.frame || '#D9DEE3'; g.fillRect(x, y0 + 6, 2, rh - 14); }
+      ge.fillStyle = '#FFCF8A'; ge.fillRect(0, y0 + 8, W, rh - 18);
+      continue;
+    }
+    for (let c = 0; c < cols; c++) {
+      const x = c * cw + 7, w = cw - 14, y = y0 + 9, h = rh - 22;
+      g.fillStyle = o.frame || '#E9EDF0'; g.fillRect(x - 2, y - 2, w + 4, h + 4);
+      const gr = g.createLinearGradient(x, y, x + w * 0.4, y + h); gr.addColorStop(0, '#A9C3D8'); gr.addColorStop(0.5, '#56718A'); gr.addColorStop(1, '#2F4255'); g.fillStyle = gr; g.fillRect(x, y, w, h);
+      g.fillStyle = 'rgba(255,255,255,.18)'; g.beginPath(); g.moveTo(x, y + h * 0.6); g.lineTo(x + w * 0.5, y); g.lineTo(x + w * 0.7, y); g.lineTo(x, y + h * 0.9); g.fill();
+      const cur = _rnd(); if (cur < 0.45) { g.fillStyle = ['rgba(232,214,180,.75)', 'rgba(200,170,140,.7)', 'rgba(240,236,226,.8)'][cur * 6 | 0 % 3] || 'rgba(232,214,180,.75)'; g.fillRect(x, y, w * (0.3 + _rnd() * 0.25), h); }
+      g.fillStyle = o.frame || '#E9EDF0'; g.fillRect(x + w / 2 - 1, y, 2, h);
+      if (_rnd() < (o.lit == null ? 0.45 : o.lit)) { const ge2 = ge.createLinearGradient(0, y, 0, y + h); ge2.addColorStop(0, '#FFC978'); ge2.addColorStop(1, '#E89A4A'); ge.fillStyle = ge2; ge.fillRect(x, y, w, h); }
+    }
+  }
+  return { map: new THREE.CanvasTexture(a), emi: new THREE.CanvasTexture(e) };
+}
+/* 콘도·호텔(실제 리조트 건물처럼): 외벽 텍스처 + 층마다 튀어나온 슬래브 띠 · 유리 난간 발코니 · 옥상 난간과 눈 · 로비 캐노피.
+   정면은 그룹의 -z 쪽(ry로 돌려요) */
+function residence(o) {
+  const g = new THREE.Group(); g.position.set(o.x, 0, o.z); g.rotation.y = o.ry || 0; scene.add(g);
+  const W = o.w, D = o.d, H = o.h, R = o.rows, fhh = H / R;
+  const fm = (cols, lob) => { const f = makeFacade(cols, R, Object.assign({}, o, { lobby: lob })); const m = new THREE.MeshLambertMaterial({ map: f.map, emissive: 0xFFE3B8, emissiveMap: f.emi, emissiveIntensity: 0 }); NIGHT_MATS.push([m, 1.0]); return m; };
+  const fM = fm(Math.max(4, Math.round(W / 3.4)), true), sM = fm(Math.max(3, Math.round(D / 3.4)), false), rM = mat(o.roof);
+  const b = new THREE.Mesh(new THREE.BoxGeometry(W, H, D), [sM, sM, rM, rM, fM, fM]); b.position.y = H / 2; b.castShadow = b.receiveShadow = true; g.add(b);
+  const bag = MergeBag(), slabM = mat(o.slabCol || '#E6E2DA'), metal = '#5E6B78';
+  for (let r = 1; r < R; r++) bag.box(W + 0.5, 0.32, D + 0.5, slabM, 0, r * fhh, 0);                  // 층 슬래브 띠
+  const cols = Math.max(4, Math.round(W / 3.4)), cw = W / cols;
+  [-1, 1].forEach((sd) => {                                                                            // 앞·뒤 유리 난간 발코니
+    for (let r = 1; r < R; r++) for (let c = 0; c + 1 < cols; c += 2) {
+      const x = -W / 2 + (c + 1) * cw, y = r * fhh, z = sd * (D / 2 + 0.75), bw = cw * 2 - 0.6;
+      if (o.core && Math.abs(x) < o.core / 2 + cw) continue;   // 가운데 유리 코어엔 발코니 없음
+      bag.box(bw, 0.26, 1.5, slabM, x, y, z); bag.box(bw, 1.0, 0.06, GLASS_M, x, y + 0.63, sd * (D / 2 + 1.45)); bag.box(bw, 0.08, 0.12, metal, x, y + 1.15, sd * (D / 2 + 1.45));
+    }
+  });
+  bag.box(W + 0.6, 1.1, 0.4, slabM, 0, H + 0.4, -D / 2 - 0.1); bag.box(W + 0.6, 1.1, 0.4, slabM, 0, H + 0.4, D / 2 + 0.1);   // 옥상 난간
+  bag.box(0.4, 1.1, D + 0.6, slabM, -W / 2 - 0.1, H + 0.4, 0); bag.box(0.4, 1.1, D + 0.6, slabM, W / 2 + 0.1, H + 0.4, 0);
+  if (o.roofStyle === 'castle') {
+    for (let i = -1; i <= 1; i++) { const r = new THREE.Mesh(new THREE.ConeGeometry(W / 6, 9, 4), mat(o.roof)); r.position.set(i * W / 3, H + 4.5, 0); r.rotation.y = Math.PI / 4; r.castShadow = true; g.add(r); const sc = new THREE.Mesh(new THREE.ConeGeometry(W / 6 * 0.62, 3.2, 4), TREE_SNOW); sc.position.set(i * W / 3, H + 7.6, 0); sc.rotation.y = Math.PI / 4; g.add(sc); }
+  } else {
+    bag.box(W - 0.6, 0.5, D - 0.6, TREE_SNOW, 0, H + 0.25, 0);                                     // 옥상 눈
+    bag.box(W * 0.3, 3.2, D * 0.4, '#9AA3AC', W * 0.18, H + 1.6, 0); bag.box(W * 0.3 - 0.3, 0.35, D * 0.4 - 0.3, TREE_SNOW, W * 0.18, H + 3.35, 0);   // 기계실
+  }
+  // 로비 캐노피(정면 -z 가운데)
+  const cz = -D / 2 - 2.4; bag.box(12, 0.45, 4.8, '#3A4552', 0, 4.4, cz); bag.box(11.6, 0.3, 4.4, TREE_SNOW, 0, 4.78, cz);
+  [-5.4, 5.4].forEach((x) => bag.box(0.3, 4.4, 0.3, metal, x, 2.2, cz - 2.1));
+  bag.build(g);
+  if (o.label) { const s = signMesh(o.label, Math.min(W - 2, o.label.length * 2.2 + 2), 2.2, '#1F2A36'); s.position.set(0, H - 3, -D / 2 - 0.12); s.rotation.y = Math.PI; g.add(s); }
+  const sw = Math.abs(Math.sin(o.ry || 0)) > 0.5, ex = sw ? D : W, ez = sw ? W : D;
+  colBox(o.x, o.z, W + 0.6, D + 3.6, o.ry || 0); BLD_BOX.push([o.x - ex / 2 - 2, o.z - ez / 2 - 2, o.x + ex / 2 + 2, o.z + ez / 2 + 2, H + 2, 0]);
   return g;
 }
-building({ id: 'ticket', label: '매표소', x: -170, z: 90, w: 18, d: 12, h: 9, wall: '#B9875F', roof: '#4D6A86', action: '기록 보기 · 채널 이동' });
-building({ id: 'rental', label: '렌탈샵', x: -95, z: 96, w: 22, d: 14, h: 10, wall: '#D9C3A5', roof: '#A9473A', action: '캐릭터 꾸미기' });
-building({ id: 'lodge', label: '스키하우스', x: 0, z: 92, w: 34, d: 18, h: 12, wall: '#E8D3B4', roof: '#6B4A35', action: '들어가서 쉬기', chimney: true });
+
+/* 베이스 건물 */
+const FAC = [];
+function building(o) {   // 샬레풍 건물 + 간판 · 상호작용 지점 · 충돌
+  const c = chalet(o), g = c.g;
+  const s = signMesh(o.label, Math.min(o.w - 4, o.label.length * 2.2 + 3), o.floors > 1 ? 1.5 : 2.0, o.signBg);
+  s.position.set(0, c.signY, o.d / 2 + (o.balcony ? 1.95 : 0.36)); g.add(s);
+  FAC.push({ id: o.id, label: o.label, x: o.x, z: o.z + o.d / 2 + 4, r: 9, action: o.action });
+  colBox(o.x, o.z, o.w + 0.6, o.d + 0.6, 0);   // 벽을 통과하지 않아요(입구 앞에서 상호작용)
+  [-1, 1].forEach((sx) => colCircle(o.x + sx * ((o.door || 2.6) / 2 + 1.0), o.z + o.d / 2 + 2.6, 0.3));   // 현관 기둥
+  BLD_BOX.push([o.x - o.w / 2 - 2, o.z - o.d / 2 - 2, o.x + o.w / 2 + 2, o.z + o.d / 2 + 2, o.h + 8, 0]);
+  return g;
+}
+building({ id: 'ticket', label: '매표소', x: -170, z: 90, w: 18, d: 12, h: 9, style: 'board', wall: '#9C6B45', roof: '#5B7896', shutter: '#2F4E6E', floors: 1, win1: [2.0, 1.9], door: 2.4, action: '기록 보기 · 채널 이동' });
+building({ id: 'rental', label: '렌탈샵', x: -95, z: 96, w: 22, d: 14, h: 10, style: 'timber', wall: '#EFE6D6', roof: '#B04A3C', shutter: '#7A2E24', floors: 2, fh: 4.6, win1: [2.4, 2.3], door: 2.6, action: '캐릭터 꾸미기' });
+building({ id: 'lodge', label: '스키하우스', x: 0, z: 92, w: 34, d: 18, h: 12, style: 'log', wall: '#A8744A', roof: '#6A5646', floors: 2, fh: 4.8, win1: [2.8, 2.6], door: 3.0, balcony: true, action: '들어가서 쉬기', chimney: true });
 const lamps = [];
 [[-130, 150], [-40, 150], [50, 150], [150, 150], [200, 80], [-60, 60]].forEach(([x, z]) => {
   box(0.5, 7, 0.5, '#26313C', x, 3.5, z); colCircle(x, z, 0.4);
@@ -1555,7 +1933,7 @@ function instParts(parts, n) {
   return parts.map(([w, h, d, col, x, y, z, mo]) => { const im = new THREE.InstancedMesh(boxGeo(w, h, d), typeof col === 'string' ? mat(col, mo) : col, n); im.castShadow = true; im.frustumCulled = false; scene.add(im); return { im, o: new THREE.Vector3(x, y, z) }; });
 }
 const _m4 = new THREE.Matrix4();
-function syncParts(P, list) { P.forEach((p) => { list.forEach((g, i) => { _m4.makeTranslation(g.position.x + p.o.x, g.position.y + p.o.y, g.position.z + p.o.z); p.im.setMatrixAt(i, _m4); }); p.im.instanceMatrix.needsUpdate = true; }); }
+function syncParts(P, list) { P.forEach((p) => { list.forEach((g, i) => { const ry = g.rotation.y, c = Math.cos(ry), sn = Math.sin(ry); _m4.makeRotationY(ry); _m4.setPosition(g.position.x + p.o.x * c + p.o.z * sn, g.position.y + p.o.y, g.position.z - p.o.x * sn + p.o.z * c); p.im.setMatrixAt(i, _m4); }); p.im.instanceMatrix.needsUpdate = true; }); }   // 부품도 의자 방향대로 돌려요
 const LIFT_ST_H = 5.5;   // 승·하차장에서 케이블 높이: 의자가 지면에 닿지 않게 살짝 높게(스키가 눈을 안 뚫어요)
 /* 리프트 승·하차장(실제 체어리프트 터미널처럼): 아치형 지붕 아래 큰 회전 바퀴(불휠) · 정면 안내판(리프트 이름·난이도·연결 코스)
    · 승차장: 줄 서는 통로(안전망) · 노란 볼라드 · 운영자 부스 · 개찰구 / 하차장: 내려서 미끄러져 나가는 하차 램프 */
@@ -1610,7 +1988,7 @@ function liftTerminal(d, x, z, top) {
   return g;
 }
 const CHAIR_SLOTS = [-1.18, -0.4, 0.4, 1.18];     // 4인 체어 좌석 x좌표(캐릭터 폭에 맞게 좁힘)
-const SEAT_Y = -3.025 + 0.15 - HIP, SEAT_Z = 0.32;   // 좌석 윗면(-3.025) 위로 엉덩이 두께만큼 · 등받이 쪽으로 깊이 앉아요
+const SEAT_Y = -3.025 + 0.15 - HIP, SEAT_Z = 0.17;   // 좌석 윗면(-3.025) 위로 엉덩이 두께만큼 · 등받이에 기대요(좌석 깊이는 허벅지 길이에 맞춰 짧게)
 function makeChairLift(d) {
   const ts = cableTowers(d.x0, d.z0, d.x1, d.z1, 92, LIFT_ST_H, 12.5);
   const cab = makeCable(d.x0, d.z0, d.x1, d.z1, 3, LIFT_ST_H, 12.5, ts);
@@ -1626,14 +2004,24 @@ function makeChairLift(d) {
   FAC.push({ id: 'lift:' + d.id, label: d.name + ' 승차장', x: qx, z: d.z0 + 18, r: 10, action: '줄 서기' });
   // 의자(인스턴스)
   const back = new THREE.Color(d.color).multiplyScalar(0.82).getStyle();
-  const P = instParts([[0.2, 3.2, 0.2, '#26313C', 0, -1.6, 0], [3.3, 0.16, 0.16, '#26313C', 0, 0, 0], [3.3, 0.32, 1.5, d.color, 0, -3.2, 0], [3.3, 1.4, 0.22, back, 0, -2.5, 0.78],
-    [0.15, 0.15, 1.5, '#26313C', -1.65, -2.3, 0.05], [0.15, 0.15, 1.5, '#26313C', 1.65, -2.3, 0.05], [0.15, 0.9, 0.15, '#26313C', -1.65, -2.8, -0.65], [0.15, 0.9, 0.15, '#26313C', 1.65, -2.8, -0.65],
-    [3.5, 0.16, 0.16, back, 0, -2.78, -1.15], [3.6, 0.18, 0.62, '#2B3A49', 0, -3.5, -0.62], [0.14, 0.34, 0.14, '#2B3A49', -1.6, -3.44, -0.6], [0.14, 0.34, 0.14, '#2B3A49', 1.6, -3.44, -0.6]], count);
+  // 캐릭터 체형(허벅지·종아리 약 0.14m, 앉은키 약 1m)에 맞춘 4인 체어: 얕은 좌석 · 낮은 등받이 · 무릎 앞 안전바와 발받침
+  const P = instParts([
+    [0.36, 0.3, 0.36, '#26313C', 0, 0, 0],                                   // 케이블 그립
+    [0.12, 2.25, 0.12, '#26313C', 0, -1.12, 0.52], [0.12, 0.12, 0.52, '#26313C', 0, 0, 0.26],   // 행거(등받이 뒤로 내려와요)
+    [3.1, 0.12, 0.12, '#26313C', 0, -2.2, 0.52],                              // 등받이 위 가로대
+    [3.1, 0.14, 0.44, d.color, 0, -3.095, 0.2],                               // 좌석(깊이 0.44m)
+    [3.1, 0.82, 0.1, back, 0, -2.6, 0.46],                                    // 등받이
+    [0.08, 0.08, 0.44, '#26313C', -1.56, -2.74, 0.2], [0.08, 0.08, 0.44, '#26313C', 1.56, -2.74, 0.2],   // 팔걸이
+    [0.08, 0.36, 0.08, '#26313C', -1.56, -2.9, 0.0], [0.08, 0.36, 0.08, '#26313C', 1.56, -2.9, 0.0],
+    [3.2, 0.08, 0.08, back, 0, -2.62, -0.16],                                 // 안전바(무릎 앞, 내려온 상태)
+    [0.07, 0.62, 0.07, '#26313C', -1.2, -2.93, -0.16], [0.07, 0.62, 0.07, '#26313C', 1.2, -2.93, -0.16],
+    [3.0, 0.06, 0.2, '#2B3A49', 0, -3.26, -0.18]                              // 발받침(발끝 아래)
+  ], count);
   const chairs = [];
   for (let i = 0; i < count; i++) { const g = new THREE.Group(); scene.add(g); chairs.push({ g, i, s: (i * spacing) % (2 * len), riders: [] }); }
   const seats = CHAIR_SLOTS.map((x) => ({ x, y: SEAT_Y, z: SEAT_Z, ry: Math.PI }));
   const L1 = { def: d, len, speed, spacing, chairs, count, posAt: cab.posAt, seats, qx, qz: d.z0 + 7, camY: -2.8, kind: '4인 체어', last: chairs.map(() => 0) };
-  L1.update = (T) => { const dep = []; chairs.forEach((ch, i) => { const s = (ch.i * spacing + T * speed) % (2 * len); if (s < L1.last[i]) dep.push(ch); L1.last[i] = s; ch.s = s; cab.posAt(s, ch.g.position); }); syncParts(P, chairs.map((c) => c.g)); return dep; };
+  L1.update = (T) => { const dep = []; chairs.forEach((ch, i) => { const s = (ch.i * spacing + T * speed) % (2 * len); if (s < L1.last[i]) dep.push(ch); L1.last[i] = s; ch.s = s; cab.posAt(s, ch.g.position); ch.g.rotation.y = s < len ? cab.ang + Math.PI : cab.ang; }); syncParts(P, chairs.map((c) => c.g)); return dep; };   // 올라갈 땐 산 쪽, 내려올 땐 베이스 쪽을 봐요
   return L1;
 }
 const LIFTS = LIFT_DEFS.map(makeChairLift);
@@ -1713,7 +2101,7 @@ const GONDOLA = (function () {
   // 좌석: 양쪽 의자에 두 명씩, 서로 마주 봐요(머리가 큰 체형이라 네 자리)
   const SY = -4.96 + 0.15 - HIP, seats = [[-0.65, 1.0, Math.PI], [0.65, 1.0, Math.PI], [-0.65, -1.0, 0], [0.65, -1.0, 0]].map(([x, z, ry]) => ({ x, y: SY, z, ry }));
   const G = { def: { id: 'gondola', name: '곤돌라', x: X, x0: GD.x0, z0: Z0, x1: GD.x1, z1: Z1, peak: 'M', top: 'summit' }, len, speed, spacing, chairs: cabins, count, posAt: cab.posAt, seats, qx: X, qz: 40, camY: -4.4, kind: '8인승 곤돌라', last: cabins.map(() => 0), gondola: true };
-  G.update = (T) => { const dep = []; cabins.forEach((ch, i) => { const s = (ch.i * spacing + T * speed) % (2 * len); if (s < G.last[i]) dep.push(ch); G.last[i] = s; ch.s = s; cab.posAt(s, ch.g.position); }); syncParts(P, cabins.map((c) => c.g)); return dep; };
+  G.update = (T) => { const dep = []; cabins.forEach((ch, i) => { const s = (ch.i * spacing + T * speed) % (2 * len); if (s < G.last[i]) dep.push(ch); G.last[i] = s; ch.s = s; cab.posAt(s, ch.g.position); ch.g.rotation.y = s < len ? cab.ang + Math.PI : cab.ang; }); syncParts(P, cabins.map((c) => c.g)); return dep; };
   return G;
 })();
 const RIDES = LIFTS.concat([GONDOLA]);   // 줄 서서 타는 모든 것
@@ -1736,20 +2124,9 @@ const RIDES = LIFTS.concat([GONDOLA]);   // 줄 서서 타는 모든 것
   const sg = signMesh('초보 연습장 · 무빙워크', 9, 1.4, '#3BA776'); sg.position.set(X, 4.2, 10.5); scene.add(sg);
   box(0.3, 4, 0.3, '#2B3440', X - 4.2, 2, 10.4); box(0.3, 4, 0.3, '#2B3440', X + 4.2, 2, 10.4);
 })();
-(function condos() {
-  // 베이스 왼쪽 리조트 콘도 2동(밤이면 창마다 불이 켜져요)
-  const facade = canvasTex(256, 512, (g, w, h) => {
-    g.fillStyle = '#E8E1D6'; g.fillRect(0, 0, w, h);
-    for (let y = 8; y < h; y += 28) for (let x = 10; x < w; x += 30) { const lit = Math.random() < 0.55; g.fillStyle = lit ? '#FFD58A' : '#4A5868'; g.fillRect(x, y, 20, 16); g.fillStyle = '#B9AFA2'; g.fillRect(x - 2, y + 17, 24, 3); }
-  });
-  facade.wrapS = facade.wrapT = THREE.RepeatWrapping;
-  const m = new THREE.MeshLambertMaterial({ map: facade, emissive: 0xFFC27A, emissiveMap: facade, emissiveIntensity: 0.0 }); NIGHT_MATS.push([m, 0.55]);
-  [[-324, 120, 48], [-324, 178, 40]].forEach(([x, z, h]) => {
-    const b = new THREE.Mesh(new THREE.BoxGeometry(18, h, 34), m); b.position.set(x, h / 2, z); b.castShadow = b.receiveShadow = true; scene.add(b);
-    box(20, 1.6, 36, '#3E5A78', x, h + 0.8, z); box(20.4, 0.8, 36.4, '#F7FAFC', x, h + 2, z);
-    const s = signMesh(h > 44 ? '스노우라이브 콘도 A동' : '스노우라이브 콘도 B동', 14, 1.8, '#3E5A78'); s.position.set(x + 9.2, h - 4, z); s.rotation.y = Math.PI / 2; scene.add(s);
-    colBox(x, z, 18.6, 34.6, 0);
-  });
+(function condos() {   // 베이스 왼쪽 리조트 콘도 2동(정면이 광장 쪽 +x)
+  residence({ x: -324, z: 120, w: 34, d: 18, h: 48, rows: 16, ry: -Math.PI / 2, base: '#E8E1D6', roof: '#3E5A78', label: '스노우라이브 콘도 A동' });
+  residence({ x: -324, z: 178, w: 34, d: 18, h: 40, rows: 13, ry: -Math.PI / 2, base: '#E3DACB', roof: '#3E5A78', label: '스노우라이브 콘도 B동' });
 })();
 (function slopeLights() {
   // 야간 조명탑(슬로프 가장자리) · 제설기
@@ -1772,32 +2149,16 @@ const RIDES = LIFTS.concat([GONDOLA]);   // 줄 서서 타는 모든 것
   });
 })();
 /* 베이스 리조트 단지: 실제 스키장처럼 슬로프 하단 뒤로 호텔·콘도가 모여 있어요(밤이면 창이 켜져요) */
-function facadeTex(base, win, lit, rows, cols) {
-  return canvasTex(256, 512, (g, w, h) => {
-    g.fillStyle = base; g.fillRect(0, 0, w, h);
-    const ch = h / rows, cw = w / cols;
-    for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) { g.fillStyle = Math.random() < lit ? '#FFD58A' : win; g.fillRect(c * cw + cw * 0.2, r * ch + ch * 0.22, cw * 0.6, ch * 0.5); g.fillStyle = 'rgba(0,0,0,.12)'; g.fillRect(c * cw + cw * 0.12, r * ch + ch * 0.76, cw * 0.76, ch * 0.08); }
-  });
-}
-function tower(x, z, w, d, h, base, roof, rows, label, ry) {
-  const tex = facadeTex(base, '#4A5868', 0.5, rows, Math.max(4, Math.round(w / 3.2)));
-  const m = new THREE.MeshLambertMaterial({ map: tex, emissive: 0xFFC27A, emissiveMap: tex, emissiveIntensity: 0 }); NIGHT_MATS.push([m, 0.55]);
-  const b = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), m); b.position.set(x, h / 2, z); b.rotation.y = ry || 0; b.castShadow = b.receiveShadow = true; scene.add(b);
-  const r = box(w + 2, 1.6, d + 2, roof, x, h + 0.8, z); r.rotation.y = ry || 0;
-  if (label) { const s = signMesh(label, Math.min(w - 2, label.length * 2.2 + 2), 2.2, '#1F2A36'); s.position.set(x, h - 3, z - d / 2 - 0.1); s.rotation.y = Math.PI; scene.add(s); }   // 정면은 슬로프 쪽
-  colBox(x, z, w + 0.6, d + 0.6, 0); BLD_BOX.push([x - w / 2 - 1, z - d / 2 - 1, x + w / 2 + 1, z + d / 2 + 1, h + 2, 0]);
-  return b;
-}
 (function resortComplex() {
   // 센터 건물 뒤 하차장 너머로 호텔·콘도가 슬로프를 바라보고 서 있어요. 주차장은 그 뒤(건물 뒤편)
-  tower(-100, 345, 44, 24, 64, '#E9E2D4', '#B9B2A4', 22, 'SNOWLIVE HOTEL');
+  residence({ x: -100, z: 345, w: 44, d: 24, h: 64, rows: 22, base: '#E9E2D4', roof: '#B9B2A4', label: 'SNOWLIVE HOTEL', lit: 0.55, core: 10 });
   const core = box(10, 66, 25, new THREE.MeshLambertMaterial({ color: '#2E7F6E', emissive: 0x2E7F6E, emissiveIntensity: 0.08 }), -100, 33, 344.4); core.castShadow = true;
-  [[-190, 340, 50, 26, 34], [-265, 350, 26, 22, 28]].forEach(([x, z, w, d, h]) => {
-    tower(x, z, w, d, h, '#E4CFA6', '#3D8A6E', 11);
-    for (let i = -1; i <= 1; i++) { const r = new THREE.Mesh(new THREE.ConeGeometry(w / 6, 9, 4), mat('#3D8A6E')); r.position.set(x + i * w / 3, h + 5, z); r.rotation.y = Math.PI / 4; scene.add(r); }
-  });
-  tower(80, 340, 34, 22, 40, '#DCC9AA', '#8A6447', 14, '콘도 블루동'); tower(140, 352, 30, 22, 52, '#DCC9AA', '#8A6447', 18, '콘도 그린동');
-  tower(205, 340, 40, 22, 30, '#E2D6C2', '#5A6B7C', 10); tower(268, 350, 30, 20, 36, '#E2D6C2', '#5A6B7C', 12);
+  residence({ x: -190, z: 340, w: 50, d: 26, h: 34, rows: 11, base: '#E4CFA6', roof: '#3D8A6E', roofStyle: 'castle' });
+  residence({ x: -265, z: 350, w: 26, d: 22, h: 28, rows: 9, base: '#E4CFA6', roof: '#3D8A6E', roofStyle: 'castle' });
+  residence({ x: 80, z: 340, w: 34, d: 22, h: 40, rows: 14, base: '#DCC9AA', roof: '#8A6447', label: '콘도 블루동' });
+  residence({ x: 140, z: 352, w: 30, d: 22, h: 52, rows: 18, base: '#D6C3A3', roof: '#8A6447', label: '콘도 그린동' });
+  residence({ x: 205, z: 340, w: 40, d: 22, h: 30, rows: 10, base: '#E2D6C2', roof: '#5A6B7C' });
+  residence({ x: 268, z: 350, w: 30, d: 20, h: 36, rows: 12, base: '#E2D6C2', roof: '#5A6B7C' });
 })();
 /* ───── 베이스 센터: 슬로프 광장과 바깥을 가르는 큰 건물(실제 스키장 입구처럼). 유리 원형 타워 · 상가동 · 파란 차양.
    건물 사이 통로(자동문)로만 드나들어요. 통로를 지나 바깥으로 나가면 장비를 벗어 들고 걸어요 ───── */
@@ -1810,8 +2171,8 @@ const DOORS = [];
   const glass = new THREE.MeshLambertMaterial({ color: '#9CC9E8', transparent: true, opacity: 0.42, depthWrite: false });
   for (let i = 0; i < edges.length; i += 2) {
     const xa = edges[i], xb = edges[i + 1], w = xb - xa, xm = (xa + xb) / 2;
-    const tex = facadeTex('#E6EBF0', '#41566B', 0.5, 3, Math.max(3, Math.round(w / 4)));
-    const m = new THREE.MeshLambertMaterial({ map: tex, emissive: 0xFFC27A, emissiveMap: tex, emissiveIntensity: 0 }); NIGHT_MATS.push([m, 0.55]);
+    const f = makeFacade(Math.max(3, Math.round(w / 4)), 3, { base: '#E6EBF0', frame: '#41566B', lit: 0.6 });
+    const m = new THREE.MeshLambertMaterial({ map: f.map, emissive: 0xFFE3B8, emissiveMap: f.emi, emissiveIntensity: 0 }); NIGHT_MATS.push([m, 1.0]);
     const b = new THREE.Mesh(new THREE.BoxGeometry(w, H, D), m); b.position.set(xm, H / 2, ZM); b.castShadow = b.receiveShadow = true; scene.add(b);
     box(w + 1, 0.8, D + 1, '#5B6B7C', xm, H + 0.4, ZM); box(w + 0.4, 0.5, D + 0.4, TREE_SNOW, xm, H + 1.0, ZM);
     [Z0 - 0.06, Z1 + 0.06].forEach((zf) => { box(w - 2, 3.4, 0.12, windowMat, xm, 2.0, zf).castShadow = false; });   // 1층 유리 상가
@@ -1913,7 +2274,8 @@ const ROAD_Z = 482, SVC_Z = 382;
     tr.push([x, z, 0.8 + R6() * 0.6]);
   }
   const tg = [[new THREE.ConeGeometry(2.6, 6.2, 8, 1), new THREE.MeshLambertMaterial({ color: '#33404F' }), 3.4], [new THREE.ConeGeometry(1.3, 1.6, 8, 1), TREE_SNOW, 6.0]];
-  tg.forEach(([g, m, y]) => { const im = new THREE.InstancedMesh(g, m, tr.length); tr.forEach(([x, z, s], i) => { d0.rotation.set(0, i, 0); d0.position.set(x, y * s - 0.3, z); d0.scale.setScalar(s); d0.updateMatrix(); im.setMatrixAt(i, d0.matrix); }); d0.scale.setScalar(1); scene.add(im); });
+  const cones = []; tg.forEach(([g, m, y]) => { const im = new THREE.InstancedMesh(g, m, tr.length); cones.push(im); tr.forEach(([x, z, s], i) => { d0.rotation.set(0, i, 0); d0.position.set(x, y * s - 0.3, z); d0.scale.setScalar(s); d0.updateMatrix(); im.setMatrixAt(i, d0.matrix); }); d0.scale.setScalar(1); scene.add(im); });
+  pineForest(tr.map(([x, z, s]) => ({ x, z, s })), cones);
 })();
 /* 셔틀버스 정류장(지붕·유리벽·벤치) */
 function shelter(x, z, ry, label) {
@@ -2182,6 +2544,11 @@ function peakRows(pk) {   // 꼭대기 가운데 기둥 기준: 베이스 쪽(+z
   return TRAILS.filter((t) => t.peak === pk).map((t) => ({ t, a: Math.atan2(t.pts[0][0] - P.x, t.pts[0][1] - P.z) })).sort((a, b) => b.a - a.a)
     .map(({ t, a }) => ({ color: t.color, text: t.name + ' · ' + t.level, arrow: Math.abs(a) < 0.45 ? '↑ 앞' : a > 0 ? '← 왼쪽' : '오른쪽 →' }));
 }
+LIFT_DEFS.filter((d) => d.top === 'mid').forEach((d) => {   // 중턱 하차장 이정표: 이 리프트로 갈 수 있는 코스
+  const t = TRAILS.find((q) => q.id === d.trail); if (!t) return;
+  const a = Math.atan2(t.pts[0][0] - d.x1, t.pts[0][1] - d.z1);
+  signpost(d.x1 - 5, d.z1 - 9, [{ color: t.color, text: t.name + ' · ' + t.level, arrow: Math.abs(a) < 0.45 ? '↑ 앞' : a > 0 ? '← 왼쪽' : '오른쪽 →' }]);
+});
 PEAKS.forEach((p) => { signpost(p.x, p.z + 8, peakRows(p.id).concat(p.id === 'E' ? [{ color: '#E9B44C', text: '하늘 전망대 · 포토스팟', arrow: '오른쪽 →' }] : [])); });
 (function peakMarkers() {   // 봉우리 표지석(이름·높이)
   PEAKS.forEach((p) => {
@@ -2786,11 +3153,11 @@ function animChar(c, dt, extra) {
     E0.rotation.x = -0.35 - Math.max(0, sw) * 0.4; E1.rotation.x = -0.35 - Math.max(0, -sw) * 0.4;
   } else if (p === 'sit') {
     // 리프트 탑승: 등받이에 기대고 정강이를 앞으로 내밀어 발받침대 쪽으로(살짝 흔들흔들)
-    const sw = Math.sin(t * 2.2) * (e.swing ? 0.2 : 0.045);
+    const sw = e.still ? 0 : Math.sin(t * 2.2) * (e.swing ? 0.2 : 0.045);
     [L0, L1].forEach((l, i) => { l.rotation.x = -1.3; l.userData.knee.rotation.x = 0.9 + (i ? -sw : sw); });
     c.body.rotation.x = 0.06;
     A0.rotation.x = -0.22; A1.rotation.x = -0.22; E0.rotation.x = -1.15; E1.rotation.x = -1.1;   // 손은 무릎 위에
-    c.head.rotation.y = Math.sin(t * 0.27 + c.seed) * 0.5; c.head.rotation.x = 0.08;
+    c.head.rotation.y = e.still ? 0 : Math.sin(t * 0.27 + c.seed) * 0.5; c.head.rotation.x = 0.08;
   } else if (p === 'ski') {
     const roll = e.roll || 0, ar = Math.abs(roll), tuck = e.tuck ? 1 : 0, skid = e.skid || 0;
     const v = e.v || 0;
@@ -2911,46 +3278,44 @@ me.c = makeChar(me.opts); scene.add(me.c.root);
 me.pos = new THREE.Vector3(0, 0, 196); me.yaw = Math.PI; me.target = null;
 function myName() { return me.opts.anon ? me.opts.anonName : (me.opts.name || '나'); }
 
+/* 스키장 직원 NPC: 실제 접속자와 헷갈리지 않게 손님 봇은 두지 않고, 직원만 유니폼 + STAFF 이름표로 보여요 */
+const STAFF = {
+  patrol: { label: '스키 패트롤', jacket: '#C62828', accent: '#F4F6F8', pants: '#1A1D22', cap: '#C62828', hat: 'helmet' },
+  coach: { label: '스키 강사', jacket: '#12263A', accent: '#F2B134', pants: '#12263A', cap: '#F2B134', hat: 'helmet' },
+  guide: { label: '안내 직원', jacket: '#2E7F6E', accent: '#F4F6F8', pants: '#26313C', cap: '#2E7F6E', hat: 'beanie' },
+  parking: { label: '주차 안내', jacket: '#F28C28', accent: '#F4F6F8', pants: '#26313C', cap: '#F28C28', hat: 'beanie' },
+  lift: { label: '리프트 직원', jacket: '#2B2F36', accent: '#F28C28', pants: '#2B2F36', cap: '#F28C28', hat: 'beanie' },
+  shuttle: { label: '셔틀 안내', jacket: '#2F6FD6', accent: '#F4F6F8', pants: '#26313C', cap: '#2F6FD6', hat: 'beanie' }
+};
+function staffOpts(role) { const st = STAFF[role]; return Object.assign(randOpts(), { jacket: st.jacket, accent: st.accent, pants: st.pants, cap: st.cap, hat: st.hat, gear: 'ski', skiFit: 'slim', ski: '#F4F6F8', neck: '', lens: '#26313C' }); }
 const bots = [];
 function addBot(kind, extra) {
-  const o = randOpts();
-  const c = makeChar(o); scene.add(c.root);
-  const b = Object.assign({ kind, c, name: pick(NAMES), pos: new THREE.Vector3(), yaw: 0, t: Math.random() * 5 }, extra || {});
+  const role = (extra && extra.role) || 'guide';
+  const c = makeChar(staffOpts(role)); scene.add(c.root);
+  const b = Object.assign({ kind, c, role, name: STAFF[role].label, staff: true, pos: new THREE.Vector3(), yaw: 0, t: Math.random() * 5 }, extra || {});
   bots.push(b); return b;
 }
-for (let i = 0; i < 12; i++) {
-  const b = addBot('walker');
+for (let i = 0; i < 5; i++) {   // 광장을 돌며 안내하는 직원(장비 없이 걸어요)
+  const b = addBot('walker', { role: 'guide' }); stowGear(b.c, true);
   b.pos.set((Math.random() - 0.5) * 300, 0, 100 + Math.random() * 90);
   b.target = null; b.idle = Math.random() * 4;
 }
-for (let i = 0; i < 6; i++) {   // 건물 밖: 주차장·정류장을 오가는 사람들(장비를 들고 걸어요)
-  const b = addBot('walker', { zone: 'out' });
-  b.pos.set(pick([-1, 1]) * (30 + Math.random() * 280), 0, pick([268, 372, 392]));
-  b.target = null; b.idle = Math.random() * 4;
+function addPost(role, x, z, yaw) { const b = addBot('post', { role }); stowGear(b.c, true); b.pos.set(x, 0, z); b.yaw = yaw; b.home = b.pos.clone(); b.idle = 2 + Math.random() * 6; return b; }
+RIDES.forEach((rd) => addPost('lift', rd.qx + 4.6, rd.qz - 2.5, Math.PI * 0.85));   // 리프트·곤돌라 승차장마다 직원
+[[-120, 392.5, 0], [120, 392.5, 0], [-280, 392.5, 0], [280, 392.5, 0]].forEach(([x, z, y]) => addPost('parking', x, z, y + Math.PI));   // 주차장 입구(도로 쪽을 봐요)
+addPost('shuttle', -36, 268.6, 0);   // 센터 하차장 셔틀 정류장
+for (let i = 0; i < 6; i++) {   // 슬로프: 패트롤 · 강사
+  const b = addBot('skier', { role: i % 2 ? 'coach' : 'patrol' });
+  b.trail = TRAILS[(i * 2) % TRAILS.length]; b.z = b.trail.zt + 10 + Math.random() * (-b.trail.zt - 60); b.ph = Math.random() * 6; b.speed = b.trail.auto * (0.85 + Math.random() * 0.3);
 }
-for (let i = 0; i < 6; i++) {
-  const b = addBot('skier');
-  b.trail = TRAILS[i % TRAILS.length]; b.z = b.trail.zt + 10 + Math.random() * (-b.trail.zt - 60); b.ph = Math.random() * 6; b.speed = b.trail.auto * (0.85 + Math.random() * 0.3);
-}
-RIDES.forEach((rd, ri) => rd.chairs.forEach((ch, i) => {
-  if ((i + ri) % (ri ? 5 : 3) === 0) {
-    const n = 1 + (i % 2);
-    for (let k = 0; k < n; k++) {
-      const st = rd.seats[k * 2 % rd.seats.length], c = makeChar(randOpts()); c.pose = 'sit'; if (rd.gondola) stowGear(c, true);
-      c.root.rotation.y = st.ry; c.root.position.set(st.x, st.y, st.z);
-      ch.g.add(c.root); ch.riders.push({ c, name: pick(NAMES) });
-    }
-  }
-}));
-const queueBots = [];
-for (let i = 0; i < 6; i++) { const b = addBot('queue'); b.c.root.visible = false; queueBots.push(b); }
+const queueBots = [];   // 가짜 줄 인원은 두지 않아요(리프트 줄·같이 타는 사람은 실제 접속자만)
 
 /* ───────────── 상태 ───────────── */
 const S = {
   mode: 'loading', snap: false, ctx: '', makerDrag: false,
   cams: { base: { az: 0, pitch: 0.36, dist: 16 }, summit: { az: Math.PI, pitch: 0.34, dist: 18 }, lift: { az: -2.36, pitch: 0.26, dist: 12.5 } },
   stats: { lift: 0, runs: 0, auto: 0, manual: 0, falls: 0, companions: new Set(), start: 0, lodgeSec: 0 },
-  ch: 3, chCount: 47, live: 1,
+  ch: 1, chCount: 1, live: 1,
   slope: 1, skiMode: 'auto',
   queue: 0, chair: null, companion: null, companions: [],
   ski: null, sitting: false, tod: 'sunset'   // 시작 화면 배경은 노을
@@ -3321,7 +3686,7 @@ function wave() {
   if (S.mode === 'lift' && S.companions && S.companions.length) near = S.companions.slice();
   if (near.length) {
     const b = pick(near);
-    setTimeout(() => { b.c.waveT = 1.6; b.waveTag = 2.2; toast(b.name + '님이 손을 흔들어 줬어요'); SND.tone(990, 0.08, 0.3); }, 900);
+    setTimeout(() => { b.c.waveT = 1.6; b.waveTag = 2.2; toast(b.name + (b.staff ? '이 손을 흔들어 줬어요' : '님이 손을 흔들어 줬어요')); SND.tone(990, 0.08, 0.3); }, 900);
   }
 }
 
@@ -3337,7 +3702,7 @@ const TO_ICON = {
 const toSvg = (k) => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' + TO_ICON[k] + '</svg>';
 const toSum = (k, label, val, unit) => '<div class="to-sum to-sum-' + k + '"><span class="to-sum-ic">' + toSvg(k) + '</span><span class="to-sum-tx"><span class="to-sum-lb">' + label + '</span><span class="to-sum-vl">' + val + '<i>' + unit + '</i></span></span></div>';
 const toTile = (k, val, label) => '<div class="to-tile to-tile-' + k + '"><span class="to-tile-ic">' + toSvg(k) + '</span><span class="to-tile-vl">' + val + '</span><span class="to-tile-lb">' + label + '</span></div>';
-const toChannels = () => [[1, 60, false], [2, 31, true], [3, S.chCount, false], [4, 12, false], [5, 6, false]];
+const toChannels = () => [[+String((typeof NET !== 'undefined' && NET.ch) || 'ch1').replace('ch', '') || 1, Math.max(1, (typeof NET !== 'undefined' && NET.count) || S.live || 1), false]];   // 실제 접속 중인 채널·인원만(가짜 채널·친구 표시 없음)
 let toSelected = null;
 
 function openTicket() {
@@ -3385,7 +3750,6 @@ function renderChannels() {
 function moveChannel(n, c) {
   S.ch = n; S.chCount = c + 1;
   const ct = $('#chText'); if (ct) ct.textContent = n + '번 채널 · ' + S.chCount + '/60명';
-  bots.forEach((x) => x.name = pick(NAMES));
   toast(n + '번 채널로 이동했어요');
   toSelected = null; show('#ticket', false);
 }
@@ -3577,7 +3941,7 @@ $('#photoDone').onclick = closePhoto;
 /* 리프트 줄 */
 function joinQueue(rd) {
   const Q = rd || LIFT; S.qLift = Q;
-  setMode('queue'); S.queue = Q.gondola ? Math.floor(Math.random() * 3) : 2 + Math.floor(Math.random() * 5); S.companion = null;
+  setMode('queue'); S.queue = 0; S.companion = null;   // 앞 사람은 실제 접속자만(가짜 줄 인원 없음)
   me.pos.set(Q.qx, 0, Q.qz + S.queue * 2.2); me.target = null; me.yaw = Math.PI;
   toast(Q.def.name + ' 줄을 섰어요. ' + Q.kind + (Q.gondola ? '이 곧 와요' : '가 곧 와요'));
 }
@@ -3597,11 +3961,7 @@ function board(ch) {
   // 실제 접속자(원격)가 리프트 근처에 있으면 우선으로 함께 태움
   try { if (typeof NET !== 'undefined' && NET.remotes) NET.remotes.forEach((rm) => { if (rm.c.root.visible && rm.name) { const wp = rm.c.root.getWorldPosition(new THREE.Vector3()); const d = wp.distanceTo(base); if (d < 90) cand.push({ d, src: rm.c, name: rm.name }); } }); } catch (e) {}
   cand.sort((a, b) => a.d - b.d);
-  // 모자란 인원은 줄 서 있던 사람들(큐 봇)로 채워 '함께 탑승' 느낌을 준다(표시 여부 무관)
-  const fill = (Q === LIFT ? queueBots : bots.filter((b) => b.kind === 'walker')).slice().sort(() => Math.random() - 0.5);
-  let fi = 0;
-  const groupSize = 1 + Math.floor(Math.random() * 3);   // 나 포함 2~4인
-  while (cand.length < groupSize - 1 && fi < fill.length) { cand.push({ d: 99, src: fill[fi].c, name: fill[fi].name }); fi++; }
+  // 같이 타는 사람은 근처의 실제 접속자만(가짜 동승자 없음)
   // 좌석 배치: 나를 가운데 자리, 나머지를 가까운 순으로 채움
   const mine = 1;
   const ST = Q.seats; me.c.root.position.set(ST[mine].x, ST[mine].y, ST[mine].z); me.c.root.rotation.set(0, ST[mine].ry, 0); me.c.pose = 'sit';
@@ -3630,15 +3990,18 @@ function unboard() {
   const LF = S.lift || LIFT, d = LF.def;
   leaveChair(); S.lift = null; stowGear(me.c, false);
   scene.add(me.c.root); me.c.root.rotation.set(0, 0, 0);
-  if (d.top === 'mid') {   // 중턱 하차: 내리자마자 옆 코스로 미끄러져 내려가요
-    const ti = Math.max(0, TRAILS.findIndex((t) => t.id === d.trail)); S.slope = ti;
-    const tg = TRAILS[ti], zz = d.z1 + 8, xx = trailX(tg, zz);
-    me.pos.set(xx, groundH(xx, zz), zz); SND.chime();
-    startSki(xx, zz); return;
+  if (d.top === 'mid') {   // 중턱 하차장(평지)에 내려요 → 이정표를 보고 걸어가 출발 게이트에서 출발(정상과 같아요)
+    const tg = TRAILS.find((t) => t.id === d.trail) || TRAILS[0], gx = tg.pts[0][0], gz = tg.pts[0][1];
+    S.peak = null; S.top = { x: d.x1, z: d.z1, R: Math.hypot(gx - d.x1, gz - d.z1) + 16, trails: [tg.id] };
+    const ex = d.x1, ez = d.z1 - 5, sx = d.x1, sz = d.z1 - 13;
+    me.pos.set(ex, groundH(ex, ez), ez); me.yaw = Math.atan2(gx - sx, gz - sz); me.c.pose = 'skate'; me.target = new THREE.Vector3(sx, 0, sz);
+    S.look.yaw = 0; S.look.pitch = 0.12; setMode('summit'); SND.chime();
+    toast(d.name + ' 하차장이에요 · 이정표를 보고 ' + tg.name + ' 출발 게이트로 가면 출발해요'); return;
   }
   // 정상 하차장 옆(동쪽 리프트는 하차장과 전망대 데크 사이)
   S.peak = d.peak || 'M';
   const P = PEAK[S.peak], ang = Math.atan2(d.x1 - P.x, d.z1 - P.z);
+  S.top = { x: P.x, z: P.z, R: 62, trails: TRAILS.filter((t) => t.peak === S.peak).map((t) => t.id) };
   const ex = d.x1 - Math.sin(ang) * 5, ez = d.z1 - Math.cos(ang) * 5;    // 하차장 바로 앞 — 의자에서 내리는 지점
   const sx = d.x1 - Math.sin(ang) * 22, sz = d.z1 - Math.cos(ang) * 22;  // 미끄러져 멈추는 자리(아래쪽)
   me.pos.set(ex, groundH(ex, ez), ez); me.yaw = Math.atan2(sx - P.x, sz - P.z); me.c.pose = 'skate';   // 정상에선 아래(베이스) 쪽을 바라봐요
@@ -3798,9 +4161,9 @@ function clickMove(e) {
 }
 function orbitBy(dx, dy) {
   if (S.mode === 'maker') { S.makerDrag = true; me.yaw += dx * 0.012; return; }
-  if (S.mode === 'lift' && S.view === 'tp') { const c = S.cams.lift; c.az -= dx * 0.0052; c.pitch = clamp(c.pitch + dy * 0.004, 0.03, 1.25); return; }
+  if (S.mode === 'lift' && S.view === 'tp') { const c = S.cams.lift; c.az -= dx * 0.0052; c.pitch = clamp(c.pitch + dy * 0.004, -0.55, 1.25); return; }   // 의자 아래에서 하늘을 올려다볼 수도 있어요
   S.look.yaw -= dx * 0.005;
-  S.look.pitch = clamp(S.look.pitch + (S.view === 'fp' ? -dy : dy) * 0.004, -0.9, 0.9);
+  S.look.pitch = clamp(S.look.pitch + (S.view === 'fp' ? -dy : dy) * 0.004, S.view === 'fp' ? -1.0 : -1.75, S.view === 'fp' ? 1.45 : 0.9);   // 위로 끌면 하늘까지 올려다봐요
 }
 function zoomBy(f) {
   if (S.mode === 'lift' && S.view === 'tp') { S.cams.lift.dist = clamp(S.cams.lift.dist * f, 6, 46); return; }
@@ -3878,12 +4241,12 @@ function currentTod() {
   if (h >= 9 && h < 16) return 'day'; if (h >= 16 && h < 18) return 'sunset'; if (h >= 18) return 'night'; return 'dawn';
 }
 const TOD = {
-  day:    { zen: '#557FB4', hor: '#C6D8E6', sun: '#FFF1DC', dir: [0.35, 0.68, -0.5], lit: '#DCE3EB', shade: '#8A9FC0', rim: '#C9D9EC', spec: '#EEF3FA', fog: '#C3D4E2', hs: '#DFE8F2', hg: '#8799B3', hi: 0.62, si: 0.62, tree: '#3E5F57', glit: 0.35, bloom: 0.1, stars: 0, win: 0.15, lamp: 0, cloud: 0.45, dust: 0.45, shaft: 0.22, mist: 0.35 },
-  sunset: { zen: '#2E3B6C', hor: '#F3AE8A', sun: '#FFC08A', dir: [0.32, 0.1, -1], lit: '#F0C9B4', shade: '#6B649E', rim: '#FFB590', spec: '#FFE2C2', fog: '#E3A48F', hs: '#F6CDB4', hg: '#615C94', hi: 0.68, si: 0.78, tree: '#3B3F5E', glit: 1.0, bloom: 0.42, stars: 0, win: 0.6, lamp: 0.6, cloud: 0.95, dust: 1, shaft: 0.75, mist: 0.75 },
-  night:  { zen: '#050A1E', hor: '#22376C', sun: '#C2D2FF', dir: [-0.42, 0.32, -1], lit: '#AABDEB', shade: '#1D2956', rim: '#6E86C8', spec: '#DDE7FF', fog: '#1B2A52', hs: '#5468A8', hg: '#131B39', hi: 0.5, si: 0.42, tree: '#0F1832', glit: 1.5, bloom: 0.6, stars: 1, win: 1, lamp: 1.6, cloud: 0.2, dust: 0.55, shaft: 0.18, mist: 0.45 },
-  dawn:   { zen: '#3B4C86', hor: '#E6B9C8', sun: '#FFD9E0', dir: [-0.5, 0.14, -1], lit: '#E3D3E6', shade: '#6F78AE', rim: '#F3C5D8', spec: '#FFEAF2', fog: '#C9B5CF', hs: '#E8D7EC', hg: '#6A6E9E', hi: 0.62, si: 0.58, tree: '#36405F', glit: 0.9, bloom: 0.32, stars: 0.3, win: 0.4, lamp: 0.4, cloud: 0.8, dust: 0.9, shaft: 0.6, mist: 0.85 }
+  day:    { aur: 0, zen: '#3F72BE', hor: '#F2E3D3', sun: '#FFF0D6', dir: [0.35, 0.68, -0.5], lit: '#DCE3EB', shade: '#8A9FC0', rim: '#C9D9EC', spec: '#EEF3FA', fog: '#C3D4E2', hs: '#DFE8F2', hg: '#8799B3', hi: 0.62, si: 0.62, tree: '#3E5F57', glit: 0.35, bloom: 0.1, stars: 0, win: 0.15, lamp: 0, cloud: 0.45, dust: 0.45, shaft: 0.22, mist: 0.35 },
+  sunset: { aur: 0, zen: '#2E3B6C', hor: '#F7AE84', sun: '#FFC285', dir: [0.32, 0.1, -1], lit: '#F0C9B4', shade: '#6B649E', rim: '#FFB590', spec: '#FFE2C2', fog: '#E3A48F', hs: '#F6CDB4', hg: '#615C94', hi: 0.68, si: 0.78, tree: '#3B3F5E', glit: 1.0, bloom: 0.42, stars: 0, win: 0.6, lamp: 0.6, cloud: 0.95, dust: 1, shaft: 0.75, mist: 0.75 },
+  night:  { aur: 1, zen: '#040920', hor: '#24396E', sun: '#C2D2FF', dir: [-0.42, 0.32, -1], lit: '#AABDEB', shade: '#1D2956', rim: '#6E86C8', spec: '#DDE7FF', fog: '#1B2A52', hs: '#5468A8', hg: '#131B39', hi: 0.5, si: 0.42, tree: '#0F1832', glit: 1.5, bloom: 0.6, stars: 1, win: 1, lamp: 1.6, cloud: 0.2, dust: 0.55, shaft: 0.18, mist: 0.45 },
+  dawn:   { aur: 0.25, zen: '#3B4C86', hor: '#EDBBCB', sun: '#FFD9E0', dir: [-0.5, 0.14, -1], lit: '#E3D3E6', shade: '#6F78AE', rim: '#F3C5D8', spec: '#FFEAF2', fog: '#C9B5CF', hs: '#E8D7EC', hg: '#6A6E9E', hi: 0.62, si: 0.58, tree: '#36405F', glit: 0.9, bloom: 0.32, stars: 0.3, win: 0.4, lamp: 0.4, cloud: 0.8, dust: 0.9, shaft: 0.6, mist: 0.85 }
 };
-const TODC = ['zen', 'hor', 'sun', 'lit', 'shade', 'rim', 'spec', 'fog', 'hs', 'hg', 'tree'], TODN = ['hi', 'si', 'glit', 'bloom', 'stars', 'win', 'lamp', 'cloud', 'dust', 'shaft', 'mist'];
+const TODC = ['zen', 'hor', 'sun', 'lit', 'shade', 'rim', 'spec', 'fog', 'hs', 'hg', 'tree'], TODN = ['hi', 'si', 'glit', 'bloom', 'stars', 'win', 'lamp', 'cloud', 'dust', 'shaft', 'mist', 'aur'];
 const todCur = (() => { const p = TOD.sunset, o = { dir: new THREE.Vector3().fromArray(p.dir).normalize() }; TODC.forEach((k) => o[k] = new THREE.Color(p[k])); TODN.forEach((k) => o[k] = p[k]); return o; })();
 let todSnap = true;
 function applyTod() { todSnap = todSnap || false; }
@@ -3892,7 +4255,7 @@ function blendTod(dt) {
   TODC.forEach((n) => todCur[n].lerp(tmpC.set(p[n]), k)); TODN.forEach((n) => todCur[n] = lerp(todCur[n], p[n], k));
   todCur.dir.lerp(tmpV.fromArray(p.dir).normalize(), k).normalize();
   SNOWU.uSunDir.value.copy(todCur.dir); SNOWU.uLit.value.copy(todCur.lit); SNOWU.uShade.value.copy(todCur.shade); SNOWU.uRim.value.copy(todCur.rim); SNOWU.uSpec.value.copy(todCur.spec); SNOWU.uGlitter.value = todCur.glit;
-  skyMat.uniforms.uZen.value.copy(todCur.zen); skyMat.uniforms.uHor.value.copy(todCur.hor); skyMat.uniforms.uSunCol.value.copy(todCur.sun); skyMat.uniforms.uStars.value = todCur.stars; skyMat.uniforms.uCloud.value = todCur.cloud; SNOWU.uSunCol.value.copy(todCur.sun);
+  skyMat.uniforms.uZen.value.copy(todCur.zen); skyMat.uniforms.uHor.value.copy(todCur.hor); skyMat.uniforms.uSunCol.value.copy(todCur.sun); skyMat.uniforms.uStars.value = todCur.stars; skyMat.uniforms.uCloud.value = todCur.cloud; skyMat.uniforms.uAur.value = todCur.aur || 0; SNOWU.uSunCol.value.copy(todCur.sun);
   DUST.mat.uniforms.uAmt.value = todCur.dust; DUST.mat.uniforms.uColor.value.copy(todCur.spec); DRIFT.mat.color.copy(todCur.lit);
   scene.fog.color.copy(todCur.fog); renderer.setClearColor(todCur.fog);
   hemi.color.copy(todCur.hs); hemi.groundColor.copy(todCur.hg); hemi.intensity = todCur.hi;
@@ -4159,7 +4522,7 @@ function moveWalker(pos, target, dt, speed) {
   return Math.atan2(tmp.x, tmp.z);
 }
 function walkBounds(p) {
-  if (S.mode === 'summit') { const P = PEAK[S.peak || 'M'], dx = p.x - P.x, dz = p.z - P.z, d = Math.hypot(dx, dz), R = 62; if (d > R) { p.x = P.x + dx / d * R; p.z = P.z + dz / d * R; } p.y = groundH(p.x, p.z); }   // 봉우리 꼭대기 둘레만 걸어요
+  if (S.mode === 'summit') { const P = S.top || PEAK[S.peak || 'M'], dx = p.x - P.x, dz = p.z - P.z, d = Math.hypot(dx, dz), R = (S.top && S.top.R) || 62; if (d > R) { p.x = P.x + dx / d * R; p.z = P.z + dz / d * R; } p.y = groundH(p.x, p.z); }   // 봉우리 꼭대기 둘레만 걸어요
   else { p.x = clamp(p.x, -560, 560); p.z = clamp(p.z, -20, 496); p.y = groundH(p.x, p.z); }   // 슬로프 하단 ~ 센터 건물 ~ 주차장·큰 도로
 }
 
@@ -4173,7 +4536,7 @@ function update(dt) {
     rd.chairs.forEach((ch) => ch.riders.forEach((r) => { if (r.c.root.visible && r.c.root.position.distanceToSquared(camera.position) < 1e9) animChar(r.c, dt); }));
   });
   BELTS.forEach((tx) => { tx.offset.y -= dt * 0.35; }); LED.draw(dt);
-  BUS.update(dt);
+  BUS.update(dt); forestLOD(dt);
   SND.setLift(0); SND.setSkate(0);   // 기본은 끄고, 아래 상태별로 켜요(리프트 모터·스케이팅 눈소리)
   /* 자동문: 사람이 다가오면 열려요 */
   DOORS.forEach((d) => {
@@ -4206,7 +4569,7 @@ function update(dt) {
     const comps = S.companions || [];
     const compTxt = comps.length ? (comps.length > 1 ? comps[0].name + ' 외 ' + (comps.length - 1) + '명' : comps[0].name) + '과 같이 타는 중' : '';
     $('#banner').innerHTML = (compTxt ? '<span>' + compTxt + '</span><span class="sep"></span>' : '') + '<span>' + (LF.def.top === 'mid' ? '중턱까지' : '정상까지') + ' <b class="num">' + Math.max(0, Math.round((LF.len - S.chair.s) / LF.speed)) + '</b>초</span><span class="sep"></span><span style="width:120px;height:8px;background:#3A4E63;display:inline-block;position:relative"><i style="position:absolute;left:0;top:0;bottom:0;width:' + Math.round(f * 100) + '%;background:#fff"></i></span>';
-    animChar(me.c, dt, { swing: keys['arrowdown'] || keys['s'] });
+    animChar(me.c, dt, { swing: keys['arrowdown'] || keys['s'], still: !(keys['arrowdown'] || keys['s']) });   // 올라가는 동안 흔들리지 않게
     (S.companions || []).forEach((cp) => {
       animChar(cp.c, dt);
       // 동승자도 가끔 이모트로 반응(내가 이모트하면 더 자주 화답)
@@ -4270,7 +4633,7 @@ function update(dt) {
     } else if (S.mode === 'summit' && $('#summitPanel').classList.contains('hidden')) {
       if (me.pos.distanceTo(PHOTO_SPOTS.photoTop.stand) < 6) near = { id: 'photoTop', label: '하늘 전망대 포토스팟', action: '사진 찍기' };
       // 슬로프 입구(출발 현수막 아래)로 걸어 들어가면 그 코스로 바로 출발해요(실제 스키장처럼)
-      if (!S.photo) { const ti = TRAILS.findIndex((t) => t.peak === S.peak && Math.hypot(me.pos.x - t.pts[0][0], me.pos.z - t.pts[0][1]) < t.wTop / 2 + 3); if (ti >= 0) { S.slope = ti; startSki(me.pos.x); } }
+      if (!S.photo) { const ti = TRAILS.findIndex((t) => (S.top ? S.top.trails.includes(t.id) : t.peak === S.peak) && Math.hypot(me.pos.x - t.pts[0][0], me.pos.z - t.pts[0][1]) < t.wTop / 2 + 3); if (ti >= 0) { S.slope = ti; startSki(me.pos.x); } }
     }
     if (S.mode !== 'maker' && !S.photo && !S.seat) { const st = nearSeat(2.4); if (st && (!near || near.d > 1.5)) near = { d: 0, id: 'seat:' + SEATS.indexOf(st), label: st.label, action: '앉기' }; }
     if (S.seat) near = { d: 0, id: 'stand', label: S.seat.label + '에 앉아 있어요', action: '일어나기' };
@@ -4403,10 +4766,11 @@ function update(dt) {
       } else {
         if (!b.target && b.idle <= 0) {
           const free = b.zone ? [] : SEATS.filter((st) => st.plaza && !st.by);
-          if (b.zone === 'out') b.target = new THREE.Vector3(pick([-1, 1]) * (24 + Math.random() * 300), 0, pick([268, 372, 392, 466]) + (Math.random() - 0.5) * 3);
+          if (b.zone === 'out' && false) b.target = new THREE.Vector3(pick([-1, 1]) * (24 + Math.random() * 300), 0, pick([268, 372, 392, 466]) + (Math.random() - 0.5) * 3);
           else if (free.length && Math.random() < 0.35) { b.seat = pick(free); b.seat.by = b; b.target = new THREE.Vector3(b.seat.x + Math.sin(b.seat.yaw) * 0.95, 0, b.seat.z + Math.cos(b.seat.yaw) * 0.95); }
           else b.target = new THREE.Vector3((Math.random() - 0.5) * 360, 0, 70 + Math.random() * 140);
         }
+        if (!b.c.stowed) stowGear(b.c, true);
         if (b.target) {
           const yw = moveWalker(b.pos, b.target, dt, b.zone ? 4.5 : 6);
           if (yw === null) { b.target = null; b.idle = 2 + Math.random() * 6; b.c.pose = 'stand'; if (b.seat) b.sitT = 8 + Math.random() * 16; else if (Math.random() < 0.15) b.c.waveT = 1.4; }
@@ -4416,9 +4780,12 @@ function update(dt) {
         b.pos.y = groundH(b.pos.x, b.pos.z);
       }
       b.c.root.position.copy(b.pos); b.c.root.rotation.y = b.yaw; animChar(b.c, dt);
+    } else if (b.kind === 'post') {   // 자리를 지키는 직원: 가끔 손짓(안내)하고 주변을 둘러봐요
+      b.idle -= dt; if (b.idle <= 0) { b.idle = 4 + Math.random() * 8; b.c.waveT = 1.6; }
+      b.pos.copy(b.home); b.c.pose = 'stand'; b.c.root.position.copy(b.pos); b.c.root.rotation.y = b.yaw + Math.sin(b.t += dt * 0.3) * 0.5; animChar(b.c, dt);
     } else if (b.kind === 'skier') {
       if (!b.cv) b.cv = carveInit(b.trail, b.z, trailX(b.trail, b.z), b.speed);
-      if (b.cv.z > -4) { b.trail = pick(TRAILS); b.speed = b.trail.auto * (0.85 + Math.random() * 0.3); b.name = pick(NAMES); b.cv = carveInit(b.trail, b.trail.zt + 6, trailX(b.trail, b.trail.zt + 6), 4); }
+      if (b.cv.z > -4) { b.trail = pick(TRAILS); b.speed = b.trail.auto * (0.85 + Math.random() * 0.3); b.cv = carveInit(b.trail, b.trail.zt + 6, trailX(b.trail, b.trail.zt + 6), 4); }
       const cv = b.cv; carveStep(cv, b.trail, dt, b.speed, b.c.gear);
       b.pos.set(cv.x, skiGround(cv.x, cv.z), cv.z); b.yaw = cv.h;
       b.c.pose = 'ski'; b.c.root.position.copy(b.pos);
@@ -4525,7 +4892,7 @@ function updateCamera(dt) {
     wantPos.set(0, 7, 62); wantLook.set(6, 34, -150);
   } else if (S.mode === 'lift' && S.chair && S.view === 'tp') {
     const center = S.chair.g.position.clone().add(new THREE.Vector3(0, S.lift ? S.lift.camY : -2.8, 0));
-    orbitPos(center, S.cams.lift, wantPos); wantLook.copy(center); k = Math.min(1, dt * 10);
+    orbitPos(center, S.cams.lift, wantPos); wantLook.copy(center); k = 1;   // 의자에 단단히 고정(늦게 따라가며 떨리지 않게)
   } else if (S.mode === 'card') {
     return;
   } else if (follow) {
@@ -4534,24 +4901,29 @@ function updateCamera(dt) {
     const H = followHeading() + S.look.yaw;
     const ski = S.mode === 'ski' && S.ski;
     if (S.view === 'fp') {
-      const eye = S.mode === 'lift' ? me.c.head.getWorldPosition(new THREE.Vector3()).add(new THREE.Vector3(0, 0.25, 0))
+      const eye = S.mode === 'lift' ? me.c.root.getWorldPosition(new THREE.Vector3()).add(new THREE.Vector3(0, HIP + 0.86, 0))   // 머리 뼈 대신 좌석 기준 고정 눈높이(흔들림 없이)
         : me.pos.clone().add(new THREE.Vector3(0, ski ? (ski.tuck ? 0.78 : 1.0) : 1.2, 0));   // 캐릭터 눈높이(키 약 1.65m, 머리가 커요)
       eye.x += Math.sin(H) * 0.35; eye.z += Math.cos(H) * 0.35;
-      const P = clamp((ski ? -0.22 - Math.atan(slopeZ(me.pos.x, me.pos.z)) * 0.6 : -0.1) + S.look.pitch, -1.2, 0.9);
+      const P = clamp((ski ? -0.22 - Math.atan(slopeZ(me.pos.x, me.pos.z)) * 0.6 : -0.1) + S.look.pitch, -1.2, 1.45);
       wantPos.copy(eye);
       wantLook.set(eye.x + Math.sin(H) * Math.cos(P) * 10, eye.y + Math.sin(P) * 10, eye.z + Math.cos(H) * Math.cos(P) * 10);
-      k = Math.min(1, dt * 14);
+      k = S.mode === 'lift' ? 1 : Math.min(1, dt * 14);
     } else {
       const center = me.pos.clone().add(new THREE.Vector3(0, ski ? 1.2 : 1.5, 0));
-      const P = clamp(S.tp.pitch + (ski ? 0.15 : 0) + S.look.pitch, 0.02, 1.3), D = S.tp.dist;
+      // 위로 끌면(피치가 낮아지면) 카메라는 땅 가까이 내려오고, 그다음부터는 시선이 하늘로 올라가요
+      const Pr = S.tp.pitch + (ski ? 0.15 : 0) + S.look.pitch, P = clamp(Pr, 0.06, 1.3), D = S.tp.dist, upA = clamp(0.06 - Pr, 0, 1.35);
       wantPos.set(center.x - Math.sin(H) * Math.cos(P) * D, center.y + Math.sin(P) * D, center.z - Math.cos(H) * Math.cos(P) * D);
       wantLook.copy(center); if (ski) { wantLook.x += Math.sin(H) * 6; wantLook.z += Math.cos(H) * 6; wantLook.y -= 1.5; }
+      if (upA > 0) wantLook.y += Math.tan(upA) * D * Math.cos(P);
       for (let i = 0; i < 14 && inBuilding(wantPos); i++) wantPos.lerp(center, 0.16);   // 건물 벽 너머로 가지 않게 당겨요
       k = Math.min(1, dt * 8);
     }
   }
   if (S.snap) { camPos.copy(wantPos); camLook.copy(wantLook); S.snap = false; }
   else { camPos.lerp(wantPos, k); camLook.lerp(wantLook, k); }
+  if (!S.photo && !['gate', 'loading', 'lodge', 'card', 'maker'].includes(S.mode)) {   // 카메라는 땅을 뚫고 들어가지 않아요
+    const gy = groundH(camPos.x, camPos.z) + 0.55; if (camPos.y < gy) camPos.y = gy;
+  }
   camera.position.copy(camPos); camera.lookAt(camLook);
   // 속도감: 빠를수록 시야가 넓어져요(화면 흔들림은 넣지 않아요 — 멀미가 나요)
   const sv = S.mode === 'ski' && S.ski && S.ski.fallT <= 0 ? S.ski.v : 0;
@@ -4573,10 +4945,10 @@ function updateLabels() {
     const mp = me.c.root.getWorldPosition(new THREE.Vector3());
     if (S.view !== 'fp' || S.mode === 'lift' && S.view === 'tp') labelAt(i++, myName(), 'me', mp.clone().add(new THREE.Vector3(0, 1.95, 0)), me.pi);
     const cand = [];
-    bots.forEach((b) => { if (b.c.root.visible) { const wp = b.c.root.getWorldPosition(new THREE.Vector3()); const d = wp.distanceTo(mp); if (d < 34) cand.push({ wp, d, name: b.name, wave: b.waveTag > 0 }); } });
+    bots.forEach((b) => { if (b.c.root.visible) { const wp = b.c.root.getWorldPosition(new THREE.Vector3()); const d = wp.distanceTo(mp); if (d < 34) cand.push({ wp, d, name: b.name, wave: b.waveTag > 0, npc: b.staff }); } });
     RIDES.forEach((rd) => rd.chairs.forEach((ch) => ch.riders.forEach((r) => { if (r.c.root.visible) { const wp = r.c.root.getWorldPosition(new THREE.Vector3()); const d = wp.distanceTo(mp); if (d < 30) cand.push({ wp, d, name: r.name }); } })));
     (S.companions || []).forEach((cp) => cand.push({ wp: cp.c.root.getWorldPosition(new THREE.Vector3()), d: 0, name: cp.name }));
-    cand.sort((a, b) => a.d - b.d).slice(0, 10).forEach((c) => labelAt(i++, c.name, c.wave ? 'wave' : '', c.wp.add(new THREE.Vector3(0, 1.95, 0))));
+    cand.sort((a, b) => a.d - b.d).slice(0, 10).forEach((c) => labelAt(i++, c.name, (c.npc ? 'npc ' : '') + (c.wave ? 'wave' : ''), c.wp.add(new THREE.Vector3(0, 1.95, 0))));
     { const _ib = { v: i }; NET.labels(labelAt, _ib); i = _ib.v; }
   } else if (S.mode === 'lodge') {
     // 창밖(슬로프)에서 라이딩하며 지나가는 실제 유저만 이름표+프사 표시(내 라벨은 숨김).
