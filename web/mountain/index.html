@@ -14,8 +14,9 @@
   --sub:#B8CCDD; --blue:#2F6FD6; --blue2:#1F56AE; --ok:#5BD69A;
 }
 *{box-sizing:border-box}
-html,body{margin:0;height:100%;overflow:hidden;background:#0E1A2B;font-family:'Gowun Dodum','Noto Sans KR',system-ui,sans-serif;color:#fff;-webkit-tap-highlight-color:transparent;user-select:none}
-#c{position:fixed;inset:0;width:100%;height:100%;display:block;touch-action:none}
+html,body{margin:0;height:100%;overflow:hidden;background:#0E1A2B;font-family:'Gowun Dodum','Noto Sans KR',system-ui,sans-serif;color:#fff;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+#c{position:fixed;inset:0;width:100%;height:100%;display:block;touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+*:not(input):not(textarea){ -webkit-touch-callout:none; }   /* 꾹 눌러도 iOS 복사/검색 메뉴·커서 안 잡혀요(입력창·이미지 저장은 예외) */
 #spdfx{position:fixed;inset:0;width:100%;height:100%;pointer-events:none}
 .hidden{display:none!important}
 button{font-family:inherit;cursor:pointer}
@@ -663,7 +664,7 @@ body.modal-open #joy, body.modal-open #jumpBtn, body.modal-open #actions, body.m
   <div class="slider"><span>환경음</span><input type="range" min="0" max="1" step="0.05" value="0.8" id="vAmb"></div>
   <div class="slider"><span>효과음</span><input type="range" min="0" max="1" step="0.05" value="0.8" id="vSfx"></div>
   <div><p class="sub" style="margin-bottom:8px">시간대(미리보기)</p>
-    <select id="todSel"><option value="real">실제 시간 따라가기</option><option value="day">낮</option><option value="sunset">노을</option><option value="night">야간 개장</option><option value="dawn">새벽</option></select></div>
+    <select id="todSel"><option value="auto">시간 흐름(자동 순환)</option><option value="real">실제 시간 따라가기</option><option value="day">낮</option><option value="sunset">노을</option><option value="night">야간 개장</option><option value="dawn">새벽</option></select></div>
   <button class="btn ghost" id="soundClose">닫기</button>
 </div>
 
@@ -797,12 +798,13 @@ function groundLevel(x, z) {
     if (d > hw + 9) continue;
     const k = d < hw ? 0 : (d - hw) / 9, wgt = 1 - k * k * (3 - 2 * k);
     if (wgt < best || (wgt === best && d >= bd)) continue;   // 두 코스가 겹치면 중심선이 가까운 코스를 따라요
-    const zc = Math.min(0, z + s * dx / nn); best = wgt; bd = d; hb = groundRaw(trailX(t, zc), zc);   // 진행 방향에 수직으로 잰 중심선 높이
+    const zc = Math.min(0, z + s * dx / nn); best = wgt; bd = d; hb = trailProfH(t, zc);   // 진행 방향에 수직으로 잰 중심선 높이(경사 제한·평활화된 프로파일)
   }
   return best ? h0 + (hb - h0) * best : h0;
 }
 /* 리프트·곤돌라 하차장은 평지(실제처럼 하차장 둘레를 다져요). 가장자리 바깥에서 원래 지형과 부드럽게 이어져요 */
 let LIFT_PADS = null;
+const SUMMIT = {};   // 봉우리별 정상 광장 {x,z,y(평평높이),r,b,R,trails} — TRAILS 정의 뒤에 채워요
 function liftPads() {
   if (!LIFT_PADS) { LIFT_PADS = LIFT_DEFS.concat([GONDOLA_DEF]).map((d) => { const r = d.top === 'mid' ? 8 : 20, b = d.top === 'mid' ? 9 : 16; return { x: d.x1, z: d.z1, r, b, R2: (r + b) ** 2, h: groundLevel(d.x1, d.z1) }; }); }   // 중턱 하차장은 옆 코스에 닿지 않게 작게
   return LIFT_PADS;
@@ -813,6 +815,10 @@ function groundH(x, z) {
   for (const p of liftPads()) {
     const dx = x - p.x, dz = z - p.z, d2 = dx * dx + dz * dz; if (d2 >= p.R2) continue;
     const d = Math.sqrt(d2), w = d <= p.r ? 1 : 1 - sstep(0, 1, (d - p.r) / p.b); h += (p.h - h) * w;
+  }
+  for (const k in SUMMIT) {   // 정상 원형 광장: 굴곡 없이 평평하게(가장자리 바깥으로 자연스럽게 이어져요)
+    const s = SUMMIT[k], dx = x - s.x, dz = z - s.z, d2 = dx * dx + dz * dz, Rb = s.r + s.b; if (d2 >= Rb * Rb) continue;
+    const d = Math.sqrt(d2), w = d <= s.r ? 1 : 1 - sstep(0, 1, (d - s.r) / s.b); h += (s.y - h) * w;
   }
   return h;
 }
@@ -834,7 +840,14 @@ const TRAILS = [
   { id: 'pk', peak: 'E', w: 50, wTop: 30, pts: [[445,-828],[525,-745],[540,-650],[545,-500],[540,-320],[535,-150],[535,0]], name: '스노우파크', level: '파크', color: '#15171B', auto: 15, vmax: 22, turnW: 0.05, turnA: 0.4, desc: '킥커·박스·롤러가 이어지는 파크 전용 코스' },
   { id: 'wb', peak: 'E', w: 70, wTop: 36, pts: [[414,-807],[428,-700],[420,-560],[425,-400],[420,-220],[420,0]], name: '와이드 크루즈', level: '중급', color: '#1F6FBF', auto: 15, vmax: 22, turnW: 0.05, turnA: 0.62, desc: '넓게 시원하게 내려가는 측면 중급 코스' },
 ];
+/* 제어점은 꼭대기(z 가장 작음)→베이스(z≈0) 순으로 정렬 — z가 역행하면 trailX가 튀어 수직 절벽처럼 보여요 */
+TRAILS.forEach((t) => t.pts.sort((a, b) => a[1] - b[1]));
+/* 시작·끝 지점을 모두 공유하는(사실상 같은) 코스는 하나만 남겨요 — 입구·출구가 하나가 되게 */
+for (let i = TRAILS.length - 1; i >= 0; i--) { const a = TRAILS[i], ae = a.pts[a.pts.length - 1];
+  for (let j = 0; j < i; j++) { const b = TRAILS[j], be = b.pts[b.pts.length - 1];
+    if (Math.hypot(a.pts[0][0] - b.pts[0][0], a.pts[0][1] - b.pts[0][1]) < 40 && Math.hypot(ae[0] - be[0], ae[1] - be[1]) < 40) { TRAILS.splice(i, 1); break; } } }
 TRAILS.forEach((t) => { t.zt = t.pts[0][1]; t.xmin = Math.min(...t.pts.map((q) => q[0])) - t.w; t.xmax = Math.max(...t.pts.map((q) => q[0])) + t.w; });   // 코스 꼭대기 z · 대략의 x 범위
+/* 휘닉스파크는 실제 슬로프 배치를 그대로 쓰므로(코스 상단을 옮기지 않아요) 정상 허브는 리프트 정류장 기준으로 LIFT_DEFS 뒤에서 만들어요. */
 /* 코스 방향이 많이 기운 곳(가로지르는 구간)은 x축으로 잰 반폭이 넓어져요(진짜 폭은 진행 방향에 수직) */
 function trailSlope(t, z) { return (trailX(t, Math.min(0, z + 0.5)) - trailX(t, Math.min(0, z - 0.5))); }
 function trailHW(t, z, extra) { if (z < t.zt - 3 || z > 2) return -1; return (trailW(t, z) / 2 + (extra || 0)) * Math.sqrt(1 + trailSlope(t, z) ** 2); }   // 코스 범위 밖이면 -1(어디에도 안 걸려요)
@@ -849,6 +862,57 @@ const LIFT_DEFS = [   // 베이스(x0,z0) → 봉우리 꼭대기 뒤(x1,z1). �
 LIFT_DEFS.forEach((d) => { d.x = d.x0; });
 const GONDOLA_DEF = { x0: -130, z0: 30, x1: 18, z1: -1108, peak: 'M' };   // 곤돌라: 베이스 → 주봉
 const GONDOLA_X = GONDOLA_DEF.x0;
+/* 정상 허브: 상단 리프트/곤돌라 정류장마다 '넓은 평평한 광장'을 만들고, 그 정류장에서 내려가는 슬로프 입구들을 광장 테두리에 둘러 배치해요(코스 시작점을 테두리로 옮겨 입구로). */
+(function liftSummits() {
+  const stations = LIFT_DEFS.filter((d) => d.top === 'summit').concat([GONDOLA_DEF]);
+  stations.forEach((d) => {
+    const key = d.id || 'gondola';
+    const cx = d.x1, cz = d.z1 + 26;   // 광장 중심(정류장에서 살짝 베이스 쪽)
+    const ts = TRAILS.filter((t) => !t._hub && Math.hypot(t.pts[0][0] - cx, t.pts[0][1] - cz) < 240);   // 이 정류장에서 내려가는 슬로프(아직 다른 정류장이 안 가져간 것)
+    if (!ts.length) return;
+    const Rrim = Math.min(118, 58 + ts.length * 11);   // 입구 수에 맞춰 넓게(실제 정상 광장처럼 넉넉히)
+    const downRim = groundRaw(cx, Math.min(0, cz + Rrim + 14));   // 다운힐(베이스) 쪽 테두리의 자연 지형 높이
+    const flatY = Math.min(groundRaw(cx, cz), downRim + 24);   // 광장을 테두리보다 많이 띄우지 않아요(메사=절벽 방지, 위쪽은 산을 살짝 깎아요)
+    ts.forEach((t) => { const q = t.pts[1] || t.pts[0]; t._a = Math.atan2(q[0] - cx, q[1] - cz); });
+    ts.sort((a, b) => a._a - b._a);
+    const gap = 0.32; for (let i = 1; i < ts.length; i++) if (ts[i]._a - ts[i - 1]._a < gap) ts[i]._a = ts[i - 1]._a + gap;
+    const orig = ts.map((t) => Math.atan2((t.pts[1] || t.pts[0])[0] - cx, (t.pts[1] || t.pts[0])[1] - cz));
+    const shift = (orig.reduce((s, a) => s + a, 0) / ts.length) - (ts.reduce((s, t) => s + t._a, 0) / ts.length);   // 평균 방향 유지(가운데 정렬)
+    ts.forEach((t) => {
+      const a = t._a + shift, gx = Math.round(cx + Math.sin(a) * Rrim), gz = Math.round(cz + Math.cos(a) * Rrim);
+      t.pts = [[gx, gz]].concat(t.pts.slice(1));   // 슬로프 시작점을 광장 테두리로(입구). 그 아래 경로는 실제 그대로
+      t.zt = t.pts[0][1]; t.xmin = Math.min(...t.pts.map((q) => q[0])) - t.w; t.xmax = Math.max(...t.pts.map((q) => q[0])) + t.w;
+      t._hub = key; delete t._a;
+    });
+    SUMMIT[key] = { x: cx, z: cz, y: flatY, r: Rrim + 14, b: 110, R: Rrim + 18, trails: ts.map((t) => t.id), lift: key };   // 다운힐 쪽 테두리가 절벽이 안 되게 넓게 완만히 이어져요
+  });
+})();
+/* 코스 중심선 고도 프로파일: 다짐 기준을 '경사 제한 + 평활화'한 값으로 미리 계산해요.
+   → 자연지형의 급경사(거의 수직)·겹침 솔기(갑자기 솟는 선반)를 없애고 매끈하게 탈 수 있게. 코스 밖 지형은 그대로 웅장하게 둬요. */
+const PROF_DZ = 2, PROF_CAP = 0.6;   // 코스 최대 경사 ≈ tan(31°), 촘촘히 샘플해 급한 꺾임도 완만하게
+function buildTrailProfiles() {
+  for (const t of TRAILS) {
+    const zs = [], hs = [];
+    for (let z = t.zt; z <= 0.01; z += PROF_DZ) { const zz = Math.min(0, z); zs.push(zz); hs.push(groundRaw(trailX(t, zz), zz)); }
+    if (zs[zs.length - 1] < -0.01) { zs.push(0); hs.push(groundRaw(trailX(t, 0), 0)); }
+    const n = hs.length; if (n < 2) { t.prof = null; continue; }
+    const dH = [0]; for (let i = 1; i < n; i++) dH.push(Math.max(0.1, Math.hypot(trailX(t, zs[i]) - trailX(t, zs[i - 1]), zs[i] - zs[i - 1])));
+    const sm = hs.slice();
+    for (let pass = 0; pass < 2; pass++) { const c = sm.slice(); for (let i = 1; i < n - 1; i++) sm[i] = (c[i - 1] + 2 * c[i] + c[i + 1]) / 4; }   // 솔기·스파이크 평활화
+    for (let it = 0; it < 4; it++) {   // 위·아래 끝 고정하고 경사 캡(양방향)
+      for (let i = 1; i < n; i++) { const lim = sm[i - 1] - PROF_CAP * dH[i]; if (sm[i] < lim) sm[i] = lim; }        // 너무 빨리 내려가면 완만하게
+      for (let i = n - 2; i >= 1; i--) { const lim = sm[i + 1] + PROF_CAP * dH[i + 1]; if (sm[i] > lim) sm[i] = lim; }   // 아래쪽 기준으로 너무 높으면 낮춰 완만하게
+    }
+    t.prof = { z0: zs[0], h: sm };
+  }
+}
+buildTrailProfiles();
+function trailProfH(t, z) {
+  const P = t.prof; if (!P) return groundRaw(trailX(t, Math.min(0, z)), Math.min(0, z));
+  const zz = Math.min(0, Math.max(P.z0, z)), f = (zz - P.z0) / PROF_DZ; let i = Math.floor(f);
+  if (i < 0) i = 0; if (i >= P.h.length - 1) return P.h[P.h.length - 1];
+  return P.h[i] + (P.h[i + 1] - P.h[i]) * (f - i);
+}
 function segDist(x, z, x0, z0, x1, z1) { const vx = x1 - x0, vz = z1 - z0, t = clamp(((x - x0) * vx + (z - z0) * vz) / (vx * vx + vz * vz), 0, 1); return Math.hypot(x - x0 - vx * t, z - z0 - vz * t); }
 function inLiftCorridor(x, z) {
   for (const d of LIFT_DEFS) if (segDist(x, z, d.x0, d.z0 + 8, d.x1, d.z1 - 16) < 18) return true;
@@ -969,8 +1033,8 @@ renderer.setPixelRatio(DPR);
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 const scene = new THREE.Scene();
-scene.fog = new THREE.FogExp2(0xE3A48F, 0.0005);   // 베이스에서 정상까지 코스가 이어져 보이게 옅게
-const camera = new THREE.PerspectiveCamera(50, 1, 0.12, 4200);
+scene.fog = new THREE.FogExp2(0xE3A48F, 0.0003);   // 멀리 갈수록 옅은 안개로 사라져 무한히 펼쳐진 느낌(모서리 숨김)
+const camera = new THREE.PerspectiveCamera(50, 1, 0.12, 9000);
 const hemi = new THREE.HemisphereLight(0xffffff, 0xB8C9D6, 0.75); scene.add(hemi);
 const sun = new THREE.DirectionalLight(0xffffff, 0.9);
 sun.castShadow = true; sun.shadow.mapSize.set(IS_TOUCH ? 1024 : 2048, IS_TOUCH ? 1024 : 2048);
@@ -1091,9 +1155,10 @@ const SNOW_MAT = snowMaterial(false), GROOM_MAT = snowMaterial(true), FAR_MAT = 
 
 /* 지형 */
 (function terrain() {
-  const geo = new THREE.PlaneGeometry(1560, L + 940, IS_TOUCH ? 190 : 300, IS_TOUCH ? 240 : 380);
+  const DEPTH = L + 2300;   // 봉우리(rz≈1320)가 0까지 완전히 사그라들도록 뒤쪽을 넉넉히(사각 절벽 방지)
+  const geo = new THREE.PlaneGeometry(2600, DEPTH, IS_TOUCH ? 220 : 360, IS_TOUCH ? 300 : 460);
   geo.rotateX(-Math.PI / 2);
-  geo.translate(0, 0, 680 - (L + 940) / 2);   // 베이스 뒤 도로·콘도(+680)부터 정상 뒤 능선(-L-260)까지
+  geo.translate(0, 0, 680 - DEPTH / 2);   // 베이스 뒤 도로·콘도(+680)부터 정상 능선 너머 설원까지 완만히 사라져요
   const pos = geo.attributes.position;
   const col = new Float32Array(pos.count * 3);
   for (let i = 0; i < pos.count; i++) {
@@ -1133,7 +1198,7 @@ function forestAt(x, z) {
 /* 하늘(저니처럼 환상적으로): 지평선 빛띠 → 해 쪽으로 번지는 큰 후광 → 깊은 천정. 해 원반·코로나·햇살 줄기,
    두 층 구름(높은 새털구름 + 낮은 뭉게구름, 해 쪽 가장자리는 금빛으로 빛나요). 밤엔 반짝이는 별 · 은하수 · 오로라 */
 const skyMat = new THREE.ShaderMaterial({
-  uniforms: { uZen: { value: new THREE.Color('#2E3B6C') }, uHor: { value: new THREE.Color('#F3AE8A') }, uSunCol: { value: new THREE.Color('#FFC08A') }, uSunDir: SNOWU.uSunDir, uStars: { value: 0 }, uTime: { value: 0 }, uCloud: { value: 0.9 }, uAur: { value: 0 }, uGlow: { value: 1 } },
+  uniforms: { uZen: { value: new THREE.Color('#2E3B6C') }, uHor: { value: new THREE.Color('#F3AE8A') }, uSunCol: { value: new THREE.Color('#FFC08A') }, uSunDir: SNOWU.uSunDir, uStars: { value: 0 }, uTime: { value: 0 }, uCloud: { value: 0.9 }, uAur: { value: 0 }, uGlow: { value: 0.5 } },
   side: THREE.BackSide, depthWrite: false, fog: false,
   vertexShader: 'varying vec3 vDir; void main(){ vDir = (modelMatrix * vec4(position, 1.0)).xyz - cameraPosition; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); gl_Position.z = gl_Position.w; }',
   fragmentShader: `
@@ -1171,6 +1236,44 @@ const skyMat = new THREE.ShaderMaterial({
       vec3 cuCol = mix(cShade, cBright, 0.35 + 0.65 * lit) + uSunCol * pow(s, 8.0) * (1.0 - smoothstep(0.55, 0.75, cu0)) * 0.6;
       col = mix(col, cuCol, cu * uCloud * 0.9);
       col = mix(col, cBright, cir * uCloud * 0.45);
+      // ── 요테이산(에조후지): 평원 위로 솟은 하나의 대칭 설산 원뿔 — 흰 눈 · 방사형 숲 줄무늬 · 넓은 오목 사면 · 둥근 정상 ──
+      {
+        float az = atan(d.x, d.z);
+        float sunAz = atan(sd.x, sd.z);
+        vec2 cdir = vec2(cos(az), sin(az));
+        // (1) 낮고 은은한 원경 평원 능선(요테이 주변 저지대 숲 라인)
+        for (int li = 0; li < 2; li++) {
+          float fl = float(li);
+          float rid = 0.05 + fl * 0.022 + 0.03 * (fbm(cdir * (3.0 + fl * 2.0) + vec2(fl * 4.0, 1.0)) - 0.5);
+          float bd = smoothstep(rid + 0.003, rid - 0.003, h) * smoothstep(-0.05, -0.012, h);
+          if (bd > 0.001) col = mix(col, mix(mix(uHor, uZen, 0.55), vec3(0.74, 0.79, 0.9), 0.4 + fl * 0.3), bd * (0.5 + fl * 0.3));
+        }
+        // (2) 히어로 요테이 원뿔(down-valley 정면)
+        float az0 = 0.0;
+        float ha = atan(sin(az - az0), cos(az - az0));
+        float hwid = 1.05, tt = clamp(abs(ha) / hwid, 0.0, 1.0);
+        float peakH = 0.66, baseH = -0.02;   // 전경 설사면 위로 솟도록 크고 웅장하게
+        float prof = pow(1.0 - tt, 1.28);                                // 넓고 살짝 오목한 사면
+        prof -= 0.05 * exp(-pow(tt / 0.09, 2.0));                        // 정상 둥글게(뾰족하지 않게)
+        float jag = (n2(vec2(ha * 18.0, 1.0)) - 0.5) * 0.006 * (1.0 - tt);
+        float top = baseH + (peakH - baseH) * prof + jag;
+        float e2 = smoothstep(top + 0.004, top - 0.004, h) * smoothstep(-0.06, -0.02, h);
+        if (tt < 1.0 && e2 > 0.001) {
+          float up = clamp((h - baseH) / (peakH - baseH), 0.0, 1.0);     // 0 밑동 … 1 정상
+          float grain = fbm(vec2(ha * 34.0, up * 3.0));                  // 방사형 숲 줄무늬(얇고 촘촘)
+          float gully = smoothstep(0.52, 0.66, grain);
+          float treeAmt = gully * smoothstep(0.95, 0.5, up) * (0.3 + 0.7 * up);   // 아래로 갈수록 숲 짙고, 정상은 깨끗한 눈
+          vec3 snow = mix(vec3(0.95, 0.96, 1.0), uSunCol, 0.12);
+          vec3 tree = vec3(0.30, 0.36, 0.42);
+          vec3 face = mix(snow, tree, treeAmt * 0.72);
+          float lit = 0.5 + 0.5 * cos(ha - (sunAz - az0));               // 해 쪽 밝게, 반대쪽 서늘한 그늘
+          face *= mix(0.82, 1.06, lit);
+          face += uSunCol * pow(s, 4.0) * 0.1 * lit;
+          face += uSunCol * smoothstep(0.02, 0.0, top - h) * pow(s, 1.6) * 0.35;   // 능선 림라이트
+          face = mix(mix(uHor, uZen, 0.5), face, 0.62 + up * 0.34);     // 밑동은 대기에 살짝 묻혀요
+          col = mix(col, face, e2);
+        }
+      }
       // 밤: 반짝이는 별(크기 제각각) · 은하수 · 오로라
       vec2 ci2 = floor(vec2(atan(d.z, d.x) * 160.0, h * 300.0));
       float st = step(0.9965, h2(ci2)) * (0.55 + 0.45 * sin(uTime * 2.3 + h2(ci2 + 1.0) * 30.0));
@@ -1184,7 +1287,7 @@ const skyMat = new THREE.ShaderMaterial({
       gl_FragColor = vec4(col, 1.0);
     }`
 });
-const sky = new THREE.Mesh(new THREE.SphereGeometry(2000, 32, 16), skyMat); sky.renderOrder = -1; sky.frustumCulled = false; scene.add(sky);
+const sky = new THREE.Mesh(new THREE.SphereGeometry(7000, 32, 16), skyMat); sky.renderOrder = -1; sky.frustumCulled = false; scene.add(sky);
 
 /* 먼 산·봉우리는 두지 않아요: 베이스에서 보이는 산은 모두 슬로프가 있는 이 스키장 산이에요(실제 스키장 전경처럼). 정상 뒤·양옆은 숲 덮인 능선 */
 
@@ -1261,8 +1364,8 @@ TRAILS.forEach((t, ti) => {
 const MOGULS = [];
 const MOGUL_GEO = new THREE.SphereGeometry(1, 16, 8, 0, Math.PI * 2, 0, Math.PI / 2);
 for (let i = 0; i < 110; i++) {
-  const t = i < 70 ? TRAILS[2] : TRAILS.find((q) => q.id === 'w');
-  const z = t.zt + 60 + R() * (-t.zt - 100), c = trailX(t, z), x = c + (R() - 0.5) * trailW(t, z) * 0.8;
+  const t = TRAILS.find((q) => q.id === 'w') || TRAILS.find((q) => q.id === 'k') || TRAILS[0];   // 급사면 모굴 코스(바람골)에 모굴을 깔아요
+  const z = t.zt + 30 + R() * (-t.zt - 50), c = trailX(t, z), x = c + (R() - 0.5) * trailW(t, z) * 0.8;
   MOGULS.push({ x, z });
   const m = new THREE.Mesh(MOGUL_GEO, GROOM_MAT); m.position.set(x, groundH(x, z) + 0.02, z); m.scale.set(1.5, 0.55, 1.1); m.rotation.x = -Math.atan(slopeZ(x, z)); m.receiveShadow = true; scene.add(m);   // 경사면에 맞게 눕혀 아래쪽이 뜨지 않아요
 }
@@ -1313,7 +1416,8 @@ const pipeProf = (u, v) => {   // 가로 단면: 바닥 14m · 반지름 5.5m �
   return h * fade;
 };
 (function superPipe() {
-  const t = TRAILS.find((q) => q.id === 'hp'), z0 = -150, z1 = -450, cz = (z0 + z1) / 2, cx = trailX(t, cz);
+  const t = TRAILS.find((q) => q.id === 'hp'); if (!t) return;   // 하프파이프 코스
+  const z0 = Math.min(-30, t.zt + 140), z1 = t.zt + 20, cz = (z0 + z1) / 2, cx = trailX(t, cz);
   const f = terrainFeature(cx, cz, 36, z0 - z1, pipeProf, false, 56, 40); f.pipe = true;
   const zb = z0 + 6, yb = groundH(cx, zb);
   [-1, 1].forEach((sd) => { box(0.7, 9, 0.7, '#15171B', cx + sd * 17, yb + 4.5, zb); colCircle(cx + sd * 17, zb, 0.6, { ski: true }); });
@@ -1322,7 +1426,8 @@ const pipeProf = (u, v) => {   // 가로 단면: 바닥 14m · 반지름 5.5m �
   for (let z = z0 - 20; z > z1 + 10; z -= 40) [-1, 1].forEach((sd) => { const x = cx + sd * 15.8; box(0.15, 1.4, 0.15, '#E4572E', x, groundH(x, z) + 5.5 + 0.7, z); });   // 데크 끝 표시 깃대
 })();
 (function parkSlope() {
-  const t = TRAILS.find((q) => q.id === 'pk'), at = (z) => trailX(t, z);
+  const t = TRAILS.find((q) => q.id === 'pk'); if (!t) return;   // 파크 코스
+  const at = (z) => trailX(t, z);
   // 킥커 3단(작은·중간·큰) · 박스 2개 · 롤러 4개
   [[-175, 1.2, 6, 6], [-240, 1.8, 8, 8], [-320, 2.5, 10, 10]].forEach(([z, H, len, w], i) => {
     const cx = at(z) + (i === 1 ? -6 : 4); terrainFeature(cx, z, w, len, kickerProf(H), true);
@@ -1501,11 +1606,16 @@ function pineForest(list, placeholders, opt) {
   const list = [];
   const ok = (x, z) => {
     if (z > 245 || z < -L - 260) return false;
-    if (z > -12) { if (Math.abs(x) < 545 && z < 264) return false; }   // 베이스 광장 · 센터 건물
+    if (z > -12 && z < 264) {   // 베이스 광장: 중앙 동선만 비우고 양 가장자리엔 숲을 심어 '운동장' 느낌을 줄여요
+      if (Math.abs(x) < 340) return false;                   // 중앙 광장(보행·활강·리프트 동선)만 비워요
+      if (z >= 232) return false;                            // 센터 건물·하차장 라인은 비움
+      if (Math.hypot(x + 533, z - 36) < 46) return false;    // 초원 리프트 승강장 주변
+    }
     if (inLiftCorridor(x, z)) return false;                              // 리프트·곤돌라 선
     if (x < -300 && x > -348 && z > 90 && z < 210) return false;          // 콘도
     if (Math.abs(x + 236) < 6 && z < 14 && z > -80) return false;         // 무빙워크
     if (PEAKS.some((p) => Math.hypot(x - p.x, z - p.z) < 64)) return false;   // 봉우리 꼭대기(걷는 곳)
+    for (const k in SUMMIT) { const s = SUMMIT[k]; if (Math.hypot(x - s.x, z - s.z) < s.R + 10) return false; }   // 정상 광장 안엔 나무 없음
     if (z <= 0 && z > NET_Z && Math.abs(x) < 545) return false;    // 하단은 안전망으로 나눠요(나무 없음)
     if (z <= 0) for (const t of TRAILS) { if (Math.abs(x - trailX(t, z)) < trailHW(t, z, t.clear != null ? t.clear : 7)) return false; }   // 글레이드는 나무가 코스 바로 옆까지
     return true;
@@ -1548,6 +1658,7 @@ function pineForest(list, placeholders, opt) {
   for (let i = 0; i < N * 4 && list.length < N; i++) {
     const x = (r() - 0.5) * (SIDE * 2 + 420), z = -8 - r() * (L + 300);
     if (inLiftCorridor(x, z) || PEAKS.some((p) => Math.hypot(x - p.x, z - p.z) < 64)) continue;
+    { let inHub = false; for (const k in SUMMIT) { const s = SUMMIT[k]; if (Math.hypot(x - s.x, z - s.z) < s.R + 10) { inHub = true; break; } } if (inHub) continue; }   // 정상 광장 안엔 나무 없음
     if (forestAt(x, z) < 0.85 && Math.abs(x) < SIDE) continue;
     list.push({ x, z, s: 0.75 + r() * 0.6, ry: r() * 6.283 });
   }
@@ -1882,6 +1993,34 @@ function bench(x, z, ry, o) {
   // (하단 슬라럼 깃발은 두지 않아요: 트인 설원 한가운데 막대가 서서)
 })();
 
+/* 베이스 빌리지: 센터 건물 앞 광장에 상점·노점을 모아 짜임새 있게 배치 — 너른 설원 느낌을 줄여요(보행로는 가운데를 비워요) */
+(function baseVillage() {
+  function stall(x, z, ry, col) {
+    const g = new THREE.Group(); g.position.set(x, groundH(x, z), z); g.rotation.y = ry; scene.add(g);
+    box(4.2, 2.2, 3.0, '#EFE7D8', 0, 1.1, 0, g);                               // 가판대 몸체
+    box(0.2, 2.4, 0.2, '#6B4A35', -1.9, 1.2, 1.4, g); box(0.2, 2.4, 0.2, '#6B4A35', 1.9, 1.2, 1.4, g);
+    const aw = box(5.2, 0.22, 2.2, col, 0, 2.5, 1.5, g); aw.rotation.x = -0.34;   // 차양
+    box(5.2, 0.12, 0.32, '#F4F8FB', 0, 2.86, 2.48, g);
+    box(3.4, 0.6, 0.18, '#2A3A52', 0, 1.9, 1.52, g);                           // 간판
+    colBox(x, z, 4.4, 3.2, ry);
+  }
+  function hut(x, z, ry, wall, roof) {
+    const g = new THREE.Group(); g.position.set(x, groundH(x, z), z); g.rotation.y = ry; scene.add(g);
+    box(6, 3.0, 5, wall, 0, 1.5, 0, g);
+    box(6.6, 0.4, 5.6, roof, 0, 3.1, 0, g);
+    box(6.8, 1.5, 3.2, roof, 0, 3.95, 0, g);                                   // 박공 지붕
+    box(1.4, 2.0, 0.2, '#6B4A35', 0, 1.0, 2.52, g);                            // 문
+    box(2.6, 0.5, 0.15, '#F4F8FB', 0, 2.55, 2.54, g);                          // 간판판
+    box(1.1, 1.1, 0.15, '#CFE6F5', -2.0, 1.7, 2.52, g); box(1.1, 1.1, 0.15, '#CFE6F5', 2.0, 1.7, 2.52, g);   // 창
+    colBox(x, z, 6.2, 5.2, ry);
+  }
+  // 센터 건물 앞 좌·우 산장 + 상점 노점(동선은 가운데 비움)
+  hut(-262, 186, 0.28, '#B5663C', '#5B4030'); hut(262, 186, -0.28, '#3E6EA8', '#2E4A6E');
+  stall(-196, 152, 0.22, '#4E8A5E'); stall(-142, 160, 0.12, '#D1A23A');
+  stall(196, 152, -0.22, '#C9643E'); stall(142, 160, -0.12, '#B3505A');
+  stall(-82, 82, 0.0, '#3E6EA8'); stall(82, 82, 0.0, '#4E8A5E');
+})();
+
 /* 포근한 눈더미·둥근 덤불(힐링 질감) */
 (function cozyMounds() {
   const snowGeoDome = new THREE.SphereGeometry(1, 10, 8);
@@ -1893,8 +2032,8 @@ function bench(x, z, ry, o) {
   }
   const R2 = () => (R() - 0.5);
   const clear = (x, z) => Math.abs(x - 260) < 24 || Math.hypot(x - 110, z - 118) < 20 || Math.hypot(x - 36, z - 60) < 12 || Math.hypot(x + 46, z - 60) < 12 || (Math.abs(z - 128) < 12 && (Math.abs(x + 120) < 28 || Math.abs(x - 190) < 28));   // 리프트 줄 · 포토스팟 구도 · 안내도 앞은 비워요
-  for (let i = 0; i < 26; i++) { const x = R2() * 520, z = 60 + R() * 170; if (clear(x, z)) continue; mound(x, z, 1.6 + R() * 2.6, snowMat); }
-  for (let i = 0; i < 14; i++) { const x = R2() * 440, z = 70 + R() * 150; if (clear(x, z)) continue; mound(x, z, 1.2 + R() * 1.4, bushMat, 0.5); }
+  for (let i = 0; i < 70; i++) { const x = R2() * 640, z = 26 + R() * 200; if (clear(x, z)) continue; mound(x, z, 1.3 + R() * 2.4, snowMat); }
+  for (let i = 0; i < 44; i++) { const x = R2() * 600, z = 30 + R() * 185; if (clear(x, z)) continue; mound(x, z, 1.0 + R() * 1.3, bushMat, 0.5); }
 })();
 
 
@@ -2078,7 +2217,7 @@ const GONDOLA = (function () {
   // 8인승 곤돌라(탈 수 있어요): 베이스 서쪽 승강장 → 정상. 유리창 너머로 안이 보이는 캐빈, 마주 보는 의자 두 줄
   const GD = GONDOLA_DEF, X = GD.x0, Z0 = GD.z0, Z1 = GD.z1, ts = cableTowers(GD.x0, GD.z0, GD.x1, GD.z1, 115, 11, 16);
   const cab = makeCable(GD.x0, GD.z0, GD.x1, GD.z1, 3, 11, 16, ts);
-  const len = cab.len, speed = len / 100, spacing = 46, count = Math.round(2 * len / spacing);
+  const len = cab.len, speed = len / 15, spacing = 46, count = Math.round(2 * len / spacing);
   ts.forEach((t) => {   // 곤돌라 타워: 높고 날씬한 기둥 + 넓은 크로스암
     const [x, z] = cab.tower(t), g0 = groundH(x, z), top = g0 + 16 + 1.2;
     box(1.8, top - g0, 1.8, '#D9DFE6', x, g0 + (top - g0) / 2, z); const arm = box(9.5, 1, 2, '#D9DFE6', x, top, z); arm.rotation.y = cab.ang;
@@ -3154,7 +3293,8 @@ function animChar(c, dt, extra) {
   } else if (p === 'sit') {
     // 리프트 탑승: 등받이에 기대고 정강이를 앞으로 내밀어 발받침대 쪽으로(살짝 흔들흔들)
     const sw = e.still ? 0 : Math.sin(t * 2.2) * (e.swing ? 0.2 : 0.045);
-    [L0, L1].forEach((l, i) => { l.rotation.x = -1.3; l.userData.knee.rotation.x = 0.9 + (i ? -sw : sw); });
+    // 발목은 월드 수직으로 보정(hip+knee+ankle≈0) → 부츠·스키가 정강이 끝에 그대로 매달려요(발이 떨어져 보이지 않게)
+    [L0, L1].forEach((l, i) => { const kn = 0.9 + (i ? -sw : sw); l.rotation.x = -1.3; l.userData.knee.rotation.x = kn; l.userData.ankle.rotation.x = 1.3 - kn; });
     c.body.rotation.x = 0.06;
     A0.rotation.x = -0.22; A1.rotation.x = -0.22; E0.rotation.x = -1.15; E1.rotation.x = -1.1;   // 손은 무릎 위에
     c.head.rotation.y = e.still ? 0 : Math.sin(t * 0.27 + c.seed) * 0.5; c.head.rotation.x = 0.08;
@@ -3318,7 +3458,7 @@ const S = {
   ch: 1, chCount: 1, live: 1,
   slope: 1, skiMode: 'auto',
   queue: 0, chair: null, companion: null, companions: [],
-  ski: null, sitting: false, tod: 'sunset'   // 시작 화면 배경은 노을
+  ski: null, sitting: false, tod: 'auto'   // 시간 흐름에 따라 날씨(시간대)가 자동으로 바뀌어요
 };
 const keys = {};
 const touch = { l: false, r: false };
@@ -3998,17 +4138,16 @@ function unboard() {
     S.look.yaw = 0; S.look.pitch = 0.12; setMode('summit'); SND.chime();
     toast(d.name + ' 하차장이에요 · 이정표를 보고 ' + tg.name + ' 출발 게이트로 가면 출발해요'); return;
   }
-  // 정상 하차장 옆(동쪽 리프트는 하차장과 전망대 데크 사이)
+  // 정상: 넓은 평평한 광장에 내려요(둘레에 슬로프 입구가 배치됨)
   S.peak = d.peak || 'M';
-  const P = PEAK[S.peak], ang = Math.atan2(d.x1 - P.x, d.z1 - P.z);
-  S.top = { x: P.x, z: P.z, R: 62, trails: TRAILS.filter((t) => t.peak === S.peak).map((t) => t.id) };
-  const ex = d.x1 - Math.sin(ang) * 5, ez = d.z1 - Math.cos(ang) * 5;    // 하차장 바로 앞 — 의자에서 내리는 지점
-  const sx = d.x1 - Math.sin(ang) * 22, sz = d.z1 - Math.cos(ang) * 22;  // 미끄러져 멈추는 자리(아래쪽)
-  me.pos.set(ex, groundH(ex, ez), ez); me.yaw = Math.atan2(sx - P.x, sz - P.z); me.c.pose = 'skate';   // 정상에선 아래(베이스) 쪽을 바라봐요
-  me.target = new THREE.Vector3(sx, 0, sz);   // 하차 모션: 내려서 램프로 스르륵 미끄러져 멈춰요(워커 재사용)
+  const S0 = SUMMIT[d.id || 'gondola'] || SUMMIT[S.peak] || { x: PEAK[S.peak].x, z: PEAK[S.peak].z, R: 60, trails: TRAILS.filter((t) => t.peak === S.peak).map((t) => t.id) };
+  S.top = { x: S0.x, z: S0.z, R: S0.R, trails: S0.trails };
+  const ex = S0.x, ez = S0.z - (S0.R - 6);    // 광장 위쪽에서 내려
+  me.pos.set(ex, groundH(ex, ez), ez); me.yaw = 0; me.c.pose = 'skate';   // 베이스(아래=+z) 쪽을 바라봐요
+  me.target = new THREE.Vector3(S0.x, 0, S0.z);   // 평평한 광장 중앙으로 스르륵 미끄러져 멈춰요
   S.look.yaw = 0; S.look.pitch = 0.12;   // 카메라는 어깨너머로 계곡·베이스를 내려다봐요(드래그로 자유 회전)
   setMode('summit'); SND.chime();
-  toast(PEAK[S.peak].name + ' 정상이에요 · 발밑으로 베이스가 내려다보여요. 화면을 돌려 풍경을 즐기고, 슬로프 게이트로 가면 출발해요');
+  toast(PEAK[S.peak].name + ' 정상이에요 · 평평한 광장 둘레의 슬로프 입구로 걸어가면 출발해요');
 }
 
 /* 정상 */
@@ -4159,17 +4298,21 @@ function clickMove(e) {
   const hit = ray.intersectObject(terrainMesh)[0];
   if (hit && !S.bus) { if (S.seat) standUp(); me.target = hit.point.clone(); S.sitting = false; $('#sitBtn').textContent = '앉기'; }
 }
+const OV_LOCK = 480;   // 이 거리 이상 줌아웃하면 '오버뷰 잠금'(시점이동·추가 줌아웃 없음, 줌인하면 복귀)
 function orbitBy(dx, dy) {
   if (S.mode === 'maker') { S.makerDrag = true; me.yaw += dx * 0.012; return; }
   if (S.mode === 'lift' && S.view === 'tp') { const c = S.cams.lift; c.az -= dx * 0.0052; c.pitch = clamp(c.pitch + dy * 0.004, -0.55, 1.25); return; }   // 의자 아래에서 하늘을 올려다볼 수도 있어요
+  if ((S.mode === 'base' || S.mode === 'summit') && S.view === 'tp' && S.tp.dist >= OV_LOCK) return;   // 오버뷰 잠금: 시점이동 없음
   S.look.yaw -= dx * 0.005;
-  S.look.pitch = clamp(S.look.pitch + (S.view === 'fp' ? -dy : dy) * 0.004, S.view === 'fp' ? -1.0 : -1.75, S.view === 'fp' ? 1.45 : 0.9);   // 위로 끌면 하늘까지 올려다봐요
+  // 세로 드래그로 카메라 높이각 조절(아래로 끌면 위에서 내려다봐요). 캐릭터는 늘 가운데
+  S.look.pitch = clamp(S.look.pitch + (S.view === 'fp' ? -dy : dy) * 0.004, S.view === 'fp' ? -1.0 : -0.36, S.view === 'fp' ? 1.45 : 1.05);
 }
 function zoomBy(f) {
   if (S.mode === 'lift' && S.view === 'tp') { S.cams.lift.dist = clamp(S.cams.lift.dist * f, 6, 46); return; }
   if (!['base', 'summit', 'queue', 'ski', 'lift'].includes(S.mode)) return;
   if (S.view === 'fp') { if (f > 1.02) { setView('tp'); S.tp.dist = 4.5; } return; }
-  S.tp.dist = clamp(S.tp.dist * f, 3.5, 40);
+  if (S.tp.dist >= OV_LOCK && f > 1) return;   // 오버뷰 잠금: 더 줌아웃 안 돼요(줌인으로만 복귀)
+  S.tp.dist = clamp(S.tp.dist * f, 3.5, OV_LOCK);   // 많이 줌아웃하면 스키장 전체 전경(여기서 잠금)
   if (S.tp.dist <= 3.5 && f < 0.98) setView('fp');
 }
 let camDragging = false;
@@ -4201,6 +4344,8 @@ function ptrEnd(e) {
 canvas.addEventListener('pointerup', ptrEnd); canvas.addEventListener('pointercancel', ptrEnd);
 // 드래그로 둘러볼 때 생기는 전체 선택 방지(입력창은 예외)
 document.addEventListener('selectstart', (e) => { const t = e.target; if (!(t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.isContentEditable))) e.preventDefault(); });
+// 크롬 등: 꾹 누를 때 뜨는 컨텍스트 메뉴(복사·검색) 차단 — 입력창·이미지 저장은 예외
+document.addEventListener('contextmenu', (e) => { const t = e.target; if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.isContentEditable || (t.closest && (t.closest('#imgModal') || t.closest('#photoResult'))))) return; e.preventDefault(); });
 canvas.addEventListener('wheel', (e) => {
   if (!['base', 'summit', 'queue', 'ski', 'lift'].includes(S.mode)) return;
   e.preventDefault(); zoomBy(1 + clamp(e.deltaY, -120, 120) * 0.0012);
@@ -4223,7 +4368,7 @@ const JUMP = { req: false };   // 좌측 점프 버튼이 한 번 눌릴 때마�
     const r = el.getBoundingClientRect(), cx = r.left + r.width / 2, cy = r.top + r.height / 2;
     let dx = e.clientX - cx, dy = e.clientY - cy; const d = Math.hypot(dx, dy);
     if (d > R0) { dx = dx / d * R0; dy = dy / d * R0; }
-    JOY.x = dx / R0; JOY.y = dy / R0;
+    JOY.x = dx / R0; JOY.y = dy / R0;   // 전후 이동 + 좌우 방향 전환. 둘러보기는 화면 드래그, 줌은 두 손
     knob.style.transform = 'translate(' + dx + 'px,' + dy + 'px)';
   }
   el.addEventListener('pointerdown', (e) => { e.preventDefault(); JOY.on = true; JOY.id = e.pointerId; try { el.setPointerCapture(e.pointerId); } catch (_) { } setFrom(e); me.target = null; S.sitting = false; });
@@ -4241,19 +4386,30 @@ function currentTod() {
   if (h >= 9 && h < 16) return 'day'; if (h >= 16 && h < 18) return 'sunset'; if (h >= 18) return 'night'; return 'dawn';
 }
 const TOD = {
-  day:    { aur: 0, zen: '#3F72BE', hor: '#F2E3D3', sun: '#FFF0D6', dir: [0.35, 0.68, -0.5], lit: '#DCE3EB', shade: '#8A9FC0', rim: '#C9D9EC', spec: '#EEF3FA', fog: '#C3D4E2', hs: '#DFE8F2', hg: '#8799B3', hi: 0.62, si: 0.62, tree: '#3E5F57', glit: 0.35, bloom: 0.1, stars: 0, win: 0.15, lamp: 0, cloud: 0.45, dust: 0.45, shaft: 0.22, mist: 0.35 },
-  sunset: { aur: 0, zen: '#2E3B6C', hor: '#F7AE84', sun: '#FFC285', dir: [0.32, 0.1, -1], lit: '#F0C9B4', shade: '#6B649E', rim: '#FFB590', spec: '#FFE2C2', fog: '#E3A48F', hs: '#F6CDB4', hg: '#615C94', hi: 0.68, si: 0.78, tree: '#3B3F5E', glit: 1.0, bloom: 0.42, stars: 0, win: 0.6, lamp: 0.6, cloud: 0.95, dust: 1, shaft: 0.75, mist: 0.75 },
-  night:  { aur: 1, zen: '#040920', hor: '#24396E', sun: '#C2D2FF', dir: [-0.42, 0.32, -1], lit: '#AABDEB', shade: '#1D2956', rim: '#6E86C8', spec: '#DDE7FF', fog: '#1B2A52', hs: '#5468A8', hg: '#131B39', hi: 0.5, si: 0.42, tree: '#0F1832', glit: 1.5, bloom: 0.6, stars: 1, win: 1, lamp: 1.6, cloud: 0.2, dust: 0.55, shaft: 0.18, mist: 0.45 },
-  dawn:   { aur: 0.25, zen: '#3B4C86', hor: '#EDBBCB', sun: '#FFD9E0', dir: [-0.5, 0.14, -1], lit: '#E3D3E6', shade: '#6F78AE', rim: '#F3C5D8', spec: '#FFEAF2', fog: '#C9B5CF', hs: '#E8D7EC', hg: '#6A6E9E', hi: 0.62, si: 0.58, tree: '#36405F', glit: 0.9, bloom: 0.32, stars: 0.3, win: 0.4, lamp: 0.4, cloud: 0.8, dust: 0.9, shaft: 0.6, mist: 0.85 }
+  day:    { aur: 0, zen: '#3F72BE', hor: '#F2E3D3', sun: '#FFF0D6', dir: [0.35, 0.68, -0.5], lit: '#DCE3EB', shade: '#8A9FC0', rim: '#C9D9EC', spec: '#EEF3FA', fog: '#C3D4E2', hs: '#DFE8F2', hg: '#8799B3', hi: 0.62, si: 0.62, tree: '#3E5F57', glit: 0.32, bloom: 0.07, stars: 0, win: 0.15, lamp: 0, cloud: 0.45, dust: 0.45, shaft: 0.22, mist: 0.35 },
+  sunset: { aur: 0, zen: '#2E3B6C', hor: '#F7AE84', sun: '#FFC285', dir: [0.32, 0.1, -1], lit: '#F0C9B4', shade: '#6B649E', rim: '#FFB590', spec: '#FFE2C2', fog: '#E3A48F', hs: '#F6CDB4', hg: '#615C94', hi: 0.68, si: 0.78, tree: '#3B3F5E', glit: 0.7, bloom: 0.22, stars: 0, win: 0.6, lamp: 0.6, cloud: 0.95, dust: 1, shaft: 0.75, mist: 0.75 },
+  night:  { aur: 1, zen: '#040920', hor: '#24396E', sun: '#C2D2FF', dir: [-0.42, 0.32, -1], lit: '#AABDEB', shade: '#1D2956', rim: '#6E86C8', spec: '#DDE7FF', fog: '#1B2A52', hs: '#5468A8', hg: '#131B39', hi: 0.5, si: 0.42, tree: '#0F1832', glit: 1.1, bloom: 0.4, stars: 1, win: 1, lamp: 1.6, cloud: 0.2, dust: 0.55, shaft: 0.18, mist: 0.45 },
+  dawn:   { aur: 0.25, zen: '#3B4C86', hor: '#EDBBCB', sun: '#FFD9E0', dir: [-0.5, 0.14, -1], lit: '#E3D3E6', shade: '#6F78AE', rim: '#F3C5D8', spec: '#FFEAF2', fog: '#C9B5CF', hs: '#E8D7EC', hg: '#6A6E9E', hi: 0.62, si: 0.58, tree: '#36405F', glit: 0.65, bloom: 0.18, stars: 0.3, win: 0.4, lamp: 0.4, cloud: 0.8, dust: 0.9, shaft: 0.6, mist: 0.85 }
 };
 const TODC = ['zen', 'hor', 'sun', 'lit', 'shade', 'rim', 'spec', 'fog', 'hs', 'hg', 'tree'], TODN = ['hi', 'si', 'glit', 'bloom', 'stars', 'win', 'lamp', 'cloud', 'dust', 'shaft', 'mist', 'aur'];
 const todCur = (() => { const p = TOD.sunset, o = { dir: new THREE.Vector3().fromArray(p.dir).normalize() }; TODC.forEach((k) => o[k] = new THREE.Color(p[k])); TODN.forEach((k) => o[k] = p[k]); return o; })();
 let todSnap = true;
+const TOD_CYCLE = ['dawn', 'day', 'sunset', 'night'];   // 하루 순환 순서(새벽→낮→노을→야간)
+const TOD_PERIOD = 360;   // 6분에 하루 한 바퀴 — 시간 흐름이 눈에 보이게
+const _ca = new THREE.Color(), _cb = new THREE.Color(), _va = new THREE.Vector3(), _vb = new THREE.Vector3();
+function todPhase() {   // 'auto'일 때 현재 두 시간대와 섞임 비율(부드럽게)
+  const seg = TOD_PERIOD / TOD_CYCLE.length, t = (performance.now() / 1000) % TOD_PERIOD, i = Math.floor(t / seg);
+  let f = (t - i * seg) / seg; f = f * f * (3 - 2 * f);
+  return { a: TOD[TOD_CYCLE[i]], b: TOD[TOD_CYCLE[(i + 1) % TOD_CYCLE.length]], f };
+}
 function applyTod() { todSnap = todSnap || false; }
 function blendTod(dt) {
-  const p = TOD[currentTod()], k = todSnap ? 1 : Math.min(1, dt * 1.5); todSnap = false;
-  TODC.forEach((n) => todCur[n].lerp(tmpC.set(p[n]), k)); TODN.forEach((n) => todCur[n] = lerp(todCur[n], p[n], k));
-  todCur.dir.lerp(tmpV.fromArray(p.dir).normalize(), k).normalize();
+  let A, B, f;
+  if (S.tod === 'auto') { const ph = todPhase(); A = ph.a; B = ph.b; f = ph.f; } else { A = B = TOD[currentTod()]; f = 0; }
+  const k = todSnap ? 1 : Math.min(1, dt * 1.5); todSnap = false;
+  TODC.forEach((n) => todCur[n].lerp(_ca.set(A[n]).lerp(_cb.set(B[n]), f), k));
+  TODN.forEach((n) => todCur[n] = lerp(todCur[n], lerp(A[n], B[n], f), k));
+  todCur.dir.lerp(_va.fromArray(A.dir).normalize().lerp(_vb.fromArray(B.dir).normalize(), f).normalize(), k).normalize();
   SNOWU.uSunDir.value.copy(todCur.dir); SNOWU.uLit.value.copy(todCur.lit); SNOWU.uShade.value.copy(todCur.shade); SNOWU.uRim.value.copy(todCur.rim); SNOWU.uSpec.value.copy(todCur.spec); SNOWU.uGlitter.value = todCur.glit;
   skyMat.uniforms.uZen.value.copy(todCur.zen); skyMat.uniforms.uHor.value.copy(todCur.hor); skyMat.uniforms.uSunCol.value.copy(todCur.sun); skyMat.uniforms.uStars.value = todCur.stars; skyMat.uniforms.uCloud.value = todCur.cloud; skyMat.uniforms.uAur.value = todCur.aur || 0; SNOWU.uSunCol.value.copy(todCur.sun);
   DUST.mat.uniforms.uAmt.value = todCur.dust; DUST.mat.uniforms.uColor.value.copy(todCur.spec); DRIFT.mat.color.copy(todCur.lit);
@@ -4596,7 +4752,7 @@ function update(dt) {
     if (S.mode === 'base') { if (S.racked && !me.c.stowed) stowGear(me.c, true); }
     const outside = me.pos.z > OUT_Z;
     let moving = false;
-    if (Math.abs(turn) > 0.12) { me.yaw += turn * 2.3 * dt; me.target = null; }
+    if (Math.abs(turn) > 0.12) { const dYaw = turn * 2.3 * dt; me.yaw += dYaw; me.target = null; S.look.yaw -= dYaw; }   // 방향전환해도 카메라 시점은 그대로(캐릭터만 돌아요)
     if (Math.abs(fwd) > 0.12) {
       const sp = fwd > 0 ? (outside ? 11 : 18) : 7;   // 바깥은 부츠 신고 걸어요(베이스가 넓어 이동 속도 상향)
       me.pos.x += Math.sin(me.yaw) * sp * fwd * dt; me.pos.z += Math.cos(me.yaw) * sp * fwd * dt; moving = true; me.target = null; S.sitting = false;
@@ -4604,6 +4760,7 @@ function update(dt) {
       const yw = moveWalker(me.pos, me.target, dt, outside ? 11 : 18);
       if (yw === null) me.target = null; else { me.yaw = lerpAngle(me.yaw, yw, Math.min(1, dt * 8)); moving = true; }
     }
+    me.fwding = moving;   // 전진(또는 목표 이동) 중일 때만 카메라가 뒤로 따라와요(방향전환만으론 안 움직여요)
     me.moving = moving || Math.abs(turn) > 0.12;
     if (moving && me.pos.z < OUT_Z) SND.setSkate(0.1);   // 설면에서 스케이팅으로 미끄러지는 눈소리
     walkBounds(me.pos);
@@ -4896,8 +5053,8 @@ function updateCamera(dt) {
   } else if (S.mode === 'card') {
     return;
   } else if (follow) {
-    // 움직이면 둘러보던 시선이 진행 방향으로 돌아와요(시선이 몸을 따라가요)
-    if ((me.moving || S.mode === 'ski') && !camDragging) S.look.yaw = lerp(S.look.yaw, 0, Math.min(1, dt * 1.8));
+    // 전진·라이딩할 때만 시선이 진행 방향으로 돌아와요(방향전환만으론 카메라가 안 움직여요)
+    if ((me.fwding || S.mode === 'ski') && !camDragging) S.look.yaw = lerp(S.look.yaw, 0, Math.min(1, dt * 1.8));
     const H = followHeading() + S.look.yaw;
     const ski = S.mode === 'ski' && S.ski;
     if (S.view === 'fp') {
@@ -4910,11 +5067,10 @@ function updateCamera(dt) {
       k = S.mode === 'lift' ? 1 : Math.min(1, dt * 14);
     } else {
       const center = me.pos.clone().add(new THREE.Vector3(0, ski ? 1.2 : 1.5, 0));
-      // 위로 끌면(피치가 낮아지면) 카메라는 땅 가까이 내려오고, 그다음부터는 시선이 하늘로 올라가요
-      const Pr = S.tp.pitch + (ski ? 0.15 : 0) + S.look.pitch, P = clamp(Pr, 0.06, 1.3), D = S.tp.dist, upA = clamp(0.06 - Pr, 0, 1.35);
+      // 세로 드래그로 카메라 높이각 조절: 아래로 끌면 위에서 내려다봐요(새 눈). 캐릭터는 늘 화면 가운데에 고정
+      const P = clamp(S.tp.pitch + (ski ? 0.15 : 0) + S.look.pitch, 0.06, 1.46), D = S.tp.dist;
       wantPos.set(center.x - Math.sin(H) * Math.cos(P) * D, center.y + Math.sin(P) * D, center.z - Math.cos(H) * Math.cos(P) * D);
       wantLook.copy(center); if (ski) { wantLook.x += Math.sin(H) * 6; wantLook.z += Math.cos(H) * 6; wantLook.y -= 1.5; }
-      if (upA > 0) wantLook.y += Math.tan(upA) * D * Math.cos(P);
       for (let i = 0; i < 14 && inBuilding(wantPos); i++) wantPos.lerp(center, 0.16);   // 건물 벽 너머로 가지 않게 당겨요
       k = Math.min(1, dt * 8);
     }
