@@ -5,7 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <title>스노우라이브 파크</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Gowun+Dodum&family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
 <style>
 :root{
   --ink:#2A2140; --panel:rgba(40,30,58,.6); --panel2:#3B3156; --line:#5A4E75;
@@ -42,7 +44,8 @@ button{font-family:inherit;cursor:pointer}
 #gateCard small{color:var(--sub);font-size:12px}
 
 /* maker */
-#maker{right:20px;top:20px;bottom:20px;width:min(420px,calc(100vw - 40px));overflow:auto;display:flex;flex-direction:column;gap:14px}
+#maker{right:20px;top:20px;bottom:20px;width:min(420px,calc(100vw - 40px));overflow:hidden;display:flex;flex-direction:column;gap:12px}
+#makerScroll{flex:1;min-height:0;overflow:auto;display:flex;flex-direction:column;gap:14px;padding-right:2px}
 .sw.none{background:linear-gradient(135deg,transparent 44%,#E86A5A 44%,#E86A5A 56%,transparent 56%),#2E2640}
 #segHat{margin-bottom:8px}
 .wear{display:flex;flex-direction:column;gap:12px;padding:14px;border-radius:14px;background:rgba(255,255,255,.06)}
@@ -58,7 +61,7 @@ button{font-family:inherit;cursor:pointer}
 .check{display:flex;align-items:center;gap:8px;font-size:14px;margin-top:8px}
 .check input{width:18px;height:18px}
 #makerTitle{position:fixed;left:20px;top:20px;background:rgba(16,28,42,.62);border-radius:16px;padding:14px 18px}
-#makerDone{position:sticky;bottom:0;flex:none;box-shadow:0 -12px 16px rgba(16,28,42,.93)}
+#makerDone{flex:none;margin-top:2px}
 #maker .sw{height:34px}
 #makerTitle .tag{font-family:'Gowun Batang','Noto Serif KR',serif;letter-spacing:3px;font-size:12px;color:#DCEBFA}
 #makerTitle h1{margin:4px 0;font-size:30px;font-weight:900}
@@ -188,6 +191,13 @@ html,body{overscroll-behavior:none}
 #skiBar{bottom:calc(22px + env(safe-area-inset-bottom,0px))}
 #touch,#joy{touch-action:none}
 #joy{position:fixed;left:calc(22px + env(safe-area-inset-left,0px));bottom:calc(26px + env(safe-area-inset-bottom,0px));width:128px;height:128px;border-radius:50%;background:rgba(16,28,42,.32);border:2px solid rgba(255,255,255,.6);z-index:4}
+#joy.joy-right{left:auto;right:calc(22px + env(safe-area-inset-right,0px))}
+#jumpBtn{position:fixed;left:calc(30px + env(safe-area-inset-left,0px));bottom:calc(52px + env(safe-area-inset-bottom,0px));width:96px;height:96px;border-radius:50%;background:rgba(228,87,46,.82);color:#fff;font-size:18px;font-weight:800;border:2px solid rgba(255,255,255,.7);box-shadow:0 10px 26px rgba(0,0,0,.3);z-index:4;touch-action:none}
+#jumpBtn:active{transform:scale(.94);background:rgba(228,87,46,.95)}
+#dressBtn{position:fixed;transform:translate(-50%,-100%);z-index:5;padding:10px 18px;border-radius:999px;background:var(--blue,#2F6FD6);color:#fff;font-weight:800;font-size:15px;border:2px solid rgba(255,255,255,.85);box-shadow:0 8px 22px rgba(0,0,0,.3)}
+#dressBtn:active{transform:translate(-50%,-100%) scale(.95)}
+#sndBtn.muted{opacity:.55;position:relative}
+#sndBtn.muted::after{content:"";position:absolute;left:4px;right:4px;top:50%;height:2px;background:currentColor;transform:rotate(-45deg);border-radius:2px}
 #joyKnob{position:absolute;left:50%;top:50%;width:54px;height:54px;margin:-27px 0 0 -27px;border-radius:50%;background:rgba(255,255,255,.92);box-shadow:0 2px 8px rgba(0,0,0,.25)}
 .modal{z-index:30}
 #imgModal img{width:100%;border-radius:10px;display:block;-webkit-touch-callout:default;-webkit-user-select:auto;user-select:auto}
@@ -211,6 +221,7 @@ html,body{overscroll-behavior:none}
   #makerTitle p{display:none}
   #makerTitle h1{font-size:22px}
   #summitPanel{left:12px;right:12px;top:auto;bottom:12px;width:auto}
+}
 .spin{width:12px;height:12px;border-radius:50%;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;display:inline-block;vertical-align:-2px;margin-right:6px;animation:spin .7s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 /* ===== 반응형: 태블릿(≤1024px) — 사이드 패널 유지하되 살짝 좁게 ===== */
@@ -239,7 +250,7 @@ html,body{overscroll-behavior:none}
   #hud .br{right:calc(10px + env(safe-area-inset-right));bottom:calc(12px + env(safe-area-inset-bottom))}
   #hud .br .btn{padding:0 12px}
   #prompt{bottom:calc(176px + env(safe-area-inset-bottom));font-size:14px}
-  #skiBar{bottom:calc(16px + env(safe-area-inset-bottom));font-size:13px}
+  #skiBar{top:calc(110px + env(safe-area-inset-top));bottom:auto;font-size:13px}   /* 라이딩 바는 상단 — 하단 조이스틱·점프버튼과 안 겹치게 */
   #progress{right:calc(14px + env(safe-area-inset-right))}
   #card{gap:20px}
 }
@@ -353,23 +364,188 @@ body.photo-mode #hud, body.photo-mode #social, body.photo-mode #joy, body.photo-
 #joy{ background:rgba(14,22,34,.3);border:1.5px solid rgba(255,255,255,.42);box-shadow:0 12px 34px rgba(0,0,0,.28); }
 #joyKnob{ background:linear-gradient(180deg,var(--blue),var(--blue2));box-shadow:0 5px 14px rgba(0,0,0,.4); }
 </style>
+<style>
+/* ═══════ 포근한 수채화 톤(힐링게임풍) 리스킨 ═══════ */
+:root{
+  --panel: rgba(26,44,74,.72);     /* 스노우라이브 블루 글래스 */
+  --panel2: rgba(46,74,118,.74);
+  --blue:  #3B82F6; --blue2: #2563EB;   /* 스노우라이브 블루 포인트 */
+  --sub:   #CFE0F4;                /* 밝은 블루화이트 보조 텍스트 */
+  --line:  rgba(200,224,255,.22);
+  --ink:   #16294A;
+}
+/* 테두리·질감 통일: 라이트블루 테두리 + 부드러운 안쪽 하이라이트 */
+.pill,.icon-btn,.btn,.panel,#banner,#skiBar,#prompt,.toast,#joy,#emotes,#chatForm,.modal .box,#gateCard,#gateHead,#counters,#summitPanel,#maker,#makerTitle,#ticket,#soundP{
+  border:1px solid rgba(200,224,255,.18) !important;
+  box-shadow:0 10px 30px rgba(10,22,44,.4), inset 0 1px 0 rgba(255,255,255,.08) !important;
+}
+.pill,.icon-btn{ border-radius:16px; background:var(--panel); }
+.btn{ border-radius:16px; }
+.panel,#maker,#summitPanel,#ticket,#soundP{ border-radius:26px; background:var(--panel); }
+#banner,#skiBar{ border-radius:22px; background:var(--panel); }
+#banner{ height:46px; }
+/* 블루 버튼엔 흰 글씨로 또렷하게 */
+.btn.primary,#promptBtn,#chatForm button,.seg button.on{ color:#fff; }
+.btn.primary,#promptBtn{ background:linear-gradient(180deg,var(--blue),var(--blue2)); box-shadow:0 10px 26px rgba(37,99,235,.42); }
+/* 숫자·강조는 밝은 블루 */
+.num{ color:#DBEAFF; }
+.dot{ background:#5BD68A; }   /* 접속 초록점은 유지 */
+/* 토스트·게이트 헤더도 블루 톤 */
+.toast,#gateHead,#makerTitle{ background:rgba(20,34,56,.82) !important; }
+#gate .tag,#gate .lead,#gateCard .live,#gateCard small{ color:#E6F0FB; }
+/* 세그먼트(체형·장비 등) 비선택 블루 톤 */
+.seg button{ background:rgba(32,52,84,.7); border:1px solid rgba(200,224,255,.2); }
+.seg button.on{ background:linear-gradient(180deg,var(--blue),var(--blue2)); border-color:transparent; }
+.field input[type=text]{ background:rgba(28,46,74,.72); border:1px solid rgba(200,224,255,.22); }
+.wear{ background:rgba(200,224,255,.07); }
+select{ background:rgba(28,46,74,.8); border:2px solid var(--line); }
+/* 프롬프트(시설 안내)는 밝은 종이 느낌 */
+#prompt{ background:rgba(246,250,255,.95); color:#16294A; }
+#prompt b{ color:#16294A; }
+/* 이모트 바 버튼 둥글게 */
+#emotes button{ background:rgba(200,224,255,.12); }
+#chatInput{ background:rgba(28,46,74,.8); }
+/* 조이스틱·점프·꾸미기도 블루 톤 */
+#joy{ background:rgba(26,44,74,.34) !important; border:1.5px solid rgba(210,230,255,.5) !important; }
+#jumpBtn{ background:rgba(59,130,246,.9); color:#fff; border-color:rgba(210,230,255,.75); }
+#jumpBtn:active{ background:rgba(59,130,246,1); }
+#dressBtn{ background:linear-gradient(180deg,var(--blue),var(--blue2)); color:#fff; }
+/* ── 레이아웃: 이동=우측 조이스틱 / 버튼=좌측 ── */
+#joy{ left:auto !important; right:calc(20px + env(safe-area-inset-right,0px)) !important; }
+#actions{ left:calc(16px + env(safe-area-inset-left,0px)) !important; right:auto !important; align-items:flex-start !important; }
+/* ── 글자 줄바꿈 금지(모바일에서 '줄 서\n기' 같은 꼴 방지) ── */
+.btn,.pill,#promptBtn,.seg button,#banner,#skiBar{ white-space:nowrap; }
+#prompt{ white-space:nowrap; max-width:calc(100vw - 20px); }
+#promptText{ white-space:nowrap; }
+#promptBtn{ white-space:nowrap; flex:none; }
+/* ── 액션은 텍스트 박스 대신 둥근 아이콘 버튼(모던 게임 느낌) ── */
+.actbtn{ width:54px;height:54px;border-radius:50%;border:1px solid rgba(255,238,212,.18);background:var(--panel);
+  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);font-size:24px;line-height:1;
+  box-shadow:0 8px 22px rgba(28,18,10,.32),inset 0 1px 0 rgba(255,244,224,.1);transition:transform .1s ease; }
+.actbtn:active{ transform:scale(.9); }
+#actions{ gap:10px; }
+/* 상단 정보 칩: 아이콘+숫자만 또렷하게 */
+#counters{ gap:14px;font-weight:700; } #counters span{ display:flex;align-items:center;gap:5px; }
+/* ── 첫 화면(게이트): 배경 살짝 딤 · 제목+입장 세로 가운데 · 인원은 하단 가운데 ── */
+#gate{ justify-content:center !important; align-items:center !important; gap:26px !important; padding:0 !important; }
+#gate::before{ content:none; }
+#gateHead,#gateCard{ position:static !important; background:transparent !important; border:none !important; box-shadow:none !important; backdrop-filter:none !important; -webkit-backdrop-filter:none !important; padding:0 !important; }
+/* 제목 — 화면 세로 가운데 */
+#gateHead{ display:flex; flex-direction:column; align-items:center; gap:10px; z-index:1; }
+#gate h1{ font-size:clamp(26px,6.8vw,42px); color:#fff; font-weight:700; text-transform:uppercase; letter-spacing:.12em; text-indent:.12em; white-space:nowrap; text-shadow:0 4px 24px rgba(0,0,0,.55),0 2px 5px rgba(0,0,0,.5); }
+/* 입장 — 제목 아래(가운데) · 블루 투명 글래스 */
+#gateCard{ display:flex; flex-direction:column; align-items:center; z-index:1; }
+/* 입장 버튼 → '화면을 눌러 시작' 풀스크린 탭 영역 + 하단 안내 문구 */
+.tap-to-start{ position:fixed; inset:0; margin:0; padding:0; border:0; background:transparent; cursor:pointer; z-index:5; pointer-events:auto; -webkit-tap-highlight-color:transparent; }
+.tap-hint{ position:fixed; left:0; right:0; bottom:calc(92px + env(safe-area-inset-bottom,0px)); z-index:6; display:flex; flex-direction:column; align-items:center; gap:12px; pointer-events:none; white-space:nowrap; }
+.tap-hint__main{ font-size:14px; font-weight:700; letter-spacing:.42em; padding-left:.42em; color:#1E2A44; text-shadow:0 1px 6px rgba(255,255,255,.5); animation:tap-breathe 2.8s ease-in-out infinite; }
+.tap-hint__sub{ font-size:11px; letter-spacing:.16em; color:#4A5872; text-shadow:0 1px 5px rgba(255,255,255,.45); }
+@keyframes tap-breathe{ 0%,100%{opacity:1} 50%{opacity:.35} }
+.tap-to-start:focus-visible + .tap-hint .tap-hint__main{ text-decoration:underline; text-underline-offset:6px; text-decoration-thickness:2px; }
+@media (max-height:700px){ .tap-hint{ bottom:calc(56px + env(safe-area-inset-bottom,0px)); } }
+@media (orientation:landscape) and (max-height:500px){ .tap-hint{ bottom:calc(28px + env(safe-area-inset-bottom,0px)); } }
+@media (prefers-reduced-motion:reduce){ .tap-hint__main{ animation:none; } }
+/* 전체 폰트 Pretendard로 통일 */
+*{ font-family:'Pretendard',-apple-system,BlinkMacSystemFont,system-ui,'Noto Sans KR',sans-serif !important; }
+/* 패널(기록·소리) 열리면 하단 조작 UI 숨겨 겹침 방지 */
+body.modal-open #joy, body.modal-open #jumpBtn, body.modal-open #actions, body.modal-open #social, body.modal-open #banner, body.modal-open #skiBar, body.modal-open #prompt, body.modal-open #counters, body.modal-open #toasts{ display:none !important; }
+/* 로딩은 문구 없이 깔끔한 배경만 */
+#loading{ background:linear-gradient(180deg,#A7C7E6,#DCEAF4) !important; }
+/* ═══ 모던 심플 화이트 패널(기록·소리·정상·꾸미기) + 게임 아이콘 ═══ */
+#ticket,#soundP,#summitPanel,#maker{ background:#FFFFFF !important; border:1px solid rgba(20,40,70,.07) !important; box-shadow:0 22px 60px rgba(20,40,70,.22) !important; color:#1E2A44 !important; }
+#ticket h2,#soundP h2,#summitPanel h2,#maker h2{ color:#15233E !important; }
+#ticket p.sub,#soundP p.sub,#summitPanel p.sub,#maker p.sub,#maker .field label,#maker .wear-hd span,#summitPanel #modeHint{ color:#7A89A0 !important; }
+.stat{ background:#F4F7FB !important; border:1px solid rgba(20,40,70,.05) !important; border-radius:16px; box-shadow:none !important; padding:12px 14px; }
+.stat .k{ color:#8A97AC; font-size:12.5px; font-weight:600; display:flex; align-items:center; gap:6px; }
+.stat .k .si{ font-size:15px; }
+.stat .v{ color:#15233E; font-weight:800; font-size:24px; letter-spacing:-.5px; }
+.ch{ background:#F4F7FB !important; border:1px solid rgba(20,40,70,.05) !important; color:#1E2A44 !important; border-radius:14px; box-shadow:none !important; }
+.ch.on{ border-color:#3B82F6 !important; background:#EAF2FE !important; }
+.ch .fr{ background:#FF7AA6; color:#fff; }
+#ticketClose,#soundClose,#summitPanel #stayTop{ background:#EEF2F7 !important; color:#2A3A56 !important; border:1px solid rgba(20,40,70,.06) !important; box-shadow:none !important; }
+#maker .seg button{ background:#EEF2F7 !important; border:1px solid rgba(20,40,70,.08) !important; color:#2A3A56 !important; }
+#maker .seg button.on{ background:linear-gradient(180deg,#3B82F6,#2563EB) !important; border-color:transparent !important; color:#fff !important; }
+#maker .field input[type=text]{ background:#F4F7FB !important; border:1px solid rgba(20,40,70,.1) !important; color:#15233E !important; }
+#maker .wear{ background:#F4F7FB !important; }
+#maker select{ background:#F4F7FB !important; border:1.5px solid rgba(20,40,70,.12) !important; color:#15233E !important; }
+#maker .check{ color:#2A3A56; }
+#summitPanel .slope-btn{ background:#F4F7FB !important; border:1px solid rgba(20,40,70,.06) !important; color:#1E2A44 !important; }
+#summitPanel .slope-btn.on{ border-color:#3B82F6 !important; background:#EAF2FE !important; }
+#summitPanel .slope-btn .d{ color:#7A89A0; }
+#ticket .num,#summitPanel .num,#maker .num{ color:#15233E; }
+/* 인원 — 하단 가운데 고정(초록점 + 명수) · safe-area */
+#gateCard .live{ position:fixed; bottom:calc(22px + env(safe-area-inset-bottom,0px)); left:50%; transform:translateX(-50%); z-index:2; display:inline-flex; align-items:center; gap:7px; background:rgba(22,36,58,.42); border:1px solid rgba(200,224,255,.2); border-radius:999px; padding:7px 15px; font-weight:600; font-size:13px; color:#EAF3FB; box-shadow:0 6px 18px rgba(0,0,0,.28); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); }
+#gateCard .live b{ color:#fff; font-family:inherit; margin:0 1px; }
+#gateCard .dot{ width:5px;height:5px;background:#5BD68A;box-shadow:0 0 6px rgba(91,214,138,.8); }
+/* ═══ 매표소(Ticket Office) 리디자인 ═══ */
+#ticket{ --to-accent:#2B6CB0; --to-tp:#1E2A44; --to-ts:#5D6A84; --to-tt:#56637E; --to-surface:#F3F6FA; --to-tile:#F5F8FB; --to-tilecur:#EEF2F7; --to-divc:#DDE4EE; --to-track:#E1E7EF; --to-crowd:#D9822B; --to-friend:#E0457B; gap:16px !important; padding:16px 18px 18px !important; border-radius:34px !important; }
+#ticket svg{ width:100%; height:100%; display:block; }
+.to-head{ text-align:center; }
+.to-eyebrow{ font-size:11px; font-weight:700; letter-spacing:.16em; color:var(--to-accent); }
+#ticket h2.to-title{ font-size:26px !important; font-weight:700; letter-spacing:-.02em; margin:2px 0 4px; color:var(--to-tp) !important; }
+#ticket .to-sub{ font-size:12px; color:var(--to-ts) !important; margin:0; }
+.to-summary{ display:flex; align-items:center; background:var(--to-surface); border-radius:18px; padding:14px 16px; }
+.to-sum{ flex:1; display:flex; align-items:center; gap:12px; min-width:0; }
+.to-summary .to-div{ width:1px; height:36px; background:var(--to-divc); margin:0 16px; flex:none; }
+.to-sum-ic{ width:40px; height:40px; border-radius:12px; display:flex; align-items:center; justify-content:center; flex:none; padding:9px; }
+.to-sum-tx{ display:flex; flex-direction:column; gap:2px; min-width:0; }
+.to-sum-lb{ font-size:11px; color:var(--to-ts); }
+.to-sum-vl{ font-size:20px; font-weight:700; color:var(--to-tp); line-height:1; }
+.to-sum-vl i{ font-size:12px; font-weight:500; font-style:normal; color:var(--to-ts); margin-left:3px; }
+.to-sum-lift .to-sum-ic{ background:#DCEBFB; color:#2B6CB0; }
+.to-sum-down .to-sum-ic{ background:#FFE9D6; color:#B55A12; }
+.to-tiles{ display:grid; grid-template-columns:repeat(4,1fr); gap:8px; }
+.to-tile{ display:flex; flex-direction:column; align-items:center; gap:6px; padding:12px 4px; border-radius:16px; min-width:0; }
+.to-tile-ic{ width:34px; height:34px; border-radius:50%; display:flex; align-items:center; justify-content:center; padding:8px; flex:none; }
+.to-tile-vl{ font-size:17px; font-weight:700; color:var(--to-tp); white-space:nowrap; max-width:100%; }
+.to-tile-lb{ font-size:11px; color:var(--to-ts); white-space:nowrap; }
+.to-tile-auto{ background:#F6F9F7; } .to-tile-auto .to-tile-ic{ background:#DDF3E6; color:#1E7A4C; }
+.to-tile-fall{ background:#FBF6F7; } .to-tile-fall .to-tile-ic{ background:#FCE1E7; color:#B42346; }
+.to-tile-time{ background:#F6F7FB; } .to-tile-time .to-tile-ic{ background:#E4E6FA; color:#4A4FB0; }
+.to-tile-users{ background:#F5F9FB; } .to-tile-users .to-tile-ic{ background:#D9EEF6; color:#1D6E8F; }
+.to-chhead{ text-align:center; margin-top:4px; }
+.to-sectitle{ font-size:17px; font-weight:700; color:var(--to-tp); }
+.to-sechint{ font-size:12px; color:var(--to-ts); margin-top:2px; }
+.to-chgrid{ display:grid; grid-template-columns:repeat(5,1fr); gap:6px; }
+.to-ch{ position:relative; display:flex; flex-direction:column; align-items:center; gap:5px; padding:10px 2px; border-radius:16px; background:var(--to-tile); border:2px solid transparent; cursor:pointer; -webkit-tap-highlight-color:transparent; transition:background .16s, border-color .16s, box-shadow .16s; }
+.to-ch.cur{ background:var(--to-tilecur); cursor:default; }
+.to-ch.full{ background:var(--to-tilecur); opacity:.7; cursor:not-allowed; }
+.to-ch.sel{ background:#FFFFFF; border-color:var(--to-accent); box-shadow:0 8px 18px rgba(30,60,100,.14); }
+.to-ch-tag{ font-size:10px; font-weight:600; color:var(--to-ts); }
+.to-ch.cur .to-ch-tag{ color:var(--to-accent); }
+.to-ch.crowded .to-ch-tag{ color:var(--to-crowd); }
+.to-ch-n{ font-size:22px; font-weight:700; color:var(--to-tp); line-height:1; }
+.to-bar{ width:36px; height:4px; border-radius:2px; background:var(--to-track); overflow:hidden; }
+.to-bar i{ display:block; height:100%; border-radius:2px; background:var(--to-accent); transition:width .4s ease; }
+.to-ch.crowded .to-bar i, .to-ch.full .to-bar i{ background:var(--to-crowd); }
+.to-ch-c{ font-size:11px; color:var(--to-tt); }
+.to-ch-fr{ position:absolute; top:6px; right:6px; width:8px; height:8px; border-radius:50%; background:var(--to-friend); border:2px solid #fff; }
+.to-legend{ display:flex; align-items:center; justify-content:center; gap:6px; font-size:12px; color:var(--to-ts); }
+.to-legend .dot{ width:8px; height:8px; border-radius:50%; background:var(--to-friend); }
+.to-cta{ display:flex; align-items:center; justify-content:space-between; height:56px; border-radius:28px; background:var(--to-accent); color:#fff; border:0; padding:0 8px 0 22px; cursor:pointer; box-shadow:0 10px 24px rgba(30,60,100,.25); font-size:15px; font-weight:700; }
+.to-cta:disabled{ background:#C9D3E0; box-shadow:none; cursor:default; }
+.to-cta-arrow{ width:44px; height:44px; border-radius:50%; background:rgba(255,255,255,.22); display:flex; align-items:center; justify-content:center; font-size:26px; font-weight:400; line-height:1; flex:none; }
+#ticketClose{ height:44px; background:none !important; border:0 !important; box-shadow:none !important; color:var(--to-tt) !important; font-size:14px; font-weight:600; cursor:pointer; }
+</style>
 </head>
 <body>
 <canvas id="c"></canvas>
 <canvas id="spdfx"></canvas>
-<div id="loading"><div class="bar"><i></i></div><span>스키장 문을 여는 중</span></div>
+<div id="loading"><span></span></div>
 <div id="labels"></div>
 
 <div id="gate" class="screen hidden">
   <div id="gateHead">
-    <span class="tag">ONLINE SKI AREA</span>
-    <h1>스노우라이브 파크</h1>
-    <p class="lead">잠깐 타고 가요</p>
+    <h1>snowlive resort</h1>
   </div>
   <div id="gateCard">
-    <div class="live"><span class="dot"></span><span id="liveLoad"><i class="spin"></i>접속 중…</span><span id="liveReal" hidden>지금 <b id="liveCount">0</b>명이 타고 있어요</span></div>
-    <button id="enterBtn" class="btn primary">입장하기</button>
-    <small>소리를 켜고 들어오면 더 좋아요 · 프로토타입(로그인 없이 체험)</small>
+    <div class="live"><span id="liveLoad"><span class="dot"></span><i class="spin"></i> 접속 중…</span><span id="liveReal" hidden><span class="dot"></span><b id="liveCount">0</b>명</span></div>
+  </div>
+  <!-- 화면 아무 곳이나 눌러 입장 -->
+  <button type="button" class="tap-to-start" id="tapStart" aria-label="입장하기"></button>
+  <div class="tap-hint" aria-hidden="true">
+    <span class="tap-hint__main">화면을 눌러 시작</span>
+    <span class="tap-hint__sub">소리를 켜고 들어오세요</span>
   </div>
 </div>
 
@@ -379,6 +555,7 @@ body.photo-mode #hud, body.photo-mode #social, body.photo-mode #joy, body.photo-
   <p>마음에 들면 그대로 들어가도 돼요</p>
 </div>
 <div id="maker" class="panel hidden">
+  <div id="makerScroll">
   <div><h2>꾸미기</h2><p class="sub">바꿀 때마다 바로 보여요</p></div>
   <div class="field"><label>체형</label><div class="seg" id="segBody"><button data-v="male">남성</button><button data-v="female">여성</button></div></div>
   <div class="field"><label>장비</label><div class="seg" id="segGear"><button data-v="ski">스키</button><button data-v="board">스노보드</button></div></div>
@@ -397,6 +574,7 @@ body.photo-mode #hud, body.photo-mode #social, body.photo-mode #joy, body.photo-
   <div class="field"><label>닉네임</label><input id="nameInput" type="text" maxlength="12" value="스노우라이브닉네임">
     <label class="check"><input id="anonInput" type="checkbox"> 익명으로 보이기</label></div>
   <div class="seg"><button id="rerollBtn">다시 뽑기</button></div>
+  </div>
   <button id="makerDone" class="btn primary" style="height:54px;font-size:16px">이대로 입장</button>
 </div>
 
@@ -407,8 +585,8 @@ body.photo-mode #hud, body.photo-mode #social, body.photo-mode #joy, body.photo-
     <button class="icon-btn" id="sndBtn" aria-label="소리·화면 설정"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H2v6h4l5 4V5z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M19 5a10 10 0 0 1 0 14"/></svg></button>
     <button class="icon-btn" id="exitBtn" aria-label="나가기"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5"/><path d="M21 12H9"/></svg></button>
   </div>
-  <div class="bl"><div id="counters" class="pill"><span class="k">오늘</span><span>리프트 <b class="num" id="cLift">0</b></span><span>하강 <b class="num" id="cRun">0</b></span><span>머문 시간 <b class="num" id="cTime">0</b>분</span></div></div>
-  <div class="br" id="actions"><button class="btn" id="waveBtn">손 흔들기</button><button class="btn" id="sitBtn">앉기</button></div>
+  <div class="bl"><div id="counters" class="pill"><span>리프트 <b class="num" id="cLift">0</b></span><span>하강 <b class="num" id="cRun">0</b></span><span><b class="num" id="cTime">0</b>분</span></div></div>
+  <div class="br" id="actions"><button class="actbtn" id="waveBtn">인사</button><button class="actbtn" id="sitBtn">앉기</button></div>
 </div>
 
 <div id="social" class="hidden">
@@ -462,14 +640,23 @@ body.photo-mode #hud, body.photo-mode #social, body.photo-mode #joy, body.photo-
 </div>
 
 <div id="ticket" class="panel hidden">
-  <div><h2>매표소</h2><p class="sub">온라인 스키장 기록 · 실제 라이딩 기록과는 별개예요</p></div>
-  <div class="stat-grid" id="statGrid"></div>
-  <div><p class="sub" style="margin-bottom:8px">채널 이동</p><div id="chList" style="display:flex;flex-direction:column;gap:6px"></div></div>
-  <button class="btn ghost" id="ticketClose">닫기</button>
+  <div class="to-head">
+    <div class="to-eyebrow">TICKET OFFICE</div>
+    <h2 class="to-title">매표소</h2>
+    <p class="sub to-sub">온라인 슬로프 기록 · 실제 라이딩 기록과는 별개예요</p>
+  </div>
+  <div class="to-summary" id="toSummary"></div>
+  <div class="to-tiles" id="toTiles"></div>
+  <div class="to-chhead"><div class="to-sectitle">채널 이동</div><div class="to-sechint">채널당 최대 60명</div></div>
+  <div class="to-chgrid" id="toChGrid"></div>
+  <div class="to-legend hidden" id="toLegend"><span class="dot"></span>친구가 있는 채널</div>
+  <button class="to-cta" id="toCta" type="button"><span class="to-cta-label"></span><span class="to-cta-arrow">›</span></button>
+  <button id="ticketClose" type="button">닫기</button>
 </div>
 
 <div id="soundP" class="panel hidden">
-  <div><h2>소리 · 화면</h2><p class="sub">볼륨은 따로 조절할 수 있어요</p></div>
+  <div><h2>소리 · 화면</h2><p class="sub">소리는 기본적으로 꺼져 있어요</p></div>
+  <button class="btn" id="muteToggle" style="justify-content:center">소리 켜기</button>
   <div class="slider"><span>BGM</span><input type="range" min="0" max="1" step="0.05" value="0.5" id="vBgm"></div>
   <div class="slider"><span>환경음</span><input type="range" min="0" max="1" step="0.05" value="0.8" id="vAmb"></div>
   <div class="slider"><span>효과음</span><input type="range" min="0" max="1" step="0.05" value="0.8" id="vSfx"></div>
@@ -497,6 +684,8 @@ body.photo-mode #hud, body.photo-mode #social, body.photo-mode #joy, body.photo-
 </div>
 
 <div id="joy" class="hidden" aria-label="이동 조이스틱"><div id="joyKnob"></div></div>
+<button id="jumpBtn" class="hidden" aria-label="점프">점프</button>
+<button id="dressBtn" class="hidden" aria-label="꾸미기">꾸미기</button>
 <div id="imgModal" class="modal hidden"><div class="box">
   <h2 id="imgTitle">사진</h2>
   <img id="imgView" alt="저장할 이미지">
@@ -571,7 +760,7 @@ const PEAKS = [
 ];
 const PEAK = Object.fromEntries(PEAKS.map((p) => [p.id, p]));
 const TOP_Y = 420;   // 가장 높은 봉우리 높이(소리 등)
-const PEAK_CAP = 0.04, PEAK_PW = 1.6;
+const PEAK_CAP = 0.06, PEAK_PW = 1.6;   // 꼭대기 평평한 구간 비율(정상 평탄화, 코스 출발점은 침범 안 하게)
 function peakH(p, x, z) {
   // 오목한 산(실제 산처럼): 꼭대기는 둥글게 넘어간 뒤 위쪽이 가장 가파르고(코스 최대 약 30~45°), 베이스 쪽으로 갈수록 완만해요
   const dx = (x - p.x) / p.rx, dz = (z - p.z) / (z > p.z ? p.rz : p.rz * 0.35), u = Math.sqrt(dx * dx + dz * dz);
@@ -660,7 +849,7 @@ function trailW(t, z) { return t.wTop ? t.wTop + (t.w - t.wTop) * clamp((z - t.z
    - 카빙: 스키/보드 사이드컷 반경(R)보다 크게 도는 턴은 엣지로 깎아 돌아 속도를 거의 안 잃어요
    - 스키딩: 그보다 급하게 돌면 판이 미끄러지며 속도를 깎아요(스피드 컨트롤)
    - 몸은 원심력과 균형이 맞도록 턴 안쪽으로 기울어요(tanθ = v·ω / g) */
-const SKI = { G: 9.8, drag: 0.0045, tuckDrag: 0.0028, mu: 0.04, rSki: 9, rBoard: 7.5, wCap: 1.9 };
+const SKI = { G: 9.8, gravK: 0.75, skate: 4.0, skateK: 2.4, drag: 0.0045, tuckDrag: 0.0028, mu: 0.04, rSki: 9, rBoard: 7.5, wCap: 1.9 };
 function trailDir(t, z) { const a = Math.min(0, z), b = Math.min(0, z + 4); return Math.atan2(trailX(t, b) - trailX(t, a), 4); }
 function carveInit(t, z, x, v) { return { x: x, z: z, h: trailDir(t, z), v: v || 4, ph: Math.random() * 6.28, A: t.turnA, roll: 0, turn: 0, skid: 0, plantT: 0, plantSide: 1, lastSide: 0, hop: 0 }; }
 function plantTick(c, dt) {
@@ -680,7 +869,9 @@ function skiPhysics(c, dt, steer, brake, tuck, gear, check) {
   const e = 0.4, gx = (skiGround(c.x + e, c.z) - skiGround(c.x - e, c.z)) / (2 * e), gz = (skiGround(c.x, c.z + e) - skiGround(c.x, c.z - e)) / (2 * e);
   const grade = -(gx * Math.sin(c.h) + gz * Math.cos(c.h)), sinS = grade / Math.sqrt(1 + grade * grade);
   if (c.air) skid = 0;   // 공중: 경사 가속·눈 마찰·엣지가 없어요(공기 저항만)
-  let a = c.air ? -SKI.drag * c.v * c.v : SKI.G * sinS - SKI.mu * SKI.G - (tuck ? SKI.tuckDrag : SKI.drag) * c.v * c.v - skid * (3 + 0.45 * c.v) - (brake ? 7 : 0);
+  let a = c.air ? -SKI.drag * c.v * c.v : SKI.G * SKI.gravK * sinS - SKI.mu * SKI.G - (tuck ? SKI.tuckDrag : SKI.drag) * c.v * c.v - skid * (3 + 0.45 * c.v) - (brake ? 7 : 0);
+  // 평지·저속에서 스케이팅으로 살살 밀어 완전히 멈추지 않아요(경사를 거슬러 올라도 다시 움직일 수 있어요)
+  if (!c.air && !brake && c.v < SKI.skate) a += (SKI.skate - c.v) * SKI.skateK;   // 스케이팅 추진: 평지 이동·완경사 거슬러 오르기 가능(위로 갈수록 느려져요)
   if (check && c.v > check) { a -= (c.v - check) * 0.8; skid = Math.max(skid, Math.min(0.6, (c.v - check) * 0.15)); }
   if (brake) skid = Math.max(skid, 0.8);
   c.v = Math.max(0, c.v + a * dt);
@@ -755,8 +946,8 @@ function standH(x, z, base) { let y = base; for (const q of PLATFORMS) if (Math.
 /* ───────────── 렌더러 · 장면 ───────────── */
 const IS_TOUCH = (window.matchMedia && matchMedia('(pointer: coarse)').matches) || ('ontouchstart' in window);
 const canvas = $('#c');
-const renderer = new THREE.WebGLRenderer({ canvas, antialias: !IS_TOUCH, preserveDrawingBuffer: true });
-const DPR = Math.min(window.devicePixelRatio || 1, IS_TOUCH ? 1.25 : 1.75);
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, preserveDrawingBuffer: true });
+const DPR = Math.min(window.devicePixelRatio || 1, 2);   // 모바일도 선명하게(도트/계단현상 제거): 디바이스 픽셀비율을 최대 2배까지
 renderer.setPixelRatio(DPR);
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
@@ -989,7 +1180,7 @@ TRAILS.forEach((t, ti) => {
   // 진행 방향에 수직으로 폭을 잡아요(가로지르는 구간도 폭이 그대로). 많이 꺾이는 곳은 촘촘히
   let arc = 0, pc = null;
   for (let z = 6; z >= t.zt - 1;) {
-    const sl = trailSlope(t, z), nn = Math.sqrt(1 + sl * sl), c = trailX(t, Math.min(0, z)), off = 0.08 + ti * 0.012;   // 코스가 겹치는 곳에서 깜빡이지 않게 층을 나눠요
+    const sl = trailSlope(t, z), nn = Math.sqrt(1 + sl * sl), c = trailX(t, Math.min(0, z)), off = 0.05 + ti * 0.01;   // 코스가 겹치는 곳에서 깜빡이지 않게 층을 나눠요(가장자리 단차 최소화)
     const hw = trailW(t, z) / 2, px = hw / nn, pz = -sl * hw / nn;
     const cy = groundH(c, z); if (pc) arc += Math.hypot(c - pc[0], z - pc[1], cy - pc[2]); pc = [c, z, cy];
     pts.push(c - px, groundH(c - px, z - pz) + off, z - pz, c + px, groundH(c + px, z + pz) + off, z + pz);
@@ -1342,8 +1533,8 @@ function cableTowers(x0, z0, x1, z1, every, hSt, hTw) {
   }
   const yAt = (t) => { const [x, z] = P(t); return groundH(x, z) + (t <= 0 || t >= 1 ? hSt : hTw); };
   for (let it = 0; it < 40; it++) {   // 케이블이 지면 위 8m보다 낮아지는 곳(봉우리 사이 능선 등)에 타워를 더해요
-    const all = [0].concat(ts.sort((a, b) => a - b), [1]); let worst = null, wv = 8;
-    for (let i = 1; i < all.length; i++) { const a = all[i - 1], b = all[i], ya = yAt(a), yb = yAt(b); for (let k = 1; k < 16; k++) { const t = a + (b - a) * k / 16, y = ya + (yb - ya) * k / 16, [x, z] = P(t), c = y - groundH(x, z); if (c < wv) { wv = c; worst = t; } } }
+    const all = [0].concat(ts.sort((a, b) => a - b), [1]); let worst = null, wv = 10;
+    for (let i = 1; i < all.length; i++) { const a = all[i - 1], b = all[i], ya = yAt(a), yb = yAt(b); for (let k = 1; k < 16; k++) { const t = a + (b - a) * k / 16; if (Math.min(t, 1 - t) * Ln < 18) continue; /* 터미널 근처는 승강장 지붕 아래로 낮게 지나가게(여기선 타워 추가 금지) */ const y = ya + (yb - ya) * k / 16, [x, z] = P(t), c = y - groundH(x, z); if (c < wv) { wv = c; worst = t; } } }
     if (worst == null) break; ts.push(worst);
   }
   return ts.sort((a, b) => a - b);
@@ -1365,7 +1556,7 @@ function instParts(parts, n) {
 }
 const _m4 = new THREE.Matrix4();
 function syncParts(P, list) { P.forEach((p) => { list.forEach((g, i) => { _m4.makeTranslation(g.position.x + p.o.x, g.position.y + p.o.y, g.position.z + p.o.z); p.im.setMatrixAt(i, _m4); }); p.im.instanceMatrix.needsUpdate = true; }); }
-const LIFT_ST_H = 4.0;   // 승·하차장에서 케이블 높이: 의자가 무릎 높이로 낮게 지나가요
+const LIFT_ST_H = 5.5;   // 승·하차장에서 케이블 높이: 의자가 지면에 닿지 않게 살짝 높게(스키가 눈을 안 뚫어요)
 /* 리프트 승·하차장(실제 체어리프트 터미널처럼): 아치형 지붕 아래 큰 회전 바퀴(불휠) · 정면 안내판(리프트 이름·난이도·연결 코스)
    · 승차장: 줄 서는 통로(안전망) · 노란 볼라드 · 운영자 부스 · 개찰구 / 하차장: 내려서 미끄러져 나가는 하차 램프 */
 const ARCH_GEO = (() => { const g = new THREE.CylinderGeometry(5.8, 5.8, 14, 22, 1, true, -Math.PI / 2, Math.PI); g.rotateX(-Math.PI / 2); return g; })();
@@ -1418,7 +1609,7 @@ function liftTerminal(d, x, z, top) {
   }
   return g;
 }
-const CHAIR_SLOTS = [-2.4, -0.8, 0.8, 2.4];     // 4인 체어 좌석 x좌표
+const CHAIR_SLOTS = [-1.18, -0.4, 0.4, 1.18];     // 4인 체어 좌석 x좌표(캐릭터 폭에 맞게 좁힘)
 const SEAT_Y = -3.025 + 0.15 - HIP, SEAT_Z = 0.32;   // 좌석 윗면(-3.025) 위로 엉덩이 두께만큼 · 등받이 쪽으로 깊이 앉아요
 function makeChairLift(d) {
   const ts = cableTowers(d.x0, d.z0, d.x1, d.z1, 92, LIFT_ST_H, 12.5);
@@ -1435,9 +1626,9 @@ function makeChairLift(d) {
   FAC.push({ id: 'lift:' + d.id, label: d.name + ' 승차장', x: qx, z: d.z0 + 18, r: 10, action: '줄 서기' });
   // 의자(인스턴스)
   const back = new THREE.Color(d.color).multiplyScalar(0.82).getStyle();
-  const P = instParts([[0.22, 3.2, 0.22, '#26313C', 0, -1.6, 0], [5.2, 0.16, 0.16, '#26313C', 0, 0, 0], [5.2, 0.35, 1.6, d.color, 0, -3.2, 0], [5.2, 1.6, 0.25, back, 0, -2.4, 0.85],
-    [0.16, 0.16, 1.6, '#26313C', -2.6, -2.25, 0.05], [0.16, 0.16, 1.6, '#26313C', 2.6, -2.25, 0.05], [0.16, 1, 0.16, '#26313C', -2.6, -2.75, -0.7], [0.16, 1, 0.16, '#26313C', 2.6, -2.75, -0.7],
-    [5.4, 0.18, 0.18, back, 0, -2.0, -1.25], [5.6, 0.2, 0.7, '#2B3A49', 0, -3.85, -1.45], [0.16, 0.9, 0.16, '#2B3A49', -2.5, -3.4, -1.25], [0.16, 0.9, 0.16, '#2B3A49', 2.5, -3.4, -1.25]], count);
+  const P = instParts([[0.2, 3.2, 0.2, '#26313C', 0, -1.6, 0], [3.3, 0.16, 0.16, '#26313C', 0, 0, 0], [3.3, 0.32, 1.5, d.color, 0, -3.2, 0], [3.3, 1.4, 0.22, back, 0, -2.5, 0.78],
+    [0.15, 0.15, 1.5, '#26313C', -1.65, -2.3, 0.05], [0.15, 0.15, 1.5, '#26313C', 1.65, -2.3, 0.05], [0.15, 0.9, 0.15, '#26313C', -1.65, -2.8, -0.65], [0.15, 0.9, 0.15, '#26313C', 1.65, -2.8, -0.65],
+    [3.5, 0.16, 0.16, back, 0, -2.78, -1.15], [3.6, 0.18, 0.62, '#2B3A49', 0, -3.5, -0.62], [0.14, 0.34, 0.14, '#2B3A49', -1.6, -3.44, -0.6], [0.14, 0.34, 0.14, '#2B3A49', 1.6, -3.44, -0.6]], count);
   const chairs = [];
   for (let i = 0; i < count; i++) { const g = new THREE.Group(); scene.add(g); chairs.push({ g, i, s: (i * spacing) % (2 * len), riders: [] }); }
   const seats = CHAIR_SLOTS.map((x) => ({ x, y: SEAT_Y, z: SEAT_Z, ry: Math.PI }));
@@ -2762,19 +2953,20 @@ const S = {
   ch: 3, chCount: 47, live: 1,
   slope: 1, skiMode: 'auto',
   queue: 0, chair: null, companion: null, companions: [],
-  ski: null, sitting: false, tod: 'real'
+  ski: null, sitting: false, tod: 'sunset'   // 시작 화면 배경은 노을
 };
 const keys = {};
 const touch = { l: false, r: false };
 
 /* ───────────── 사운드(Web Audio 합성) ───────────── */
 const SND = {
-  ctx: null, vol: { bgm: 0.5, amb: 0.8, sfx: 0.8 },
+  ctx: null, muted: true, vol: { bgm: 0.5, amb: 0.8, sfx: 0.8 },   // 기본 음소거 — 사용자가 켤 때만 소리가 나요
+  setMuted(m) { this.muted = m; if (this.master) this.master.gain.value = m ? 0 : 0.9; },
   init() {
     if (this.ctx) { if (this.ctx.state === 'suspended') this.ctx.resume(); return; }
     const AC = window.AudioContext || window.webkitAudioContext; if (!AC) return;
     const ctx = this.ctx = new AC();
-    this.master = ctx.createGain(); this.master.gain.value = 0.9; this.master.connect(ctx.destination);
+    this.master = ctx.createGain(); this.master.gain.value = this.muted ? 0 : 0.9; this.master.connect(ctx.destination);
     this.bgmG = ctx.createGain(); this.ambG = ctx.createGain(); this.sfxG = ctx.createGain();
     [this.bgmG, this.ambG, this.sfxG].forEach((g) => g.connect(this.master));
     this.apply();
@@ -2789,6 +2981,19 @@ const SND = {
     const hp = ctx.createBiquadFilter(); hp.type = 'highpass'; hp.frequency.value = 1400;
     this.swG = ctx.createGain(); this.swG.gain.value = 0;
     sw.connect(hp); hp.connect(this.swG); this.swG.connect(this.ambG); sw.start();
+    // 리프트 모터 험(올라가는 동안): 저역 럼블 + 낮은 삼각파
+    const lift = ctx.createBufferSource(); lift.buffer = buf; lift.loop = true;
+    const llp = ctx.createBiquadFilter(); llp.type = 'lowpass'; llp.frequency.value = 170; llp.Q.value = 5;
+    this.liftG = ctx.createGain(); this.liftG.gain.value = 0;
+    lift.connect(llp); llp.connect(this.liftG); this.liftG.connect(this.ambG); lift.start();
+    const hum = ctx.createOscillator(); hum.type = 'triangle'; hum.frequency.value = 72;
+    this.liftHumG = ctx.createGain(); this.liftHumG.gain.value = 0;
+    hum.connect(this.liftHumG); this.liftHumG.connect(this.ambG); hum.start();
+    // 스케이팅/활주 눈 긁힘 소리
+    const sk = ctx.createBufferSource(); sk.buffer = buf; sk.loop = true;
+    const sbp = ctx.createBiquadFilter(); sbp.type = 'bandpass'; sbp.frequency.value = 640; sbp.Q.value = 0.8;
+    this.skateG = ctx.createGain(); this.skateG.gain.value = 0;
+    sk.connect(sbp); sbp.connect(this.skateG); this.skateG.connect(this.ambG); sk.start();
     const chords = [[261.6, 329.6, 392, 493.9], [220, 261.6, 329.6, 392], [174.6, 220, 261.6, 329.6], [196, 246.9, 293.7, 370]];
     let ci = 0;
     const play = () => {
@@ -2830,11 +3035,14 @@ const SND = {
   sip() { this.noiseSweep('bandpass', 2600, 900, 0.22, 0.42); this.noiseSweep('bandpass', 2200, 800, 0.16, 0.36, 0.5); },
   clink() { this.tone(2093, 0.06, 0.4, this.sfxG, 'sine'); this.tone(3136, 0.03, 0.3, this.sfxG, 'sine', 0.01); },
   setSwoosh(v) { if (this.swG) this.swG.gain.value = v; },
-  setWind(v) { if (this.windG) this.windG.gain.value = v; }
+  setWind(v) { if (this.windG) this.windG.gain.value = v; },
+  setLift(v) { if (this.liftG) { this.liftG.gain.value = v * 0.13; this.liftHumG.gain.value = v * 0.05; } },
+  setSkate(v) { if (this.skateG) this.skateG.gain.value = v; }
 };
 
 /* ───────────── UI 헬퍼 ───────────── */
-function show(el, on) { (typeof el === 'string' ? $(el) : el).classList.toggle('hidden', !on); }
+function syncModal() { const t = $('#ticket'), s = $('#soundP'); if (t && s) document.body.classList.toggle('modal-open', !t.classList.contains('hidden') || !s.classList.contains('hidden')); }
+function show(el, on) { (typeof el === 'string' ? $(el) : el).classList.toggle('hidden', !on); syncModal(); }
 function toast(msg) {
   const d = document.createElement('div'); d.className = 'toast'; d.textContent = msg; $('#toasts').appendChild(d);
   setTimeout(() => d.remove(), 2600);
@@ -2879,7 +3087,7 @@ function buildWear() {
 buildWear(); buildSwatches('#swCap', CAPS, 'cap'); buildSwatches('#swSkin', SKINS, 'skin');
 buildSwatches('#swLens', LENSES, 'lens'); buildSwatches('#swNeck', NECKS, 'neck'); buildSwatches('#swGlove', GLOVES, 'glove');
 [...$('#segHat').children].forEach((b) => b.onclick = () => { me.opts.hat = b.dataset.v; setColors(me.c, me.opts); syncMaker(); });
-[...$('#segBody').children].forEach((b) => b.onclick = () => { me.opts.body = b.dataset.v; setColors(me.c, me.opts); syncMaker(); });
+[...$('#segBody').children].forEach((b) => b.onclick = () => { me.opts.body = b.dataset.v; S.bodyEdited = true; setColors(me.c, me.opts); syncMaker(); });
 [...$('#segGear').children].forEach((b) => b.onclick = () => { me.opts.gear = b.dataset.v; S.gearEdited = true; setGear(me.c, me.opts.gear); buildWear(); syncMaker(); });
 $('#rerollBtn').onclick = () => { const r = randOpts(); ['body', 'jacket', 'accent', 'pants', 'skiFit', 'bJacket', 'bAccent', 'bPants', 'boardFit', 'cap', 'skin', 'hat', 'lens', 'neck', 'glove'].forEach((k) => { me.opts[k] = r[k]; }); setColors(me.c, me.opts); syncMaker(); SND.blip(); };
 $('#nameInput').oninput = (e) => { me.opts.name = e.target.value.trim(); S.nameEdited = true; };
@@ -2887,6 +3095,7 @@ $('#anonInput').onchange = (e) => { me.opts.anon = e.target.checked; };
 
 /* ───────────── 모드 전환 ───────────── */
 function setMode(m) {
+  const prev = S.mode;
   if (S.photo && !['base', 'summit'].includes(m)) closePhoto();
   if (m !== 'base' && m !== 'summit') { if (S.seat) S.seat.by = null; S.seat = null; S.sitting = false; if (S.bus) { S.bus = null; } }
   S.mode = m;
@@ -2900,10 +3109,14 @@ function setMode(m) {
   show('#sitBtn', m === 'base' || m === 'summit');
   show('#viewBtn', ['base', 'summit', 'queue', 'lift', 'ski'].includes(m));
   show('#joy', IS_TOUCH && (m === 'base' || m === 'summit' || m === 'ski'));
+  $('#joy').classList.toggle('joy-right', m === 'ski');   // 라이딩 중엔 조이스틱을 우측으로
+  show('#jumpBtn', IS_TOUCH && m === 'ski');              // 점프 버튼은 좌측(라이딩 중)
+  show('#dressBtn', false);                               // 모드 바뀌면 꾸미기 버튼 숨겨요
   if (S.look) { S.look.yaw = 0; }
   show('#social', ['base', 'summit', 'queue', 'lift'].includes(m));  // 이모트·채팅 바
   if (!['base', 'summit', 'queue', 'lift'].includes(m)) socialOpen(false);
-  const ctx = camCtx(m); if (ctx !== S.ctx) { if (S.ctx) cut(); S.ctx = ctx; }
+  // 정상→슬로프는 흰 페이드·카메라 하드컷 없이 자연스럽게 이어져요(맵 이동 느낌 제거)
+  const ctx = camCtx(m); if (ctx !== S.ctx) { const seamless = prev === 'summit' && m === 'ski'; if (S.ctx && !seamless) cut(); S.ctx = ctx; }
   me.c.root.visible = m !== 'lodge' && m !== 'gate';
 }
 function leaveChair() {
@@ -2921,14 +3134,48 @@ function goBase(at) {
 }
 
 /* 게이트 */
-$('#enterBtn').onclick = () => { SND.init(); SND.blip(); setMode('maker'); syncMaker(); me.pos.set(0, 0, 196); me.yaw = 0; };
+function saveLocalAvatar() { try { localStorage.setItem('resort_avatar', JSON.stringify(me.opts)); localStorage.setItem('resort_customized', '1'); } catch (e) {} }
+function loadLocalAvatar() {
+  try {
+    if (localStorage.getItem('resort_customized') !== '1') return false;
+    const a = JSON.parse(localStorage.getItem('resort_avatar') || 'null'); if (!a) return false;
+    Object.assign(me.opts, a); S.avatarLoaded = true; if (a.gear) S.gearEdited = true; if (a.body) S.bodyEdited = true;
+    setColors(me.c, me.opts); setGear(me.c, me.opts.gear);
+    const ni = $('#nameInput'); if (ni && a.name) ni.value = a.name;
+    return true;
+  } catch (e) { return false; }
+}
+// 입장: 전에 꾸민 적 있으면 저장한 모습으로 바로 입장(꾸미기는 최초 1회만). 처음이면 꾸미기 화면.
+let _entering = false;
+function enterGame() {
+  if (_entering) return; _entering = true;   // 연타해도 1회만
+  const tap = $('.tap-to-start'); if (tap) { tap.disabled = true; tap.setAttribute('aria-busy', 'true'); }
+  const hint = $('.tap-hint'); if (hint) { const mn = hint.querySelector('.tap-hint__main'); if (mn) { mn.textContent = '불러오는 중…'; mn.style.animation = 'none'; } hint.style.transition = 'opacity .3s'; hint.style.opacity = '0'; }
+  SND.init(); SND.blip(); me.pos.set(0, 0, 196); me.yaw = 0;
+  if (loadLocalAvatar()) {
+    if (!S.stats.start) S.stats.start = performance.now();
+    goBase(new THREE.Vector3(0, 0, 120)); me.yaw = Math.PI;
+    toast('스노우라이브 파크에 다시 오신 걸 환영해요');
+    setTimeout(() => toast('내 캐릭터를 톡 누르면 꾸미기를 열 수 있어요'), 2600);
+  } else {
+    setMode('maker'); syncMaker();
+  }
+}
+(function tapToStart() {
+  const tap = $('#tapStart'); if (!tap) return;
+  tap.addEventListener('click', enterGame);
+  // 데스크톱이면 안내 문구를 '클릭하여 시작'으로
+  if (matchMedia('(hover:hover) and (pointer:fine)').matches) { const mn = document.querySelector('.tap-hint__main'); if (mn) mn.textContent = '클릭하여 시작'; }
+  // 소리가 이미 켜져 있으면 보조 문구 숨김
+  if (!SND.muted) { const sb = document.querySelector('.tap-hint__sub'); if (sb) sb.style.display = 'none'; }
+})();
 $('#makerDone').onclick = () => {
   me.opts.name = $('#nameInput').value.trim() || '스노우라이브닉네임';
-  NET.saveAvatar();
+  NET.saveAvatar(); saveLocalAvatar();
   SND.chime();
   if (S.makerFrom) { goBase(S.makerFrom); S.makerFrom = null; toast('새 모습으로 갈아입었어요'); return; }
   if (!S.stats.start) S.stats.start = performance.now();
-  goBase(new THREE.Vector3(0, 0, 150)); me.yaw = Math.PI;
+  goBase(new THREE.Vector3(0, 0, 120)); me.yaw = Math.PI;
   toast('스노우라이브 파크에 오신 걸 환영해요');
   setTimeout(() => toast(IS_TOUCH ? '조이스틱으로 이동·방향 전환 · 화면을 끌어 둘러보기 · 오른쪽 위 버튼으로 1인칭/3인칭' : 'W/↑ 앞으로 · A D/← → 방향 전환 · 드래그로 둘러보기 · V로 1인칭/3인칭'), 2400);
   setTimeout(() => toast('리프트 승강장은 오른쪽이에요'), 5600);
@@ -2937,9 +3184,18 @@ $('#makerDone').onclick = () => {
 
 /* HUD 버튼 */
 $('#viewBtn').onclick = () => setView(S.view === 'fp' ? 'tp' : 'fp');
+$('#dressBtn').onclick = () => { show('#dressBtn', false); S.makerFrom = me.pos.clone(); setMode('maker'); syncMaker(); SND.blip(); };
 $('#sndBtn').onclick = () => { const on = $('#soundP').classList.contains('hidden'); show('#soundP', on); show('#ticket', false); };
 $('#soundClose').onclick = () => show('#soundP', false);
+function refreshMuteUI() {
+  const m = SND.muted;
+  $('#muteToggle').textContent = m ? '소리 켜기' : '소리 끄기';
+  $('#sndBtn').classList.toggle('muted', m);
+}
+$('#muteToggle').onclick = () => { SND.init(); SND.setMuted(!SND.muted); if (!SND.muted) SND.blip(); refreshMuteUI(); };
+refreshMuteUI();
 ['bgm', 'amb', 'sfx'].forEach((k) => { $('#v' + k[0].toUpperCase() + k.slice(1)).oninput = (e) => { SND.vol[k] = +e.target.value; SND.apply(); }; });
+$('#todSel').value = S.tod;   // 드롭다운도 현재 시간대(노을) 반영
 $('#todSel').onchange = (e) => { S.tod = e.target.value; };
 $('#chPill').onclick = () => openTicket();
 $('#exitBtn').onclick = () => openCard();
@@ -2949,7 +3205,7 @@ function nearSeat(r) { let best = null, bd = r; SEATS.forEach((st) => { if (st.b
 function sitOn(st) {
   if (!st || (st.by && st.by !== me)) { toast('다른 사람이 앉아 있어요'); return; }
   if (S.seat) S.seat.by = null;
-  S.seat = st; st.by = me; S.sitting = true; me.target = null; $('#sitBtn').textContent = '일어나기';
+  S.seat = st; st.by = me; S.sitting = true; me.target = null; $('#sitBtn').textContent = '일어서기';
 }
 function standUp() {
   const st = S.seat; S.sitting = false; $('#sitBtn').textContent = '앉기';
@@ -2960,7 +3216,7 @@ $('#sitBtn').onclick = () => {
   if ((S.mode !== 'base' && S.mode !== 'summit') || S.bus) return;
   if (S.seat || S.sitting) { standUp(); return; }
   const st = nearSeat(3); if (st) { sitOn(st); return; }
-  S.sitting = true; me.target = null; $('#sitBtn').textContent = '일어나기';   // 근처에 자리가 없으면 눈 위에 앉아요
+  S.sitting = true; me.target = null; $('#sitBtn').textContent = '일어서기';   // 근처에 자리가 없으면 눈 위에 앉아요
 };
 /* 장비 거치대: 걸어 두면 부츠만 신고 다녀요(리프트는 장비를 챙겨야 탈 수 있어요) */
 function rackPut(rk) {
@@ -3069,22 +3325,69 @@ function wave() {
   }
 }
 
-/* 매표소 */
+/* 매표소 — 모던 카드형(통계 요약 + 채널 이동). 기존 데이터·채널 이동 로직 그대로 재사용 */
+const TO_ICON = {
+  lift: '<path d="M10 3h.01"/><path d="M14 2h.01"/><path d="m2 9 20-5"/><path d="M12 12V6.5"/><rect width="16" height="10" x="4" y="12" rx="3"/><path d="M9 12v5"/><path d="M15 12v5"/><path d="M4 17h16"/>',
+  down: '<path d="M22 17 13.5 8.5 8.5 13.5 2 7"/><path d="M16 17h6v-6"/>',
+  auto: '<path d="m17 2 4 4-4 4"/><path d="M3 11v-1a4 4 0 0 1 4-4h14"/><path d="m7 22-4-4 4-4"/><path d="M21 13v1a4 4 0 0 1-4 4H3"/>',
+  fall: '<path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/>',
+  time: '<line x1="10" x2="14" y1="2" y2="2"/><line x1="12" x2="15" y1="14" y2="11"/><circle cx="12" cy="14" r="8"/>',
+  users: '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>'
+};
+const toSvg = (k) => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' + TO_ICON[k] + '</svg>';
+const toSum = (k, label, val, unit) => '<div class="to-sum to-sum-' + k + '"><span class="to-sum-ic">' + toSvg(k) + '</span><span class="to-sum-tx"><span class="to-sum-lb">' + label + '</span><span class="to-sum-vl">' + val + '<i>' + unit + '</i></span></span></div>';
+const toTile = (k, val, label) => '<div class="to-tile to-tile-' + k + '"><span class="to-tile-ic">' + toSvg(k) + '</span><span class="to-tile-vl">' + val + '</span><span class="to-tile-lb">' + label + '</span></div>';
+const toChannels = () => [[1, 60, false], [2, 31, true], [3, S.chCount, false], [4, 12, false], [5, 6, false]];
+let toSelected = null;
+
 function openTicket() {
   hideAllPanels(); show('#ticket', true);
   const st = S.stats;
   const mins = st.start ? Math.floor((performance.now() - st.start) / 60000) : 0;
-  $('#statGrid').innerHTML = [['리프트', st.lift], ['하강', st.runs], ['자동 / 직접', st.auto + ' / ' + st.manual], ['넘어짐', st.falls], ['머문 시간', mins + '분'], ['같이 탄 사람', st.companions.size + '명']]
-    .map(([k, v]) => '<div class="stat"><div class="k">' + k + '</div><div class="v">' + v + '</div></div>').join('');
-  const chs = [[1, 60, false], [2, 31, true], [3, S.chCount, false], [4, 12, false], [5, 6, false]];
-  $('#chList').innerHTML = '';
-  chs.forEach(([n, c, fr]) => {
-    const b = document.createElement('button'); b.className = 'ch' + (n === S.ch ? ' on' : '');
-    b.innerHTML = '<span>' + n + '번 채널' + (fr ? '<span class="fr">친구 1명</span>' : '') + '</span><span>' + (c >= 60 ? '꽉 찼어요' : c + '/60명') + '</span>';
-    if (c >= 60) b.disabled = true;
-    b.onclick = () => { if (n === S.ch) return; S.ch = n; S.chCount = c + 1; $('#chText').textContent = n + '번 채널 · ' + S.chCount + '/60명'; bots.forEach((x) => x.name = pick(NAMES)); toast(n + '번 채널로 이동했어요'); openTicket(); };
-    $('#chList').appendChild(b);
-  });
+  const timeStr = mins >= 60 ? Math.floor(mins / 60) + 'h ' + (mins % 60) + 'm' : mins + '분';
+  $('#toSummary').innerHTML = toSum('lift', '리프트', st.lift, '회') + '<div class="to-div"></div>' + toSum('down', '하강', st.runs, '런');
+  $('#toTiles').innerHTML = toTile('auto', st.auto + ' / ' + st.manual, '자동/직접') + toTile('fall', st.falls, '넘어짐') + toTile('time', timeStr, '머문 시간') + toTile('users', st.companions.size + '명', '같이 탄 사람');
+  toSelected = null;
+  renderChannels();
+}
+function renderChannels() {
+  const MAX = 60, chs = toChannels(), anyFriend = chs.some((c) => c[2]);
+  if (toSelected == null || toSelected === S.ch) {
+    const avail = chs.filter((c) => c[0] !== S.ch && c[1] < MAX);
+    const fr = avail.find((c) => c[2]);
+    const p = fr || avail.slice().sort((a, b) => a[1] - b[1])[0];
+    toSelected = p ? p[0] : null;
+  }
+  $('#toChGrid').innerHTML = chs.map(([n, c, fr]) => {
+    const cur = n === S.ch, full = c >= MAX, crowded = c / MAX >= 0.75;
+    const tag = cur ? '현재' : (full ? '만원' : (crowded ? '혼잡' : '채널'));
+    let cls = 'to-ch';
+    if (cur) cls += ' cur'; else if (full) cls += ' full'; else if (n === toSelected) cls += ' sel';
+    if (crowded && !cur && !full) cls += ' crowded';
+    const pct = Math.min(100, Math.round(c / MAX * 100));
+    return '<button type="button" class="' + cls + '" data-n="' + n + '"' + ((cur || full) ? ' disabled' : '')
+      + ' aria-label="' + n + '번 채널, ' + c + '명' + (fr ? ', 친구 있음' : '') + (cur ? ', 현재 채널' : '') + '">'
+      + (fr ? '<span class="to-ch-fr"></span>' : '')
+      + '<span class="to-ch-tag">' + tag + '</span><span class="to-ch-n">' + n + '</span>'
+      + '<span class="to-bar"><i style="width:' + pct + '%"></i></span>'
+      + '<span class="to-ch-c">' + c + '/' + MAX + '</span></button>';
+  }).join('');
+  $('#toChGrid').querySelectorAll('.to-ch:not([disabled])').forEach((b) => { b.onclick = () => { toSelected = +b.dataset.n; renderChannels(); }; });
+  show('#toLegend', anyFriend);
+  const cta = $('#toCta'), lab = cta.querySelector('.to-cta-label');
+  if (toSelected && toSelected !== S.ch) {
+    cta.disabled = false; lab.textContent = toSelected + '번 채널로 이동';
+    cta.onclick = () => { const r = chs.find((c) => c[0] === toSelected); moveChannel(toSelected, r ? r[1] : 0); };
+  } else {
+    cta.disabled = true; lab.textContent = '채널을 선택하세요'; cta.onclick = null;
+  }
+}
+function moveChannel(n, c) {
+  S.ch = n; S.chCount = c + 1;
+  const ct = $('#chText'); if (ct) ct.textContent = n + '번 채널 · ' + S.chCount + '/60명';
+  bots.forEach((x) => x.name = pick(NAMES));
+  toast(n + '번 채널로 이동했어요');
+  toSelected = null; show('#ticket', false);
 }
 $('#ticketClose').onclick = () => show('#ticket', false);
 
@@ -3335,15 +3638,19 @@ function unboard() {
   }
   // 정상 하차장 옆(동쪽 리프트는 하차장과 전망대 데크 사이)
   S.peak = d.peak || 'M';
-  const P = PEAK[S.peak], ang = Math.atan2(d.x1 - P.x, d.z1 - P.z), sx = d.x1 - Math.sin(ang) * 18, sz = d.z1 - Math.cos(ang) * 18;   // 하차장에서 꼭대기 쪽으로 조금 나온 자리
-  me.pos.set(sx, groundH(sx, sz), sz); me.yaw = Math.atan2(P.x - sx, P.z - sz); me.c.pose = 'stand';
+  const P = PEAK[S.peak], ang = Math.atan2(d.x1 - P.x, d.z1 - P.z);
+  const ex = d.x1 - Math.sin(ang) * 5, ez = d.z1 - Math.cos(ang) * 5;    // 하차장 바로 앞 — 의자에서 내리는 지점
+  const sx = d.x1 - Math.sin(ang) * 22, sz = d.z1 - Math.cos(ang) * 22;  // 미끄러져 멈추는 자리(아래쪽)
+  me.pos.set(ex, groundH(ex, ez), ez); me.yaw = Math.atan2(sx - P.x, sz - P.z); me.c.pose = 'skate';   // 정상에선 아래(베이스) 쪽을 바라봐요
+  me.target = new THREE.Vector3(sx, 0, sz);   // 하차 모션: 내려서 램프로 스르륵 미끄러져 멈춰요(워커 재사용)
+  S.look.yaw = 0; S.look.pitch = 0.12;   // 카메라는 어깨너머로 계곡·베이스를 내려다봐요(드래그로 자유 회전)
   setMode('summit'); SND.chime();
-  toast(PEAK[S.peak].name + ' 정상이에요 · 이정표를 보고 슬로프 출발 게이트로 걸어가면 바로 출발해요');
+  toast(PEAK[S.peak].name + ' 정상이에요 · 발밑으로 베이스가 내려다보여요. 화면을 돌려 풍경을 즐기고, 슬로프 게이트로 가면 출발해요');
 }
 
 /* 정상 */
 function openSummit() {
-  show('#summitPanel', true); show('#prompt', false); show('#joy', false); show('#actions', false);
+  show('#summitPanel', true); show('#prompt', false); show('#joy', false); show('#actions', false); show('#jumpBtn', false); show('#skiBar', false);
   const list = $('#slopeList'); list.innerHTML = '';
   TRAILS.forEach((t, i) => {
     const b = document.createElement('button'); b.className = 'slope-btn' + (S.slope === i ? ' on' : '');
@@ -3367,6 +3674,11 @@ function skiFall(s, back) {
 }
 function startSki(x0, z0) {
   const t = TRAILS[S.slope];
+  // 정상에서 바로 출발인데 지금 서 있는 자리가 그 코스 위쪽이면 그 자리에서 이어 출발(순간이동 없음)
+  if (x0 == null && z0 == null && S.mode === 'summit') {
+    const pz = me.pos.z, px = me.pos.x;
+    if (pz >= t.zt - 10 && pz <= 2 && Math.abs(px - trailX(t, Math.min(0, pz))) < trailW(t, pz)) { x0 = px; z0 = pz; }
+  }
   const z = z0 != null ? z0 : t.zt + 3;
   const h0 = trailDir(t, z), x = x0 != null ? (z0 != null ? x0 : clamp(x0, trailX(t, z) - trailW(t, z) / 2 + 2, trailX(t, z) + trailW(t, z) / 2 - 2)) : trailX(t, z);
   S.ski = Object.assign(carveInit(t, z, x, 3), { t, mode: S.skiMode, h: h0, fallT: 0, falls: 0, steer: 0, camH: h0, tx: null });
@@ -3463,8 +3775,22 @@ window.addEventListener('keydown', (e) => {
 });
 window.addEventListener('keyup', (e) => { keys[e.key.toLowerCase()] = false; });
 const ray = new THREE.Raycaster(), mouse = new THREE.Vector2();
+function showDressBtn() {
+  const sp = me.pos.clone().add(new THREE.Vector3(0, 2.2, 0)).project(camera);
+  const b = $('#dressBtn'); if (!b) return;
+  b.style.left = ((sp.x * 0.5 + 0.5) * innerWidth) + 'px';
+  b.style.top = ((-sp.y * 0.5 + 0.5) * innerHeight - 16) + 'px';
+  show('#dressBtn', true);
+}
 function clickMove(e) {
   if (S.mode !== 'base' && S.mode !== 'summit') return;
+  // 내 캐릭터를 톡 누르면 '꾸미기' 버튼이 떠요(아바타 화면 위치 근처를 눌렀는지로 판정)
+  const sp = me.pos.clone().add(new THREE.Vector3(0, 1.1, 0)).project(camera);
+  if (sp.z < 1) {
+    const ax = (sp.x * 0.5 + 0.5) * innerWidth, ay = (-sp.y * 0.5 + 0.5) * innerHeight;
+    if (Math.hypot(e.clientX - ax, e.clientY - ay) < 80) { showDressBtn(); return; }
+  }
+  show('#dressBtn', false);
   mouse.set((e.clientX / innerWidth) * 2 - 1, -(e.clientY / innerHeight) * 2 + 1);
   ray.setFromCamera(mouse, camera);
   const hit = ray.intersectObject(terrainMesh)[0];
@@ -3486,6 +3812,7 @@ function zoomBy(f) {
 let camDragging = false;
 const ptrs = new Map(); let dragMoved = false, lastPinch = 0;
 canvas.addEventListener('pointerdown', (e) => {
+  e.preventDefault();   // 드래그 시 화면 전체 텍스트 선택(파란 하이라이트) 방지
   try { canvas.setPointerCapture(e.pointerId); } catch (_) { }
   ptrs.set(e.pointerId, { x: e.clientX, y: e.clientY, sx: e.clientX, sy: e.clientY });
   if (ptrs.size === 1) dragMoved = false;
@@ -3509,6 +3836,8 @@ function ptrEnd(e) {
   if (ptrs.size === 0) camDragging = false;
 }
 canvas.addEventListener('pointerup', ptrEnd); canvas.addEventListener('pointercancel', ptrEnd);
+// 드래그로 둘러볼 때 생기는 전체 선택 방지(입력창은 예외)
+document.addEventListener('selectstart', (e) => { const t = e.target; if (!(t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.isContentEditable))) e.preventDefault(); });
 canvas.addEventListener('wheel', (e) => {
   if (!['base', 'summit', 'queue', 'ski', 'lift'].includes(S.mode)) return;
   e.preventDefault(); zoomBy(1 + clamp(e.deltaY, -120, 120) * 0.0012);
@@ -3519,6 +3848,11 @@ function bindTouch(el, side) {
 }
 bindTouch($('#tL'), 'l'); bindTouch($('#tR'), 'r');
 const JOY = { on: false, x: 0, y: 0, id: null };
+const JUMP = { req: false };   // 좌측 점프 버튼이 한 번 눌릴 때마다 req=true (라이딩 중 점프)
+(function jumpBtn() {
+  const b = $('#jumpBtn'); if (!b) return;
+  b.addEventListener('pointerdown', (e) => { e.preventDefault(); JUMP.req = true; });
+})();
 (function joystick() {
   const el = $('#joy'), knob = $('#joyKnob');
   const R0 = 46;
@@ -3753,11 +4087,13 @@ const NET = {
     fetch(API+'me/?uid='+encodeURIComponent(this.uid)).then(r=>r.json()).then(j=>{ if(j&&j.found){ if(j.display_name){ me.opts.name=j.display_name; const ni=document.getElementById('nameInput'); if(ni&&!S.nameEdited) ni.value=j.display_name; } if(j.profile_image) me.pi=j.profile_image;
       /* 유저 테이블의 스키/보드를 캐릭터 장비로 반영(직접 바꾸거나 저장아바타가 있으면 그걸 우선) */
       if((j.gear==='ski'||j.gear==='board') && !S.gearEdited){ me.opts.gear=j.gear; setGear(me.c, me.opts.gear); if(typeof syncMaker==='function') syncMaker(); }
+      /* 유저 테이블의 성별을 캐릭터 체형 기본값으로(직접 바꾸거나 저장아바타가 있으면 그걸 우선) */
+      if((j.body==='male'||j.body==='female') && !S.bodyEdited && !S.avatarLoaded){ me.opts.body=j.body; setColors(me.c, me.opts); if(typeof syncMaker==='function') syncMaker(); }
     } }).catch(()=>{});
   },
   /* 저장된 아바타(재킷/모자/바지/피부/장비)를 RTDB에서 복원 — 로그인 유저만 */
   loadAvatar(){ const fb=window.__fb; if(!fb||!this.realUid||!fb.get) return;
-    try{ fb.get(fb.ref('resort/avatars/'+this.uid)).then((snap)=>{ const a=snap&&snap.val(); if(a&&a.jacket){ ['body','jacket','cap','pants','skin','gear','ski','boardColor','hat','lens','glove','accent','skiFit','bJacket','bAccent','bPants','boardFit'].forEach((k)=>{ if(a[k]) me.opts[k]=a[k]; }); if(a.neck!==undefined) me.opts.neck=a.neck; if(a.gear) S.gearEdited=true; setColors(me.c,me.opts); setGear(me.c,me.opts.gear); if(typeof syncMaker==='function') syncMaker(); } }).catch(()=>{}); }catch(e){}
+    try{ fb.get(fb.ref('resort/avatars/'+this.uid)).then((snap)=>{ const a=snap&&snap.val(); if(a&&a.jacket){ ['body','jacket','cap','pants','skin','gear','ski','boardColor','hat','lens','glove','accent','skiFit','bJacket','bAccent','bPants','boardFit'].forEach((k)=>{ if(a[k]) me.opts[k]=a[k]; }); if(a.neck!==undefined) me.opts.neck=a.neck; if(a.gear) S.gearEdited=true; if(a.body) S.bodyEdited=true; S.avatarLoaded=true; setColors(me.c,me.opts); setGear(me.c,me.opts.gear); if(typeof syncMaker==='function') syncMaker(); try{ saveLocalAvatar(); }catch(_){} } }).catch(()=>{}); }catch(e){}
   },
   /* 꾸민 아바타를 RTDB에 저장(이대로 입장 시) — 로그인 유저만 */
   saveAvatar(){ const fb=window.__fb; if(!fb||!this.realUid) return; const o=me.opts;
@@ -3838,6 +4174,7 @@ function update(dt) {
   });
   BELTS.forEach((tx) => { tx.offset.y -= dt * 0.35; }); LED.draw(dt);
   BUS.update(dt);
+  SND.setLift(0); SND.setSkate(0);   // 기본은 끄고, 아래 상태별로 켜요(리프트 모터·스케이팅 눈소리)
   /* 자동문: 사람이 다가오면 열려요 */
   DOORS.forEach((d) => {
     const nearD = (p) => Math.abs(p.x - d.x) < d.w / 2 + 2.5 && Math.abs(p.z - d.z) < 19;
@@ -3863,6 +4200,7 @@ function update(dt) {
   }
   if (S.mode === 'lift' && S.chair) {
     const LF = S.lift, f = S.chair.s / LF.len;
+    SND.setLift(1);   // 올라가는 동안 리프트 모터 험
     clackT += dt; if (clackT > 4.2) { clackT = 0; SND.clack(); }
     show('#banner', true);
     const comps = S.companions || [];
@@ -3886,7 +4224,7 @@ function update(dt) {
     if (S.mode !== 'maker') {
       if (keys['w'] || keys['arrowup']) fwd += 1; if (keys['s'] || keys['arrowdown']) fwd -= 1;
       if (keys['a'] || keys['arrowleft']) turn += 1; if (keys['d'] || keys['arrowright']) turn -= 1;
-      if (JOY.on) { fwd += -JOY.y; turn += -JOY.x * 0.9; }
+      if (JOY.on) { fwd += -JOY.y; turn += -JOY.x * 0.55; }   // 조이스틱 방향전환 민감도 낮춤
       if (S.photo) { fwd = 0; turn = 0; me.target = null; S.sitting = false; me.pos.copy(S.photo.sp.stand); me.yaw = S.photo.sp.yaw; }   // 촬영 중엔 자리에 서 있어요
     }
     fwd = clamp(fwd, -1, 1); turn = clamp(turn, -1, 1);
@@ -3897,13 +4235,14 @@ function update(dt) {
     let moving = false;
     if (Math.abs(turn) > 0.12) { me.yaw += turn * 2.3 * dt; me.target = null; }
     if (Math.abs(fwd) > 0.12) {
-      const sp = fwd > 0 ? (outside ? 6.5 : 10) : 4;   // 바깥은 부츠 신고 걸어요
+      const sp = fwd > 0 ? (outside ? 11 : 18) : 7;   // 바깥은 부츠 신고 걸어요(베이스가 넓어 이동 속도 상향)
       me.pos.x += Math.sin(me.yaw) * sp * fwd * dt; me.pos.z += Math.cos(me.yaw) * sp * fwd * dt; moving = true; me.target = null; S.sitting = false;
     } else if (me.target) {
-      const yw = moveWalker(me.pos, me.target, dt, outside ? 6.5 : 10);
+      const yw = moveWalker(me.pos, me.target, dt, outside ? 11 : 18);
       if (yw === null) me.target = null; else { me.yaw = lerpAngle(me.yaw, yw, Math.min(1, dt * 8)); moving = true; }
     }
     me.moving = moving || Math.abs(turn) > 0.12;
+    if (moving && me.pos.z < OUT_Z) SND.setSkate(0.1);   // 설면에서 스케이팅으로 미끄러지는 눈소리
     walkBounds(me.pos);
     if (S.mode !== 'maker' && collide(me.pos, 0.45)) { if (me.target) me.target = null; }   // 건물·소품은 통과하지 않아요
     if (S.mode === 'base' && !S.bus && pushOut(me.pos, 0.45, BUS.col)) me.target = null;   // 달리는 버스도 통과하지 않아요
@@ -3960,6 +4299,8 @@ function update(dt) {
     if (keys['arrowdown'] || keys['s']) { brake = true; input = true; }
     if (keys['arrowup'] || keys['w']) { tuck = true; input = true; }
     if (JOY.on) { steer += -(Math.abs(JOY.x) > 0.12 ? JOY.x : 0); if (JOY.y > 0.55) brake = true; if (JOY.y < -0.55) tuck = true; input = true; }
+    const jumpKey = keys[' '] || keys['spacebar'] || JUMP.req;   // 점프: 스페이스바 또는 화면 좌측 버튼
+    if (jumpKey) input = true;
     if (input && s.mode === 'auto' && s.fallT <= 0) { s.mode = 'manual'; S.skiMode = 'manual'; renderSkiBar(); }
     s.hop = Math.max(0, (s.hop || 0) - dt * 1.6);
     if (s.fallT > 0) {
@@ -3969,16 +4310,27 @@ function update(dt) {
     } else if (s.mode === 'auto') {
       carveStep(s, t, dt, t.auto, gear);
     } else {
-      s.steer = lerp(s.steer || 0, clamp(steer, -1, 1), Math.min(1, dt * 7));
-      // 입력 0.8까지는 엣지 그립 안에서 카빙(속도 유지), 그 이상(조이스틱 끝까지)은 급하게 꺾으며 스키딩
-      const wC = Math.max(s.v < 3 ? 1.2 : 0, Math.max(0.15, s.v) / (gear === 'board' ? SKI.rBoard : SKI.rSki));
-      const st = s.steer, ast = Math.abs(st), wc = Math.min(wC, SKI.wCap);
-      const rate = ast <= 0.8 ? st / 0.8 * wc : Math.sign(st) * (wc + (ast - 0.8) / 0.2 * Math.max(0, SKI.wCap - wc));
-      skiPhysics(s, dt, rate / SKI.wCap, brake, tuck, gear, 0);
+      if (s.air) {
+        // 공중 트릭: 방향키/조이스틱 좌우로 스핀, ↑로 플립 (진행 방향 s.h는 유지하고 캐릭터만 돌아요)
+        const spin = ((keys['arrowleft'] || keys['a']) ? 1 : 0) + ((keys['arrowright'] || keys['d']) ? -1 : 0) + (JOY.on && Math.abs(JOY.x) > 0.3 ? -Math.sign(JOY.x) : 0);
+        s.trickYaw = (s.trickYaw || 0) + spin * 7.2 * dt;
+        if (keys['arrowup'] || keys['w'] || (JOY.on && JOY.y < -0.55)) s.trickPitch = (s.trickPitch || 0) + 6.5 * dt;
+        skiPhysics(s, dt, 0, false, false, gear, 0);   // 공중엔 조향·브레이크 없이 공기저항만
+      } else {
+        s.steer = lerp(s.steer || 0, clamp(steer, -1, 1), Math.min(1, dt * 7));
+        // 입력 0.8까지는 엣지 그립 안에서 카빙(속도 유지), 그 이상(조이스틱 끝까지)은 급하게 꺾으며 스키딩
+        const wC = Math.max(s.v < 3 ? 1.2 : 0, Math.max(0.15, s.v) / (gear === 'board' ? SKI.rBoard : SKI.rSki));
+        const st = s.steer, ast = Math.abs(st), wc = Math.min(wC, SKI.wCap);
+        const rate = ast <= 0.8 ? st / 0.8 * wc : Math.sign(st) * (wc + (ast - 0.8) / 0.2 * Math.max(0, SKI.wCap - wc));
+        skiPhysics(s, dt, rate / SKI.wCap, brake, tuck, gear, 0);
+      }
       // 자유 활강: 어느 코스든(또는 아래쪽 트인 설원) 정설면이면 그대로, 정설 밖 깊은 눈에서만 마찰이 조금 더해요
       const onT = TRAILS.find((q) => Math.abs(s.x - trailX(q, Math.min(0, s.z))) < trailHW(q, s.z, 4)), inBowl = s.z > BOWL_Z && Math.abs(s.x) < 440;
       if (!onT && !inBowl) s.v = Math.max(0, s.v - 1.1 * dt);
       if (onT && onT !== s.t) { s.t = onT; }   // 다른 코스로 넘어가면 그 코스를 탄 걸로(자동으로 바꿔도 이 코스를 따라가요)
+      // 슬로프 양 사이드라인 밖으로 못 나가게: 현재 코스 폭 안으로 x를 가둬요(경계에 닿으면 가장자리를 따라 미끄러짐)
+      const bz = Math.min(0, s.z), bhw = trailHW(s.t, s.z, 0);
+      if (bhw > 0) { const bcx = trailX(s.t, bz); s.x = clamp(s.x, bcx - bhw, bcx + bhw); }
       s.x = clamp(s.x, -620, 620);
       // 나무·타워·깃발 등에 부딪히면: 빠르면 넘어지고, 느리면 옆으로 비켜 미끄러져요(통과하지 않아요)
       const tree = !s.air && hitTree(s.x, s.z), obj = s.air && s.y - groundH(s.x, s.z) > 2.2 ? null : collide(s, 0.45, true);
@@ -3989,12 +4341,18 @@ function update(dt) {
     // 높이: 지면(모굴·킥커·롤러 포함)을 따라가다, 지면이 중력보다 빨리 꺼지면 떠올라요(점프)
     const gh = skiGround(s.x, s.z);
     if (s.y == null) { s.y = gh; s.vy = -slopeAlong(s.x, s.z, s.h) * s.v; s.air = false; s.gPrev = gh - s.vy * dt; }   // 시작: 설면을 따라 내려가는 중
+    // 수동 점프: 지면에 있을 때 점프키(스페이스/좌측 버튼)를 누르면 떠올라 공중 트릭을 할 수 있어요
+    const jumpNow = keys[' '] || keys['spacebar'] || JUMP.req;
+    if (jumpNow && !s.jumpLatch && !s.air && s.fallT <= 0) { s.air = true; s.vy = 6.6; s.trickYaw = 0; s.trickPitch = 0; s.jumpLatch = true; SND.pop(); }
+    if (!jumpNow) s.jumpLatch = false;
+    JUMP.req = false;
     if (s.air) {
       s.vy -= 9.8 * dt; s.y += s.vy * dt;
       if (s.pipeAir) { s.x = s.pipeX; if (s.vy < 0 && !s.pipeFlip) { s.h = 2 * trailDir(t, s.z) - s.h; s.pipeFlip = true; } }
       if (s.y <= gh) {
         const vg = clamp((gh - s.gPrev) / Math.max(dt, 1e-3), -s.v - 3, s.v * 0.75), impact = s.vy - vg;
         s.y = gh; s.air = false; s.vy = vg; s.land = clamp(-impact / 10, 0.2, 1); s.pipeAir = null;
+        s.trickYaw = 0; s.trickPitch = 0;   // 착지하면 트릭 회전 정리
         puff(s.x, gh, s.z, 12 + Math.round(s.land * 20), 1.5 + s.land * 2); SND.pop();
         if (impact < -14) skiFall(s, 0);   // 너무 세게 떨어지면 넘어져요
       }
@@ -4017,6 +4375,7 @@ function update(dt) {
       if (s.v > 1.5 && !s.air) { sprayFrom(s, s.x, me.pos.y, s.z, dt, gear); leaveTracks(s, gear); } else if (s.air) s.tx = null;
     }
     SND.setSwoosh(clamp(s.v / 26, 0, 1) * (0.3 + Math.abs(s.roll) * 0.25 + s.skid * 0.5));
+    if (!s.air && s.v > 0.5 && s.v < SKI.skate + 2) SND.setSkate(clamp((SKI.skate + 2 - s.v) / (SKI.skate + 2), 0, 1) * 0.09);   // 저속 스케이팅 눈소리
     const spdEl = $('#spd'); if (spdEl) spdEl.textContent = Math.round(s.v * 3.6);
     const f = clamp((s.z + L) / L, 0, 1);
     $('#progFill').style.height = (f * 100) + '%'; $('#progDot').style.top = 'calc(' + (f * 100) + '% - 8px)';
@@ -4030,7 +4389,8 @@ function update(dt) {
     // 판을 설면 경사에 맞춰 세워요(꼬리가 눈에 박히지 않게) + 턴 안쪽 기울기
     const s = S.ski; me.c.root.position.copy(me.pos);
     const pitch = Math.atan(slopeAlong(me.pos.x, me.pos.z, me.yaw));
-    me.c.root.rotation.set(pitch, me.yaw, s && s.fallT <= 0 ? s.roll : 0);
+    const tkY = s && s.air ? (s.trickYaw || 0) : 0, tkP = s && s.air ? (s.trickPitch || 0) : 0;
+    me.c.root.rotation.set(pitch + tkP, me.yaw + tkY, s && s.fallT <= 0 ? s.roll : 0);
   }
 
   /* 봇 */
@@ -4216,7 +4576,7 @@ function updateLabels() {
     bots.forEach((b) => { if (b.c.root.visible) { const wp = b.c.root.getWorldPosition(new THREE.Vector3()); const d = wp.distanceTo(mp); if (d < 34) cand.push({ wp, d, name: b.name, wave: b.waveTag > 0 }); } });
     RIDES.forEach((rd) => rd.chairs.forEach((ch) => ch.riders.forEach((r) => { if (r.c.root.visible) { const wp = r.c.root.getWorldPosition(new THREE.Vector3()); const d = wp.distanceTo(mp); if (d < 30) cand.push({ wp, d, name: r.name }); } })));
     (S.companions || []).forEach((cp) => cand.push({ wp: cp.c.root.getWorldPosition(new THREE.Vector3()), d: 0, name: cp.name }));
-    cand.sort((a, b) => a.d - b.d).slice(0, 10).forEach((c) => labelAt(i++, c.wave ? '👋 ' + c.name : c.name, c.wave ? 'wave' : '', c.wp.add(new THREE.Vector3(0, 1.95, 0))));
+    cand.sort((a, b) => a.d - b.d).slice(0, 10).forEach((c) => labelAt(i++, c.name, c.wave ? 'wave' : '', c.wp.add(new THREE.Vector3(0, 1.95, 0))));
     { const _ib = { v: i }; NET.labels(labelAt, _ib); i = _ib.v; }
   } else if (S.mode === 'lodge') {
     // 창밖(슬로프)에서 라이딩하며 지나가는 실제 유저만 이름표+프사 표시(내 라벨은 숨김).
@@ -4255,7 +4615,14 @@ function drawSpeedFx(v, dt) {
 const POST = { composer: null, bloom: null, grade: null };
 if (THREE.EffectComposer && THREE.UnrealBloomPass) {
   try {
-    POST.composer = new THREE.EffectComposer(renderer);
+    // 후처리(블룸·빛줄기) 경로에서도 계단현상이 안 생기게: WebGL2면 멀티샘플 렌더타깃으로 MSAA 적용
+    let _crt = null;
+    if (renderer.capabilities.isWebGL2 && THREE.WebGLMultisampleRenderTarget) {
+      const sz = renderer.getDrawingBufferSize(new THREE.Vector2());
+      _crt = new THREE.WebGLMultisampleRenderTarget(Math.max(2, sz.x), Math.max(2, sz.y), { format: THREE.RGBAFormat, stencilBuffer: false });
+      _crt.samples = 4;
+    }
+    POST.composer = _crt ? new THREE.EffectComposer(renderer, _crt) : new THREE.EffectComposer(renderer);
     POST.composer.addPass(new THREE.RenderPass(scene, camera));
     POST.bloom = new THREE.UnrealBloomPass(new THREE.Vector2(256, 256), 0.42, 0.5, 0.94); POST.composer.addPass(POST.bloom);
     // 빛줄기: 해 쪽으로 밝은 부분을 끌어당겨 산·나무 사이로 쏟아지는 빛을 만들어요
@@ -4325,7 +4692,7 @@ requestAnimationFrame(loop);
 setTimeout(() => { $('#loading').remove(); setMode('gate'); }, 400);
 /* 접속이 끝내 안 되면(오프라인 등) 스피너만 돌지 않게 10초 후 혼자 타는 상태로 표시 */
 setTimeout(() => { const ll=document.getElementById('liveLoad'), lr=document.getElementById('liveReal'); if(ll&&lr&&!ll.hidden){ const lc=document.getElementById('liveCount'); if(lc) lc.textContent=Math.max(1,S.live); ll.hidden=true; lr.hidden=false; } }, 10000);
-window.__resort = { S, me, LIFT, joinQueue, startSki, goBase, openSummit, unboard, enterLodge, setColors, setGear };
+window.__resort = { S, me, LIFT, JUMP, joinQueue, startSki, goBase, openSummit, unboard, enterLodge, setColors, setGear };
 })();
 </script>
 </body>
