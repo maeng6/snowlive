@@ -6,7 +6,7 @@
 <title>스노우라이브 파크</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Gowun+Dodum&family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Gowun+Dodum&family=Noto+Sans+KR:wght@400;500;700;900&family=Montserrat:wght@800;900&family=Orbitron:wght@800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
 <style>
 :root{
@@ -529,6 +529,253 @@ body.modal-open #joy, body.modal-open #jumpBtn, body.modal-open #actions, body.m
 .to-cta:disabled{ background:#C9D3E0; box-shadow:none; cursor:default; }
 .to-cta-arrow{ width:44px; height:44px; border-radius:50%; background:rgba(255,255,255,.22); display:flex; align-items:center; justify-content:center; font-size:26px; font-weight:400; line-height:1; flex:none; }
 #ticketClose{ height:44px; background:none !important; border:0 !important; box-shadow:none !important; color:var(--to-tt) !important; font-size:14px; font-weight:600; cursor:pointer; }
+
+/* ═══ 첫 화면(게이트) v3: 모던 심플 + 게임 감성 — 배지 · 큰 제목 · 글래스 카드의 HUD 칩 · 빛나는 플레이 버튼(모바일·태블릿·데스크톱 대응) ═══ */
+#gate{ background:radial-gradient(120% 70% at 50% 110%, rgba(10,24,48,.55), rgba(10,24,48,0) 60%), linear-gradient(180deg, rgba(10,24,48,.18), rgba(10,24,48,0) 30%); }
+#gate .g3{ position:relative; z-index:1; display:flex; flex-direction:column; align-items:center; gap:clamp(10px,2.2vh,18px); width:min(560px,92vw); padding:0 4px; pointer-events:none; text-align:center; }
+#gate .g3-badge{ display:inline-flex; align-items:center; gap:8px; padding:7px 14px 7px 11px; border-radius:999px; background:rgba(255,255,255,.18); border:1px solid rgba(255,255,255,.35); color:#fff; font-size:12px; font-weight:800; letter-spacing:.18em; backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); box-shadow:0 6px 18px rgba(10,30,60,.18); }
+#gate .g3-badge svg{ width:15px; height:15px; fill:none; stroke:#BFE4FF; stroke-width:2.2; stroke-linecap:round; stroke-linejoin:round; }
+#gate h1.g3-title{ margin:0; font-size:clamp(34px,9vw,64px) !important; line-height:1.05; font-weight:900 !important; letter-spacing:-.03em !important; text-indent:0 !important; text-transform:none !important; white-space:nowrap; color:#fff !important; text-shadow:0 3px 0 rgba(20,60,120,.35), 0 10px 30px rgba(10,30,60,.45) !important; }
+#gate h1.g3-title em{ font-style:normal; background:linear-gradient(180deg,#FFFFFF 10%,#9FDBFF 55%,#4FA8FF 100%); -webkit-background-clip:text; background-clip:text; color:transparent; filter:drop-shadow(0 3px 0 rgba(20,70,140,.45)); }
+#gate .g3-sub{ margin:0; max-width:28em; font-size:clamp(13px,3.6vw,16px); font-weight:600; color:#F2F8FF; text-shadow:0 2px 10px rgba(10,30,60,.5); word-break:keep-all; }
+#gate .g3-card{ display:grid; grid-template-columns:repeat(3,1fr); gap:8px; width:100%; margin-top:clamp(4px,1.4vh,12px); padding:10px; border-radius:24px; background:rgba(255,255,255,.2); border:1px solid rgba(255,255,255,.38); backdrop-filter:blur(16px) saturate(1.3); -webkit-backdrop-filter:blur(16px) saturate(1.3); box-shadow:0 18px 50px rgba(10,30,60,.28), inset 0 1px 0 rgba(255,255,255,.4); }
+#gate .g3-stat{ display:flex; flex-direction:column; align-items:center; gap:4px; padding:12px 6px 10px; border-radius:16px; background:rgba(255,255,255,.88); color:#15233E; min-width:0; }
+#gate .g3-ic{ width:30px; height:30px; border-radius:10px; display:flex; align-items:center; justify-content:center; background:#E6F1FF; }
+#gate .g3-ic svg{ width:18px; height:18px; fill:none; stroke:#2B6CB0; stroke-width:2; stroke-linejoin:round; stroke-linecap:round; }
+#gate .g3-ic .g3-dot{ width:10px; height:10px; border-radius:50%; background:#22C55E; box-shadow:0 0 0 4px rgba(34,197,94,.2); animation:g3-pulse 1.8s ease-in-out infinite; }
+#gate .g3-live .g3-ic{ background:#E7F8EE; }
+#gate .g3-v{ font-size:clamp(15px,4.2vw,20px); font-weight:800; letter-spacing:-.02em; white-space:nowrap; line-height:1.1; }
+#gate .g3-v b{ font-size:1.15em; margin-right:1px; }
+#gate .g3-v .spin{ display:inline-block; width:12px; height:12px; border:2px solid #9FB6CC; border-top-color:#2B6CB0; border-radius:50%; animation:g3-spin .8s linear infinite; vertical-align:-1px; }
+#gate .g3-k{ font-size:11px; font-weight:600; color:#6A7A93; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:100%; }
+#gate .g3-play{ position:relative; width:clamp(64px,17vw,82px); height:clamp(64px,17vw,82px); margin-top:clamp(8px,2.4vh,22px); }
+#gate .g3-play span{ position:absolute; inset:0; border-radius:50%; display:flex; align-items:center; justify-content:center; background:linear-gradient(180deg,#5AB4FF,#2563EB); box-shadow:0 6px 0 #1A47A8, 0 14px 30px rgba(20,60,160,.45), inset 0 2px 0 rgba(255,255,255,.45); animation:g3-bob 2.4s ease-in-out infinite; }
+#gate .g3-play svg{ width:42%; height:42%; fill:#fff; margin-left:6%; filter:drop-shadow(0 2px 0 rgba(10,40,110,.35)); }
+#gate .g3-ring{ position:absolute; inset:-6px; border-radius:50%; border:2px solid rgba(255,255,255,.7); animation:g3-ring 2.4s ease-out infinite; }
+#gate .g3-ring2{ animation-delay:1.2s; }
+#gate .tap-hint{ bottom:calc(clamp(18px,4vh,40px) + env(safe-area-inset-bottom,0px)) !important; }
+#gate .tap-hint__main{ color:#fff !important; text-shadow:none !important; letter-spacing:.24em !important; padding:8px 16px 8px calc(16px + .24em) !important; border-radius:999px; background:rgba(14,30,58,.55); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); }
+#gate .tap-hint__sub{ color:#E2EEFB !important; text-shadow:0 1px 8px rgba(10,30,60,.6) !important; }
+@keyframes g3-pulse{ 0%,100%{ box-shadow:0 0 0 3px rgba(34,197,94,.25); } 50%{ box-shadow:0 0 0 7px rgba(34,197,94,0); } }
+@keyframes g3-spin{ to{ transform:rotate(360deg); } }
+@keyframes g3-bob{ 0%,100%{ transform:translateY(0); } 50%{ transform:translateY(-4px); } }
+@keyframes g3-ring{ 0%{ transform:scale(.9); opacity:.9; } 100%{ transform:scale(1.55); opacity:0; } }
+@media (max-width:420px){ #gate .g3-card{ gap:6px; padding:8px; border-radius:20px; } #gate .g3-stat{ padding:10px 4px 8px; border-radius:14px; } #gate .g3-ic{ width:26px; height:26px; } #gate .g3-k{ font-size:10px; } }
+@media (orientation:landscape) and (max-height:520px){ #gate .g3{ gap:8px; } #gate .g3-sub{ display:none; } #gate .g3-play{ width:56px; height:56px; margin-top:4px; } #gate h1.g3-title{ font-size:clamp(28px,6vw,44px) !important; } }
+@media (prefers-reduced-motion:reduce){ #gate .g3-play span, #gate .g3-ring, #gate .g3-ic .g3-dot{ animation:none; } }
+
+/* ═══ HUD v3 — 모바일(≤600) · 태블릿(601~1024) · 데스크톱(>1024) 한 기준으로: 여백·버튼 높이·글자 크기를 변수로 맞추고, 서로 겹치지 않게 배치 ═══ */
+:root{ --g:16px; --bh:44px; --fs:14px; --sl:env(safe-area-inset-left,0px); --sr:env(safe-area-inset-right,0px); --st:env(safe-area-inset-top,0px); --sb:env(safe-area-inset-bottom,0px); --joy:128px; }
+@media (max-width:600px){ :root{ --g:10px; --bh:40px; --fs:13px; --joy:120px; } }
+@media (min-width:1025px){ :root{ --g:20px; --bh:46px; --fs:15px; } }
+/* 위: 왼쪽 채널 · 그 아래 기록 / 오른쪽 시점·소리·나가기 */
+#hud .tl{ left:calc(var(--g) + var(--sl)) !important; top:calc(var(--g) + var(--st)) !important; }
+#hud .tr{ right:calc(var(--g) + var(--sr)) !important; top:calc(var(--g) + var(--st)) !important; gap:8px !important; align-items:center; }
+#hud .tl .pill, #hud .tr .pill, #hud .tr .icon-btn{ height:var(--bh) !important; font-size:var(--fs) !important; }
+#hud .tr .icon-btn{ width:var(--bh) !important; padding:0 !important; display:flex; align-items:center; justify-content:center; }
+#chPill{ max-width:calc(100vw - 3 * var(--bh) - 7 * var(--g)); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; padding:0 14px !important; }
+#hud .bl{ left:calc(var(--g) + var(--sl)) !important; top:calc(var(--g) + var(--st) + var(--bh) + 8px) !important; bottom:auto !important; }
+#counters{ height:calc(var(--bh) - 8px) !important; font-size:calc(var(--fs) - 1px) !important; padding:0 12px !important; gap:12px !important; white-space:nowrap; }
+@media (max-width:600px){ #counters .k{ display:none; } }
+/* 아래 왼쪽: 인사 · 앉기 — 아이콘+글자 알약 버튼(줄바꿈 없음) */
+#hud #actions{ position:fixed; left:calc(var(--g) + var(--sl)) !important; right:auto !important; top:auto !important; bottom:calc(var(--g) + var(--sb)) !important; display:flex; flex-direction:column !important; align-items:flex-start !important; gap:8px !important; }
+#hud .actbtn{ width:auto !important; min-width:calc(var(--bh) * 2); height:var(--bh) !important; padding:0 16px 0 12px !important; border-radius:999px !important; display:inline-flex; align-items:center; justify-content:center; gap:6px; font-size:var(--fs) !important; font-weight:700; color:#fff; white-space:nowrap; line-height:1; letter-spacing:-.01em; }
+#hud #waveBtn::before{ content:'👋'; font-size:1.15em; }
+#hud #sitBtn::before{ content:'🪑'; font-size:1.1em; }
+@media (min-width:1025px){ #hud #actions{ flex-direction:row !important; align-items:center !important; } }
+/* 아래 오른쪽: 조이스틱(터치) · 채팅 버튼은 조이스틱 위로 */
+#joy{ width:var(--joy) !important; height:var(--joy) !important; right:calc(var(--g) + 10px + var(--sr)) !important; bottom:calc(var(--g) + 10px + var(--sb)) !important; }
+@media (max-width:720px){
+  #social{ right:calc(var(--g) + var(--sr)) !important; bottom:calc(var(--g) + 10px + var(--joy) + 12px + var(--sb)) !important; }
+  #chatToggle{ width:var(--bh) !important; height:var(--bh) !important; font-size:calc(var(--bh) * .45) !important; }
+  #social.open{ left:var(--g) !important; right:var(--g) !important; bottom:calc(var(--g) + var(--sb)) !important; }
+}
+@media (min-width:721px){ #social{ bottom:calc(var(--g) + var(--sb) + 4px) !important; } }
+/* 가운데: 배너·안내·라이딩 바·토스트는 화면 폭을 넘지 않게 */
+#banner{ max-width:calc(100vw - 2 * var(--g)); overflow:hidden; font-size:var(--fs) !important; }
+#banner > *{ min-width:0; overflow:hidden; text-overflow:ellipsis; }
+#prompt{ max-width:calc(100vw - 2 * var(--g)) !important; font-size:var(--fs) !important; }
+#prompt #promptText{ min-width:0; overflow:hidden; text-overflow:ellipsis; }
+#prompt #promptBtn{ height:var(--bh); padding:0 16px; font-size:var(--fs); white-space:nowrap; flex:none; }
+#skiBar{ max-width:calc(100vw - 2 * var(--g)); overflow-x:auto; scrollbar-width:none; }
+#skiBar::-webkit-scrollbar{ display:none; }
+.toast{ max-width:calc(100vw - 2 * var(--g)); font-size:var(--fs) !important; text-align:center; word-break:keep-all; }
+@media (min-width:721px){ #prompt{ bottom:calc(var(--g) + var(--sb) + 120px) !important; } }
+@media (max-width:720px){ #prompt{ bottom:calc(var(--g) + 10px + var(--joy) + 24px + var(--sb)) !important; } }
+/* 패널: 화면 높이를 넘지 않고, 안에서 스크롤 */
+#ticket, #soundP, #summitPanel{ max-height:calc(100dvh - 2 * var(--g) - var(--st) - var(--sb)) !important; overflow:auto !important; }
+#maker{ max-height:calc(100dvh - 2 * var(--g) - var(--st) - var(--sb)); }
+/* 짧은 가로 화면(폰 가로): 위아래 여백 줄이기 */
+@media (orientation:landscape) and (max-height:520px){ :root{ --g:8px; --bh:36px; --fs:12px; --joy:104px; } #hud #actions{ flex-direction:row !important; } }
+
+/* ═══════════ ZUI — ZEPETO 스타일(스노우라이브 블루): 흰 카드 · 굵고 둥근 글씨 · 알약 버튼 · 부드러운 그림자 · 입체감 있는 메인 버튼 ═══════════ */
+:root{ --zb:#2F6FEB; --zb2:#1F57D6; --zbl:#E8F0FF; --zink:#14213D; --zsub:#7B88A1; --zline:rgba(20,40,70,.08); --zsoft:#F2F5FA; --zwhite:rgba(255,255,255,.94);
+  --zsh:0 8px 24px rgba(20,40,80,.16), 0 1px 2px rgba(20,40,80,.08); --zsh2:0 18px 48px rgba(20,40,80,.22); --zr:20px; }
+/* 공통 흰 칩·버튼(게임 화면 위) */
+#chPill, #viewBtn, #counters, #hud .icon-btn, #hud .actbtn, #chatToggle, #emotes, #chatForm, #banner, #skiBar, #prompt, #dressBtn, #photoTop, #photoBar{
+  background:var(--zwhite) !important; color:var(--zink) !important; border:1px solid var(--zline) !important; box-shadow:var(--zsh) !important;
+  backdrop-filter:blur(14px) saturate(1.2) !important; -webkit-backdrop-filter:blur(14px) saturate(1.2) !important; }
+#chPill, #viewBtn, #counters, #hud .actbtn, #banner, #skiBar, #dressBtn{ border-radius:999px !important; font-weight:800 !important; letter-spacing:-.02em; }
+#chPill .dot{ background:#22C55E !important; box-shadow:0 0 0 3px rgba(34,197,94,.18); }
+#counters span{ color:var(--zsub); font-weight:700; } #counters b{ color:var(--zb) !important; font-weight:900; font-family:inherit !important; }
+#hud .icon-btn{ border-radius:50% !important; color:var(--zink) !important; } #hud .icon-btn svg{ stroke:var(--zink); }
+#viewBtn{ color:var(--zb) !important; }
+#hud .actbtn:active, #viewBtn:active, #hud .icon-btn:active, #chatToggle:active{ transform:scale(.94); }
+/* 채팅·이모트 */
+#chatToggle{ border-radius:50% !important; }
+#emotes{ border-radius:999px !important; } #emotes button{ background:var(--zsoft) !important; }
+#chatForm{ border-radius:999px !important; padding:6px 6px 6px 14px !important; }
+#chatForm input{ background:transparent !important; color:var(--zink) !important; border:0 !important; font-weight:600; } #chatForm input::placeholder{ color:var(--zsub); }
+#chatForm button{ border-radius:50% !important; background:var(--zb) !important; box-shadow:0 3px 0 var(--zb2); }
+#social.open{ background:var(--zwhite) !important; border:1px solid var(--zline); box-shadow:var(--zsh2) !important; }
+/* 안내·배너·라이딩 바 */
+#prompt{ border-radius:var(--zr) !important; padding:8px 8px 8px 18px !important; font-weight:800 !important; }
+#prompt kbd{ background:var(--zsoft) !important; color:var(--zsub) !important; border-radius:6px; }
+#promptBtn, #skiBar .btn.primary, #skiBar button.on{ background:linear-gradient(180deg,#4A86FF,var(--zb)) !important; color:#fff !important; border:0 !important; border-radius:999px !important; box-shadow:0 3px 0 var(--zb2), 0 6px 14px rgba(47,111,235,.35) !important; font-weight:800 !important; }
+#banner .sep{ background:var(--zline) !important; } #banner b{ color:var(--zb); }
+#skiBar{ color:var(--zink) !important; } #skiBar kbd{ background:var(--zsoft) !important; color:var(--zink) !important; border-radius:6px; }
+#skiBar .btn:not(.primary){ background:var(--zsoft) !important; color:var(--zink) !important; border:0 !important; border-radius:999px !important; }
+.toast{ background:rgba(20,33,61,.88) !important; color:#fff !important; border:0 !important; border-radius:999px !important; padding:10px 18px !important; font-weight:700 !important; box-shadow:0 8px 24px rgba(20,33,61,.3) !important; }
+/* 조이스틱 · 점프 */
+#joy{ background:rgba(255,255,255,.28) !important; border:2px solid rgba(255,255,255,.85) !important; box-shadow:var(--zsh) !important; }
+#joyKnob{ background:linear-gradient(180deg,#4A86FF,var(--zb)) !important; box-shadow:0 3px 0 var(--zb2), 0 6px 16px rgba(47,111,235,.4) !important; border:2px solid #fff !important; }
+#jumpBtn{ background:linear-gradient(180deg,#4A86FF,var(--zb)) !important; color:#fff !important; border:3px solid #fff !important; box-shadow:0 5px 0 var(--zb2), 0 12px 26px rgba(47,111,235,.4) !important; font-weight:900 !important; }
+#jumpBtn:active{ transform:translateY(3px); box-shadow:0 2px 0 var(--zb2) !important; }
+/* 패널: 흰 시트 · 굵은 제목 · 알약 버튼 */
+#ticket, #soundP, #summitPanel, #maker, #lodge, #photoResult .box{ background:#fff !important; color:var(--zink) !important; border:1px solid var(--zline) !important; border-radius:28px !important; box-shadow:var(--zsh2) !important; }
+#soundP h2, #summitPanel h2, #maker h2, #lodge h2{ color:var(--zink) !important; font-weight:900 !important; letter-spacing:-.03em; font-size:22px !important; }
+#soundP p.sub, #summitPanel p.sub, #maker p.sub, #lodge p.sub{ color:var(--zsub) !important; font-weight:600; }
+.btn.primary, #makerDone, #goSki, #photoShare{ background:linear-gradient(180deg,#4A86FF,var(--zb)) !important; color:#fff !important; border:0 !important; border-radius:999px !important; font-weight:800 !important; box-shadow:0 4px 0 var(--zb2), 0 10px 22px rgba(47,111,235,.35) !important; }
+.btn.primary:active, #makerDone:active, #goSki:active{ transform:translateY(2px); box-shadow:0 2px 0 var(--zb2) !important; }
+.btn.ghost, #soundClose, #stayTop, #photoSave, #muteToggle{ background:var(--zsoft) !important; color:var(--zink) !important; border:0 !important; border-radius:999px !important; font-weight:800 !important; box-shadow:none !important; }
+#maker .seg, #summitPanel .seg, #soundP .seg, .seg{ background:var(--zsoft) !important; border-radius:999px !important; padding:4px !important; gap:4px !important; }
+#maker .seg button, #summitPanel .seg button, #soundP .seg button, .seg button{ background:transparent !important; border:0 !important; border-radius:999px !important; color:var(--zsub) !important; font-weight:800 !important; box-shadow:none !important; text-decoration:none !important; }
+#maker .seg button.on, #summitPanel .seg button.on, #soundP .seg button.on, .seg button.on{ background:#fff !important; color:var(--zb) !important; box-shadow:0 2px 8px rgba(20,40,80,.14) !important; }
+.slider span{ color:var(--zink) !important; font-weight:700; } input[type=range]{ accent-color:var(--zb); }
+#soundP select, #maker select{ background:var(--zsoft) !important; border:0 !important; border-radius:14px !important; color:var(--zink) !important; font-weight:700; }
+#summitPanel .slope-btn{ border-radius:18px !important; background:var(--zsoft) !important; border:2px solid transparent !important; }
+#summitPanel .slope-btn.on{ background:var(--zbl) !important; border-color:var(--zb) !important; }
+/* 꾸미기: 위쪽 카테고리 탭 · 동그란 색 칩(선택 시 블루 링) */
+#makerTitle{ background:var(--zwhite) !important; color:var(--zink) !important; border:1px solid var(--zline) !important; box-shadow:var(--zsh) !important; border-radius:20px !important; }
+#makerTitle .tag{ color:var(--zb) !important; font-weight:900; letter-spacing:.16em; } #makerTitle h1{ color:var(--zink) !important; text-shadow:none !important; font-weight:900 !important; } #makerTitle p{ color:var(--zsub) !important; }
+#maker .wear{ background:var(--zsoft) !important; border-radius:20px !important; border:0 !important; }
+#maker .field label, #maker .wear-hd span{ color:var(--zsub) !important; font-weight:700; }
+#maker .field input[type=text]{ background:var(--zsoft) !important; border:2px solid transparent !important; border-radius:14px !important; color:var(--zink) !important; font-weight:700; }
+#maker .field input[type=text]:focus{ border-color:var(--zb) !important; outline:none; }
+.sw-row{ grid-template-columns:repeat(auto-fill,minmax(34px,1fr)) !important; gap:10px !important; justify-items:center; }
+.sw{ width:34px !important; height:34px !important; border-radius:50% !important; border:2px solid rgba(20,40,70,.1) !important; box-shadow:none !important; padding:0; }
+.sw.on{ box-shadow:0 0 0 3px #fff, 0 0 0 5px var(--zb) !important; transform:scale(1.04); }
+#makerScroll{ position:relative; }
+#mkTabs{ flex:none; min-height:50px; box-sizing:border-box; position:sticky; top:-1px; z-index:2; display:flex; gap:6px; overflow-x:auto; scrollbar-width:none; padding:6px 2px 10px; margin:0 -2px; background:linear-gradient(#fff 80%, rgba(255,255,255,0)); }
+#mkTabs::-webkit-scrollbar{ display:none; }
+#mkTabs button{ flex:none; display:inline-flex; align-items:center; gap:5px; height:34px; padding:0 13px; border-radius:999px; border:0; background:var(--zsoft); color:var(--zsub); font-weight:800; font-size:13px; cursor:pointer; white-space:nowrap; }
+#mkTabs button.on{ background:var(--zb); color:#fff; box-shadow:0 3px 0 var(--zb2); }
+/* 사진 */
+#photoBar .chips button, .chips button{ border-radius:999px !important; }
+#photoShoot{ background:#fff !important; border:4px solid var(--zb) !important; box-shadow:var(--zsh2) !important; }
+/* 로딩: 브랜드 블루 */
+#loading{ background:radial-gradient(120% 80% at 50% 0%, #5B9BFF 0%, #2F6FEB 55%, #1E4FC2 100%) !important; color:#fff !important; }
+#loading::before{ content:'스노우라이브 파크'; font-size:clamp(28px,8vw,44px); font-weight:900; letter-spacing:-.03em; text-shadow:0 3px 0 rgba(10,40,120,.35); }
+#loading::after{ content:''; width:min(200px,50vw); height:8px; border-radius:999px; background:linear-gradient(90deg,#fff 0 40%, rgba(255,255,255,.3) 40%) 0 0/200% 100%; animation:zload 1.1s linear infinite; }
+#loading span{ color:#E2ECFF; font-weight:600; }
+@keyframes zload{ to{ background-position:-200% 0; } }
+@media (max-width:600px){
+  #ticket, #soundP, #summitPanel{ left:var(--g) !important; right:var(--g) !important; width:auto !important; }
+  #soundP, #summitPanel{ top:auto !important; bottom:calc(var(--g) + var(--sb)) !important; border-radius:28px !important; }   /* 모바일: 아래에서 올라오는 시트 */
+}
+
+/* ═══ 시작 화면 v4 — ZEPETO 스타일(스노우라이브 블루): 꽉 찬 브랜드 배경 · 떠다니는 스티커 · 가운데 로고 · 아래 흰 알약 버튼 2개 ═══ */
+#gate{ padding:0 !important; justify-content:space-between !important; align-items:center !important; flex-direction:column !important; gap:0 !important; pointer-events:auto !important; background:none !important; }
+#gate .z4-bg{ position:absolute; inset:0; overflow:hidden; background:linear-gradient(to top, #1F4FC4 0%, rgba(31,79,196,.98) 22%, rgba(31,79,196,0) 42%), radial-gradient(90% 60% at 50% 38%, rgba(120,178,255,.92) 0%, rgba(47,111,235,.94) 52%, rgba(26,72,190,.97) 100%); }
+#gate .z4-bg::after{ content:''; position:absolute; inset:0; background-image:radial-gradient(rgba(255,255,255,.22) 1.4px, transparent 1.6px); background-size:26px 26px; opacity:.55; }
+#gate .z4-f{ position:absolute; font-style:normal; font-size:clamp(30px,8vw,56px); filter:drop-shadow(0 8px 14px rgba(10,30,90,.35)); animation:z4-float 6s ease-in-out infinite; user-select:none; }
+#gate .z4-f1{ left:8%; top:12%; color:#fff; } #gate .z4-f2{ right:10%; top:16%; animation-delay:-1s; font-size:clamp(40px,11vw,76px); }
+#gate .z4-f3{ right:18%; top:44%; color:#CFE4FF; animation-delay:-2s; } #gate .z4-f4{ left:9%; top:52%; animation-delay:-3s; font-size:clamp(40px,11vw,76px); }
+#gate .z4-f5{ left:40%; top:6%; animation-delay:-4s; } #gate .z4-f6{ left:16%; bottom:30%; color:#fff; animation-delay:-2.5s; font-size:clamp(20px,5vw,34px); }
+#gate .z4-f7{ right:8%; bottom:32%; animation-delay:-1.5s; } #gate .z4-f8{ right:30%; top:28%; animation-delay:-3.6s; font-size:clamp(24px,6vw,40px); }
+#gate .z4-top, #gate .z4-center, #gate .z4-bottom{ position:relative; z-index:1; }
+#gate .z4-top{ padding-top:calc(18px + env(safe-area-inset-top,0px)); }
+#gate .z4-live{ display:inline-flex; align-items:center; gap:8px; height:34px; padding:0 14px; border-radius:999px; background:rgba(255,255,255,.2); border:1px solid rgba(255,255,255,.35); color:#fff; font-size:13px; font-weight:700; backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); }
+#gate .z4-live b{ font-weight:900; margin-right:1px; }
+#gate .z4-dot{ width:8px; height:8px; border-radius:50%; background:#4ADE80; box-shadow:0 0 0 3px rgba(74,222,128,.3); }
+#gate .z4-center{ display:flex; flex-direction:column; align-items:center; gap:14px; text-align:center; padding:0 20px; }
+#gate .z4-logo{ width:clamp(92px,26vw,128px); height:clamp(92px,26vw,128px); border-radius:50%; background:#fff; display:flex; align-items:center; justify-content:center; box-shadow:0 10px 0 rgba(20,60,160,.35), 0 24px 50px rgba(10,30,90,.35); animation:z4-pop .7s cubic-bezier(.2,1.6,.4,1) both; }
+#gate .z4-logo svg{ width:58%; height:58%; fill:none; stroke:var(--zb,#2F6FEB); stroke-width:3.4; stroke-linecap:round; stroke-linejoin:round; }
+#gate h1.z4-title{ margin:6px 0 0 !important; font-size:clamp(32px,8.6vw,54px) !important; font-weight:900 !important; letter-spacing:-.035em !important; text-transform:none !important; text-indent:0 !important; white-space:nowrap; color:#fff !important; text-shadow:0 4px 0 rgba(20,60,160,.35) !important; }
+#gate .z4-sub{ margin:0; color:#E4EEFF; font-size:clamp(14px,3.8vw,17px); font-weight:700; }
+#gate .z4-bottom{ width:min(420px,calc(100% - 40px)); display:flex; flex-direction:column; align-items:stretch; gap:12px; padding-bottom:calc(26px + env(safe-area-inset-bottom,0px)); }
+#gate .z4-btn{ position:static !important; inset:auto !important; height:56px; border-radius:999px; font-size:17px; font-weight:900; letter-spacing:-.02em; cursor:pointer; -webkit-tap-highlight-color:transparent; transition:transform .1s ease; }
+#gate .z4-primary{ background:#fff !important; color:var(--zb,#2F6FEB) !important; border:0 !important; box-shadow:0 5px 0 rgba(20,60,160,.45), 0 14px 30px rgba(10,30,90,.3) !important; }
+#gate .z4-primary:active{ transform:translateY(3px); box-shadow:0 2px 0 rgba(20,60,160,.45) !important; }
+#gate .z4-ghost{ background:rgba(255,255,255,.08) !important; color:#fff !important; border:2px solid rgba(255,255,255,.75) !important; }
+#gate .z4-ghost:active{ transform:scale(.98); }
+#gate .z4-note{ text-align:center; color:#D7E6FF; font-size:12px; font-weight:700; margin-top:2px; }
+@keyframes z4-float{ 0%,100%{ transform:translateY(0) rotate(-6deg); } 50%{ transform:translateY(-14px) rotate(6deg); } }
+@keyframes z4-pop{ 0%{ transform:scale(.6); opacity:0; } 100%{ transform:scale(1); opacity:1; } }
+@media (orientation:landscape) and (max-height:520px){ #gate .z4-logo{ width:64px; height:64px; } #gate .z4-sub{ display:none; } #gate .z4-bottom{ flex-direction:row; flex-wrap:wrap; width:min(560px,92vw); } #gate .z4-btn{ flex:1; height:48px; } #gate .z4-note{ width:100%; } }
+@media (prefers-reduced-motion:reduce){ #gate .z4-f, #gate .z4-logo{ animation:none; } }
+
+/* 시작 화면 v5: 스노우라이브 로고(워드마크) + '파크' 배지 · 우리 3D 캐릭터 스티커(이모지 대신) */
+#gate .tap-hint{ display:none !important; }
+#gate h1.z4-title{ display:flex; flex-direction:column; align-items:center; gap:14px; margin:0 !important; }
+#gate .z4-wordmark{ width:clamp(220px,62vw,420px); height:auto; filter:brightness(0) invert(1); animation:z4-pop .7s cubic-bezier(.2,1.6,.4,1) both; }
+#gate .z4-park{ display:inline-flex; align-items:center; height:clamp(34px,8vw,44px); padding:0 clamp(16px,4vw,22px); border-radius:999px; background:#fff; color:var(--zb,#2F6FEB); font-size:clamp(17px,4.6vw,22px); font-weight:900; letter-spacing:.02em; box-shadow:0 4px 0 rgba(20,60,160,.35); }
+#gate .z4-sr{ position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; }
+#z4Chars{ position:absolute; inset:0; }
+#gate .z4-char{ position:absolute; width:clamp(96px,26vw,190px); height:auto; filter:drop-shadow(0 0 0 #fff) drop-shadow(0 10px 16px rgba(10,30,90,.35)); animation:z4-float 6s ease-in-out infinite, z4-in .6s ease-out both; }
+#gate .z4-c1{ left:-2%; top:8%; animation-delay:-1s, 0s; } #gate .z4-c2{ right:-1%; top:11%; animation-delay:-2s, .08s; }
+#gate .z4-c3{ left:1%; top:55%; width:clamp(84px,22vw,160px); animation-delay:-3s, .16s; } #gate .z4-c4{ right:1%; top:54%; width:clamp(84px,22vw,160px); animation-delay:-4s, .24s; }
+#gate .z4-c5{ left:27%; top:60%; width:clamp(66px,17vw,120px); animation-delay:-5s, .32s; } #gate .z4-c6{ right:27%; top:61%; width:clamp(66px,17vw,120px); animation-delay:-2.5s, .4s; }
+@keyframes z4-in{ from{ opacity:0; } to{ opacity:1; } }
+@media (min-width:1025px){ #gate .z4-c1{ left:10%; top:14%; } #gate .z4-c2{ right:10%; top:14%; } #gate .z4-c3{ left:20%; top:50%; } #gate .z4-c4{ right:20%; top:50%; } #gate .z4-c5{ left:4%; top:58%; } #gate .z4-c6{ right:4%; top:58%; } }
+@media (orientation:landscape) and (max-height:520px){ #gate .z4-c3, #gate .z4-c4, #gate .z4-c5, #gate .z4-c6{ display:none; } }
+
+/* 시작 화면 v6: 설산이 비치는 반투명 블루(도트 없음) · 로고 결의 'PARK' 워드마크 · 우리 캐릭터 단체 사진 한 장 */
+#gate .z4-bg{ background:linear-gradient(to top, rgba(26,72,190,.9) 0%, rgba(31,79,196,.55) 26%, rgba(31,79,196,0) 46%), radial-gradient(90% 65% at 50% 35%, rgba(90,150,255,.28) 0%, rgba(47,111,235,.46) 55%, rgba(26,72,190,.66) 100%) !important; }
+#gate .z4-bg::after{ content:none !important; }
+#z4Chars{ display:none; }
+#gate .z4-center{ margin-top:auto; }
+#gate .z4-park{ height:auto !important; padding:0 !important; background:none !important; box-shadow:none !important; color:#fff !important; display:inline-flex; align-items:center; gap:.45em; font-family:'Montserrat','Pretendard',sans-serif !important; font-weight:900 !important; font-size:clamp(13px,3.4vw,17px) !important; font-weight:800 !important; letter-spacing:.42em !important; line-height:1; text-indent:.42em; filter:none; text-shadow:none !important; margin-top:-2px; }
+#gate .z4-park i{ display:inline-block; width:.9em; height:.42em; border-top:.11em solid #fff; border-bottom:.11em solid #fff; box-sizing:border-box; }
+#gate .z4-group{ position:relative; z-index:1; width:min(620px,96vw); aspect-ratio:900/440; margin:clamp(6px,2vh,18px) 0 auto; pointer-events:none; }
+#gate .z4-group img{ width:100%; height:100%; object-fit:contain; filter:drop-shadow(0 14px 20px rgba(10,30,90,.35)); animation:z4-in .6s ease-out both, z4-bob 3.6s ease-in-out infinite; }
+@keyframes z4-bob{ 0%,100%{ transform:translateY(0); } 50%{ transform:translateY(-6px); } }
+@media (orientation:landscape) and (max-height:520px){ #gate .z4-group{ display:none; } }
+/* 하강 속도계(디지털) — 우하단. 터치 기기는 조이스틱 위(가로 짧은 화면은 조이스틱 왼쪽) */
+:root{ --gw:176px; --gh:104px; }
+@media (max-width:600px){ :root{ --gw:136px; --gh:82px; } }
+@media (orientation:landscape) and (max-height:520px){ :root{ --gw:124px; --gh:74px; } }
+#gauge{ position:fixed; z-index:4; right:calc(var(--g) + var(--sr)); bottom:calc(var(--g) + var(--sb)); width:var(--gw); height:var(--gh); box-sizing:border-box; padding:calc(var(--gh) * .1) calc(var(--gw) * .08) calc(var(--gh) * .12); border-radius:calc(var(--gh) * .24); background:linear-gradient(180deg,#1B2A4E 0%,#0F1832 100%); border:2px solid rgba(255,255,255,.9); box-shadow:0 5px 0 #0A1226, 0 14px 30px rgba(10,24,70,.38); display:flex; flex-direction:column; justify-content:space-between; pointer-events:none; font-family:'Orbitron','Montserrat',sans-serif; }
+body.touch #gauge{ bottom:calc(var(--g) + 10px + var(--joy) + 14px + var(--sb)); right:calc(var(--g) + 10px + var(--sr) + (var(--joy) - var(--gw)) / 2); }
+@media (orientation:landscape) and (max-height:520px){ body.touch #gauge{ bottom:calc(var(--g) + 10px + var(--sb) + (var(--joy) - var(--gh)) / 2); right:calc(var(--g) + 10px + var(--joy) + 14px + var(--sr)); } }
+#gauge .d-top{ display:flex; justify-content:space-between; align-items:center; font-size:calc(var(--gh) * .1); font-weight:800; letter-spacing:.14em; line-height:1; }
+#gauge .d-lab{ color:#6F86B8; } #gauge .d-unit{ color:#9DB8F0; letter-spacing:.06em; }
+#gauge .d-num{ position:relative; text-align:right; line-height:1; font-size:calc(var(--gh) * .44); font-weight:900; font-variant-numeric:tabular-nums; letter-spacing:.04em; }
+#gauge .d-ghost{ position:absolute; right:0; top:0; color:rgba(120,160,255,.09); }
+#gauge .d-num b{ position:relative; color:#7FB2FF !important; font-weight:900; font-family:inherit !important; text-shadow:0 0 12px rgba(80,140,255,.55); }
+#gauge.fast .d-num b{ color:#FF7A5C !important; text-shadow:0 0 12px rgba(255,90,60,.55); }
+#gauge .d-bar{ display:flex; gap:2px; height:calc(var(--gh) * .075); }
+#gauge .d-bar i{ flex:1; border-radius:2px; background:rgba(120,160,255,.14); }
+#gauge .d-bar i.on{ background:#4A86FF; box-shadow:0 0 6px rgba(74,134,255,.7); }
+#gauge .d-bar i.on.hot{ background:#FF6A4D; box-shadow:0 0 6px rgba(255,106,77,.7); }
+/* 라이딩 바: 속도·조작 안내 대신 코스 이름 + 자동/직접 전환만 작게 */
+#skiBar{ height:auto !important; padding:5px 5px 5px 16px !important; gap:10px !important; font-size:var(--fs) !important; }
+#skiBar .btn{ height:calc(var(--bh) - 8px) !important; padding:0 14px !important; font-size:calc(var(--fs) - 1px) !important; }
+/* 인사 · 앉기 버튼은 쓰지 않아요(벤치는 다가가면 뜨는 안내로 앉고 일어나요) */
+#hud #actions{ display:none !important; }
+/* 좌상단 인포 버튼 → 오늘의 라이딩 기록 카드 */
+#hud .tl{ align-items:center; }
+#hud .tl .icon-btn{ width:var(--bh) !important; height:var(--bh) !important; padding:0 !important; display:flex; align-items:center; justify-content:center; flex:none; }
+#infoBtn[aria-expanded="true"]{ background:var(--zb,#2F6FEB) !important; color:#fff !important; }
+#chPill{ max-width:calc(100vw - 4 * var(--bh) - 8 * var(--g)) !important; }
+#statsPop{ min-width:220px; padding:14px 16px 16px; border-radius:20px; background:#fff; color:var(--zink,#16213A); box-shadow:0 12px 34px rgba(16,40,110,.22); animation:sp-in .18s ease-out both; }
+#statsPop .sp-h{ margin:0 0 10px; font-size:calc(var(--fs) - 1px); font-weight:800; color:var(--zsub,#6B7A93); }
+#statsPop .sp-row{ display:flex; gap:8px; }
+#statsPop .sp-row > div{ flex:1; display:flex; flex-direction:column; align-items:center; gap:4px; padding:10px 6px; border-radius:14px; background:var(--zsoft,#EEF3FB); }
+#statsPop b{ color:var(--zb,#2F6FEB) !important; font-size:calc(var(--fs) + 8px); font-weight:900; color:var(--zb,#2F6FEB); font-family:inherit !important; line-height:1; }
+#statsPop span{ font-size:calc(var(--fs) - 2px); font-weight:700; color:var(--zsub,#6B7A93); }
+@keyframes sp-in{ from{ opacity:0; transform:translateY(-6px) scale(.97); } to{ opacity:1; transform:none; } }
+body.modal-open #gauge, body.modal-open #statsPop{ display:none !important; }
 </style>
 </head>
 <body>
@@ -538,18 +785,19 @@ body.modal-open #joy, body.modal-open #jumpBtn, body.modal-open #actions, body.m
 <div id="labels"></div>
 
 <div id="gate" class="screen hidden">
-  <div id="gateHead">
-    <h1>snowlive resort</h1>
+  <div class="z4-bg" aria-hidden="true"><div id="z4Chars"></div></div>
+  <div class="z4-top"><span class="z4-live"><i class="z4-dot"></i><span id="liveLoad">접속 중…</span><span id="liveReal" hidden><b id="liveCount">0</b>명이 타고 있어요</span></span></div>
+  <div class="z4-center">
+    <h1 class="z4-title"><img class="z4-wordmark" src="assets/snowlive_logo.svg" alt="SNOWLIVE"><span class="z4-park" aria-hidden="true">PARK</span><span class="z4-sr">스노우라이브 파크</span></h1>
+    <p class="z4-sub">친구들과 함께 타는 온라인 스키장</p>
   </div>
-  <div id="gateCard">
-    <div class="live"><span id="liveLoad"><span class="dot"></span><i class="spin"></i> 접속 중…</span><span id="liveReal" hidden><span class="dot"></span><b id="liveCount">0</b>명</span></div>
+  <div class="z4-group" id="z4Group" aria-hidden="true"></div>
+  <div class="z4-bottom">
+    <button type="button" class="z4-btn z4-primary" id="tapStart" aria-label="스노우라이브 파크 입장하기">입장하기</button>
+    <button type="button" class="z4-btn z4-ghost" id="gateDress">캐릭터 꾸미기</button>
+    <span class="z4-note"><span id="gTrails">11</span>개 슬로프 · <span id="gLifts">6</span>개 리프트 운영 중</span>
   </div>
-  <!-- 화면 아무 곳이나 눌러 입장 -->
-  <button type="button" class="tap-to-start" id="tapStart" aria-label="입장하기"></button>
-  <div class="tap-hint" aria-hidden="true">
-    <span class="tap-hint__main">화면을 눌러 시작</span>
-    <span class="tap-hint__sub">소리를 켜고 들어오세요</span>
-  </div>
+  <div class="tap-hint" aria-hidden="true" hidden><span class="tap-hint__main"></span><span class="tap-hint__sub"></span></div>
 </div>
 
 <div id="makerTitle" class="hidden">
@@ -560,6 +808,7 @@ body.modal-open #joy, body.modal-open #jumpBtn, body.modal-open #actions, body.m
 <div id="maker" class="panel hidden">
   <div id="makerScroll">
   <div><h2>꾸미기</h2><p class="sub">바꿀 때마다 바로 보여요</p></div>
+  <div id="mkTabs" role="tablist" aria-label="꾸미기 항목"></div>
   <div class="field"><label>체형</label><div class="seg" id="segBody"><button data-v="male">남성</button><button data-v="female">여성</button></div></div>
   <div class="field"><label>장비</label><div class="seg" id="segGear"><button data-v="ski">스키</button><button data-v="board">스노보드</button></div></div>
   <div class="wear">
@@ -582,13 +831,13 @@ body.modal-open #joy, body.modal-open #jumpBtn, body.modal-open #actions, body.m
 </div>
 
 <div id="hud" class="hidden">
-  <div class="tl"><button id="chPill" class="pill"><span class="dot"></span><span id="chText">1번 채널 · 접속 중</span></button></div>
+  <div class="tl"><button id="chPill" class="pill"><span class="dot"></span><span id="chText">1번 채널 · 접속 중</span></button><button class="icon-btn" id="infoBtn" aria-label="오늘의 라이딩 기록" aria-expanded="false"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="9.2"/><path d="M12 11v5.5"/><circle cx="12" cy="7.6" r=".6" fill="currentColor"/></svg></button></div>
   <div class="tr">
     <button class="pill" id="viewBtn" aria-label="1인칭·3인칭 바꾸기" title="시점 바꾸기 (V)" style="height:44px">3인칭</button>
     <button class="icon-btn" id="sndBtn" aria-label="소리·화면 설정"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H2v6h4l5 4V5z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M19 5a10 10 0 0 1 0 14"/></svg></button>
     <button class="icon-btn" id="exitBtn" aria-label="나가기"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5"/><path d="M21 12H9"/></svg></button>
   </div>
-  <div class="bl"><div id="counters" class="pill"><span>리프트 <b class="num" id="cLift">0</b></span><span>하강 <b class="num" id="cRun">0</b></span><span><b class="num" id="cTime">0</b>분</span></div></div>
+  <div class="bl"><div id="statsPop" class="hidden" role="dialog" aria-label="오늘의 라이딩"><p class="sp-h">오늘의 라이딩</p><div class="sp-row"><div><b class="num" id="cLift">0</b><span>리프트</span></div><div><b class="num" id="cRun">0</b><span>하강</span></div><div><b class="num" id="cTime">0</b><span>분</span></div></div></div></div>
   <div class="br" id="actions"><button class="actbtn" id="waveBtn">인사</button><button class="actbtn" id="sitBtn">앉기</button></div>
 </div>
 
@@ -618,6 +867,7 @@ body.modal-open #joy, body.modal-open #jumpBtn, body.modal-open #actions, body.m
 </div>
 
 <div id="skiBar" class="hidden"></div>
+<div id="gauge" class="hidden" aria-label="속도계"><div class="d-top"><span class="d-lab">SPEED</span><span class="d-unit">km/h</span></div><div class="d-num"><span class="d-ghost" aria-hidden="true">888</span><b id="spd">0</b></div><div class="d-bar" id="gBar" aria-hidden="true"></div></div>
 <div id="progress" class="hidden"><div id="progFill"></div><div id="progDot"></div></div>
 <div id="touch" class="hidden"><div id="tL">왼쪽으로</div><div id="tR">오른쪽으로</div></div>
 
@@ -650,7 +900,7 @@ body.modal-open #joy, body.modal-open #jumpBtn, body.modal-open #actions, body.m
   </div>
   <div class="to-summary" id="toSummary"></div>
   <div class="to-tiles" id="toTiles"></div>
-  <div class="to-chhead"><div class="to-sectitle">채널 이동</div><div class="to-sechint">채널당 최대 60명</div></div>
+  <div class="to-chhead"><div class="to-sectitle">채널 이동</div><div class="to-sechint" id="chMaxHint">채널당 최대 100명</div></div>
   <div class="to-chgrid" id="toChGrid"></div>
   <div class="to-legend hidden" id="toLegend"><span class="dot"></span>친구가 있는 채널</div>
   <button class="to-cta" id="toCta" type="button"><span class="to-cta-label"></span><span class="to-cta-arrow">›</span></button>
@@ -775,50 +1025,73 @@ const SIDE = 560;   // 슬로프가 있는 폭(±)
 /* 캐릭터 체형(리프트 좌석 높이 등 월드에서도 써요) */
 const KK_S = 0.75;                            // 캐릭터 모델(KayKit) 단위 → m. 키 약 1.65m
 const LEG = (0.519 - 0.145) / 2 * KK_S, HIP = 0.519 * KK_S;   // 모델 기준(고관절 0.39m, 허벅지+종아리 0.28m). 발목 높이 = HIP - 2·LEG ≈ 0.11m
+function edgeDrop(x, z) {   // 스키장 바깥 끝은 완만히 내려가 구름 바다 아래로 잠겨요(멀리 막힌 벽 대신 운해)
+  const a = Math.max(0, z - 540) / 140, b = Math.max(0, Math.abs(x) - 1060) / 240;
+  return -70 * (a * a + b * b);
+}
 function groundRaw(x, z) {   // 자연 지형(봉우리·안장·주름)
-  if (z > 0) return 0;   // 베이스 광장
+  if (z > 0) return z > 540 || Math.abs(x) > 1060 ? edgeDrop(x, z) : 0;   // 베이스 광장
   let h = 0, sm = 0; for (const p of PEAKS) { const v = peakH(p, x, z); if (v > h) h = v; sm += v; }
   h += (sm - h) * 0.18;                                                             // 봉우리 사이 안장을 둥글게
   h += Math.min(h, 60) * 0.06 * Math.sin(x * 0.021 + Math.sin(z * 0.006) * 2);     // 산비탈 주름
   h *= Math.pow(Math.min(1, -z / 70), 1.2);                                         // 베이스로 완만하게
   // 초급 구역(서쪽 아래 · 새싹/초원 리프트): 약 12°로 일정하게 완만한 언덕. 위쪽(숲)에서 원래 산과 이어져요
   const w = begW(x, z); if (w > 0) { const ramp = 0.21 * Math.max(0, -z - 45); if (h > ramp) h -= w * (h - ramp); }
-  return h;
+  return h + (Math.abs(x) > 1060 ? edgeDrop(x, z) : 0);
 }
 const sstep = (a, b, v) => { const t = clamp((v - a) / (b - a), 0, 1); return t * t * (3 - 2 * t); };
 function begW(x, z) { return sstep(-556, -540, x) * (1 - sstep(-320, -290, x)) * sstep(-440, -340, z); }
 /* 슬로프는 옆으로 기울지 않게 다듬어요(실제로 정설해서 폭 방향은 평평): 코스 안은 중심선 높이로, 가장자리 바깥 9m에서 원래 지형과 이어져요 */
+function groundBase(x, z) {   // 자연 지형 + 정상 광장(평평하게, 바깥으로 완만히 이어져요). 코스 프로파일은 이 위에서 만들어요(광장이 코스를 덮어써 급경사가 생기지 않게)
+  let h = groundRaw(x, z); if (z > -150) return h;
+  for (const k in SUMMIT) {
+    const s = SUMMIT[k], dx = x - s.x, dz = z - s.z, d2 = dx * dx + dz * dz, Rb = s.r + s.b; if (d2 >= Rb * Rb) continue;
+    const d = Math.sqrt(d2), w = d <= s.r ? 1 : 1 - sstep(0, 1, (d - s.r) / s.b); h += (s.y - h) * w;
+  }
+  return h;
+}
+/* 코스 옆 벽(둔덕): 코스 가장자리에서 원래 지형으로 이어지는 경사면. 올라가는 쪽은 높이에 맞춰 폭을 넓혀
+   실제 슬로프 사이드 벽처럼 타고 오를 수 있는 기울기(최대 ~43°)로 만들어요. 내려가는 쪽은 그대로 짧게 */
+const BANK_MAX = 28;
+function bankW(diff) { return diff > 0 ? clamp(diff * 1.6, 9, BANK_MAX) : 9; }
+function wallAt(t, x, z) {   // 이 코스의 오르막 벽 위면 {k: 0(코스 끝)~1(벽 끝)} · 아니면 null
+  if (!t || z < t.zt - 12 || z > 2) return null;
+  const c = trailX(t, Math.min(0, z)), dx = x - c, s = trailSlope(t, z), nn = 1 + s * s, d = Math.abs(dx) / Math.sqrt(nn), hw = trailW(t, z) / 2 + 2;
+  if (d < hw - 2 || d > hw + BANK_MAX) return null;
+  const diff = groundBase(x, z) - trailProfH(t, Math.min(0, z + s * dx / nn));
+  return diff < 0.5 ? null : { k: Math.max(0, d - hw) / bankW(diff) };
+}
+function onWall(x, z) { for (const t of TRAILS) { const w = wallAt(t, x, z); if (w && w.k < 0.74) return true; } return false; }   // 벽 위쪽 끝(k≥0.74)엔 숲이 남아요
 function groundLevel(x, z) {
-  const h0 = groundRaw(x, z); if (z > 2) return h0;
+  const h0 = groundBase(x, z); if (z > 2) return h0;
   let best = 0, bd = 1e9, hb = 0;
   for (const t of TRAILS) {
-    if (z < t.zt - 12 || z > 4 || x < t.xmin - 60 || x > t.xmax + 60) continue;
+    if (z < t.zt - 12 || z > 4 || x < t.xmin - 80 || x > t.xmax + 80) continue;
     const c = trailX(t, Math.min(0, z)), dx = x - c; if (Math.abs(dx) > 120) continue;
     const s = trailSlope(t, z), nn = 1 + s * s, d = Math.abs(dx) / Math.sqrt(nn), hw = trailW(t, z) / 2 + 2;
-    if (d > hw + 9) continue;
-    const k = d < hw ? 0 : (d - hw) / 9, wgt = 1 - k * k * (3 - 2 * k);
+    if (d > hw + BANK_MAX) continue;
+    const zc = Math.min(0, z + s * dx / nn), hc = trailProfH(t, zc);   // 진행 방향에 수직으로 잰 중심선 높이(경사 제한·평활화된 프로파일)
+    const bw = bankW(h0 - hc); if (d > hw + bw) continue;
+    const k = d < hw ? 0 : (d - hw) / bw, wgt = 1 - k * k * (3 - 2 * k);
     if (wgt < best || (wgt === best && d >= bd)) continue;   // 두 코스가 겹치면 중심선이 가까운 코스를 따라요
-    const zc = Math.min(0, z + s * dx / nn); best = wgt; bd = d; hb = trailProfH(t, zc);   // 진행 방향에 수직으로 잰 중심선 높이(경사 제한·평활화된 프로파일)
+    best = wgt; bd = d; hb = hc;
   }
   return best ? h0 + (hb - h0) * best : h0;
 }
 /* 리프트·곤돌라 하차장은 평지(실제처럼 하차장 둘레를 다져요). 가장자리 바깥에서 원래 지형과 부드럽게 이어져요 */
 let LIFT_PADS = null;
 const SUMMIT = {};   // 봉우리별 정상 광장 {x,z,y(평평높이),r,b,R,trails} — TRAILS 정의 뒤에 채워요
-function liftPads() {
-  if (!LIFT_PADS) { LIFT_PADS = LIFT_DEFS.concat([GONDOLA_DEF]).map((d) => { const r = d.top === 'mid' ? 8 : 20, b = d.top === 'mid' ? 9 : 16; return { x: d.x1, z: d.z1, r, b, R2: (r + b) ** 2, h: groundLevel(d.x1, d.z1) }; }); }   // 중턱 하차장은 옆 코스에 닿지 않게 작게
+function groundSummit(x, z) { return groundLevel(x, z); }   // (정상 광장은 groundBase에서 이미 반영)
+function liftPads() {   // 하차장 높이는 정상 광장까지 반영한 높이로(광장과 하차장이 어긋나 역이 구덩이에 박히지 않게)
+  if (!LIFT_PADS) { LIFT_PADS = LIFT_DEFS.concat([GONDOLA_DEF]).map((d) => { const r = d.top === 'mid' ? 12 : 22, b = d.top === 'mid' ? 10 : 16; /* 중턱: 옆 코스와 22m 이상 떨어진 자리에 반경 12m 평지 */ return { x: d.x1, z: d.z1, r, b, R2: (r + b) ** 2, h: groundSummit(d.x1, d.z1) }; }); }
   return LIFT_PADS;
 }
 function groundH(x, z) {
-  let h = groundLevel(x, z); if (z > -150) return h;
+  let h = groundSummit(x, z); if (z > -150) return h;
   for (const p of liftPads()) { const dx = x - p.x, dz = z - p.z; if (dx * dx + dz * dz <= p.r * p.r) return p.h; }   // 하차장 안은 완전히 평평
   for (const p of liftPads()) {
     const dx = x - p.x, dz = z - p.z, d2 = dx * dx + dz * dz; if (d2 >= p.R2) continue;
-    const d = Math.sqrt(d2), w = d <= p.r ? 1 : 1 - sstep(0, 1, (d - p.r) / p.b); h += (p.h - h) * w;
-  }
-  for (const k in SUMMIT) {   // 정상 원형 광장: 굴곡 없이 평평하게(가장자리 바깥으로 자연스럽게 이어져요)
-    const s = SUMMIT[k], dx = x - s.x, dz = z - s.z, d2 = dx * dx + dz * dz, Rb = s.r + s.b; if (d2 >= Rb * Rb) continue;
-    const d = Math.sqrt(d2), w = d <= s.r ? 1 : 1 - sstep(0, 1, (d - s.r) / s.b); h += (s.y - h) * w;
+    const d = Math.sqrt(d2), w = 1 - sstep(0, 1, (d - p.r) / p.b); h += (p.h - h) * w;
   }
   return h;
 }
@@ -853,11 +1126,11 @@ function trailSlope(t, z) { return (trailX(t, Math.min(0, z + 0.5)) - trailX(t, 
 function trailHW(t, z, extra) { if (z < t.zt - 3 || z > 2) return -1; return (trailW(t, z) / 2 + (extra || 0)) * Math.sqrt(1 + trailSlope(t, z) ** 2); }   // 코스 범위 밖이면 -1(어디에도 안 걸려요)
 /* 리프트(체어) 정의 · 곤돌라는 따로. 나무·코스 배치보다 먼저 정해 둬요 */
 const LIFT_DEFS = [   // 베이스(x0,z0) → 봉우리 꼭대기 뒤(x1,z1). 코스 출구 사이 빈자리에서 출발해요
-  { id: 'main', name: '동봉 리프트', x0: 250, z0: 36, x1: 392, z1: -905, peak: 'E', top: 'summit', color: '#E4572E', ride: 80 },
-  { id: 'park', name: '파크 리프트', x0: 480, z0: 36, x1: 436, z1: -898, peak: 'E', top: 'summit', color: '#2B2F36', ride: 80 },
+  { id: 'main', name: '동봉 리프트', x0: 354, z0: 36, x1: 392, z1: -905, peak: 'E', top: 'summit', color: '#E4572E', ride: 80 },
+  { id: 'park', name: '파크 리프트', x0: 482, z0: 36, x1: 475, z1: -880, peak: 'E', top: 'summit', color: '#2B2F36', ride: 80 },
   { id: 'west', name: '서봉 리프트', x0: -410, z0: 36, x1: -384, z1: -846, peak: 'W', top: 'summit', color: '#2F6FD6', ride: 75 },
-  { id: 'kid', name: '새싹 리프트', x0: -306, z0: 36, x1: -306, z1: -300, top: 'mid', trail: 'g', color: '#3BA776', ride: 40 },   // 초급 코스는 정상이 아니라
-  { id: 'meadow', name: '초원 리프트', x0: -533, z0: 36, x1: -533, z1: -332, top: 'mid', trail: 'wd', color: '#7BC67E', ride: 42 }   // 완만한 아래쪽에서 출발해요(전용 리프트)
+  { id: 'kid', name: '새싹 리프트', x0: -306, z0: 36, x1: -296, z1: -300, top: 'mid', trail: 'g', color: '#3BA776', ride: 40 },   // 초급 코스는 정상이 아니라
+  { id: 'meadow', name: '초원 리프트', x0: -533, z0: 36, x1: -526, z1: -332, top: 'mid', trail: 'wd', color: '#7BC67E', ride: 42 }   // 완만한 아래쪽에서 출발해요(전용 리프트)
 ];
 LIFT_DEFS.forEach((d) => { d.x = d.x0; });
 const GONDOLA_DEF = { x0: -130, z0: 30, x1: 18, z1: -1108, peak: 'M' };   // 곤돌라: 베이스 → 주봉
@@ -893,22 +1166,26 @@ const PROF_DZ = 2, PROF_CAP = 0.6;   // 코스 최대 경사 ≈ tan(31°), 촘�
 function buildTrailProfiles() {
   for (const t of TRAILS) {
     const zs = [], hs = [];
-    for (let z = t.zt; z <= 0.01; z += PROF_DZ) { const zz = Math.min(0, z); zs.push(zz); hs.push(groundRaw(trailX(t, zz), zz)); }
-    if (zs[zs.length - 1] < -0.01) { zs.push(0); hs.push(groundRaw(trailX(t, 0), 0)); }
+    for (let z = t.zt; z <= 0.01; z += PROF_DZ) { const zz = Math.min(0, z); zs.push(zz); hs.push(groundBase(trailX(t, zz), zz)); }
+    if (zs[zs.length - 1] < -0.01) { zs.push(0); hs.push(groundBase(trailX(t, 0), 0)); }
     const n = hs.length; if (n < 2) { t.prof = null; continue; }
     const dH = [0]; for (let i = 1; i < n; i++) dH.push(Math.max(0.1, Math.hypot(trailX(t, zs[i]) - trailX(t, zs[i - 1]), zs[i] - zs[i - 1])));
     const sm = hs.slice();
     for (let pass = 0; pass < 2; pass++) { const c = sm.slice(); for (let i = 1; i < n - 1; i++) sm[i] = (c[i - 1] + 2 * c[i] + c[i + 1]) / 4; }   // 솔기·스파이크 평활화
-    for (let it = 0; it < 4; it++) {   // 위·아래 끝 고정하고 경사 캡(양방향)
+    const cap = () => { for (let it = 0; it < 12; it++) {   // 위·아래 끝 고정하고 경사 캡(양방향, 충분히 반복해 수렴)
       for (let i = 1; i < n; i++) { const lim = sm[i - 1] - PROF_CAP * dH[i]; if (sm[i] < lim) sm[i] = lim; }        // 너무 빨리 내려가면 완만하게
       for (let i = n - 2; i >= 1; i--) { const lim = sm[i + 1] + PROF_CAP * dH[i + 1]; if (sm[i] > lim) sm[i] = lim; }   // 아래쪽 기준으로 너무 높으면 낮춰 완만하게
+    } };
+    for (let round = 0; round < 4; round++) {   // 캡 → 넓게 부드럽게(경사가 갑자기 꺾이지 않게, 꼭대기는 둥글게 넘어가요) → 다시 캡
+      cap(); for (let pass = 0; pass < 6; pass++) { const c = sm.slice(); for (let i = 2; i < n - 2; i++) sm[i] = (c[i - 2] + 2 * c[i - 1] + 3 * c[i] + 2 * c[i + 1] + c[i + 2]) / 9; }
     }
+    cap();
     t.prof = { z0: zs[0], h: sm };
   }
 }
 buildTrailProfiles();
 function trailProfH(t, z) {
-  const P = t.prof; if (!P) return groundRaw(trailX(t, Math.min(0, z)), Math.min(0, z));
+  const P = t.prof; if (!P) return groundBase(trailX(t, Math.min(0, z)), Math.min(0, z));
   const zz = Math.min(0, Math.max(P.z0, z)), f = (zz - P.z0) / PROF_DZ; let i = Math.floor(f);
   if (i < 0) i = 0; if (i >= P.h.length - 1) return P.h[P.h.length - 1];
   return P.h[i] + (P.h[i + 1] - P.h[i]) * (f - i);
@@ -952,7 +1229,7 @@ function skiPhysics(c, dt, steer, brake, tuck, gear, check) {
   if (c.air) skid = 0;   // 공중: 경사 가속·눈 마찰·엣지가 없어요(공기 저항만)
   let a = c.air ? -SKI.drag * c.v * c.v : SKI.G * SKI.gravK * sinS - SKI.mu * SKI.G - (tuck ? SKI.tuckDrag : SKI.drag) * c.v * c.v - skid * (3 + 0.45 * c.v) - (brake ? 7 : 0);
   // 평지·저속에서 스케이팅으로 살살 밀어 완전히 멈추지 않아요(경사를 거슬러 올라도 다시 움직일 수 있어요)
-  if (!c.air && !brake && c.v < SKI.skate) a += (SKI.skate - c.v) * SKI.skateK;   // 스케이팅 추진: 평지 이동·완경사 거슬러 오르기 가능(위로 갈수록 느려져요)
+  if (!c.air && !brake && c.v < SKI.skate) a += (SKI.skate - c.v) * SKI.skateK * clamp(1 + sinS * 2.5, 0, 1);   // 스케이팅 추진: 평지 이동·완경사 거슬러 오르기 가능(위로 갈수록 느려져요)
   if (check && c.v > check) { a -= (c.v - check) * 0.8; skid = Math.max(skid, Math.min(0.6, (c.v - check) * 0.15)); }
   if (brake) skid = Math.max(skid, 0.8);
   c.v = Math.max(0, c.v + a * dt);
@@ -964,16 +1241,24 @@ function skiPhysics(c, dt, steer, brake, tuck, gear, check) {
   c.tuck = !!tuck; c.brake = !!brake;
   plantTick(c, dt);
 }
+/* 자동 하강: 앞쪽 코스 중심(속도에 비례한 거리)을 겨냥해 따라가며, 코스 폭 절반 안에서 S자 카빙. 급커브 앞에선 미리 속도를 줄여요 */
+function angDiff(a, b) { return ((b - a + Math.PI) % (2 * Math.PI) + 2 * Math.PI) % (2 * Math.PI) - Math.PI; }
 function autoSteer(c, t, dt) {
-  const dir = trailDir(t, c.z);
-  c.A = lerp(c.A, clamp(t.turnA + (c.v - t.auto) * 0.25, 0.3, 1.6), Math.min(1, dt * 1.5));
-  c.ph += t.turnW * Math.max(4, c.v) * dt;
-  const ahead = trailX(t, Math.min(0, c.z + 18));
-  const corr = clamp((ahead - c.x) * 0.08, -0.5, 0.5);
-  const want = dir + corr + c.A * Math.sin(c.ph);
-  return clamp((want - c.h) * 2.2, -1, 1);
+  const v = Math.max(4, c.v), look = clamp(v * 1.1, 10, 26), zA = Math.min(0, c.z + look);
+  const hw = Math.max(4, trailHW(t, zA, 0));
+  c.ph += t.turnW * v * dt;
+  const amp = Math.min(hw * 0.5, t.w * 0.27) * clamp((c.z - t.zt) / 40, 0, 1);   // 출발 직후엔 곧게, 그다음 S자
+  const want = Math.atan2(trailX(t, zA) + amp * Math.sin(c.ph) - c.x, zA - c.z);
+  return clamp(angDiff(c.h, want) * 2.4, -1, 1);
 }
-function carveStep(c, t, dt, vTarget, gear) { skiPhysics(c, dt, autoSteer(c, t, dt), false, false, gear || 'ski', vTarget); }
+function autoSpeed(t, z, v0, x) {   // 앞 35m 안에 코스가 크게 휘면 미리 천천히 · 모굴/점프대/롤러 앞에선 시속 30km대로
+  const bend = Math.abs(angDiff(trailDir(t, z), trailDir(t, Math.min(0, z + 35))));
+  let v = v0 * clamp(1 - bend * 0.9, 0.45, 1);
+  if (x != null && FEATURES.some((f) => !f.pipe && z > f.z0 - 45 && z < f.z0 + f.len + 4 && Math.abs(x - f.cx) < f.w / 2 + 14)) v = Math.min(v, 8.5);
+  if (MOGULS.trail === t) v = Math.min(v, 10);   // 모굴 코스(바람골)는 리듬 타며 천천히
+  return v;
+}
+function carveStep(c, t, dt, vTarget, gear) { skiPhysics(c, dt, autoSteer(c, t, dt), false, false, gear || 'ski', autoSpeed(t, c.z, vTarget, c.x)); }
 function autoX(t, z, ph) {
   const u = clamp(-z / L, 0, 1);
   const carve = t.w * 0.27 * Math.min(1, u * 5) * Math.min(1, (1 - u) * 20);
@@ -1026,6 +1311,7 @@ function standH(x, z, base) { let y = base; for (const q of PLATFORMS) if (Math.
 
 /* ───────────── 렌더러 · 장면 ───────────── */
 const IS_TOUCH = (window.matchMedia && matchMedia('(pointer: coarse)').matches) || ('ontouchstart' in window);
+if (IS_TOUCH) document.body.classList.add('touch');   /* 터치 기기: 속도계를 조이스틱 위로 */
 const canvas = $('#c');
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, preserveDrawingBuffer: true });
 const DPR = Math.min(window.devicePixelRatio || 1, 2);   // 모바일도 선명하게(도트/계단현상 제거): 디바이스 픽셀비율을 최대 2배까지
@@ -1236,42 +1522,32 @@ const skyMat = new THREE.ShaderMaterial({
       vec3 cuCol = mix(cShade, cBright, 0.35 + 0.65 * lit) + uSunCol * pow(s, 8.0) * (1.0 - smoothstep(0.55, 0.75, cu0)) * 0.6;
       col = mix(col, cuCol, cu * uCloud * 0.9);
       col = mix(col, cBright, cir * uCloud * 0.45);
-      // ── 요테이산(에조후지): 평원 위로 솟은 하나의 대칭 설산 원뿔 — 흰 눈 · 방사형 숲 줄무늬 · 넓은 오목 사면 · 둥근 정상 ──
+      // ── 먼 풍경(몽환적으로): 지평선을 따라 사방으로 낮게 겹친 파스텔 산맥 3겹 + 지평선 아래 운해(구름 바다) ──
       {
         float az = atan(d.x, d.z);
-        float sunAz = atan(sd.x, sd.z);
         vec2 cdir = vec2(cos(az), sin(az));
-        // (1) 낮고 은은한 원경 평원 능선(요테이 주변 저지대 숲 라인)
-        for (int li = 0; li < 2; li++) {
-          float fl = float(li);
-          float rid = 0.05 + fl * 0.022 + 0.03 * (fbm(cdir * (3.0 + fl * 2.0) + vec2(fl * 4.0, 1.0)) - 0.5);
-          float bd = smoothstep(rid + 0.003, rid - 0.003, h) * smoothstep(-0.05, -0.012, h);
-          if (bd > 0.001) col = mix(col, mix(mix(uHor, uZen, 0.55), vec3(0.74, 0.79, 0.9), 0.4 + fl * 0.3), bd * (0.5 + fl * 0.3));
+        vec3 haze = mix(uHor, uZen, 0.18);
+        for (int li = 0; li < 3; li++) {
+          float fl = float(li);                                                   // 0 = 가장 먼 겹(가장 옅게)
+          float ridge = 0.016 + fl * 0.006 + (0.055 - fl * 0.012) * fbm(cdir * (1.6 + fl * 1.4) + vec2(fl * 7.3, 3.1 + fl))
+                      + 0.02 * pow(abs(sin(az * (1.5 + fl * 0.7) + fl * 2.0)), 4.0);
+          float m = smoothstep(ridge + 0.0025, ridge - 0.0025, h) * smoothstep(-0.05, -0.005, h - 0.0);
+          float cap = smoothstep(ridge - 0.018, ridge - 0.002, h);                // 능선 가까이는 눈 덮인 밝은 띠
+          vec3 mc = mix(haze, mix(uZen, vec3(0.62, 0.66, 0.92), 0.4), 0.16 + fl * 0.17);
+          mc = mix(mc, mix(vec3(1.0), uSunCol, 0.3), cap * (0.28 - fl * 0.06));
+          mc += uSunCol * pow(s, 5.0) * (0.18 - fl * 0.04);                       // 해 쪽 능선이 은은하게 빛나요
+          col = mix(col, mc, m * (0.5 + fl * 0.17));
         }
-        // (2) 히어로 요테이 원뿔(down-valley 정면)
-        float az0 = 0.0;
-        float ha = atan(sin(az - az0), cos(az - az0));
-        float hwid = 1.05, tt = clamp(abs(ha) / hwid, 0.0, 1.0);
-        float peakH = 0.66, baseH = -0.02;   // 전경 설사면 위로 솟도록 크고 웅장하게
-        float prof = pow(1.0 - tt, 1.28);                                // 넓고 살짝 오목한 사면
-        prof -= 0.05 * exp(-pow(tt / 0.09, 2.0));                        // 정상 둥글게(뾰족하지 않게)
-        float jag = (n2(vec2(ha * 18.0, 1.0)) - 0.5) * 0.006 * (1.0 - tt);
-        float top = baseH + (peakH - baseH) * prof + jag;
-        float e2 = smoothstep(top + 0.004, top - 0.004, h) * smoothstep(-0.06, -0.02, h);
-        if (tt < 1.0 && e2 > 0.001) {
-          float up = clamp((h - baseH) / (peakH - baseH), 0.0, 1.0);     // 0 밑동 … 1 정상
-          float grain = fbm(vec2(ha * 34.0, up * 3.0));                  // 방사형 숲 줄무늬(얇고 촘촘)
-          float gully = smoothstep(0.52, 0.66, grain);
-          float treeAmt = gully * smoothstep(0.95, 0.5, up) * (0.3 + 0.7 * up);   // 아래로 갈수록 숲 짙고, 정상은 깨끗한 눈
-          vec3 snow = mix(vec3(0.95, 0.96, 1.0), uSunCol, 0.12);
-          vec3 tree = vec3(0.30, 0.36, 0.42);
-          vec3 face = mix(snow, tree, treeAmt * 0.72);
-          float lit = 0.5 + 0.5 * cos(ha - (sunAz - az0));               // 해 쪽 밝게, 반대쪽 서늘한 그늘
-          face *= mix(0.82, 1.06, lit);
-          face += uSunCol * pow(s, 4.0) * 0.1 * lit;
-          face += uSunCol * smoothstep(0.02, 0.0, top - h) * pow(s, 1.6) * 0.35;   // 능선 림라이트
-          face = mix(mix(uHor, uZen, 0.5), face, 0.62 + up * 0.34);     // 밑동은 대기에 살짝 묻혀요
-          col = mix(col, face, e2);
+        // 운해: 지평선 아래를 부드러운 구름 바다로(해 쪽은 금빛, 반대쪽은 라벤더 그늘)
+        float below = smoothstep(0.004, -0.03, h);
+        if (below > 0.0) {
+          vec2 cp2 = d.xz / (abs(min(h, 0.0)) + 0.035);
+          float sea = fbm(cp2 * 0.22 + vec2(uTime * 0.006, uTime * 0.002)) * 0.7 + fbm(cp2 * 0.6 - vec2(uTime * 0.01, 0.0)) * 0.3;
+          vec3 top = mix(mix(uHor, vec3(1.0), 0.45), uSunCol * 1.1, pow(s, 3.0) * 0.6);
+          vec3 shd = mix(mix(uZen, uHor, 0.55), vec3(0.72, 0.68, 0.9), 0.3);
+          vec3 sc = mix(shd, top, smoothstep(0.38, 0.72, sea));
+          sc = mix(sc, haze, smoothstep(-0.06, 0.004, h) * 0.6);                    // 지평선 가까이는 안개에 녹아요
+          col = mix(col, sc, below);
         }
       }
       // 밤: 반짝이는 별(크기 제각각) · 은하수 · 오로라
@@ -1287,6 +1563,33 @@ const skyMat = new THREE.ShaderMaterial({
       gl_FragColor = vec4(col, 1.0);
     }`
 });
+/* 운해: 스키장 아래로 펼쳐진 구름 바다(땅 끝이 잠기는 높이 −28m). 천천히 흐르고, 해 쪽은 금빛 · 그늘은 라벤더, 멀리선 하늘 안개에 녹아요 */
+const cloudSea = (() => {
+  const m = new THREE.ShaderMaterial({
+    uniforms: { uZen: skyMat.uniforms.uZen, uHor: skyMat.uniforms.uHor, uSunCol: skyMat.uniforms.uSunCol, uSunDir: SNOWU.uSunDir, uTime: skyMat.uniforms.uTime },
+    transparent: true, depthWrite: false, fog: false,
+    vertexShader: 'varying vec3 vW; void main(){ vec4 w = modelMatrix * vec4(position, 1.0); vW = w.xyz; gl_Position = projectionMatrix * viewMatrix * w; }',
+    fragmentShader: `
+      uniform vec3 uZen, uHor, uSunCol, uSunDir; uniform float uTime; varying vec3 vW;
+      float h2(vec2 p){ return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
+      float n2(vec2 p){ vec2 i = floor(p), f = fract(p); f = f * f * (3.0 - 2.0 * f); return mix(mix(h2(i), h2(i + vec2(1.0, 0.0)), f.x), mix(h2(i + vec2(0.0, 1.0)), h2(i + vec2(1.0, 1.0)), f.x), f.y); }
+      float fbm(vec2 p){ float v = 0.0, a = 0.5; for (int i = 0; i < 5; i++) { v += a * n2(p); p = p * 2.02 + vec2(3.1, 1.7); a *= 0.5; } return v; }
+      void main(){
+        vec2 q = vW.xz * 0.0016 + vec2(uTime * 0.004, uTime * 0.0015);
+        float c = fbm(q) * 0.65 + fbm(q * 2.7 - vec2(uTime * 0.006, 0.0)) * 0.35;
+        vec3 V = normalize(vW - cameraPosition), sd = normalize(uSunDir);
+        float s = max(dot(V, sd), 0.0), dist = length(vW.xz - cameraPosition.xz);
+        vec3 top = mix(mix(uHor, vec3(1.0), 0.5), uSunCol * 1.08, pow(s, 3.0) * 0.55);
+        vec3 shd = mix(mix(uZen, uHor, 0.6), vec3(0.74, 0.7, 0.92), 0.28);
+        vec3 col = mix(shd, top, smoothstep(0.32, 0.72, c));
+        col = mix(col, mix(uHor, uZen, 0.18), smoothstep(1800.0, 6500.0, dist) * 0.75);   // 멀리선 하늘 안개에 녹아요
+        float a = mix(0.82, 1.0, smoothstep(0.3, 0.7, c));
+        gl_FragColor = vec4(col, a);
+      }`
+  });
+  const p = new THREE.Mesh(new THREE.PlaneGeometry(16000, 16000, 1, 1), m); p.rotation.x = -Math.PI / 2; p.position.set(0, -28, -400); p.renderOrder = 0; p.frustumCulled = false; scene.add(p);
+  return p;
+})();
 const sky = new THREE.Mesh(new THREE.SphereGeometry(7000, 32, 16), skyMat); sky.renderOrder = -1; sky.frustumCulled = false; scene.add(sky);
 
 /* 먼 산·봉우리는 두지 않아요: 베이스에서 보이는 산은 모두 슬로프가 있는 이 스키장 산이에요(실제 스키장 전경처럼). 정상 뒤·양옆은 숲 덮인 능선 */
@@ -1363,8 +1666,9 @@ TRAILS.forEach((t, ti) => {
 /* 모굴(상급): 둥근 눈 둔덕 */
 const MOGULS = [];
 const MOGUL_GEO = new THREE.SphereGeometry(1, 16, 8, 0, Math.PI * 2, 0, Math.PI / 2);
+MOGULS.trail = TRAILS.find((q) => q.id === 'w') || TRAILS.find((q) => q.id === 'k') || TRAILS[0];
 for (let i = 0; i < 110; i++) {
-  const t = TRAILS.find((q) => q.id === 'w') || TRAILS.find((q) => q.id === 'k') || TRAILS[0];   // 급사면 모굴 코스(바람골)에 모굴을 깔아요
+  const t = MOGULS.trail;   // 급사면 모굴 코스(바람골)에 모굴을 깔아요
   const z = t.zt + 30 + R() * (-t.zt - 50), c = trailX(t, z), x = c + (R() - 0.5) * trailW(t, z) * 0.8;
   MOGULS.push({ x, z });
   const m = new THREE.Mesh(MOGUL_GEO, GROOM_MAT); m.position.set(x, groundH(x, z) + 0.02, z); m.scale.set(1.5, 0.55, 1.1); m.rotation.x = -Math.atan(slopeZ(x, z)); m.receiveShadow = true; scene.add(m);   // 경사면에 맞게 눕혀 아래쪽이 뜨지 않아요
@@ -1373,12 +1677,17 @@ for (let i = 0; i < 110; i++) {
 const MOG_B = new Map();
 MOGULS.forEach((m) => { const k = Math.floor(m.z / 4); if (!MOG_B.has(k)) MOG_B.set(k, []); MOG_B.get(k).push(m); });
 const FEATURES = [];
-function featureH(x, z) {
+function mogulH(x, z) {   // 모굴 둔덕 높이
   let h = 0; const k = Math.floor(z / 4);
   for (let d = -1; d <= 1; d++) { const arr = MOG_B.get(k + d); if (!arr) continue; for (const m of arr) { const a = (x - m.x) / 1.5, b = (z - m.z) / 1.1, q = 1 - a * a - b * b; if (q > 0) h = Math.max(h, 0.55 * Math.sqrt(q)); } }
+  return h;
+}
+function kickH(x, z) {   // 킥커·롤러·파이프 높이(모굴 제외)
+  let h = 0;
   for (const f of FEATURES) { const u = (z - f.z0) / f.len, v = (x - f.cx) / (f.w / 2); if (u >= 0 && u < 1 && v > -1 && v < 1) h = Math.max(h, f.prof(u, v)); }
   return h;
 }
+function featureH(x, z) { return Math.max(mogulH(x, z), kickH(x, z)); }
 function skiGround(x, z) { return groundH(x, z) + featureH(x, z); }
 function terrainFeature(cx, cz, w, len, prof, lip, nx, nz) {
   const f = { cx, z0: cz - len / 2, w, len, prof }; FEATURES.push(f);
@@ -1417,11 +1726,12 @@ const pipeProf = (u, v) => {   // 가로 단면: 바닥 14m · 반지름 5.5m �
 };
 (function superPipe() {
   const t = TRAILS.find((q) => q.id === 'hp'); if (!t) return;   // 하프파이프 코스
-  const z0 = Math.min(-30, t.zt + 140), z1 = t.zt + 20, cz = (z0 + z1) / 2, cx = trailX(t, cz);
+  const z0 = -420, z1 = -560, cz = (z0 + z1) / 2, cx = trailX(t, cz);   // 코스가 곧게 뻗은 구간에 140m 직선 파이프
   const f = terrainFeature(cx, cz, 36, z0 - z1, pipeProf, false, 56, 40); f.pipe = true;
   const zb = z0 + 6, yb = groundH(cx, zb);
-  [-1, 1].forEach((sd) => { box(0.7, 9, 0.7, '#15171B', cx + sd * 17, yb + 4.5, zb); colCircle(cx + sd * 17, zb, 0.6, { ski: true }); });
-  box(35, 2.4, 0.5, '#E4572E', cx, yb + 8.6, zb);
+  const aw = trailW(t, zb) / 2 + 0.9 + Math.abs(trailX(t, zb) - cx);   // 아치 기둥은 코스 가장자리 밖에
+  [-1, 1].forEach((sd) => { box(0.7, 9, 0.7, '#15171B', cx + sd * aw, yb + 4.5, zb); colCircle(cx + sd * aw, zb, 0.6, { ski: true }); });
+  box(aw * 2 + 0.8, 2.4, 0.5, '#E4572E', cx, yb + 8.6, zb);
   const s1 = signMesh('SUPER PIPE · 하프파이프', 30, 2.0, '#E4572E'); s1.position.set(cx, yb + 8.6, zb + 0.3); scene.add(s1);
   for (let z = z0 - 20; z > z1 + 10; z -= 40) [-1, 1].forEach((sd) => { const x = cx + sd * 15.8; box(0.15, 1.4, 0.15, '#E4572E', x, groundH(x, z) + 5.5 + 0.7, z); });   // 데크 끝 표시 깃대
 })();
@@ -1541,6 +1851,7 @@ const FOREST = { list: [], hold: [], ready: false, near: new Set(), t: 0, R: IS_
 // 숲 등록: 모든 숲(슬로프 가장자리·산 전체·베이스 뒤)이 한 LOD로 — 멀리는 임포스터, 내 주변만 모델
 FOREST.add = (list, placeholders, h) => {
   list.forEach((t) => {
+    if (onPiste(t.x, t.z, 1.5) || onWall(t.x, t.z)) { t.off = true; return; }   // 코스 위 · 탈 수 있는 사이드 벽 아래쪽 나무는 빼요(충돌도 없음)
     t.H = h * t.s; if (t.ry == null) t.ry = ((t.x * 12.9898 + t.z * 78.233) % 6.283 + 6.283) % 6.283;
     const i = FOREST.list.length; FOREST.list.push(t);
     const gk = Math.floor(t.x / FOREST.CELL) + ',' + Math.floor(t.z / FOREST.CELL); if (!FOREST.grid.has(gk)) FOREST.grid.set(gk, []); FOREST.grid.get(gk).push(i);
@@ -1660,6 +1971,7 @@ function pineForest(list, placeholders, opt) {
     if (inLiftCorridor(x, z) || PEAKS.some((p) => Math.hypot(x - p.x, z - p.z) < 64)) continue;
     { let inHub = false; for (const k in SUMMIT) { const s = SUMMIT[k]; if (Math.hypot(x - s.x, z - s.z) < s.R + 10) { inHub = true; break; } } if (inHub) continue; }   // 정상 광장 안엔 나무 없음
     if (forestAt(x, z) < 0.85 && Math.abs(x) < SIDE) continue;
+    if (onPiste(x, z, 3)) continue;   // 코스 위엔 나무 없음(지형 폭 바깥 코스도)
     list.push({ x, z, s: 0.75 + r() * 0.6, ry: r() * 6.283 });
   }
   // 모델을 불러오기 전엔 원뿔 나무가 자리를 지켜요
@@ -1677,7 +1989,7 @@ function hitTree(x, z) {
   const k = Math.floor(z / 10);
   for (let d = -1; d <= 1; d++) {
     const arr = TREE_BUCKET.get(k + d); if (!arr) continue;
-    for (const t of arr) { const dx = t.x - x, dz = t.z - z; if (dx * dx + dz * dz < (2.1 * t.s) * (2.1 * t.s)) return true; }
+    for (const t of arr) { if (t.off) continue; const dx = t.x - x, dz = t.z - z; if (dx * dx + dz * dz < (2.1 * t.s) * (2.1 * t.s)) return true; }
   }
   return false;
 }
@@ -2045,14 +2357,16 @@ function cableTowers(x0, z0, x1, z1, every, hSt, hTw) {
   const onTrail = (t) => { const [x, z] = P(t); return TRAILS.some((q) => Math.abs(x - trailX(q, Math.min(0, z))) < trailHW(q, z, 3)); };
   const ts = [];
   for (let d = every * 0.7; d < Ln - every * 0.4; d += every) {   // 코스 위를 피해 앞뒤로 조금씩 옮겨 봐요
-    let best = null; for (const dd of [0, 12, -12, 24, -24, 36, -36]) { const tt = (d + dd) / Ln; if (tt > 0.03 && tt < 0.97 && !onTrail(tt)) { best = tt; break; } }
+    let best = null; for (const dd of [0, 12, -12, 24, -24, 36, -36, 48, -48, 60, -60]) { const tt = (d + dd) / Ln; if (tt > 0.03 && tt < 0.97 && !onTrail(tt)) { best = tt; break; } }
     ts.push(best != null ? best : d / Ln);
   }
   const yAt = (t) => { const [x, z] = P(t); return groundH(x, z) + (t <= 0 || t >= 1 ? hSt : hTw); };
   for (let it = 0; it < 40; it++) {   // 케이블이 지면 위 8m보다 낮아지는 곳(봉우리 사이 능선 등)에 타워를 더해요
     const all = [0].concat(ts.sort((a, b) => a - b), [1]); let worst = null, wv = 10;
     for (let i = 1; i < all.length; i++) { const a = all[i - 1], b = all[i], ya = yAt(a), yb = yAt(b); for (let k = 1; k < 16; k++) { const t = a + (b - a) * k / 16; if (Math.min(t, 1 - t) * Ln < 18) continue; /* 터미널 근처는 승강장 지붕 아래로 낮게 지나가게(여기선 타워 추가 금지) */ const y = ya + (yb - ya) * k / 16, [x, z] = P(t), c = y - groundH(x, z); if (c < wv) { wv = c; worst = t; } } }
-    if (worst == null) break; ts.push(worst);
+    if (worst == null) break;
+    let tw = worst; if (onTrail(tw)) for (let k = 1; k <= 15 && tw === worst; k++) for (const sg of [1, -1]) { const c = worst + sg * k * 4 / Ln; if (c > 0.03 && c < 0.97 && !onTrail(c)) { tw = c; break; } }   // 보강 타워도 코스를 피해 옆으로
+    ts.push(tw);
   }
   return ts.sort((a, b) => a - b);
 }
@@ -2217,7 +2531,7 @@ const GONDOLA = (function () {
   // 8인승 곤돌라(탈 수 있어요): 베이스 서쪽 승강장 → 정상. 유리창 너머로 안이 보이는 캐빈, 마주 보는 의자 두 줄
   const GD = GONDOLA_DEF, X = GD.x0, Z0 = GD.z0, Z1 = GD.z1, ts = cableTowers(GD.x0, GD.z0, GD.x1, GD.z1, 115, 11, 16);
   const cab = makeCable(GD.x0, GD.z0, GD.x1, GD.z1, 3, 11, 16, ts);
-  const len = cab.len, speed = len / 15, spacing = 46, count = Math.round(2 * len / spacing);
+  const len = cab.len, speed = Math.min(10, len / 110), spacing = 70, count = Math.round(2 * len / spacing);   // 실제 곤돌라처럼 초속 약 10m(정상까지 약 2분), 캐빈 간격 70m
   ts.forEach((t) => {   // 곤돌라 타워: 높고 날씬한 기둥 + 넓은 크로스암
     const [x, z] = cab.tower(t), g0 = groundH(x, z), top = g0 + 16 + 1.2;
     box(1.8, top - g0, 1.8, '#D9DFE6', x, g0 + (top - g0) / 2, z); const arm = box(9.5, 1, 2, '#D9DFE6', x, top, z); arm.rotation.y = cab.ang;
@@ -2244,6 +2558,7 @@ const GONDOLA = (function () {
   return G;
 })();
 const RIDES = LIFTS.concat([GONDOLA]);   // 줄 서서 타는 모든 것
+{ const a = document.getElementById('gTrails'), b = document.getElementById('gLifts'); if (a) a.textContent = TRAILS.length; if (b) b.textContent = RIDES.length; }   // 첫 화면: 실제 슬로프·리프트 수
 (function magicCarpet() {
   // 초보 연습장: 솜사탕 출구 왼쪽, 지붕 덮인 무빙워크(비발디 발라드·휘닉스 초보 존처럼)
   const X = -236, zs = []; for (let z = 8; z >= -74; z -= 4) zs.push(z);
@@ -2408,7 +2723,7 @@ const ROAD_Z = 482, SVC_Z = 382;
   // 도로 너머 · 단지 양옆 숲
   const tr = [], R6 = rng(17);
   for (let i = 0; i < 2600 && tr.length < (IS_TOUCH ? 300 : 600); i++) {
-    const x = (R6() - 0.5) * 1560, z = 244 + R6() * 500;
+    const x = (R6() - 0.5) * 1560, z = 244 + R6() * 296;
     if (z < 500 && Math.abs(x) < 578) continue;
     tr.push([x, z, 0.8 + R6() * 0.6]);
   }
@@ -3239,6 +3554,14 @@ function animChar(c, dt, extra) {
     A0.rotation.set(0.05, 0, -0.12 - br * 0.02); A1.rotation.set(-0.03, 0, 0.12 + br * 0.02);
     E0.rotation.x = -0.28 - br * 0.03; E1.rotation.x = -0.36 + br * 0.03;
     if (board) { L1.rotation.z = 0.1; }
+  } else if (p === 'hop') {
+    // 제자리 점프: 공중에선 무릎을 당기고 팔을 옆으로 벌려 균형을 잡아요(c.hopK: 0 도약·착지 ~ 1 정점)
+    const k = clamp(c.hopK || 0, 0, 1), d = Math.min(legFlex(L0, 0.16 + 0.42 * k), legFlex(L1, 0.16 + 0.42 * k));
+    setHips(c, d, 0);
+    c.body.rotation.x = 0.1 + 0.12 * k; c.head.rotation.x = -c.body.rotation.x * 0.6;
+    A0.rotation.set(-0.3 - 0.2 * k, 0, -0.5 - 0.25 * k); A1.rotation.set(-0.3 - 0.2 * k, 0, 0.5 + 0.25 * k);
+    E0.rotation.x = E1.rotation.x = -0.45;
+    if (board) { L1.rotation.z = 0.1; }
   } else if (p === 'skate') {
     const ph = t * 5.2, sn = Math.sin(ph);
     if (board) {
@@ -3556,7 +3879,7 @@ function updateCounters() {
   $('#cLift').textContent = S.stats.lift; $('#cRun').textContent = S.stats.runs;
   $('#cTime').textContent = Math.floor((performance.now() - S.stats.start) / 60000);
 }
-function hideAllPanels() { ['#summitPanel', '#lodge', '#ticket', '#soundP', '#finish', '#prompt', '#banner', '#skiBar', '#progress', '#touch'].forEach((s) => show(s, false)); }
+function hideAllPanels() { ['#summitPanel', '#lodge', '#ticket', '#soundP', '#finish', '#prompt', '#banner', '#skiBar', '#progress', '#touch', '#gauge'].forEach((s) => show(s, false)); }
 
 /* 캐릭터 메이커 */
 function buildSwatches(id, list, key) {
@@ -3600,6 +3923,7 @@ $('#anonInput').onchange = (e) => { me.opts.anon = e.target.checked; };
 
 /* ───────────── 모드 전환 ───────────── */
 function setMode(m) {
+  if (m === 'base' && me && me.pos) me.pos._wz = null;   // 베이스로 들어온 위치부터 다시 재요(슬로프를 거슬러 오르기만 막아요)
   const prev = S.mode;
   if (S.photo && !['base', 'summit'].includes(m)) closePhoto();
   if (m !== 'base' && m !== 'summit') { if (S.seat) S.seat.by = null; S.seat = null; S.sitting = false; if (S.bus) { S.bus = null; } }
@@ -3615,7 +3939,9 @@ function setMode(m) {
   show('#viewBtn', ['base', 'summit', 'queue', 'lift', 'ski'].includes(m));
   show('#joy', IS_TOUCH && (m === 'base' || m === 'summit' || m === 'ski'));
   $('#joy').classList.toggle('joy-right', m === 'ski');   // 라이딩 중엔 조이스틱을 우측으로
-  show('#jumpBtn', IS_TOUCH && m === 'ski');              // 점프 버튼은 좌측(라이딩 중)
+  show('#jumpBtn', IS_TOUCH && ['ski', 'base', 'summit'].includes(m));   // 점프 버튼은 좌측(라이딩 · 걷는 중 제자리 점프)
+  if (m !== 'base' && m !== 'summit' && me && me.hop) me.hop = null;
+  show('#gauge', m === 'ski'); if (m === 'ski') setGauge(0, true);
   show('#dressBtn', false);                               // 모드 바뀌면 꾸미기 버튼 숨겨요
   if (S.look) { S.look.yaw = 0; }
   show('#social', ['base', 'summit', 'queue', 'lift'].includes(m));  // 이모트·채팅 바
@@ -3666,13 +3992,47 @@ function enterGame() {
     setMode('maker'); syncMaker();
   }
 }
+(function gateCharacters() {   // 시작 화면: 우리 캐릭터 5명을 한 장면에 모아 단체 사진처럼 한 장으로(크기·조명·겹침이 자연스럽게)
+  const holder = document.getElementById('z4Group'); if (!holder) return;
+  const go = () => {
+    if (!MODEL.ready) { setTimeout(go, 250); return; }
+    if (S.mode !== 'gate' && S.mode !== 'loading') return;
+    let rr; try { rr = new THREE.WebGLRenderer({ alpha: true, antialias: true, preserveDrawingBuffer: true }); } catch (e) { return; }
+    const W = 900, H = 440; rr.setPixelRatio(1); rr.setSize(W, H); rr.setClearColor(0x000000, 0);
+    const sc = new THREE.Scene(); sc.add(new THREE.HemisphereLight(0xffffff, 0xA9BEDC, 1.05)); const dl = new THREE.DirectionalLight(0xffffff, 0.85); dl.position.set(2, 4, 4); sc.add(dl);
+    const cam = new THREE.PerspectiveCamera(24, W / H, 0.1, 50); cam.position.set(0, 1.05, 6.4); cam.lookAt(0, 0.82, 0);
+    const P = [   // 가운데가 앞, 양옆으로 갈수록 뒤(V자) · 서로 다른 장비·포즈
+      { x: -1.9, z: -0.55, gear: 'board', pose: 'stand', photo: 'cheer', ry: 0.38 },
+      { x: -0.98, z: -0.2, gear: 'ski', pose: 'stand', photo: 'v', ry: 0.22 },
+      { x: 0, z: 0.2, gear: 'board', pose: 'stand', photo: 'wave', ry: 0 },
+      { x: 0.98, z: -0.2, gear: 'ski', pose: 'stand', photo: 'heart', ry: -0.22 },
+      { x: 1.9, z: -0.55, gear: 'board', pose: 'stand', photo: 'v', ry: -0.38 }
+    ];
+    P.forEach((p) => {
+      const c = makeChar(Object.assign(randOpts(), { gear: p.gear })); c.root.position.set(p.x, 0, p.z); c.root.rotation.y = p.ry; c.pose = p.pose; c.photoPose = p.photo; sc.add(c.root);
+      for (let k = 0; k < 45; k++) animChar(c, 1 / 30, {});
+    });
+    rr.render(sc, cam);
+    const img = new Image(); img.alt = ''; img.src = rr.domElement.toDataURL('image/png'); holder.appendChild(img);
+    rr.dispose(); if (rr.forceContextLoss) rr.forceContextLoss();
+  };
+  go();
+})();
 (function tapToStart() {
   const tap = $('#tapStart'); if (!tap) return;
   tap.addEventListener('click', enterGame);
+  const dress = $('#gateDress'); if (dress) dress.addEventListener('click', () => { enterGame(); if (S.mode === 'base') { S.makerFrom = me.pos.clone(); setMode('maker'); syncMaker(); } });   // 입장하자마자 꾸미기
   // 데스크톱이면 안내 문구를 '클릭하여 시작'으로
   if (matchMedia('(hover:hover) and (pointer:fine)').matches) { const mn = document.querySelector('.tap-hint__main'); if (mn) mn.textContent = '클릭하여 시작'; }
   // 소리가 이미 켜져 있으면 보조 문구 숨김
   if (!SND.muted) { const sb = document.querySelector('.tap-hint__sub'); if (sb) sb.style.display = 'none'; }
+})();
+(function makerTabs() {   // 꾸미기 카테고리 탭: 누르면 그 항목으로 이동, 스크롤하면 현재 항목이 켜져요
+  const box = $('#makerScroll'), bar = $('#mkTabs'); if (!box || !bar) return;
+  const T = [['🧍', '체형·장비', '#segBody'], ['🧥', '옷', '.wear'], ['⛑️', '머리', '#segHat'], ['🥽', '고글', '#swLens'], ['🧣', '넥워머', '#swNeck'], ['🧤', '장갑', '#swGlove'], ['🙂', '피부', '#swSkin'], ['🏷️', '닉네임', '#nameInput']];
+  const items = T.map(([ic, lb, sel]) => { const el = box.querySelector(sel); const sec = el && [...box.children].find((c) => c.contains(el)); /* 그 항목을 담은 꾸미기 섹션 */ const b = document.createElement('button'); b.type = 'button'; b.textContent = ic + ' ' + lb; b.onclick = () => { if (sec) box.scrollTo({ top: sec.offsetTop - bar.offsetHeight - 6, behavior: 'smooth' }); }; bar.appendChild(b); return { b, sec }; });
+  const sync = () => { let cur = 0; items.forEach((it, i) => { if (it.sec && it.sec.offsetTop - bar.offsetHeight - 20 <= box.scrollTop) cur = i; }); items.forEach((it, i) => it.b.classList.toggle('on', i === cur)); };
+  box.addEventListener('scroll', sync, { passive: true }); sync();
 })();
 $('#makerDone').onclick = () => {
   me.opts.name = $('#nameInput').value.trim() || '스노우라이브닉네임';
@@ -3703,6 +4063,19 @@ refreshMuteUI();
 $('#todSel').value = S.tod;   // 드롭다운도 현재 시간대(노을) 반영
 $('#todSel').onchange = (e) => { S.tod = e.target.value; };
 $('#chPill').onclick = () => openTicket();
+/* 오늘의 라이딩 기록: 좌상단 인포 버튼을 누르면 카드로 보여요(바깥을 누르면 닫혀요) */
+function statsOpen(on) { updateCounters(); show('#statsPop', on); $('#infoBtn').setAttribute('aria-expanded', on ? 'true' : 'false'); }
+$('#infoBtn').onclick = (e) => { e.stopPropagation(); statsOpen($('#statsPop').classList.contains('hidden')); };
+document.addEventListener('pointerdown', (e) => { if (!$('#statsPop').classList.contains('hidden') && !e.target.closest('#statsPop, #infoBtn')) statsOpen(false); });
+/* 하강 속도계(디지털): 큰 숫자(뒤에 흐린 888) + 아래 LED 막대 20칸(0~100km/h, 80부터 빨강). 숫자는 부드럽게 따라와요 */
+const GAUGE = { max: 100, n: 20, cur: 0, shown: -1, lit: -1 };
+$('#gBar').innerHTML = Array.from({ length: GAUGE.n }, (_, i) => '<i class="' + ((i + 1) / GAUGE.n * GAUGE.max > 80 ? 'hot' : '') + '"></i>').join('');
+function setGauge(kmh, snap) {
+  const tgt = clamp(kmh, 0, 199); GAUGE.cur = snap ? tgt : GAUGE.cur + (tgt - GAUGE.cur) * 0.2;
+  const n = Math.round(GAUGE.cur); if (n !== GAUGE.shown) { GAUGE.shown = n; $('#spd').textContent = n; $('#gauge').classList.toggle('fast', n >= 80); }
+  const lit = Math.min(GAUGE.n, Math.ceil(GAUGE.cur / GAUGE.max * GAUGE.n - 0.15));
+  if (lit !== GAUGE.lit) { GAUGE.lit = lit; $('#gBar').querySelectorAll('i').forEach((el, i) => el.classList.toggle('on', i < lit)); }
+}
 $('#exitBtn').onclick = () => openCard();
 $('#waveBtn').onclick = () => wave();
 /* 벤치에 앉기 · 일어나기 */
@@ -3842,7 +4215,7 @@ const TO_ICON = {
 const toSvg = (k) => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' + TO_ICON[k] + '</svg>';
 const toSum = (k, label, val, unit) => '<div class="to-sum to-sum-' + k + '"><span class="to-sum-ic">' + toSvg(k) + '</span><span class="to-sum-tx"><span class="to-sum-lb">' + label + '</span><span class="to-sum-vl">' + val + '<i>' + unit + '</i></span></span></div>';
 const toTile = (k, val, label) => '<div class="to-tile to-tile-' + k + '"><span class="to-tile-ic">' + toSvg(k) + '</span><span class="to-tile-vl">' + val + '</span><span class="to-tile-lb">' + label + '</span></div>';
-const toChannels = () => [[+String((typeof NET !== 'undefined' && NET.ch) || 'ch1').replace('ch', '') || 1, Math.max(1, (typeof NET !== 'undefined' && NET.count) || S.live || 1), false]];   // 실제 접속 중인 채널·인원만(가짜 채널·친구 표시 없음)
+const toChannels = () => { const cc = (typeof NET !== 'undefined' && NET.chCounts) || {}; return Array.from({ length: CH_COUNT }, (_, i) => [i + 1, i + 1 === S.ch ? Math.max(1, cc[i + 1] || 0, S.chCount || 0) : (cc[i + 1] || 0), false]); };   // 채널 10개의 실제 인원(친구 표시는 아직 없음)
 let toSelected = null;
 
 function openTicket() {
@@ -3856,7 +4229,7 @@ function openTicket() {
   renderChannels();
 }
 function renderChannels() {
-  const MAX = 60, chs = toChannels(), anyFriend = chs.some((c) => c[2]);
+  const MAX = CH_MAX, chs = toChannels(), anyFriend = chs.some((c) => c[2]);
   if (toSelected == null || toSelected === S.ch) {
     const avail = chs.filter((c) => c[0] !== S.ch && c[1] < MAX);
     const fr = avail.find((c) => c[2]);
@@ -3888,8 +4261,8 @@ function renderChannels() {
   }
 }
 function moveChannel(n, c) {
-  S.ch = n; S.chCount = c + 1;
-  const ct = $('#chText'); if (ct) ct.textContent = n + '번 채널 · ' + S.chCount + '/60명';
+  if (typeof NET !== 'undefined' && window.__fb && window.__fb.ready) NET.joinChannel(n);   // 실제로 그 채널로 옮겨요(그 채널 사람들이 보여요)
+  else { S.ch = n; S.chCount = c + 1; const ct = $('#chText'); if (ct) ct.textContent = n + '번 채널 · ' + S.chCount + '/' + CH_MAX + '명'; }
   toast(n + '번 채널로 이동했어요');
   toSelected = null; show('#ticket', false);
 }
@@ -4133,14 +4506,14 @@ function unboard() {
   if (d.top === 'mid') {   // 중턱 하차장(평지)에 내려요 → 이정표를 보고 걸어가 출발 게이트에서 출발(정상과 같아요)
     const tg = TRAILS.find((t) => t.id === d.trail) || TRAILS[0], gx = tg.pts[0][0], gz = tg.pts[0][1];
     S.peak = null; S.top = { x: d.x1, z: d.z1, R: Math.hypot(gx - d.x1, gz - d.z1) + 16, trails: [tg.id] };
-    const ex = d.x1, ez = d.z1 - 5, sx = d.x1, sz = d.z1 - 13;
+    const ex = d.x1 - 3, ez = d.z1 - 11, sx = d.x1 - 3, sz = d.z1 - 17;   /* 하차 램프 끝(안전망 밖)에서 내려 앞으로 미끄러져요 — 하차장 기둥 사이에 갇히지 않게 */
     me.pos.set(ex, groundH(ex, ez), ez); me.yaw = Math.atan2(gx - sx, gz - sz); me.c.pose = 'skate'; me.target = new THREE.Vector3(sx, 0, sz);
     S.look.yaw = 0; S.look.pitch = 0.12; setMode('summit'); SND.chime();
     toast(d.name + ' 하차장이에요 · 이정표를 보고 ' + tg.name + ' 출발 게이트로 가면 출발해요'); return;
   }
   // 정상: 넓은 평평한 광장에 내려요(둘레에 슬로프 입구가 배치됨)
   S.peak = d.peak || 'M';
-  const S0 = SUMMIT[d.id || 'gondola'] || SUMMIT[S.peak] || { x: PEAK[S.peak].x, z: PEAK[S.peak].z, R: 60, trails: TRAILS.filter((t) => t.peak === S.peak).map((t) => t.id) };
+  const S0 = SUMMIT[d.id || 'gondola'] || Object.values(SUMMIT).find((h) => Math.hypot(d.x1 - h.x, d.z1 - h.z) < h.R + 10) || SUMMIT[S.peak] || /* 이 하차장이 들어 있는 정상 광장(파크 리프트는 동봉 광장) */ { x: PEAK[S.peak].x, z: PEAK[S.peak].z, R: 60, trails: TRAILS.filter((t) => t.peak === S.peak).map((t) => t.id) };
   S.top = { x: S0.x, z: S0.z, R: S0.R, trails: S0.trails };
   const ex = S0.x, ez = S0.z - (S0.R - 6);    // 광장 위쪽에서 내려
   me.pos.set(ex, groundH(ex, ez), ez); me.yaw = 0; me.c.pose = 'skate';   // 베이스(아래=+z) 쪽을 바라봐요
@@ -4165,9 +4538,20 @@ function openSummit() {
   $('#goSki').textContent = TRAILS[S.slope].name + (S.skiMode === 'auto' ? '로 자동 하강' : '로 직접 타기');
 }
 $('#goSki').onclick = () => startSki();
-$('#stayTop').onclick = () => { show('#summitPanel', false); show('#joy', IS_TOUCH); show('#actions', true); toast('전망 데크에서 쉬어가요. 슬로프 입구로 가면 다시 고를 수 있어요'); };
+$('#stayTop').onclick = () => { show('#summitPanel', false); show('#joy', IS_TOUCH); show('#jumpBtn', IS_TOUCH); show('#actions', true); toast('전망 데크에서 쉬어가요. 슬로프 입구로 가면 다시 고를 수 있어요'); };
 
 /* 하강 */
+function skierHit(s) {   // 슬로프 위 다른 사람(실제 접속자 · 직원 스키어)과의 충돌: 밀어낼 방향과 상대 속도
+  const others = [];
+  bots.forEach((b) => { if (b.kind === 'skier' && b.cv && b.c.root.visible) others.push([b.pos.x, b.pos.z, b.cv.v || 0, b.cv.h || 0, b]); });
+  if (typeof NET !== 'undefined' && NET.remotes) NET.remotes.forEach((rm) => { if (rm.pose === 'ski' && rm.c.root.visible) { const p = rm.c.root.position; others.push([p.x, p.z, rm.v || 0, rm.tyaw || 0, rm]); } });
+  for (const [x, z, v, h, who] of others) {
+    const dx = s.x - x, dz = s.z - z, d = Math.hypot(dx, dz); if (d > 1.1 || d < 1e-3) continue;
+    const rvx = Math.sin(s.h) * s.v - Math.sin(h) * v, rvz = Math.cos(s.h) * s.v - Math.cos(h) * v;
+    return { dx: dx / d, dz: dz / d, d, rel: Math.hypot(rvx, rvz), who };
+  }
+  return null;
+}
 function skiFall(s, back) {
   s.fallT = 1.7; s.falls++; S.stats.falls++; SND.pop(); toast('푹! 괜찮아요, 금방 일어나요');
   puff(s.x, groundH(s.x, s.z), s.z, 40, 3);
@@ -4191,12 +4575,11 @@ function startSki(x0, z0) {
 }
 function renderSkiBar() {
   const s = S.ski; show('#skiBar', true);
-  const spd = '<span><b class="num" id="spd">0</b> km/h</span>';
   if (s.mode === 'auto') {
-    $('#skiBar').innerHTML = spd + '<span>' + s.t.name + ' · 자동</span><button class="btn primary" id="toManual" style="height:40px">직접 타기</button>';
+    $('#skiBar').innerHTML = '<span>' + s.t.name + ' · 자동</span><button class="btn primary" id="toManual">직접 타기</button>';
     $('#toManual').onclick = () => { s.mode = 'manual'; S.skiMode = 'manual'; renderSkiBar(); };
   } else {
-    $('#skiBar').innerHTML = spd + (IS_TOUCH ? '<span>조이스틱 좌우 턴 · 아래 감속 · 위 웅크리기</span>' : '<span><kbd>←</kbd><kbd>→</kbd> 턴 · <kbd>↓</kbd> 감속 · <kbd>↑</kbd> 웅크리기</span>') + '<span style="color:#B8CCDD" id="fallTxt">넘어짐 ' + s.falls + '번</span><button class="btn ghost" id="toAuto" style="height:40px">자동으로</button>';
+    $('#skiBar').innerHTML = '<span>' + s.t.name + ' · 직접</span><button class="btn ghost" id="toAuto">자동으로</button>';
     $('#toAuto').onclick = () => { s.mode = 'auto'; S.skiMode = 'auto'; s.fallT = 0; renderSkiBar(); };
   }
 }
@@ -4356,7 +4739,7 @@ function bindTouch(el, side) {
 }
 bindTouch($('#tL'), 'l'); bindTouch($('#tR'), 'r');
 const JOY = { on: false, x: 0, y: 0, id: null };
-const JUMP = { req: false };   // 좌측 점프 버튼이 한 번 눌릴 때마다 req=true (라이딩 중 점프)
+const JUMP = { req: false };   // 좌측 점프 버튼이 한 번 눌릴 때마다 req=true (라이딩 중 점프 · 걷는 중 제자리 점프)
 (function jumpBtn() {
   const b = $('#jumpBtn'); if (!b) return;
   b.addEventListener('pointerdown', (e) => { e.preventDefault(); JUMP.req = true; });
@@ -4579,28 +4962,57 @@ function labelAt(i, text, cls, wp, img) {
 const tmp = new THREE.Vector3(), tmp2 = new THREE.Vector3();
 
 /* ───────────── 멀티플레이(RTDB) ───────────── */
+/* 채널: 10개 × 100명. 입장하면 1번부터 빈자리가 있는 채널에 자동 배정(동시에 들어오면 잠깐 100명을 조금 넘을 수 있어요).
+   채널별 인원은 가벼운 접속 기록(<root>_presence/chN/uid)으로 세요 — 다른 채널 사람들의 위치까지 받지 않아요 */
+var CH_MAX = 100, CH_COUNT = 10;
 const API='https://snowlive-api-c617725e2b78.herokuapp.com/api/online-resort/';
 const NET = {
   ready:false, root:'resort/channels', ch:'ch1', cap:30,
   remotes:new Map(), acc:0, count:1, uid:null, selfRef:null, playersRef:null, nameTried:false,
-  async init(){ try{ const r=await fetch(API+'config/',{cache:'no-store'}); if(r.ok){ const c=await r.json(); this.root=c.rtdb_root||this.root; this.ch=c.default_channel||this.ch; this.cap=c.render_cap||this.cap; } }catch(e){} },
+  chCounts:{}, total:0, joined:false, unsubPlayers:null, presRef:null,
+  async init(){ try{ const r=await fetch(API+'config/',{cache:'no-store'}); if(r.ok){ const c=await r.json(); this.root=c.rtdb_root||this.root; this.cap=c.render_cap||this.cap; if(c.channel_max) CH_MAX=+c.channel_max||CH_MAX; if(c.channel_count) CH_COUNT=+c.channel_count||CH_COUNT; } }catch(e){} },
   connect(){
     const fb=window.__fb; if(!fb||!fb.ready||this.ready) return;
     const urlUid=(new URLSearchParams(location.search).get('uid')||'').trim();
     this.realUid = !!(fb.uid || urlUid);
     this.uid = fb.uid || urlUid || ('guest_'+Date.now()+'_'+Math.floor(Math.random()*1e4));
-    this.playersRef = fb.ref(this.root+'/'+this.ch+'/players');
-    this.selfRef = fb.ref(this.root+'/'+this.ch+'/players/'+this.uid);
-    try{ fb.onDisconnect(this.selfRef).remove(); }catch(e){}
-    fb.onValue(this.playersRef,(snap)=>{
-      const val=snap.val()||{}, keys=Object.keys(val); this.count=keys.length||1; const seen=new Set();
+    this.presRoot=this.root+'_presence';
+    fb.onValue(fb.ref(this.presRoot),(snap)=>{   // 채널별 인원(접속 기록 수) — 처음 받으면 빈자리 있는 채널로 들어가요
+      const v=snap.val()||{}, cc={}; let tot=0;
+      for(let i=1;i<=CH_COUNT;i++){ const k=Object.keys(v['ch'+i]||{}).length; cc[i]=k; tot+=k; }
+      this.chCounts=cc; this.total=tot;
+      if(!this.joined){ this.joined=true; this.joinChannel(this.pickChannel()); }
+      this.updateLabels();
+    },()=>{ if(!this.joined){ this.joined=true; this.joinChannel(1); } });   // 인원 기록을 못 읽으면 1번 채널로
+    setTimeout(()=>{ if(!this.joined){ this.joined=true; this.joinChannel(1); } },5000);   // 응답이 늦어도 5초 뒤엔 1번 채널로 들어가요
+    this.ready=true; if(this.realUid){ this.fetchName(); this.loadAvatar(); }
+  },
+  pickChannel(){ const cc=this.chCounts||{}; for(let i=1;i<=CH_COUNT;i++) if((cc[i]||0)<CH_MAX) return i; let b=1; for(let i=2;i<=CH_COUNT;i++) if((cc[i]||0)<(cc[b]||0)) b=i; return b; },   // 1번부터 채우고, 모두 차면 가장 한산한 채널
+  /* 채널 들어가기/옮기기: 이전 채널의 내 기록·구독·다른 사람 캐릭터를 정리하고 새 채널을 구독해요 */
+  joinChannel(n){
+    const fb=window.__fb; if(!fb) return; const ch='ch'+n;
+    if(this.unsubPlayers){ try{ this.unsubPlayers(); }catch(e){} this.unsubPlayers=null; }
+    [this.selfRef,this.presRef].forEach((r)=>{ if(r){ try{ fb.onDisconnect(r).cancel(); fb.set(r,null); }catch(e){} } });
+    for(const rm of this.remotes.values()) scene.remove(rm.c.root); this.remotes.clear();
+    this.ch=ch; S.ch=n; this.count=1;
+    this.playersRef=fb.ref(this.root+'/'+ch+'/players'); this.selfRef=fb.ref(this.root+'/'+ch+'/players/'+this.uid); this.presRef=fb.ref(this.presRoot+'/'+ch+'/'+this.uid);
+    try{ fb.onDisconnect(this.selfRef).remove(); fb.onDisconnect(this.presRef).remove(); fb.set(this.presRef, fb.serverTimestamp()); }catch(e){}
+    this.unsubPlayers=fb.onValue(this.playersRef,(snap)=>{
+      // 접속이 끊겼는데 정리되지 않은 기록(3분 넘게 갱신 없음)은 사람으로 치지 않아요(유령 캐릭터·인원 부풀림 방지)
+      const val=snap.val()||{}, now=Date.now(), keys=Object.keys(val).filter((k)=>k===this.uid||!(val[k]&&val[k].t&&now-val[k].t>180000)); this.count=Math.max(1,keys.length+(keys.includes(this.uid)?0:1)); const seen=new Set();
       for(const k of keys){ if(k===this.uid) continue; const d=val[k]; if(!d) continue; seen.add(k); this.upsert(k,d); }
       for(const k of [...this.remotes.keys()]){ if(!seen.has(k)){ const rm=this.remotes.get(k); scene.remove(rm.c.root); this.remotes.delete(k); } }
-      S.live=this.count; const lc=document.getElementById('liveCount'); if(lc) lc.textContent=this.count;
-      const ll=document.getElementById('liveLoad'), lr=document.getElementById('liveReal'); if(ll&&lr){ ll.hidden=true; lr.hidden=false; }
-      const ct=document.getElementById('chText'); if(ct) ct.textContent=(this.ch.replace('ch',''))+'번 채널 · '+this.count+'/60명';
-    },()=>{ this.ready=false; });
-    this.ready=true; if(this.realUid){ this.fetchName(); this.loadAvatar(); }
+      this.updateLabels();
+    },()=>{});
+    this.updateLabels();
+  },
+  updateLabels(){
+    const n=+String(this.ch).replace('ch','')||1, c=Math.max(1,(this.chCounts&&this.chCounts[n])||0,this.count||0);
+    S.ch=n; S.chCount=c; S.live=Math.max(c,this.total||0);
+    const ct=document.getElementById('chText'); if(ct) ct.textContent=n+'번 채널 · '+c+'/'+CH_MAX+'명';
+    const lc=document.getElementById('liveCount'); if(lc) lc.textContent=S.live;   // 시작 화면: 모든 채널을 합친 접속자
+    const ll=document.getElementById('liveLoad'), lr=document.getElementById('liveReal'); if(ll&&lr){ ll.hidden=true; lr.hidden=false; }
+    const tk=document.getElementById('ticket'); if(tk&&!tk.classList.contains('hidden')&&typeof renderChannels==='function') renderChannels();
   },
   fetchName(){ if(this.nameTried) return; this.nameTried=true;
     fetch(API+'me/?uid='+encodeURIComponent(this.uid)).then(r=>r.json()).then(j=>{ if(j&&j.found){ if(j.display_name){ me.opts.name=j.display_name; const ni=document.getElementById('nameInput'); if(ni&&!S.nameEdited) ni.value=j.display_name; } if(j.profile_image) me.pi=j.profile_image;
@@ -4677,9 +5089,14 @@ function moveWalker(pos, target, dt, speed) {
   pos.add(tmp);
   return Math.atan2(tmp.x, tmp.z);
 }
+const BASE_ZMIN = 13;
 function walkBounds(p) {
   if (S.mode === 'summit') { const P = S.top || PEAK[S.peak || 'M'], dx = p.x - P.x, dz = p.z - P.z, d = Math.hypot(dx, dz), R = (S.top && S.top.R) || 62; if (d > R) { p.x = P.x + dx / d * R; p.z = P.z + dz / d * R; } p.y = groundH(p.x, p.z); }   // 봉우리 꼭대기 둘레만 걸어요
-  else { p.x = clamp(p.x, -560, 560); p.z = clamp(p.z, -20, 496); p.y = groundH(p.x, p.z); }   // 슬로프 하단 ~ 센터 건물 ~ 주차장·큰 도로
+  else {   // 슬로프 하단 안전망(z 11) ~ 센터 건물 ~ 주차장·큰 도로. 슬로프 쪽으로는 거슬러 올라가지 못해요(방금 내려와 안전망 안쪽에 있으면 베이스 쪽으로만 걸을 수 있어요)
+    const zMin = Math.min(BASE_ZMIN, p._wz == null ? p.z : p._wz);
+    p.x = clamp(p.x, -560, 560); p.z = clamp(p.z, zMin, 496); p._wz = p.z; p.y = groundH(p.x, p.z);
+    if (me.target && me.target.z < zMin) me.target.z = zMin;   // 슬로프 쪽을 눌러도 안전망 앞까지만 걸어가요
+  }
 }
 
 function update(dt) {
@@ -4752,7 +5169,7 @@ function update(dt) {
     if (S.mode === 'base') { if (S.racked && !me.c.stowed) stowGear(me.c, true); }
     const outside = me.pos.z > OUT_Z;
     let moving = false;
-    if (Math.abs(turn) > 0.12) { const dYaw = turn * 2.3 * dt; me.yaw += dYaw; me.target = null; S.look.yaw -= dYaw; }   // 방향전환해도 카메라 시점은 그대로(캐릭터만 돌아요)
+    if (Math.abs(turn) > 0.12) { const dYaw = turn * (me.hop ? 6.5 : 2.3) * dt; me.yaw += dYaw; me.target = null; S.look.yaw -= dYaw; }   // 방향전환해도 카메라 시점은 그대로(캐릭터만 돌아요)
     if (Math.abs(fwd) > 0.12) {
       const sp = fwd > 0 ? (outside ? 11 : 18) : 7;   // 바깥은 부츠 신고 걸어요(베이스가 넓어 이동 속도 상향)
       me.pos.x += Math.sin(me.yaw) * sp * fwd * dt; me.pos.z += Math.cos(me.yaw) * sp * fwd * dt; moving = true; me.target = null; S.sitting = false;
@@ -4774,7 +5191,17 @@ function update(dt) {
       show('#banner', true); $('#banner').innerHTML = '<b>셔틀버스</b><span class="sep"></span><span>다음 정류장 ' + BUS.next(S.bus.from).name + '</span>';
       if (BUS.at && BUS.at !== S.bus.from) busLeave(BUS.at);
     }
-    me.c.pose = S.sitting ? 'sit' : (moving ? 'skate' : 'stand');
+    // 제자리 점프(스페이스 · 점프 버튼): 현실적인 높이(약 0.5m · 0.65초). 공중에서 좌우 방향키로 돌 수 있어요(제자리 점프 턴)
+    const jumpNow = S.mode !== 'maker' && (keys[' '] || keys['spacebar'] || JUMP.req); JUMP.req = false;
+    if (jumpNow && !me.jumpLatch && !me.hop && !S.seat && !S.sitting && !S.bus && !S.photo) me.hop = { vy: 3.2, h: 0 };
+    me.jumpLatch = !!jumpNow;
+    if (me.hop && (S.seat || S.bus || S.photo)) me.hop = null;
+    if (me.hop) {
+      const hp = me.hop; hp.vy -= 9.8 * dt; hp.h += hp.vy * dt;
+      if (hp.h <= 0) { me.hop = null; me.c.hopK = 0; puff(me.pos.x, me.pos.y, me.pos.z, 8, 1); SND.pop(); }
+      else { me.pos.y += hp.h; me.c.hopK = Math.min(1, hp.h / 0.4); }
+    }
+    me.c.pose = S.sitting ? 'sit' : (me.hop ? 'hop' : (moving ? 'skate' : 'stand'));
     if (moving && me.pos.z < OUT_Z && Math.random() < dt * 5) puff(me.pos.x + (Math.random() - 0.5), me.pos.y, me.pos.z + (Math.random() - 0.5), 3, 0.8);
     if (S.mode === 'maker') { if (!S.makerDrag) me.yaw += dt * 0.6; me.c.pose = 'stand'; }
     /* 시설 프롬프트 */
@@ -4829,6 +5256,8 @@ function update(dt) {
       if (s.fallT <= 0) { me.c.pose = 'ski'; s.h = dir; s.v = 2; }
     } else if (s.mode === 'auto') {
       carveStep(s, t, dt, t.auto, gear);
+      const bhw = trailHW(t, s.z, -1);   // 자동 하강도 코스 폭 안에서만(가장자리에 닿으면 코스 방향으로 돌아와요)
+      if (bhw > 0) { const bcx = trailX(t, Math.min(0, s.z)), nx = clamp(s.x, bcx - bhw, bcx + bhw); if (nx !== s.x) { s.x = Math.abs(nx - s.x) > 1.5 ? s.x + (nx - s.x) * Math.min(1, dt * 2.5) : nx; s.h = lerpAngle(s.h, trailDir(t, s.z), 0.25); } }
     } else {
       if (s.air) {
         // 공중 트릭: 방향키/조이스틱 좌우로 스핀, ↑로 플립 (진행 방향 s.h는 유지하고 캐릭터만 돌아요)
@@ -4842,20 +5271,37 @@ function update(dt) {
         const wC = Math.max(s.v < 3 ? 1.2 : 0, Math.max(0.15, s.v) / (gear === 'board' ? SKI.rBoard : SKI.rSki));
         const st = s.steer, ast = Math.abs(st), wc = Math.min(wC, SKI.wCap);
         const rate = ast <= 0.8 ? st / 0.8 * wc : Math.sign(st) * (wc + (ast - 0.8) / 0.2 * Math.max(0, SKI.wCap - wc));
+        const px = s.x;
         skiPhysics(s, dt, rate / SKI.wCap, brake, tuck, gear, 0);
+        // 사이드 벽(옆으로 기운 설면): 중력의 옆 성분이 진행 방향을 아래(폴라인)로 돌려요 — 벽을 오르면 느려지다 다시 코스로 내려와요
+        const ge = 0.5, gx = (groundH(s.x + ge, s.z) - groundH(s.x - ge, s.z)) / (2 * ge), gz = (groundH(s.x, s.z + ge) - groundH(s.x, s.z - ge)) / (2 * ge);
+        const td = trailDir(s.t, s.z), gl = Math.abs(gx * Math.cos(td) - gz * Math.sin(td));   // 코스 방향에 수직인 기울기(벽의 기울기만 — 평평하게 다진 코스 위에선 0)
+        if (gl > 0.15) {
+          const hd = clamp(Math.atan2(-gx, -gz), -2.3, 2.3), dl = hd - s.h;   // 폴라인(가장 가파르게 내려가는 방향)으로, 골짜기 쪽(0)을 지나 돌아요
+          const w = s.v < 1.5 ? 2.2 : Math.min(2.4, SKI.G * 0.8 * gl / Math.sqrt(1 + gl * gl) * Math.abs(Math.sin(dl)) / s.v + 0.25);   // 멈출 듯 느리면 그 자리에서 몸을 돌려요
+          s.h += clamp(dl, -w * dt, w * dt);
+        }
+        // 슬로프는 거슬러 올라갈 수 없어요: 진행 방향은 코스 아래쪽(베이스 쪽)으로부터 최대 83°까지만 — 옆으로 가로지르거나 벽을 탈 수는 있어도 위로는 못 가요
+        const HMAX = 1.45; s.h = clamp(s.h, Math.max(td - HMAX, -HMAX), Math.min(td + HMAX, HMAX));
+        s.px = px;
       }
       // 자유 활강: 어느 코스든(또는 아래쪽 트인 설원) 정설면이면 그대로, 정설 밖 깊은 눈에서만 마찰이 조금 더해요
       const onT = TRAILS.find((q) => Math.abs(s.x - trailX(q, Math.min(0, s.z))) < trailHW(q, s.z, 4)), inBowl = s.z > BOWL_Z && Math.abs(s.x) < 440;
-      if (!onT && !inBowl) s.v = Math.max(0, s.v - 1.1 * dt);
+      const wall = s.air ? null : wallAt(s.t, s.x, s.z);   // 코스 옆 오르막 벽 위(실제처럼 타고 올라갈 수 있어요)
+      if (!onT && !inBowl && !wall) s.v = Math.max(0, s.v - 1.1 * dt);
       if (onT && onT !== s.t) { s.t = onT; }   // 다른 코스로 넘어가면 그 코스를 탄 걸로(자동으로 바꿔도 이 코스를 따라가요)
       // 슬로프 양 사이드라인 밖으로 못 나가게: 현재 코스 폭 안으로 x를 가둬요(경계에 닿으면 가장자리를 따라 미끄러짐)
       const bz = Math.min(0, s.z), bhw = trailHW(s.t, s.z, 0);
-      if (bhw > 0) { const bcx = trailX(s.t, bz); s.x = clamp(s.x, bcx - bhw, bcx + bhw); }
+      if (bhw > 0) { const bcx = trailX(s.t, bz); if (Math.abs(s.x - bcx) > bhw) { if (!wall) s.x = clamp(s.x, bcx - bhw, bcx + bhw); else if (wall.k > 0.7 && s.px != null) s.x = s.px; } }   // 벽은 위쪽(나무가 시작되는 곳) 전까지만, 내리막 쪽 가장자리는 그대로 막아요
       s.x = clamp(s.x, -620, 620);
       // 나무·타워·깃발 등에 부딪히면: 빠르면 넘어지고, 느리면 옆으로 비켜 미끄러져요(통과하지 않아요)
       const tree = !s.air && hitTree(s.x, s.z), obj = s.air && s.y - groundH(s.x, s.z) > 2.2 ? null : collide(s, 0.45, true);
       if ((tree || (obj && !obj.soft)) && s.v > 5) skiFall(s, tree ? 2.2 : 1.2);
       else if (tree || obj) s.v *= obj && obj.soft ? 0.75 : 0.4;   // 얇은 폴대·깃발은 스치며 속도만 줄어요
+    }
+    if (s.fallT <= 0 && !s.air) {   // 다른 사람과 부딪히면: 서로 밀려나고, 상대 속도가 빠르면(시속 18km 이상) 넘어져요
+      const hit = skierHit(s);
+      if (hit) { const push = 1.15 - hit.d; s.x += hit.dx * push; s.z += hit.dz * push; if (hit.rel > 5) { skiFall(s, 1.4); if (hit.who && hit.who.cv) hit.who.cv.v *= 0.3; } else s.v *= 0.7; }
     }
     s.z = Math.min(0.5, s.z);
     // 높이: 지면(모굴·킥커·롤러 포함)을 따라가다, 지면이 중력보다 빨리 꺼지면 떠올라요(점프)
@@ -4878,14 +5324,18 @@ function update(dt) {
       }
     } else {
       // 지면을 따라 오르내리는 속도(점프대 경사로 낼 수 있는 만큼만: 옆면을 가로질러 높이가 툭 바뀌어도 하늘로 튀지 않아요)
-      const vg = clamp((gh - s.gPrev) / Math.max(dt, 1e-3), -s.v - 3, s.v * 0.75), pred = s.y + s.vy * dt - 4.9 * dt * dt;
-      if (s.fallT <= 0 && s.v > 5 && gh < pred - 0.04) {
+      // 모굴은 무릎으로 흡수: 위아래 속도·점프 판단은 모굴을 뺀 설면(+킥커)으로, 보이는 높이만 모굴을 따라가요
+      const ghB = groundH(s.x, s.z) + kickH(s.x, s.z), gpB = s.gPrevB == null ? ghB : s.gPrevB;
+      const vg = clamp((ghB - gpB) / Math.max(dt, 1e-3), -s.v - 3, s.v * 0.75), predB = (s.yB == null ? ghB : s.yB) + s.vy * dt - 4.9 * dt * dt, pred = Math.max(predB, gh - 0.02);
+      if (s.fallT <= 0 && s.v > 5 && ghB < predB - 0.16) {   // 작은 굴곡은 무릎으로 흡수(급사면에서 살짝 볼록한 곳마다 붕 뜨지 않게), 점프대처럼 확 꺼질 때만 떠요
         s.air = true; s.y = pred; s.vy -= 9.8 * dt;
         const pf = FEATURES.find((f) => f.pipe && s.z > f.z0 && s.z < f.z0 + f.len && Math.abs(s.x - f.cx) < 18);
         if (pf && Math.abs(s.x - pf.cx) > 8) { s.pipeAir = pf; s.pipeX = s.x; s.pipeFlip = false; }   // 파이프 벽 끝(립)에서 뜸
       }
-      else { s.y = gh; s.vy = vg; }
+      else { s.y = gh; s.vy = vg; s.yB = ghB; }
+      s.gPrevB = ghB;
     }
+    if (s.air) { s.yB = null; s.gPrevB = null; }
     s.gPrev = gh; s.land = Math.max(0, (s.land || 0) - dt * 2.5);
     me.pos.set(s.x, s.y, s.z);
     me.yaw = s.h;
@@ -4896,7 +5346,7 @@ function update(dt) {
     }
     SND.setSwoosh(clamp(s.v / 26, 0, 1) * (0.3 + Math.abs(s.roll) * 0.25 + s.skid * 0.5));
     if (!s.air && s.v > 0.5 && s.v < SKI.skate + 2) SND.setSkate(clamp((SKI.skate + 2 - s.v) / (SKI.skate + 2), 0, 1) * 0.09);   // 저속 스케이팅 눈소리
-    const spdEl = $('#spd'); if (spdEl) spdEl.textContent = Math.round(s.v * 3.6);
+    setGauge(s.v * 3.6);
     const f = clamp((s.z + L) / L, 0, 1);
     $('#progFill').style.height = (f * 100) + '%'; $('#progDot').style.top = 'calc(' + (f * 100) + '% - 8px)';
     if (s.z >= -5) finishRun();
@@ -4910,7 +5360,10 @@ function update(dt) {
     const s = S.ski; me.c.root.position.copy(me.pos);
     const pitch = Math.atan(slopeAlong(me.pos.x, me.pos.z, me.yaw));
     const tkY = s && s.air ? (s.trickYaw || 0) : 0, tkP = s && s.air ? (s.trickPitch || 0) : 0;
-    me.c.root.rotation.set(pitch + tkP, me.yaw + tkY, s && s.fallT <= 0 ? s.roll : 0);
+    const ce = 0.5, cgx = (groundH(me.pos.x + ce, me.pos.z) - groundH(me.pos.x - ce, me.pos.z)) / (2 * ce), cgz = (groundH(me.pos.x, me.pos.z + ce) - groundH(me.pos.x, me.pos.z - ce)) / (2 * ce);
+    if (s) s.bank = lerp(s.bank || 0, s.air ? 0 : Math.atan(cgx * Math.cos(me.yaw) - cgz * Math.sin(me.yaw)) * 0.85, Math.min(1, dt * 8));   // 벽 위에선 설면에 수직으로 서요
+    me.c.root.rotation.order = 'YXZ';
+    me.c.root.rotation.set(pitch + tkP, me.yaw + tkY, (s && s.fallT <= 0 ? s.roll : 0) + (s ? s.bank : 0));
   }
 
   /* 봇 */
@@ -5057,20 +5510,23 @@ function updateCamera(dt) {
     if ((me.fwding || S.mode === 'ski') && !camDragging) S.look.yaw = lerp(S.look.yaw, 0, Math.min(1, dt * 1.8));
     const H = followHeading() + S.look.yaw;
     const ski = S.mode === 'ski' && S.ski;
+    // 하강 중엔 진행 방향의 경사를 부드럽게 따라가요: 가파를수록 카메라는 뒤쪽 위로, 시선은 비탈 아래로(슬로프 면 기준 같은 구도)
+    let sa = 0;
+    if (ski) { const raw = clamp(Math.atan(slopeAlong(me.pos.x, me.pos.z, H)), -0.25, 0.75); ski.camSlope = ski.camSlope == null ? raw : lerp(ski.camSlope, raw, Math.min(1, dt * 2.2)); sa = ski.camSlope; }
     if (S.view === 'fp') {
       const eye = S.mode === 'lift' ? me.c.root.getWorldPosition(new THREE.Vector3()).add(new THREE.Vector3(0, HIP + 0.86, 0))   // 머리 뼈 대신 좌석 기준 고정 눈높이(흔들림 없이)
         : me.pos.clone().add(new THREE.Vector3(0, ski ? (ski.tuck ? 0.78 : 1.0) : 1.2, 0));   // 캐릭터 눈높이(키 약 1.65m, 머리가 커요)
       eye.x += Math.sin(H) * 0.35; eye.z += Math.cos(H) * 0.35;
-      const P = clamp((ski ? -0.22 - Math.atan(slopeZ(me.pos.x, me.pos.z)) * 0.6 : -0.1) + S.look.pitch, -1.2, 1.45);
+      const P = clamp((ski ? -0.16 - sa * 0.9 : -0.1) + S.look.pitch, -1.2, 1.45);   // 1인칭: 비탈을 따라 내려다봐요
       wantPos.copy(eye);
       wantLook.set(eye.x + Math.sin(H) * Math.cos(P) * 10, eye.y + Math.sin(P) * 10, eye.z + Math.cos(H) * Math.cos(P) * 10);
       k = S.mode === 'lift' ? 1 : Math.min(1, dt * 14);
     } else {
       const center = me.pos.clone().add(new THREE.Vector3(0, ski ? 1.2 : 1.5, 0));
       // 세로 드래그로 카메라 높이각 조절: 아래로 끌면 위에서 내려다봐요(새 눈). 캐릭터는 늘 화면 가운데에 고정
-      const P = clamp(S.tp.pitch + (ski ? 0.15 : 0) + S.look.pitch, 0.06, 1.46), D = S.tp.dist;
+      const P = clamp(S.tp.pitch + (ski ? 0.15 + sa : 0) + S.look.pitch, 0.06, 1.46), D = S.tp.dist;   // 경사만큼 높이각을 더해 비탈 면 기준 구도 유지
       wantPos.set(center.x - Math.sin(H) * Math.cos(P) * D, center.y + Math.sin(P) * D, center.z - Math.cos(H) * Math.cos(P) * D);
-      wantLook.copy(center); if (ski) { wantLook.x += Math.sin(H) * 6; wantLook.z += Math.cos(H) * 6; wantLook.y -= 1.5; }
+      wantLook.copy(center); if (ski) { wantLook.x += Math.sin(H) * 6; wantLook.z += Math.cos(H) * 6; wantLook.y -= 1.5 + Math.tan(sa) * 6; }   // 앞쪽 비탈 아래를 봐요
       for (let i = 0; i < 14 && inBuilding(wantPos); i++) wantPos.lerp(center, 0.16);   // 건물 벽 너머로 가지 않게 당겨요
       k = Math.min(1, dt * 8);
     }
