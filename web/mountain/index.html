@@ -1086,6 +1086,19 @@ function liftPads() {
   if (!LIFT_PADS) { LIFT_PADS = LIFT_DEFS.map((d) => { const r = d.top === 'mid' ? 8 : 20, b = d.top === 'mid' ? 9 : 16; return { x: d.x1, z: d.z1, r, b, R2: (r + b) ** 2, h: groundLevel(d.x1, d.z1) }; }); }   // 중턱 하차장은 옆 코스에 닿지 않게 작게
   return LIFT_PADS;
 }
+/* 화면에 그려진 눈 표면(지형 격자 삼각형) 높이. 격자 간격(7~12m)보다 좁게 오목한 곳(코스 옆 벽 등)은
+   그려진 면이 계산 높이(groundH)보다 위에 있어서, 계산 높이로만 세우면 캐릭터가 눈 속에 파묻혀 보여요 */
+let TGRID = null;
+function meshH(x, z) {
+  const G = TGRID; if (!G) return -1e9;
+  const fx = (x - G.x0) / G.sx, fz = (z - G.z0) / G.sz, ix = Math.floor(fx), iz = Math.floor(fz);
+  if (ix < 0 || iz < 0 || ix >= G.gx || iz >= G.gz) return -1e9;
+  const u = fx - ix, v = fz - iz, Y = (i, k) => G.p[((k * G.nx) + i) * 3 + 1];
+  // PlaneGeometry 삼각형: (a=(i,k), b=(i,k+1), d=(i+1,k)) · (b, c=(i+1,k+1), d) — 대각선 b-d 기준
+  if (u + v <= 1) { const a = Y(ix, iz); return a + (Y(ix + 1, iz) - a) * u + (Y(ix, iz + 1) - a) * v; }
+  const c = Y(ix + 1, iz + 1); return c + (Y(ix, iz + 1) - c) * (1 - u) + (Y(ix + 1, iz) - c) * (1 - v);
+}
+function surfH(x, z) { return Math.max(groundH(x, z), meshH(x, z)); }   // 보이는 눈 위(파묻히지 않게)
 function groundH(x, z) {
   let h = groundSummit(x, z); if (z > -150) return h;
   for (const p of liftPads()) { const dx = x - p.x, dz = z - p.z; if (dx * dx + dz * dz <= p.r * p.r) return p.h; }   // 하차장 안은 완전히 평평
@@ -1127,14 +1140,15 @@ LIFT_DEFS.forEach((d) => { d.x = d.x0; });
 (function summitHub() {
   // 리프트 1개 + 슬로프 3개 전용 정상부. 산을 바라본 기준(좌→우): 파이프 · 하차장(리프트) · 라이딩 · 파크
   const hcx = 0, hcz = -950;                               // 정상 광장 중심(작게)
-  const COL = { hp: -120, lift: -40, b: 40, pk: 120 };     // 각 요소의 x 열
+  const COL = { hp: -120, lift: -40, b: 10, pk: 120 };     // 각 요소의 x 열(메인 라이딩은 아래 코스와 일직선 — 출발하자마자 옆으로 꺾이지 않게)
+  const GZ = { hp: hcz, b: hcz + 80, pk: hcz };            // 출발점 z: 메인 라이딩은 광장 아래 끝(실제로 경사가 시작되는 곳) — 평지를 한참 지나 내려가지 않게
   const Rplaza = 105, Bplaza = 45, Rwalk = 150;            // 평평한 광장 반경(작게) · 가장자리 falloff · 걸어다닐 수 있는 반경
   const byId = Object.fromEntries(TRAILS.map((t) => [t.id, t]));
   const flatY = Math.min(groundRaw(hcx, hcz), groundRaw(hcx, hcz + Rplaza + 20) + 25);   // 메사(절벽) 방지
   // 슬로프 입구를 각자의 x 열(광장 앞)로 옮기고, 그 아래로만 코스를 남겨 단조 하강 유지
   ['hp', 'b', 'pk'].forEach((id) => {
     const t = byId[id]; if (!t) return;
-    const gx = COL[id], gz = hcz;
+    const gx = COL[id], gz = GZ[id];
     const below = t.pts.filter((q) => q[1] > gz + 2);
     t.pts = [[gx, gz]].concat(below.length ? below : [t.pts[t.pts.length - 1]]);
     t.zt = t.pts[0][1]; t.xmin = Math.min(...t.pts.map((q) => q[0])) - t.w; t.xmax = Math.max(...t.pts.map((q) => q[0])) + t.w;
@@ -1426,7 +1440,8 @@ const SNOW_MAT = snowMaterial(false), GROOM_MAT = snowMaterial(true), FAR_MAT = 
 /* 지형 */
 (function terrain() {
   const DEPTH = L + 2300;   // 봉우리(rz≈1320)가 0까지 완전히 사그라들도록 뒤쪽을 넉넉히(사각 절벽 방지)
-  const geo = new THREE.PlaneGeometry(2600, DEPTH, IS_TOUCH ? 220 : 360, IS_TOUCH ? 300 : 460);
+  const GX = IS_TOUCH ? 220 : 360, GZ = IS_TOUCH ? 300 : 460;
+  const geo = new THREE.PlaneGeometry(2600, DEPTH, GX, GZ);
   geo.rotateX(-Math.PI / 2);
   geo.translate(0, 0, 680 - DEPTH / 2);   // 베이스 뒤 도로·콘도(+680)부터 정상 능선 너머 설원까지 완만히 사라져요
   const pos = geo.attributes.position;
@@ -1439,6 +1454,7 @@ const SNOW_MAT = snowMaterial(false), GROOM_MAT = snowMaterial(true), FAR_MAT = 
   }
   geo.setAttribute('color', new THREE.BufferAttribute(col, 3));
   geo.computeVertexNormals();
+  TGRID = { x0: -1300, z0: 680 - DEPTH, sx: 2600 / GX, sz: DEPTH / GZ, nx: GX + 1, gx: GX, gz: GZ, p: pos.array };   // 보이는 눈 표면(격자) 높이를 그대로 계산하려고 남겨 둬요
   const m = new THREE.Mesh(geo, SNOW_MAT);
   m.receiveShadow = true; m.name = 'terrain';
   scene.add(m);
@@ -1697,7 +1713,7 @@ const pipeProf = (u, v) => {   // 가로 단면: 바닥 14m · 반지름 5.5m �
 };
 (function superPipe() {
   const t = TRAILS.find((q) => q.id === 'hp'); if (!t) return;   // 하프파이프 코스
-  const z0 = Math.min(-140, t.zt + 460), z1 = t.zt + 20, cz = (z0 + z1) / 2, cx = trailX(t, cz);   // 상단~중단을 길게 덮는 하프파이프(정면에서 '파이프'로 확실히 보이게)
+  const z1 = Math.max(t.zt + 20, (t.pts[1] ? t.pts[1][1] : t.zt) + 10), z0 = Math.min(-140, z1 + 440), cz = (z0 + z1) / 2, cx = trailX(t, cz);   // 코스가 곧게 펴진 뒤부터(정상 광장에서 옆으로 꺾여 내려오는 구간엔 파이프를 깔지 않아요)   // 상단~중단을 길게 덮는 하프파이프(정면에서 '파이프'로 확실히 보이게)
   const f = terrainFeature(cx, cz, 36, z0 - z1, pipeProf, false, 56, 120); f.pipe = true;
   const zb = z0 + 6, yb = groundH(cx, zb);
   const aw = trailW(t, zb) / 2 + 0.9 + Math.abs(trailX(t, zb) - cx);   // 아치 기둥은 코스 가장자리 밖에
@@ -2412,7 +2428,7 @@ function liftTerminal(d, x, z, top) {
   return g;
 }
 const CHAIR_SLOTS = [-1.18, -0.4, 0.4, 1.18];     // 4인 체어 좌석 x좌표(캐릭터 폭에 맞게 좁힘)
-const SEAT_Y = -2.97 + 0.12 - HIP, SEAT_Z = 0.08;   // 얇은 슬랫 좌석(윗면 -2.97)에 엉덩이를 얹고, 앞쪽으로 당겨 앉아 다리가 좌석 앞으로 늘어뜨려져요
+const SEAT_Y = -3.025 + 0.15 - HIP, SEAT_Z = 0.1;   /* 좌석 앞 끝(z 0.10)에 걸터앉아 무릎(z -0.07)이 좌석 밖으로 나오고, 정강이·부츠가 좌석 앞으로 곧게 늘어져요 */
 function makeChairLift(d) {
   const ts = cableTowers(d.x0, d.z0, d.x1, d.z1, 92, LIFT_ST_H, 12.5);
   const cab = makeCable(d.x0, d.z0, d.x1, d.z1, 3, LIFT_ST_H, 12.5, ts);
@@ -2432,15 +2448,15 @@ function makeChairLift(d) {
   // 개방형 벤치: 앞이 트여 다리가 좌석 앞으로 그대로 늘어뜨려져 보여요(박스로 안 가림)
   const P = instParts([
     [0.36, 0.3, 0.36, '#26313C', 0, 0, 0],                                   // 케이블 그립
-    [0.12, 2.3, 0.12, '#26313C', 0, -1.18, 0.5], [0.12, 0.12, 0.62, '#26313C', 0, 0, 0.28],   // 행거(등받이 뒤로)
-    [3.1, 0.12, 0.12, '#26313C', 0, -2.34, 0.5],                              // 행거 가로대
-    [3.1, 0.1, 0.46, d.color, 0, -3.02, 0.14],                               // 좌석판(얇은 슬랫)
-    [3.1, 0.52, 0.08, back, 0, -2.78, 0.38],                                  // 낮은 등받이
-    [0.08, 0.1, 0.5, '#26313C', -1.56, -2.74, 0.14], [0.08, 0.1, 0.5, '#26313C', 1.56, -2.74, 0.14],   // 팔걸이(옆, 위쪽)
-    [0.08, 0.26, 0.08, '#26313C', -1.56, -2.88, -0.08], [0.08, 0.26, 0.08, '#26313C', 1.56, -2.88, -0.08],
-    [3.2, 0.07, 0.07, back, 0, -2.42, -0.36],                                 // 안전바(가슴 앞으로 올려 다리 안 가림)
-    [0.06, 1.02, 0.06, '#26313C', -1.2, -2.92, -0.36], [0.06, 1.02, 0.06, '#26313C', 1.2, -2.92, -0.36],   // 안전바 지지대
-    [2.5, 0.05, 0.13, '#2B3A49', 0, -3.62, -0.3]                              // 발받침(얇은 가로봉, 발 아래)
+    [0.12, 2.25, 0.12, '#26313C', 0, -1.12, 0.52], [0.12, 0.12, 0.52, '#26313C', 0, 0, 0.26],   // 행거(등받이 뒤로 내려와요)
+    [3.1, 0.12, 0.12, '#26313C', 0, -2.2, 0.52],                              // 등받이 위 가로대
+    [3.1, 0.14, 0.32, d.color, 0, -3.095, 0.26],                              // 좌석(깊이 0.32m, 앞 끝 z 0.10) — 늘어진 부츠 뒤꿈치가 좌석 앞면에 묻히지 않게
+    [3.1, 0.82, 0.1, back, 0, -2.6, 0.46],                                    // 등받이
+    [0.08, 0.08, 0.44, '#26313C', -1.56, -2.74, 0.2], [0.08, 0.08, 0.44, '#26313C', 1.56, -2.74, 0.2],   // 팔걸이
+    [0.08, 0.36, 0.08, '#26313C', -1.56, -2.9, 0.0], [0.08, 0.36, 0.08, '#26313C', 1.56, -2.9, 0.0],
+    [3.2, 0.08, 0.08, back, 0, -2.62, -0.16],                                 // 안전바(무릎 앞, 내려온 상태)
+    [0.07, 0.66, 0.07, '#26313C', -1.52, -2.95, -0.16], [0.07, 0.66, 0.07, '#26313C', 1.52, -2.95, -0.16],   // 안전바 지지대(의자 양 끝 · 아래 끝에 발받침)
+    [3.04, 0.06, 0.24, '#2B3A49', 0, -3.18, -0.12]                            // 발받침: 늘어진 부츠 밑창 바로 아래(안전바 지지대 끝에 걸려 있어요)
   ], count);
   const chairs = [];
   for (let i = 0; i < count; i++) { const g = new THREE.Group(); scene.add(g); chairs.push({ g, i, s: (i * spacing) % (2 * len), riders: [] }); }
@@ -2870,7 +2886,7 @@ const PHOTO_SPOTS = {};
   PHOTO_SPOTS.photo = { name: '눈꽃 트리 광장', sub: 'SNOWLIVE PARK · 베이스', stand: new THREE.Vector3(X, 0, Z + 7.4), yaw: 0, cam: new THREE.Vector3(X + 1.0, 1.5, Z + 17.2), look: new THREE.Vector3(X, 3.7, Z + 1), fov: 46 };
 })();
 (function skyDeck() {
-  const X = PEAK.M.x, Z = PEAK.M.z + 130, G0 = groundH(X, Z), Y = G0 + 0.6, g = new THREE.Group(); g.position.set(X, G0, Z); scene.add(g);   // 정상 광장 앞 턱(링 너머로 슬로프와 베이스가 내려다보여요)
+  const X = SUMMIT.hub ? SUMMIT.hub.x - 80 : PEAK.M.x, Z = SUMMIT.hub ? SUMMIT.hub.z + 65 : PEAK.M.z + 130, G0 = groundH(X, Z),   /* 하프파이프와 리프트 선 사이 · 광장 아래 끝(슬로프 위가 아니에요) */ Y = G0 + 0.6, g = new THREE.Group(); g.position.set(X, G0, Z); scene.add(g);   // 정상 광장 앞 턱(링 너머로 슬로프와 베이스가 내려다보여요)
   box(26, 0.6, 16, '#9C7350', 0, 0.3, 0, g);                                                           // 데크
   for (let i = 0; i < 13; i++) box(25.8, 0.04, 0.06, '#7A5638', 0, 0.62, -7.5 + i * 1.25, g);          // 데크 판 이음
   const glassM = new THREE.MeshLambertMaterial({ color: '#CFE6F5', transparent: true, opacity: 0.28, depthWrite: false });
@@ -2901,8 +2917,8 @@ const PHOTO_SPOTS = {};
 
 /* 정상 이정표: 리프트에서 내려 걸어가며 고르는 슬로프 입구 안내(팝업 없이) */
 const TRAIL_START = (t) => t.pts[0][0];
-function signpost(x, z, rows) {
-  const g = new THREE.Group(); g.position.set(x, groundH(x, z), z); scene.add(g);
+function signpost(x, z, rows, ry) {
+  const g = new THREE.Group(); g.position.set(x, groundH(x, z), z); g.rotation.y = ry || 0; scene.add(g);
   box(0.36, 2.2 + rows.length * 0.62, 0.36, '#5A3E2A', 0, (2.2 + rows.length * 0.62) / 2, 0, g);
   rows.forEach((r, i) => {
     const tex = canvasTex(640, 96, (c, W, H) => {
@@ -2926,7 +2942,12 @@ LIFT_DEFS.filter((d) => d.top === 'mid').forEach((d) => {   // 중턱 하차장 
   const a = Math.atan2(t.pts[0][0] - d.x1, t.pts[0][1] - d.z1);
   signpost(d.x1 - 5, d.z1 - 9, [{ color: t.color, text: t.name + ' · ' + t.level, arrow: Math.abs(a) < 0.45 ? '↑ 앞' : a > 0 ? '← 왼쪽' : '오른쪽 →' }]);
 });
-PEAKS.forEach((p) => { signpost(p.x, p.z + 8, peakRows(p.id).concat(p.id === 'E' ? [{ color: '#E9B44C', text: '하늘 전망대 · 포토스팟', arrow: '오른쪽 →' }] : [])); });
+if (SUMMIT.hub && LIFT_DEFS.some((q) => q.top === 'summit')) {   // 정상 광장 이정표: 하차 램프에서 나와 돌아서면 왼쪽 앞에 보여요. 화살표는 슬로프(아래)를 바라본 기준
+  const d = LIFT_DEFS.find((q) => q.top === 'summit'), side = SUMMIT.hub.x >= d.x1 ? 1 : -1, sx = d.x1 - 3 + side * 18, sz = d.z1 - 11;
+  const rows = SUMMIT.hub.trails.map((id) => TRAILS.find((t) => t.id === id)).filter(Boolean).map((t) => ({ color: t.color, text: t.name + ' · ' + t.level, a: Math.atan2(trailX(t, t.zt + 4) - sx, t.zt + 4 - sz) }));
+  if (PHOTO_SPOTS.photoTop) rows.push({ color: '#E9B44C', text: '하늘 전망대 · 포토스팟', a: Math.atan2(PHOTO_SPOTS.photoTop.stand.x - sx, PHOTO_SPOTS.photoTop.stand.z - sz) });
+  signpost(sx, sz, rows.sort((a, b) => b.a - a.a).map((r) => ({ color: r.color, text: r.text, arrow: Math.abs(r.a) < 0.45 ? '↑ 앞' : r.a > 0 ? '← 왼쪽' : '오른쪽 →' })), Math.PI);
+} else PEAKS.forEach((p) => { signpost(p.x, p.z + 8, peakRows(p.id).concat(p.id === 'E' ? [{ color: '#E9B44C', text: '하늘 전망대 · 포토스팟', arrow: '오른쪽 →' }] : [])); });
 (function peakMarkers() {   // 봉우리 표지석(이름·높이)
   PEAKS.forEach((p) => {
     const g = new THREE.Group(); g.position.set(p.x - 9, groundH(p.x - 9, p.z + 2), p.z + 2); scene.add(g);
@@ -3223,11 +3244,12 @@ function buildKK(parts, skeleton) {
   function tube(G, kind, rings, N, cap) {
     const b0 = G.P.length / 3;
     rings.forEach((R) => {
-      const [I, W] = skinOf(R.sk), e = 2 / (R.p || 2);
+      const fn = typeof R.sk === 'function', [I0, W0] = fn ? [null, null] : skinOf(R.sk), e = 2 / (R.p || 2);   // sk가 함수면 정점마다(링 안 위치별로) 가중치를 따로 줘요
       for (let j = 0; j < N; j++) {
         const th = (2 * Math.PI * (j + 0.5)) / N, cs = Math.cos(th), sn = Math.sin(th);
         const x = R.a * Math.sign(cs) * Math.pow(Math.abs(cs), e), z = R.b * Math.sign(sn) * Math.pow(Math.abs(sn), e);
-        G.P.push(R.c.x + R.u.x * x + R.v.x * z, R.c.y + R.u.y * x + R.v.y * z, R.c.z + R.u.z * x + R.v.z * z); G.SI.push(...I); G.SW.push(...W);
+        const ox = R.u.x * x + R.v.x * z, oz = R.u.z * x + R.v.z * z, [I, W] = fn ? skinOf(R.sk(ox, oz, R)) : [I0, W0];
+        G.P.push(R.c.x + ox, R.c.y + R.u.y * x + R.v.y * z, R.c.z + oz); G.SI.push(...I); G.SW.push(...W);
       }
     });
     for (let r = 0; r < rings.length - 1; r++) for (let j = 0; j < N; j++) {
@@ -3256,7 +3278,16 @@ function buildKK(parts, skeleton) {
     const G = { P: [], SI: [], SW: [], main: [], acc: [], acc_: o.acc }, R = [];
     const y0 = shY - 0.06, yTop = headY + 0.02, aN = 0.15, bN = 0.14;
     const aOf = (y) => o.a * (1 - o.waist * Math.sin(Math.PI * Math.min(1, Math.max(0, (y - o.hem) / (y0 - o.hem))))) + Math.max(0, legY - y) * (o.flare || 0);
-    for (let y = o.hem; y < y0; y += 0.03) R.push({ c: new V3(0, y, o.z), u: XA, v: ZB, a: aOf(y), b: o.b, p: o.p, sk: torsoSk(y) });
+    // 재킷 아랫단(고관절 높이 아래)의 앞·옆은 그쪽 허벅지를 따라가요 → 앉으면 밑단이 허벅지 위로 들려 무릎 쪽으로 덮여요(다리가 재킷 속에 묻히지 않게).
+    // 아래로 갈수록·앞으로 갈수록 허벅지를 더 따라가고, 등 쪽과 고관절 위는 골반 그대로. 가운데는 양 허벅지를 반반 섞어 앞섶이 갈라지지 않게
+    const yLift = legY + 0.02, lxSign = Math.sign(J['upperleg_l'].x) || 1, ss = (a, b, v) => { const t = Math.min(1, Math.max(0, (v - a) / (b - a))); return t * t * (3 - 2 * t); };
+    const hemSk = (y) => (ox, oz, Rg) => {
+      const base = torsoSk(y), wy = ss(yLift, Math.min(yLift - 0.02, o.hem + 0.02), y), wf = ss(-0.15, 0.75, oz / Math.max(1e-3, Rg.b));
+      const w = 0.95 * wy * wf; if (w < 1e-3) return base;
+      const kl = ss(-0.45, 0.45, (ox * lxSign) / Math.max(1e-3, Rg.a));   // 왼쪽 허벅지 쪽일수록 1
+      return base.map(([n, v]) => [n, v * (1 - w)]).concat([['upperleg_l', w * kl], ['upperleg_r', w * (1 - kl)]]);
+    };
+    for (let y = o.hem; y < y0; y += 0.03) R.push({ c: new V3(0, y, o.z), u: XA, v: ZB, a: aOf(y), b: o.b, p: o.p, sk: y < yLift ? hemSk(y) : torsoSk(y) });
     const a0 = aOf(y0);
     for (let k = 0; k <= 10; k++) { const f = (k / 10) * (Math.PI / 2), y = lerp(y0, yTop, Math.sin(f)); R.push({ c: new V3(0, y, lerp(o.z, 0, Math.sin(f))), u: XA, v: ZB, a: aN + (a0 - aN) * Math.cos(f), b: bN + (o.b - bN) * Math.cos(f), p: lerp(o.p, 2, Math.sin(f)), sk: torsoSk(y) }); }
     tube(G, 'torso', R, 96);
@@ -3389,7 +3420,8 @@ function driveModel(c) {
   const pv = M.bones.hips; _vd.set(c.body.position.x, c.body.position.y - HIP, c.body.position.z).applyQuaternion(M.rootInv).multiplyScalar(1 / KK_S); pv.position.copy(pv.userData.bindP).add(_vd);
   walk(M.bones.root, new THREE.Quaternion());
   // 장비를 모델 몸에 맞춰요: 부츠·스키·바인딩은 모델 발목에, 폴은 모델 손(쥐는 자리)에
-  c.root.updateMatrixWorld(true);
+  // 부모(리프트 의자 등)의 위치도 이번 프레임 값으로 갱신해요 — 지난 프레임 값으로 계산하면 빠르게 움직이는 의자 위에서 부츠·폴이 몇 m 앞에 떠 보여요
+  c.root.updateWorldMatrix(true, true);
   c.legs.forEach((l, i) => { M.bones[i ? 'foot_l' : 'foot_r'].getWorldPosition(_wp); l.userData.ankle.worldToLocal(_wp); l.userData.gearG.position.set(_wp.x, _wp.y + GEAR_UP, _wp.z); });
   c.arms.forEach((a, i) => {
     const sd = i ? '_l' : '_r'; M.bones['hand' + sd].getWorldPosition(_wp); M.bones['handslot' + sd].getWorldPosition(_wp2); _wp.lerp(_wp2, 0.5);
@@ -3541,9 +3573,13 @@ function animChar(c, dt, extra) {
   } else if (p === 'sit') {
     // 리프트 탑승: 등받이에 기대고 정강이를 앞으로 내밀어 발받침대 쪽으로(살짝 흔들흔들)
     const sw = e.still ? 0 : Math.sin(t * 2.2) * (e.swing ? 0.2 : 0.045);
-    // 리프트 앉은 자세: 허벅지는 앞으로 내밀어 좌석 앞 끝에 걸치고(-0.6), 정강이는 그대로 수직으로 늘어뜨리고(무릎 +0.6 → 정강이 수직), 발끝은 아래로 돌려 스키가 앞-아래로 매달려요(발목 +0.5). 양발 평행
-    const kn = 0.6 + sw * 0.2;   // 양쪽 동일 → 스키가 벌어지지 않고 가지런
-    [L0, L1].forEach((l) => { l.rotation.x = -0.6; l.userData.knee.rotation.x = kn; l.userData.ankle.rotation.x = 0.5; });
+    // 발목은 월드 수직으로 보정(hip+knee+ankle≈0) → 부츠·스키가 정강이 끝에 그대로 매달려요(발이 떨어져 보이지 않게)
+    // 다리가 짧은(허벅지·정강이 각 0.14m) 캐릭터라, 무릎을 꺾어 정강이를 내리면 허벅지가 재킷 속에 묻혀 부츠만 몸통 밑에 붙어 보여요(몸이 따로 노는 느낌).
+    // 아이가 벤치에 앉듯 다리를 앞으로 쭉 뻗어, 재킷 밑에서 부츠까지 다리가 한 줄로 이어져 보이게 해요
+    // 의자에 앉듯: 허벅지는 좌석 위로 수평, 무릎에서 정강이를 곧게 내려요(무릎 = 허벅지 각). 발목은 정강이와 일직선이라 스키 부츠(정강이를 감싸는 높은 셸)가
+    // 서 있을 때처럼 다리에 그대로 붙어 있어요. ㄴ자로 뻗으면 큰 부츠가 다리 끝에 세워져 떠 보이고, 발목을 꺾으면 셸이 정강이에서 떨어져 보여요.
+    // 허벅지가 재킷에 묻히지 않게 재킷 밑단 앞쪽은 허벅지를 따라 들려요(hemSk). 앉는 자리는 무릎이 좌석 앞 끝을 살짝 넘게(SEAT_Z · 벤치 0.2m 앞)
+    [L0, L1].forEach((l, i) => { const kn = 1.5 + (i ? -sw : sw) * 0.5; l.rotation.x = -1.5; l.userData.knee.rotation.x = kn; l.userData.ankle.rotation.x = 1.5 - kn; });
     c.body.rotation.x = 0.06;
     A0.rotation.x = -0.22; A1.rotation.x = -0.22; E0.rotation.x = -1.15; E1.rotation.x = -1.1;   // 손은 무릎 위에
     c.head.rotation.y = e.still ? 0 : Math.sin(t * 0.27 + c.seed) * 0.5; c.head.rotation.x = 0.08;
@@ -3867,6 +3903,7 @@ function setMode(m) {
   $('#joy').classList.toggle('joy-right', m === 'ski');   // 라이딩 중엔 조이스틱을 우측으로
   show('#jumpBtn', IS_TOUCH && ['ski', 'base', 'summit'].includes(m));   // 점프 버튼은 좌측(라이딩 · 걷는 중 제자리 점프)
   if (m !== 'base' && m !== 'summit' && me && me.hop) me.hop = null;
+  if (m !== 'summit') S.unload = null;
   show('#gauge', m === 'ski'); if (m === 'ski') setGauge(0, true);
   show('#dressBtn', false);                               // 모드 바뀌면 꾸미기 버튼 숨겨요
   if (S.look) { S.look.yaw = 0; }
@@ -3879,10 +3916,13 @@ function setMode(m) {
 function leaveChair() {
   const ch = S.chair; if (!ch) return;
   (S.companions || []).forEach((cp) => { if (cp.temp) ch.g.remove(cp.c.root); });
+  (ch.gearProps || []).forEach((g) => ch.g.remove(g)); ch.gearProps = [];   // 의자 뒤에 걸어 둔 장비도 치워요
+  if (!S.racked && !me.c.benchProp) stowGear(me.c, false);   // 하차·베이스로 돌아가기 모두 장비를 다시 신어요
   ch.riders.forEach((r) => { r.c.root.visible = true; });
   S.companions = []; S.companion = null; S.chair = null;
 }
 function goBase(at) {
+  if (S.seat) { S.seat.by = null; S.seat = null; } if (me.c.benchProp) benchGear(me.c, null, false);   // 벤치에 앉아 있었으면 장비를 다시 신고 일어나요
   leaveChair(); S.ski = null; S.sitting = false;
   if (me.c.root.parent !== scene) scene.add(me.c.root);
   me.c.root.rotation.set(0, 0, 0);
@@ -4006,14 +4046,32 @@ $('#exitBtn').onclick = () => openCard();
 $('#waveBtn').onclick = () => wave();
 /* 벤치에 앉기 · 일어나기 */
 function nearSeat(r) { let best = null, bd = r; SEATS.forEach((st) => { if (st.by && st.by !== me) return; const d = Math.hypot(st.x - me.pos.x, st.z - me.pos.z); if (d < bd) { bd = d; best = st; } }); return best; }
+/* 벤치에 앉으면 장비(스키·폴/보드)를 벗어 벤치 앞 옆에 세워 두고 부츠만 신고 앉아요. 일어나면 다시 신어요 */
+function benchGear(c, st, on) {
+  if (c.benchProp) { if (c.benchProp.parent) c.benchProp.parent.remove(c.benchProp); c.benchProp = null; if (!on && c.stowed && !(c === me.c && S.racked)) stowGear(c, false); }
+  if (!on || !st || c.stowed) return;   // 이미 벗은 상태(거치대에 걸어 둠 등)면 그대로
+  const o = c.opts || {}, fx = Math.sin(st.yaw), fz = Math.cos(st.yaw), sx = Math.cos(st.yaw), sz = -Math.sin(st.yaw);
+  const mate = SEATS.find((q) => q !== st && q.yaw === st.yaw && Math.hypot(q.x - st.x, q.z - st.z) < 1.4);   // 같은 벤치 옆자리 반대쪽(벤치 끝)에 세워요
+  const sd = mate && ((mate.x - st.x) * sx + (mate.z - st.z) * sz) > 0 ? -1 : 1;
+  const x = st.x + fx * 0.4 + sx * sd * 0.95, z = st.z + fz * 0.4 + sz * sd * 0.95, g = new THREE.Group();
+  g.position.set(x, groundH(x, z), z); g.rotation.order = 'YXZ'; g.rotation.set(-0.2, st.yaw, 0); scene.add(g);   // 눈에 꽂아 벤치 쪽으로 살짝 기대 세워요
+  if (c.gear === 'board') { box(0.27, 1.45, 0.035, o.boardColor || '#8E6BD8', 0, 0.72, 0, g); }
+  else {
+    [-0.07, 0.07].forEach((dx) => box(0.085, 1.55, 0.03, o.ski || '#F2B134', dx, 0.77, 0, g));
+    [-0.24, 0.24].forEach((dx) => box(0.03, 1.2, 0.03, '#3B4A5A', dx, 0.6, 0.05, g));
+  }
+  c.benchProp = g; stowGear(c, true);
+}
 function sitOn(st) {
   if (!st || (st.by && st.by !== me)) { toast('다른 사람이 앉아 있어요'); return; }
-  if (S.seat) S.seat.by = null;
+  if (S.seat) { S.seat.by = null; benchGear(me.c, null, false); }
   S.seat = st; st.by = me; S.sitting = true; me.target = null; $('#sitBtn').textContent = '일어서기';
+  benchGear(me.c, st, true);
 }
 function standUp() {
   const st = S.seat; S.sitting = false; $('#sitBtn').textContent = '앉기';
   if (!st) return;
+  benchGear(me.c, st, false);
   st.by = null; S.seat = null; me.pos.set(st.x + Math.sin(st.yaw) * 1.0, groundH(st.x, st.z), st.z + Math.cos(st.yaw) * 1.0);
 }
 $('#sitBtn').onclick = () => {
@@ -4391,6 +4449,7 @@ function stowGear(c, on) {
 }
 function board(ch) {
   const Q = S.qLift || LIFT; S.lift = Q;
+  if (S.seat) { S.seat.by = null; S.seat = null; S.sitting = false; } if (me.c.benchProp) benchGear(me.c, null, false);
   S.chair = ch; S.stats.lift++; updateCounters();
   ch.riders.forEach((r) => { r.c.root.visible = false; });
   ch.g.add(me.c.root);
@@ -4404,7 +4463,16 @@ function board(ch) {
   // 좌석 배치: 나를 가운데 자리, 나머지를 가까운 순으로 채움
   const mine = 1;
   const ST = Q.seats; me.c.root.position.set(ST[mine].x, ST[mine].y, ST[mine].z); me.c.root.rotation.set(0, ST[mine].ry, 0); me.c.pose = 'sit';
-  if (Q.gondola) stowGear(me.c, true);
+  // 리프트에선 장비(스키·폴/보드)를 벗어 의자 등받이 뒤 걸이에 걸고 부츠만 신고 앉아요(벤치처럼). 하차하면 다시 신어요
+  ch.gearProps = (ch.gearProps || []).filter((g) => { ch.g.remove(g); return false; });
+  const hangGear = (c, seat) => {
+    const o = c.opts || {}, g = new THREE.Group(); g.position.set(seat.x, -2.78, 0.6); ch.g.add(g); ch.gearProps.push(g);
+    if (c.gear === 'board') box(0.27, 1.45, 0.035, o.boardColor || '#8E6BD8', 0, 0, 0, g);
+    else { [-0.07, 0.07].forEach((dx) => box(0.085, 1.55, 0.03, o.ski || '#F2B134', dx, 0, 0, g)); [-0.22, 0.22].forEach((dx) => box(0.03, 1.2, 0.03, '#3B4A5A', dx, -0.1, 0.04, g)); }
+    box(0.5, 0.06, 0.08, '#26313C', 0, 0.62, -0.04, g);   // 걸이
+    stowGear(c, true);
+  };
+  hangGear(me.c, Q.seats[1]);
   S.companions = [];
   let si = 0;
   for (const cd of cand) {
@@ -4412,7 +4480,7 @@ function board(ch) {
     if (si === mine) si++;
     if (si > 3) break;
     const c = makeChar(Object.assign({}, cd.src.opts, { gear: cd.src.gear }));
-    c.pose = 'sit'; c.root.rotation.y = ST[si].ry; c.root.position.set(ST[si].x, ST[si].y, ST[si].z); if (Q.gondola) stowGear(c, true);
+    c.pose = 'sit'; c.root.rotation.y = ST[si].ry; c.root.position.set(ST[si].x, ST[si].y, ST[si].z); hangGear(c, ST[si]);
     ch.g.add(c.root);
     S.companions.push({ c, name: cd.name, temp: true, emT: 0 });
     S.stats.companions.add(cd.name);
@@ -4441,12 +4509,14 @@ function unboard() {
   S.peak = 'M';
   const S0 = SUMMIT.hub || { x: 0, z: -1000, R: 160, trails: TRAILS.filter((t) => t.peak).map((t) => t.id) };
   S.top = { x: S0.x, z: S0.z, R: S0.R, trails: S0.trails };
-  const ex = d.x1, ez = d.z1;   // 리프트가 정상에 닿는 그 지점(하차장)에 그대로 내려요(광장을 가로지르지 않아요)
-  me.pos.set(ex, groundH(ex, ez), ez); me.yaw = 0; me.c.pose = 'stand'; me.target = null;   // 계곡(다운힐·+z)을 바라봐요 · 자동 이동 없음
+  // 하차(실제 체어처럼): 의자에서 일어나 하차 램프(안전망 사이)를 따라 앞으로 미끄러져 나온 뒤, 광장 쪽으로 돌아 슬로프를 바라보고 멈춰요(약 4초)
+  const rx = d.x1 - 3, ex = rx, ez = d.z1 - 1, side = S0.x >= d.x1 ? 1 : -1;
+  me.pos.set(ex, groundH(ex, ez), ez); me.yaw = Math.PI; me.c.pose = 'ski'; me.target = null; me.prevZ = null;
+  S.unload = { pts: [new THREE.Vector3(rx, 0, d.z1 - 12), new THREE.Vector3(rx + side * 14, 0, d.z1 - 17)], i: 0, v: 2.5, vmax: 6, face: 0 };
   S.sitting = false;
   S.look.yaw = 0; S.look.pitch = 0.12;   // 카메라는 어깨너머로 계곡·베이스를 내려다봐요(드래그로 자유 회전)
   setMode('summit'); SND.chime();
-  toast('정상 광장이에요 · 걸어서 원하는 슬로프 입구로 가면 내려가요');
+  toast('정상이에요 · 이정표를 보고 원하는 슬로프의 출발 게이트를 지나 내려가요');
 }
 
 /* 정상 */
@@ -4961,7 +5031,7 @@ const NET = {
   upsert(uid,d){
     let rm=this.remotes.get(uid); const opts=this.optsFrom(d), os=JSON.stringify(opts);
     if(!rm){ const c=makeChar(opts); scene.add(c.root); rm={ c, tpos:new THREE.Vector3(d.x||0,d.y||0,d.z||0), tyaw:d.yw||0, pose:d.p||'stand', name:d.n||'', pi:d.pi||'', opts:os, em:'', emT:-9, ms:'', msT:-9, lastT:0, stableSince:performance.now() }; c.root.position.copy(rm.tpos); this.remotes.set(uid,rm); }
-    rm.tpos.set(d.x||0,d.y||0,d.z||0); rm.tyaw=d.yw||0; rm.pose=d.p||'stand'; rm.troll=d.rl||0; rm.tuck=!!d.tk; rm.v=d.v||0; rm.name=d.n||''; rm.pi=d.pi||''; rm.crew=d.cw||'';
+    rm.tpos.set(d.x||0,d.y||0,d.z||0); rm.tyaw=d.yw||0; rm.pose=d.p||'stand'; if(d.m) rm.m=d.m; rm.troll=d.rl||0; rm.tuck=!!d.tk; rm.v=d.v||0; rm.name=d.n||''; rm.pi=d.pi||''; rm.crew=d.cw||'';
     // 이모트·채팅: 새 값이 들어올 때만 수신시각 갱신(과거 값 재표시 방지)
     const em=d.em||'', ms=d.ms||'';
     if(em && em!==rm.em){ rm.em=em; rm.emT=performance.now()/1000; } else if(!em){ rm.em=''; }
@@ -4987,6 +5057,8 @@ const NET = {
         // 하강 중엔 내 캐릭터와 같게: 경사에 맞춰 앞뒤로, 턴 안쪽으로 기울여 카빙 자세
         const sk=rm.pose==='ski'; rm.roll=lerp(rm.roll||0, sk?rm.troll:0, Math.min(1,dt*8));
         rm.c.root.rotation.x = sk ? Math.atan(slopeAlong(rm.c.root.position.x, rm.c.root.position.z, rm.c.root.rotation.y)) : 0; rm.c.root.rotation.z = rm.roll;
+        const bs = rm.pose==='sit';   // 벤치·리프트에 앉은 사람은 장비를 벗은 모습(장비는 벤치 옆·의자 뒤에)
+        if(bs && !rm.c.stowed) stowGear(rm.c,true); else if(!bs && rm.c.stowed) stowGear(rm.c,false);
         rm.c.pose=rm.pose; animChar(rm.c,dt, sk?{ roll:rm.roll, tuck:rm.tuck, v:rm.v }:undefined);
       });
     }
@@ -5033,10 +5105,10 @@ function moveWalker(pos, target, dt, speed) {
 }
 const BASE_ZMIN = 13;
 function walkBounds(p) {
-  if (S.mode === 'summit') { const P = S.top || PEAK[S.peak || 'M'], dx = p.x - P.x, dz = p.z - P.z, d = Math.hypot(dx, dz), R = (S.top && S.top.R) || 62; if (d > R) { p.x = P.x + dx / d * R; p.z = P.z + dz / d * R; } p.y = groundH(p.x, p.z); }   // 봉우리 꼭대기 둘레만 걸어요
+  if (S.mode === 'summit') { const P = S.top || PEAK[S.peak || 'M'], dx = p.x - P.x, dz = p.z - P.z, d = Math.hypot(dx, dz), R = (S.top && S.top.R) || 62; if (d > R) { p.x = P.x + dx / d * R; p.z = P.z + dz / d * R; } p.y = surfH(p.x, p.z); }   // 봉우리 꼭대기 둘레만 걸어요
   else {   // 슬로프 하단 안전망(z 11) ~ 센터 건물 ~ 주차장·큰 도로. 슬로프 쪽으로는 거슬러 올라가지 못해요(방금 내려와 안전망 안쪽에 있으면 베이스 쪽으로만 걸을 수 있어요)
     const zMin = Math.min(BASE_ZMIN, p._wz == null ? p.z : p._wz);
-    p.x = clamp(p.x, -560, 560); p.z = clamp(p.z, zMin, 496); p._wz = p.z; p.y = groundH(p.x, p.z);
+    p.x = clamp(p.x, -560, 560); p.z = clamp(p.z, zMin, 496); p._wz = p.z; p.y = surfH(p.x, p.z);
     if (me.target && me.target.z < zMin) me.target.z = zMin;   // 슬로프 쪽을 눌러도 안전망 앞까지만 걸어가요
   }
 }
@@ -5107,6 +5179,8 @@ function update(dt) {
     }
     fwd = clamp(fwd, -1, 1); turn = clamp(turn, -1, 1);
     if (S.bus) { fwd = 0; turn = 0; me.target = null; }
+    if (S.unload) { fwd = 0; turn = 0; me.target = null; }   // 하차 램프를 미끄러져 나오는 동안은 조작 없이
+    if (!S.seat && me.c.benchProp) benchGear(me.c, null, false);   // 벤치에서 어떤 식으로 일어났든 장비를 다시 신어요
     if (S.seat && (!S.sitting || Math.abs(fwd) > 0.12 || Math.abs(turn) > 0.12 || me.target)) standUp();
     if (S.mode === 'base') { if (S.racked && !me.c.stowed) stowGear(me.c, true); }
     const outside = me.pos.z > OUT_Z;
@@ -5121,6 +5195,19 @@ function update(dt) {
       const yw = moveWalker(me.pos, me.target, dt, outside ? 11 : 18);
       if (yw === null) me.target = null; else { me.yaw = lerpAngle(me.yaw, yw, Math.min(1, dt * 8)); moving = true; }
     }
+    if (S.unload) {   // 하차: 램프를 따라 미끄러져 나오다(점점 빨라지다) 광장 쪽으로 돌아 나간 뒤 슬로프(아래)를 바라보고 서요
+      const U = S.unload;
+      if (U.i < U.pts.length) {
+        const wp = U.pts[U.i], dx = wp.x - me.pos.x, dz = wp.z - me.pos.z, dd = Math.hypot(dx, dz);
+        U.v = Math.min(U.vmax, U.v + dt * 3);
+        if (dd < 0.35) U.i++;
+        else { const st = Math.min(dd, U.v * dt); me.pos.x += dx / dd * st; me.pos.z += dz / dd * st; me.yaw = lerpAngle(me.yaw, Math.atan2(dx, dz), Math.min(1, dt * 4)); }
+        moving = true;
+      } else {
+        me.yaw = lerpAngle(me.yaw, U.face, Math.min(1, dt * 3));
+        if (Math.abs(angDiff(me.yaw, U.face)) < 0.04) { me.yaw = U.face; S.unload = null; }
+      }
+    }
     me.fwding = moving;   // 전진(또는 목표 이동) 중일 때만 카메라가 뒤로 따라와요(방향전환만으론 안 움직여요)
     me.moving = moving || Math.abs(turn) > 0.12;
     if (moving && me.pos.z < OUT_Z) SND.setSkate(0.1);   // 설면에서 스케이팅으로 미끄러지는 눈소리
@@ -5129,7 +5216,7 @@ function update(dt) {
     if (S.mode === 'base' && !S.bus && pushOut(me.pos, 0.45, BUS.col)) me.target = null;   // 달리는 버스도 통과하지 않아요
     if (S.mode === 'summit') me.pos.y = standH(me.pos.x, me.pos.z, groundH(me.pos.x, me.pos.z));
     if (S.photo) me.pos.copy(S.photo.sp.stand);
-    if (S.seat) { me.pos.set(S.seat.x, S.seat.y + 0.15 - HIP, S.seat.z); me.yaw = S.seat.yaw; me.moving = moving = false; }   // 벤치 좌판 위에 앉아요
+    if (S.seat) { me.pos.set(S.seat.x + Math.sin(S.seat.yaw) * 0.3, S.seat.y + 0.15 - HIP, S.seat.z + Math.cos(S.seat.yaw) * 0.3); me.yaw = S.seat.yaw; me.moving = moving = false; }   // 벤치 좌판 위에 앉아요
     if (S.bus) {
       me.pos.set(BUS.pos.x, 0, BUS.pos.z); me.yaw = BUS.h; me.moving = moving = false;
       show('#banner', true); $('#banner').innerHTML = '<b>셔틀버스</b><span class="sep"></span><span>다음 정류장 ' + BUS.next(S.bus.from).name + '</span>';
@@ -5137,7 +5224,7 @@ function update(dt) {
     }
     // 제자리 점프(스페이스 · 점프 버튼): 현실적인 높이(약 0.5m · 0.65초). 공중에서 좌우 방향키로 돌 수 있어요(제자리 점프 턴)
     const jumpNow = S.mode !== 'maker' && (keys[' '] || keys['spacebar'] || JUMP.req); JUMP.req = false;
-    if (jumpNow && !me.jumpLatch && !me.hop && !S.seat && !S.sitting && !S.bus && !S.photo) me.hop = { vy: 3.2, h: 0 };
+    if (jumpNow && !me.jumpLatch && !me.hop && !S.seat && !S.sitting && !S.bus && !S.photo && !S.unload) me.hop = { vy: 3.2, h: 0 };
     me.jumpLatch = !!jumpNow;
     if (me.hop && (S.seat || S.bus || S.photo)) me.hop = null;
     if (me.hop) {
@@ -5145,7 +5232,7 @@ function update(dt) {
       if (hp.h <= 0) { me.hop = null; me.c.hopK = 0; puff(me.pos.x, me.pos.y, me.pos.z, 8, 1); SND.pop(); }
       else { me.pos.y += hp.h; me.c.hopK = Math.min(1, hp.h / 0.4); }
     }
-    me.c.pose = S.sitting ? 'sit' : (me.hop ? 'hop' : (moving ? 'skate' : 'stand'));
+    me.c.pose = S.sitting ? 'sit' : (me.hop ? 'hop' : (S.unload ? 'ski' : (moving ? 'skate' : 'stand')));
     if (moving && me.pos.z < OUT_Z && Math.random() < dt * 5) puff(me.pos.x + (Math.random() - 0.5), me.pos.y, me.pos.z + (Math.random() - 0.5), 3, 0.8);
     if (S.mode === 'maker') { if (!S.makerDrag) me.yaw += dt * 0.6; me.c.pose = 'stand'; }
     /* 시설 프롬프트 */
@@ -5160,8 +5247,18 @@ function update(dt) {
       if (BUS.at && BUS.wait > 1.2 && !S.bus) { const d = Math.hypot(BUS.at.px - me.pos.x, BUS.at.pz - me.pos.z); if (d < 11 && (!near || d < near.d)) near = { d, id: 'bus:' + BUS.stops.indexOf(BUS.at), label: '셔틀버스 · 다음 정류장 ' + BUS.next(BUS.at).name, action: '타기' }; }
     } else if (S.mode === 'summit' && $('#summitPanel').classList.contains('hidden')) {
       if (me.pos.distanceTo(PHOTO_SPOTS.photoTop.stand) < 6) near = { id: 'photoTop', label: '하늘 전망대 포토스팟', action: '사진 찍기' };
-      // 슬로프 입구(출발 현수막 아래)로 걸어 들어가면 그 코스로 바로 출발해요(실제 스키장처럼)
-      if (!S.photo) { const ti = TRAILS.findIndex((t) => (S.top ? S.top.trails.includes(t.id) : t.peak === S.peak) && Math.hypot(me.pos.x - t.pts[0][0], me.pos.z - t.pts[0][1]) < t.wTop / 2 + 3); if (ti >= 0) { S.slope = ti; startSki(me.pos.x); } }
+      // 출발 게이트: 게이트 앞(위쪽 16m)에 서면 '출발하기' 안내, 게이트를 아래로 지나가면 지금 자리·방향 그대로 이어서 출발해요(순간이동·갑작스런 출발 없음)
+      if (!S.photo && !S.unload) {
+        const pz = me.prevZ == null ? me.pos.z : me.prevZ;
+        for (let i = 0; i < TRAILS.length; i++) {
+          const t = TRAILS[i]; if (!(S.top ? S.top.trails.includes(t.id) : t.peak === S.peak)) continue;
+          const gz = t.zt + 4, gx = trailX(t, gz), gw = trailW(t, gz) / 2 + 1.5;
+          if (Math.abs(me.pos.x - gx) > gw - 0.6) continue;
+          if (pz < gz && me.pos.z >= gz) { const yw = me.yaw; S.slope = i; startSki(me.pos.x, me.pos.z); if (S.ski) { if (Math.abs(angDiff(yw, S.ski.h)) < 1.1) S.ski.h = S.ski.camH = yw; S.ski.v = 5; } break; }
+          if (me.pos.z < gz && me.pos.z > gz - 16) { const dg = gz - me.pos.z; if (!near || dg < (near.d == null ? 99 : near.d)) near = { d: dg, id: 'gate:' + i, label: t.name + ' · ' + t.level + ' 출발 게이트', action: '출발하기' }; }
+        }
+      }
+      me.prevZ = me.pos.z;
     }
     if (S.mode !== 'maker' && !S.photo && !S.seat) { const st = nearSeat(2.4); if (st && (!near || near.d > 1.5)) near = { d: 0, id: 'seat:' + SEATS.indexOf(st), label: st.label, action: '앉기' }; }
     if (S.seat) near = { d: 0, id: 'stand', label: S.seat.label + '에 앉아 있어요', action: '일어나기' };
@@ -5281,7 +5378,7 @@ function update(dt) {
     }
     if (s.air) { s.yB = null; s.gPrevB = null; }
     s.gPrev = gh; s.land = Math.max(0, (s.land || 0) - dt * 2.5);
-    me.pos.set(s.x, s.y, s.z);
+    me.pos.set(s.x, Math.max(s.y, meshH(s.x, s.z) + (s.air ? 0 : featureH(s.x, s.z))), s.z);   // 벽처럼 좁게 오목한 곳에서도 그려진 눈 위로 타요(파묻히지 않게)
     me.yaw = s.h;
     s.camH = lerpAngle(s.camH == null ? s.h : s.camH, s.h, Math.min(1, dt * 2.2));
     if (s.fallT <= 0) {
@@ -5315,8 +5412,8 @@ function update(dt) {
     if (b.kind === 'walker') {
       b.idle -= dt;
       if (b.sitT > 0) {   // 벤치에 앉아 쉬는 중
-        b.sitT -= dt; const st = b.seat; b.pos.set(st.x, st.y + 0.15 - HIP, st.z); b.yaw = st.yaw; b.c.pose = 'sit';
-        if (b.sitT <= 0) { st.by = null; b.seat = null; b.pos.set(st.x + Math.sin(st.yaw), 0, st.z + Math.cos(st.yaw)); b.idle = 1; b.c.pose = 'stand'; }
+        b.sitT -= dt; const st = b.seat; b.pos.set(st.x + Math.sin(st.yaw) * 0.3, st.y + 0.15 - HIP, st.z + Math.cos(st.yaw) * 0.3); b.yaw = st.yaw; b.c.pose = 'sit';
+        if (b.sitT <= 0) { benchGear(b.c, st, false); st.by = null; b.seat = null; b.pos.set(st.x + Math.sin(st.yaw), 0, st.z + Math.cos(st.yaw)); b.idle = 1; b.c.pose = 'stand'; }
       } else {
         if (!b.target && b.idle <= 0) {
           const free = b.zone ? [] : SEATS.filter((st) => st.plaza && !st.by);
@@ -5327,7 +5424,7 @@ function update(dt) {
         if (!b.c.stowed) stowGear(b.c, true);
         if (b.target) {
           const yw = moveWalker(b.pos, b.target, dt, b.zone ? 4.5 : 6);
-          if (yw === null) { b.target = null; b.idle = 2 + Math.random() * 6; b.c.pose = 'stand'; if (b.seat) b.sitT = 8 + Math.random() * 16; else if (Math.random() < 0.15) b.c.waveT = 1.4; }
+          if (yw === null) { b.target = null; b.idle = 2 + Math.random() * 6; b.c.pose = 'stand'; if (b.seat) { b.sitT = 8 + Math.random() * 16; benchGear(b.c, b.seat, true); } else if (Math.random() < 0.15) b.c.waveT = 1.4; }
           else { b.yaw = yw; b.c.pose = 'skate'; }
         }
         if (collide(b.pos, 0.45) || pushOut(b.pos, 0.45, BUS.col)) { b.target = null; b.idle = 1 + Math.random() * 3; b.c.pose = 'stand'; if (b.seat) { b.seat.by = null; b.seat = null; } }
@@ -5384,6 +5481,7 @@ function facility(id) {
   show('#prompt', false);
   if (id.startsWith('lift:') && S.racked) { toast('거치대에 걸어 둔 장비를 먼저 챙겨요'); return; }
   if (id.startsWith('lift:')) joinQueue(LIFTS.find((l) => 'lift:' + l.def.id === id));
+  else if (id.startsWith('gate:')) { S.slope = +id.slice(5); startSki(me.pos.x, me.pos.z); }   // 게이트 앞에서 '출발하기': 그 자리에서 밀고 나가 게이트를 지나요
   else if (id === 'lodge') enterLodge();
   else if (id === 'ticket') openTicket();
   else if (id === 'rental') { S.makerFrom = me.pos.clone(); setMode('maker'); syncMaker(); }
