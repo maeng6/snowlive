@@ -6,7 +6,7 @@
 <title>스노우라이브 파크</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Gowun+Dodum&family=Noto+Sans+KR:wght@400;500;700;900&family=Montserrat:wght@800;900&family=Orbitron:wght@800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Gowun+Dodum&family=Noto+Sans+KR:wght@400;500;700;900&family=Montserrat:wght@700;800;900&family=Orbitron:wght@800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
 <style>
 :root{
@@ -778,6 +778,230 @@ body.touch #gauge{ bottom:calc(var(--g) + 10px + var(--joy) + 14px + var(--sb));
 #statsPop span{ font-size:calc(var(--fs) - 2px); font-weight:700; color:var(--zsub,#6B7A93); }
 @keyframes sp-in{ from{ opacity:0; transform:translateY(-6px) scale(.97); } to{ opacity:1; transform:none; } }
 body.modal-open #gauge, body.modal-open #statsPop{ display:none !important; }
+</style>
+<style>
+/* ═══════════ FLAT — 평면 디자인(글래스모피즘·그림자 제거) ═══════════
+   앞 블록들이 !important로 겹겹이 덮고 있어서, 선언을 찾아다니며 지우는 대신
+   여기서 한 번에 평면으로 되돌린다. 되돌리려면 이 블록만 지우면 된다.
+
+   원칙: 반투명 유리(backdrop-filter) 대신 **불투명 흰 면 + 연한 회색 1px 라인**.
+   블러를 빼면 뒤의 3D가 그대로 비쳐 글자가 지저분해지므로 면은 반드시 불투명해야 한다. */
+
+:root{
+  --fl-line:#E6EAF0;          /* 연한 회색 라인 */
+  --fl-soft:#F4F6F9;          /* 보조 면(세그먼트·입력창) */
+  /* ZUI 토큰을 평면 값으로 덮으면 그걸 쓰는 칩·버튼·패널이 한 번에 따라온다 */
+  --zwhite:#FFFFFF; --zline:#E6EAF0; --zsoft:#F4F6F9;
+  --zsh:none; --zsh2:none;
+  /* 앞 블록의 어두운 반투명 패널도 불투명 흰 면으로 */
+  --panel:#FFFFFF; --panel2:#F4F6F9;
+}
+
+/* ── 1. 유리·그림자 전역 제거 ───────────────────────────────── */
+*, *::before, *::after{
+  backdrop-filter:none !important; -webkit-backdrop-filter:none !important;
+  box-shadow:none !important; text-shadow:none !important;
+}
+
+/* ── 1-b. 전역 리셋(`*`)을 이기고 살아남은 선언들 ──────────────
+   `*`는 우선순위가 가장 낮아서, `!important`가 붙은 id/class 규칙에는 집니다.
+   같은 선택자를 그대로 다시 적어 여기서 끕니다(이 블록이 뒤라 동점이면 이깁니다).
+   ⚠️ 앞 블록에서 그림자를 새로 추가하면 여기에도 같이 적어야 합니다. */
+.pill,.icon-btn,.btn,.panel,#banner,#skiBar,#prompt,.toast,#joy,#emotes,#chatForm,
+.modal .box,#gateCard,#gateHead,#counters,#summitPanel,#maker,#makerTitle,#ticket,#soundP,
+#promptBtn,#skiBar .btn.primary,#skiBar button.on,#joyKnob,#jumpBtn,#jumpBtn:active,
+.btn.primary,#makerDone,#goSki,#photoShare,
+.btn.primary:active,#makerDone:active,#goSki:active,
+#maker .seg button.on,#summitPanel .seg button.on,#soundP .seg button.on,.seg button.on,
+#gate .z4-primary,#gate .z4-primary:active,#photoShoot,#social.open,#chatForm button,
+#mkTabs button.on,#chPill .dot{
+  box-shadow:none !important;
+  backdrop-filter:none !important; -webkit-backdrop-filter:none !important;
+}
+/* 게이트 버튼: 모서리 6px · 불투명 · 눌러도 내려앉지 않고 면 색만 바뀐다 */
+#gate .z4-btn{ border-radius:6px !important; }
+#gate .z4-primary{ background:#fff !important; color:var(--zb) !important; }
+#gate .z4-primary:active{ background:#E8F0FF !important; transform:none !important; }
+/* 보조 버튼(캐릭터 꾸미기)은 반투명(흰 8%)이었다 → 불투명으로. 색은 아래 5-d에서
+   스노우라이브 블루로 확정한다. */
+#gate .z4-ghost:active{ transform:none !important; }
+
+/* ── 2. 그림자가 '장식'이 아니라 '기능'인 곳은 되살린다 ───────
+   아래 규칙은 위 전역 리셋보다 선택자가 구체적이라 이깁니다. */
+/* 머리 위 이름표·이모지는 배경 없이 3D 위에 떠 있어서 테두리가 없으면 눈밭에서 안 읽힌다.
+   ⚠️ 자식(.lbltxt·.lblcrew)까지 적어야 한다 — text-shadow는 상속되지만, 위 전역 리셋이
+   자식 요소에 **직접** 걸려서 상속값을 이긴다(원본 307행과 같은 3겹 값). */
+.lbl, .lbl *{ text-shadow:0 1px 3px rgba(0,0,0,.95), 0 0 3px rgba(0,0,0,.85), 0 0 1px rgba(0,0,0,.9) !important; }
+.lbl.npc::before{ text-shadow:none !important; }   /* STAFF 배지는 배경이 있어 필요 없다 */
+.lblimg{ box-shadow:0 1px 3px rgba(0,0,0,.55) !important; }   /* 프로필 썸네일 테두리 대비 */
+.bub.emo{ filter:drop-shadow(0 3px 5px rgba(0,0,0,.45)); }
+/* 속도계 80km/h 경고 글로우는 상태 표시 */
+#gauge.fast .d-num b{ text-shadow:0 0 12px rgba(255,90,60,.55) !important; }
+/* 색 선택 링도 box-shadow로 그려져 있다(선택 상태 표시) */
+.sw.on{ box-shadow:0 0 0 3px #fff, 0 0 0 5px var(--zb) !important; }
+
+/* ── 3. 면 = 불투명 흰색 + 1px 라인 ──────────────────────────── */
+#chPill, #viewBtn, #counters, #hud .icon-btn, #hud .actbtn, #chatToggle,
+#emotes, #chatForm, #banner, #skiBar, #prompt, #dressBtn, #photoTop > div,
+#photoBar, #social.open, #makerTitle, #ramenTimer, #joy{
+  background:#fff !important; color:var(--zink) !important;
+  border:1px solid var(--fl-line) !important;
+}
+#ticket, #soundP, #summitPanel, #maker, #lodge, #photoResult .box, .panel, .modal .box{
+  background:#fff !important; border:1px solid var(--fl-line) !important;
+}
+/* 반투명이던 딤·토스트도 또렷하게 */
+.modal{ background:rgba(16,26,44,.55) !important; }
+.toast{ background:#14213D !important; color:#fff !important; border:0 !important; }
+
+/* ── 4. 메인 버튼: 그라데이션·입체 그림자 없이 단색 ──────────── */
+.btn.primary, #makerDone, #goSki, #photoShare, #promptBtn,
+#skiBar .btn.primary, #skiBar button.on, #chatForm button,
+#joyKnob, #jumpBtn, #mkTabs button.on{
+  background:var(--zb) !important; color:#fff !important; border:0 !important;
+}
+/* 눌림은 내려앉는 대신 색이 진해지는 것으로 — 평면에선 그림자가 없어 깊이를 쓸 수 없다 */
+.btn.primary:active, #makerDone:active, #goSki:active, #promptBtn:active,
+#joyKnob:active, #jumpBtn:active{
+  background:var(--zb2) !important; transform:none !important;
+}
+#hud .actbtn:active, #viewBtn:active, #hud .icon-btn:active, #chatToggle:active{
+  background:var(--fl-soft) !important; transform:none !important;
+}
+#jumpBtn{ border:1px solid var(--fl-line) !important; }
+/* 조이스틱: 유리 대신 연한 면 + 라인 */
+#joy{ background:var(--fl-soft) !important; border:1px solid var(--fl-line) !important; }
+
+/* ── 5. 보조 면·세그먼트 ─────────────────────────────────────── */
+.btn.ghost, #soundClose, #stayTop, #photoSave, #muteToggle,
+#skiBar .btn:not(.primary), #emotes button, #maker .wear,
+#maker .field input[type=text], #soundP select, #maker select,
+#summitPanel .slope-btn, #mkTabs button, #prompt kbd, #skiBar kbd{
+  background:var(--fl-soft) !important; border:0 !important;
+}
+.seg{ background:var(--fl-soft) !important; }
+.seg button.on{ background:#fff !important; border:1px solid var(--fl-line) !important; }
+#summitPanel .slope-btn.on{ background:var(--zbl) !important; border:2px solid var(--zb) !important; }
+#chPill .dot{ box-shadow:none !important; }
+
+/* ── 5-b. 게이트 타이틀: 로고 + PARK를 한 덩어리로 ────────────
+   워드마크는 clamp(220px,62vw,420px)이고 SVG 비율이 128:22라 높이는 38~72px.
+   PARK 글자 높이는 **로고 글자 높이의 60%**(100%·75%는 컸다 — 사용자 확정).
+   SNOWLIVE는 대문자뿐이라 글자 높이 = 렌더 높이 = 폭 × 22/128.
+   Montserrat 캡하이트는 0.70em이므로
+   font-size = 폭 × (22/128) / 0.70 × 0.60 = 폭 × 0.1473
+   → 워드마크와 같은 vw 기울기로 clamp(32px, 9.13vw, 62px).
+   이 배율(0.60)만 바꾸면 크기가 로고에 맞춰 같이 따라온다.
+   둘 사이 간격은 거의 붙여 한 로고처럼 읽히게 한다. */
+#gate h1.z4-title{ gap:clamp(2px,.6vw,6px) !important; }
+/* ⚠️ letter-spacing을 0으로 하면 text-indent도 같이 0이어야 한다 —
+   원래 indent는 마지막 글자 뒤에 붙는 자간을 상쇄해 가운데를 맞추던 값이라,
+   자간만 지우면 PARK가 오른쪽으로 밀린다.
+   ⚠️ line-height는 캡하이트에 맞춘 .72 — 1.0이면 글자 위아래로 빈 줄 공간이 남아
+   로고와 떨어져 보인다. */
+#gate .z4-park{ font-size:clamp(32px,9.13vw,62px) !important;
+  font-weight:700 !important; letter-spacing:0 !important; text-indent:0 !important;
+  line-height:.72 !important; margin-top:0 !important; }
+
+/* ── 5-c. 게이트 배경: 3D를 흐리고 파란 덮개를 덜어낸다 ────────
+   글자 가독성을 깎는 건 밝기가 아니라 **고주파 디테일**(나무 알갱이·리프트 케이블선)이다.
+   그걸 블러로 지우면 파란색을 걷어내도 글자가 읽히고, 스키장은 오히려 더 잘 보인다.
+   (예전엔 가독성 수단이 "파랑을 진하게" 하나뿐이라 버튼 쪽이 90%까지 올라가 있었다.)
+
+   ⚠️ 블러 세기는 px이라 화면 폭에 따라 체감이 다르다 → clamp로 폭에 비례시킨다.
+   ⚠️ scale(1.03)은 가장자리 보정 — blur는 바깥을 샘플링해서 화면 끝이 비쳐 보인다.
+   ⚠️ 게이트에서도 3D가 매 프레임 렌더되므로 이 블러도 매 프레임 합성된다.
+      모바일에서 프레임이 떨어지면 '게이트 진입 시 한 장 찍어 블러한 정지 이미지'로 바꿀 것. */
+body.gate-open #c{
+  filter:blur(clamp(4px,.7vw,10px));
+  transform:scale(1.03); transform-origin:center;
+}
+/* 캐릭터 단체컷(#z4Group)은 캔버스 밖이라 흐려지지 않는다 — 의도한 대로. */
+#gate .z4-bg{
+  background:
+    linear-gradient(to top, rgba(26,72,190,.40) 0%, rgba(31,79,196,.25) 26%, rgba(31,79,196,0) 46%),
+    radial-gradient(90% 65% at 50% 35%, rgba(90,150,255,.15) 0%, rgba(47,111,235,.25) 55%, rgba(26,72,190,.40) 100%)
+    !important;
+}
+
+/* ── 5-d. 게이트 배치: 타이틀 + 버튼을 한 덩어리로 가운데 ──────
+   원래는 #gate가 space-between이라 타이틀은 위·버튼은 아래로 갈라져 있었다.
+   캐릭터 단체컷을 빼면서 가운데 한 묶음으로 모은다.
+   접속 인원 칩만 absolute로 떼어 위에 남긴다(묶음에 끼면 같이 가운데로 온다). */
+#gate{ justify-content:center !important; gap:clamp(18px,4vh,34px) !important; }
+/* ⚠️ .z4-center에 margin-top:auto가 걸려 있다(739행) — auto 마진이 남은 공간을 다 먹어
+   justify-content:center를 무력화한다. 반드시 같이 풀어야 가운데로 온다. */
+#gate .z4-center{ margin:0 !important; }
+#gate .z4-top{
+  position:absolute !important; top:calc(18px + env(safe-area-inset-top,0px)) !important;
+  left:0; right:0; display:flex; justify-content:center; padding-top:0 !important;
+}
+#gate .z4-group{ display:none !important; }   /* 캐릭터 단체컷 임시 숨김(사용자 요청) */
+#gate .z4-bottom{ padding-bottom:0 !important; }
+
+/* 버튼 색: 위는 흰 면에 검은 글씨, 아래는 테두리 없는 블루 면 */
+#gate .z4-primary{ color:#000 !important; }
+/* 스노우라이브 블루 = 앱 SDSColor.snowliveBlue(#3D83ED).
+   게이트가 쓰던 --zb(#2F6FEB)와 미묘하게 달라 앱 값으로 맞춘다(사용자 확정). */
+#gate .z4-ghost{ border:0 !important; background:#3D83ED !important; }
+#gate .z4-ghost:active{ background:#2F6FD6 !important; }
+
+/* 로고 묶음 ↔ 소제목 간격을 조금 넓힌다(원래 14). */
+#gate .z4-center{ gap:clamp(14px,2.4vh,22px) !important; }
+
+/* 접속 인원 칩: 흰색 20% 반투명 + blur(8px)로 남아 있던 유리를 불투명 흰 면으로.
+   면이 밝아지므로 글자도 흰색 → 검정으로 바꿔야 읽힌다. */
+#gate .z4-live{
+  background:#fff !important; border:1px solid var(--fl-line) !important;
+  color:var(--zink) !important;
+  backdrop-filter:none !important; -webkit-backdrop-filter:none !important;
+}
+#gate .z4-live b{ color:var(--zink) !important; }   /* 숫자도 본문과 같은 검정(사용자 확정) */
+#gate .z4-dot{ box-shadow:none !important; }   /* 초록 점 둘레 후광 제거(평면) */
+
+/* 하단 안내: 흰색 · 레귤러 · 한 단계 큰 글씨(12 → 13, 사용자 확정).
+   아래 'bold 통일'은 버튼·인원 칩만 해당한다 — 이 줄은 일부러 레귤러로 둔다. */
+#gate .z4-note{ color:#fff !important; font-weight:400 !important; font-size:13px !important; }
+
+/* 글자 굵기는 게이트 전체를 bold(700)로 통일한다(사용자 확정).
+   버튼과 인원 숫자만 900(블랙)이라 혼자 두꺼웠다 — 나머지(소제목·안내)는 이미 700. */
+#gate .z4-btn, #gate .z4-live, #gate .z4-live b{ font-weight:700 !important; }
+
+/* ── 5-e. 꾸미기 패널: 항목 스타일 통일 ───────────────────────
+   스키복만 회색 박스(.wear)에 묶여 있고 머리·고글·넥워머·장갑·피부는 맨 흰 바탕이라
+   같은 종류의 항목이 두 가지로 보였다. 박스를 풀어 전부 흰 바탕에 두고,
+   항목 구분은 **divider 한 줄**로만 한다(색을 고르는 화면이라 면을 쓰면 색과 경쟁한다).
+   .wear 안쪽(재킷·포인트 색·바지)은 바깥 항목과 구조가 같아서 같은 규칙이 그대로 먹는다. */
+#maker .wear{
+  background:none !important; border-radius:0 !important; padding:0 !important;
+}
+#makerScroll > div:not(#mkTabs):not(:first-child),
+#maker .wear > div:not(.wear-hd):not(.seg){
+  border-top:1px solid var(--fl-line);
+  padding-top:14px; margin-top:14px;
+}
+/* '스키복' 머리말을 다른 항목 라벨과 같은 급으로 내린다(13/700/zsub).
+   박스가 사라진 뒤로 혼자 17px 먹색이라 튀었다. 설명줄은 한 단계 더 작게 남긴다. */
+#maker .wear-hd{ display:block !important; margin-bottom:6px; }
+#maker .wear-hd b{
+  display:block; font-size:13px !important; font-weight:700 !important;
+  color:var(--zsub) !important;
+}
+#maker .wear-hd span{
+  display:block; font-size:11px !important; font-weight:500 !important;
+  color:var(--zsub) !important; opacity:.8; margin-top:2px;
+}
+
+/* 선이 겹치지 않게: 탭 바로 아래 첫 항목, 그리고 '스키복' 머리말 바로 아래 첫 줄은 뺀다 */
+#makerScroll > #mkTabs + div,
+#maker .wear > .wear-hd + div,
+#maker .wear > .wear-hd + .seg + div{
+  border-top:0 !important; padding-top:0 !important; margin-top:0 !important;
+}
+
+/* ── 6. 장식용 그림자(그라데이션 글자·떠 있는 아이콘) 제거 ───── */
+#food svg, #gate .g3-play svg, #gate .z4-f{ filter:none !important; }
+#loading{ background:var(--zb) !important; }
 </style>
 </head>
 <body>
@@ -3892,6 +4116,7 @@ function setMode(m) {
   S.mode = m;
   hideAllPanels();
   show('#gate', m === 'gate');
+  document.body.classList.toggle('gate-open', m === 'gate');   // 게이트에서만 배경 3D를 흐리게(아래 FLAT 블록)
   show('#maker', m === 'maker'); show('#makerTitle', m === 'maker');
   show('#hud', ['base', 'queue', 'lift', 'summit', 'ski', 'lodge'].includes(m));
   show('#card', m === 'card');
@@ -5704,11 +5929,19 @@ let last = performance.now();
 // 탭 복귀 시 dt 폭주 방지. 리프트는 벽시계(liftClock) 기반이라 그동안의 진행만큼 자동으로 스냅된다.
 document.addEventListener('visibilitychange', () => { if (!document.hidden) last = performance.now(); });
 let todTimer = 0;
+let gateAcc = 0;
+const GATE_FPS = 12;   // 게이트 배경은 CSS로 흐려지고 카메라도 고정이라 저프레임으로 충분해요
 function loop(now) {
   const dt = Math.min(0.05, (now - last) / 1000); last = now;
   if (S.mode !== 'card') {
     blendTod(dt); update(dt); updateCamera(dt); updateLabels(); updateBubbles();
-    renderFrame();
+    // 게이트에서는 그리는 횟수를 줄여요. 캔버스에 CSS 블러가 걸려 있어서 **다시 그릴 때마다**
+    // 화면 전체를 다시 흐리게 합성하거든요(실측: 그것만으로 38 → 31fps).
+    // 캔버스가 안 바뀌면 브라우저가 흐린 결과를 그대로 재사용해요.
+    if (S.mode === 'gate') {
+      gateAcc += dt;
+      if (gateAcc >= 1 / GATE_FPS) { gateAcc = 0; renderFrame(); }
+    } else renderFrame();
   }
   todTimer += dt; if (todTimer > 30) { todTimer = 0; applyTod(); }
   requestAnimationFrame(loop);
