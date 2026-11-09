@@ -157,8 +157,8 @@ class LoginView extends StatelessWidget {
                             SizedBox(
                               width: 12,
                             ),
-                            (Platform.isIOS)
-                                ? Column(
+                            if (Platform.isIOS) ...[
+                              Column(
                               children: [
                                 if (_loginViewModel.signInMethod == 'apple')
                                   Padding(
@@ -192,9 +192,9 @@ class LoginView extends StatelessWidget {
                                   loginViewModel: _loginViewModel,
                                 ),
                               ],
-                            )
-                                : SizedBox(width: 0,),
-                            SizedBox(width: 12),
+                              ),
+                              SizedBox(width: 12),
+                            ],
                             Column(
                               children: [
                                 if (_loginViewModel.signInMethod == 'kakao')

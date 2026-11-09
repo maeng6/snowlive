@@ -56,10 +56,7 @@ Future<bool> showLiveTalkCardShareFlow({
 }) async {
   final vm = Get.find<LiveTalkUploadViewModelWeb>();
   vm.reset();
-  // 로컬 확인용 스위치가 켜져 있으면 서버 대신 가짜 기록을 쓴다(배포 전 false).
-  if (kDebugFakeRidingCard) {
-    vm.useFakeRidingCard();
-  } else if (userId != null) {
+  if (userId != null) {
     await vm.loadRidingCard(userId);
   }
 
