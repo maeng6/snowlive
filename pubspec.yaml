@@ -111,6 +111,9 @@ dependencies:
   flame: ^1.38.2
   firebase_database: ^11.3.10
 flutter:
+  # iOS는 CocoaPods로 빌드해요 (SPM 자동 전환 시 flutter_background_geolocation의 CocoaLumberjack이 iOS 버전 충돌)
+  config:
+    enable-swift-package-manager: false
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
