@@ -6,7 +6,6 @@ import 'package:com.snowlive/web/viewmodel/liveTalk/vm_liveTalkUpload_web.dart';
 import 'package:com.snowlive/web/widget/w_web_overlay_modal_web.dart';
 import 'package:com.snowlive/web/widget/w_web_switch_web.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:com.snowlive/web/widget/w_web_toast_web.dart';
 
@@ -354,36 +353,37 @@ class _ImagePreviewBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final file = vm.pickedImage;
     final side = context.screenType == WebScreenType.mobile
         ? kLiveTalkPickBoxSizeMobile
         : kLiveTalkPickBoxSize;
-    return Container(
-      width: side,
-      height: side,
-      decoration: BoxDecoration(
-        color: isDragging ? SDSColor.blue50 : SDSColor.gray50,
-        borderRadius: BorderRadius.circular(4),
-        border: isDragging ? Border.all(color: SDSColor.snowliveBlue, width: 2) : null,
-      ),
-      clipBehavior: Clip.antiAlias,
-      // 웹의 XFile.path는 blob URL이라 Image.network로 그린다.
-      child: file == null
-          ? Center(
-              // ⚠️ colorFilter로 색을 덮지 않는다 — srcIn은 실루엣 전체를 칠해서
-              // 렌즈처럼 흰색으로 뚫어둔 구멍까지 메워버린다. 색은 그대로 두고
-              // 불투명도만 낮춰 연하게 만든다(검정 10%를 덮었을 때와 같은 밝기).
-              child: Opacity(
-                opacity: 0.25,
-                child: SvgPicture.asset(
-                  'assets/imgs/icons/icon_input_camera.svg',
-                  width: 48,
-                  height: 48,
+    // ⚠️ pickedImage는 Rx다 — 이 박스가 직접 구독해야 **1단계에서 사진을 고른
+    // 즉시** 미리보기로 바뀐다. 바깥 Obx는 1단계에서 이 값을 읽지 않아(isSubmitting만
+    // 구독) 여기서 감싸지 않으면 `다음`을 눌러 setState가 돌 때까지 빈 칸(회색)이 남는다.
+    return Obx(() {
+      final file = vm.pickedImage;
+      return Container(
+        width: side,
+        height: side,
+        decoration: BoxDecoration(
+          color: isDragging ? SDSColor.blue50 : SDSColor.gray50,
+          borderRadius: BorderRadius.circular(4),
+          border: isDragging ? Border.all(color: SDSColor.snowliveBlue, width: 2) : null,
+        ),
+        clipBehavior: Clip.antiAlias,
+        // 웹의 XFile.path는 blob URL이라 Image.network로 그린다.
+        child: file == null
+            // 빈 상태는 머티리얼 카메라 아이콘으로 그린다 — 예전 SVG(흰 렌즈를 뚫어둔)
+            // 는 iOS Safari에서 흰 구멍 합성이 깨져 큰 회색 원처럼 보였다.
+            ? const Center(
+                child: Icon(
+                  Icons.photo_camera_rounded,
+                  size: 48,
+                  color: SDSColor.gray300,
                 ),
-              ),
-            )
-          : Image.network(file.path, fit: BoxFit.cover),
-    );
+              )
+            : Image.network(file.path, fit: BoxFit.cover),
+      );
+    });
   }
 }
 
@@ -483,17 +483,11 @@ class _AddPhotoSlotState extends State<_AddPhotoSlot> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // 1단계 사진 칸과 **같은 카메라 아이콘**을 쓴다(크기만 26으로 줄임).
-              // ⚠️ colorFilter로 색을 덮지 않는다 — srcIn은 실루엣 전체를 칠해서
-              // 렌즈처럼 흰색으로 뚫어둔 구멍까지 메워버린다. 색은 그대로 두고
-              // 불투명도만 조절한다(1단계와 같은 처리).
-              Opacity(
-                opacity: active ? 0.55 : 0.25,
-                child: SvgPicture.asset(
-                  'assets/imgs/icons/icon_input_camera.svg',
-                  width: 26,
-                  height: 26,
-                ),
+              // 1단계 사진 칸과 **같은 머티리얼 카메라 아이콘**을 쓴다(크기만 26).
+              Icon(
+                Icons.photo_camera_rounded,
+                size: 26,
+                color: active ? SDSColor.snowliveBlue : SDSColor.gray300,
               ),
               const SizedBox(height: 4),
               Text(
