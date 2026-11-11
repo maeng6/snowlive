@@ -48,6 +48,8 @@ import 'package:com.snowlive/web/view/seasonpass/v_seasonPassResult_web.dart';
 import 'package:com.snowlive/web/view/seasonpass/v_rideDetail_web.dart';
 import 'package:com.snowlive/web/view/seasonpass/v_rideListWeb.dart';
 import 'package:com.snowlive/web/view/location/v_liveMap_web.dart';
+import 'package:com.snowlive/web/view/campaign/v_phoenixLanding_web.dart';
+import 'package:com.snowlive/web/view/campaign/v_phoenixClaim_web.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -150,7 +152,15 @@ class WebRoutes {
   // 친구 실시간 위치 지도(유료).
   static const liveMap = '/live-map';
 
+  // 휘팍 X 스노우라이브 콜라보 이벤트(홈 히어로배너로 진입).
+  static const phoenix = '/phoenix';
+  static const phoenixClaim = '/phoenix-claim';
+
   static final pages = [
+    GetPage(name: phoenix, page: () => const PhoenixLandingWeb()),
+    // 끝 슬래시(/phoenix/)로 들어와도 같은 페이지를 띄운다(공유 링크 호환).
+    GetPage(name: '$phoenix/', page: () => const PhoenixLandingWeb()),
+    GetPage(name: phoenixClaim, page: () => const PhoenixClaimWeb()),
     GetPage(
       name: settings,
       page: () => const SettingsViewWeb(),

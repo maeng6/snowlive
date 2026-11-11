@@ -62,6 +62,9 @@ const Map<String, String> kWebPageNames = {
   // 계정
   WebRoutes.login: '로그인',
   WebRoutes.onboarding: '회원가입',
+  // 휘팍 콜라보 이벤트
+  WebRoutes.phoenix: '휘팍 이벤트',
+  WebRoutes.phoenixClaim: '상품 받기',
 };
 
 /// 라우트(쿼리 포함 가능) → 브라우저 탭 제목. `중고거래 | 스노우라이브`.
