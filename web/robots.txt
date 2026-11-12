@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /daum_postcode.html
+
+Sitemap: https://snowlive.kr/sitemap.xml

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 앱 화면은 해시 라우팅(#/...)이라 개별 색인이 안 된다. 실제 경로가 있는 것만 싣는다. -->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://snowlive.kr/</loc><changefreq>weekly</changefreq><priority>1.0</priority></url>
+  <url><loc>https://snowlive.kr/about.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://snowlive.kr/terms.html</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>
+  <url><loc>https://snowlive.kr/privacy.html</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>
+</urlset>
