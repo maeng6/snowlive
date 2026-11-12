@@ -19,7 +19,11 @@ void showTierEnlargeDialog(
     barrierColor: Colors.black.withValues(alpha: 0.85),
     context: context,
     builder: (BuildContext context) {
-      return GestureDetector(
+      // Material로 감싸야 Text에 노란 디버그 밑줄이 안 생긴다
+      // (showDialog는 Material 조상을 넣어주지 않음).
+      return Material(
+        type: MaterialType.transparency,
+        child: GestureDetector(
         behavior: HitTestBehavior.opaque, // 딤 배경 어디를 눌러도 닫히게
         onTap: () => Navigator.of(context).pop(),
         child: Center(
@@ -50,6 +54,7 @@ void showTierEnlargeDialog(
             ],
           ),
         ),
+      ),
       );
     },
   );
