@@ -60,9 +60,13 @@ Color _catIconColor(String cat) {
   }
 }
 
-int? _myUserId() => Get.isRegistered<UserViewModel>()
-    ? Get.find<UserViewModel>().user.user_id
-    : null;
+// 웹에서 user.user_id가 String으로 올 수 있어(UserViewModel.user는 dynamic) 정수로 정규화.
+int? _asInt(dynamic v) => v is int ? v : int.tryParse('${v ?? ''}');
+
+int? _myUserId() {
+  if (!Get.isRegistered<UserViewModel>()) return null;
+  return _asInt(Get.find<UserViewModel>().user.user_id);
+}
 
 /// 원형 프로필(night 2px 외곽선).
 // 프로필 아바타는 다른 웹 화면과 동일한 공용 WebAvatar를 사용한다
@@ -124,6 +128,13 @@ class PhoenixLandingWeb extends StatelessWidget {
           child: ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: kWebDesktopListMaxWidth),
             child: Obx(() {
+              // 로그인 유저가 비동기로 늦게 로드돼도(새로고침 등) 상품받기 버튼이
+              // 다시 그려지도록, _myUserId가 쓰는 UserViewModel Rx를 여기서 구독한다.
+              if (Get.isRegistered<UserViewModel>()) {
+                final uvm = Get.find<UserViewModel>();
+                uvm.isLoading.value; // isLoading 구독
+                uvm.user; // _user.value 구독
+              }
               if (vm.isLoading.value) {
                 return const SizedBox(
                   height: 400,
@@ -285,7 +296,7 @@ class _Content extends StatelessWidget {
     final slope = (data?['slope_label'] ?? '').toString();
     final profile = (data?['profile_image_url'] ?? '').toString();
     final winnerId = winner?['winner_id'];
-    final isMine = winner != null && winner['user_id'] == _myUserId();
+    final isMine = winner != null && _asInt(winner['user_id']) == _myUserId();
 
     return Container(
       padding: const EdgeInsets.all(12),
@@ -857,7 +868,7 @@ class _OpenBreadCardState extends State<_OpenBreadCard> {
     dynamic myWinnerId;
     if (winners != null) {
       for (final w in (winners['open_bread'] as List? ?? const [])) {
-        if (w['user_id'] == _myUserId()) myWinnerId = w['winner_id'];
+        if (_asInt(w['user_id']) == _myUserId()) myWinnerId = w['winner_id'];
       }
     }
     final ordered = _recentFirst ? list.reversed.toList() : list.toList();
@@ -1018,7 +1029,7 @@ class _OpenBreadCardState extends State<_OpenBreadCard> {
     final metric = (e['metric_label'] ?? '').toString();
     final profile = (e['profile_image_url'] ?? '').toString();
     // 내 아이디가 리스트에 있을 때 내 줄만 노란 하이라이트.
-    final mine = e['user_id'] != null && e['user_id'] == _myUserId();
+    final mine = e['user_id'] != null && _asInt(e['user_id']) == _myUserId();
     return Column(children: [
       const SkiDashedLine(color: SkiColors.ice),
       Container(
