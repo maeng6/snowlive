@@ -161,12 +161,16 @@ class _RidingCardListViewState extends State<RidingCardListView> {
       final tempFile = File('${tempDir.path}/$fileName');
       await tempFile.writeAsBytes(pngBytes);
 
-      Share.shareXFiles(
+      final box = context.findRenderObject() as RenderBox?;
+      await Share.shareXFiles(
         [XFile(tempFile.path)],
         text: '스노우라이브에서 ${_userViewModel.user.display_name}님의 시즌 기록을 공유합니다!',
+        sharePositionOrigin:
+            box != null ? box.localToGlobal(Offset.zero) & box.size : null,
       );
     } catch (e) {
       debugPrint('시즌 카드 이미지 공유 오류: $e');
+      Get.snackbar('공유 실패', '잠시 후 다시 시도해 주세요.');
     } finally {
       if (mounted) {
         setState(() {
@@ -1911,12 +1915,16 @@ class _DailyCardDetailDialogState extends State<DailyCardDetailDialog> {
       final tempFile = File('${tempDir.path}/$fileName');
       await tempFile.writeAsBytes(pngBytes);
 
-      Share.shareXFiles(
+      final box = context.findRenderObject() as RenderBox?;
+      await Share.shareXFiles(
         [XFile(tempFile.path)],
         text: '스노우라이브에서 ${widget.userViewModel.user.display_name}님의 라이딩 기록을 공유합니다!',
+        sharePositionOrigin:
+            box != null ? box.localToGlobal(Offset.zero) & box.size : null,
       );
     } catch (e) {
       debugPrint('이미지 공유 오류: $e');
+      Get.snackbar('공유 실패', '잠시 후 다시 시도해 주세요.');
     } finally {
       if (mounted) {
         setState(() {
@@ -2771,12 +2779,16 @@ class _SeasonCardDetailDialogState extends State<SeasonCardDetailDialog> {
       final tempFile = File('${tempDir.path}/$fileName');
       await tempFile.writeAsBytes(pngBytes);
 
-      Share.shareXFiles(
+      final box = context.findRenderObject() as RenderBox?;
+      await Share.shareXFiles(
         [XFile(tempFile.path)],
         text: '스노우라이브에서 ${widget.userViewModel.user.display_name}님의 시즌 기록을 공유합니다!',
+        sharePositionOrigin:
+            box != null ? box.localToGlobal(Offset.zero) & box.size : null,
       );
     } catch (e) {
       debugPrint('시즌 카드 이미지 공유 오류: $e');
+      Get.snackbar('공유 실패', '잠시 후 다시 시도해 주세요.');
     } finally {
       if (mounted) {
         setState(() {

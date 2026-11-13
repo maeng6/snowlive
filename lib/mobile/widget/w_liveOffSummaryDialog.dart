@@ -146,13 +146,18 @@ class _LiveOffSummaryDialogState extends State<LiveOffSummaryDialog> {
       final tempFile = File('${tempDir.path}/$fileName');
       await tempFile.writeAsBytes(pngBytes);
 
-      // 공유 시트 열기 (await 제거 - 공유창이 열리면 바로 상태 업데이트)
-      Share.shareXFiles(
+      // 공유 시트 열기. await 해야 에러가 잡히고, iPad는 sharePositionOrigin이 없으면
+      // 팝오버 앵커가 없어 throw(먹통)되므로 버튼 위치를 넘겨준다.
+      final box = context.findRenderObject() as RenderBox?;
+      await Share.shareXFiles(
         [XFile(tempFile.path)],
         text: '스노우라이브에서 ${widget.summary.displayName}님이 오늘의 라이딩 기록을 공유합니다!',
+        sharePositionOrigin:
+            box != null ? box.localToGlobal(Offset.zero) & box.size : null,
       );
     } catch (e) {
       print('이미지 공유 오류: $e');
+      Get.snackbar('공유 실패', '잠시 후 다시 시도해 주세요.');
     } finally {
       if (mounted) {
         setState(() {
