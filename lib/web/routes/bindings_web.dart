@@ -40,6 +40,8 @@ import 'package:com.snowlive/web/viewmodel/location/vm_liveMap_web.dart';
 import 'package:com.snowlive/web/viewmodel/auth/vm_login_web.dart';
 import 'package:com.snowlive/web/viewmodel/auth/vm_authcheck_web.dart';
 import 'package:com.snowlive/web/viewmodel/auth/vm_onboarding_web.dart';
+import 'package:com.snowlive/web/data/affiliate_product_repository_web.dart';
+import 'package:com.snowlive/web/viewmodel/shop/vm_shop_web.dart';
 import 'package:get/get.dart';
 
 /// 로그인 라우트용 바인딩 (팀원이 로그인/스플래시 라우트에 연결).
@@ -328,6 +330,20 @@ class WebSlopeCraftBinding extends Bindings {
     Get.lazyPut(() => SlopeCraftViewModelWeb(), fenix: true);
     // 상단 `전체 스키장 점령 TOP 5`는 전용 API가 없어 크루홈 집계를 쓴다.
     Get.lazyPut(() => CrewHomeViewModel(), fenix: true);
+  }
+}
+
+/// 추천 상품(쿠팡 파트너스) 라우트용 바인딩.
+///
+/// 지금은 하드코딩 JSON([AssetAffiliateProductRepository]). 서버 API가 생기면 여기서
+/// 저장소만 API 구현으로 바꿔 끼운다 — 뷰모델·화면은 그대로.
+class WebShopBinding extends Bindings {
+  @override
+  void dependencies() {
+    Get.lazyPut(
+      () => ShopViewModelWeb(const AssetAffiliateProductRepository()),
+      fenix: true,
+    );
   }
 }
 

@@ -1,6 +1,7 @@
 import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/core/viewmodel/vm_user.dart';
 import 'package:com.snowlive/web/routes/routes_web.dart';
+import 'package:com.snowlive/web/view/shop/shop_sections_web.dart' show kShopMenuLabel;
 import 'package:com.snowlive/web/viewmodel/alarm/vm_alarmCenter_web.dart';
 import 'package:com.snowlive/web/viewmodel/fleamarket/vm_fleamarketPagination_web.dart';
 import 'package:com.snowlive/web/viewmodel/home/vm_home_web.dart';
@@ -50,8 +51,8 @@ class GnbNavItemData {
   });
 }
 
-/// 1차 그룹: 홈 / 중고거래 / 각종소식 / 커뮤니티 / 라이브톡 / 랭킹 / 라이브크루 /
-/// 슬로프크래프트 / 라이딩 기록 카드
+/// 1차 그룹: 홈 / 중고거래 / 추천 상품 / 각종소식 / 커뮤니티 / 라이브톡 / 랭킹 /
+/// 라이브크루 / 슬로프크래프트 / 라이딩 기록 카드
 const List<GnbNavItemData> kGnbPrimaryItems = [
   GnbNavItemData(
     label: '홈',
@@ -64,6 +65,13 @@ const List<GnbNavItemData> kGnbPrimaryItems = [
     routePrefix: '/fleamarket',
     assetIconSvgOn: 'assets/imgs/icons/icon_web_fleamarket_select.svg',
     assetIconSvgOff: 'assets/imgs/icons/icon_web_fleamarket.svg',
+  ),
+  // 추천 상품(쿠팡 파트너스 제휴). 중고거래 바로 아래 — 둘 다 '사는 것'이라 붙여 둔다.
+  GnbNavItemData(
+    label: kShopMenuLabel,
+    routePrefix: WebRoutes.shop,
+    assetIconSvgOn: 'assets/imgs/icons/icon_web_shop_select.svg',
+    assetIconSvgOff: 'assets/imgs/icons/icon_web_shop.svg',
   ),
   GnbNavItemData(
     label: '각종소식',

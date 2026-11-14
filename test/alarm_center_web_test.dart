@@ -309,8 +309,9 @@ void main() {
   });
 
   test('사이드바·드로어 2차 메뉴는 친구 / 알림 / 설정 순서, 알림만 빨간 점', () {
-    expect(kGnbSecondaryItems.map((i) => i.label), ['친구', '알림', '설정']);
-    final alarm = kGnbSecondaryItems[1];
+    // 데이터랩(시즌권 데이터)은 maeng이 2차 그룹 맨 앞에 넣었다.
+    expect(kGnbSecondaryItems.map((i) => i.label), ['데이터랩', '친구', '알림', '설정']);
+    final alarm = kGnbSecondaryItems.singleWhere((i) => i.label == '알림');
     expect(alarm.routePrefix, WebRoutes.alarm);
     expect(alarm.showsAlarmDot, isTrue);
     expect(kGnbSecondaryItems.where((i) => i.showsAlarmDot), hasLength(1));

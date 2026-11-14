@@ -37,6 +37,7 @@ import 'package:com.snowlive/web/view/profile/v_profileDetail_web.dart';
 import 'package:com.snowlive/web/view/profile/v_profileEdit_web.dart';
 import 'package:com.snowlive/web/view/ranking/v_ridingCards_web.dart';
 import 'package:com.snowlive/web/view/ranking/v_slopeCraft_web.dart';
+import 'package:com.snowlive/web/view/shop/v_shop_web.dart';
 import 'package:com.snowlive/web/view/liveTalk/v_liveTalkDetail_web.dart';
 import 'package:com.snowlive/web/view/liveTalk/v_liveTalkHome_web.dart';
 import 'package:com.snowlive/web/view/login/v_login_web.dart';
@@ -94,6 +95,8 @@ class WebRoutes {
   static const slopeCraft = '/slopecraft';
   /// 라이딩 기록 카드(시즌 카드 + 데일리 카드 목록).
   static const ridingCards = '/riding-cards';
+  /// 추천 상품(쿠팡 파트너스 제휴 링크 모음). 상세 없이 목록만.
+  static const shop = '/shop';
 
   // 친구는 하위 경로(`/friend/settings`)로 두면 GetX가 부모 `/friend`로 매칭해버려
   // 새로고침 시 목록이 뜬다 → 커뮤니티·랭킹처럼 형제 최상위 경로로 나눈다.
@@ -389,6 +392,11 @@ class WebRoutes {
       name: slopeCraft,
       page: () => const SlopeCraftViewWeb(),
       binding: WebSlopeCraftBinding(),
+    ),
+    GetPage(
+      name: shop,
+      page: () => const ShopViewWeb(),
+      binding: WebShopBinding(),
     ),
     GetPage(
       name: userProfile,

@@ -5,8 +5,8 @@ import 'package:flutter_test/flutter_test.dart';
 
 /// 사이드바·드로어 메뉴 아이콘. 활성은 채워진 `_select`, 비활성은 외곽선을 쓴다.
 void main() {
-  test('1차 메뉴 9개 모두 벡터 아이콘 on/off 쌍을 갖는다', () {
-    expect(kGnbPrimaryItems, hasLength(9));
+  test('1차 메뉴 10개 모두 벡터 아이콘 on/off 쌍을 갖는다', () {
+    expect(kGnbPrimaryItems, hasLength(10));
     for (final item in kGnbPrimaryItems) {
       expect(item.assetIconSvgOff, isNotNull, reason: item.label);
       expect(item.assetIconSvgOn, isNotNull, reason: item.label);
@@ -24,7 +24,8 @@ void main() {
     for (final item in kGnbSecondaryItems) {
       expect(item.isPlaceholder, isFalse, reason: item.label);
     }
-    expect(kGnbSecondaryItems.map((i) => i.label), ['친구', '알림', '설정']);
+    // 데이터랩(시즌권 데이터)은 maeng이 2차 그룹 맨 앞에 넣었다.
+    expect(kGnbSecondaryItems.map((i) => i.label), ['데이터랩', '친구', '알림', '설정']);
   });
 
   test('2차 메뉴(친구·알림·설정)는 아이콘이 없다 — 텍스트만', () {

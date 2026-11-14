@@ -1,44 +1,8 @@
-import 'dart:async';
-import 'dart:html' as html;
-
-/// 다음(카카오) 우편번호 검색 결과.
-class DaumAddress {
-  final String zonecode; // 우편번호
-  final String address; // 도로명 주소(없으면 지번)
-  const DaumAddress(this.zonecode, this.address);
-}
-
-/// 다음 우편번호 검색을 **팝업 창**(`/daum_postcode.html`)으로 열고, 선택 결과를
-/// postMessage로 받아 반환한다. dart:html만 써서 js_interop 버전 이슈를 피한다.
-/// 팝업을 그냥 닫으면 null.
-Future<DaumAddress?> openDaumPostcode() async {
-  final completer = Completer<DaumAddress?>();
-  final popup = html.window.open(
-    '/daum_postcode.html', 'daum_addr', 'width=500,height=600,resizable=yes,scrollbars=yes');
-
-  StreamSubscription<html.MessageEvent>? sub;
-  Timer? poll;
-  void finish(DaumAddress? v) {
-    if (completer.isCompleted) return;
-    sub?.cancel();
-    poll?.cancel();
-    completer.complete(v);
-  }
-
-  sub = html.window.onMessage.listen((event) {
-    final data = event.data;
-    if (data is Map && data['type'] == 'daum_addr') {
-      finish(DaumAddress(
-        (data['zonecode'] ?? '').toString(),
-        (data['address'] ?? '').toString(),
-      ));
-    }
-  });
-
-  // 선택 없이 팝업을 닫으면 null로 마무리.
-  poll = Timer.periodic(const Duration(milliseconds: 500), (t) {
-    if (popup.closed ?? true) finish(null);
-  });
-
-  return completer.future;
-}
+/// 다음(카카오) 우편번호 검색 — 플랫폼별 구현을 고른다.
+///
+/// 웹이면 `dart:html` 팝업 구현([web_daum_postcode_html.dart]), 그 외(단위 테스트 VM·
+/// 모바일)는 호출 시 예외만 던지는 스텁. ⚠️ `dart:html`을 직접 import하는 파일을
+/// `routes_web.dart`가 끌어오면 **라우트를 건드리는 모든 테스트가 컴파일조차 안 된다**
+/// (maeng_4.5.8 이후 실측) — 그래서 조건부 export로 갈라 둔다.
+export 'web_daum_postcode_stub.dart'
+    if (dart.library.html) 'web_daum_postcode_html.dart';
