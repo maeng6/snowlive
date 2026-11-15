@@ -78,6 +78,13 @@ class WebFormTextField extends StatelessWidget {
   /// (닉네임 중복 같은 서버 검증 결과를 필드 바로 아래에 붙이는 용도).
   final String? errorText;
 
+  /// 직접 입력은 막고 값만 보여준다(주소 검색으로 채우는 우편번호·기본주소 등).
+  /// `enabled: false`와 달리 색이 죽지 않아 다른 필드와 같아 보인다.
+  final bool readOnly;
+
+  /// 필드를 탭했을 때. [readOnly]와 같이 쓰면 "탭하면 검색 열기"가 된다.
+  final VoidCallback? onTap;
+
   const WebFormTextField({
     super.key,
     required this.label,
@@ -95,12 +102,16 @@ class WebFormTextField extends StatelessWidget {
     this.compact = false,
     this.isRequired = false,
     this.errorText,
+    this.readOnly = false,
+    this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
     final field = TextField(
       controller: controller,
+      readOnly: readOnly,
+      onTap: onTap,
       maxLength: maxLength,
       maxLines: expands ? null : maxLines,
       expands: expands,
@@ -140,7 +151,10 @@ class WebFormTextField extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        WebFormLabel(label, compact: compact, required: isRequired),
+        // 라벨이 비면 그리지 않는다 — 한 라벨 아래 여러 필드를 쌓는 묶음
+        // (주소: 우편번호 + 기본주소 + 상세주소)에서 쓴다.
+        if (label.isNotEmpty)
+          WebFormLabel(label, compact: compact, required: isRequired),
         height != null ? SizedBox(height: height, child: field) : field,
         if (errorText != null) ...[
           const SizedBox(height: 6),

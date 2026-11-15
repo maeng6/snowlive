@@ -6,6 +6,10 @@ void startSocialLoginRedirect(String startUrl) {}
 
 SocialLoginResult? readSocialRedirectResult() => null;
 
+void saveReturnRoute(String? route) {}
+
+String? takeReturnRoute() => null;
+
 void registerUnloadDiscard(String discardUrl, String uid) {}
 
 void clearUnloadDiscard() {}

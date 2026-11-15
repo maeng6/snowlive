@@ -172,6 +172,14 @@ flutter:
    - family: BebasNeue
      fonts:
         - asset: assets/fonts/BebasNeue-Regular.ttf
+   # 한글 픽셀 폰트(SIL OFL 1.1). KS X 1001 2350자로 서브셋해 용량을 줄였다
+   # (Regular 482KB + Bold 427KB). 도트 폰트라 합성 볼드는 격자가 뭉개져서
+   # Bold 페이스를 따로 넣는다.
+   - family: Galmuri11
+     fonts:
+        - asset: assets/fonts/Galmuri11.ttf
+        - asset: assets/fonts/Galmuri11-Bold.ttf
+          weight: 700
 
 
   # For details regarding fonts from package dependencies,

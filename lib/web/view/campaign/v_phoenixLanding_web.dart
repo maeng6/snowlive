@@ -4,6 +4,8 @@ import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/core/viewmodel/vm_user.dart';
 import 'package:com.snowlive/web/routes/routes_web.dart';
 import 'package:com.snowlive/web/util/responsive_web.dart';
+import 'package:com.snowlive/web/view/campaign/ski_slope_actors_web.dart';
+import 'package:com.snowlive/web/view/campaign/ski_slope_scene_web.dart';
 import 'package:com.snowlive/web/view/campaign/ski_theme.dart';
 import 'package:com.snowlive/web/view/home/w_home_sections_web.dart' show HomeFooterWeb;
 import 'package:com.snowlive/web/viewmodel/campaign/vm_phoenix_web.dart';
@@ -22,46 +24,35 @@ const _ootdTags = ['@phoenixhnr', '@snowlive', '#휘팍OOTD'];
 const bool _kDemo60 = true;
 
 // 카드별 채움색 + 아이콘 스프라이트 + 아이콘 단색.
+// 카드 채움 — 어두운 4색. 창백한 설경 위에서 대비로 떠올라야 "콘텐츠 블록"으로
+// 떨어져 나온다. 밝은 카드(배경과 같은 하늘색 계열)는 배경에 녹아서 접었다.
 const _catFill = {
-  'early_bird': SkiColors.yellow,
-  'fast_rider': SkiColors.ice,
-  'slow_rider': SkiColors.mint,
-  'best_rider': SkiColors.pink,
+  'early_bird': SkiColors.cardEarly,
+  'slow_rider': SkiColors.cardSlow,
+  'best_rider': SkiColors.cardBest,
 };
-const _catCaption = {'fast_rider': '속도', 'slow_rider': '소요시간'};
+const _catCaption = {'slow_rider': '소요시간'};
+// 시상 카테고리. 이 맵의 키 순서가 그대로 카드 순서가 된다.
+//
+// '패스트 라이더'(평균 속도 1위)는 **의도적으로 뺐다** — 슬로프에서 속도 경쟁을
+// 부추기는 항목이라 위험하다는 판단. 서버는 여전히 fast_rider를 내려줄 수 있지만
+// 화면에는 올리지 않는다. 다시 넣자는 얘기가 나오면 이 사유부터 확인할 것.
 const _catMeta = {
   'early_bird': ['얼리버드 라이더', '가장 먼저 슬로프를 내려온 라이더'],
-  'fast_rider': ['패스트 라이더', '평균 속도가 가장 빠른 세션'],
   'slow_rider': ['슬로우 라이더', '한 슬로프를 가장 오래 내려온 라이더'],
   'best_rider': ['베스트 라이더', '개장일 하루 가장 많이 탄 라이더'],
 };
 
-List<String> _catSprite(String cat) {
-  switch (cat) {
-    case 'early_bird':
-      return spSun;
-    case 'fast_rider':
-      return spLightning;
-    case 'slow_rider':
-      return spSnowflake;
-    default:
-      return spStar;
-  }
-}
-
-Color _catIconColor(String cat) {
-  switch (cat) {
-    case 'fast_rider':
-      return SkiColors.red;
-    case 'slow_rider':
-      return SkiColors.deepBlue;
-    default:
-      return SkiColors.orange; // 얼리버드(해)·베스트(별)
-  }
-}
-
 // 웹에서 user.user_id가 String으로 올 수 있어(UserViewModel.user는 dynamic) 정수로 정규화.
 int? _asInt(dynamic v) => v is int ? v : int.tryParse('${v ?? ''}');
+
+/// 당첨자 본인에게만 뜨는 '상품 받기' 버튼 노출 조건.
+/// 카드(버튼을 그릴지)와 그리드(높이를 늘릴지)가 같은 판정을 써야 한다 —
+/// 갈라지면 버튼은 뜨는데 높이가 그대로라 프사가 눌린다.
+bool _canClaim(Map? winner) =>
+    winner != null &&
+    winner['winner_id'] != null &&
+    _asInt(winner['user_id']) == _myUserId();
 
 int? _myUserId() {
   if (!Get.isRegistered<UserViewModel>()) return null;
@@ -119,12 +110,28 @@ class PhoenixLandingWeb extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final vm = Get.put(PhoenixViewModelWeb());
+    final isMobile = context.screenType == WebScreenType.mobile;
     return Container(
-      color: SkiColors.snow,
+      color: SnowScene.snow,
       child: WebStickyFooterScroll(
         onRefresh: vm.load,
         padding: EdgeInsets.zero,
-        content: Center(
+        // 배경(설경)은 폭 제한 **바깥에** 깔아 PC에서도 화면 끝까지 채운다.
+        // 콘텐츠만 1280으로 묶이고, 넓어진 만큼 눈밭과 숲이 더 그려진다.
+        content: Stack(children: [
+          // 지형은 한 번 구운 비트맵, 라이더·리프트 의자만 매 프레임 움직인다.
+          // pisteWidth는 두 레이어가 **같은 값**이어야 경로가 어긋나지 않는다.
+          // 모바일은 화면이 좁아 양옆 숲이 제목까지 밀고 들어온다.
+          // 제목 블록이 차지하는 세로 띠만 알려주고 그 안쪽 나무를 비운다.
+          Positioned.fill(
+            child: SkiSlopeBackground(
+              pisteWidth: 980,
+              clearTop: isMobile ? 60 : 0,
+              clearBottom: isMobile ? 350 : 0,
+            ),
+          ),
+          const Positioned.fill(child: SkiSlopeActors(pisteWidth: 980)),
+          Center(
           child: ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: kWebDesktopListMaxWidth),
             child: Obx(() {
@@ -147,7 +154,8 @@ class PhoenixLandingWeb extends StatelessWidget {
               return _Content(vm: vm);
             }),
           ),
-        ),
+          ),
+        ]),
         // 풋터 좌우 여백은 본문과 공통(16).
         footer: Center(
           child: ConstrainedBox(
@@ -194,7 +202,7 @@ class _Content extends StatelessWidget {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          _HeroBanner(ev: ev),
+          _HeroTitle(ev: ev),
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 32, 16, 0),
             child: sections,
@@ -207,14 +215,19 @@ class _Content extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [_HeroBanner(ev: ev), gap, sections],
+        children: [_HeroTitle(ev: ev), gap, sections],
       ),
     );
   }
 
-  /// 섹션 제목(도트 제목 폰트 26px).
-  Widget _sectionTitle(String t) =>
-      Text(t, style: pxTitle(26, SkiColors.night));
+  /// 섹션 제목 — 배경 설경 위에 바로 놓이므로 흰 외곽선 한 겹으로 어떤 음영
+  /// 위에서도 읽히게 한다. 크기는 Galmuri11 도트 격자에 맞춘 22(11x2).
+  Widget _sectionTitle(String t) => PixelOutlinedText(
+        t,
+        style: pxDot(22, SkiColors.night, bold: true),
+        outline: SnowScene.paper,
+        width: 1,
+      );
 
   Widget _openingSection(BuildContext context, Map<String, dynamic> ev) {
     final status = ev['status'];
@@ -223,7 +236,18 @@ class _Content extends StatelessWidget {
     final lb = ev['leaderboard'] as Map?;
     final winners = ev['winners'] as Map?;
     final isMobile = context.screenType == WebScreenType.mobile;
-    final cross = isMobile ? 2 : (context.screenType == WebScreenType.tablet ? 2 : 4);
+    // 카테고리 수가 줄면 열도 같이 줄여야 한 줄이 고르게 찬다(4열에 3장이면
+    // 오른쪽 한 칸이 비어 균형이 깨진다).
+    final wide = _catMeta.length < 4 ? _catMeta.length : 4;
+    final cross = isMobile
+        ? 2
+        : (context.screenType == WebScreenType.tablet ? 2 : wide);
+
+    // 버튼이 뜨는 카드가 하나라도 있으면 **전체** 높이를 키운다. GridView의
+    // mainAxisExtent는 칸 공통이라 카드별로 다르게 줄 수 없다.
+    final anyClaim =
+        _catMeta.keys.any((cat) => _canClaim(winners?[cat] as Map?));
+    final cardExtent = anyClaim ? 226.0 : 172.0; // 버튼 44 + 간격 10
 
     final cards = _catMeta.keys.map((cat) {
       final live = lb?[cat] as Map?;
@@ -248,7 +272,7 @@ class _Content extends StatelessWidget {
             crossAxisCount: cross,
             mainAxisSpacing: 14,
             crossAxisSpacing: 14,
-            mainAxisExtent: 172,
+            mainAxisExtent: cardExtent,
           ),
           itemBuilder: (_, i) => cards[i],
         ),
@@ -257,30 +281,28 @@ class _Content extends StatelessWidget {
   }
 
   Widget _statusBadge(String? status) {
+    // (라벨, 채움, 글자) — '발표'만 액션 블루라 글자를 흰색으로 뒤집는다.
     final map = {
-      'scheduled': ['예정', SkiColors.sky],
-      'open': ['진행중', SkiColors.mint],
-      'closed': ['집계중', SkiColors.sky],
-      'announced': ['발표', SkiColors.yellow],
+      'scheduled': ['예정', SkiColors.sky, SkiColors.night],
+      'open': ['진행중', SkiColors.mint, SkiColors.night],
+      'closed': ['집계중', SkiColors.sky, SkiColors.night],
+      'announced': ['발표', SkiColors.action, SkiColors.onAction],
     };
-    final m = map[status] ?? ['', SkiColors.sky];
+    final m = map[status] ?? ['', SkiColors.sky, SkiColors.night];
+    final ink = m[2] as Color;
     // 라운드 처리 + 크기 축소.
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-      decoration: BoxDecoration(
-        color: m[1] as Color,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: SkiColors.night, width: 1.5),
-      ),
+      // 라운드를 빼고 다른 칩과 같은 각진 테두리로 — 여기만 알약이면 튄다.
+      decoration: skiMarker(fill: m[1] as Color),
       child: Row(mainAxisSize: MainAxisSize.min, children: [
         Container(
           width: 5, height: 5,
-          decoration: const BoxDecoration(
-              color: SkiColors.night, shape: BoxShape.circle),
+          decoration: BoxDecoration(color: ink, shape: BoxShape.circle),
         ),
         const SizedBox(width: 5),
         Text(m[0] as String,
-            style: SDSTextStyle.bold.copyWith(color: SkiColors.night, fontSize: 11)),
+            style: SDSTextStyle.bold.copyWith(color: ink, fontSize: 11)),
       ]),
     );
   }
@@ -296,17 +318,17 @@ class _Content extends StatelessWidget {
     final slope = (data?['slope_label'] ?? '').toString();
     final profile = (data?['profile_image_url'] ?? '').toString();
     final winnerId = winner?['winner_id'];
-    final isMine = winner != null && _asInt(winner['user_id']) == _myUserId();
 
     return Container(
       padding: const EdgeInsets.all(12),
-      decoration: skiBox(fill: fill, shadow: SkiColors.night),
+      decoration: skiSurface(fill: fill),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           // 윗줄: 제목(아이콘 타일 제거).
           Text(meta[0], maxLines: 1, overflow: TextOverflow.ellipsis,
-              style: pxTitle(17, SkiColors.night)),
+              style: SDSTextStyle.bold
+                  .copyWith(color: SkiColors.onDarkDim, fontSize: 15)),
           if (name != null) ...[
             // 가운뎃줄: 정사각 프사 + 큰 닉네임 — 세로 가운데 정렬.
             Expanded(
@@ -316,46 +338,53 @@ class _Content extends StatelessWidget {
                   const SizedBox(width: 10),
                   Expanded(
                     child: Text(name, maxLines: 1, overflow: TextOverflow.ellipsis,
-                        style: pxTitle(20, SkiColors.night)),
+                        style: SDSTextStyle.extraBold
+                            .copyWith(color: SkiColors.onDark, fontSize: 17)),
                   ),
                 ]),
               ),
             ),
             const SizedBox(height: 10),
-            const SkiDashedLine(),
+            const SkiDashedLine(color: SkiColors.onDarkDim),
             const SizedBox(height: 8),
-            // 아랫줄: 슬로프(왼) · 기록(오른).
-            Row(children: [
-              Expanded(
-                child: slope.isEmpty
-                    ? const SizedBox.shrink()
-                    : Text(slope, maxLines: 1, overflow: TextOverflow.ellipsis,
+            // 아랫줄: 슬로프 · 기록을 한 덩어리로 가운데 정렬.
+            // 좌우로 밀어 두면(Expanded) 값이 짧은 카드는 가운데가 뻥 뚫린다.
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                if (slope.isNotEmpty)
+                  Flexible(
+                    child: Text(slope, maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                         style: SDSTextStyle.bold.copyWith(
-                            color: SkiColors.night, fontSize: 12)),
-              ),
-              if (metric.isNotEmpty) ...[
-                const SizedBox(width: 6),
-                if (caption != null) ...[
-                  Text(caption,
-                      style: SDSTextStyle.bold.copyWith(
-                          color: SkiColors.night, fontSize: 12)),
-                  const SizedBox(width: 4),
+                            color: SkiColors.onDarkDim, fontSize: 12)),
+                  ),
+                if (metric.isNotEmpty) ...[
+                  if (slope.isNotEmpty) const SizedBox(width: 6),
+                  if (caption != null) ...[
+                    Text(caption,
+                        style: SDSTextStyle.bold.copyWith(
+                            color: SkiColors.onDarkDim, fontSize: 12)),
+                    const SizedBox(width: 4),
+                  ],
+                  Flexible(child: _pixelMetric(metric, SkiColors.onDark)),
                 ],
-                _pixelMetric(metric, SkiColors.night),
               ],
-            ]),
+            ),
           ] else ...[
             const Spacer(),
             Text(announced ? '수상자 없음' : '아직 기록 없음',
-                style: SDSTextStyle.bold.copyWith(color: SkiColors.night, fontSize: 13)),
+                style: SDSTextStyle.bold
+                    .copyWith(color: SkiColors.onDarkDim, fontSize: 13)),
             const Spacer(),
           ],
-          if (isMine && winnerId != null) ...[
+          if (_canClaim(winner)) ...[
             const SizedBox(height: 10),
             _SkiButton(
               label: '상품 받기',
               full: true,
-              onTap: () => Get.toNamed('${WebRoutes.phoenixClaim}?winner=$winnerId'),
+              onTap: () =>
+                  Get.toNamed('${WebRoutes.phoenixClaim}?winner=$winnerId'),
             ),
           ],
         ],
@@ -371,12 +400,9 @@ class _Content extends StatelessWidget {
     }) =>
         Container(
           padding: const EdgeInsets.all(14),
-          // 옅은 딤(반투명 흰색) + 옅은 외곽선 — 뒤 배경은 은은히 비치되 글자 가독성 확보.
-          decoration: BoxDecoration(
-            color: SkiColors.snow.withOpacity(0.45),
-            border: Border.all(
-                color: SkiColors.night.withOpacity(0.3), width: 1.5),
-          ),
+          // 선착순 블록과 같은 불투명 흰색 — 반투명이면 뒤 설경이 비쳐서
+          // 카드마다 바탕이 달라 보인다.
+          decoration: skiSurface(fill: SkiColors.white),
           child: Row(children: [
             leading,
             const SizedBox(width: 14),
@@ -395,7 +421,7 @@ class _Content extends StatelessWidget {
             const SizedBox(width: 10),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-              decoration: skiBox(fill: SkiColors.sky),
+              decoration: skiMarker(fill: SkiColors.sky),
               child: Column(children: [
                 Text('COMING', style: pxLabel(11, SkiColors.night)),
                 const SizedBox(height: 3),
@@ -408,7 +434,12 @@ class _Content extends StatelessWidget {
     final content = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('시즌 내내 이어지는 이벤트', style: pxTitle(26, SkiColors.night)),
+        PixelOutlinedText(
+          '시즌 내내 이어지는 이벤트',
+          style: pxDot(22, SkiColors.night, bold: true),
+          outline: SnowScene.paper,
+          width: 1,
+        ),
         const SizedBox(height: 6),
         Text('휘닉스파크와 스노우라이브가 시즌 시작부터 끝까지 함께합니다.',
             style: SDSTextStyle.regular.copyWith(color: SkiColors.deepBlue, fontSize: 14)),
@@ -423,11 +454,15 @@ class _Content extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(children: [
-                Text('크리스마스', style: pxTitle(20, SkiColors.night)),
+                Text('크리스마스',
+                    style: SDSTextStyle.extraBold
+                        .copyWith(color: SkiColors.night, fontSize: 17)),
                 const SizedBox(width: 6),
                 const PixelSprite(spXmasTree, scale: 2),
               ]),
-              Text('눈송이 상점 이벤트', style: pxTitle(20, SkiColors.night)),
+              Text('눈송이 상점 이벤트',
+                  style: SDSTextStyle.extraBold
+                      .copyWith(color: SkiColors.night, fontSize: 17)),
             ],
           ),
           sub: '12월, 눈송이 상점과 함께하는 특별 이벤트',
@@ -439,8 +474,12 @@ class _Content extends StatelessWidget {
           title: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('시즌말', style: pxTitle(20, SkiColors.night)),
-              Text('휘닉스 어워즈', style: pxTitle(20, SkiColors.night)),
+              Text('시즌말',
+                  style: SDSTextStyle.extraBold
+                      .copyWith(color: SkiColors.night, fontSize: 17)),
+              Text('휘닉스 어워즈',
+                  style: SDSTextStyle.extraBold
+                      .copyWith(color: SkiColors.night, fontSize: 17)),
             ],
           ),
           sub: '시즌 종합점수 크루 시상식',
@@ -449,203 +488,93 @@ class _Content extends StatelessWidget {
       ],
     );
 
-    // 배경 = 투명 PNG 눈송이 상점 이미지. 페이드 없이 투명도 0.5로만 은은하게.
-    return ClipRect(
-      child: Stack(children: [
-        Positioned.fill(
-          child: IgnorePointer(
-            child: Opacity(
-              opacity: 0.5,
-              child: Image.asset(
-                'assets/imgs/imgs/snowballShop/img_colab_phoenix_bg.png',
-                fit: BoxFit.fitWidth,
-                alignment: Alignment.bottomCenter,
-              ),
-            ),
-          ),
-        ),
-        Padding(padding: const EdgeInsets.all(16), child: content),
-      ]),
-    );
+    // 배경 이미지를 깔지 않는다 — 파란 일러스트가 창백한 설경 위에서 혼자
+    // 다른 그림이 된다. 눈밭이 그대로 비치는 쪽이 한 화면으로 읽힌다.
+    return Padding(padding: const EdgeInsets.all(16), child: content);
   }
 }
 
 // ── 상단 배너(캐러셀) ──
-class _HeroBanner extends StatefulWidget {
+/// 히어로 — 배경 픽셀 슬로프 위에 바로 얹는 도트 타이틀.
+/// 판때기(카드)를 두면 배경 설산이 가려지므로 글자만 올린다.
+class _HeroTitle extends StatelessWidget {
   final Map<String, dynamic>? ev;
-  const _HeroBanner({required this.ev});
-
-  @override
-  State<_HeroBanner> createState() => _HeroBannerState();
-}
-
-class _HeroBannerState extends State<_HeroBanner> {
-  final PageController _pc = PageController();
-  int _index = 0;
-  Timer? _timer;
-  static const int _slides = 2;
-
-  @override
-  void initState() {
-    super.initState();
-    _timer = Timer.periodic(const Duration(seconds: 5), (_) {
-      if (!mounted || !_pc.hasClients) return;
-      _pc.animateToPage((_index + 1) % _slides,
-          duration: const Duration(milliseconds: 350), curve: Curves.easeInOut);
-    });
-  }
-
-  @override
-  void dispose() {
-    _timer?.cancel();
-    _pc.dispose();
-    super.dispose();
-  }
+  const _HeroTitle({required this.ev});
 
   @override
   Widget build(BuildContext context) {
-    final content = Stack(children: [
-      Positioned.fill(
-        child: PageView(
-          controller: _pc,
-          onPageChanged: (i) => setState(() => _index = i),
-          children: [_eventSlide(), _ootdSlide()],
-        ),
-      ),
-      // 캐러셀 점(8px 정사각).
-      Positioned(
-        left: 0, right: 0, bottom: 10,
-        child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-          for (var i = 0; i < _slides; i++)
-            Container(
-              width: 8, height: 8,
-              margin: const EdgeInsets.symmetric(horizontal: 3),
-              decoration: skiBox(fill: i == _index ? SkiColors.night : SkiColors.ice),
-            ),
-        ]),
-      ),
-    ]);
+    final isMobile = context.screenType == WebScreenType.mobile;
+    final title = (ev?['title'] as String?)?.trim();
+    final subtitle = (ev?['subtitle'] as String?)?.trim();
 
-    return RepaintBoundary(
-      child: Container(
-        height: 330,
-        decoration: const BoxDecoration(
-          color: SkiColors.sky,
-          border: Border(bottom: BorderSide(color: SkiColors.night, width: 4)),
-        ),
-        clipBehavior: Clip.hardEdge,
-        child: content,
-      ),
-    );
-  }
+    // Galmuri11은 11px 비트맵 글꼴 — 11의 배수 크기에서만 획이 정수 도트로
+    // 떨어진다. 외곽선 두께도 도트 한 칸(size/11)에 맞춰야 격자가 안 깨진다.
+    final titleSize = isMobile ? 33.0 : 44.0;
+    final dot = titleSize / 11;
+    const ink = SkiColors.night;
+    const paper = SnowScene.paper;
 
-  Widget _snowBase() {
-    // 하단 설산 + 장식 스프라이트.
-    return Positioned.fill(
-      child: IgnorePointer(
-        child: Stack(children: [
-          // 설산(폭 꽉 채움).
-          Positioned(
-            left: 0, right: 0, bottom: 0,
-            child: LayoutBuilder(builder: (_, c) {
-              final scale = c.maxWidth / 39.0;
-              return PixelSprite(spSnowMountain, scale: scale);
-            }),
+    return Padding(
+      // 상단 여백은 배경 맨 위 산장(약 55px)을 비울 만큼만.
+      padding: EdgeInsets.fromLTRB(
+        16,
+        isMobile ? 84 : 104,
+        16,
+        isMobile ? 40 : 60,
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          PixelOutlinedText(
+            '26/27 SEASON',
+            style: pxLabel(isMobile ? 10 : 12, SkiColors.deepBlue, spacing: 2),
+            outline: paper,
+            width: 2,
+            align: TextAlign.center,
           ),
-          // 왼쪽 아래 나무 2그루.
-          const Positioned(bottom: 10, left: 16, child: PixelSprite(spTree, scale: 5)),
-          const Positioned(bottom: 8, left: 70, child: PixelSprite(spTree, scale: 4)),
-          // 깃발.
-          const Positioned(bottom: 10, right: 150, child: PixelSprite(spFlagRed, scale: 4)),
-          const Positioned(bottom: 10, right: 120, child: PixelSprite(spFlagBlue, scale: 4)),
-          // 오른쪽 끝 나무.
-          const Positioned(bottom: 10, right: 20, child: PixelSprite(spTree, scale: 5)),
-          // 해, 구름.
-          const Positioned(top: 16, right: 24, child: PixelSprite(spSun, scale: 5)),
-          const Positioned(top: 30, right: 180, child: PixelSprite(spCloud, scale: 6)),
-          const Positioned(top: 90, right: 90, child: PixelSprite(spCloud, scale: 4)),
-        ]),
-      ),
-    );
-  }
-
-  Widget _eventSlide() {
-    final ev = widget.ev;
-    final title = ev?['title'] ?? '휘팍 개장빵 이벤트';
-    final subtitle = ev?['subtitle'] ?? '스라X휘팍 26/27시즌 개장빵 이벤트!';
-    return Stack(children: [
-      _snowBase(),
-      Padding(
-        padding: const EdgeInsets.fromLTRB(20, 24, 20, 20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text('26/27 SEASON', style: pxLabel(11, SkiColors.deepBlue)),
-            const SizedBox(height: 8),
-            Text(title, style: pxTitle(36, SkiColors.night)),
-            const SizedBox(height: 8),
-            Text(subtitle,
-                style: SDSTextStyle.regular.copyWith(
-                    color: SkiColors.deepBlue, fontSize: 14)),
-            const SizedBox(height: 8),
-            Text('휘닉스파크에서 라이브온하고 타면 자동 참여',
-                style: SDSTextStyle.bold.copyWith(color: SkiColors.night, fontSize: 14)),
-            const SizedBox(height: 8),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-              decoration: skiBox(fill: SkiColors.yellow, shadow: SkiColors.orange),
-              child: Row(mainAxisSize: MainAxisSize.min, children: [
+          SizedBox(height: isMobile ? 16 : 22),
+          PixelOutlinedText(
+            title?.isNotEmpty == true ? title! : '휘팍 개장빵',
+            // 부제는 Regular로 둬서 위계를 남긴다.
+            style: pxDot(titleSize, ink, bold: true),
+            outline: paper,
+            width: dot,
+            align: TextAlign.center,
+          ),
+          SizedBox(height: isMobile ? 14 : 18),
+          PixelOutlinedText(
+            'PHOENIX PARK OPENING',
+            style: pxLabel(isMobile ? 9 : 11, SkiColors.deepBlue, spacing: 3),
+            outline: paper,
+            width: 2,
+            align: TextAlign.center,
+          ),
+          if (subtitle?.isNotEmpty == true) ...[
+            SizedBox(height: isMobile ? 14 : 18),
+            PixelOutlinedWrap(
+              subtitle!,
+              style: pxDot(22, ink),
+              outline: paper,
+              width: 2,
+            ),
+          ],
+          SizedBox(height: isMobile ? 20 : 26),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+            // 누를 수 없는 정보 칩이라 그림자를 빼고 표시 어법으로 둔다.
+            decoration: skiMarker(fill: SkiColors.action),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
                 const PixelSprite(spFlagRed, scale: 2),
                 const SizedBox(width: 8),
-                Text('2026.11.20 OPEN', style: pxLabel(11, SkiColors.night)),
-              ]),
+                Text('2026.11.20 OPEN', style: pxLabel(11, SkiColors.onAction)),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
-    ]);
-  }
-
-  Widget _ootdSlide() {
-    // SNS 느낌 — 인스타그램 도트 아이콘 + 태그 + 복사 버튼.
-    return Stack(children: [
-      const Positioned(right: 24, top: 36, child: PixelSprite(spInstagram, scale: 7)),
-      Padding(
-        padding: const EdgeInsets.fromLTRB(20, 22, 20, 20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text('SNS OOTD', style: pxLabel(11, SkiColors.deepBlue)),
-            const SizedBox(height: 8),
-            Text('베스트 드레서', style: pxTitle(28, SkiColors.night)),
-            const SizedBox(height: 6),
-            Text('스키장 OOTD를 인스타에 올리고 태그하세요.\n가장 많은 좋아요를 받으면 숙박권 1매 증정!',
-                style: SDSTextStyle.bold.copyWith(
-                    color: SkiColors.night, fontSize: 13, height: 1.4)),
-            const SizedBox(height: 10),
-            Wrap(spacing: 6, runSpacing: 6, children: [
-              for (final t in _ootdTags)
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
-                  decoration: skiBox(fill: SkiColors.deepBlue, border: SkiColors.ice),
-                  child: Text(t,
-                      style: SDSTextStyle.bold.copyWith(
-                          color: SkiColors.snow, fontSize: 12)),
-                ),
-            ]),
-            const SizedBox(height: 10),
-            _SkiButton(
-              label: '태그 복사',
-              fill: SkiColors.yellow,
-              shadow: SkiColors.orange,
-              onTap: _copyOotdTags,
-            ),
-          ],
-        ),
-      ),
-    ]);
+    );
   }
 }
 
@@ -689,7 +618,7 @@ class _IconInfoTileState extends State<_IconInfoTile> {
               constraints: const BoxConstraints(maxWidth: 240),
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                decoration: skiBox(fill: SkiColors.night, shadow: SkiColors.deepBlue),
+                decoration: skiMarker(fill: SkiColors.night),
                 child: Text(widget.message,
                     style: SDSTextStyle.regular.copyWith(
                         color: SkiColors.snow, fontSize: 12, height: 1.4)),
@@ -720,7 +649,7 @@ class _IconInfoTileState extends State<_IconInfoTile> {
           width: 28,
           height: 28,
           alignment: Alignment.center,
-          decoration: skiBox(fill: SkiColors.snow),
+          decoration: skiMarker(fill: SkiColors.snow),
           child: PixelSprite(widget.sprite, scale: 2, mono: widget.mono),
         ),
       ),
@@ -747,20 +676,16 @@ class _TailPainter extends CustomPainter {
 }
 
 /// 도트 버튼 — 채움 + night 외곽선 + 단색 그림자. 누르면 그림자 없애고 4px 내림.
+/// 액션 버튼 — 색은 액션 블루 하나로 고정한다. 호출부마다 색을 넘기게 두면
+/// 버튼마다 색이 갈려서 "누르는 것"이라는 신호가 흐려진다.
 class _SkiButton extends StatefulWidget {
   final String label;
   final VoidCallback onTap;
   final bool full;
-  final Color fill;
-  final Color shadow;
-  final Color textColor;
   const _SkiButton({
     required this.label,
     required this.onTap,
     this.full = false,
-    this.fill = SkiColors.yellow,
-    this.shadow = SkiColors.orange,
-    this.textColor = SkiColors.night,
   });
 
   @override
@@ -776,8 +701,13 @@ class _SkiButtonState extends State<_SkiButton> {
       height: 44,
       alignment: Alignment.center,
       padding: const EdgeInsets.symmetric(horizontal: 16),
-      decoration: skiBox(fill: widget.fill, shadow: _down ? null : widget.shadow),
-      child: Text(widget.label, style: pxTitle(17, widget.textColor)),
+      decoration: skiControl(
+          fill: SkiColors.action,
+          shadow: SkiColors.actionShadow,
+          pressed: _down),
+      child: Text(widget.label,
+          style: SDSTextStyle.bold
+              .copyWith(color: SkiColors.onAction, fontSize: 15)),
     );
     final btn = MouseRegion(
       cursor: SystemMouseCursors.click,
@@ -788,7 +718,7 @@ class _SkiButtonState extends State<_SkiButton> {
         onTapCancel: () => setState(() => _down = false),
         onTap: widget.onTap,
         child: Transform.translate(
-          offset: _down ? const Offset(4, 4) : Offset.zero,
+          offset: _down ? const Offset(kSkiPress, kSkiPress) : Offset.zero,
           child: body,
         ),
       ),
@@ -811,7 +741,7 @@ class _RefreshIconButton extends StatelessWidget {
         width: 36,
         height: 36,
         alignment: Alignment.center,
-        decoration: skiBox(fill: SkiColors.snow),
+        decoration: skiControl(fill: SkiColors.snow),
         child: const Icon(Icons.refresh, color: SkiColors.night, size: 20),
       ),
     );
@@ -876,7 +806,7 @@ class _OpenBreadCardState extends State<_OpenBreadCard> {
 
     return Container(
       padding: const EdgeInsets.all(16),
-      decoration: skiBox(fill: SkiColors.white, shadow: SkiColors.night),
+      decoration: skiSurface(fill: SkiColors.white),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -884,7 +814,9 @@ class _OpenBreadCardState extends State<_OpenBreadCard> {
             const PixelSprite(spCoin, scale: 3),
             const SizedBox(width: 10),
             Expanded(
-              child: Text('개장빵 선착순 100명', style: pxTitle(20, SkiColors.night)),
+              child: Text('개장빵 선착순 100명',
+                  style: SDSTextStyle.extraBold
+                      .copyWith(color: SkiColors.night, fontSize: 17)),
             ),
             Text('$count/100', style: pxLabel(12, SkiColors.night)),
           ]),
@@ -896,9 +828,10 @@ class _OpenBreadCardState extends State<_OpenBreadCard> {
               for (int i = 0; i < 20; i++) ...[
                 Expanded(
                   child: Container(
-                    decoration: skiBox(
-                      fill: i < filled ? SkiColors.mint : SkiColors.sky,
-                      border: i < filled ? SkiColors.night : SkiColors.ice,
+                    // 테두리는 채움과 무관하게 night 하나로 — 빈 칸만 밝은
+                    // 테두리를 쓰면 게이지가 두 가지 어법으로 갈린다.
+                    decoration: skiMarker(
+                      fill: i < filled ? SkiColors.action : SkiColors.sky,
                     ),
                   ),
                 ),
@@ -925,11 +858,18 @@ class _OpenBreadCardState extends State<_OpenBreadCard> {
                   if (_pageCtrl.hasClients) _pageCtrl.jumpToPage(0);
                 }),
                 child: Container(
-                  width: 36,
                   height: 36,
-                  alignment: Alignment.center,
-                  decoration: skiBox(fill: SkiColors.snow),
-                  child: const SkiSortIcon(size: 18),
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  decoration: skiControl(fill: SkiColors.snow),
+                  child: Row(mainAxisSize: MainAxisSize.min, children: [
+                    const SkiSortIcon(size: 16),
+                    const SizedBox(width: 6),
+                    // 아이콘만 두면 무엇을 누르는 버튼인지 알 수 없어서
+                    // 지금 적용된 정렬을 글자로 같이 띄운다.
+                    Text(_recentFirst ? '최근 라이더부터' : '빠른 라이더부터',
+                        style: SDSTextStyle.bold.copyWith(
+                            color: SkiColors.night, fontSize: 13)),
+                  ]),
                 ),
               ),
             ),
@@ -1017,7 +957,6 @@ class _OpenBreadCardState extends State<_OpenBreadCard> {
         height: h,
         decoration: BoxDecoration(
           color: active ? SkiColors.night : SkiColors.ice,
-          borderRadius: BorderRadius.circular(4),
         ),
       ),
     );
@@ -1035,7 +974,7 @@ class _OpenBreadCardState extends State<_OpenBreadCard> {
       Container(
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
         decoration:
-            mine ? skiBox(fill: SkiColors.yellow) : const BoxDecoration(),
+            mine ? skiMarker(fill: SkiColors.yellow) : const BoxDecoration(),
         child: Row(children: [
           SizedBox(
             width: 34,
@@ -1062,15 +1001,19 @@ class _OotdPanel extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.fromLTRB(16, 18, 16, 18),
-      decoration: skiBox(fill: SkiColors.night, shadow: SkiColors.pink),
+      // 채움은 가장 짙은 톤 그대로 — 결과 카드 4색과 겹치지 않아야 CTA 블록으로
+      // 따로 읽힌다. 그림자만 액션 블루로(기존 핑크는 옛 팔레트의 마지막 잔재였다).
+      decoration: skiSurface(fill: SkiColors.panel),
       child: Stack(children: [
         const Positioned(top: 0, right: 0, child: PixelSprite(spHeart, scale: 4)),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('SNS OOTD', style: pxLabel(11, SkiColors.yellow)),
+            Text('SNS OOTD', style: pxLabel(11, SkiColors.actionLit)),
             const SizedBox(height: 8),
-            Text('베스트 드레서', style: pxTitle(26, SkiColors.snow)),
+            Text('베스트 드레서',
+                style: SDSTextStyle.extraBold
+                    .copyWith(color: SkiColors.snow, fontSize: 22)),
             const SizedBox(height: 8),
             Text('스키장 OOTD를 인스타에 올리고 태그하세요.\n좋아요를 가장 많이 받으신 분께 숙박권 1매 증정!',
                 style: SDSTextStyle.regular.copyWith(
@@ -1080,7 +1023,7 @@ class _OotdPanel extends StatelessWidget {
               for (final t in _ootdTags)
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
-                  decoration: skiBox(fill: SkiColors.deepBlue, border: SkiColors.ice),
+                  decoration: skiMarker(fill: SkiColors.deepBlue),
                   child: Text(t,
                       style: SDSTextStyle.bold.copyWith(color: SkiColors.snow, fontSize: 13)),
                 ),
@@ -1088,12 +1031,7 @@ class _OotdPanel extends StatelessWidget {
             const SizedBox(height: 14),
             Align(
               alignment: Alignment.centerLeft,
-              child: _SkiButton(
-                label: '태그 복사',
-                fill: SkiColors.yellow,
-                shadow: SkiColors.orange,
-                onTap: _copyOotdTags,
-              ),
+              child: _SkiButton(label: '태그 복사', onTap: _copyOotdTags),
             ),
           ],
         ),

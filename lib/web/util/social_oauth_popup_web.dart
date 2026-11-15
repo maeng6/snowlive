@@ -18,7 +18,8 @@ SocialLoginResult? readSocialRedirectResult() {
   final p = _hashParams();
   final token = p['sl_token'];
   final err = p['sl_error'];
-  if ((token == null || token.isEmpty) && (err == null || err.isEmpty)) return null;
+  if ((token == null || token.isEmpty) && (err == null || err.isEmpty))
+    return null;
 
   _clearParams(); // 새로고침 시 재처리 방지
 
@@ -42,6 +43,25 @@ Map<String, String> _hashParams() {
 void _clearParams() {
   final loc = web.window.location;
   web.window.history.replaceState(null, '', '${loc.pathname}#/login');
+}
+
+// ─── 로그인 후 복귀 경로 보관 ───
+// 카카오·네이버는 전체 페이지를 떠났다가 `{origin}/#/login?sl_token=...`으로
+// 돌아온다. 그 사이 앱이 새로 뜨면서 Dart 상태(Get.previousRoute 포함)가 전부
+// 날아가므로, 떠나기 전에 세션 스토리지에 남겨 둬야 "보던 화면으로 복귀"가 된다.
+// 탭 단위(sessionStorage)라 다른 탭·다음 방문에 새지 않는다.
+const String _kReturnRouteKey = 'sl_return_route';
+
+void saveReturnRoute(String? route) {
+  if (route == null || route.isEmpty) return;
+  web.window.sessionStorage.setItem(_kReturnRouteKey, route);
+}
+
+/// 저장된 복귀 경로를 꺼내고 **지운다**. 남겨 두면 다음 로그인이 엉뚱한 곳으로 간다.
+String? takeReturnRoute() {
+  final v = web.window.sessionStorage.getItem(_kReturnRouteKey);
+  web.window.sessionStorage.removeItem(_kReturnRouteKey);
+  return (v == null || v.isEmpty) ? null : v;
 }
 
 // ─── 온보딩 미완료 이탈 시 Firebase 소셜 유저 정리(beforeunload/pagehide 비콘) ───

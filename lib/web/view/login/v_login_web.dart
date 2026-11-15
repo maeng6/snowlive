@@ -6,6 +6,9 @@ import 'package:com.snowlive/web/view/onboarding/w_onboarding_scaffold_web.dart'
 import 'package:com.snowlive/web/viewmodel/auth/vm_authcheck_web.dart';
 import 'package:com.snowlive/web/viewmodel/auth/vm_login_web.dart';
 import 'package:flutter/material.dart';
+import 'package:com.snowlive/web/util/social_oauth_popup_stub.dart'
+    if (dart.library.js_interop)
+        'package:com.snowlive/web/util/social_oauth_popup_web.dart';
 import 'package:get/get.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -39,12 +42,20 @@ class _LoginViewWebState extends State<LoginViewWeb> {
 
   /// 로그인 화면으로 오기 직전에 보던 경로(쿼리 포함). 돌아가면 안 되는 곳
   /// — 로그인·온보딩 자신, 또는 URL 직접 진입이라 이전 경로가 없는 경우 — 은 null.
+  ///
+  /// 카카오·네이버는 전체 페이지를 떠났다가 `#/login?sl_token=...`으로 돌아오기
+  /// 때문에 그때는 이전 경로가 없다. 떠나기 전에 저장해 둔 값으로 메운다.
   String? _captureReturnRoute() {
     final previous = Get.previousRoute;
-    if (previous.isEmpty) return null;
     final path = previous.split('?').first;
-    if (path == WebRoutes.login || path == WebRoutes.onboarding) return null;
-    return previous;
+    if (previous.isNotEmpty &&
+        path != WebRoutes.login &&
+        path != WebRoutes.onboarding) {
+      // 소셜 리다이렉트로 떠나도 살아남게 보관(돌아와 한 번 쓰고 지운다).
+      saveReturnRoute(previous);
+      return previous;
+    }
+    return takeReturnRoute();
   }
 
   @override
