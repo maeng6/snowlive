@@ -295,6 +295,9 @@ const Map<String, Color> _legend = {
   'y': SkiColors.yellow,
   'o': SkiColors.orange,
   'p': SkiColors.pink,
+  // 빵 전용 — wood(#8A6B55)는 회색빛이라 구운 색으로 안 읽힌다.
+  'c': Color(0xFFA2682E),
+  'g': Color(0xFFF8E1A8),
 };
 
 /// 격자 문자열을 정수 배율로 그리는 재사용 스프라이트. [mono]를 주면 한 색으로 칠한다.
@@ -421,6 +424,28 @@ const spCoin = [
   'nyyyyyoon',
   '.nooooon.',
   '..nnnnn..',
+];
+
+/// 개장'빵' — 히어로 제목 옆 빵. 직선 막대로 두면 빵으로 안 읽혀서 축을 휘고
+/// 두께를 올렸다. 격자를 1칸 넓힌 뒤 외곽선을 둘러야 양 끝 테두리가 안 잘린다.
+/// 흰 눈 위에 올라가므로 외곽선(n)이 없으면 묻힌다.
+const spBaguette = [
+  '...........nnn..',
+  '..........nggyn.',
+  '.........nggyocn',
+  '........nggyoocn',
+  '.......ngcyyoocn',
+  '......nggcccocn.',
+  '.....ngcyyccccn.',
+  '....ngcccyoccn..',
+  '...nggycccoccn..',
+  '..ngccyyccccn...',
+  '.nggyccooccn....',
+  'nggyycccccn.....',
+  'ngyooocccn......',
+  'nyoooccnn.......',
+  '.ncccnn.........',
+  '..nnn...........',
 ];
 
 const spHeart = [

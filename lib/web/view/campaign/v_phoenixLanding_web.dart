@@ -65,18 +65,33 @@ int? _myUserId() {
 Widget _avatar(String url, double size) => WebAvatar(url: url, size: size);
 
 /// 기록 표시 — 숫자/영문은 픽셀 폰트, 한글 단위는 본문 폰트.
+/// 픽셀 숫자를 아래로 미는 양(논리 px). 글꼴 디센더 때문에 생기는 착시 보정.
+const double _kPixelNumberDrop = 1.5;
+
 Widget _pixelMetric(String s, Color color) {
-  final spans = <TextSpan>[];
+  final spans = <InlineSpan>[];
   final buf = StringBuffer();
   bool? asciiRun;
   void flush() {
     if (buf.isEmpty) return;
-    spans.add(TextSpan(
-      text: buf.toString(),
-      style: asciiRun!
-          ? pxLabel(11, color)
-          : SDSTextStyle.bold.copyWith(color: color, fontSize: 12),
-    ));
+    // 숫자는 Press Start 2P, 한글은 Pretendard라 한 문단에 두 글꼴이 섞인다.
+    // 베이스라인만 맞추면 픽셀 글꼴이 베이스라인 위로 훨씬 높이 올라가 한글이
+    // 아래로 처져 보인다. 픽셀 구간을 WidgetSpan으로 감싸 글줄 세로 중앙에 건다.
+    spans.add(asciiRun!
+        ? WidgetSpan(
+            alignment: PlaceholderAlignment.middle,
+            // Press Start 2P는 디센더 자리가 커서 글자가 상자 위쪽에 몰린다.
+            // 상자를 가운데 걸어도 글자만 떠 보이므로 레이아웃은 그대로 두고
+            // 그리기만 아래로 민다(Padding을 쓰면 상자가 커져 다시 가운데가 밀린다).
+            child: Transform.translate(
+              offset: const Offset(0, _kPixelNumberDrop),
+              child: Text(buf.toString(), style: pxLabel(11, color)),
+            ),
+          )
+        : TextSpan(
+            text: buf.toString(),
+            style: SDSTextStyle.bold.copyWith(color: color, fontSize: 12),
+          ));
     buf.clear();
   }
 
@@ -88,7 +103,22 @@ Widget _pixelMetric(String s, Color color) {
     buf.write(c);
   }
   flush();
-  return Text.rich(TextSpan(children: spans), maxLines: 1, overflow: TextOverflow.ellipsis);
+  // 루트 style과 strut을 못 박는다. WidgetSpan의 middle 정렬은 **그 문단의**
+  // 글줄 높이를 기준으로 가운데를 잡는데, 카드마다 span 구성이 달라서
+  // (한글+숫자 / 숫자만 / 숫자+한글) 기준 높이가 제각각이면 눈높이가 미세하게
+  // 어긋난다. 한글 본문과 같은 값으로 고정해 세 카드가 같은 기준을 쓰게 한다.
+  final base = SDSTextStyle.bold.copyWith(color: color, fontSize: 12);
+  return Text.rich(
+    TextSpan(children: spans),
+    maxLines: 1,
+    overflow: TextOverflow.ellipsis,
+    style: base,
+    strutStyle: const StrutStyle(
+      fontFamily: 'Pretendard',
+      fontSize: 12,
+      forceStrutHeight: true,
+    ),
+  );
 }
 
 /// 태그 3개를 한번에 복사.
@@ -347,8 +377,9 @@ class _Content extends StatelessWidget {
             const SizedBox(height: 10),
             const SkiDashedLine(color: SkiColors.onDarkDim),
             const SizedBox(height: 8),
-            // 아랫줄: 슬로프 · 기록을 한 덩어리로 가운데 정렬.
-            // 좌우로 밀어 두면(Expanded) 값이 짧은 카드는 가운데가 뻥 뚫린다.
+            // 아랫줄: 슬로프 · 기록을 한 덩어리로 가로 가운데 정렬.
+            // 글꼴이 섞인 글줄의 세로 눈높이는 _pixelMetric 안에서 따로 맞춘다
+            // (가로 정렬과 무관한 축이라 둘은 같이 쓴다).
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -533,13 +564,26 @@ class _HeroTitle extends StatelessWidget {
             align: TextAlign.center,
           ),
           SizedBox(height: isMobile ? 16 : 22),
-          PixelOutlinedText(
-            title?.isNotEmpty == true ? title! : '휘팍 개장빵',
-            // 부제는 Regular로 둬서 위계를 남긴다.
-            style: pxDot(titleSize, ink, bold: true),
-            outline: paper,
-            width: dot,
-            align: TextAlign.center,
+          // 제목 + 개장'빵' 바게트. 스프라이트는 정수 배율에서만 격자가 안
+          // 깨지므로 13칸 기준 2·3배로 고정하고, 아주 좁은 화면에서만
+          // FittedBox가 통째로 줄인다(글자만 줄이면 도트가 어긋난다).
+          FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                PixelOutlinedText(
+                  title?.isNotEmpty == true ? title! : '휘팍 개장빵',
+                  // 부제는 Regular로 둬서 위계를 남긴다.
+                  style: pxDot(titleSize, ink, bold: true),
+                  outline: paper,
+                  width: dot,
+                  align: TextAlign.center,
+                ),
+                const SizedBox(width: 8),
+                PixelSprite(spBaguette, scale: isMobile ? 2 : 3),
+              ],
+            ),
           ),
           SizedBox(height: isMobile ? 14 : 18),
           PixelOutlinedText(
