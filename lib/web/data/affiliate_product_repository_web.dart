@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:com.snowlive/core/model/m_affiliate_product.dart';
 import 'package:flutter/services.dart' show rootBundle;
+import 'package:http/http.dart' as http;
 
 /// 추천 상품 목록을 가져오는 곳. 뷰모델은 이 인터페이스만 본다.
 ///
@@ -23,6 +24,24 @@ class AssetAffiliateProductRepository implements AffiliateProductRepository {
   Future<List<AffiliateProduct>> fetchAll() async {
     final text = await rootBundle.loadString(assetPath);
     return parseAffiliateProducts(jsonDecode(text));
+  }
+}
+
+/// 서버 소스 — `GET /api/affiliate/products/`. 어드민 '추천상품 관리'에서 등록한
+/// 쿠팡 상품을 받아온다. 응답 모양은 [AssetAffiliateProductRepository]와 동일하다.
+class ApiAffiliateProductRepository implements AffiliateProductRepository {
+  static const String url =
+      'https://snowlive-api-c617725e2b78.herokuapp.com/api/affiliate/products/';
+
+  const ApiAffiliateProductRepository();
+
+  @override
+  Future<List<AffiliateProduct>> fetchAll() async {
+    final res = await http.get(Uri.parse(url));
+    if (res.statusCode != 200) {
+      throw Exception('추천 상품 조회 실패: HTTP ${res.statusCode}');
+    }
+    return parseAffiliateProducts(jsonDecode(utf8.decode(res.bodyBytes)));
   }
 }
 
