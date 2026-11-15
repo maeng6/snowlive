@@ -111,6 +111,7 @@ Widget _pixelMetric(String s, Color color) {
   return Text.rich(
     TextSpan(children: spans),
     maxLines: 1,
+    softWrap: false,
     overflow: TextOverflow.ellipsis,
     style: base,
     strutStyle: const StrutStyle(
@@ -380,27 +381,35 @@ class _Content extends StatelessWidget {
             // 아랫줄: 슬로프 · 기록을 한 덩어리로 가로 가운데 정렬.
             // 글꼴이 섞인 글줄의 세로 눈높이는 _pixelMetric 안에서 따로 맞춘다
             // (가로 정렬과 무관한 축이라 둘은 같이 쓴다).
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                if (slope.isNotEmpty)
-                  Flexible(
-                    child: Text(slope, maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: SDSTextStyle.bold.copyWith(
-                            color: SkiColors.onDarkDim, fontSize: 12)),
-                  ),
-                if (metric.isNotEmpty) ...[
-                  if (slope.isNotEmpty) const SizedBox(width: 6),
-                  if (caption != null) ...[
-                    Text(caption,
-                        style: SDSTextStyle.bold.copyWith(
-                            color: SkiColors.onDarkDim, fontSize: 12)),
-                    const SizedBox(width: 4),
+            //
+            // 모바일 2열에서는 카드 안쪽이 ~148px뿐이라 '파노(휘) 소요시간 6:45'
+            // 같은 조합이 넘친다. Flexible로 두면 말줄임·줄바꿈이 생겨 값이
+            // 잘리므로, 통째로 FittedBox에 넣어 **줄여서라도 전부** 보이게 한다.
+            SizedBox(
+              width: double.infinity,
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                alignment: Alignment.center,
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    if (slope.isNotEmpty)
+                      Text(slope, maxLines: 1, softWrap: false,
+                          style: SDSTextStyle.bold.copyWith(
+                              color: SkiColors.onDarkDim, fontSize: 12)),
+                    if (metric.isNotEmpty) ...[
+                      if (slope.isNotEmpty) const SizedBox(width: 6),
+                      if (caption != null) ...[
+                        Text(caption, maxLines: 1, softWrap: false,
+                            style: SDSTextStyle.bold.copyWith(
+                                color: SkiColors.onDarkDim, fontSize: 12)),
+                        const SizedBox(width: 4),
+                      ],
+                      _pixelMetric(metric, SkiColors.onDark),
+                    ],
                   ],
-                  Flexible(child: _pixelMetric(metric, SkiColors.onDark)),
-                ],
-              ],
+                ),
+              ),
             ),
           ] else ...[
             const Spacer(),
