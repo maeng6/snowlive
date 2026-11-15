@@ -335,13 +335,13 @@ class WebSlopeCraftBinding extends Bindings {
 
 /// 추천 상품(쿠팡 파트너스) 라우트용 바인딩.
 ///
-/// 지금은 하드코딩 JSON([AssetAffiliateProductRepository]). 서버 API가 생기면 여기서
-/// 저장소만 API 구현으로 바꿔 끼운다 — 뷰모델·화면은 그대로.
+/// 어드민 '추천상품 관리'에서 등록한 상품을 서버 API로 받아온다
+/// ([ApiAffiliateProductRepository]). 뷰모델·화면은 저장소 인터페이스만 본다.
 class WebShopBinding extends Bindings {
   @override
   void dependencies() {
     Get.lazyPut(
-      () => ShopViewModelWeb(const AssetAffiliateProductRepository()),
+      () => ShopViewModelWeb(const ApiAffiliateProductRepository()),
       fenix: true,
     );
   }

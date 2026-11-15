@@ -2,6 +2,7 @@ import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/core/model/m_affiliate_product.dart';
 import 'package:com.snowlive/web/view/fleamarket/w_fleamarket_card_web.dart'
     show kFleamarketDefaultImage, kFleamarketPhotoRadius;
+import 'package:com.snowlive/web/view/shop/coupang_widget.dart';
 import 'package:com.snowlive/web/view/shop/shop_sections_web.dart';
 import 'package:com.snowlive/web/widget/w_network_image_web.dart';
 import 'package:flutter/material.dart';
@@ -49,6 +50,21 @@ class _ShopCardWebState extends State<ShopCardWeb> {
 
   @override
   Widget build(BuildContext context) {
+    // 다이나믹 배너(위젯)형 — 쿠팡이 실시간 가격까지 그려주는 iframe을 셀에 가득 채운다.
+    // 커스텀 카드 대신 쿠팡 위젯이 그대로 보인다(이미지·제목·가격·버튼 전부 쿠팡 렌더).
+    if (p.isWidget) {
+      return ClipRRect(
+        borderRadius: BorderRadius.circular(kFleamarketPhotoRadius),
+        child: Container(
+          decoration: BoxDecoration(
+            border: Border.all(width: 0.5, color: SDSColor.gray100),
+            borderRadius: BorderRadius.circular(kFleamarketPhotoRadius),
+          ),
+          child: coupangWidgetView(embedUrl: p.embedUrl),
+        ),
+      );
+    }
+
     final image = p.imageUrl.isEmpty
         ? Image.asset(kFleamarketDefaultImage, fit: BoxFit.cover)
         : WebNetworkImage(
