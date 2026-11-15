@@ -67,6 +67,16 @@
               "value": "no-cache, max-age=0, must-revalidate"
             }
           ]
+        },
+        {
+          "comment": "매니페스트는 파일명에 해시가 없는데 빌드마다 내용이 바뀐다. 위 *.json immutable 규칙에 걸리면 재방문자가 1년간 옛 목록을 써서 새로 추가한 폰트·에셋이 영영 안 뜬다.",
+          "source": "/assets/{FontManifest.json,AssetManifest.json,AssetManifest.bin,AssetManifest.bin.json,NOTICES}",
+          "headers": [
+            {
+              "key": "Cache-Control",
+              "value": "no-cache, max-age=0, must-revalidate"
+            }
+          ]
         }
       ]
     },
@@ -129,6 +139,16 @@
         },
         {
           "source": "/{index.html,main.dart.js,flutter.js,flutter_bootstrap.js,flutter_service_worker.js,version.json,manifest.json}",
+          "headers": [
+            {
+              "key": "Cache-Control",
+              "value": "no-cache, max-age=0, must-revalidate"
+            }
+          ]
+        },
+        {
+          "comment": "매니페스트는 파일명에 해시가 없는데 빌드마다 내용이 바뀐다. 위 *.json immutable 규칙에 걸리면 재방문자가 1년간 옛 목록을 써서 새로 추가한 폰트·에셋이 영영 안 뜬다.",
+          "source": "/assets/{FontManifest.json,AssetManifest.json,AssetManifest.bin,AssetManifest.bin.json,NOTICES}",
           "headers": [
             {
               "key": "Cache-Control",
