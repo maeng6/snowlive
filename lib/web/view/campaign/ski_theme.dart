@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -19,12 +21,12 @@ abstract final class SkiColors {
   static const mint = Color(0xFF8FC9B4);
   static const pink = Color(0xFFE0A3B6);
 
-  /// 어두운 카드 3색 — 얼리버드·슬로우·베스트.
-  /// 흰 눈 위에서 대비로 떠오르게 하는 용도라, 명도는 낮게 유지하고 색상만
-  /// 다르게 둔다. 밝히면 중간 톤이 되면서 배경과 엉긴다.
-  static const cardEarly = Color(0xFF2E4F5C);
-  static const cardSlow = Color(0xFF2C5147);
-  static const cardBest = Color(0xFF4A3A4C);
+  /// 카드 3색 — 얼리버드·슬로우·베스트. 기존보다 한 단계 밝은 톤으로(흰 글자
+  /// 가독성 유지를 위해 명도는 0.25 미만으로만 올림), 색상은 그대로 구분.
+  // 러블리 픽셀아트 파스텔 카드 3색(밝은 눈송이 테마). 글자는 어둡게(night) 얹는다.
+  static const cardEarly = Color(0xFFAFD3F2); // 하늘빛
+  static const cardSlow = Color(0xFFAEE2C8); // 민트
+  static const cardBest = Color(0xFFE7C4EC); // 라일락
 
   /// OOTD 패널 채움. 카드 4색보다 한 단계만 묵직하다 — [night]를 그대로 쓰면
   /// 페이지에서 혼자 압도적으로 어두워 흰 블록 바로 아래에서 점프가 생긴다.
@@ -93,6 +95,12 @@ class PixelOutlinedText extends StatelessWidget {
   final double width;
   final TextAlign align;
 
+  /// 바깥 테두리(선택) — 흰 테두리 **밖에** 한 겹 더 두른다. 배경 음영 없이도
+  /// 글자가 어떤 배경에서든 또렷하게 떨어지는 "스티커" 효과. 안쪽 흰 테두리는
+  /// 어두운 배경에서, 바깥 진한 테두리는 밝은 눈밭에서 가장자리를 세운다.
+  final Color? ring;
+  final double ringWidth;
+
   const PixelOutlinedText(
     this.text, {
     super.key,
@@ -100,6 +108,8 @@ class PixelOutlinedText extends StatelessWidget {
     this.outline = SkiColors.night,
     this.width = 2,
     this.align = TextAlign.start,
+    this.ring,
+    this.ringWidth = 0,
   });
 
   @override
@@ -115,11 +125,23 @@ class PixelOutlinedText extends StatelessWidget {
       Offset(1, 1),
     ];
     final outlineStyle = style.copyWith(color: outline);
+    final ringStyle = ring == null ? null : style.copyWith(color: ring);
+    final rw = ringWidth > 0 ? ringWidth : width + width * 0.6;
     return Stack(
       // 외곽선 복사본이 글자 상자 밖으로 나가므로 자르면 안 된다.
       clipBehavior: Clip.none,
       alignment: Alignment.center,
       children: [
+        // 바깥 링 — 8방향만 찍으면 큰 글자에서 간격이 벌어져 점선처럼 보인다.
+        // 원주를 따라 촘촘히(24방향) 찍어 **이어진 선**이 되게 한다.
+        if (ringStyle != null)
+          for (int k = 0; k < 24; k++)
+            Transform.translate(
+              offset: Offset(math.cos(k * math.pi / 12),
+                      math.sin(k * math.pi / 12)) *
+                  rw,
+              child: Text(text, style: ringStyle, textAlign: align),
+            ),
         for (final d in dirs)
           Transform.translate(
             offset: d * width,
@@ -140,6 +162,8 @@ class PixelOutlinedWrap extends StatelessWidget {
   final Color outline;
   final double width;
   final WrapAlignment alignment;
+  final Color? ring;
+  final double ringWidth;
 
   const PixelOutlinedWrap(
     this.text, {
@@ -148,6 +172,8 @@ class PixelOutlinedWrap extends StatelessWidget {
     this.outline = SkiColors.night,
     this.width = 2,
     this.alignment = WrapAlignment.center,
+    this.ring,
+    this.ringWidth = 0,
   });
 
   @override
@@ -160,7 +186,12 @@ class PixelOutlinedWrap extends StatelessWidget {
       runSpacing: (style.fontSize ?? 16) * 0.3,
       children: [
         for (final w in words)
-          PixelOutlinedText(w, style: style, outline: outline, width: width),
+          PixelOutlinedText(w,
+              style: style,
+              outline: outline,
+              width: width,
+              ring: ring,
+              ringWidth: ringWidth),
       ],
     );
   }
@@ -197,10 +228,12 @@ const double kSkiPress = 3;
 /// 테두리 색은 **채움 밝기를 보고 뒤집는다**. 어두운 면에 어두운 테두리를 두르면
 /// 완전히 묻혀서 그 카드만 "크롬 없는 맨 사각형"이 된다(어두운 카드로 바꾼 뒤
 /// 실제로 그랬다).
-BoxDecoration skiSurface({required Color fill}) {
-  final onDarkFill = fill.computeLuminance() < 0.25;
+BoxDecoration skiSurface({required Color fill, Gradient? gradient}) {
+  // 그라데이션(밝은 카드)은 어두운 테두리로 둘러 또렷하게.
+  final onDarkFill = gradient == null && fill.computeLuminance() < 0.25;
   return BoxDecoration(
-    color: fill,
+    color: gradient == null ? fill : null,
+    gradient: gradient,
     borderRadius: BorderRadius.zero,
     border: Border.all(
       color: onDarkFill
@@ -430,22 +463,22 @@ const spCoin = [
 /// 두께를 올렸다. 격자를 1칸 넓힌 뒤 외곽선을 둘러야 양 끝 테두리가 안 잘린다.
 /// 흰 눈 위에 올라가므로 외곽선(n)이 없으면 묻힌다.
 const spBaguette = [
-  '...........nnn..',
-  '..........nggyn.',
-  '.........nggyocn',
-  '........nggyoocn',
-  '.......ngcyyoocn',
-  '......nggcccocn.',
-  '.....ngcyyccccn.',
-  '....ngcccyoccn..',
-  '...nggycccoccn..',
-  '..ngccyyccccn...',
-  '.nggyccooccn....',
-  'nggyycccccn.....',
-  'ngyooocccn......',
-  'nyoooccnn.......',
-  '.ncccnn.........',
-  '..nnn...........',
+  '................',
+  '...........n....',
+  '.........nnon...',
+  '........nooggn..',
+  '.......nooggggn.',
+  '......noocggggn.',
+  '.....nooggcggcn.',
+  '....noocggggcn..',
+  '...nooggcggcn...',
+  '..noocggggcn....',
+  '..noggcggcn.....',
+  '..ngggggcn......',
+  '...ngggcn.......',
+  '....ngnn........',
+  '.....n..........',
+  '................',
 ];
 
 const spHeart = [

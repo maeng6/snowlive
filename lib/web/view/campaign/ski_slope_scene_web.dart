@@ -29,9 +29,9 @@ abstract final class SnowScene {
   static const shade2 = Color(0xFFCCDFEE);
   static const shade3 = Color(0xFFACC7DE);
 
-  /// 침엽수 — 짙은 청록녹색. 눈밭이 파랄수록 나무는 초록기를 남겨야 구분된다.
-  static const pine = Color(0xFF2C4C50);
-  static const pineDark = Color(0xFF1A3337);
+  /// 침엽수 — 조금 더 밝고 초록기가 도는 녹색(기존 짙은 청록에서 밝게).
+  static const pine = Color(0xFF3C6E54);
+  static const pineDark = Color(0xFF28493A);
 
   /// 가지 윗면에 얹힌 눈 — 겨울로 읽히게 하는 결정적 한 겹.
   static const pineSnow = Color(0xFFE9F3FD);
@@ -122,7 +122,7 @@ class SlopeGeometry {
     return SlopeGeometry(
       cell: cell,
       cols: cols,
-      halfBase: math.min(pisteWidth / 2 / cell, cols * 0.40),
+      halfBase: math.min(pisteWidth / 2 / cell, cols * 0.46),
       sway: math.min(cols * 0.03, 16.0),
     );
   }
@@ -140,8 +140,12 @@ class SlopeGeometry {
   /// 같은 지점의 반폭(논리 px).
   double halfPx(double y) => _halfCells(y / cell) * cell;
 
-  /// 리프트 케이블이 지나는 x(논리 px).
-  double cableX(double y) => centerPx(y) + halfPx(y) * 0.92;
+  /// 리프트 케이블이 지나는 x(논리 px). piste를 넓힌 뒤 케이블이 화면 밖으로
+  /// 밀려 곤돌라가 잘려서, 안쪽(0.78)으로 당긴다.
+  ///
+  /// 곤돌라는 **사이드에서 곧게 위로** 올라간다 — 슬로프 오른쪽을 따라 일정한
+  /// 비율(0.78)로. (가운데로 휘지 않는다.)
+  double cableX(double y) => centerPx(y) + halfPx(y) * 0.78;
 
   @override
   bool operator ==(Object other) =>
@@ -223,8 +227,9 @@ Uint32List paintSlopeScene(
   }
 
   _paintForest(buf, geo, cols, rows, clear);
-  _paintShrubs(buf, cols, rows);
-  _paintLift(buf, geo, rows);
+  _paintShrubs(buf, geo, cols, rows);
+  // 케이블은 배경에 굽지 않고 SkiSlopeActors가 **매끄러운 한 줄**로 올린다
+  // (배경 픽셀선과 오버레이가 겹쳐 두 줄처럼 보이던 문제 제거).
   _paintLodge(buf, geo, rows);
 
   return buf.px;
@@ -301,6 +306,11 @@ void _paintForest(
     _Buf buf, SlopeGeometry geo, int cols, int rows, _Clear? clear) {
   final clumps = <({double x, double y, double r})>[];
   final count = math.max(6, (rows / 130).round());
+  // 글자가 올라앉는 **콘텐츠 칼럼(최대 1280px)** 안쪽에는 나무를 아예 두지
+  // 않는다. cols 비율로 깔면 넓은 화면에서 칼럼 안으로 밀고 들어와 제목과
+  // 겹친다. 칼럼 반폭(+여유)을 셀 단위로 환산해 그 바깥에만 심는다.
+  final innerCells = math.min(cols * geo.cell, 1280.0) / 2 / geo.cell + 8;
+  final spread = math.max(0.0, cols / 2 - innerCells);
   for (int i = 0; i < count; i++) {
     final r1 = _hash01(i, 0, 991);
     final r2 = _hash01(i, 1, 991);
@@ -308,7 +318,7 @@ void _paintForest(
     // 가운데(콘텐츠 자리)는 비우고 양옆에 앉힌다.
     final side = i.isEven ? -1 : 1;
     clumps.add((
-      x: cols / 2 + side * (cols * 0.22 + r1 * cols * 0.26),
+      x: cols / 2 + side * (innerCells + r1 * spread * 0.9),
       y: r2 * rows * 1.05,
       r: 26 + r3 * 40,
     ));
@@ -347,15 +357,15 @@ void _paintStrayPines(
   // 격자는 성기게, 확률도 낮게 — 빈 눈밭이 이 스타일의 핵심이라 "중간중간
   // 한두 그루"를 넘으면 금방 숲이 된다.
   const gx = 40, gy = 36;
+  // 콘텐츠 칼럼(최대 1280px) 반폭 — 이 안쪽은 글자 자리라 외딴 나무도 안 심는다.
+  final contentHalf = math.min(cols * geo.cell, 1280.0) / 2 + 24;
   for (int cy = 0; cy * gy < rows; cy++) {
     for (int cxi = 0; cxi * gx < cols; cxi++) {
       if (_hash01(cxi, cy, 613) > 0.26) continue;
       final px = cxi * gx + (_hash01(cxi, cy, 617) * gx).floor();
       final py = cy * gy + (_hash01(cxi, cy, 619) * gy).floor();
       if (py >= rows) continue;
-      final yPx = py * geo.cell;
-      final d = (px * geo.cell - geo.centerPx(yPx)).abs() / geo.halfPx(yPx);
-      if (d < 0.55) continue;
+      if ((px * geo.cell - cols * geo.cell / 2).abs() < contentHalf) continue;
       final k = clear?.factor(px, py) ?? 1;
       if (k <= 0 || _hash01(cxi, cy, 631) > k) continue;
       // 외딴 나무는 작게 — 크면 군락처럼 보여 흩어 심은 티가 안 난다.
@@ -366,14 +376,16 @@ void _paintStrayPines(
 }
 
 /// 잔가지 덤불 — 크기 비교 대상이 되어 빈 눈밭이 허전하지 않다.
-void _paintShrubs(_Buf buf, int cols, int rows) {
+void _paintShrubs(_Buf buf, SlopeGeometry geo, int cols, int rows) {
   final dark = _rgba(SnowScene.pineDark);
   final sh1 = _rgba(SnowScene.shade1);
   final n = math.max(8, (rows / 40).round());
+  // 콘텐츠 칼럼 반폭(셀 단위) — 글자 자리엔 덤불 점도 찍지 않는다.
+  final contentHalfCells = math.min(cols * geo.cell, 1280.0) / 2 / geo.cell + 8;
   for (int i = 0; i < n; i++) {
     final x = (_hash01(i, 5, 771) * cols).floor();
     final y = (_hash01(i, 6, 771) * rows).floor();
-    if ((x - cols / 2).abs() < cols * 0.08) continue;
+    if ((x - cols / 2).abs() < contentHalfCells) continue;
     buf.set(x, y, dark);
     buf.set(x - 1, y - 1, dark);
     buf.set(x + 1, y - 1, dark);
@@ -385,55 +397,108 @@ void _paintShrubs(_Buf buf, int cols, int rows) {
   }
 }
 
-/// 리프트 — 가는 케이블 + 아주 작은 철탑. 의자는 SkiSlopeActors가 올린다.
+/// 리프트 — 가는 세로 케이블만. (가로 철탑 팔은 레퍼런스에 맞춰 뺐다.)
+/// 의자/곤돌라는 SkiSlopeActors가 올린다.
 void _paintLift(_Buf buf, SlopeGeometry geo, int rows) {
   final line = _rgba(SnowScene.structure);
-  final dark = _rgba(SnowScene.structureDark);
-  final sh2 = _rgba(SnowScene.shade2);
   for (int y = 0; y < rows; y++) {
     buf.set((geo.cableX(y * geo.cell) / geo.cell).round(), y, line);
   }
-  // 철탑 — 가로대 한 줄과 기둥 몇 칸이면 충분하다.
-  for (int y = 40; y < rows; y += 150) {
-    final lx = (geo.cableX(y * geo.cell) / geo.cell).round();
-    buf.span(y, lx - 3, lx + 3, dark);
-    for (int k = 1; k <= 4; k++) {
-      buf.set(lx, y + k, dark);
-    }
-    buf.span(y + 5, lx - 6, lx - 1, sh2);
-  }
 }
 
-/// 정상 산장 — 작고 어두운 실루엣 + 창 불빛.
-/// 레퍼런스엔 건물이 없지만 스키장임을 알리는 최소한의 사물로 남긴다.
+/// 3×5 소형 픽셀 폰트 — 박공 벽면 워드마크("MontBlanc")용. '#'이 켜진 점.
+const Map<String, List<String>> _font3 = {
+  'M': ['#.#', '###', '###', '#.#', '#.#'],
+  'B': ['##.', '#.#', '##.', '#.#', '##.'],
+  'o': ['...', '###', '#.#', '#.#', '###'],
+  'n': ['...', '##.', '#.#', '#.#', '#.#'],
+  't': ['.#.', '###', '.#.', '.#.', '.##'],
+  'l': ['.#.', '.#.', '.#.', '.#.', '.##'],
+  'a': ['...', '##.', '.##', '#.#', '.##'],
+  'c': ['...', '.##', '#..', '#..', '.##'],
+};
+
+/// 정상 스키하우스 — 몽블랑 스타일 네이비 박공 건물 + 흰 산 로고 + 워드마크.
 void _paintLodge(_Buf buf, SlopeGeometry geo, int rows) {
-  if (rows < 60) return;
-  final body = _rgba(SnowScene.structure);
-  final dark = _rgba(SnowScene.structureDark);
-  final win = _rgba(SnowScene.window);
+  if (rows < 70) return;
+  final navy = _rgba(const Color(0xFF263A5E)); // 박공 벽 네이비
+  final roof = _rgba(const Color(0xFF151E30)); // 지붕/토대 짙은 남색
+  final white = _rgba(const Color(0xFFF2F6FF)); // 로고·글자
   final sh2 = _rgba(SnowScene.shade2);
 
-  final cx = (geo.centerPx(6 * geo.cell) / geo.cell).round();
-  const top = 5;
-  // 그림자 먼저 — 나무와 같은 방향(왼쪽 아래)으로 눕혀야 광원이 하나로 보인다.
-  for (int k = 0; k < 7; k++) {
-    buf.span(top + 8 + k, cx - 14 - k, cx + 11 - k, sh2);
+  final cols = buf.w;
+  // 벽 반폭(셀) — 작은 건물. 워드마크 3×5(약 35셀)가 들어갈 고정 크기.
+  const W = 22;
+  if (cols < W * 2 + 6) return; // 화면이 너무 좁으면 생략
+  final cx = cols ~/ 2;
+  const top = 4;
+  final roofH = (W * 0.55).round();
+  final bodyH = (W * 0.46).round();
+  final eaves = top + roofH; // 처마 행
+  final base = eaves + bodyH; // 바닥 행
+
+  // 그림자 — 나무와 같은 방향(왼쪽 아래)으로.
+  for (int k = 0; k < 9; k++) {
+    buf.span(base + k, cx - W - 6 - k, cx + W - 4 - k, sh2);
   }
-  // 박공지붕.
-  for (int k = 0; k < 5; k++) {
-    buf.span(top + k, cx - 2 - k * 2, cx + 2 + k * 2, dark);
+
+  // 1) 박공 삼각 벽(네이비) + 짙은 지붕 테두리.
+  for (int r = 0; r <= roofH; r++) {
+    final s = (r / roofH * W).round();
+    buf.span(top + r, cx - s, cx + s, navy);
+    // 비스듬한 지붕선 — 바깥 2셀을 짙게 덮는다.
+    for (int d = 0; d < 2; d++) {
+      buf.set(cx - s + d, top + r, roof);
+      buf.set(cx + s - d, top + r, roof);
+    }
   }
-  // 벽 + 창.
-  for (int k = 0; k < 4; k++) {
-    buf.span(top + 5 + k, cx - 10, cx + 10, body);
+  // 꼭대기와 처마 오버행을 짙게 마감.
+  buf.span(top, cx - 1, cx + 1, roof);
+  buf.span(eaves, cx - W - 2, cx + W + 2, roof);
+
+  // 2) 벽체(네이비) + 짙은 토대 + 중앙 큰 출입구.
+  for (int r = 1; r < bodyH; r++) {
+    buf.span(eaves + r, cx - W, cx + W, navy);
   }
-  buf.span(top + 6, cx - 7, cx - 5, win);
-  buf.span(top + 6, cx - 1, cx + 1, win);
-  buf.span(top + 6, cx + 5, cx + 7, win);
-  buf.span(top + 9, cx - 10, cx + 10, dark);
-  for (int x = cx - 8; x <= cx + 8; x += 4) {
-    buf.set(x, top + 10, dark);
-    buf.set(x, top + 11, dark);
+  buf.span(base - 1, cx - W, cx + W, roof);
+  buf.span(base, cx - W, cx + W, roof);
+  // 중앙 큰 출입구 — 벽 아래쪽(워드마크 아래)에만.
+  final gW = (W * 0.5).round();
+  final gH = (bodyH * 0.3).round();
+  for (int r = 0; r < gH; r++) {
+    buf.span(base - 2 - r, cx - gW, cx + gW, roof);
+  }
+
+  // 3) 흰 산 로고 — 박공 삼각형 가운데. 두 봉우리.
+  final ly = top + (roofH * 0.66).round(); // 로고 밑변(삼각 벽 가운데쯤)
+  final mw = (W * 0.28).round(); // 작은 산 로고
+  void peak(int px, int h, int halfBase) {
+    for (int r = 0; r <= h; r++) {
+      final hw = (r / h * halfBase).round();
+      buf.span(ly - h + r, px - hw, px + hw, white);
+    }
+  }
+  // 큰 봉우리(왼쪽) + 작은 봉우리(오른쪽), 밑변은 ly로 공유.
+  peak(cx - (mw * 0.22).round(), (mw * 0.70).round(), (mw * 0.50).round());
+  peak(cx + (mw * 0.42).round(), (mw * 0.45).round(), (mw * 0.33).round());
+  buf.span(ly, cx - mw, cx + mw, white); // 밑변
+
+  // 4) 워드마크 — 벽체 상단에 작은 흰 글씨.
+  const word = 'MontBlanc';
+  const gw = 3, gap = 1;
+  final wordW = word.length * gw + (word.length - 1) * gap;
+  var gx = cx - wordW ~/ 2;
+  final wy = eaves + 1; // 벽 상단(출입구 위)
+  for (final ch in word.split('')) {
+    final glyph = _font3[ch];
+    if (glyph != null) {
+      for (int gy = 0; gy < 5; gy++) {
+        for (int gxi = 0; gxi < gw; gxi++) {
+          if (glyph[gy][gxi] == '#') buf.set(gx + gxi, wy + gy, white);
+        }
+      }
+    }
+    gx += gw + gap;
   }
 }
 
