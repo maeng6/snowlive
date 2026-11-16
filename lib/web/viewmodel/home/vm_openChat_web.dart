@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:com.snowlive/core/api/api_resortHome.dart';
 import 'package:com.snowlive/core/viewmodel/vm_user.dart';
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 /// 홈 우측 하단 오픈 채팅.
 ///
@@ -29,6 +30,17 @@ class OpenChatViewModelWeb extends GetxController {
   /// 스트림 첫 응답은 "새 메시지"가 아니다(들어오자마자 말풍선이 뜨면 안 된다).
   bool _primed = false;
 
+  /// 빨간점 "읽음" 기준선을 **브라우저(기기) 단위**로 저장한다(계정 무관).
+  /// 같은 브라우저에서 한 번 읽으면 새로고침·로그아웃·계정전환해도 유지된다.
+  static const String _seenKey = 'openchat_last_seen_ms';
+  SharedPreferences? _prefs;
+
+  /// 최신 메시지의 createdAt(ms) — 빨간점 판정 기준.
+  int _latestMs = 0;
+
+  int _seenMs() => _prefs?.getInt(_seenKey) ?? 0;
+  void _recomputeUnread() => _unread.value = _latestMs > _seenMs();
+
   /// 오래된 → 최신 순. 화면이 아래로 쌓아 그린다.
   List<OpenChatMessage> get messages => _messages;
   bool get isSending => _isSending.value;
@@ -42,8 +54,12 @@ class OpenChatViewModelWeb extends GetxController {
   RxBool get unreadRx => _unread;
   bool get unread => _unread.value;
 
-  /// 채팅을 펼쳤을 때 호출 — 미확인 표시(빨간점)를 내린다.
-  void markRead() => _unread.value = false;
+  /// 채팅을 펼쳤을 때 호출 — 미확인 표시(빨간점)를 내린다. 읽음 기준선을 이
+  /// 브라우저(기기)에 저장해, 새로고침·계정전환 후에도 다시 뜨지 않게 한다.
+  void markRead() {
+    _prefs?.setInt(_seenKey, _latestMs);
+    _unread.value = false;
+  }
 
   UserViewModel get _userVM => Get.find<UserViewModel>();
   int? get myUserId => _userVM.user.user_id;
@@ -61,9 +77,11 @@ class OpenChatViewModelWeb extends GetxController {
     super.onClose();
   }
 
-  void start() {
+  Future<void> start() async {
     _sub?.cancel();
     _primed = false;
+    _prefs ??= await SharedPreferences.getInstance();
+    _recomputeUnread();
     _sub = FirebaseFirestore.instance
         .collection('chat')
         .orderBy('createdAt', descending: true)
@@ -85,16 +103,26 @@ class OpenChatViewModelWeb extends GetxController {
     final previousLast = _messages.isEmpty ? null : _messages.last.id;
     _messages.value = parsed;
 
+    // 최신 메시지 시각(ms) — descending 쿼리라 첫 도큐가 가장 최신.
+    final ts = snapshot.docs.isEmpty ? null : snapshot.docs.first.data()['createdAt'];
+    if (ts is Timestamp) _latestMs = ts.millisecondsSinceEpoch;
+
     if (!_primed) {
       _primed = true;
+      // 이 브라우저에서 처음(저장값 없음)이면 지금 최신을 '봤다'로 프라임 →
+      // 기존 글엔 점이 안 뜬다. 저장값이 있으면 그 이후 글만 점으로 뜬다.
+      if (_prefs != null && !_prefs!.containsKey(_seenKey)) {
+        _prefs!.setInt(_seenKey, _latestMs);
+      }
+      _recomputeUnread();
       return;
     }
     // 마지막 메시지가 바뀌었을 때만 말풍선을 띄운다(수정·삭제로 스냅샷이 와도 조용히).
     final last = parsed.isEmpty ? null : parsed.last;
     if (last != null && last.id != previousLast) {
-      _latest.value = last;
-      _unread.value = true; // 새 글 → 빨간점(펼쳐져 있으면 위젯이 바로 markRead).
+      _latest.value = last; // 5초 말풍선
     }
+    _recomputeUnread(); // 새 글(최신>읽음) → 빨간점. 펼쳐져 있으면 위젯이 바로 markRead.
   }
 
   /// 말풍선을 내린다(5초 타이머 종료 또는 채팅창을 펼쳤을 때).

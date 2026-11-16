@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:com.snowlive/core/viewmodel/vm_user.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -10,9 +9,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 /// 서버는 새 글을 만들 때 Firestore `livetalk/meta.latest_id`만 갱신한다. 클라이언트는
 /// 이 **문서 1개만 실시간 구독**하므로 폴링이 없다(서버 트래픽·배터리 부담 거의 0).
 ///
-/// 읽음 기준선(lastSeen)은 **유저별로** SharedPreferences에 저장한다. 같은 브라우저에서
-/// 계정을 바꿔도 서로 독립적으로 동작한다. 저장된 적이 없으면 0으로 보므로, 아직 한 번도
-/// 라이브톡을 열지 않은 유저에겐 "새 글 있음" 점이 뜬다(라이브톡에 들어가면 꺼진다).
+/// 읽음 기준선(lastSeen)은 **브라우저(기기) 단위**로 SharedPreferences(localStorage)에
+/// 저장한다 — 계정과 무관하다. 같은 브라우저에서 한 번 보면, 어떤 계정이든/로그아웃이든
+/// 읽음이 유지된다. 저장된 적이 없으면 0으로 보므로, 그 브라우저에서 한 번도 라이브톡을
+/// 열지 않았으면 "새 글 있음" 점이 뜬다(라이브톡에 들어가면 꺼진다).
 class LiveTalkBadgeWeb extends GetxController {
   static LiveTalkBadgeWeb get to => Get.find<LiveTalkBadgeWeb>();
 
@@ -52,24 +52,18 @@ class LiveTalkBadgeWeb extends GetxController {
     latestId.value = (v is int) ? v : int.tryParse('$v') ?? 0;
   }
 
-  int? get _uid {
-    if (!Get.isRegistered<UserViewModel>()) return null;
-    final id = Get.find<UserViewModel>().user.user_id;
-    if (id is int) return id;
-    return int.tryParse('$id');
-  }
+  /// 기기(브라우저) 단위 고정 키 — 계정(uid)과 무관하다.
+  static const String _key = 'livetalk_last_seen_id';
 
-  String _key(int? uid) => 'livetalk_last_seen_id_${uid ?? 'guest'}';
+  /// 이 브라우저에서 마지막으로 본 글 id(없으면 0). uid 인자는 호환용으로 **무시**한다.
+  int seenFor([int? uid]) => _prefs?.getInt(_key) ?? 0;
 
-  /// 해당 유저가 마지막으로 본 글 id(없으면 0).
-  int seenFor(int? uid) => _prefs?.getInt(_key(uid)) ?? 0;
+  /// 안 읽은 새 글이 있는지. uid 인자는 호환용으로 **무시**(기기 단위).
+  bool hasUnreadFor([int? uid]) => latestId.value > seenFor();
 
-  /// 해당 유저 기준 안 읽은 새 글이 있는지.
-  bool hasUnreadFor(int? uid) => latestId.value > seenFor(uid);
-
-  /// 라이브톡 진입/열람 시 읽음 처리 — 현재 유저 기준으로 점을 끈다.
+  /// 라이브톡 진입/열람 시 읽음 처리 — 이 브라우저 기준으로 점을 끈다.
   Future<void> markSeen() async {
-    await _prefs?.setInt(_key(_uid), latestId.value);
+    await _prefs?.setInt(_key, latestId.value);
     seenRev.value++;
   }
 }

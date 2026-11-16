@@ -1,18 +1,32 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
+/// 오픈채팅 "새 글" 빨간점 — **기기(앱 설치) 단위**로 동작한다(계정 무관).
+///
+/// 기존엔 Firestore `openChat_alarm/alarm` 문서의 `user_id` 배열로 **계정 단위**
+/// 공유였지만, 웹과 동일하게 "이 기기에서 마지막으로 본 이후 새 글이 있나"로 바꿨다.
+/// 읽음 기준선(lastSeen)은 SharedPreferences에 **uid 없이** 저장하므로, 같은 기기면
+/// 어떤 계정이든/로그아웃이든 읽음이 유지된다. 판정: `최신글 시각(ms) > 저장된 읽음 시각`.
 class OpenChatAlarmViewModel extends GetxController {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   // 새 메시지 여부 (빨간점 표시용)
   RxBool hasNewMessage = false.obs;
 
-  // Firestore 스트림 구독
-  StreamSubscription<DocumentSnapshot>? _alarmSubscription;
+  StreamSubscription<QuerySnapshot<Map<String, dynamic>>>? _alarmSubscription;
 
-  // 현재 유저 ID
-  int? _myUserId;
+  SharedPreferences? _prefs;
+
+  /// 기기 단위 고정 키(계정 무관). 웹과 같은 의미.
+  static const String _seenKey = 'openchat_last_seen_ms';
+
+  /// 최신 메시지 createdAt(ms).
+  int _latestMs = 0;
+
+  /// 첫 스냅샷은 "새 글"이 아니다 — 처음 켠 기기엔 기존 글로 점을 띄우지 않는다.
+  bool _primed = false;
 
   @override
   void onClose() {
@@ -20,32 +34,36 @@ class OpenChatAlarmViewModel extends GetxController {
     super.onClose();
   }
 
-  /// 알람 스트림 구독 시작
-  /// [userId] 현재 로그인한 유저의 ID
-  void startListening(int userId) {
-    _myUserId = userId;
+  int _seenMs() => _prefs?.getInt(_seenKey) ?? 0;
+  void _recompute() => hasNewMessage.value = _latestMs > _seenMs();
 
-    // 기존 구독 해제
+  /// 알람 스트림 구독 시작. [userId]는 호환용으로 받되 **사용하지 않는다**(기기 단위).
+  Future<void> startListening([int? userId]) async {
     _alarmSubscription?.cancel();
+    _primed = false;
+    _prefs ??= await SharedPreferences.getInstance();
+    _recompute();
 
-    // Firestore 스트림 구독: openChat_alarm/alarm 문서
+    // 오픈채팅 메시지는 Firestore `chat` 컬렉션(웹과 같은 소스). 최신 1건만 구독.
     _alarmSubscription = _firestore
-        .collection('openChat_alarm')
-        .doc('alarm')
+        .collection('chat')
+        .orderBy('createdAt', descending: true)
+        .limit(1)
         .snapshots()
         .listen((snapshot) {
-      if (snapshot.exists) {
-        final data = snapshot.data();
-        final List<dynamic> userIds = data?['user_id'] ?? [];
+      final ts = snapshot.docs.isEmpty
+          ? null
+          : snapshot.docs.first.data()['createdAt'];
+      if (ts is Timestamp) _latestMs = ts.millisecondsSinceEpoch;
 
-        // 내 user_id가 배열에 없으면 새 메시지 있음 (빨간점 표시)
-        hasNewMessage.value = !userIds.contains(_myUserId);
-
-        print('🔔 오픈채팅 알람 상태: ${hasNewMessage.value ? "새 글 있음" : "읽음"}');
-      } else {
-        // 문서가 없으면 새 메시지 없음으로 처리
-        hasNewMessage.value = false;
+      if (!_primed) {
+        _primed = true;
+        // 이 기기에서 처음(저장값 없음)이면 지금 최신을 '봤다'로 프라임 → 기존 글엔 점 없음.
+        if (_prefs != null && !_prefs!.containsKey(_seenKey)) {
+          _prefs!.setInt(_seenKey, _latestMs);
+        }
       }
+      _recompute();
     }, onError: (e) {
       print('❌ 오픈채팅 알람 스트림 오류: $e');
     });
@@ -59,55 +77,18 @@ class OpenChatAlarmViewModel extends GetxController {
 
   /// 알람 스트림 재시작 (포어그라운드 복귀 시 호출)
   void resumeListening() {
-    if (_myUserId != null && _alarmSubscription == null) {
-      startListening(_myUserId!);
-    }
+    if (_alarmSubscription == null) startListening();
   }
 
-  /// 오픈채팅 읽음 처리 (내 user_id를 배열에 추가)
+  /// 오픈채팅 읽음 처리 — 이 기기의 읽음 기준선을 최신으로 올린다.
   Future<void> markAsRead() async {
-    if (_myUserId == null) return;
-
-    try {
-      await _firestore
-          .collection('openChat_alarm')
-          .doc('alarm')
-          .update({
-        'user_id': FieldValue.arrayUnion([_myUserId]),
-      });
-      print('✅ 오픈채팅 읽음 처리 완료');
-    } catch (e) {
-      print('❌ 오픈채팅 읽음 처리 실패: $e');
-    }
+    await _prefs?.setInt(_seenKey, _latestMs);
+    hasNewMessage.value = false;
   }
 
-  /// 새 글 작성 시 알람 초기화 (user_id 배열 비우기)
-  /// 모든 유저에게 새 글 알림이 표시됨
-  Future<void> clearAllReadStatus() async {
-    try {
-      await _firestore
-          .collection('openChat_alarm')
-          .doc('alarm')
-          .set({'user_id': []});
-      print('✅ 오픈채팅 알람 초기화 (새 글 작성)');
-    } catch (e) {
-      print('❌ 오픈채팅 알람 초기화 실패: $e');
-    }
-  }
+  /// 새 글 작성 후: 작성자 본인은 읽음 처리(다른 기기는 최신글 시각이 올라가 자동으로 점).
+  Future<void> clearAndMarkMyself() async => markAsRead();
 
-  /// 새 글 작성 시 알람 초기화 + 본인은 읽음 처리
-  /// 다른 유저에게만 새 글 알림이 표시됨
-  Future<void> clearAndMarkMyself() async {
-    if (_myUserId == null) return;
-
-    try {
-      await _firestore
-          .collection('openChat_alarm')
-          .doc('alarm')
-          .set({'user_id': [_myUserId]});
-      print('✅ 오픈채팅 알람 초기화 (본인 제외)');
-    } catch (e) {
-      print('❌ 오픈채팅 알람 초기화 실패: $e');
-    }
-  }
+  /// (레거시 호환) 기기 단위 모델에선 "모두 안읽음으로"가 필요 없다 — no-op.
+  Future<void> clearAllReadStatus() async {}
 }
