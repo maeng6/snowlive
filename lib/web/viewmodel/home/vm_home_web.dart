@@ -164,7 +164,9 @@ class HomeViewModelWeb extends GetxController {
     _bannerFallbackTimer?.cancel();
     // Firestore가 끝내 응답(데이터·에러)을 안 줘도 배너 영역이 스켈레톤에 영영
     // 갇히지 않게, 일정 시간 내 첫 스냅샷이 없으면 기본 슬라이드(로컬 에셋)로 연다.
-    _bannerFallbackTimer = Timer(const Duration(seconds: 4), () {
+    // 느린 망·콜드 핸드셰이크에서 4초는 너무 성급해 기본배너로 빠졌다 → 10초로.
+    // (늦게라도 스냅샷이 오면 리스너가 실제 배너로 교체하므로 default는 임시다.)
+    _bannerFallbackTimer = Timer(const Duration(seconds: 10), () {
       if (!_isBannerLoaded.value) {
         _bannerDoc.value = null;
         _isBannerLoaded(true);

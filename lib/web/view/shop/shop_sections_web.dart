@@ -44,7 +44,15 @@ List<String> shopCategories(List<AffiliateProduct> items) {
   return [kShopAllCategory, ...ordered];
 }
 
-/// 선택한 카테고리의 상품만, `order` 오름차순(같으면 id).
+/// 카테고리 정렬 순위 — [kShopCategoryOrder] 위치. 순서표에 없으면 맨 뒤.
+int _categoryRank(String category) {
+  final i = kShopCategoryOrder.indexOf(category);
+  return i < 0 ? kShopCategoryOrder.length : i;
+}
+
+/// 선택한 카테고리의 상품만. `전체` 탭에서도 **카테고리끼리 묶이게** 1차로 카테고리
+/// 순서, 그 안에서 `order` 오름차순(같으면 id)으로 정렬한다. 특정 카테고리를
+/// 고르면 1차 키가 상수라 사실상 order 정렬과 같다.
 List<AffiliateProduct> shopVisibleItems(
   List<AffiliateProduct> items,
   String category,
@@ -53,10 +61,25 @@ List<AffiliateProduct> shopVisibleItems(
       ? items.toList()
       : items.where((p) => p.category == category).toList();
   filtered.sort((a, b) {
+    final byCat = _categoryRank(a.category).compareTo(_categoryRank(b.category));
+    if (byCat != 0) return byCat;
     final byOrder = a.order.compareTo(b.order);
     return byOrder != 0 ? byOrder : a.id.compareTo(b.id);
   });
   return filtered;
+}
+
+/// 백엔드 호스트(이미지 프록시용).
+const String _kShopApiBase = 'https://snowlive-api-c617725e2b78.herokuapp.com';
+
+/// 쿠팡 CDN 이미지는 CORS 헤더가 없어, 웹(Flutter CanvasKit)이 바이트 디코드를
+/// 못 하고 카드마다 `<img>` 플랫폼뷰로 폴백한다 → 상품이 많으면 iOS Safari/PWA가
+/// 메모리로 **반복 크래시**. 백엔드 프록시(CORS 포함)를 거치게 해서 캔버스 디코드
+/// 경로로 돌려 플랫폼뷰를 없앤다. 쿠팡 외 URL은 그대로 둔다.
+String shopProxiedImageUrl(String url) {
+  if (url.isEmpty) return url;
+  if (!url.contains('coupangcdn.com') && !url.contains('coupang.com')) return url;
+  return '$_kShopApiBase/api/affiliate/img/?u=${Uri.encodeComponent(url)}';
 }
 
 /// 쿠팡 CDN 썸네일 URL의 `212x212ex` 같은 크기 구간을 [size]로 바꾼다.

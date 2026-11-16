@@ -37,11 +37,31 @@ class ApiAffiliateProductRepository implements AffiliateProductRepository {
 
   @override
   Future<List<AffiliateProduct>> fetchAll() async {
-    final res = await http.get(Uri.parse(url));
-    if (res.statusCode != 200) {
-      throw Exception('추천 상품 조회 실패: HTTP ${res.statusCode}');
+    // Heroku dyno가 잠들었다 깨면(콜드스타트) 첫 응답이 느리거나 503이 날 수 있다.
+    // 타임아웃을 두고 **지수 백오프로 몇 번 재시도**해 그 1회 깨우기를 흡수한다.
+    // (타임아웃·재시도가 없으면 콜드스타트 한 번에 바로 에러 화면으로 빠진다.)
+    const timeout = Duration(seconds: 12);
+    const maxAttempts = 3;
+    Object? lastError;
+    for (int attempt = 0; attempt < maxAttempts; attempt++) {
+      try {
+        final res = await http.get(Uri.parse(url)).timeout(timeout);
+        // 5xx(부팅 중 503 등)는 재시도 대상. 4xx는 바로 던진다.
+        if (res.statusCode >= 500) {
+          throw Exception('추천 상품 조회 실패: HTTP ${res.statusCode}');
+        }
+        if (res.statusCode != 200) {
+          throw Exception('추천 상품 조회 실패: HTTP ${res.statusCode}');
+        }
+        return parseAffiliateProducts(jsonDecode(utf8.decode(res.bodyBytes)));
+      } catch (e) {
+        lastError = e;
+        if (attempt == maxAttempts - 1) break;
+        // 0.6s → 1.2s → … 백오프.
+        await Future.delayed(Duration(milliseconds: 600 * (1 << attempt)));
+      }
     }
-    return parseAffiliateProducts(jsonDecode(utf8.decode(res.bodyBytes)));
+    throw Exception('추천 상품 조회 실패: $lastError');
   }
 }
 

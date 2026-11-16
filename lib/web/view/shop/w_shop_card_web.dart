@@ -5,6 +5,7 @@ import 'package:com.snowlive/web/view/fleamarket/w_fleamarket_card_web.dart'
 import 'package:com.snowlive/web/view/shop/coupang_widget.dart';
 import 'package:com.snowlive/web/view/shop/shop_banner_image.dart';
 import 'package:com.snowlive/web/view/shop/shop_sections_web.dart';
+import 'package:com.snowlive/web/util/responsive_web.dart';
 import 'package:com.snowlive/web/widget/w_network_image_web.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -43,6 +44,7 @@ class _ShopCardWebState extends State<ShopCardWeb> {
   AffiliateProduct get p => widget.product;
 
   Future<void> _open() async {
+    if (!p.url.startsWith('http')) return; // 위젯형 등 링크 없으면 무시
     final uri = Uri.tryParse(p.url);
     if (uri == null) return;
     // 웹에서 externalApplication은 새 탭이다 — 우리 화면은 그대로 남는다.
@@ -51,9 +53,15 @@ class _ShopCardWebState extends State<ShopCardWeb> {
 
   @override
   Widget build(BuildContext context) {
+    // ⚠️ 모바일(특히 인앱 브라우저)에서는 쿠팡 위젯 iframe·배너 DOM 플랫폼뷰를
+    // 여러 개 띄우면 WebKit 프로세스가 메모리 한계로 반복 크래시한다
+    // ("문제가 반복적으로 발생했습니다"). 모바일에서는 무거운 플랫폼뷰를 끄고
+    // 가벼운 이미지 카드로 폴백한다(데스크톱은 그대로).
+    final bool heavyOk = context.screenType != WebScreenType.mobile;
+
     // 다이나믹 배너(위젯)형 — 쿠팡이 실시간 가격까지 그려주는 iframe을 셀에 가득 채운다.
     // 커스텀 카드 대신 쿠팡 위젯이 그대로 보인다(이미지·제목·가격·버튼 전부 쿠팡 렌더).
-    if (p.isWidget) {
+    if (p.isWidget && heavyOk) {
       return ClipRRect(
         borderRadius: BorderRadius.circular(kFleamarketPhotoRadius),
         child: Container(
@@ -69,18 +77,22 @@ class _ShopCardWebState extends State<ShopCardWeb> {
     final Widget image;
     if (p.imageUrl.isEmpty) {
       image = Image.asset(kFleamarketDefaultImage, fit: BoxFit.cover);
-    } else if (shopIsBannerImage(p.imageUrl)) {
+    } else if (shopIsBannerImage(p.imageUrl) && heavyOk) {
       // 어드민에서 붙여넣은 블로그용 태그의 배너(240×480) — DOM 안에서 상품 사진 구간만
       // 잘라 보인다(Flutter 쪽 클립은 iOS Safari의 DOM 이미지에 안 먹는다).
       image = shopBannerImageView(url: p.imageUrl, radius: kFleamarketPhotoRadius);
     } else {
       image = WebNetworkImage(
         // 212px 썸네일은 PC 셀에서 흐릿해 큰 사이즈로 요청. 없으면 원본으로.
-        url: shopImageUrlAt(p.imageUrl, kShopImageSize),
+        // 쿠팡 CDN은 CORS가 없어 프록시를 거쳐야 플랫폼뷰 폭주(iOS 크래시)를 막는다.
+        url: shopProxiedImageUrl(shopImageUrlAt(p.imageUrl, kShopImageSize)),
         fit: BoxFit.cover,
+        // 로딩 동안 정사각 스켈레톤 쉬머(셀이 1:1이라 비율 1).
+        placeholderAspectRatio: 1,
         fallback: WebNetworkImage(
-          url: p.imageUrl,
+          url: shopProxiedImageUrl(p.imageUrl),
           fit: BoxFit.cover,
+          placeholderAspectRatio: 1,
           fallback: Image.asset(kFleamarketDefaultImage, fit: BoxFit.cover),
         ),
       );
