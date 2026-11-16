@@ -37,7 +37,12 @@ class ShopGridWeb extends StatelessWidget {
             mainAxisSpacing: layout.runSpacing,
             mainAxisExtent: shopExactCellWidth(layout, constraints.maxWidth) + shopCardTextBlockHeight(),
           ),
-          itemBuilder: (context, i) => ShopCardWeb(product: items[i]),
+          // ⚠️ 상품 id로 키를 준다. 쿠팡 CDN은 CORS가 없어 이미지가 DOM `<img>`
+          // 플랫폼뷰로 그려지는데, 카테고리를 바꿔 같은 자리에 다른 상품이 오면 Flutter는
+          // 카드를 재사용해 글자만 바꾸고 `<img>`는 예전 주소를 그대로 든다(실측 —
+          // 제목은 스키인데 사진은 차량 캐리어). 키가 다르면 카드째 새로 만든다.
+          itemBuilder: (context, i) =>
+              ShopCardWeb(key: ValueKey(items[i].id), product: items[i]),
         );
       },
     );

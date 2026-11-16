@@ -4,6 +4,7 @@ import 'package:com.snowlive/web/view/shop/shop_sections_web.dart';
 import 'package:com.snowlive/web/view/shop/w_shop_card_web.dart';
 import 'package:com.snowlive/web/view/shop/w_shop_category_chips_web.dart';
 import 'package:com.snowlive/web/view/shop/w_shop_grid_web.dart';
+import 'package:com.snowlive/web/viewmodel/shop/vm_shop_web.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -32,8 +33,26 @@ Map<String, dynamic> _raw(
       'active': active,
     };
 
-AffiliateProduct _p(int id, {String category = '스키', int order = 0}) =>
-    AffiliateProduct.tryParse(_raw(id, category: category, order: order))!;
+class _CountingRepo implements AffiliateProductRepository {
+  int calls = 0;
+
+  @override
+  Future<List<AffiliateProduct>> fetchAll() async {
+    calls++;
+    return [AffiliateProduct.tryParse(_raw(1))!];
+  }
+}
+
+AffiliateProduct _p(
+  int id, {
+  String category = '스키',
+  String sub = '고글',
+  String brand = 'SMIRIA',
+  int order = 0,
+}) =>
+    AffiliateProduct.tryParse(
+      _raw(id, category: category, sub: sub, brand: brand, order: order),
+    )!;
 
 Widget _wrap(Widget child, {double width = 1440}) => MediaQuery(
       data: MediaQueryData(size: Size(width, 900)),
@@ -107,6 +126,45 @@ void main() {
       );
       // 크기 구간이 없으면 손대지 않는다.
       expect(shopImageUrlAt('https://x.com/a.png', 492), 'https://x.com/a.png');
+    });
+
+    test('어드민 블로그용 태그의 배너 이미지를 구분한다', () {
+      expect(
+        shopIsBannerImage('https://img3a.coupangcdn.com/image/affiliate/banner/1213@2x.jpg'),
+        isTrue,
+      );
+      expect(
+        shopIsBannerImage('https://t.coupangcdn.com/thumbnails/remote/212x212ex/image/a.png'),
+        isFalse,
+      );
+      // 사진 구간은 배너(세로 2배) 안의 정사각 — 세로 비율로 폭(0.5)과 같아야 한다.
+      expect(kShopBannerPhotoHeight, 0.5);
+      expect(kShopBannerPhotoTop + kShopBannerPhotoHeight, lessThanOrEqualTo(1));
+    });
+  });
+
+  group('보조 줄', () {
+    test('브랜드·소분류 중 있는 것만, 둘 다 비면 카테고리', () {
+      expect(shopCardMeta(_p(1)), 'SMIRIA · 고글');
+      expect(shopCardMeta(_p(2, brand: '')), '고글');
+      expect(shopCardMeta(_p(3, brand: '', sub: '', category: '기타')), '기타');
+    });
+  });
+
+  group('뷰모델', () {
+    test('GNB 재진입 시 전체로 되돌리고 다시 받는다 · 최초 진입은 중복 조회 없음', () async {
+      final repo = _CountingRepo();
+      final vm = ShopViewModelWeb(repo);
+      vm.onInit(); // 최초 진입 — load() 1회
+      vm.enterFromGnb(); // 아직 로딩 중 → 중복 조회 안 함
+      await Future<void>.delayed(Duration.zero);
+      expect(repo.calls, 1);
+      vm.selectCategory('스키');
+      vm.enterFromGnb(); // 재진입 — 전체로 + 다시 받음
+      expect(vm.selectedCategory, kShopAllCategory);
+      await Future<void>.delayed(Duration.zero);
+      expect(repo.calls, 2);
+      expect(vm.items, hasLength(1));
     });
   });
 

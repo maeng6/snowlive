@@ -14,12 +14,27 @@ import 'package:get/get.dart';
 ///
 /// 타이틀 → 고지 문구 → 카테고리 칩 → 카드 그리드. 카드를 누르면 쿠팡이 새 탭으로
 /// 열린다. 상세 화면은 없다. 사이드바도 없다(중고거래와 달리 내 활동이 없어서).
-class ShopViewWeb extends StatelessWidget {
+class ShopViewWeb extends StatefulWidget {
   const ShopViewWeb({super.key});
 
   @override
+  State<ShopViewWeb> createState() => _ShopViewWebState();
+}
+
+class _ShopViewWebState extends State<ShopViewWeb> {
+  late final ShopViewModelWeb vm = Get.find<ShopViewModelWeb>();
+
+  @override
+  void initState() {
+    super.initState();
+    // 라우트가 새로 만들어질 때(GNB 진입·재진입)마다 `전체`로 되돌리고 새로 받는다.
+    // 브라우저 뒤로가기로 **기존** 라우트에 돌아오는 건 initState가 안 돌아 고른
+    // 카테고리가 유지된다(뒤로가기는 보던 화면 그대로가 맞다).
+    vm.enterFromGnb();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final vm = Get.find<ShopViewModelWeb>();
     final isDesktop = context.isDesktop;
 
     return Container(

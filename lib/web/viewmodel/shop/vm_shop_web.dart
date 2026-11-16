@@ -52,4 +52,17 @@ class ShopViewModelWeb extends GetxController {
   void selectCategory(String category) {
     _selectedCategory.value = category;
   }
+
+  /// GNB로 (다시) 들어올 때 — 섹션 메인 상태(`전체`)로 되돌리고 목록을 새로 받는다.
+  ///
+  /// 이 뷰모델은 라우트가 스택에 남아 있는 한 살아 있어서(다른 탭 갔다가 GNB로
+  /// 돌아오면 `Get.toNamed`가 새 라우트를 쌓고 `Get.find`는 같은 인스턴스를 준다)
+  /// 아무것도 안 하면 전에 고른 카테고리·오래된 목록이 그대로 보인다(사용자 지적).
+  /// 최초 진입은 [onInit]의 [load]가 이미 돌고 있으니 중복 조회하지 않는다.
+  /// 이미 받은 목록은 비우지 않는다 — 화면은 `isLoading && items.isEmpty`일 때만
+  /// 스켈레톤이라 기존 카드 위로 조용히 갱신된다.
+  void enterFromGnb() {
+    _selectedCategory.value = kShopAllCategory;
+    if (!_isLoading.value) load();
+  }
 }

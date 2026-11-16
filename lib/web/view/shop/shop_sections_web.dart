@@ -67,6 +67,21 @@ String shopImageUrlAt(String url, int size) {
   return url.replaceFirst(re, '/${size}x${size}ex/');
 }
 
-/// 카드 보조 줄: `브랜드 · 소분류` — 비어 있는 쪽은 뺀다.
-String shopCardMeta(AffiliateProduct p) =>
-    [p.brand, p.subCategory].where((s) => s.isNotEmpty).join(' · ');
+/// 카드 보조 줄: `브랜드 · 소분류` — 비어 있는 쪽은 뺀다. 둘 다 비면(어드민에서
+/// 쿠팡 코드만 붙여넣은 상품) 카테고리를 쓴다 — 빈 줄이 남으면 제목과 `쿠팡에서 보기`
+/// 사이가 벌어져 다른 카드와 어긋나 보인다.
+String shopCardMeta(AffiliateProduct p) {
+  final meta = [p.brand, p.subCategory].where((s) => s.isNotEmpty).join(' · ');
+  return meta.isEmpty ? p.category : meta;
+}
+
+/// 어드민에서 '블로그용 태그'를 붙여넣으면 이미지가 쿠팡 **배너**(120×240 @2x = 240×480)로
+/// 온다 — 상품 사진 위아래로 쿠팡 로고·제목·로켓배지·'쇼핑하기' 버튼이 같이 그려진 그림.
+/// 이걸 정사각 셀에 그대로 넣으면 글자가 잘려 보이고 상품도 작아진다.
+bool shopIsBannerImage(String url) => url.contains('/image/affiliate/banner/');
+
+/// 배너 안에서 상품 사진이 차지하는 정사각 구간(세로 비율). 실측(배너 7장): 로고가
+/// 19~49, 제목이 316~337에 있고 사진은 그 사이 240×240 = **64~304**에 가운데 정렬.
+/// 가로는 전체 폭(0~240)이다.
+const double kShopBannerPhotoTop = 64 / 480;
+const double kShopBannerPhotoHeight = 240 / 480;

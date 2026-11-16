@@ -17,6 +17,8 @@ const Map<String, String> kWebPageNames = {
   WebRoutes.fleamarketUpload: '내 물건 팔기',
   WebRoutes.fleamarketUpdate: '중고거래 글 수정',
   WebRoutes.fleamarketAlert: '중고거래 알림 설정',
+  // 추천 상품(쿠팡 파트너스)
+  WebRoutes.shop: '추천 상품',
   // 각종소식 · 커뮤니티
   WebRoutes.event: '각종소식',
   WebRoutes.community: '커뮤니티',

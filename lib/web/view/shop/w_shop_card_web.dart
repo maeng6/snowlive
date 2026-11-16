@@ -3,6 +3,7 @@ import 'package:com.snowlive/core/model/m_affiliate_product.dart';
 import 'package:com.snowlive/web/view/fleamarket/w_fleamarket_card_web.dart'
     show kFleamarketDefaultImage, kFleamarketPhotoRadius;
 import 'package:com.snowlive/web/view/shop/coupang_widget.dart';
+import 'package:com.snowlive/web/view/shop/shop_banner_image.dart';
 import 'package:com.snowlive/web/view/shop/shop_sections_web.dart';
 import 'package:com.snowlive/web/widget/w_network_image_web.dart';
 import 'package:flutter/material.dart';
@@ -65,18 +66,25 @@ class _ShopCardWebState extends State<ShopCardWeb> {
       );
     }
 
-    final image = p.imageUrl.isEmpty
-        ? Image.asset(kFleamarketDefaultImage, fit: BoxFit.cover)
-        : WebNetworkImage(
-            // 212px 썸네일은 PC 셀에서 흐릿해 큰 사이즈로 요청. 없으면 원본으로.
-            url: shopImageUrlAt(p.imageUrl, kShopImageSize),
-            fit: BoxFit.cover,
-            fallback: WebNetworkImage(
-              url: p.imageUrl,
-              fit: BoxFit.cover,
-              fallback: Image.asset(kFleamarketDefaultImage, fit: BoxFit.cover),
-            ),
-          );
+    final Widget image;
+    if (p.imageUrl.isEmpty) {
+      image = Image.asset(kFleamarketDefaultImage, fit: BoxFit.cover);
+    } else if (shopIsBannerImage(p.imageUrl)) {
+      // 어드민에서 붙여넣은 블로그용 태그의 배너(240×480) — DOM 안에서 상품 사진 구간만
+      // 잘라 보인다(Flutter 쪽 클립은 iOS Safari의 DOM 이미지에 안 먹는다).
+      image = shopBannerImageView(url: p.imageUrl, radius: kFleamarketPhotoRadius);
+    } else {
+      image = WebNetworkImage(
+        // 212px 썸네일은 PC 셀에서 흐릿해 큰 사이즈로 요청. 없으면 원본으로.
+        url: shopImageUrlAt(p.imageUrl, kShopImageSize),
+        fit: BoxFit.cover,
+        fallback: WebNetworkImage(
+          url: p.imageUrl,
+          fit: BoxFit.cover,
+          fallback: Image.asset(kFleamarketDefaultImage, fit: BoxFit.cover),
+        ),
+      );
+    }
 
     return MouseRegion(
       cursor: SystemMouseCursors.click,
@@ -166,3 +174,4 @@ class _ShopCardWebState extends State<ShopCardWeb> {
     );
   }
 }
+
