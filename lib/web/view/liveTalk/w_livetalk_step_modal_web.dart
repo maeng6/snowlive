@@ -214,12 +214,19 @@ class LiveTalkStepModal extends StatelessWidget {
   /// 안내 문구도 시트가 그리지 않는다 — 1단계는 **사진 칸 아래**에 오고
   /// 2단계엔 아예 없어서, 위치를 body가 정해야 한다.
   Widget _buildMobileSheet(BuildContext context) {
-    return Material(
-      color: SDSColor.snowliveWhite,
-      borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
-      clipBehavior: Clip.antiAlias,
-      child: SafeArea(
-        top: false,
+    // 키보드가 올라오면 그 높이만큼 시트를 위로 밀어 입력부가 가려지지 않게 한다
+    // (하단 정렬 오버레이라, 아래 패딩을 주면 시트 전체가 위로 뜬다). 내용이 길면
+    // 아래 SingleChildScrollView가 스크롤한다.
+    return AnimatedPadding(
+      duration: const Duration(milliseconds: 150),
+      curve: Curves.easeOut,
+      padding: EdgeInsets.only(bottom: MediaQuery.viewInsetsOf(context).bottom),
+      child: Material(
+        color: SDSColor.snowliveWhite,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+        clipBehavior: Clip.antiAlias,
+        child: SafeArea(
+          top: false,
         child: ConstrainedBox(
           // 단계마다 내용 길이가 달라도 시트가 들썩이지 않게 높이를 붙잡는다.
           constraints: BoxConstraints(minHeight: minHeight ?? 0),
@@ -316,6 +323,7 @@ class LiveTalkStepModal extends StatelessWidget {
                 ),
               ),
             ],
+          ),
           ),
         ),
       ),

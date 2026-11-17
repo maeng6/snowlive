@@ -11,7 +11,8 @@ const String kShopAllCategory = '전체';
 /// 칩 순서. 데이터에 없는 카테고리는 칩을 만들지 않고, 데이터에만 있는 카테고리는
 /// 이 순서 뒤에 붙는다(새 카테고리를 넣어도 화면이 깨지지 않게).
 const List<String> kShopCategoryOrder = [
-  '리프트권·렌탈',
+  '리프트권',
+  '렌탈',
   '스키',
   '보드',
   '보호장비',
@@ -25,9 +26,9 @@ const List<String> kShopCategoryOrder = [
 const String kShopDisclosure =
     '이 포스팅은 쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다.';
 
-/// 가격 표시 여부. 지금은 수동 수집이라 **끈다** — 쿠팡 가격이 바뀌면 틀려진다.
-/// 서버 API가 실시간 가격을 주기 시작하면 켠다.
-const bool kShopShowsPrice = false;
+/// 가격 표시 여부. 백엔드 자동수집(sync_affiliate)이 하루 단위로 쿠팡 가격을 다시
+/// 가져와 DB를 갱신하므로 켠다 — 완전 실시간은 아니지만 매일 최신에 가깝게 유지된다.
+const bool kShopShowsPrice = true;
 
 /// 카드 이미지 요청 크기. 파트너스 썸네일은 212px이라 PC 셀(최대 250)에서 흐릿해
 /// 쿠팡 CDN의 큰 사이즈로 바꿔 요청한다. 없으면 원본(212)으로 폴백.

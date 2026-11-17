@@ -122,7 +122,7 @@ class _WebGnbMenuPanelState extends State<WebGnbMenuPanel>
                 () => Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    for (final item in kGnbPrimaryItems)
+                    for (final item in gnbPrimaryItemsForHost)
                       if (PaidVisibilityControllerWeb.menuVisible(
                         item.routePrefix,
                       ))
