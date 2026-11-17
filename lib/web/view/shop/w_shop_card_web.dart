@@ -13,10 +13,10 @@ import 'package:url_launcher/url_launcher.dart';
 
 /// 카드 이미지(정사각) 아래 텍스트 블록의 고정 높이. 그리드·스켈레톤이 같은 값을
 /// 써야 로딩 → 데이터 전환 때 레이아웃이 안 튄다. 모든 글자 줄높이를 1.5로 고정해
-/// 계산한다: 간격 10 + 제목 1줄(13) 19.5 + 4 + 가격줄 24 + 6 + 링크 18 = 81.5 → 82.
-/// 가격이 없어도 가격줄 높이를 남겨 **모든 카드에서 가격·링크 줄 위치가 똑같아**
-/// 눈으로 비교하기 쉽다.
-double shopCardTextBlockHeight() => 82;
+/// 계산한다: 간격 10 + 제목 1줄(13) 19.5 + 4 + 가격줄 24 = 57.5 → 58.
+/// 가격이 없어도 가격줄 높이를 남겨 **모든 카드에서 가격 줄 위치가 똑같아** 눈으로
+/// 비교하기 쉽다. (카드 전체가 쿠팡으로 연결되므로 'CTA 줄'은 두지 않는다.)
+double shopCardTextBlockHeight() => 58;
 
 /// 카드 안 모든 글자의 줄높이(위 계산과 같이 움직여야 한다).
 const double _kLineHeight = 1.5;
@@ -194,26 +194,6 @@ class _ShopCardWebState extends State<ShopCardWeb> {
                         ),
                       ),
               ),
-            ),
-            const SizedBox(height: 6),
-            Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  '쿠팡에서 보기',
-                  style: SDSTextStyle.bold.copyWith(
-                    fontSize: 12,
-                    height: _kLineHeight,
-                    color: _hovered ? SDSColor.snowliveBlue : SDSColor.gray700,
-                  ),
-                ),
-                const SizedBox(width: 2),
-                Icon(
-                  Icons.open_in_new_rounded,
-                  size: 12,
-                  color: _hovered ? SDSColor.snowliveBlue : SDSColor.gray700,
-                ),
-              ],
             ),
           ],
         ),
