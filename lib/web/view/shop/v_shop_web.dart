@@ -84,6 +84,17 @@ class _ShopViewWebState extends State<ShopViewWeb> {
                       selected: selected,
                       onSelected: vm.selectCategory,
                     ),
+                  // 스키장(소분류) + 정렬 필터. 칩 아래 한 줄(좁으면 자동 줄바꿈).
+                  if (hasAny) ...[
+                    const SizedBox(height: SDSSpacing.md),
+                    _ShopFilterBar(
+                      resortOptions: vm.resortOptions,
+                      selectedResort: vm.selectedResort,
+                      onResort: vm.selectResort,
+                      sort: vm.sort,
+                      onSort: vm.setSort,
+                    ),
+                  ],
                   // 칩 ↔ 그리드: 중고거래 탭줄 ↔ 그리드와 같은 PC 30 / 그 외 22.
                   if (hasAny) SizedBox(height: isDesktop ? 30 : 22),
                   if (isLoading && !hasAny)
@@ -106,6 +117,90 @@ class _ShopViewWebState extends State<ShopViewWeb> {
               children: [SizedBox(height: webFooterTopGap(context)), const HomeFooterWeb()],
             ),
           ),
+        ),
+      ),
+    );
+  }
+}
+
+/// 스키장(소분류) 드롭다운 + 정렬 드롭다운 한 줄. 스키장 옵션이 2개 미만이면
+/// 스키장 드롭다운은 숨긴다(액세서리 등 스키장 구분이 없는 카테고리).
+class _ShopFilterBar extends StatelessWidget {
+  final List<String> resortOptions;
+  final String selectedResort;
+  final ValueChanged<String> onResort;
+  final ShopSort sort;
+  final ValueChanged<ShopSort> onSort;
+
+  const _ShopFilterBar({
+    required this.resortOptions,
+    required this.selectedResort,
+    required this.onResort,
+    required this.sort,
+    required this.onSort,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Wrap(
+      spacing: SDSSpacing.sm,
+      runSpacing: SDSSpacing.sm,
+      children: [
+        if (resortOptions.length >= 2)
+          _Dropdown<String>(
+            value: selectedResort,
+            items: [
+              const DropdownMenuItem(value: '', child: Text('스키장 전체')),
+              for (final r in resortOptions)
+                DropdownMenuItem(value: r, child: Text(r)),
+            ],
+            onChanged: (v) => onResort(v ?? ''),
+          ),
+        _Dropdown<ShopSort>(
+          value: sort,
+          items: [
+            for (final s in ShopSort.values)
+              DropdownMenuItem(value: s, child: Text(shopSortLabel(s))),
+          ],
+          onChanged: (v) => onSort(v ?? ShopSort.recommended),
+        ),
+      ],
+    );
+  }
+}
+
+/// 공통 톤의 작은 드롭다운(회색 테두리 pill). SDS 색/타이포만 쓴다.
+class _Dropdown<T> extends StatelessWidget {
+  final T value;
+  final List<DropdownMenuItem<T>> items;
+  final ValueChanged<T?> onChanged;
+
+  const _Dropdown({
+    required this.value,
+    required this.items,
+    required this.onChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 36,
+      padding: const EdgeInsets.symmetric(horizontal: 12),
+      decoration: BoxDecoration(
+        color: SDSColor.snowliveWhite,
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: SDSColor.gray200),
+      ),
+      child: DropdownButtonHideUnderline(
+        child: DropdownButton<T>(
+          value: value,
+          isDense: true,
+          borderRadius: BorderRadius.circular(8),
+          icon: const Icon(Icons.keyboard_arrow_down_rounded,
+              size: 18, color: SDSColor.gray500),
+          style: SDSTextStyle.bold.copyWith(fontSize: 13, color: SDSColor.gray800),
+          items: items,
+          onChanged: onChanged,
         ),
       ),
     );

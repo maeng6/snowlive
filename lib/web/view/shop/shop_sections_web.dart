@@ -51,16 +51,63 @@ int _categoryRank(String category) {
   return i < 0 ? kShopCategoryOrder.length : i;
 }
 
+/// 정렬 모드 — 추천순(기본, 카테고리·order) / 가격 낮은순 / 가격 높은순.
+enum ShopSort { recommended, priceAsc, priceDesc }
+
+/// 정렬 드롭다운 라벨.
+String shopSortLabel(ShopSort s) {
+  switch (s) {
+    case ShopSort.recommended:
+      return '추천순';
+    case ShopSort.priceAsc:
+      return '가격 낮은순';
+    case ShopSort.priceDesc:
+      return '가격 높은순';
+  }
+}
+
+/// 현재 카테고리에서 고를 수 있는 **스키장(소분류)** 목록(가나다). 비어 있지 않은
+/// `subCategory`만, 중복 제거. 2개 미만이면 드롭다운을 숨기는 판단에 쓴다.
+List<String> shopResortOptions(List<AffiliateProduct> items, String category) {
+  final seen = <String>{};
+  for (final p in items) {
+    if (category != kShopAllCategory && p.category != category) continue;
+    final r = p.subCategory.trim();
+    if (r.isNotEmpty) seen.add(r);
+  }
+  final out = seen.toList()..sort();
+  return out;
+}
+
 /// 선택한 카테고리의 상품만. `전체` 탭에서도 **카테고리끼리 묶이게** 1차로 카테고리
 /// 순서, 그 안에서 `order` 오름차순(같으면 id)으로 정렬한다. 특정 카테고리를
 /// 고르면 1차 키가 상수라 사실상 order 정렬과 같다.
+///
+/// [resort]가 있으면 그 스키장(소분류)만, [sort]가 가격이면 가격순으로 재정렬한다
+/// (가격 없는 항목은 항상 뒤로).
 List<AffiliateProduct> shopVisibleItems(
   List<AffiliateProduct> items,
-  String category,
-) {
-  final filtered = category == kShopAllCategory
+  String category, {
+  String resort = '',
+  ShopSort sort = ShopSort.recommended,
+}) {
+  var filtered = category == kShopAllCategory
       ? items.toList()
       : items.where((p) => p.category == category).toList();
+  if (resort.isNotEmpty) {
+    filtered = filtered.where((p) => p.subCategory == resort).toList();
+  }
+  if (sort == ShopSort.priceAsc || sort == ShopSort.priceDesc) {
+    filtered.sort((a, b) {
+      final ap = a.salesPrice, bp = b.salesPrice;
+      if (ap == null && bp == null) return a.id.compareTo(b.id);
+      if (ap == null) return 1; // 가격 없는 건 뒤로
+      if (bp == null) return -1;
+      final c = sort == ShopSort.priceAsc ? ap.compareTo(bp) : bp.compareTo(ap);
+      return c != 0 ? c : a.id.compareTo(b.id);
+    });
+    return filtered;
+  }
   filtered.sort((a, b) {
     final byCat = _categoryRank(a.category).compareTo(_categoryRank(b.category));
     if (byCat != 0) return byCat;
