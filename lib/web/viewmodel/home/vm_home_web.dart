@@ -12,6 +12,7 @@ import 'package:com.snowlive/core/model/m_communityList.dart';
 import 'package:com.snowlive/core/model/m_crewHome.dart';
 import 'package:com.snowlive/core/model/m_event.dart';
 import 'package:com.snowlive/core/model/m_fleamarket.dart';
+import 'package:com.snowlive/core/model/m_open_preview.dart';
 import 'package:com.snowlive/core/model/m_rankingListCrew.dart';
 import 'package:com.snowlive/core/model/m_rankingListIndiv.dart';
 import 'package:com.snowlive/core/model/m_resortModel.dart';
@@ -107,12 +108,19 @@ class HomeViewModelWeb extends GetxController {
   /// 오늘의 랭킹 배지에 쓰는 날짜. 화면이 매번 DateTime.now()를 부르지 않게 한 곳에 둔다.
   DateTime get today => DateTime.now();
 
+  // ── 개장 미리보기(스키장 웹캠) ──
+  final RxList<OpenPreviewItem> _openPreview = <OpenPreviewItem>[].obs;
+  final RxBool _isOpenPreviewLoaded = false.obs;
+  List<OpenPreviewItem> get openPreviewItems => _openPreview.toList();
+  bool get isOpenPreviewLoaded => _isOpenPreviewLoaded.value;
+
   @override
   void onInit() {
     super.onInit();
     _listenBanner();
     selectResort(homeDefaultResort(_userVM.user.favorite_resort));
     loadTodayRanking();
+    loadOpenPreview();
     loadCommunity();
     loadCrewCards();
     loadFleamarket();
@@ -150,11 +158,32 @@ class HomeViewModelWeb extends GetxController {
     await Future.wait([
       if (r != null) _fetchWeather(r),
       loadTodayRanking(),
+      loadOpenPreview(),
       loadCommunity(),
       loadCrewCards(),
       loadFleamarket(),
       loadEvents(),
     ]);
+  }
+
+  /// 개장 미리보기 항목(노출 ON) — 공개 API에서 받아 온다. 실패해도 조용히 빈 목록.
+  Future<void> loadOpenPreview() async {
+    try {
+      final res = await http.get(Uri.parse(
+          'https://snowlive-api-c617725e2b78.herokuapp.com/api/open-preview/'));
+      if (res.statusCode == 200) {
+        final body = jsonDecode(res.body);
+        final list = (body is Map ? body['items'] : null);
+        if (list is List) {
+          _openPreview.assignAll(
+              list.map(OpenPreviewItem.tryParse).whereType<OpenPreviewItem>());
+        }
+      }
+    } catch (_) {
+      // 개장 미리보기만 비고 나머지 섹션은 그대로.
+    } finally {
+      _isOpenPreviewLoaded.value = true;
+    }
   }
 
   // ── 배너: **웹 전용 문서**를 구독한다(운영에서 값을 바꾸면 새로고침 없이 반영).
