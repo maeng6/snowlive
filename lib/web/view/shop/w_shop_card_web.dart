@@ -13,10 +13,10 @@ import 'package:url_launcher/url_launcher.dart';
 
 /// 카드 이미지(정사각) 아래 텍스트 블록의 고정 높이. 그리드·스켈레톤이 같은 값을
 /// 써야 로딩 → 데이터 전환 때 레이아웃이 안 튄다. 모든 글자 줄높이를 1.5로 고정해
-/// 계산한다: 간격 10 + 제목 2줄(13·2) 39 + 4 + 가격줄 24 + 6 + 링크 18 = 101.
-/// 제목이 1줄이어도 2줄 자리를 비워두고, 가격이 없어도 가격줄 높이를 남겨 **모든
-/// 카드에서 가격·링크 줄 위치가 똑같아** 눈으로 비교하기 쉽다.
-double shopCardTextBlockHeight() => 101;
+/// 계산한다: 간격 10 + 제목 1줄(13) 19.5 + 4 + 가격줄 24 + 6 + 링크 18 = 81.5 → 82.
+/// 가격이 없어도 가격줄 높이를 남겨 **모든 카드에서 가격·링크 줄 위치가 똑같아**
+/// 눈으로 비교하기 쉽다.
+double shopCardTextBlockHeight() => 82;
 
 /// 카드 안 모든 글자의 줄높이(위 계산과 같이 움직여야 한다).
 const double _kLineHeight = 1.5;
@@ -155,12 +155,12 @@ class _ShopCardWebState extends State<ShopCardWeb> {
               ),
             ),
             const SizedBox(height: 10),
-            // 제목: 1줄이어도 항상 2줄 높이를 차지해 아래 가격 줄이 모든 카드에서 맞는다.
+            // 제목: 항상 1줄 높이를 차지(말줄임) → 아래 가격 줄이 모든 카드에서 맞는다.
             SizedBox(
-              height: 13 * _kLineHeight * 2,
+              height: 13 * _kLineHeight,
               child: Text(
                 p.title,
-                maxLines: 2,
+                maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: SDSTextStyle.regular.copyWith(
                   fontSize: 13,
@@ -170,22 +170,30 @@ class _ShopCardWebState extends State<ShopCardWeb> {
               ),
             ),
             const SizedBox(height: 4),
-            // 가격 줄: 가격이 없어도 같은 높이를 남겨 링크 줄 위치가 카드마다 같다.
+            // 가격 줄: 가격이 없어도 같은 높이를 남긴다. 예약·이용권형은 쿠팡이 단일
+            // 가격을 안 주므로 "쿠팡에서 확인"으로 안내(누르면 쿠팡으로 이동).
             SizedBox(
               height: 16 * _kLineHeight,
-              child: p.salesPrice != null
-                  ? Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text(
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: p.salesPrice != null
+                    ? Text(
                         '${_shopPriceFormat.format(p.salesPrice)}원',
                         style: SDSTextStyle.bold.copyWith(
                           fontSize: 16,
                           height: _kLineHeight,
                           color: SDSColor.gray900,
                         ),
+                      )
+                    : Text(
+                        '쿠팡에서 확인',
+                        style: SDSTextStyle.regular.copyWith(
+                          fontSize: 13,
+                          height: _kLineHeight,
+                          color: SDSColor.gray400,
+                        ),
                       ),
-                    )
-                  : null,
+              ),
             ),
             const SizedBox(height: 6),
             Row(

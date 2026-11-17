@@ -13,6 +13,7 @@ const String kShopAllCategory = '전체';
 const List<String> kShopCategoryOrder = [
   '리프트권',
   '렌탈',
+  '강습',
   '스키',
   '보드',
   '보호장비',
