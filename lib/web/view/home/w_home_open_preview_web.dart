@@ -122,15 +122,7 @@ class OpenPreviewCard extends StatelessWidget {
 
     final Widget video = embedded
         ? webcamEmbedView(url: item.webcamUrl)
-        // 임베드 못하는 자리(모바일·URL없음)는 탭하면 새 탭으로 연다.
-        : MouseRegion(
-            cursor: hasCam ? SystemMouseCursors.click : SystemMouseCursors.basic,
-            child: GestureDetector(
-              behavior: HitTestBehavior.opaque,
-              onTap: hasCam ? _open : null,
-              child: _CamPlaceholder(hasCam: hasCam),
-            ),
-          );
+        : _CamPlaceholder(hasCam: hasCam);
 
     final camArea = AspectRatio(
       aspectRatio: 16 / 9,
@@ -142,6 +134,20 @@ class OpenPreviewCard extends StatelessWidget {
             fit: StackFit.expand,
             children: [
               video,
+              // 탭하면 새 탭으로 연다. iframe은 pointer-events:none이라 이 레이어가 탭을
+              // 받고(위에 얹음), **세로 드래그는 그대로 스크롤**로 통과한다.
+              if (hasCam)
+                Positioned.fill(
+                  child: MouseRegion(
+                    cursor: SystemMouseCursors.click,
+                    child: GestureDetector(
+                      // opaque가 아닌 기본(deferToChild 아님) — onTap만 있어 드래그는
+                      // 스크롤로 넘어간다. 탭만 가로채 새 탭 열기.
+                      onTap: _open,
+                      child: const SizedBox.expand(),
+                    ),
+                  ),
+                ),
               // 슬로프명을 영상 위 좌상단에 — 사진 위에서도 읽히게 반투명 검정 pill.
               if (item.slopeName.trim().isNotEmpty)
                 Positioned(
