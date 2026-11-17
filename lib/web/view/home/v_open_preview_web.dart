@@ -64,6 +64,14 @@ class _OpenPreviewPageWebState extends State<OpenPreviewPageWeb> {
     return map;
   }
 
+  /// 그룹의 오픈 예정일 — 비어 있지 않은 첫 항목 값.
+  String _openDateOf(List<OpenPreviewItem> items) {
+    for (final it in items) {
+      if (it.openDate.trim().isNotEmpty) return it.openDate.trim();
+    }
+    return '';
+  }
+
   @override
   Widget build(BuildContext context) {
     final isMobile = context.screenType == WebScreenType.mobile;
@@ -107,12 +115,10 @@ class _OpenPreviewPageWebState extends State<OpenPreviewPageWeb> {
                   )
                 else
                   for (final entry in groups.entries) ...[
-                    Text(
-                      entry.key,
-                      style: SDSTextStyle.bold.copyWith(
-                        fontSize: isMobile ? 16 : 18,
-                        color: SDSColor.gray900,
-                      ),
+                    _ResortHeader(
+                      resort: entry.key,
+                      openDate: _openDateOf(entry.value),
+                      isMobile: isMobile,
                     ),
                     const SizedBox(height: SDSSpacing.md),
                     _CamGrid(items: entry.value),
@@ -157,10 +163,50 @@ class _CamGrid extends StatelessWidget {
           runSpacing: gap,
           children: [
             for (final it in items)
+              // 페이지에선 스키장명은 그룹 제목에 있으니 카드 아래 라벨은 생략.
               SizedBox(width: cellW, child: OpenPreviewCard(item: it)),
           ],
         );
       },
+    );
+  }
+}
+
+/// 스키장 그룹 제목 — 스키장명 옆에 "개장일 : <날짜>"(있을 때만).
+class _ResortHeader extends StatelessWidget {
+  final String resort;
+  final String openDate;
+  final bool isMobile;
+
+  const _ResortHeader({
+    required this.resort,
+    required this.openDate,
+    required this.isMobile,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Text(
+          resort,
+          style: SDSTextStyle.bold.copyWith(
+            fontSize: isMobile ? 16 : 18,
+            color: SDSColor.gray900,
+          ),
+        ),
+        if (openDate.isNotEmpty) ...[
+          const SizedBox(width: 10),
+          Text(
+            '개장일 : $openDate',
+            style: SDSTextStyle.regular.copyWith(
+              fontSize: isMobile ? 13 : 14,
+              color: SDSColor.snowliveBlue,
+            ),
+          ),
+        ],
+      ],
     );
   }
 }

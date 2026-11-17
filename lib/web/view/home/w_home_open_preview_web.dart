@@ -51,7 +51,7 @@ class HomeOpenPreviewWeb extends StatelessWidget {
                 for (final it in items)
                   SizedBox(
                     width: cellW,
-                    child: OpenPreviewCard(item: it),
+                    child: OpenPreviewCard(item: it, bottomLabel: it.resort),
                   ),
               ],
             );
@@ -92,10 +92,18 @@ class _OpenPreviewMoreButton extends StatelessWidget {
 }
 
 /// 웹캠 카드 1개 — 홈 섹션과 개장 미리보기 페이지가 공유한다.
+///
+/// 슬로프명은 **영상 위(좌상단)에 오버레이**한다. 영상 아래에는 [bottomLabel](홈에선
+/// 스키장명, 페이지에선 null — 스키장은 그룹 제목으로 이미 보여서 생략)만 둔다.
+/// 임베드된 iframe은 탭 오버레이로 **덮지 않는다** — 그래야 자동재생·플레이어 조작이
+/// 막히지 않는다(URL 열기는 임베드 못하는 자리에서만).
 class OpenPreviewCard extends StatelessWidget {
   final OpenPreviewItem item;
 
-  const OpenPreviewCard({super.key, required this.item});
+  /// 영상 아래에 둘 라벨(홈=스키장명). null이면 아래 라벨 없음(페이지).
+  final String? bottomLabel;
+
+  const OpenPreviewCard({super.key, required this.item, this.bottomLabel});
 
   Future<void> _open() async {
     final url = item.webcamUrl.trim();
@@ -110,58 +118,75 @@ class OpenPreviewCard extends StatelessWidget {
     // 모바일·인앱 브라우저는 iframe 과다 시 크래시 → 임베드는 데스크탑/태블릿만.
     final bool heavyOk = context.screenType != WebScreenType.mobile;
     final hasCam = item.webcamUrl.trim().startsWith('http');
+    final embedded = hasCam && heavyOk;
 
-    final Widget camArea = AspectRatio(
+    final Widget video = embedded
+        ? webcamEmbedView(url: item.webcamUrl)
+        // 임베드 못하는 자리(모바일·URL없음)는 탭하면 새 탭으로 연다.
+        : MouseRegion(
+            cursor: hasCam ? SystemMouseCursors.click : SystemMouseCursors.basic,
+            child: GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: hasCam ? _open : null,
+              child: _CamPlaceholder(hasCam: hasCam),
+            ),
+          );
+
+    final camArea = AspectRatio(
       aspectRatio: 16 / 9,
       child: ClipRRect(
         borderRadius: BorderRadius.circular(12),
         child: Container(
           color: SDSColor.gray100,
-          child: (hasCam && heavyOk)
-              ? webcamEmbedView(url: item.webcamUrl)
-              : _CamPlaceholder(hasCam: hasCam),
+          child: Stack(
+            fit: StackFit.expand,
+            children: [
+              video,
+              // 슬로프명을 영상 위 좌상단에 — 사진 위에서도 읽히게 반투명 검정 pill.
+              if (item.slopeName.trim().isNotEmpty)
+                Positioned(
+                  top: 8,
+                  left: 8,
+                  child: IgnorePointer(
+                    child: Container(
+                      padding:
+                          const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                      decoration: BoxDecoration(
+                        color: SDSColor.gray900.withOpacity(0.62),
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                      child: Text(
+                        item.slopeName,
+                        style: SDSTextStyle.bold.copyWith(
+                          fontSize: 12,
+                          height: 1.2,
+                          color: SDSColor.snowliveWhite,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+            ],
+          ),
         ),
       ),
     );
 
-    return MouseRegion(
-      cursor: hasCam ? SystemMouseCursors.click : SystemMouseCursors.basic,
-      child: GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        onTap: hasCam ? _open : null,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            camArea,
-            const SizedBox(height: 8),
-            Row(
-              children: [
-                Flexible(
-                  child: Text(
-                    item.resort,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: SDSTextStyle.bold
-                        .copyWith(fontSize: 15, color: SDSColor.gray900),
-                  ),
-                ),
-                if (item.slopeName.trim().isNotEmpty) ...[
-                  const SizedBox(width: 6),
-                  Flexible(
-                    child: Text(
-                      item.slopeName,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: SDSTextStyle.regular
-                          .copyWith(fontSize: 14, color: SDSColor.gray500),
-                    ),
-                  ),
-                ],
-              ],
-            ),
-          ],
-        ),
-      ),
+    final label = bottomLabel?.trim() ?? '';
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        camArea,
+        if (label.isNotEmpty) ...[
+          const SizedBox(height: 8),
+          Text(
+            label,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: SDSTextStyle.bold.copyWith(fontSize: 15, color: SDSColor.gray900),
+          ),
+        ],
+      ],
     );
   }
 }
