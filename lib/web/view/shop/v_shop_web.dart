@@ -1,5 +1,7 @@
 import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/web/util/responsive_web.dart';
+import 'package:com.snowlive/web/view/fleamarket/w_fleamarket_filter_sheet_web.dart'
+    show FleamarketFilterPill;
 import 'package:com.snowlive/web/view/home/w_home_sections_web.dart' show HomeFooterWeb;
 import 'package:com.snowlive/web/view/shop/shop_sections_web.dart';
 import 'package:com.snowlive/web/view/shop/w_shop_category_chips_web.dart';
@@ -123,8 +125,9 @@ class _ShopViewWebState extends State<ShopViewWeb> {
   }
 }
 
-/// 스키장(소분류) 드롭다운 + 정렬 드롭다운 한 줄. 스키장 옵션이 2개 미만이면
-/// 스키장 드롭다운은 숨긴다(액세서리 등 스키장 구분이 없는 카테고리).
+/// 스키장(소분류) 필터 pill + 정렬 pill 한 줄. 앱 공통 [FleamarketFilterPill]을
+/// 그대로 쓴다(중고거래·랭킹 필터와 동일한 드롭다운). 스키장 옵션이 2개 미만이면
+/// 스키장 pill은 숨긴다(액세서리 등 스키장 구분이 없는 카테고리).
 class _ShopFilterBar extends StatelessWidget {
   final List<String> resortOptions;
   final String selectedResort;
@@ -140,6 +143,8 @@ class _ShopFilterBar extends StatelessWidget {
     required this.onSort,
   });
 
+  static const String _allResort = '스키장 전체';
+
   @override
   Widget build(BuildContext context) {
     return Wrap(
@@ -147,62 +152,25 @@ class _ShopFilterBar extends StatelessWidget {
       runSpacing: SDSSpacing.sm,
       children: [
         if (resortOptions.length >= 2)
-          _Dropdown<String>(
-            value: selectedResort,
-            items: [
-              const DropdownMenuItem(value: '', child: Text('스키장 전체')),
-              for (final r in resortOptions)
-                DropdownMenuItem(value: r, child: Text(r)),
-            ],
-            onChanged: (v) => onResort(v ?? ''),
+          FleamarketFilterPill<String>(
+            label: selectedResort.isEmpty ? _allResort : selectedResort,
+            isActive: selectedResort.isNotEmpty,
+            title: '스키장',
+            dropdownOnTablet: true,
+            values: ['', ...resortOptions],
+            labelOf: (v) => v.isEmpty ? _allResort : v,
+            onSelected: onResort,
           ),
-        _Dropdown<ShopSort>(
-          value: sort,
-          items: [
-            for (final s in ShopSort.values)
-              DropdownMenuItem(value: s, child: Text(shopSortLabel(s))),
-          ],
-          onChanged: (v) => onSort(v ?? ShopSort.recommended),
+        FleamarketFilterPill<ShopSort>(
+          label: shopSortLabel(sort),
+          isActive: sort != ShopSort.recommended,
+          title: '정렬',
+          dropdownOnTablet: true,
+          values: ShopSort.values,
+          labelOf: shopSortLabel,
+          onSelected: onSort,
         ),
       ],
-    );
-  }
-}
-
-/// 공통 톤의 작은 드롭다운(회색 테두리 pill). SDS 색/타이포만 쓴다.
-class _Dropdown<T> extends StatelessWidget {
-  final T value;
-  final List<DropdownMenuItem<T>> items;
-  final ValueChanged<T?> onChanged;
-
-  const _Dropdown({
-    required this.value,
-    required this.items,
-    required this.onChanged,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 36,
-      padding: const EdgeInsets.symmetric(horizontal: 12),
-      decoration: BoxDecoration(
-        color: SDSColor.snowliveWhite,
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: SDSColor.gray200),
-      ),
-      child: DropdownButtonHideUnderline(
-        child: DropdownButton<T>(
-          value: value,
-          isDense: true,
-          borderRadius: BorderRadius.circular(8),
-          icon: const Icon(Icons.keyboard_arrow_down_rounded,
-              size: 18, color: SDSColor.gray500),
-          style: SDSTextStyle.bold.copyWith(fontSize: 13, color: SDSColor.gray800),
-          items: items,
-          onChanged: onChanged,
-        ),
-      ),
     );
   }
 }

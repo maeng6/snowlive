@@ -11,12 +11,12 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-/// 카드 이미지(정사각) 아래 텍스트 블록(제목 2줄 + 보조 줄 + 링크 줄)의 고정 높이.
-/// 그리드와 스켈레톤이 같은 값을 써야 로딩 → 데이터 전환 때 레이아웃이 안 튄다.
-/// 텍스트 줄높이를 전부 1.5로 **고정**해서 계산한다(글꼴 기본 줄높이에 맡기면 0.5px씩
-/// 넘쳐 줄무늬가 뜬다): 간격 10 + 제목 2줄 39 + 2 + 보조 18 + 6 + 링크 18 = 93 → 94.
-/// 가격을 켜면([kShopShowsPrice]) 2 + 가격 24 = 26 더.
-double shopCardTextBlockHeight() => kShopShowsPrice ? 120 : 94;
+/// 카드 이미지(정사각) 아래 텍스트 블록의 고정 높이. 그리드·스켈레톤이 같은 값을
+/// 써야 로딩 → 데이터 전환 때 레이아웃이 안 튄다. 모든 글자 줄높이를 1.5로 고정해
+/// 계산한다: 간격 10 + 제목 2줄(13·2) 39 + 4 + 가격줄 24 + 6 + 링크 18 = 101.
+/// 제목이 1줄이어도 2줄 자리를 비워두고, 가격이 없어도 가격줄 높이를 남겨 **모든
+/// 카드에서 가격·링크 줄 위치가 똑같아** 눈으로 비교하기 쉽다.
+double shopCardTextBlockHeight() => 101;
 
 /// 카드 안 모든 글자의 줄높이(위 계산과 같이 움직여야 한다).
 const double _kLineHeight = 1.5;
@@ -49,6 +49,26 @@ class _ShopCardWebState extends State<ShopCardWeb> {
     if (uri == null) return;
     // 웹에서 externalApplication은 새 탭이다 — 우리 화면은 그대로 남는다.
     await launchUrl(uri, mode: LaunchMode.externalApplication);
+  }
+
+  /// 썸네일 좌상단 카테고리 배지 — 사진 위에서도 읽히게 반투명 검정 pill + 흰 글자.
+  Widget _categoryBadge(String category) {
+    if (category.isEmpty) return const SizedBox.shrink();
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+      decoration: BoxDecoration(
+        color: SDSColor.gray900.withOpacity(0.72),
+        borderRadius: BorderRadius.circular(6),
+      ),
+      child: Text(
+        category,
+        style: SDSTextStyle.bold.copyWith(
+          fontSize: 11,
+          height: 1.2,
+          color: SDSColor.snowliveWhite,
+        ),
+      ),
+    );
   }
 
   @override
@@ -122,44 +142,51 @@ class _ShopCardWebState extends State<ShopCardWeb> {
                       border: Border.all(width: 0.5, color: SDSColor.gray100),
                       borderRadius: BorderRadius.circular(kFleamarketPhotoRadius),
                     ),
-                    child: image,
+                    // 썸네일 좌상단에 카테고리 배지를 얹는다(가격 위가 아니라 이미지 위).
+                    child: Stack(
+                      fit: StackFit.expand,
+                      children: [
+                        image,
+                        Positioned(top: 8, left: 8, child: _categoryBadge(p.category)),
+                      ],
+                    ),
                   ),
                 ),
               ),
             ),
             const SizedBox(height: 10),
-            Text(
-              p.title,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-              style: SDSTextStyle.regular.copyWith(
-                fontSize: 13,
-                height: _kLineHeight,
-                color: SDSColor.gray900,
-              ),
-            ),
-            const SizedBox(height: 2),
-            Text(
-              shopCardMeta(p),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: SDSTextStyle.regular.copyWith(
-                fontSize: 12,
-                height: _kLineHeight,
-                color: SDSColor.gray500,
-              ),
-            ),
-            if (kShopShowsPrice && p.salesPrice != null) ...[
-              const SizedBox(height: 2),
-              Text(
-                '${_shopPriceFormat.format(p.salesPrice)}원',
-                style: SDSTextStyle.bold.copyWith(
-                  fontSize: 16,
+            // 제목: 1줄이어도 항상 2줄 높이를 차지해 아래 가격 줄이 모든 카드에서 맞는다.
+            SizedBox(
+              height: 13 * _kLineHeight * 2,
+              child: Text(
+                p.title,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: SDSTextStyle.regular.copyWith(
+                  fontSize: 13,
                   height: _kLineHeight,
                   color: SDSColor.gray900,
                 ),
               ),
-            ],
+            ),
+            const SizedBox(height: 4),
+            // 가격 줄: 가격이 없어도 같은 높이를 남겨 링크 줄 위치가 카드마다 같다.
+            SizedBox(
+              height: 16 * _kLineHeight,
+              child: p.salesPrice != null
+                  ? Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        '${_shopPriceFormat.format(p.salesPrice)}원',
+                        style: SDSTextStyle.bold.copyWith(
+                          fontSize: 16,
+                          height: _kLineHeight,
+                          color: SDSColor.gray900,
+                        ),
+                      ),
+                    )
+                  : null,
+            ),
             const SizedBox(height: 6),
             Row(
               mainAxisSize: MainAxisSize.min,
