@@ -4,12 +4,14 @@ class OpenPreviewItem {
   final String resort; // 스키장
   final String slopeName; // 슬로프명
   final String webcamUrl; // 웹캠 URL
+  final bool showOnHome; // 홈 섹션 노출 여부(페이지엔 active 전부, 홈엔 이 플래그만)
 
   const OpenPreviewItem({
     required this.id,
     required this.resort,
     this.slopeName = '',
     this.webcamUrl = '',
+    this.showOnHome = true,
   });
 
   /// 깨진 항목(스키장 없음)은 null → 호출 쪽이 건너뛴다.
@@ -24,6 +26,7 @@ class OpenPreviewItem {
       resort: resort,
       slopeName: raw['slope_name'] is String ? raw['slope_name'] as String : '',
       webcamUrl: raw['webcam_url'] is String ? raw['webcam_url'] as String : '',
+      showOnHome: raw['show_on_home'] != false,
     );
   }
 }

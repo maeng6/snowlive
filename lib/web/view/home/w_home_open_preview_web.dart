@@ -13,7 +13,10 @@ import 'package:url_launcher/url_launcher.dart';
 class HomeOpenPreviewWeb extends StatelessWidget {
   final List<OpenPreviewItem> items;
 
-  const HomeOpenPreviewWeb({super.key, required this.items});
+  /// 제목 옆 '더보기' → 개장 미리보기 페이지로. null이면 버튼을 숨긴다.
+  final VoidCallback? onMore;
+
+  const HomeOpenPreviewWeb({super.key, required this.items, this.onMore});
 
   @override
   Widget build(BuildContext context) {
@@ -21,12 +24,18 @@ class HomeOpenPreviewWeb extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          '개장 미리보기',
-          style: SDSTextStyle.extraBold.copyWith(
-            fontSize: isMobile ? 18 : 22,
-            color: SDSColor.gray900,
-          ),
+        Row(
+          children: [
+            Text(
+              '개장 미리보기',
+              style: SDSTextStyle.extraBold.copyWith(
+                fontSize: isMobile ? 18 : 22,
+                color: SDSColor.gray900,
+              ),
+            ),
+            const Spacer(),
+            if (onMore != null) _OpenPreviewMoreButton(onTap: onMore!),
+          ],
         ),
         const SizedBox(height: SDSSpacing.md),
         LayoutBuilder(
@@ -42,7 +51,7 @@ class HomeOpenPreviewWeb extends StatelessWidget {
                 for (final it in items)
                   SizedBox(
                     width: cellW,
-                    child: _PreviewCard(item: it),
+                    child: OpenPreviewCard(item: it),
                   ),
               ],
             );
@@ -53,10 +62,40 @@ class HomeOpenPreviewWeb extends StatelessWidget {
   }
 }
 
-class _PreviewCard extends StatelessWidget {
+/// 홈 '더보기' 버튼 — 다른 홈 섹션(`_MoreButton`)과 같은 톤(gray100·bold 13).
+class _OpenPreviewMoreButton extends StatelessWidget {
+  final VoidCallback onTap;
+
+  const _OpenPreviewMoreButton({required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: SDSColor.gray100,
+      borderRadius: BorderRadius.circular(4),
+      clipBehavior: Clip.antiAlias,
+      child: InkWell(
+        onTap: onTap,
+        splashFactory: NoSplash.splashFactory,
+        highlightColor: Colors.transparent,
+        hoverColor: Colors.black.withValues(alpha: 0.04),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 8),
+          child: Text(
+            '더보기',
+            style: SDSTextStyle.bold.copyWith(fontSize: 13, color: SDSColor.gray900),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// 웹캠 카드 1개 — 홈 섹션과 개장 미리보기 페이지가 공유한다.
+class OpenPreviewCard extends StatelessWidget {
   final OpenPreviewItem item;
 
-  const _PreviewCard({required this.item});
+  const OpenPreviewCard({super.key, required this.item});
 
   Future<void> _open() async {
     final url = item.webcamUrl.trim();

@@ -112,6 +112,9 @@ class HomeViewModelWeb extends GetxController {
   final RxList<OpenPreviewItem> _openPreview = <OpenPreviewItem>[].obs;
   final RxBool _isOpenPreviewLoaded = false.obs;
   List<OpenPreviewItem> get openPreviewItems => _openPreview.toList();
+  /// 홈 섹션엔 '홈' 체크된 것만. (더보기로 가는 페이지는 전체를 쓴다.)
+  List<OpenPreviewItem> get openPreviewHomeItems =>
+      _openPreview.where((p) => p.showOnHome).toList();
   bool get isOpenPreviewLoaded => _isOpenPreviewLoaded.value;
 
   @override
