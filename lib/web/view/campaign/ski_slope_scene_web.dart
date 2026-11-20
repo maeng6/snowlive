@@ -230,7 +230,8 @@ Uint32List paintSlopeScene(
   _paintShrubs(buf, geo, cols, rows);
   // 케이블은 배경에 굽지 않고 SkiSlopeActors가 **매끄러운 한 줄**로 올린다
   // (배경 픽셀선과 오버레이가 겹쳐 두 줄처럼 보이던 문제 제거).
-  _paintLodge(buf, geo, rows);
+  // 산장(몽블랑 집)은 상단 스노우라이브 로고(픽셀)로 대체 — 랜딩 Stack에서 그린다.
+  // _paintLodge(buf, geo, rows);
 
   return buf.px;
 }
@@ -305,7 +306,8 @@ class _Clear {
 void _paintForest(
     _Buf buf, SlopeGeometry geo, int cols, int rows, _Clear? clear) {
   final clumps = <({double x, double y, double r})>[];
-  final count = math.max(6, (rows / 130).round());
+  // 작은 숲을 **더 많이, 더 작게** 흩는다(큰 군락 하나로 몰려 보이지 않게).
+  final count = math.max(9, (rows / 100).round());
   // 글자가 올라앉는 **콘텐츠 칼럼(최대 1280px)** 안쪽에는 나무를 아예 두지
   // 않는다. cols 비율로 깔면 넓은 화면에서 칼럼 안으로 밀고 들어와 제목과
   // 겹친다. 칼럼 반폭(+여유)을 셀 단위로 환산해 그 바깥에만 심는다.
@@ -317,10 +319,16 @@ void _paintForest(
     final r3 = _hash01(i, 2, 991);
     // 가운데(콘텐츠 자리)는 비우고 양옆에 앉힌다.
     final side = i.isEven ? -1 : 1;
+    // 세로는 '균등+지터' 값을 **제곱**해 상단으로 쏠리게 한다. → 상단 배경은
+    // 솔숲이 군데군데 차고, 박스가 놓이는 중하단엔 군락이 거의 없다.
+    final t = ((i + 0.5 + (r2 - 0.5) * 0.8) / count).clamp(0.0, 1.0);
     clumps.add((
-      x: cols / 2 + side * (innerCells + r1 * spread * 0.9),
-      y: r2 * rows * 1.05,
-      r: 26 + r3 * 40,
+      // 좌우 거리를 폭 바깥쪽(0.5~1.0)으로 밀어 박스 바로 옆엔 안 붙게 한다.
+      x: cols / 2 + side * (innerCells + (0.5 + r1 * 0.5) * spread),
+      // 상단 쏠림(t²) — 최상단 테두리부터 심기되 아래로 갈수록 급격히 성겨진다.
+      y: t * t * rows * 0.8,
+      // 군락 반경을 작게(16~36) — 큰 덩어리 숲이 아니라 아담한 솔숲으로.
+      r: 16 + r3 * 20,
     ));
   }
 

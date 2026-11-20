@@ -171,7 +171,20 @@ class _WebAppShellState extends State<WebAppShell>
 
   @override
   Widget build(BuildContext context) {
+    // 셸은 Navigator 상위에 고정돼 라우트 변경만으론 다시 빌드되지 않는다.
+    // 배너 캡처 라우트 분기가 먹도록 currentRouteWeb를 Obx로 구독한다.
+    return Obx(() => _buildShell(context));
+  }
+
+  Widget _buildShell(BuildContext context) {
     final screenType = context.screenType;
+
+    // OG·히어로 배너 캡처 전용 라우트는 앱 네비(상단바·사이드바·오픈챗) 없이
+    // 콘텐츠만 풀블리드로 띄운다.
+    if (currentRouteWeb.value == '/phoenix-banner' ||
+        currentRouteWeb.value == '/phoenix-strip') {
+      return Scaffold(body: widget.child);
+    }
 
     if (screenType == WebScreenType.desktop) {
       return Scaffold(

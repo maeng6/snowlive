@@ -3,28 +3,37 @@
 /// 프로덕션은 snowlive.kr로 직접 배포하므로 이 값과 일치한다.
 const String kWebCanonicalOrigin = 'https://snowlive.kr';
 
-/// 현재 페이지(또는 주어진 [uri])의 **오리진만** 배포 도메인으로 바꾼 공유 링크.
+/// 공유 링크 오리진 — **현재 접속한 호스트**를 그대로 쓴다.
+/// - 프로덕션(snowlive.kr)에서 공유 → snowlive.kr (기존과 동일)
+/// - QA(*.web.app)에서 공유 → QA 도메인 → QA에서 만든 공유 링크는 QA 페이지로
+///   이동하고, 미리보기(OG)·리다이렉트는 프로덕션과 동일하게 동작한다.
+/// - 그 외(localhost 등)는 프로덕션 도메인으로 폴백.
+String get shareOrigin {
+  final o = Uri.base.origin;
+  if (o.endsWith('snowlive.kr') || o.contains('.web.app')) return o;
+  return kWebCanonicalOrigin;
+}
+
+/// 현재 페이지(또는 주어진 [uri])의 **오리진만** 공유 오리진으로 바꾼 공유 링크.
 /// 경로·쿼리·프래그먼트(#라우트)는 그대로 보존한다.
-/// 예) https://snowlive-web-qa.web.app/#/fleamarket-detail?id=7
-///  → https://snowlive.kr/#/fleamarket-detail?id=7
 String canonicalShareUrl([Uri? uri]) {
   final u = uri ?? Uri.base;
   final full = u.toString();
   // u.origin = scheme://host[:port]. 그 뒤(path?query#fragment)만 살려 붙인다.
   final rest = full.length >= u.origin.length ? full.substring(u.origin.length) : '';
-  return '$kWebCanonicalOrigin$rest';
+  return '$shareOrigin$rest';
 }
 
 /// 해시 라우트 딥링크용. [hashRoute]는 '/community-detail?id=3' 처럼 **앞에 슬래시**가
 /// 붙은 라우트+쿼리. 결과: https://snowlive.kr/#/community-detail?id=3
-String canonicalHashUrl(String hashRoute) => '$kWebCanonicalOrigin/#$hashRoute';
+String canonicalHashUrl(String hashRoute) => '$shareOrigin/#$hashRoute';
 
 /// 카카오 등 링크 미리보기(OG)를 위한 공유 링크 오리진.
 /// 공유 링크는 항상 **배포 도메인(snowlive.kr)** 으로 노출한다 → 카톡에 붙여도 snowlive.kr로 보인다.
 /// 정적 호스팅(snowlive.kr)은 게시글/유저별 OG 태그를 서버에서 못 넣으므로,
 /// Firebase 호스팅이 `/share/...` 를 백엔드(app.snowlive.kr)로 302 리다이렉트하고,
 /// 백엔드가 OG(크롤러용)를 서빙한 뒤 사람은 실제 게시글/프로필 페이지로 보낸다.
-const String kShareLinkOrigin = kWebCanonicalOrigin;
+String get kShareLinkOrigin => shareOrigin;
 
 /// 중고거래 게시글 공유 링크. 미리보기: 대표사진 + '글제목 | 스라 중고거래' + 내용.
 String fleamarketShareLink(int fleaId) => '$kShareLinkOrigin/share/flea/$fleaId';
@@ -40,3 +49,8 @@ String livetalkShareLink(int livetalkId) => '$kShareLinkOrigin/share/livetalk/$l
 
 /// 크루 홈 공유 링크. 미리보기: 크루로고(OG 가운데) + '크루명 | 스라 라이브크루' + 소개글.
 String crewShareLink(int crewId) => '$kShareLinkOrigin/share/crew/$crewId';
+
+/// 개장빵 이벤트 공유 링크. 미리보기: 이벤트 OG(스라 개장빵 이벤트) + 이벤트 페이지로 이동.
+/// (브라우저 주소창의 #해시 URL을 그대로 공유하면 카카오가 해시 라우트를 못 읽어
+///  index.html의 사이트 공통 OG가 떠버린다. 이 /share 링크를 써야 이벤트 미리보기가 뜬다.)
+String seasonOpenEventShareLink() => '$kShareLinkOrigin/share/season-open-event';

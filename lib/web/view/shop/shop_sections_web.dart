@@ -25,7 +25,7 @@ const List<String> kShopCategoryOrder = [
 /// 쿠팡 파트너스 활동 고지 — 상품이 보이는 화면마다 **반드시** 들어가야 한다
 /// (공정위 심사지침·파트너스 약관). 문구를 바꾸지 말 것.
 const String kShopDisclosure =
-    '이 포스팅은 쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다.';
+    '이 페이지는 쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다.';
 
 /// 가격 표시 여부. 백엔드 자동수집(sync_affiliate)이 하루 단위로 쿠팡 가격을 다시
 /// 가져와 DB를 갱신하므로 켠다 — 완전 실시간은 아니지만 매일 최신에 가깝게 유지된다.
@@ -67,12 +67,28 @@ String shopSortLabel(ShopSort s) {
   }
 }
 
+/// 스키장(소분류) 필터가 의미 있는 카테고리 — 리프트권/렌탈/강습만 스키장별로 나뉜다.
+/// 보호장비·스키·보드·의류·액세서리·여행차량 등은 스키장 개념이 없어서, 소분류에
+/// (키워드 첫 단어로 들어간) '지폼'·'파워텍터'·'보드' 같은 값이 스키장 필터에 섞여
+/// 보이던 걸 막는다.
+const Set<String> kShopResortCategories = {'리프트권', '렌탈', '강습'};
+
 /// 현재 카테고리에서 고를 수 있는 **스키장(소분류)** 목록(가나다). 비어 있지 않은
 /// `subCategory`만, 중복 제거. 2개 미만이면 드롭다운을 숨기는 판단에 쓴다.
+///
+/// 스키장 필터는 [kShopResortCategories]에서만 — 그 외 카테고리를 고르면 빈 목록(→필터 숨김),
+/// `전체` 탭에서도 리조트성 카테고리 상품의 소분류만 모은다(비리조트 브랜드명 제외).
 List<String> shopResortOptions(List<AffiliateProduct> items, String category) {
+  final bool isAll = category == kShopAllCategory;
+  // 특정 카테고리인데 리조트성이 아니면 스키장 필터 자체가 없다.
+  if (!isAll && !kShopResortCategories.contains(category)) return const [];
   final seen = <String>{};
   for (final p in items) {
-    if (category != kShopAllCategory && p.category != category) continue;
+    if (isAll) {
+      if (!kShopResortCategories.contains(p.category)) continue;
+    } else if (p.category != category) {
+      continue;
+    }
     final r = p.subCategory.trim();
     if (r.isNotEmpty) seen.add(r);
   }

@@ -12,12 +12,57 @@ void startSocialLoginRedirect(String startUrl) {
   web.window.location.href = '$startUrl?origin=${Uri.encodeComponent(origin)}';
 }
 
-/// 리다이렉트로 돌아온 URL(#/login?sl_token=...)에서 결과를 읽고, 읽은 뒤 URL을 정리한다.
-/// 결과가 없으면 null.
-SocialLoginResult? readSocialRedirectResult() {
+// ─── 부팅 시점 캡처 ───
+// 카카오/네이버는 전체 페이지 리다이렉트라 돌아오면 앱이 **새로 부팅**된다. 그런데
+// GetMaterialApp의 initialRoute가 '/home'으로 고정돼 있어 `#/login?sl_token=..`으로
+// 돌아와도 초기 라우팅 과정에서 URL이 `#/home`으로 재작성되며 토큰이 날아갈 수 있다
+// → 로그인 화면이 안 뜨고 토큰도 소비되지 못해 "메인으로 돌아가 무응답". 이를 막기
+// 위해 runApp **이전**에 해시의 결과를 읽어 보관하고, initialRoute를 /login으로 잡는다.
+String? _bootToken;
+String? _bootError;
+String? _bootEmail;
+String? _bootNick;
+bool _bootCaptured = false;
+
+/// 앱 부팅 시 1회(runApp 전) 호출 — 소셜 리다이렉트 결과를 미리 읽어 보관한다.
+/// 결과(토큰 또는 에러)가 있으면 true. 이때 호출부는 initialRoute를 /login으로 잡는다.
+/// URL은 아직 지우지 않는다(readSocialRedirectResult가 소비 시점에 정리).
+bool captureSocialRedirectAtBootstrap() {
   final p = _hashParams();
-  final token = p['sl_token'];
-  final err = p['sl_error'];
+  _bootToken = p['sl_token'];
+  _bootError = p['sl_error'];
+  _bootEmail = p['sl_email'];
+  _bootNick = p['sl_nick'];
+  _bootCaptured = true;
+  return (_bootToken != null && _bootToken!.isNotEmpty) ||
+      (_bootError != null && _bootError!.isNotEmpty);
+}
+
+/// 리다이렉트로 돌아온 결과를 읽고, 읽은 뒤 URL을 정리한다. 결과가 없으면 null.
+/// 부팅 시점에 보관해 둔 값이 있으면 그걸 우선 쓴다(GetX 라우팅이 쿼리를 날려도 안전).
+SocialLoginResult? readSocialRedirectResult() {
+  String? token;
+  String? err;
+  String? email;
+  String? nick;
+
+  final hasBoot = _bootCaptured &&
+      (((_bootToken?.isNotEmpty) ?? false) || ((_bootError?.isNotEmpty) ?? false));
+  if (hasBoot) {
+    token = _bootToken;
+    err = _bootError;
+    email = _bootEmail;
+    nick = _bootNick;
+    // 1회만 소비.
+    _bootToken = _bootError = _bootEmail = _bootNick = null;
+  } else {
+    final p = _hashParams();
+    token = p['sl_token'];
+    err = p['sl_error'];
+    email = p['sl_email'];
+    nick = p['sl_nick'];
+  }
+
   if ((token == null || token.isEmpty) && (err == null || err.isEmpty))
     return null;
 
@@ -26,8 +71,8 @@ SocialLoginResult? readSocialRedirectResult() {
   if (token != null && token.isNotEmpty) {
     return SocialLoginResult(
       customToken: token,
-      email: p['sl_email'],
-      nickname: p['sl_nick'],
+      email: email,
+      nickname: nick,
     );
   }
   return SocialLoginResult(error: err);

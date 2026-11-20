@@ -233,6 +233,37 @@ class _WebFormDropdownFieldState<T> extends State<WebFormDropdownField<T>> {
   /// 필드 박스의 위치/폭을 재려면 라벨을 제외한 입력 박스만의 컨텍스트가 필요하다.
   final GlobalKey _boxKey = GlobalKey();
 
+  /// 딤 시트로 선택지를 띄운다(모바일/태블릿, 또는 앵커 드롭다운이 들어갈 세로
+  /// 공간이 없는 짧은 뷰포트의 폴백). 선택했을 때만 콜백을 태운다.
+  Future<void> _openSheet() async {
+    final picked = await showWebFilterSheet<T>(
+      context: context,
+      values: widget.values,
+      labelOf: widget.labelOf,
+      centerOnTablet: widget.centerSheetOnTablet,
+      title: widget.sheetShowsLabelTitle ? widget.label : null,
+      showTitle: widget.sheetShowsLabelTitle,
+      alignItemsStart: widget.sheetAlignStart,
+    );
+    if (picked != null) widget.onSelected(picked);
+  }
+
+  /// 앵커 드롭다운이 필드 위/아래로 펼쳐질 세로 공간이 있는지. 브라우저 높이를 줄이면
+  /// 양쪽 다 좁아져 패널이 뷰포트 밖으로 잘려 "클릭해도 안 뜨는" 것처럼 보인다 →
+  /// 이때는 시트로 폴백한다. 한 항목 ≈ 38, 패널 여백 16으로 추정하고 최소 160은 확보.
+  bool _anchoredHasRoom() {
+    final box = _boxKey.currentContext?.findRenderObject() as RenderBox?;
+    if (box == null || !box.hasSize) return false;
+    final top = box.localToGlobal(Offset.zero).dy;
+    final vh = MediaQuery.sizeOf(context).height;
+    const edge = 12.0;
+    final spaceBelow = vh - (top + box.size.height) - edge;
+    final spaceAbove = top - edge;
+    final estimate = (16 + widget.values.length * 38).toDouble();
+    final needed = estimate.clamp(80.0, 160.0);
+    return spaceBelow >= needed || spaceAbove >= needed;
+  }
+
   Future<void> _open() async {
     if (widget.canOpen != null && !widget.canOpen!()) return;
 
@@ -241,18 +272,9 @@ class _WebFormDropdownFieldState<T> extends State<WebFormDropdownField<T>> {
     final bool useAnchored = context.isDesktop ||
         (widget.anchoredOnTablet &&
             context.screenType == WebScreenType.tablet);
-    if (!useAnchored) {
-      final picked = await showWebFilterSheet<T>(
-        context: context,
-        values: widget.values,
-        labelOf: widget.labelOf,
-        centerOnTablet: widget.centerSheetOnTablet,
-        title: widget.sheetShowsLabelTitle ? widget.label : null,
-        showTitle: widget.sheetShowsLabelTitle,
-        alignItemsStart: widget.sheetAlignStart,
-      );
-      // 배경 탭으로 닫으면 null — 선택했을 때만 콜백을 태운다.
-      if (picked != null) widget.onSelected(picked);
+    // 앵커를 쓰더라도 세로 공간이 없으면(짧은 창) 시트로 폴백해 목록이 항상 보이게.
+    if (!useAnchored || !_anchoredHasRoom()) {
+      await _openSheet();
       return;
     }
 
@@ -261,6 +283,10 @@ class _WebFormDropdownFieldState<T> extends State<WebFormDropdownField<T>> {
       link: _link,
       // 패널은 인풋 필드 하단에 딱 붙는다.
       gap: 0,
+      // 항목 수로 패널 높이를 추정 — 아래 공간이 충분하면 위로 뒤집지 않게.
+      // 한 항목 ≈ 38(텍스트+상하 패딩 9), 패널 상하 여백 16. 2개짜리 성별이
+      // 폼 맨 아래에서도 아래로 펼쳐지게 한다.
+      desiredHeight: (16 + widget.values.length * 38).toDouble().clamp(80, 360),
       builder: (_, close, anchorWidth) => _FormDropdownPanel<T>(
         values: widget.values,
         labelOf: widget.labelOf,

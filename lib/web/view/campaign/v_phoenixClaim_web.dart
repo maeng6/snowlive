@@ -35,7 +35,9 @@ class _PhoenixClaimWebState extends State<PhoenixClaimWeb> {
   String? _existingStatus; // 이미 제출함
   bool _claimOpen = true;
 
-  bool get _loggedIn => FirebaseAuth.instance.currentUser != null;
+  // QA 데모: 로그인 안 돼 있어도 폼을 보이게 한다.
+  bool get _loggedIn =>
+      kPhoenixClaimDemo || FirebaseAuth.instance.currentUser != null;
 
   @override
   void initState() {
@@ -47,6 +49,11 @@ class _PhoenixClaimWebState extends State<PhoenixClaimWeb> {
   Future<void> _init() async {
     if (_winnerId == null) {
       setState(() { _loading = false; _error = '잘못된 접근이에요.'; });
+      return;
+    }
+    // QA 데모: 백엔드/인증 없이 바로 입력 폼을 렌더(claim_open=true 유지).
+    if (kPhoenixClaimDemo) {
+      setState(() { _loading = false; _claimOpen = true; });
       return;
     }
     if (!_loggedIn) {
@@ -86,12 +93,20 @@ class _PhoenixClaimWebState extends State<PhoenixClaimWeb> {
 
   Future<void> _submit() async {
     setState(() { _error = ''; });
-    if (_name.text.trim().isEmpty || _phone.text.trim().isEmpty || _address.text.trim().isEmpty) {
-      setState(() => _error = '이름·전화번호·주소를 모두 입력해 주세요.');
+    // 올리브영 모바일 상품권(디지털) — 주소 불필요, 이름·휴대폰만.
+    if (_name.text.trim().isEmpty || _phone.text.trim().isEmpty) {
+      setState(() => _error = '이름·휴대폰 번호를 입력해 주세요.');
       return;
     }
     if (!_consent) {
       setState(() => _error = '개인정보 수집·이용 동의가 필요해요.');
+      return;
+    }
+    // QA 데모: 실제 제출하지 않고 완료 화면만 보여준다.
+    // 이벤트 페이지로 돌아가면 그 당첨자 버튼이 '신청완료'로 바뀌도록 표시해 둔다.
+    if (kPhoenixClaimDemo) {
+      if (_winnerId != null) kDemoClaimedWinnerIds.add(_winnerId!);
+      setState(() => _done = true);
       return;
     }
     setState(() => _submitting = true);
@@ -99,9 +114,9 @@ class _PhoenixClaimWebState extends State<PhoenixClaimWeb> {
       winnerId: _winnerId!,
       name: _name.text.trim(),
       phone: _phone.text.trim(),
-      address: _address.text.trim(),
-      addressDetail: _addressDetail.text.trim(),
-      postcode: _postcode.text.trim(),
+      address: '',
+      addressDetail: '',
+      postcode: '',
       consent: _consent,
     );
     setState(() => _submitting = false);
@@ -146,7 +161,7 @@ class _PhoenixClaimWebState extends State<PhoenixClaimWeb> {
               Row(
                 children: [
                   WebIconButton(
-                    onTap: () => Get.offAllNamed(WebRoutes.phoenix),
+                    onTap: () => Get.offAllNamed(WebRoutes.seasonOpenEvent),
                     padding: const EdgeInsets.fromLTRB(0, 4, 4, 4),
                     icon: WebBackIcon(size: isMobile ? 24 : 30),
                   ),
@@ -282,7 +297,7 @@ class _PhoenixClaimWebState extends State<PhoenixClaimWeb> {
         title: '신청이 접수됐어요',
         body: '입력하신 정보로 상품을 보내드릴게요.',
         actionLabel: '이벤트로 돌아가기',
-        onAction: () => Get.offAllNamed(WebRoutes.phoenix),
+        onAction: () => Get.offAllNamed(WebRoutes.seasonOpenEvent),
       );
 
   /// 안내 화면 공통 — 아이콘(선택) + 제목 + 설명 + 액션 하나.
@@ -370,38 +385,10 @@ class _PhoenixClaimWebState extends State<PhoenixClaimWeb> {
           maxLength: 11,
           onChanged: (_) => setState(() {}),
         ),
-        const SizedBox(height: 30),
-        // 주소는 라벨 하나 아래 세 필드를 쌓는다(우편번호 + 기본 + 상세).
-        const WebFormLabel('주소', required: true),
-        Row(
-          children: [
-            Expanded(
-              child: WebFormTextField(
-                label: '',
-                controller: _postcode,
-                hint: '우편번호',
-                readOnly: true,
-                onTap: _searchAddress,
-              ),
-            ),
-            const SizedBox(width: 10),
-            _addressSearchButton(),
-          ],
-        ),
-        const SizedBox(height: 8),
-        WebFormTextField(
-          label: '',
-          controller: _address,
-          hint: '기본 주소 (주소 검색으로 입력)',
-          readOnly: true,
-          onTap: _searchAddress,
-        ),
-        const SizedBox(height: 8),
-        WebFormTextField(
-          label: '',
-          controller: _addressDetail,
-          hint: '상세 주소 (동/호수 등)',
-        ),
+        const SizedBox(height: 10),
+        Text('올리브영 모바일 상품권(5,000원)을 입력하신 휴대폰 번호로 보내드려요.',
+            style: SDSTextStyle.regular
+                .copyWith(fontSize: 13, color: SDSColor.gray500, height: 1.4)),
         const SizedBox(height: 30),
         _consentRow(),
         if (_error.isNotEmpty) ...[
@@ -458,7 +445,7 @@ class _PhoenixClaimWebState extends State<PhoenixClaimWeb> {
             Expanded(
               child: Text(
                 '(필수) 개인정보 수집·이용에 동의합니다.\n'
-                '수집항목: 이름·전화번호·주소 / 목적: 경품 배송 / 보유기간: 배송 완료 후 30일 이내 파기.',
+                '수집항목: 이름·휴대폰 / 목적: 모바일 상품권(올리브영) 발송 / 보유기간: 발송 후 30일 이내 파기.',
                 style: SDSTextStyle.regular.copyWith(
                     fontSize: 13, color: SDSColor.gray900, height: 1.5),
               ),

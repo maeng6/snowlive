@@ -6,6 +6,8 @@ import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/core/viewmodel/vm_user.dart';
 import 'package:com.snowlive/web/routes/routes_web.dart';
 import 'package:com.snowlive/web/util/analytics_web.dart';
+import 'package:com.snowlive/web/util/web_address_bar.dart';
+import 'package:com.snowlive/web/util/social_oauth_popup.dart';
 import 'package:com.snowlive/web/util/web_page_title.dart';
 import 'package:com.snowlive/web/viewmodel/auth/vm_authcheck_web.dart';
 import 'package:com.snowlive/web/viewmodel/paid/vm_paidVisibility_web.dart';
@@ -24,6 +26,10 @@ import 'package:intl/date_symbol_data_local.dart';
 /// computed padding(env(safe-area-inset-*))을 읽어 넣는다. 홈화면 추가(standalone)
 /// PWA에서만 0이 아니고, 일반 브라우저 탭은 0이라 영향 없다.
 final ValueNotifier<EdgeInsets> _safeInsets = ValueNotifier<EdgeInsets>(EdgeInsets.zero);
+
+/// 카카오/네이버 소셜 로그인 리다이렉트로 돌아온 부팅인지. true면 initialRoute를
+/// /login으로 잡아 로그인 화면이 떠서 토큰을 소비하게 한다(기본 /home이면 안 뜬다).
+bool _socialRedirectPending = false;
 
 EdgeInsets _readSafeInsets() {
   try {
@@ -54,6 +60,10 @@ void _trackSafeInsets() {
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // 소셜 로그인 리다이렉트 결과(#/login?sl_token=..)는 GetX 초기 라우팅이 URL을
+  // 재작성하기 전에 미리 읽어 보관한다. 결과가 있으면 initialRoute를 /login으로.
+  _socialRedirectPending = captureSocialRedirectAtBootstrap();
 
   _trackSafeInsets();
   await initializeDateFormatting('ko', null);
@@ -86,11 +96,17 @@ class SnowliveWebApp extends StatelessWidget {
       // 앱 전역 제목은 브랜드만 — 화면별 탭 제목은 아래 builder의 Title이 덮어쓴다.
       title: kWebBrandTitle,
       getPages: WebRoutes.pages,
-      initialRoute: WebRoutes.home,
+      // 평소엔 홈. 단, 카카오/네이버 리다이렉트 복귀 부팅이면 /login으로 떠야
+      // consumeSocialRedirect가 돌아 토큰을 처리한다(안 그러면 메인에서 무응답).
+      initialRoute: _socialRedirectPending ? WebRoutes.login : WebRoutes.home,
       // 라우트 전환 효과 없이 즉시 바뀐다 — 일반 웹페이지처럼 보이게 한다(사용자 확정).
       // GNB(사이드바/상단바)는 라우트 Navigator 바깥이라 어차피 고정이고 콘텐츠만 교체된다.
       defaultTransition: Transition.noTransition,
       transitionDuration: Duration.zero,
+      // 콜드 로드(주소창으로 직접 진입)는 routingCallback을 안 타므로, 첫 프레임 후
+      // URL 프래그먼트(#뒤 라우트)를 보고 콘텐츠 페이지면 주소창을 /share 링크로 바꾼다.
+      // (재적용은 syncShareAddressBar가 내부에서 처리한다.)
+      onReady: () => syncShareAddressBar(Uri.base.fragment),
       // GNB(사이드바/드로어)의 활성 탭 볼드 표시가 라우트 변경을 따라오도록
       // 매 라우팅 시점에 현재 라우트를 반응형 신호에 반영한다.
       // routingCallback 자체가 Navigator가 라우트를 push하며 자신을 빌드하는
@@ -115,7 +131,12 @@ class SnowliveWebApp extends StatelessWidget {
         WidgetsBinding.instance.addPostFrameCallback((_) {
           currentRouteWeb.value = current;
           // GA4 수동 page_view(해시 라우팅 SPA) — 실제 라우트 변경마다 1회.
+          // (주소창을 바꾸기 전에 호출해 page_location을 실제 라우트로 기록한다.)
           sendPageViewWeb(current);
+          // 공유 가능한 콘텐츠 페이지면 주소창을 /share 링크로 바꿔, 브라우저 기본
+          // 공유로도 카카오 미리보기가 뜨게 한다(떠나면 정상 해시로 복구).
+          // 쿼리(id)까지 있는 Uri.base.fragment를 넘긴다(routing.current엔 쿼리가 없음).
+          syncShareAddressBar(Uri.base.fragment);
           // 전환이 너무 빨리 끝나면 바가 깜빡이는 것처럼 보여서 최소 노출 시간을 둔다.
           Future.delayed(const Duration(milliseconds: 200), endPageLoading);
         });

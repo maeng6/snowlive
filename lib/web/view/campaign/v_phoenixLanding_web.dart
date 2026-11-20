@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:math' as math;
 
+import 'package:com.snowlive/core/api/api_phoenix.dart'
+    show kPhoenixClaimDemo, kDemoClaimedWinnerIds;
 import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/core/model/m_rankingListIndiv.dart' show RankingUser;
 import 'package:com.snowlive/core/viewmodel/vm_user.dart';
@@ -54,6 +56,13 @@ const _cardBg = Color(0xFFF7FAFF);
 const _cardShadow = Color(0xFF9DB7DE);
 const _dividerCol = Color(0xFFC5D5EC);
 const _brandBlue = Color(0xFF1F5FBF);
+// 스키장 카드 테두리/포인트 색 — 빨강→노랑→초록→파랑 순차 순환.
+const _cardAccents = <Color>[
+  Color(0xFFE4564E), // 빨강
+  Color(0xFFE0A100), // 노랑(가독 위해 살짝 진한 톤)
+  Color(0xFF2E9E63), // 초록
+  _brandBlue,        // 파랑
+];
 const _btnBg = Color(0xFF2F6BE0);
 const _titleShadow = Color(0xFFFFFFFF); // 흰색 하드 섀도
 
@@ -352,7 +361,9 @@ class _PrizeTicketState extends State<_PrizeTicket>
         painter: _TicketPainter(anim, _phase),
         child: Padding(
           padding: const EdgeInsets.fromLTRB(11, 6, 11, 6),
-          child: Text('숙박권', style: _kr(12, _ink)),
+          child: Text('올리브영\n5,000원',
+              textAlign: TextAlign.center,
+              style: _kr(11, _ink).copyWith(height: 1.25)),
         ),
       ),
     );
@@ -614,7 +625,8 @@ int? _asInt(dynamic v) => v is int ? v : int.tryParse('${v ?? ''}');
 bool _canClaim(Map? winner) =>
     winner != null &&
     winner['winner_id'] != null &&
-    _asInt(winner['user_id']) == _myUserId();
+    // QA 데모: 본인 여부 무시하고 버튼 노출(백엔드가 실제 신청은 본인만 허용).
+    (kPhoenixClaimDemo || _asInt(winner['user_id']) == _myUserId());
 
 int? _myUserId() {
   if (!Get.isRegistered<UserViewModel>()) return null;
@@ -735,9 +747,26 @@ class PhoenixLandingWeb extends StatelessWidget {
                 // 하단 220px(풋터 쪽)엔 라이더·곤돌라가 내려오지 않게 한다.
                 : const SkiSlopeActors(pisteWidth: 1340, bottomSafe: 220)),
           ),
+          // 상단 중앙 — 산장(몽블랑 집) 대신 스노우라이브 앱아이콘. 저해상 디코드 후
+          // nearest 업스케일로 픽셀아트 톤에 맞춘다(정사각).
+          Align(
+            alignment: Alignment.topCenter,
+            child: Padding(
+              padding: EdgeInsets.only(top: isMobile ? 16 : 22),
+              child: Image.asset(
+                'assets/imgs/logos/snowlive_pixel_logo_v4.png',
+                width: isMobile ? 92 : 105,
+                cacheWidth: 130,
+                filterQuality: FilterQuality.none,
+                isAntiAlias: false,
+              ),
+            ),
+          ),
           Center(
           child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: kWebDesktopListMaxWidth),
+            // 콘텐츠 폭은 다른 서브페이지(커뮤니티 상세 등)와 동일하게 제한한다.
+            // 배경 설경(SkiSlopeBackground)은 이 제한 바깥이라 PC에서도 풀블리드.
+            constraints: const BoxConstraints(maxWidth: kWebSubPageMaxWidth),
             child: Obx(() {
               // 로그인 유저가 비동기로 늦게 로드돼도(새로고침 등) 상품받기 버튼이
               // 다시 그려지도록, _myUserId가 쓰는 UserViewModel Rx를 여기서 구독한다.
@@ -763,7 +792,7 @@ class PhoenixLandingWeb extends StatelessWidget {
         // 풋터 좌우 여백은 본문과 공통(16).
         footer: Center(
           child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: kWebDesktopListMaxWidth),
+            constraints: const BoxConstraints(maxWidth: kWebSubPageMaxWidth),
             child: const Padding(
               padding: EdgeInsets.symmetric(horizontal: 16),
               child: HomeFooterWeb(),
@@ -775,28 +804,146 @@ class PhoenixLandingWeb extends StatelessWidget {
   }
 }
 
+/// OG·히어로 배너 **캡처 전용** 풀블리드 뷰 — 앱 네비/카드 없이 히어로 아트만.
+/// (서버/디자인 배포 노출용 정적 이미지를 /#/phoenix-banner에서 스크린샷한다.)
+class PhoenixBannerWeb extends StatelessWidget {
+  const PhoenixBannerWeb({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    Get.put(PhoenixViewModelWeb()).load(); // 라이더 표시용 로드 트리거
+    final isMobile = context.screenType == WebScreenType.mobile;
+    return Container(
+      color: SnowScene.snow,
+      child: Stack(children: [
+        Positioned.fill(
+          child: SkiSlopeBackground(
+            pisteWidth: 1340,
+            clearTop: isMobile ? 60 : 0,
+            clearBottom: 0,
+          ),
+        ),
+        const Positioned.fill(
+          child: SkiSlopeActors(pisteWidth: 1340, bottomSafe: 40),
+        ),
+        Align(
+          alignment: Alignment.topCenter,
+          child: Padding(
+            padding: EdgeInsets.only(top: isMobile ? 16 : 22),
+            child: Image.asset(
+              'assets/imgs/logos/snowlive_pixel_logo_v4.png',
+              width: isMobile ? 92 : 105,
+              cacheWidth: 130,
+              filterQuality: FilterQuality.none,
+              isAntiAlias: false,
+            ),
+          ),
+        ),
+        const Align(
+          alignment: Alignment.topCenter,
+          child: _HeroTitle(ev: null),
+        ),
+      ]),
+    );
+  }
+}
+
+/// 앱 홈 배너(가로 띠, 360:86) **캡처 전용** — 로고·제목·상품을 한 줄로.
+class PhoenixStripWeb extends StatelessWidget {
+  const PhoenixStripWeb({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: SnowScene.snow,
+      child: Stack(children: [
+        const Positioned.fill(
+          child: SkiSlopeBackground(pisteWidth: 1340, clearTop: 0, clearBottom: 0),
+        ),
+        Center(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 40),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Image.asset(
+                  'assets/imgs/logos/snowlive_pixel_logo_v4.png',
+                  height: 118,
+                  cacheWidth: 300,
+                  filterQuality: FilterQuality.none,
+                  isAntiAlias: false,
+                ),
+                const SizedBox(width: 30),
+                Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('26/27 SEASON OPEN',
+                        style: pxLabel(9, _brandBlue, spacing: 1)),
+                    const SizedBox(height: 9),
+                    PixelOutlinedText(
+                      '스라 개장빵 이벤트',
+                      style: _kr(40, _ink),
+                      outline: SnowScene.paper,
+                      width: 40 / 11,
+                      ring: SkiColors.night,
+                      align: TextAlign.left,
+                    ),
+                  ],
+                ),
+                const SizedBox(width: 30),
+                // 상품 칩(올리브영 상품권 5,000원).
+                CustomPaint(
+                  painter: const _PixelFrame(
+                      border: _ink,
+                      shadow: _cardShadow,
+                      t: 3,
+                      shadowOffset: Offset(3, 5)),
+                  child: ColoredBox(
+                    color: _btnBg,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 10),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text('올리브영 상품권',
+                              style:
+                                  _kr(13, const Color(0xFFFFFFFF), bold: true)),
+                          const SizedBox(height: 2),
+                          Text('5,000원',
+                              style:
+                                  _kr(16, const Color(0xFFFFD23F), bold: true)),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ]),
+    );
+  }
+}
+
 class _Content extends StatelessWidget {
   final PhoenixViewModelWeb vm;
   const _Content({required this.vm});
 
   @override
   Widget build(BuildContext context) {
-    final ev = vm.openingEvent;
+    // 전국 스키장: 어드민에서 개장일 입력된 이벤트들(각 리조트 카드).
+    final events = vm.events.toList();
+    final ev = events.isNotEmpty ? events.first : null;
     final isMobile = context.screenType == WebScreenType.mobile;
-    const gap = SizedBox(height: 32);
 
     final sections = Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        if (ev != null) ...[
-          _openingSection(context, ev),
-          gap,
-          _OpenBreadCard(ev: ev, onRefresh: vm.refreshQuietly),
-          gap,
-        ],
-        const _OotdPanel(),
-        gap,
-        _timeline(),
+        _resortsSection(context, events),
         const SizedBox(height: 28),
       ],
     );
@@ -819,74 +966,199 @@ class _Content extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [_HeroTitle(ev: ev), gap, sections],
+        children: [_HeroTitle(ev: ev), const SizedBox(height: 32), sections],
       ),
     );
   }
 
-  Widget _openingSection(BuildContext context, Map<String, dynamic> ev) {
-    final status = ev['status'];
-    final announced =
-        status == 'announced' || status == 'closed' || status == 'archived';
-    final lb = ev['leaderboard'] as Map?;
-    final winners = ev['winners'] as Map?;
-
-    // 어워드는 **1열 3행** — 아케이드 픽셀 카드.
-    final cards = <Widget>[];
-    for (final cat in _catMeta.keys) {
-      if (cards.isNotEmpty) cards.add(const SizedBox(height: 22));
-      final live = lb?[cat] as Map?;
-      final won = winners?[cat] as Map?;
-      cards.add(
-          _awardCard(context, cat, live: live, winner: won, announced: announced));
-    }
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        _arcadeHeader(),
-        const SizedBox(height: 22),
-        ...cards,
-      ],
+  /// 스키장별 개장빵 1~3등 — 어드민에서 개장일 입력한 리조트 카드만.
+  Widget _resortsSection(BuildContext context, List<Map<String, dynamic>> events) {
+    // 카드(헤더 포함)는 본문 폭의 약 2/3로 좁혀 가운데 정렬한다. 모바일은 화면이
+    // 이 값보다 좁아 자동으로 꽉 차므로 영향 없다(데스크탑/태블릿만 제한).
+    return Center(
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 512),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            _arcadeHeader(context),
+            const SizedBox(height: 11),
+            if (events.isEmpty)
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 40),
+                child: Text('곧 개장하는 스키장이 열려요!',
+                    textAlign: TextAlign.center, style: _kr(14, _inkSub)),
+              )
+            else
+              for (int i = 0; i < events.length; i++) ...[
+                if (i > 0) const SizedBox(height: 22),
+                _resortCard(context, events[i], i),
+              ],
+          ],
+        ),
+      ),
     );
   }
 
-  /// 아케이드 헤더 — `개장빵 라이더` 한 줄. 왼쪽 정렬, 폰트 30% 축소(34→24).
-  /// 음영은 옅은 하늘색(약하게).
-  Widget _arcadeHeader() => Align(
+  /// 아케이드 헤더 — `개장빵 라이더` + 공통 안내(i): 스키장별 가장 먼저 라이딩한 1~3등.
+  Widget _arcadeHeader(BuildContext context) => Align(
         alignment: Alignment.centerLeft,
-        child: Text(
-          '개장빵 라이더',
-          textAlign: TextAlign.left,
-          style: _kr(24, _ink, bold: true).copyWith(
-            height: 1.2,
-            letterSpacing: 1,
-            shadows: const [
-              Shadow(
-                  color: Color(0xFFC6DEF6), offset: Offset(3, 3), blurRadius: 0),
-            ],
-          ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              '개장빵 라이더',
+              style: _kr(24, _ink, bold: true).copyWith(
+                height: 1.2,
+                letterSpacing: 1,
+                shadows: const [
+                  Shadow(color: Color(0xFFC6DEF6), offset: Offset(3, 3), blurRadius: 0),
+                ],
+              ),
+            ),
+            const SizedBox(width: 8),
+            const _RiderInfoButton(
+                message: '스키장별 가장 먼저 라이딩한 1~3등', accent: _brandBlue),
+          ],
         ),
       );
 
   /// 닉네임은 6자 넘으면 말줄임.
   String _clipName(String s) => s.length > 6 ? '${s.substring(0, 6)}…' : s;
 
-  Widget _awardCard(BuildContext context, String cat,
-      {Map? live, Map? winner, required bool announced}) {
-    final meta = _catMeta[cat]!;
-    final st = _cardStyles[cat]!;
-    final caption = _catCaption[cat];
-    final data = announced ? winner : live;
-    final name = (data?['display_name'] ?? '').toString();
-    final crew = (data?['crew_name'] ?? '').toString();
-    final metric = (data?['metric_label'] ?? '').toString();
-    final slope = (data?['slope_label'] ?? '').toString();
-    final profile = (data?['profile_image_url'] ?? '').toString();
-    final winnerId = winner?['winner_id'];
-    final userId = (data?['user_id'] as num?)?.toInt();
+  /// 리조트 1장 — 상단(영문/한글 스키장명 + 올리브영 티켓), 아래 1~3등 세로 리스트.
+  /// 개장 전(라이더 없음)이면 '개장 전' 표시.
+  Widget _resortCard(BuildContext context, Map<String, dynamic> ev, int idx) {
+    // 카드마다 빨강→노랑→초록→파랑 순으로 테두리·포인트 색을 번갈아 준다.
+    final accent = _cardAccents[idx % _cardAccents.length];
+    final en = (ev['resort_name_en'] ?? '').toString();
+    final ko = (ev['resort_name_ko'] ?? '').toString();
+    final openDate = (ev['open_date_label'] ?? '').toString();
+    var prelaunch = ev['is_prelaunch'] == true;
+    var top3 = ((ev['top3'] as List?) ?? const [])
+        .map((e) => Map<String, dynamic>.from(e as Map))
+        .toList();
+    // QA 데모: 당첨자 없는 첫 카드에 더미 1~3등을 넣어 상품받기 버튼을 보여준다.
+    if (kPhoenixClaimDemo && idx == 0 && top3.isEmpty) {
+      prelaunch = false;
+      top3 = [
+        {'rank': 1, 'display_name': '데모 라이더', 'crew_name': '데모크루',
+         'winner_id': 999001, 'user_id': 0, 'profile_image_url': '',
+         'metric_label': '', 'slope_label': ''},
+        {'rank': 2, 'display_name': '눈보라', 'crew_name': '',
+         'winner_id': 999002, 'user_id': 0, 'profile_image_url': '',
+         'metric_label': '', 'slope_label': '', 'has_claim': true}, // 신청완료 예시
 
-    // 프사·닉네임 탭 → 웹 공용 프로필 미리보기(프로필 보러가기 포함).
+        {'rank': 3, 'display_name': '파우더러', 'crew_name': '스노우',
+         'winner_id': 999003, 'user_id': 0, 'profile_image_url': '',
+         'metric_label': '', 'slope_label': ''},
+      ];
+    }
+
+    final content = Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        // 상단 행: 영문 스키장명 + 한글 스키장명 · 올리브영 티켓.
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(en, style: pxLabel(7, accent, spacing: 1)),
+                  const SizedBox(height: 5),
+                  // 풀네임(크게) + 그 옆에 개장일.
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Flexible(
+                        child: Text(ko,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: _kr(22, _ink, bold: true)),
+                      ),
+                      if (openDate.isNotEmpty) ...[
+                        const SizedBox(width: 6),
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 3),
+                          child: Text('$openDate 개장',
+                              style: _kr(11, _inkSub)),
+                        ),
+                      ],
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(width: 7),
+            _prizeTicket(),
+          ],
+        ),
+        const SizedBox(height: 10),
+        SizedBox(
+          height: 4,
+          child: CustomPaint(painter: const _PixelDivider(_dividerCol)),
+        ),
+        const SizedBox(height: 12),
+        if (prelaunch || top3.isEmpty)
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 14),
+            child: Center(child: Text('개장 전', style: _kr(14, _inkSub))),
+          )
+        else
+          for (int i = 0; i < top3.length; i++) ...[
+            if (i > 0) const SizedBox(height: 12),
+            _riderRow(context, top3[i], accent),
+          ],
+      ],
+    );
+
+    return Padding(
+      padding: const EdgeInsets.only(left: 4, top: 4, right: 6, bottom: 10),
+      child: RepaintBoundary(
+        child: CustomPaint(
+          painter: _PixelFrame(border: accent, shadow: _cardShadow),
+          child: ColoredBox(
+            color: _cardBg,
+            child: Padding(padding: const EdgeInsets.all(12), child: content),
+          ),
+        ),
+      ),
+    );
+  }
+
+  /// 순위 — 채우기 없이 '1등/2등/3등' 텍스트. (1 금 / 2 은 / 3 동 색)
+  Widget _rankNumber(int rank) {
+    const cols = {1: Color(0xFFF2A900), 2: Color(0xFF8F9BB3), 3: Color(0xFFCB7B3F)};
+    return SizedBox(
+      width: 42,
+      height: 42,
+      child: Center(
+        child: Text('$rank등',
+            style: _kr(18, cols[rank] ?? _inkSub, bold: true)
+                .copyWith(height: 1.0)),
+      ),
+    );
+  }
+
+  /// 1~3등 한 줄 — 뱃지 + 링프사 + 닉네임/크루 + (당첨자 본인이면 상품받기 / 아니면 첫 하강 시각·슬로프).
+  Widget _riderRow(BuildContext context, Map data, Color accent) {
+    final rank = (data['rank'] as num?)?.toInt() ?? 0;
+    final name = (data['display_name'] ?? '').toString();
+    final crew = (data['crew_name'] ?? '').toString();
+    final metric = (data['metric_label'] ?? '').toString();
+    final slope = (data['slope_label'] ?? '').toString();
+    final profile = (data['profile_image_url'] ?? '').toString();
+    final userId = (data['user_id'] as num?)?.toInt();
+    final winnerId = data['winner_id'];
+    final canClaim = _canClaim(Map<String, dynamic>.from(data));
+    // 이미 신청했으면(백엔드 has_claim, 또는 데모에서 제출한 winner_id) '신청완료'.
+    final claimed = data['has_claim'] == true ||
+        (kPhoenixClaimDemo &&
+            winnerId is int &&
+            kDemoClaimedWinnerIds.contains(winnerId));
+
     void openProfile() {
       if (userId == null) return;
       showRankingProfileModal(
@@ -900,130 +1172,64 @@ class _Content extends StatelessWidget {
       );
     }
 
-    final content = Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        // 상단 행: 영문 라벨 + 한글 제목  ·  (당첨자면) 상품받기 버튼.
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(
+        _rankNumber(rank),
+        const SizedBox(width: 10),
+        MouseRegion(
+          cursor: SystemMouseCursors.click,
+          child: GestureDetector(
+              onTap: openProfile, child: _avatar(profile, 42)),
+        ),
+        const SizedBox(width: 10),
+        Expanded(
+          child: MouseRegion(
+            cursor: SystemMouseCursors.click,
+            child: GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: openProfile,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text(st.en, style: pxLabel(7, st.label, spacing: 1)),
-                  const SizedBox(height: 4),
-                  // 제목 + 설명을 띄우는 동그라미 i 버튼.
-                  Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Flexible(
-                        child: Text(meta[0],
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: _kr(14, _ink)),
-                      ),
-                      const SizedBox(width: 6),
-                      _RiderInfoButton(message: meta[1], accent: st.accent),
-                    ],
-                  ),
+                  Text(name,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: _kr(16, _ink).copyWith(height: 1.0)),
+                  if (crew.isNotEmpty) ...[
+                    const SizedBox(height: 2),
+                    Text(crew,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: _kr(10, _inkSub.withValues(alpha: 0.75))),
+                  ],
                 ],
               ),
             ),
-            const SizedBox(width: 7),
-            // 종료 전/비수령자: 숙박권 티켓. 종료 후 수령 대상자: 상품 받기 버튼.
-            _canClaim(winner)
-                ? _claimButton(winnerId, st.accent)
-                : _prizeTicket(),
-          ],
-        ),
-        const SizedBox(height: 10),
-        SizedBox(
-          height: 4,
-          child: CustomPaint(painter: const _PixelDivider(_dividerCol)),
-        ),
-        const SizedBox(height: 10),
-        // 플레이어 행: [링 프사] 닉네임/태그  ·  기록.
-        if (name.isNotEmpty)
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              // 프사·닉네임 탭 → 프로필 다이얼로그.
-              MouseRegion(
-                cursor: SystemMouseCursors.click,
-                child: GestureDetector(
-                  onTap: openProfile,
-                  child: _ringAvatar(profile, st.accent),
-                ),
-              ),
-              const SizedBox(width: 9),
-              Expanded(
-                child: MouseRegion(
-                  cursor: SystemMouseCursors.click,
-                  child: GestureDetector(
-                    behavior: HitTestBehavior.opaque,
-                    onTap: openProfile,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(name,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: _kr(17, _ink).copyWith(height: 1.0)),
-                        // 소속 크루가 있으면 닉네임 아래 옅게 작게.
-                        if (crew.isNotEmpty) ...[
-                          const SizedBox(height: 2),
-                          Text(crew,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: _kr(10, _inkSub.withValues(alpha: 0.75))),
-                        ],
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-              if (metric.isNotEmpty || slope.isNotEmpty) ...[
-                const SizedBox(width: 8),
-                // 기록 밑줄에 라이딩 슬로프명.
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    if (metric.isNotEmpty)
-                      _record(cat, caption, metric, st.numShadow),
-                    if (slope.isNotEmpty) ...[
-                      const SizedBox(height: 3),
-                      Text(slope,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          textAlign: TextAlign.right,
-                          style: _kr(10, _inkSub)),
-                    ],
-                  ],
-                ),
-              ],
-            ],
-          )
-        else
-          Text(announced ? '수상자 없음' : '아직 기록 없음',
-              style: _kr(10, _inkSub)),
-      ],
-    );
-
-    // 프레임 테두리(상·좌 4)와 섀도(우 6·하 10)는 본체 밖에 그려지므로 여백 확보.
-    return Padding(
-      padding: const EdgeInsets.only(left: 4, top: 4, right: 6, bottom: 10),
-      child: RepaintBoundary(
-        child: CustomPaint(
-          painter: _PixelFrame(border: st.accent, shadow: _cardShadow),
-          child: ColoredBox(
-            color: _cardBg,
-            child: Padding(padding: const EdgeInsets.all(12), child: content),
           ),
         ),
-      ),
+        const SizedBox(width: 8),
+        if (canClaim)
+          _claimButton(winnerId, accent, claimed: claimed)
+        else if (metric.isNotEmpty || slope.isNotEmpty)
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (metric.isNotEmpty)
+                _pixelMetric(metric, _ink, asciiSize: 12, hangulSize: 11),
+              if (slope.isNotEmpty) ...[
+                const SizedBox(height: 3),
+                Text(slope,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    textAlign: TextAlign.right,
+                    style: _kr(10, _inkSub)),
+              ],
+            ],
+          ),
+      ],
     );
   }
 
@@ -1055,39 +1261,48 @@ class _Content extends StatelessWidget {
   /// 숙박권 티켓 — 광택이 스윽 지나가고 별이 반짝이는 애니메이션.
   Widget _prizeTicket() => const _PrizeTicket();
 
-  /// '상품 받기' 버튼 — 파인 모서리 픽셀 테두리 + 하드 섀도. onTap은 기존 그대로.
-  Widget _claimButton(dynamic winnerId, Color fill) {
-    // 밝은 테두리색(노란색 등)은 흰 글씨 대비가 약해 어두운 잉크로 쓴다.
+  /// '상품 받기' 버튼 — 파인 모서리 픽셀 테두리 + 하드 섀도.
+  /// [claimed](이미 신청함)이면 '신청완료'로 바뀌고 회색·비활성(탭 불가)이 된다.
+  Widget _claimButton(dynamic winnerId, Color fill, {bool claimed = false}) {
+    final Color bg = claimed ? const Color(0xFFC3CAD3) : fill;
+    // 밝은 배경색(노란색·회색 등)은 흰 글씨 대비가 약해 어두운 잉크로 쓴다.
     final textColor =
-        fill.computeLuminance() > 0.5 ? _ink : const Color(0xFFFFFFFF);
-    return MouseRegion(
-        cursor: SystemMouseCursors.click,
-        child: Semantics(
-          button: true,
-          label: '상품 받기',
-          child: GestureDetector(
-            onTap: () =>
-                Get.toNamed('${WebRoutes.phoenixClaim}?winner=$winnerId'),
-            child: Padding(
-              // 테두리(3)·섀도(3,7)만큼 여백.
-              padding: const EdgeInsets.only(left: 3, top: 3, right: 3, bottom: 7),
-              child: CustomPaint(
-                painter: const _PixelFrame(
-                    border: _ink, shadow: _cardShadow, t: 3,
-                    shadowOffset: Offset(3, 7)),
-                child: ColoredBox(
-                  color: fill,
-                  child: Padding(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
-                    child: Text('상품 받기', style: _kr(13, textColor)),
-                  ),
-                ),
-              ),
-            ),
+        bg.computeLuminance() > 0.5 ? _ink : const Color(0xFFFFFFFF);
+    final label = claimed ? '신청완료' : '상품 받기';
+
+    Widget frame = Padding(
+      // 테두리(3)·섀도(3,7)만큼 여백.
+      padding: const EdgeInsets.only(left: 3, top: 3, right: 3, bottom: 7),
+      child: CustomPaint(
+        painter: const _PixelFrame(
+            border: _ink, shadow: _cardShadow, t: 3,
+            shadowOffset: Offset(3, 7)),
+        child: ColoredBox(
+          color: bg,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
+            child: Text(label, style: _kr(13, textColor)),
           ),
         ),
-      );
+      ),
+    );
+
+    if (claimed) {
+      // 비활성 — 탭/커서 없음.
+      return Opacity(opacity: 0.8, child: Semantics(button: true, enabled: false, label: label, child: frame));
+    }
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      child: Semantics(
+        button: true,
+        label: label,
+        child: GestureDetector(
+          onTap: () =>
+              Get.toNamed('${WebRoutes.phoenixClaim}?winner=$winnerId'),
+          child: frame,
+        ),
+      ),
+    );
   }
 
   Widget _timeline() {
@@ -1241,7 +1456,7 @@ class _HeroTitle extends StatelessWidget {
         const SizedBox(width: 8),
         _BlinkCaret(_brandBlue, 8),
         const SizedBox(width: 6),
-        Text('Snowlive X Phoenixpark', style: pxLabel(8, _brandBlue, spacing: 1)),
+        Text('26/27 SEASON OPEN', style: pxLabel(9, _brandBlue, spacing: 1)),
         const SizedBox(width: 8),
         dash2,
       ],
@@ -1249,7 +1464,7 @@ class _HeroTitle extends StatelessWidget {
 
     // 메인 제목(빵 이모티콘 제거).
     final titleStack = PixelOutlinedText(
-      title?.isNotEmpty == true ? title! : '휘팍 개장빵 이벤트',
+      '스라 개장빵 이벤트',
       style: _kr(titleSize, ink),
       outline: paper,
       width: dot,
@@ -1262,7 +1477,7 @@ class _HeroTitle extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.only(left: 3, top: 3, right: 3, bottom: 7),
         child: Semantics(
-          label: '2026년 11월 26일 오픈',
+          label: '전국 스키장 개장빵 이벤트',
           child: CustomPaint(
             painter: const _PixelFrame(
                 border: _ink,
@@ -1284,9 +1499,9 @@ class _HeroTitle extends StatelessWidget {
                         children: [
                           const PixelSprite(spFlagRed, scale: 2),
                           const SizedBox(width: 10),
-                          Text('2026.11.26',
-                              style: pxLabel(12, const Color(0xFFFFFFFF),
-                                  spacing: 1)),
+                          Text('올리브영 상품권',
+                              style: _kr(14, const Color(0xFFFFFFFF),
+                                  bold: true)),
                         ],
                       ),
                     ),
@@ -1298,7 +1513,7 @@ class _HeroTitle extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(horizontal: 14),
                       child: Center(
                         child:
-                            Text('OPEN', style: pxLabel(12, _ink, spacing: 1)),
+                            Text('5,000원', style: _kr(14, _ink, bold: true)),
                       ),
                     ),
                   ),
@@ -1313,8 +1528,9 @@ class _HeroTitle extends StatelessWidget {
     // 커서 줄·제목·리본을 **같은 폭**(묶음)으로 — 좌우 끝이 한 세로선에 맞는다.
     // 좁은 화면에선 화면폭(패딩 안)까지, 넓은 화면에선 440으로 캡.
     return Padding(
-      // 산장(약 105px) ↔ 커서 줄 30.
-      padding: EdgeInsets.fromLTRB(16, isMobile ? 130 : 138, 16, 32),
+      // 상단 로고(topCenter 오버레이) 아래로 커서 줄이 내려오도록 — 로고와
+      // 겹치지 않게 패딩을 키운다.
+      padding: EdgeInsets.fromLTRB(16, isMobile ? 90 : 107, 16, 32),
       child: Center(
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 440),
@@ -1322,7 +1538,7 @@ class _HeroTitle extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               cursorLine, // Expanded 점선이 묶음 폭까지 길게 채운다
-              const SizedBox(height: 20),
+              const SizedBox(height: 5),
               // 제목은 묶음 폭 안에서 가운데 — 한 줄 고정(넘치면 통째 축소).
               Center(child: FittedBox(fit: BoxFit.scaleDown, child: titleStack)),
               const SizedBox(height: 18),
@@ -1376,6 +1592,7 @@ class _HeroTitle extends StatelessWidget {
           ),
         ),
       );
+
 }
 
 /// 제목 왼쪽의 **노란 제설기** — 눈을 제목 위로 뿌리는 픽셀 애니메이션.
@@ -1637,8 +1854,8 @@ void _showJoinMethodDialog(BuildContext context) {
                           const SizedBox(height: 10),
                           step('1', '스노우라이브 앱 다운로드',
                               trailing: downloadBtn),
-                          step('2', '휘닉스파크에서 라이브온!'),
-                          step('3', '신나게 라이딩하면 자동 참여'),
+                          step('2', '스키장에서 라이브온!'),
+                          step('3', '라이딩하면 스키장별 1~3등 자동 집계'),
                         ],
                       ),
                     ),

@@ -15,7 +15,6 @@ class PaidVisibilityControllerWeb extends GetxController {
   // 웹 GNB 메뉴 온오프 맵 {route_prefix: bool}. 키 없으면 노출(true).
   final RxMap<String, bool> menus = <String, bool>{}.obs;
   final RxBool todayRanking = true.obs; // 웹 홈 '오늘의 랭킹' 섹션
-  final RxBool openPreview = true.obs; // 웹 홈 '개장 미리보기' 섹션
   /// 서버에서 노출 설정을 **한 번이라도 받아왔는지**. 로드 전엔 메뉴를 숨겨
   /// '꺼진 메뉴가 잠깐 보였다 사라지는' 깜빡임(FOUC)을 막는다. 성공·실패 무관하게
   /// 첫 조회가 끝나면 true로 두고(실패 시 빈 맵이라 기존처럼 기본 노출로 복귀).
@@ -55,9 +54,6 @@ class PaidVisibilityControllerWeb extends GetxController {
         if (res.data['today_ranking'] != null) {
           todayRanking.value = res.data['today_ranking'] == true;
         }
-        if (res.data['open_preview'] != null) {
-          openPreview.value = res.data['open_preview'] == true;
-        }
       }
     } catch (_) {
       // 조회 실패 시 유료는 숨김(보수적), 랭킹은 기본 노출 유지.
@@ -92,13 +88,5 @@ class PaidVisibilityControllerWeb extends GetxController {
     if (c == null) return true;
     if (!c.ready.value) return false;
     return c.todayRanking.value;
-  }
-
-  /// 웹 홈 '개장 미리보기' 섹션 노출 여부. 로드 전엔 숨김, 로드 후 기본 노출(true).
-  static bool get openPreviewVisible {
-    final c = _c;
-    if (c == null) return true;
-    if (!c.ready.value) return false;
-    return c.openPreview.value;
   }
 }

@@ -17,6 +17,7 @@ import 'package:com.snowlive/core/model/m_treasure_record.dart';
 import 'package:com.snowlive/core/model/m_ridingRecordCard.dart';
 import 'package:com.snowlive/core/model/m_weatherModel.dart';
 import 'package:com.snowlive/mobile/widget/w_liveOffSummaryDialog.dart';
+import 'package:com.snowlive/mobile/widget/w_reviewPromptDialog.dart';
 import 'package:com.snowlive/mobile/native/live_activity_service.dart';
 import 'package:com.snowlive/core/util/util_1.dart';
 import 'package:com.snowlive/mobile/viewmodel/ranking/vm_snowball.dart';
@@ -2540,6 +2541,18 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
             }
           } catch (e) {
             print('❌ 라이브오프 요약 다이얼로그 오류: $e');
+          }
+
+          // ⭐ 인앱 평점/피드백(2단계) — 유저가 직접 라이브오프한 경우에만, 요약 닫은 뒤.
+          // 띄울지 여부(가입14일↑·세션3회↑·쿨다운·중복)는 서버가 판정한다. 실패해도 조용히 무시.
+          try {
+            final int? uid = user_id is int ? user_id : int.tryParse('$user_id');
+            if (uid != null) {
+              final ver = await getCurrentAppVersion();
+              await maybeShowReviewAfterSession(userId: uid, appVersion: ver);
+            }
+          } catch (e) {
+            print('리뷰 요청 처리 생략: $e');
           }
         }
 

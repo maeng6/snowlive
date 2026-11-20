@@ -77,11 +77,17 @@ List<HomeBanner> homeVisibleBanners(Map<String, dynamic>? data) {
     return value;
   }
 
+  // QA 전용 배너(`qaOnly`)는 **프로덕션(snowlive.kr)** 에선 숨기고,
+  // QA(*.web.app)·로컬에서만 노출한다 → 운영 전 QA에서 미리 확인.
+  final bool isProdHost = Uri.base.host.endsWith('snowlive.kr');
+
   final result = <HomeBanner>[];
   for (final slide in slides) {
     if (slide is! Map) continue;
     // visible을 켜야 보이는 쪽이 안전하다(빠뜨리면 숨김).
     if (slide['visible'] != true) continue;
+    // QA 전용 배너는 프로덕션에서 숨긴다.
+    if (slide['qaOnly'] == true && isProdHost) continue;
     // 사진이 없는 배너는 그릴 수 없다.
     final image = stringOf(slide, 'imageUrl');
     if (image == null) continue;

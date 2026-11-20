@@ -220,7 +220,14 @@
       var isStandalone=(window.matchMedia && window.matchMedia('(display-mode: standalone)').matches)
                        || window.navigator.standalone===true;
       var until=parseInt(localStorage.getItem(KEY)||'0',10);
-      if(!isMobile || isStandalone || Date.now()<until) return;
+      // 이벤트(개장빵) 페이지에선 앱 제안 바텀시트를 띄우지 않는다.
+      // 해시 라우트(#/season-open-event), 공유 경로(/share/season-open-event),
+      // 클린 경로(/season-open-event), 레거시 phoenix 전부 커버.
+      function onEventPage(){
+        var p=((location.pathname||'')+' '+(location.hash||'')).toLowerCase();
+        return p.indexOf('season-open-event')>=0 || p.indexOf('phoenix')>=0;
+      }
+      if(!isMobile || isStandalone || Date.now()<until || onEventPage()) return;
       var STORE='https://app.snowlive.kr/';     // UA 판별 → 앱스토어/플레이스토어
       var APP_SCHEME='snowlive://open';          // 설치돼 있으면 앱이 이 스킴으로 열림
       function remember(days){ try{ localStorage.setItem(KEY, String(Date.now()+days*864e5)); }catch(e){} }
@@ -244,6 +251,9 @@
         }, 1400);
       }
       setTimeout(function(){
+        // 노출 시점에도 재확인 — 공유링크 리다이렉트·주소창 치환으로 URL이 그 사이
+        // 이벤트 경로로 바뀌었을 수 있다.
+        if(onEventPage()) return;
         var el=document.getElementById('app-invite'); if(!el) return;
         el.style.display='block';
         requestAnimationFrame(function(){ el.classList.add('show'); });

@@ -151,24 +151,37 @@ List<_Actor> _buildActors(int count) {
   // 1/3~1/2로 사람마다 다르고, 위상을 골고루 어긋나게 해서(황금비) 같은 높이에
   // 있어도 좌우로 흩어져 서로 겹치지 않는다.
   final out = <_Actor>[];
+  // 궤적 스타일을 섞어 라이더마다 라이딩이 다르게 보이게 한다.
+  // [ampFrac(호 반경/화면너비), waveFactor(한 굽이 길이/화면높이)]
+  //  - 완만한 S : 길고 느긋한 호
+  //  - 숏턴      : 좁고 잦은 호
+  //  - 뚱뚱한 S  : 크고 넓게 휘는 호
+  //  - 보통
+  const styles = <List<double>>[
+    [0.30, 1.15], // 완만
+    [0.17, 0.30], // 숏턴
+    [0.47, 0.72], // 뚱뚱
+    [0.34, 0.52], // 보통
+  ];
   for (int i = 0; i < count; i++) {
     final r1 = ((i * 37) % 17) / 17.0;
     final r2 = ((i * 53) % 23) / 23.0;
     // 위상을 황금비로 촘촘히 깔아 좌우 분산을 극대화.
     final golden = (i * 0.6180339887) % 1.0;
+    final st = styles[i % styles.length];
     out.add(
       _Actor(
         accent: i % _accents.length, // 사람마다 다른 색
         kind: i % 2, // 스키·보드 번갈아
-        // 속도를 거의 균일하게 — 제각각이면 시간이 지나며 뭉쳤다 벌어져
-        // "우르르 나왔다가 공백기"가 생긴다. 균일하면 간격이 유지돼 늘 고르다.
-        speed: 42 + r1 * 8,
-        // 세로로 완전 균등 배치 → 항상 화면에 두엇은 지나간다.
-        phase: i / count,
-        // 호 반경 = 화면 너비의 1/3 ~ 거의 1/2.
-        ampFrac: 0.34 + r2 * 0.14,
-        // 한 굽이 길이 = 화면 높이의 0.3~0.9배 랜덤 — 짧고 자주 휘어 S가 잦다.
-        waveFactor: 0.3 + r1 * 0.6,
+        // 속도는 거의 균일(공백기 방지)하되 ±6으로만 흔들어 '행진 대형'처럼
+        // 보이지 않게 한다.
+        speed: 42 + r1 * 6,
+        // 균등 배치에 황금비 지터를 더해 세로 위치를 불규칙하게 흩뿌린다
+        // (한 줄로 우르르 나오지 않게). 균등 성분이 남아 공백기는 안 생긴다.
+        phase: ((i + golden) / count) % 1.0,
+        // 스타일별 호 반경·굽이 길이에 소폭 개인차만 덧댄다.
+        ampFrac: (st[0] + (r2 - 0.5) * 0.05).clamp(0.12, 0.5),
+        waveFactor: (st[1] + (r1 - 0.5) * 0.12).clamp(0.22, 1.3),
         swayPhase: golden * math.pi * 2,
       ),
     );
@@ -443,15 +456,6 @@ class _ActorPainter extends CustomPainter {
     canvas.drawPath(path, p);
   }
 
-  /// 배경 맨 위 몽블랑 스키하우스 박스(도트 좌표 기준). 라이더가 이 안으로는
-  /// 들어오지 않게 해서 "건물 양옆에서만" 지나가게 한다. 값은 _paintLodge의
-  /// 벽 반폭(W=22, 처마+2) · 높이(지붕12+벽10)와 맞춰 둔 것 + 스프라이트 여유.
-  bool _overLodge(double x, double y) {
-    final cell = geo.cell;
-    final bcx = (geo.cols ~/ 2) * cell;
-    return y < 30 * cell && (x - bcx).abs() < 24 * cell + 14;
-  }
-
   /// 라이더별 세로 위치·사인 궤도. 궤적/본체 두 패스가 공유한다.
   double _actorY(Size size, _Actor a, double t, double loop) =>
       ((a.phase * loop + t * a.speed) % loop) - 120;
@@ -491,10 +495,9 @@ class _ActorPainter extends CustomPainter {
     final img = lean < -0.7
         ? frames.left
         : (lean > 0.7 ? frames.right : frames.mid);
-    // 건물 위는 그리지 않는다(양옆에서만 지나간다).
-    if (!_overLodge(x, y)) {
-      _draw(canvas, img, x, y, paint, scale: _riderScale);
-    }
+    // 산장을 뺐으므로 상단 중앙도 막지 않는다 — 라이더가 최상단 테두리부터
+    // 전 구간을 끊김 없이 지나간다.
+    _draw(canvas, img, x, y, paint, scale: _riderScale);
   }
 
   /// 지나온 자국 — 라이더가 **실제로 지난 자리**에만, 화면 위쪽으로 갈수록
@@ -507,48 +510,54 @@ class _ActorPainter extends CustomPainter {
     double Function(double) xAt, {
     required bool twoTrails,
   }) {
-    const step = 4.0; // 자국 표본 간격(논리 px) — 촘촘히 끊어 부드럽게.
     const fadeLen = 620.0; // 이 거리만큼 뒤에서 완전히 사라진다
+    const step = 9.0; // 표본 간격 — 사이는 베지어로 메우니 성겨도 매끄럽다
+    final headY = y;
+    final tailY = math.max(-20.0, y - fadeLen);
+    if (headY - tailY < step) return;
+
+    // 자국을 **하나의 연속 곡선**(2차 베지어)으로 긋고, 머리→꼬리 알파를
+    // 세로 그라데이션으로 한 번에 칠한다. (프레임마다 수백 개 선분을 끊어
+    // 그리던 방식이 '뚝뚝' 끊김·프레임 드랍의 원인이었음.) 격자 스냅도 없애
+    // 자국 머리가 라이더를 실시간으로 따라붙어 매끄럽게 이어진다.
+    final shader = ui.Gradient.linear(
+      Offset(0, headY),
+      Offset(0, tailY),
+      [
+        SnowScene.track.withValues(alpha: 0.85),
+        SnowScene.track.withValues(alpha: 0.30),
+        SnowScene.track.withValues(alpha: 0.0),
+      ],
+      const [0.0, 0.45, 1.0],
+    );
     final stroke = Paint()
       ..style = PaintingStyle.stroke
       ..strokeWidth = kSceneDot
-      ..isAntiAlias = false;
+      ..strokeCap = StrokeCap.round
+      ..strokeJoin = StrokeJoin.round
+      ..isAntiAlias = true // 턴 호가 각지지 않게 매끄럽게
+      ..shader = shader;
+
     final sides = twoTrails ? const [-1.0, 1.0] : const [0.0];
-
-    // 표본 위치를 **월드 격자에 스냅**한다. 라이더가 매 프레임 조금씩 움직여도
-    // 자국 점들은 같은 좌표에 고정돼, 비트맵이 프레임마다 떨리지(끊겨 보이지)
-    // 않는다.
-    final yStart = (y / step).floorToDouble() * step;
-
-    // 산장 사각형을 통째로 **클립(차집합)** 해서, 자국이 건물을 덮지 않으면서도
-    // 경계가 프레임마다 깜빡이며 끊기지 않는다(세그먼트 단위 컬링이 원인이었음).
-    final cell = geo.cell;
-    final bcx = (geo.cols ~/ 2) * cell;
-    final half = 24 * cell + 14;
-    final lodge = Rect.fromLTWH(bcx - half, -40, half * 2, 30 * cell + 40);
-    canvas.save();
-    canvas.clipRect(lodge, clipOp: ui.ClipOp.difference, doAntiAlias: false);
-
-    // 알파가 변해야 하므로 구간별로 끊어 그린다.
-    double yc = yStart;
-    while (true) {
-      final back = y - yc;
-      if (back > fadeLen) break;
-      final y0 = yc, y1 = yc - step;
-      if (y1 < -20) break;
-      final fade = 1 - back / fadeLen;
-      // 꼬리로 갈수록 0까지(제곱 커브) 스며들듯 부드럽게 사라진다.
-      stroke.color = SnowScene.track.withValues(alpha: 0.85 * fade * fade);
-      for (final side in sides) {
-        canvas.drawLine(
-          Offset(xAt(y0) + side * kSceneDot, y0),
-          Offset(xAt(y1) + side * kSceneDot, y1),
-          stroke,
-        );
+    for (final side in sides) {
+      Offset at(double yy) => Offset(xAt(yy) + side * kSceneDot, yy);
+      final path = Path();
+      final first = at(headY);
+      path.moveTo(first.dx, first.dy);
+      // 머리(headY)에서 꼬리(tailY)로 내려가며 표본을 모아 베지어로 잇는다.
+      double yy = headY - step;
+      Offset prev = first;
+      while (yy > tailY) {
+        final cur = at(yy);
+        final mid = Offset((prev.dx + cur.dx) / 2, (prev.dy + cur.dy) / 2);
+        path.quadraticBezierTo(prev.dx, prev.dy, mid.dx, mid.dy);
+        prev = cur;
+        yy -= step;
       }
-      yc -= step;
+      final last = at(tailY);
+      path.quadraticBezierTo(prev.dx, prev.dy, last.dx, last.dy);
+      canvas.drawPath(path, stroke);
     }
-    canvas.restore();
   }
 
   void _paintChairs(Canvas canvas, Size size, double t, Paint paint) {

@@ -235,6 +235,10 @@ Future<T?> showWebAnchoredDropdown<T>({
   required LayerLink link,
   required Widget Function(BuildContext context, void Function([T? result]) close, double anchorWidth) builder,
   double gap = 8,
+  // 패널의 **예상 높이**. 아래 공간이 이보다 좁고 위가 더 넓을 때만 위로 뒤집는다.
+  // 항목이 적은 드롭다운(예: 성별 2개)이 아래 공간이 충분한데도 위로 뒤집혀 뜨는 걸 막는다.
+  // 미지정이면 기존 임계치(_kAnchoredDropdownMinHeight)를 그대로 쓴다.
+  double? desiredHeight,
 }) {
   final overlay = Overlay.of(context, rootOverlay: true);
   final overlayBox = overlay.context.findRenderObject() as RenderBox;
@@ -250,9 +254,13 @@ Future<T?> showWebAnchoredDropdown<T>({
   final spaceBelow =
       overlayBox.size.height - (anchorOffset.dy + anchorBox.size.height) - gap - _kAnchoredDropdownEdgeMargin;
   final spaceAbove = anchorOffset.dy - gap - _kAnchoredDropdownEdgeMargin;
-  final flipUp = spaceBelow < _kAnchoredDropdownMinHeight && spaceAbove > spaceBelow;
+  final flipThreshold = desiredHeight ?? _kAnchoredDropdownMinHeight;
+  final flipUp = spaceBelow < flipThreshold && spaceAbove > spaceBelow;
   // 남은 높이를 그대로 최대 높이로 물려준다 → 패널 내부 스크롤이 살아난다.
-  final maxHeight = (flipUp ? spaceAbove : spaceBelow).clamp(120.0, double.infinity);
+  // 창 높이가 낮아 위아래 모두 좁을 때 바닥값(120)이 가용 공간을 넘기면 패널이
+  // 뷰포트 밖으로 밀려 '안 뜬 것처럼' 보였다 → 바닥값을 낮추고(한두 줄은 보장)
+  // 가용 공간이 그보다 크면 가용 공간을 그대로 쓴다.
+  final maxHeight = (flipUp ? spaceAbove : spaceBelow).clamp(88.0, double.infinity);
 
   final completer = Completer<T?>();
   late final OverlayEntry entry;
@@ -340,19 +348,35 @@ class _DropdownOpenRevealState extends State<_DropdownOpenReveal>
   final GlobalKey _contentKey = GlobalKey();
 
   /// 측정 전 null. 측정 후 애니메이션의 목표 높이.
+  /// 음수(-1) = 측정 실패 폴백 → 리빌 애니메이션 없이 그대로 보여준다.
   double? _fullHeight;
+
+  /// 첫 프레임에 패널이 아직 레이아웃되지 않아(!hasSize) 측정이 실패하는 경우가
+  /// 있다(특히 창이 낮아 팔로워가 늦게 붙을 때). 그때 그냥 return하면 패널이
+  /// `Visibility(visible:false)`에 영원히 갇혀 **목록이 아예 안 뜬다** →
+  /// 몇 프레임 재시도하고, 그래도 안 되면 애니메이션을 접고 그대로 노출한다.
+  int _measureTries = 0;
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted) return;
-      final box =
-          _contentKey.currentContext?.findRenderObject() as RenderBox?;
-      if (box == null || !box.hasSize) return;
+    WidgetsBinding.instance.addPostFrameCallback((_) => _measure());
+  }
+
+  void _measure() {
+    if (!mounted) return;
+    final box = _contentKey.currentContext?.findRenderObject() as RenderBox?;
+    if (box != null && box.hasSize && box.size.height > 0) {
       setState(() => _fullHeight = box.size.height);
       _ctrl.forward();
-    });
+      return;
+    }
+    if (_measureTries++ < 5) {
+      WidgetsBinding.instance.addPostFrameCallback((_) => _measure());
+    } else {
+      // 측정 실패해도 목록이 사라지지 않게: 리빌 없이 바로 보여준다.
+      setState(() => _fullHeight = -1);
+    }
   }
 
   @override
@@ -377,6 +401,9 @@ class _DropdownOpenRevealState extends State<_DropdownOpenReveal>
         child: content,
       );
     }
+
+    // 측정 실패 폴백(-1): 리빌 애니메이션 없이 그대로 노출한다.
+    if (_fullHeight! < 0) return content;
 
     return AnimatedBuilder(
       animation: _t,

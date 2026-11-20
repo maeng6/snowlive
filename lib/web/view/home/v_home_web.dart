@@ -4,8 +4,6 @@ import 'package:com.snowlive/web/view/home/home_sections_web.dart';
 import 'package:com.snowlive/web/view/home/w_home_hero_web.dart';
 import 'package:com.snowlive/web/view/home/w_home_quick_menu_web.dart';
 import 'package:com.snowlive/web/view/home/w_home_open_chat_web.dart';
-import 'package:com.snowlive/web/routes/routes_web.dart';
-import 'package:com.snowlive/web/view/home/w_home_open_preview_web.dart';
 import 'package:com.snowlive/web/view/home/w_home_sections_web.dart';
 import 'package:com.snowlive/web/view/home/w_home_weather_web.dart';
 import 'package:com.snowlive/web/viewmodel/auth/vm_authcheck_web.dart';
@@ -208,30 +206,6 @@ class _HomeViewWebState extends State<HomeViewWeb> {
                           //  · 랭킹 숨김: 날씨 아래가 바로 섹션 간격
                           // → 어느 경우든 **중고거래 위는 섹션 간격**(PC·태블릿 48 /
                           //   모바일 32)으로 다른 섹션 사이와 같다.
-                          // 개장 미리보기 — 어드민 토글(테스트대상 기본노출). 노출 항목이
-                          // 하나도 없으면 공간을 차지하지 않는다(간격도 X).
-                          Obx(() {
-                            final homeItems = _vm.openPreviewHomeItems;
-                            final show =
-                                PaidVisibilityControllerWeb.openPreviewVisible &&
-                                    homeItems.isNotEmpty;
-                            if (!show) return const SizedBox.shrink();
-                            // 더보기: 페이지에 노출(active)된 항목이 홈보다 많을 때만.
-                            final hasMore =
-                                _vm.openPreviewItems.length > homeItems.length;
-                            return Column(
-                              crossAxisAlignment: CrossAxisAlignment.stretch,
-                              children: [
-                                const SizedBox(height: 30),
-                                HomeOpenPreviewWeb(
-                                  items: homeItems,
-                                  onMore: hasMore
-                                      ? () => Get.toNamed(WebRoutes.openPreview)
-                                      : null,
-                                ),
-                              ],
-                            );
-                          }),
                           Obx(
                             () =>
                                 PaidVisibilityControllerWeb.todayRankingVisible

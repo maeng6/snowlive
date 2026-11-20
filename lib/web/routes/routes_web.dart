@@ -37,7 +37,6 @@ import 'package:com.snowlive/web/view/profile/v_profileDetail_web.dart';
 import 'package:com.snowlive/web/view/profile/v_profileEdit_web.dart';
 import 'package:com.snowlive/web/view/ranking/v_ridingCards_web.dart';
 import 'package:com.snowlive/web/view/ranking/v_slopeCraft_web.dart';
-import 'package:com.snowlive/web/view/home/v_open_preview_web.dart';
 import 'package:com.snowlive/web/view/shop/v_shop_web.dart';
 import 'package:com.snowlive/web/view/liveTalk/v_liveTalkDetail_web.dart';
 import 'package:com.snowlive/web/view/liveTalk/v_liveTalkHome_web.dart';
@@ -98,8 +97,6 @@ class WebRoutes {
   static const ridingCards = '/riding-cards';
   /// 추천 상품(쿠팡 파트너스 제휴 링크 모음). 상세 없이 목록만.
   static const shop = '/shop';
-  /// 개장 미리보기(스키장 웹캠 모음). 외부 배너에서 바로 진입할 수 있다.
-  static const openPreview = '/open-preview';
 
   // 친구는 하위 경로(`/friend/settings`)로 두면 GetX가 부모 `/friend`로 매칭해버려
   // 새로고침 시 목록이 뜬다 → 커뮤니티·랭킹처럼 형제 최상위 경로로 나눈다.
@@ -158,15 +155,22 @@ class WebRoutes {
   // 친구 실시간 위치 지도(유료).
   static const liveMap = '/live-map';
 
-  // 휘팍 X 스노우라이브 콜라보 이벤트(홈 히어로배너로 진입).
-  static const phoenix = '/phoenix';
+  // 개장빵 이벤트(전국 스키장 개장빵). URL은 season-open-event.
+  static const seasonOpenEvent = '/season-open-event';
   static const phoenixClaim = '/phoenix-claim';
 
   static final pages = [
-    GetPage(name: phoenix, page: () => const PhoenixLandingWeb()),
-    // 끝 슬래시(/phoenix/)로 들어와도 같은 페이지를 띄운다(공유 링크 호환).
-    GetPage(name: '$phoenix/', page: () => const PhoenixLandingWeb()),
+    GetPage(name: seasonOpenEvent, page: () => const PhoenixLandingWeb()),
+    // 끝 슬래시로 들어와도 같은 페이지(공유 링크 호환).
+    GetPage(name: '$seasonOpenEvent/', page: () => const PhoenixLandingWeb()),
+    // 구 경로(/phoenix) 하위호환 — 기존에 공유된 링크도 그대로 열린다.
+    GetPage(name: '/phoenix', page: () => const PhoenixLandingWeb()),
+    GetPage(name: '/phoenix/', page: () => const PhoenixLandingWeb()),
     GetPage(name: phoenixClaim, page: () => const PhoenixClaimWeb()),
+    // OG·히어로 배너 캡처 전용(앱 네비/카드 없이 히어로 아트만).
+    GetPage(name: '/phoenix-banner', page: () => const PhoenixBannerWeb()),
+    // 앱 홈 배너(가로 띠) 캡처 전용.
+    GetPage(name: '/phoenix-strip', page: () => const PhoenixStripWeb()),
     GetPage(
       name: settings,
       page: () => const SettingsViewWeb(),
@@ -400,10 +404,6 @@ class WebRoutes {
       name: shop,
       page: () => const ShopViewWeb(),
       binding: WebShopBinding(),
-    ),
-    GetPage(
-      name: openPreview,
-      page: () => const OpenPreviewPageWeb(),
     ),
     GetPage(
       name: userProfile,

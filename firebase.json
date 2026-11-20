@@ -12,27 +12,32 @@
       "redirects": [
         {
           "source": "/share/flea/:id",
-          "destination": "https://app.snowlive.kr/share/flea/:id/",
+          "destination": "https://app.snowlive.kr/share/flea/:id/?w=qa",
           "type": 302
         },
         {
           "source": "/share/user/:id",
-          "destination": "https://app.snowlive.kr/share/user/:id/",
+          "destination": "https://app.snowlive.kr/share/user/:id/?w=qa",
           "type": 302
         },
         {
           "source": "/share/community/:id",
-          "destination": "https://app.snowlive.kr/share/community/:id/",
+          "destination": "https://app.snowlive.kr/share/community/:id/?w=qa",
           "type": 302
         },
         {
           "source": "/share/livetalk/:id",
-          "destination": "https://app.snowlive.kr/share/livetalk/:id/",
+          "destination": "https://app.snowlive.kr/share/livetalk/:id/?w=qa",
           "type": 302
         },
         {
           "source": "/share/crew/:id",
-          "destination": "https://app.snowlive.kr/share/crew/:id/",
+          "destination": "https://app.snowlive.kr/share/crew/:id/?w=qa",
+          "type": 302
+        },
+        {
+          "source": "/share/season-open-event",
+          "destination": "https://app.snowlive.kr/share/season-open-event/?w=qa",
           "type": 302
         },
         {
@@ -113,6 +118,11 @@
         {
           "source": "/share/crew/:id",
           "destination": "https://app.snowlive.kr/share/crew/:id/",
+          "type": 302
+        },
+        {
+          "source": "/share/season-open-event",
+          "destination": "https://app.snowlive.kr/share/season-open-event/",
           "type": 302
         },
         {

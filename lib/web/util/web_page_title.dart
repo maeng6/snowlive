@@ -64,8 +64,9 @@ const Map<String, String> kWebPageNames = {
   // 계정
   WebRoutes.login: '로그인',
   WebRoutes.onboarding: '회원가입',
-  // 휘팍 콜라보 이벤트
-  WebRoutes.phoenix: '휘팍 이벤트',
+  // 개장빵 이벤트
+  WebRoutes.seasonOpenEvent: '개장빵 이벤트',
+  '/phoenix': '개장빵 이벤트', // 구 경로 하위호환
   WebRoutes.phoenixClaim: '상품 받기',
 };
 
