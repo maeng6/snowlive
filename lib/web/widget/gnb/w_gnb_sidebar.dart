@@ -43,7 +43,7 @@ class WebGnbSidebar extends StatelessWidget {
                 () => Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    for (final item in gnbPrimaryItemsForHost)
+                    for (final item in kGnbPrimaryItems)
                       if (PaidVisibilityControllerWeb.menuVisible(
                         item.routePrefix,
                       ))

@@ -131,30 +131,6 @@ const List<GnbNavItemData> kGnbSecondaryItems = [
   GnbNavItemData(label: '설정', routePrefix: WebRoutes.settings),
 ];
 
-/// 추천 상품 메뉴 노출 게이트 — **프로덕션 호스트에서는 숨기고**, QA/기타에선 노출한다.
-///
-/// 추천상품을 QA에서 새로 셋팅·오픈 준비 중이라, 같은 빌드를 prod/QA에 올리되
-/// 프로덕션에서만 메뉴를 가린다. 정식 오픈 시 아래 프로덕션 호스트 목록을 비우면
-/// (또는 이 게이트를 지우면) 프로덕션에도 바로 노출된다.
-bool get kShopMenuVisibleWeb {
-  const prodHosts = {
-    'snowlive.kr',
-    'www.snowlive.kr',
-    'snowlive-cf446.web.app',
-    'snowlive-cf446.firebaseapp.com',
-  };
-  return !prodHosts.contains(Uri.base.host);
-}
-
-/// 호스트 게이트까지 반영한 1차 그룹. 사이드바·드로어가 이 목록을 순회한다.
-List<GnbNavItemData> get gnbPrimaryItemsForHost {
-  if (kShopMenuVisibleWeb) return kGnbPrimaryItems;
-  return [
-    for (final item in kGnbPrimaryItems)
-      if (item.routePrefix != WebRoutes.shop) item,
-  ];
-}
-
 bool gnbItemIsActive(GnbNavItemData item, String currentRoute) {
   if (item.routePrefix == null) return false;
   return currentRoute.startsWith(item.routePrefix!);
