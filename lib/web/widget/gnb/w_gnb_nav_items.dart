@@ -1,6 +1,7 @@
 import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/core/viewmodel/vm_user.dart';
 import 'package:com.snowlive/web/routes/routes_web.dart';
+import 'package:com.snowlive/web/util/web_hard_reload_web.dart';
 import 'package:com.snowlive/web/view/shop/shop_sections_web.dart' show kShopMenuLabel;
 import 'package:com.snowlive/web/viewmodel/alarm/vm_alarmCenter_web.dart';
 import 'package:com.snowlive/web/viewmodel/fleamarket/vm_fleamarketPagination_web.dart';
@@ -177,15 +178,13 @@ void openGnbSection(String prefix) {
   }
 }
 
-/// 상단 로고 탭 = **사이드바 '홈' 탭과 완전히 동일 동작**.
+/// 상단 로고 탭 = **웹사이트를 통째로 다시 로드하며 홈으로**(사용자 지시).
 ///
-/// 예전엔 `Get.offAllNamed(home)`로 스택을 통째로 날려 홈을 다시 만들었는데, 그러면
-/// 홈 뷰모델이 지워졌다 두 번 새로 생기면서(fenix) 배너 실시간 구독 재연결이 꼬여
-/// "다른 탭 거쳐 로고로 오면 배너가 안 뜨는" 문제가 있었다. 홈 탭이 쓰는
-/// [openGnbSection]을 그대로 재사용한다 — 다른 탭에선 스택 보존하며 toNamed, 홈이면
-/// refreshFromGnb(맨 위로 + 재조회)만.
+/// 앱 안에서 라우팅만 하면(`openGnbSection`) 그때까지 만들어진 뷰모델·구독이 그대로
+/// 남는다. 로고는 "처음부터 다시"라는 뜻으로 쓰이므로 문서를 새로 로드한다.
+/// 주소창이 `/share/...`로 바뀌어 있는 경우까지 [hardReloadToRouteWeb]가 처리한다.
 void reloadToHomeWeb() {
-  openGnbSection(WebRoutes.home);
+  hardReloadToRouteWeb(WebRoutes.home);
 }
 
 /// 사이드바/드로어가 공유하는 항목 1개 행. 라우트가 있으면 이동하고,
