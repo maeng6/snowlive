@@ -720,21 +720,26 @@ class PhoenixLandingWeb extends StatelessWidget {
   Widget build(BuildContext context) {
     final vm = Get.put(PhoenixViewModelWeb());
     final isMobile = context.screenType == WebScreenType.mobile;
+    // 설경 배경의 가로 폭(piste). 콘텐츠 폭(모바일은 화면 가득)에 맞춰 그린다.
+    final double piste = isMobile ? 1340 : kWebSubPageMaxWidth;
     return Container(
       color: SnowScene.snow,
       child: WebStickyFooterScroll(
         onRefresh: vm.load,
         padding: EdgeInsets.zero,
-        // 배경(설경)은 폭 제한 **바깥에** 깔아 PC에서도 화면 끝까지 채운다.
-        // 콘텐츠만 1280으로 묶이고, 넓어진 만큼 눈밭과 숲이 더 그려진다.
-        content: Stack(children: [
+        // 바디(배경 설경 포함)를 콘텐츠 폭에 맞춰 가운데 정렬한다 — 배경이 화면 끝까지
+        // 퍼지지 않고 콘텐츠 영역만큼만 그려지고, 바깥은 SnowScene.snow 단색.
+        content: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: kWebSubPageMaxWidth),
+            child: Stack(children: [
           // 지형은 한 번 구운 비트맵, 라이더·리프트 의자만 매 프레임 움직인다.
           // pisteWidth는 두 레이어가 **같은 값**이어야 경로가 어긋나지 않는다.
           // 모바일은 화면이 좁아 양옆 숲이 제목까지 밀고 들어온다.
           // 제목 블록이 차지하는 세로 띠만 알려주고 그 안쪽 나무를 비운다.
           Positioned.fill(
             child: SkiSlopeBackground(
-              pisteWidth: 1340,
+              pisteWidth: piste,
               clearTop: isMobile ? 60 : 0,
               clearBottom: isMobile ? 350 : 0,
             ),
@@ -745,7 +750,7 @@ class PhoenixLandingWeb extends StatelessWidget {
             child: Obx(() => vm.isLoading.value
                 ? const SizedBox.shrink()
                 // 하단 220px(풋터 쪽)엔 라이더·곤돌라가 내려오지 않게 한다.
-                : const SkiSlopeActors(pisteWidth: 1340, bottomSafe: 220)),
+                : SkiSlopeActors(pisteWidth: piste, bottomSafe: 220)),
           ),
           // 상단 중앙 — 산장(몽블랑 집) 대신 스노우라이브 앱아이콘. 저해상 디코드 후
           // nearest 업스케일로 픽셀아트 톤에 맞춘다(정사각).
@@ -789,10 +794,12 @@ class PhoenixLandingWeb extends StatelessWidget {
           ),
           ),
         ]),
-        // 풋터 좌우 여백은 본문과 공통(16).
+          ), // ConstrainedBox — 바디 폭 제한
+        ), // Center
+        // 풋터는 다른 페이지 공통 풋터와 동일 폭(1280)으로 둬 스토어 배지 정렬을 맞춘다.
         footer: Center(
           child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: kWebSubPageMaxWidth),
+            constraints: const BoxConstraints(maxWidth: kWebDesktopListMaxWidth),
             child: const Padding(
               padding: EdgeInsets.symmetric(horizontal: 16),
               child: HomeFooterWeb(),
