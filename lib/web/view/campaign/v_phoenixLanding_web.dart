@@ -1855,7 +1855,7 @@ void _showJoinMethodDialog(BuildContext context) {
                           step('1', '스노우라이브 앱 다운로드',
                               trailing: downloadBtn),
                           step('2', '스키장에서 라이브온!'),
-                          step('3', '라이딩하면 스키장별 1~3등 자동 집계'),
+                          step('3', '라이딩하면 스키장별 선착순 1~3등 자동 집계'),
                         ],
                       ),
                     ),
