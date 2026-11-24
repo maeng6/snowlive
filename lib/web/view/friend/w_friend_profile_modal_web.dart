@@ -6,8 +6,16 @@ import 'package:com.snowlive/web/viewmodel/friend/vm_friend_web.dart';
 import 'package:com.snowlive/web/widget/w_web_overlay_modal_web.dart';
 import 'package:com.snowlive/web/widget/w_web_profile_card_web.dart';
 import 'package:com.snowlive/web/widget/w_web_toast_web.dart';
+import 'package:com.snowlive/web/util/web_external_links.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+/// 공식 계정(공지 작성자 '스노우라이브') 표시용 상수.
+const String _kOfficialName = '스노우라이브';
+const String _kOfficialLogoAsset = 'assets/app_icon.png';
+const String _kInstaIconAsset = 'assets/imgs/icons/icon_link_instagram.png';
+const String _kKakaoIconAsset = 'assets/imgs/icons/icon_link_kakao.png';
 
 /// 친구/유저 프로필 미리보기 팝업.
 ///
@@ -29,6 +37,10 @@ Future<bool?> showFriendProfileModal(
   /// 호출한 쪽이 이미 친구임을 아는 경우(친구 목록 행). 상세 응답을 기다리는 동안
   /// `친구 추가` 버튼이 잠깐 보이는 것을 막는다.
   bool initialAreWeFriend = false,
+
+  /// 공식 계정('스노우라이브' 공지 작성자)일 때 true. 프로필 사진 대신 앱 로고,
+  /// 친구추가·프로필보러가기 대신 인스타그램·카카오 채널 바로가기를 보여준다.
+  bool official = false,
 }) {
   final isMobile = context.screenType == WebScreenType.mobile;
   return showWebOverlayModal<bool>(
@@ -42,6 +54,7 @@ Future<bool?> showFriendProfileModal(
       initialAvatarUrl: initialAvatarUrl,
       initialAreWeFriend: initialAreWeFriend,
       isSheet: isMobile,
+      official: official,
       onClose: close,
     ),
   );
@@ -53,6 +66,7 @@ class _FriendProfileSheet extends StatefulWidget {
   final String? initialAvatarUrl;
   final bool initialAreWeFriend;
   final bool isSheet;
+  final bool official;
   final void Function([bool? result]) onClose;
 
   const _FriendProfileSheet({
@@ -61,6 +75,7 @@ class _FriendProfileSheet extends StatefulWidget {
     required this.initialAvatarUrl,
     required this.initialAreWeFriend,
     required this.isSheet,
+    required this.official,
     required this.onClose,
   });
 
@@ -108,6 +123,28 @@ class _FriendProfileSheetState extends State<_FriendProfileSheet> {
   Widget build(BuildContext context) {
     final info = _detail?.friendUserInfo;
 
+    // 공식 계정(공지 '스노우라이브'): 프로필 사진→앱 로고, 소속/상태 숨김,
+    // 친구추가·프로필보러가기→인스타그램·카카오 채널 바로가기.
+    if (widget.official) {
+      return WebProfileCard(
+        data: WebProfileCardData(
+          userId: widget.friendUserId,
+          logoAsset: _kOfficialLogoAsset,
+          displayName: _kOfficialName,
+        ),
+        isSheet: widget.isSheet,
+        onClose: widget.isSheet ? null : () => widget.onClose(),
+        action: null,
+        footer: Row(
+          children: [
+            Expanded(child: _officialSnsButton(_kInstaIconAsset, '인스타그램', kInstagramUrl)),
+            const SizedBox(width: 10),
+            Expanded(child: _officialSnsButton(_kKakaoIconAsset, '카카오 채널', kKakaoChannelUrl)),
+          ],
+        ),
+      );
+    }
+
     final data = WebProfileCardData(
       userId: widget.friendUserId,
       avatarUrl: info?.profileImageUrlUser ?? widget.initialAvatarUrl,
@@ -130,6 +167,32 @@ class _FriendProfileSheetState extends State<_FriendProfileSheet> {
           widget.onClose(_requestSent);
           pushWebProfileRoute(widget.friendUserId);
         },
+      ),
+    );
+  }
+
+  /// 공식 SNS 바로가기 버튼(로고 + 라벨). 새 탭으로 공식 채널을 연다.
+  Widget _officialSnsButton(String iconAsset, String label, String url) {
+    return InkWell(
+      borderRadius: BorderRadius.circular(10),
+      onTap: () => launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication),
+      child: Container(
+        height: 46,
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          color: SDSColor.gray50,
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(color: SDSColor.gray200),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Image.asset(iconAsset, width: 20, height: 20),
+            const SizedBox(width: 7),
+            Text(label,
+                style: SDSTextStyle.bold.copyWith(fontSize: 14, color: SDSColor.gray900)),
+          ],
+        ),
       ),
     );
   }

@@ -37,6 +37,7 @@ class LiveActivityService : Service() {
         private var liveFriendCount: Int = 0
         private var lastRideAtMs: Long? = null
         private var resortName: String = "-"
+        private var snowballCount: Int = -1   // -1 = 눈송이 리조트 아님(표시 안함)
 
         fun isServiceRunning(): Boolean = isRunning
     }
@@ -56,6 +57,7 @@ class LiveActivityService : Service() {
                 sessionRideCount = intent.getIntExtra("sessionRideCount", 0)
                 lastSlopeName = intent.getStringExtra("lastSlopeName") ?: "-"
                 liveFriendCount = intent.getIntExtra("liveFriendCount", 0)
+                snowballCount = intent.getIntExtra("snowballCount", -1)
                 lastRideAtMs = if (intent.hasExtra("lastRideAtMs")) intent.getLongExtra("lastRideAtMs", 0) else null
                 resortName = intent.getStringExtra("resortName") ?: "-"
 
@@ -75,6 +77,9 @@ class LiveActivityService : Service() {
                 }
                 if (intent.hasExtra("liveFriendCount")) {
                     liveFriendCount = intent.getIntExtra("liveFriendCount", liveFriendCount)
+                }
+                if (intent.hasExtra("snowballCount")) {
+                    snowballCount = intent.getIntExtra("snowballCount", snowballCount)
                 }
                 if (intent.hasExtra("lastRideAtMs")) {
                     lastRideAtMs = intent.getLongExtra("lastRideAtMs", 0)
@@ -145,7 +150,8 @@ class LiveActivityService : Service() {
         val minutes = elapsedMinutes % 60
         val elapsedText = if (hours > 0) "${hours}시간 ${minutes}분" else "${minutes}분"
 
-        val contentText = "라이딩 $sessionRideCount 회 | $elapsedText 경과"
+        val snowballText = if (snowballCount >= 0) " | ❄ 눈송이 $snowballCount" else ""
+        val contentText = "라이딩 $sessionRideCount 회$snowballText | $elapsedText 경과"
 
         // 볼드 처리된 subText
         val boldSubText = if (AndroidBuild.VERSION.SDK_INT >= AndroidBuild.VERSION_CODES.N) {

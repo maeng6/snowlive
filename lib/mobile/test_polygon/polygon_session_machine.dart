@@ -89,14 +89,23 @@ class PolygonSessionMachine {
   final double noiseFloorM; // 최소 커버리지 하한(m)
   final double minDescentM;     // 순 하강량 절대 하한(m)
   final double minDescentRatio; // 순 하강량 상대 하한(축길이 비율) — 리프트횡단/역행 배제
+  final int reentryGraceMs;     // 짧은 이탈 후 재진입 시 같은 세션으로 이어붙이는 유예(ms)
+  final double altRiseTolM;     // 진입 시 고도 상승 허용치(m) — 이보다 오르면 리프트로 보고 세션 시작 안 함
+  final double minNetDescentM;  // 커밋 전 순 하강(고도) 하한(m) — 안 내려오면 리프트/평탄으로 드롭
+  // 🎿 속도 우선: GPS 고도는 부정확(활강 중 100m+ 튐)해서 고도만으로 리프트를 판정하면
+  // '빠른 실제 라이딩'을 오삭제한다. 평활 속도의 상위값(p80)이 이 스키속도(km/h) 이상이면
+  // 고도가 어떻든 실제 하강(라이딩)으로 보고 고도 가드로 드롭하지 않는다(리프트는 3~6km/h).
+  final double skiSpeedKmh;
 
   PolygonSessionMachine(this.slopes,
       {this.entryConfirm = 2, this.exitConfirm = 2, this.bandM = 25, this.noiseFloorM = 5,
-      this.minDescentM = 15, this.minDescentRatio = 0.05});
+      this.minDescentM = 15, this.minDescentRatio = 0.05, this.reentryGraceMs = 8000,
+      this.altRiseTolM = 1.0, this.minNetDescentM = 3.0, this.skiSpeedKmh = 15.0});
 
   final Map<int, _Cand> _active = {};
   final Map<int, int> _entryStreak = {};
   final Map<int, double> _lastPr = {};
+  double? _prevAlt; // 직전 점의 고도(기기 단일 스트림) — 진입 시 '고도 상승 여부' 판별용
   final List<_Cand> _cluster = []; // 시간상 겹치는 후보 그룹 (dedup용)
 
   final List<CommitEvent> commits = [];
@@ -125,10 +134,14 @@ class PolygonSessionMachine {
 
       final c = _active[s.slopeId];
       if (c == null) {
-        // 진입 판별: 폴리곤 안 + 하강(진행률 증가)
+        // 진입 판별: 폴리곤 안 + 하강(진행률 증가) + 고도 안 오름(리프트 배제)
         if (ins && pr >= 0) {
           final last = _lastPr[s.slopeId];
-          final descending = last != null && pr > last + 1e-9;
+          // 진입 판별: 진행률 증가(하강) + 고도 안 오름(per-point 급상승이면 리프트로 보고 제외).
+          // 실측상 리프트는 진행률이 '감소'하므로 "진행률 증가 필수" 조건만으로도 대부분 막힌다.
+          // (전진투영으로 진행률 증가하는 리프트는 데이터상 없음 — 그런 궤적은 실제 라이딩이었음)
+          final altRising = alt != null && _prevAlt != null && alt > _prevAlt! + altRiseTolM;
+          final descending = last != null && pr > last + 1e-9 && !altRising;
           _entryStreak[s.slopeId] = descending ? (_entryStreak[s.slopeId] ?? 0) + 1 : 0;
           _lastPr[s.slopeId] = pr;
           if ((_entryStreak[s.slopeId] ?? 0) >= entryConfirm - 1 && last != null) {
@@ -143,7 +156,12 @@ class PolygonSessionMachine {
             _log('▶ 세션시작 ${s.name} (진입 pr=${last.toStringAsFixed(2)})');
           }
         } else {
-          if (pr >= 0) _lastPr[s.slopeId] = pr;
+          // 폴리곤 밖이면 진입 기준선(_lastPr)을 리셋한다. 안 그러면 '직전 방문의 오래된
+          // 진행률'이 남아, 바닥(여러 슬로프가 겹치는 구간)에 다시 들어올 때 pr 점프(예: 0.71→1.0)가
+          // '진행률 증가'로 오인돼 유령 세션이 시작된다. 그 세션이 이어서 리프트 상승(진행률 감소)을
+          // 기록한다 — 겹친 슬로프에 리프트가 세션으로 잡히던 근본 원인. 리셋하면 재진입 후
+          // '새로 연속 하강'해야만 진입하므로, 진행률이 감소하는 리프트는 애초에 시작되지 않는다.
+          _lastPr.remove(s.slopeId);
           _entryStreak[s.slopeId] = 0;
         }
       } else {
@@ -171,12 +189,20 @@ class PolygonSessionMachine {
           }
         } else {
           c.outside++;
-          if (c.outside >= exitConfirm) {
-            _end(c, t, '폴리곤이탈');
+          // 재진입 유예(reentry grace): 짧은 이탈(GPS 튐·경계 스침)로 세션이 끊겨
+          // 한 번의 라이딩이 둘로 쪼개지는(=라이딩 횟수 중복) 걸 막는다.
+          // 연속 exitConfirm점 밖 '그리고' 마지막 내부점으로부터 grace 이상 지나야 실제 종료.
+          // (유예 안에 다시 들어오면 c.outside=0으로 리셋돼 같은 세션으로 이어진다.)
+          final outMs = t.difference(c.lastInsideAt).inMilliseconds;
+          if (c.outside >= exitConfirm && outMs >= reentryGraceMs) {
+            // 종료 시각은 실제로 마지막으로 폴리곤 안에 있던 시점(이탈 공백 제외).
+            _end(c, c.lastInsideAt, '폴리곤이탈');
           }
         }
       }
     }
+    // 직전 고도 갱신(기기 단일 스트림) — 다음 점의 진입 고도판별용.
+    if (alt != null) _prevAlt = alt;
     // [임시/디버그] 포인트별 상세 로그: 좌표 + 이 점에서 안에 든 슬로프(진행률) + 활성세션 상태
     _log('· (${p.lat.toStringAsFixed(6)},${p.lng.toStringAsFixed(6)}) '
         'in=[${insNames.join(', ')}] act=[$activeSummary]');
@@ -225,6 +251,53 @@ class PolygonSessionMachine {
   // 세션의 순 하강량(m) = (최고 진행률 − 진입 진행률) × 축길이
   double _netDescent(_Cand c) => (c.maxProgress - c.entryProgress) * c.s.axisLen;
 
+  // 고도상 실제로 내려왔는가 — 리프트가 폴리곤 가장자리/축밖을 지나 진행률만 증가하는
+  // 케이스를 고도(수직 진실)로 막는다. 고도 데이터가 없으면(판정불가) true(기존 필터에 위임).
+  bool _altDescends(_Cand c) {
+    // 🎿 속도 우선(지터 아닐 때만): 지속 스키속도(p80)가 나오고 궤적이 지터가 아니면
+    // — GPS 고도가 어떻든 — 실제 라이딩이다. 리프트는 느려서 못 미치고, 지터는 가짜 속도를
+    // 만들 수 있어 곡률로 걸러낸다. (빠른 실제 라이딩 오삭제 방지)
+    if (_rideSpeedP80(c) >= skiSpeedKmh && _curvature(c) <= 1.8) return true;
+    final a = <double>[];
+    for (final v in c.trackAlt) {
+      if (v != null) a.add(v);
+    }
+    if (a.length < 6) return true;
+    final head = (a[0] + a[1] + a[2]) / 3.0;
+    final tail = (a[a.length - 1] + a[a.length - 2] + a[a.length - 3]) / 3.0;
+    return (head - tail) >= minNetDescentM;
+  }
+
+  /// 점간 속도(km/h)의 80퍼센타일 — 단일 GPS 튐에 강건. 리프트/라이딩 판별용.
+  double _rideSpeedP80(_Cand c) {
+    final n = c.track.length;
+    if (n < 5 || c.trackT.length != n) return 0;
+    final sp = <double>[];
+    for (int i = 1; i < n; i++) {
+      final dt = c.trackT[i].difference(c.trackT[i - 1]).inMilliseconds / 1000.0;
+      if (dt > 0) sp.add(metersBetween(c.track[i - 1], c.track[i]) / dt * 3.6);
+    }
+    if (sp.isEmpty) return 0;
+    sp.sort();
+    return sp[math.min(sp.length - 1, (sp.length - 1) * 8 ~/ 10)];
+  }
+
+  /// 궤적 경로길이/직선변위 비율. 1=직선, 클수록 구불. 실제 라이딩~1~1.8, 리프트~1.0,
+  /// GPS 지터(제자리 튐)는 2.5+ (경로만 길고 실제론 안 움직임).
+  double _curvature(_Cand c) {
+    final n = c.track.length;
+    if (n < 3) return 1.0;
+    double path = 0;
+    for (int i = 1; i < n; i++) {
+      path += metersBetween(c.track[i - 1], c.track[i]);
+    }
+    final straight = metersBetween(c.track[0], c.track[n - 1]);
+    return straight > 1.0 ? path / straight : 99.0;
+  }
+
+  /// GPS 지터(바닥 승차장/정지 중 좌표가 좁은 영역서 튐)로 생긴 가짜 세션.
+  bool _isJitter(_Cand c) => c.track.length >= 8 && _curvature(c) >= 2.5;
+
   /// 종료된 후보 그룹을 시간포함(nesting) 기반으로 dedup → 커밋
   void _finalizeGroup() {
     // 커버리지 하한 + 순 하강량 하한(리프트/역행/횡단처럼 하강 없는 세션 배제).
@@ -232,7 +305,9 @@ class PolygonSessionMachine {
     final cands = _cluster
         .where((c) =>
             c.coverageM >= noiseFloorM &&
-            _netDescent(c) >= math.max(minDescentM, minDescentRatio * c.s.axisLen))
+            !_isJitter(c) &&  // GPS 지터(제자리 튐)로 생긴 가짜 세션 제외
+            _netDescent(c) >= math.max(minDescentM, minDescentRatio * c.s.axisLen) &&
+            _altDescends(c))
         .toList();
     final Map<int, _Cand> best = {};
     for (final c in cands) {

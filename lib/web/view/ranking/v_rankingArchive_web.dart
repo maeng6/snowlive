@@ -60,7 +60,7 @@ class _RankingArchiveViewWebState extends State<RankingArchiveViewWeb> {
   final RxString _searchQuery = ''.obs;
 
   _ArchiveTab _tab = _ArchiveTab.individual;
-  RankingFilter_season _selectedSeason = RankingFilter_season.season2526;
+  RankingFilter_season _selectedSeason = RankingFilter_season.season2627;
   RankingFilter_resort _selectedResort = RankingFilter_resort.total;
   RankingFilter_fed _selectedFed = RankingFilter_fed.initial;
 

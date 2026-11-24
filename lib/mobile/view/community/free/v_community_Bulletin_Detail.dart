@@ -23,7 +23,80 @@ import 'dart:io' as io;
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:url_launcher/url_launcher.dart';
 
+// ── 공지 작성자('스노우라이브') 공식 프로필 — 웹과 동일 구성 ──────────────
+const String _kSnowliveNoticeSub = '공지';
+const String _kSnowliveOfficialName = '스노우라이브';
+const String _kSnowliveLogoAsset = 'assets/app_icon.png';
+const String _kSnowliveInstaUrl = 'https://www.instagram.com/snowlive_official/';
+const String _kSnowliveKakaoUrl = 'https://pf.kakao.com/_LxnDdG/';
+const String _kSnowliveInstaIcon = 'assets/imgs/icons/icon_link_instagram.png';
+const String _kSnowliveKakaoIcon = 'assets/imgs/icons/icon_link_kakao.png';
+
+/// 공지 작성자('스노우라이브')를 눌렀을 때 뜨는 공식 프로필 바텀시트.
+/// 웹 official 모달과 동일하게 로고 + 인스타그램/카카오 채널 바로가기만 보여준다.
+void showSnowliveOfficialSheet(BuildContext context) {
+  showModalBottomSheet(
+    context: context,
+    backgroundColor: Colors.transparent,
+    builder: (_) => Container(
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      padding: const EdgeInsets.fromLTRB(20, 10, 20, 28),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            width: 40, height: 4,
+            margin: const EdgeInsets.only(bottom: 20),
+            decoration: BoxDecoration(
+                color: SDSColor.gray200, borderRadius: BorderRadius.circular(2)),
+          ),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(64 * 0.22),
+            child: Image.asset(_kSnowliveLogoAsset, width: 64, height: 64, fit: BoxFit.cover),
+          ),
+          const SizedBox(height: 12),
+          Text(_kSnowliveOfficialName,
+              style: SDSTextStyle.bold.copyWith(fontSize: 18, color: SDSColor.gray900)),
+          const SizedBox(height: 24),
+          Row(children: [
+            Expanded(child: _snowliveSnsButton(_kSnowliveInstaIcon, '인스타그램', _kSnowliveInstaUrl)),
+            const SizedBox(width: 10),
+            Expanded(child: _snowliveSnsButton(_kSnowliveKakaoIcon, '카카오 채널', _kSnowliveKakaoUrl)),
+          ]),
+        ],
+      ),
+    ),
+  );
+}
+
+Widget _snowliveSnsButton(String icon, String label, String url) {
+  return InkWell(
+    borderRadius: BorderRadius.circular(10),
+    onTap: () => launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication),
+    child: Container(
+      height: 46,
+      alignment: Alignment.center,
+      decoration: BoxDecoration(
+        color: SDSColor.gray50,
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: SDSColor.gray200!),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Image.asset(icon, width: 20, height: 20),
+          const SizedBox(width: 7),
+          Text(label, style: SDSTextStyle.bold.copyWith(fontSize: 14, color: SDSColor.gray900)),
+        ],
+      ),
+    ),
+  );
+}
 
 
 class CommunityBulletinDetailView extends StatelessWidget {
@@ -653,6 +726,11 @@ class CommunityBulletinDetailView extends StatelessWidget {
                                           GestureDetector(
                                             onTap: () async{
                                               textFocus.unfocus();
+                                              // 공지 작성자는 '스노우라이브' 공식 프로필 시트(웹과 동일).
+                                              if (_communityDetailViewModel.communityDetail.categorySub == _kSnowliveNoticeSub) {
+                                                showSnowliveOfficialSheet(context);
+                                                return;
+                                              }
                                               Get.toNamed(AppRoutes.friendDetail);
                                               await _friendDetailViewModel.fetchFriendDetailInfo(
                                                   userId: _userViewModel.user.user_id,
@@ -665,7 +743,14 @@ class CommunityBulletinDetailView extends StatelessWidget {
                                                 crossAxisAlignment: CrossAxisAlignment.center,
                                                 mainAxisAlignment: MainAxisAlignment.start,
                                                 children: [
-                                                  if (_communityDetailViewModel.communityDetail.userInfo!.profileImageUrlUser != '')
+                                                  // 공지 작성자는 프로필 사진 대신 앱 로고(웹과 동일).
+                                                  if (_communityDetailViewModel.communityDetail.categorySub == _kSnowliveNoticeSub)
+                                                    ClipRRect(
+                                                      borderRadius: BorderRadius.circular(32 * 0.22),
+                                                      child: Image.asset(_kSnowliveLogoAsset,
+                                                          width: 32, height: 32, fit: BoxFit.cover),
+                                                    ),
+                                                  if (_communityDetailViewModel.communityDetail.categorySub != _kSnowliveNoticeSub && _communityDetailViewModel.communityDetail.userInfo!.profileImageUrlUser != '')
                                                     Container(
                                                       width: 32,
                                                       height: 32,
@@ -718,7 +803,7 @@ class CommunityBulletinDetailView extends StatelessWidget {
                                                         },
                                                       ),
                                                     ),
-                                                  if (_communityDetailViewModel.communityDetail.userInfo!.profileImageUrlUser == '')
+                                                  if (_communityDetailViewModel.communityDetail.categorySub != _kSnowliveNoticeSub && _communityDetailViewModel.communityDetail.userInfo!.profileImageUrlUser == '')
                                                     ExtendedImage.network(
                                                       '${profileImgUrlList[0].default_round}',
                                                       shape: BoxShape.circle,
@@ -764,11 +849,16 @@ class CommunityBulletinDetailView extends StatelessWidget {
                                                     child: Column(
                                                       crossAxisAlignment: CrossAxisAlignment.start,
                                                       children: [
-                                                        Text('${_communityDetailViewModel.communityDetail.userInfo!.displayName}',
+                                                        Text(
+                                                          _communityDetailViewModel.communityDetail.categorySub == _kSnowliveNoticeSub
+                                                              ? _kSnowliveOfficialName
+                                                              : '${_communityDetailViewModel.communityDetail.userInfo!.displayName}',
                                                           style: SDSTextStyle.regular.copyWith(
                                                               fontSize: 12,
                                                               color: SDSColor.gray900),
                                                         ),
+                                                        // 공지(스노우라이브)는 스키장 소속을 숨긴다(웹과 동일).
+                                                        if (_communityDetailViewModel.communityDetail.categorySub != _kSnowliveNoticeSub)
                                                         Row(
                                                           children: [
                                                             Text('${_communityDetailViewModel.communityDetail.userInfo!.resortNickname}',

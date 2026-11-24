@@ -16,7 +16,8 @@ final class LiveActivityManager {
                sessionRideCount: Int,
                lastSlopeName: String,
                resortName: String,
-               liveFriendCount: Int = 0) async throws -> String {
+               liveFriendCount: Int = 0,
+               snowballCount: Int = -1) async throws -> String {
 
         // 시스템이 Live Activities를 허용하는지 확인
         guard ActivityAuthorizationInfo().areActivitiesEnabled else {
@@ -33,7 +34,8 @@ final class LiveActivityManager {
             todayRideCount: todayRideCount,
             sessionRideCount: sessionRideCount,
             lastSlopeName: lastSlopeName,
-            liveFriendCount: liveFriendCount
+            liveFriendCount: liveFriendCount,
+            snowballCount: snowballCount
         )
 
         // 요청
@@ -49,7 +51,8 @@ final class LiveActivityManager {
                 todayRideCount: Int,
                 sessionRideCount: Int,
                 lastSlopeName: String,
-                liveFriendCount: Int = 0) async throws {
+                liveFriendCount: Int = 0,
+                snowballCount: Int = -1) async throws {
         guard let activity = activities[activityId] ?? Activity<LiveOnActivityAttributes>.activities.first(where: { $0.id == activityId }) else {
             throw NSError(domain: "LiveActivity", code: -2, userInfo: [NSLocalizedDescriptionKey: "Activity not found"])
         }
@@ -58,7 +61,8 @@ final class LiveActivityManager {
             todayRideCount: todayRideCount,
             sessionRideCount: sessionRideCount,
             lastSlopeName: lastSlopeName,
-            liveFriendCount: liveFriendCount
+            liveFriendCount: liveFriendCount,
+            snowballCount: snowballCount
         )
         await activity.update(using: state)
         activities[activityId] = activity

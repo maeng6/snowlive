@@ -15,6 +15,7 @@ Future<void> openWebProfilePopup(
   required int userId,
   String? name,
   String? avatarUrl,
+  bool official = false,
 }) {
   _ensurePopupViewModels();
   return showFriendProfileModal(
@@ -22,6 +23,7 @@ Future<void> openWebProfilePopup(
     friendUserId: userId,
     initialName: name,
     initialAvatarUrl: avatarUrl,
+    official: official,
   );
 }
 
@@ -52,6 +54,9 @@ class WebProfileTap extends StatelessWidget {
   final String? name;
   final String? avatarUrl;
 
+  /// 공식 계정(공지 '스노우라이브')이면 로고+SNS 바로가기 팝업을 띄운다.
+  final bool official;
+
   /// 팝업 대신 다른 동작을 붙일 때 쓴다(프로필 화면에서 사진 확대). [userId]보다 우선.
   final VoidCallback? onTap;
 
@@ -61,6 +66,7 @@ class WebProfileTap extends StatelessWidget {
     this.userId,
     this.name,
     this.avatarUrl,
+    this.official = false,
     this.onTap,
   });
 
@@ -70,7 +76,8 @@ class WebProfileTap extends StatelessWidget {
     final effectiveOnTap = onTap ??
         (id == null
             ? null
-            : () => openWebProfilePopup(context, userId: id, name: name, avatarUrl: avatarUrl));
+            : () => openWebProfilePopup(context,
+                userId: id, name: name, avatarUrl: avatarUrl, official: official));
     if (effectiveOnTap == null) return child;
 
     return MouseRegion(

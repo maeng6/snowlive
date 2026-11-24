@@ -34,7 +34,7 @@ class FriendDetailViewModel_recordRoom extends GetxController {
     await fetchFriendDetailInfo_recordRoom(
       userId: _userViewModel.user.user_id,
       friendUserId: _userViewModel.user.user_id,
-      selected_season: '2526',
+      selected_season: '2627',
     );
 
     await getCurrentSeason();

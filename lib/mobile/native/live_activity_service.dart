@@ -18,6 +18,7 @@ class LiveActivityService {
     required String resortName,
     DateTime? lastRideAt,
     int liveFriendCount = 0,
+    int snowballCount = -1,   // -1 = 눈송이 리조트 아님(표시 안함)
   }) async {
     // 라이브 액티비티 비활성화 시 바로 리턴
     if (!isEnabled) return null;
@@ -31,6 +32,7 @@ class LiveActivityService {
       'lastSlopeName': lastSlopeName,
       'resortName': resortName,
       'liveFriendCount': liveFriendCount,
+      'snowballCount': snowballCount,
       if (lastRideAt != null) 'lastRideAtMs': lastRideAt.toUtc().millisecondsSinceEpoch,
     };
     print('[LiveActivityService.start] platform: ${Platform.operatingSystem}, payload: $payload');
@@ -53,6 +55,7 @@ class LiveActivityService {
     required String lastSlopeName,
     DateTime? lastRideAt,
     int liveFriendCount = 0,
+    int snowballCount = -1,
   }) async {
     // 라이브 액티비티 비활성화 시 바로 리턴
     if (!isEnabled) return;
@@ -65,6 +68,7 @@ class LiveActivityService {
         'sessionRideCount': sessionRideCount,
         'lastSlopeName': lastSlopeName,
         'liveFriendCount': liveFriendCount,
+        'snowballCount': snowballCount,
         if (lastRideAt != null) 'lastRideAtMs': lastRideAt.toUtc().millisecondsSinceEpoch,
       });
     } on PlatformException catch (e) {

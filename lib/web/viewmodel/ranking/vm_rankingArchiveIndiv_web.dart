@@ -26,7 +26,7 @@ class RankingArchiveIndivViewModelWeb extends GetxController {
   final int pageSize;
 
   // 필터 상태 (번호 이동 시 유지)
-  String _season = RankingFilter_season.season2526.dbSeason;
+  String _season = RankingFilter_season.season2627.dbSeason;
   int? _resortId;
   String? _federation;
   bool? _daily;

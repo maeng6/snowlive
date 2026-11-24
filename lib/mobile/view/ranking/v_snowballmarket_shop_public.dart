@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:com.snowlive/core/util/snowball_images.dart';
 import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/core/model/m_forestPark.dart';
 import 'package:com.snowlive/core/model/m_snowball.dart';
@@ -89,8 +90,7 @@ class _SnowballMarketPublicShopViewState extends State<SnowballMarketPublicShopV
                           children: [
                             Row(
                               children: [
-                                Image.asset(
-                                  'assets/imgs/imgs/snowballShop/icon_snowballshop_whiteball.png',
+                                snowImage('assets/imgs/imgs/snowballShop/icon_snowballshop_whiteball.png',
                                   height: 16,
                                 ),
                                 const SizedBox(width: 4),
@@ -106,8 +106,7 @@ class _SnowballMarketPublicShopViewState extends State<SnowballMarketPublicShopV
                             const SizedBox(width: 8),
                             Row(
                               children: [
-                                Image.asset(
-                                  'assets/imgs/imgs/snowballShop/icon_snowballshop_goldball.png',
+                                snowImage('assets/imgs/imgs/snowballShop/icon_snowballshop_goldball.png',
                                   height: 16,
                                 ),
                                 const SizedBox(width: 4),
@@ -692,8 +691,7 @@ class _SnowballMarketPublicShopViewState extends State<SnowballMarketPublicShopV
                                                       children: [
                                                         Row(
                                                           children: [
-                                                            Image.asset(
-                                                              'assets/imgs/imgs/snowballShop/icon_snowballshop_whiteball.png',
+                                                            snowImage('assets/imgs/imgs/snowballShop/icon_snowballshop_whiteball.png',
                                                               height: 12,
                                                             ),
                                                             const SizedBox(width: 4),
@@ -709,8 +707,7 @@ class _SnowballMarketPublicShopViewState extends State<SnowballMarketPublicShopV
                                                         const SizedBox(width: 8),
                                                         Row(
                                                           children: [
-                                                            Image.asset(
-                                                              'assets/imgs/imgs/snowballShop/icon_snowballshop_goldball.png',
+                                                            snowImage('assets/imgs/imgs/snowballShop/icon_snowballshop_goldball.png',
                                                               height: 12,
                                                             ),
                                                             const SizedBox(width: 4),

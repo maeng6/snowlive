@@ -319,7 +319,9 @@ class CommunityTableRow extends StatelessWidget {
           border: Border(bottom: BorderSide(color: SDSColor.gray100)),
           titleCell: CommunityTitleLine(community: community, query: query),
           authorCell: Text(
-            community.userInfo?.displayName ?? '',
+            community.categorySub == '공지'
+                ? '스노우라이브'
+                : (community.userInfo?.displayName ?? ''),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             style: metaStyle,
@@ -396,7 +398,9 @@ class CommunityCardRow extends StatelessWidget {
               children: [
                 Flexible(
                   child: Text(
-                    community.userInfo?.displayName ?? '',
+                    community.categorySub == '공지'
+                        ? '스노우라이브'
+                        : (community.userInfo?.displayName ?? ''),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: metaStyle,

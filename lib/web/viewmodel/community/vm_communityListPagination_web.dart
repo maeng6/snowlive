@@ -11,6 +11,7 @@ import 'package:get/get.dart';
 /// 정의한다. **문자열 값은 core enum과 동일하게 유지해야 서버 필터가 맞는다.**
 enum CommunityCategoryTab {
   total('전체', null),
+  notice('공지', '공지'),
   chat('잡담', '잡담'),
   room('시즌방', '시즌방'),
   crew('단톡방·동호회', '단톡방·동호회');

@@ -337,6 +337,29 @@ class CommunityMainView extends StatelessWidget {
                                       GestureDetector(
                                         onTap: (){
                                           HapticFeedback.lightImpact();
+                                          _communityBulletinListViewModel.changeChip(Community_Category_sub_bulletin.notice.korean);
+                                        },
+                                        child: Container(
+                                            decoration: BoxDecoration(
+                                              color: (_communityBulletinListViewModel.chipName==Community_Category_sub_bulletin.notice.korean) ? SDSColor.gray900 : SDSColor.snowliveWhite,
+                                              borderRadius: BorderRadius.circular(30.0),
+                                              border: Border.all(
+                                                  color: (_communityBulletinListViewModel.chipName==Community_Category_sub_bulletin.notice.korean) ? SDSColor.gray900 : SDSColor.gray100),
+                                            ),
+                                            padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                                            height: 36,
+                                            child: Text('${Community_Category_sub_bulletin.notice.korean}',
+                                              style: SDSTextStyle.bold.copyWith(
+                                                  fontSize: 13,
+                                                  fontWeight: (_communityBulletinListViewModel.chipName==Community_Category_sub_bulletin.notice.korean) ? FontWeight.bold : FontWeight.w300,
+                                                  color: (_communityBulletinListViewModel.chipName==Community_Category_sub_bulletin.notice.korean) ? SDSColor.snowliveWhite : SDSColor.snowliveBlack
+                                              ),)
+                                        ),
+                                      ),
+                                      SizedBox(width: 6),
+                                      GestureDetector(
+                                        onTap: (){
+                                          HapticFeedback.lightImpact();
                                           _communityBulletinListViewModel.changeChip(Community_Category_sub_bulletin.chat.korean);
                                         },
                                         child: Container(

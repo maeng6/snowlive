@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:com.snowlive/core/util/snowball_images.dart';
 import 'dart:convert';
 import 'dart:math';
 import 'package:carousel_slider/carousel_slider.dart';
@@ -457,8 +458,7 @@ class _SnowballMarketHomeViewState extends State<SnowballMarketHomeView> {
                             Container(
                               child: Column(
                                 children: [
-                                  Image.asset(
-                                      'assets/imgs/imgs/snowballShop/img_snowballshop_store.png',
+                                  snowImage('assets/imgs/imgs/snowballShop/img_snowballshop_store.png',
                                       width: _size.width
                                   ),
                                 ],
@@ -470,8 +470,7 @@ class _SnowballMarketHomeViewState extends State<SnowballMarketHomeView> {
                               left: 0,
                               right: 0,
                               child: Center(
-                                child: Image.asset(
-                                  'assets/imgs/imgs/snowballShop/icon_snowballshop_store_title.png',
+                                child: snowImage('assets/imgs/imgs/snowballShop/icon_snowballshop_store_title.png',
                                   height: 95, // 크기 조정
                                 ),
                               ),
@@ -510,8 +509,7 @@ class _SnowballMarketHomeViewState extends State<SnowballMarketHomeView> {
                                       child: Row(
                                         mainAxisSize: MainAxisSize.min,
                                         children: [
-                                          Image.asset(
-                                            'assets/imgs/imgs/snowballShop/icon_snowballshop_whiteball.png',
+                                          snowImage('assets/imgs/imgs/snowballShop/icon_snowballshop_whiteball.png',
                                             height: 16,
                                           ),
                                           const SizedBox(width: 4),
@@ -548,8 +546,7 @@ class _SnowballMarketHomeViewState extends State<SnowballMarketHomeView> {
                                       child: Row(
                                         mainAxisSize: MainAxisSize.min,
                                         children: [
-                                          Image.asset(
-                                            'assets/imgs/imgs/snowballShop/icon_snowballshop_goldball.png',
+                                          snowImage('assets/imgs/imgs/snowballShop/icon_snowballshop_goldball.png',
                                             height: 16,
                                           ),
                                           const SizedBox(width: 4),
@@ -602,8 +599,7 @@ class _SnowballMarketHomeViewState extends State<SnowballMarketHomeView> {
                                     children: [
                                       Padding(
                                         padding: EdgeInsets.only(left: 50),
-                                        child: Image.asset(
-                                            'assets/imgs/imgs/snowballShop/icon_snowballshop_bubble.png',
+                                        child: snowImage('assets/imgs/imgs/snowballShop/icon_snowballshop_bubble.png',
                                             width: 17
                                         ),
                                       ),
@@ -630,7 +626,8 @@ class _SnowballMarketHomeViewState extends State<SnowballMarketHomeView> {
                         SizedBox(height: 20,),
                         Column(
                           children: [
-                            //브랜드 미션 이미지
+                            //브랜드 미션 이미지 (어드민 'brand_mission_visible'=false면 숨김)
+                            if ((_snowballShopViewModel.infoData_snowballShop.value?['brand_mission_visible'] ?? true) != false)
                             Padding(
                               padding: const EdgeInsets.symmetric(horizontal: 30),
                               child: Column(
@@ -664,8 +661,7 @@ class _SnowballMarketHomeViewState extends State<SnowballMarketHomeView> {
                                       CustomFullScreenDialog.cancelDialog();
                                       Get.toNamed(AppRoutes.snowballMarketBrandShop);
                                     },
-                                    child: Image.asset(
-                                      'assets/imgs/imgs/snowballShop/icon_snowballshop_store_brand.png',
+                                    child: snowImage('assets/imgs/imgs/snowballShop/icon_snowballshop_store_brand.png',
                                     ),
                                   ),
                                   Padding(
@@ -697,8 +693,7 @@ class _SnowballMarketHomeViewState extends State<SnowballMarketHomeView> {
                                             ),
                                           ),
                                           SizedBox(width: 10,),
-                                          Image.asset(
-                                            'assets/imgs/imgs/snowballShop/icon_snowballshop_arrow_b.png',
+                                          snowImage('assets/imgs/imgs/snowballShop/icon_snowballshop_arrow_b.png',
                                             width: 16,
                                             height: 16,
                                           ),
@@ -810,12 +805,10 @@ class _SnowballMarketHomeViewState extends State<SnowballMarketHomeView> {
                                                                                   Row(
                                                                                     children: [
                                                                                       (item.color == '하얀')
-                                                                                          ? Image.asset(
-                                                                                        'assets/imgs/imgs/snowballShop/icon_snowballshop_whiteball.png',
+                                                                                          ? snowImage('assets/imgs/imgs/snowballShop/icon_snowballshop_whiteball.png',
                                                                                         height: 20,
                                                                                       )
-                                                                                          : Image.asset(
-                                                                                        'assets/imgs/imgs/snowballShop/icon_snowballshop_goldball.png',
+                                                                                          : snowImage('assets/imgs/imgs/snowballShop/icon_snowballshop_goldball.png',
                                                                                         height: 20,
                                                                                       ),
                                                                                       SizedBox(
@@ -862,8 +855,8 @@ class _SnowballMarketHomeViewState extends State<SnowballMarketHomeView> {
                                           padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                                           decoration: BoxDecoration(
                                             borderRadius: BorderRadius.circular(8),
-                                            image: const DecorationImage(
-                                              image: AssetImage('assets/imgs/imgs/snowballShop/icon_snowballshop_store_box_1.png'),
+                                            image: DecorationImage(
+                                              image: snowImageProvider('assets/imgs/imgs/snowballShop/icon_snowballshop_store_box_1.png'),
                                               fit: BoxFit.cover,
                                             ),
                                           ),
@@ -872,7 +865,7 @@ class _SnowballMarketHomeViewState extends State<SnowballMarketHomeView> {
                                               if (_snowballShopViewModel.userSnowballRecords.isNotEmpty)
                                                 Padding(
                                                   padding: const EdgeInsets.only(right: 6),
-                                                  child: Image.asset(
+                                                  child: snowImage(
                                                     _snowballShopViewModel.userSnowballRecords[0].color == '하얀'
                                                         ? 'assets/imgs/imgs/snowballShop/icon_snowballshop_whiteball.png'
                                                         : 'assets/imgs/imgs/snowballShop/icon_snowballshop_goldball.png',
@@ -1001,12 +994,10 @@ class _SnowballMarketHomeViewState extends State<SnowballMarketHomeView> {
                                                                                       Row(
                                                                                         children: [
                                                                                           (item.color == '하얀')
-                                                                                              ? Image.asset(
-                                                                                            'assets/imgs/imgs/snowballShop/icon_snowballshop_whiteball.png',
+                                                                                              ? snowImage('assets/imgs/imgs/snowballShop/icon_snowballshop_whiteball.png',
                                                                                             height: 20,
                                                                                           )
-                                                                                              : Image.asset(
-                                                                                            'assets/imgs/imgs/snowballShop/icon_snowballshop_goldball.png',
+                                                                                              : snowImage('assets/imgs/imgs/snowballShop/icon_snowballshop_goldball.png',
                                                                                             height: 20,
                                                                                           ),
                                                                                           SizedBox(
@@ -1053,8 +1044,8 @@ class _SnowballMarketHomeViewState extends State<SnowballMarketHomeView> {
                                               padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                                               decoration: BoxDecoration(
                                                 borderRadius: BorderRadius.circular(8),
-                                                image: const DecorationImage(
-                                                  image: AssetImage('assets/imgs/imgs/snowballShop/icon_snowballshop_store_box_1.png'),
+                                                image: DecorationImage(
+                                                  image: snowImageProvider('assets/imgs/imgs/snowballShop/icon_snowballshop_store_box_1.png'),
                                                   fit: BoxFit.cover,
                                                 ),
                                               ),
@@ -1063,7 +1054,7 @@ class _SnowballMarketHomeViewState extends State<SnowballMarketHomeView> {
                                                   if (_snowballShopViewModel.userSnowballRecords.isNotEmpty)
                                                     Padding(
                                                       padding: const EdgeInsets.only(right: 6),
-                                                      child: Image.asset(
+                                                      child: snowImage(
                                                         _snowballShopViewModel.userSnowballRecords[1].color == '하얀'
                                                             ? 'assets/imgs/imgs/snowballShop/icon_snowballshop_whiteball.png'
                                                             : 'assets/imgs/imgs/snowballShop/icon_snowballshop_goldball.png',
@@ -1194,12 +1185,10 @@ class _SnowballMarketHomeViewState extends State<SnowballMarketHomeView> {
                                                                                       Row(
                                                                                         children: [
                                                                                           (item.color == '하얀')
-                                                                                              ? Image.asset(
-                                                                                            'assets/imgs/imgs/snowballShop/icon_snowballshop_whiteball.png',
+                                                                                              ? snowImage('assets/imgs/imgs/snowballShop/icon_snowballshop_whiteball.png',
                                                                                             height: 20,
                                                                                           )
-                                                                                              : Image.asset(
-                                                                                            'assets/imgs/imgs/snowballShop/icon_snowballshop_goldball.png',
+                                                                                              : snowImage('assets/imgs/imgs/snowballShop/icon_snowballshop_goldball.png',
                                                                                             height: 20,
                                                                                           ),
                                                                                           SizedBox(
@@ -1246,8 +1235,8 @@ class _SnowballMarketHomeViewState extends State<SnowballMarketHomeView> {
                                               padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                                               decoration: BoxDecoration(
                                                 borderRadius: BorderRadius.circular(8),
-                                                image: const DecorationImage(
-                                                  image: AssetImage('assets/imgs/imgs/snowballShop/icon_snowballshop_store_box_1.png'),
+                                                image: DecorationImage(
+                                                  image: snowImageProvider('assets/imgs/imgs/snowballShop/icon_snowballshop_store_box_1.png'),
                                                   fit: BoxFit.cover,
                                                 ),
                                               ),
@@ -1256,7 +1245,7 @@ class _SnowballMarketHomeViewState extends State<SnowballMarketHomeView> {
                                                   if (_snowballShopViewModel.userSnowballRecords.isNotEmpty)
                                                     Padding(
                                                       padding: const EdgeInsets.only(right: 6),
-                                                      child: Image.asset(
+                                                      child: snowImage(
                                                         _snowballShopViewModel.userSnowballRecords[2].color == '하얀'
                                                             ? 'assets/imgs/imgs/snowballShop/icon_snowballshop_whiteball.png'
                                                             : 'assets/imgs/imgs/snowballShop/icon_snowballshop_goldball.png',
@@ -1443,12 +1432,10 @@ class _SnowballMarketHomeViewState extends State<SnowballMarketHomeView> {
                                                                                       Row(
                                                                                         children: [
                                                                                           (item.color == '하얀')
-                                                                                              ? Image.asset(
-                                                                                            'assets/imgs/imgs/snowballShop/icon_snowballshop_whiteball.png',
+                                                                                              ? snowImage('assets/imgs/imgs/snowballShop/icon_snowballshop_whiteball.png',
                                                                                             height: 20,
                                                                                           )
-                                                                                              : Image.asset(
-                                                                                            'assets/imgs/imgs/snowballShop/icon_snowballshop_goldball.png',
+                                                                                              : snowImage('assets/imgs/imgs/snowballShop/icon_snowballshop_goldball.png',
                                                                                             height: 20,
                                                                                           ),
                                                                                           SizedBox(
@@ -1487,8 +1474,7 @@ class _SnowballMarketHomeViewState extends State<SnowballMarketHomeView> {
                                                                             mainAxisAlignment: MainAxisAlignment.center,
                                                                             crossAxisAlignment: CrossAxisAlignment.center,
                                                                             children: [
-                                                                              Image.asset(
-                                                                                'assets/imgs/imgs/snowballShop/icon_snb_nodata.png',
+                                                                              snowImage('assets/imgs/imgs/snowballShop/icon_snb_nodata.png',
                                                                                 width: 80,
                                                                                 height: 80,
                                                                               ),
@@ -1537,8 +1523,7 @@ class _SnowballMarketHomeViewState extends State<SnowballMarketHomeView> {
                                                   ),
                                                 ),
                                                 SizedBox(width: 10,),
-                                                Image.asset(
-                                                  'assets/imgs/imgs/snowballShop/icon_snowballshop_arrow_b.png',
+                                                snowImage('assets/imgs/imgs/snowballShop/icon_snowballshop_arrow_b.png',
                                                   width: 16,
                                                   height: 16,
                                                 ),
@@ -1580,13 +1565,11 @@ class _SnowballMarketHomeViewState extends State<SnowballMarketHomeView> {
                                     Row(
                                       mainAxisAlignment: MainAxisAlignment.center,
                                         children: [
-                                          Image.asset(
-                                            'assets/imgs/imgs/snowballShop/icon_snowballshop_whiteball.png',
+                                          snowImage('assets/imgs/imgs/snowballShop/icon_snowballshop_whiteball.png',
                                             height: 60,
                                           ),
                                           SizedBox(width: 6,),
-                                          Image.asset(
-                                            'assets/imgs/imgs/snowballShop/icon_snowballshop_goldball.png',
+                                          snowImage('assets/imgs/imgs/snowballShop/icon_snowballshop_goldball.png',
                                             height: 60,
                                           ),
                                         ],
@@ -1637,8 +1620,7 @@ class _SnowballMarketHomeViewState extends State<SnowballMarketHomeView> {
                                     crossAxisAlignment: CrossAxisAlignment.center,
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
-                                      Image.asset(
-                                        'assets/imgs/imgs/snowballShop/icon_snowballshop_store_banner.png',
+                                      snowImage('assets/imgs/imgs/snowballShop/icon_snowballshop_store_banner.png',
                                         height: 100,
                                       ),
                                       Padding(
@@ -1695,8 +1677,7 @@ class _SnowballMarketHomeViewState extends State<SnowballMarketHomeView> {
                               padding: const EdgeInsets.symmetric(horizontal: 16),
                               child: Stack(
                                 children: [
-                                  Image.asset(
-                                    'assets/imgs/imgs/snowballShop/img_snowballshop_store_bottom_image2.png',
+                                  snowImage('assets/imgs/imgs/snowballShop/img_snowballshop_store_bottom_image2.png',
                                   ),
                                   Positioned(
                                     top: 0,

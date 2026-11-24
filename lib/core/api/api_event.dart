@@ -13,6 +13,7 @@ class EventAPI {
   /// [page] - 번호식 페이지네이션용(웹). [url]이 주어지면 무시된다.
   Future<ApiResponse> fetchEventList({
     String? category,
+    String? accountCategory,
     String? searchQuery,
     int? crawlAccountId,
     String? url,
@@ -23,6 +24,9 @@ class EventAPI {
         : Uri.parse('$baseUrl/').replace(
             queryParameters: {
               if (category != null && category.isNotEmpty) 'category': category,
+              // 각종소식 1차 그룹 필터(스키장/브랜드). crawlAccountId(2차)가 있으면 그게 우선.
+              if (accountCategory != null && accountCategory.isNotEmpty)
+                'account_category': accountCategory,
               if (searchQuery != null && searchQuery.isNotEmpty) 'search_query': searchQuery,
               if (crawlAccountId != null) 'crawl_account_id': '$crawlAccountId',
               if (page != null) 'page': '$page',

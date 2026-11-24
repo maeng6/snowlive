@@ -107,12 +107,16 @@ class RideTrackPainter extends CustomPainter {
       }
       runs.add(cur);
 
-      // 렌더용 점열: smooth면 run마다 Catmull-Rom로 5배 보간. runStart=각 run의 시작 인덱스.
+      // 렌더용 점열: run마다 ①이동평균으로 GPS 노이즈(뾰족뾰족한 지그재그)를 누르고
+      // ②Catmull-Rom으로 곡선 보간한다. 정적 이미지도 동일 — 날것의 꺾임선이 아니라
+      // 매끈한 곡선으로 보이게. 원본 GPS 점(옅은 점)은 raw 그대로 따로 찍어 실데이터를 남긴다.
+      // runStart=각 run의 시작 인덱스.
       final pts = <Offset>[];
       final runStart = <int>{};
       for (final run in runs) {
         runStart.add(pts.length);
-        pts.addAll(smooth ? _smoothRun(run) : run);
+        final denoised = _denoise(run, 2);
+        pts.addAll(_smoothRun(denoised));
       }
       final n = pts.length;
       bool isRunStart(int k) => runStart.contains(k);
@@ -161,6 +165,32 @@ class RideTrackPainter extends CustomPainter {
         canvas.drawCircle(head, 3.5, Paint()..color = _line);
       }
     }
+  }
+
+  /// 이동평균으로 GPS 노이즈(뾰족뾰족한 지그재그)를 눌러 라인을 매끈하게 만든다.
+  /// 각 점을 ±[w] 이웃의 평균으로 대체한다. 시작/끝 점은 고정(마커·시작/끝 원과
+  /// 어긋나지 않게). Catmull-Rom 보간은 점을 '통과'하기만 하므로, 그 전에 점 자체를
+  /// 눌러줘야 곡선이 뾰족하지 않다.
+  static List<Offset> _denoise(List<Offset> run, int w) {
+    final n = run.length;
+    if (n <= 2 || w < 1) return run;
+    final out = List<Offset>.filled(n, Offset.zero);
+    for (int i = 0; i < n; i++) {
+      double sx = 0, sy = 0;
+      int c = 0;
+      for (int k = -w; k <= w; k++) {
+        final j = i + k;
+        if (j >= 0 && j < n) {
+          sx += run[j].dx;
+          sy += run[j].dy;
+          c++;
+        }
+      }
+      out[i] = Offset(sx / c, sy / c);
+    }
+    out[0] = run[0];
+    out[n - 1] = run[n - 1];
+    return out;
   }
 
   /// 세그먼트 길이(px)에 비례해 분할 수를 정한다 — GPS가 성겨 점 간격이 멀어도

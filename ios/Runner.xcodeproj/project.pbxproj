@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 70;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -90,14 +90,14 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		0201FF7F2EC77A4400EB47B4 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+		0201FF7F2EC77A4400EB47B4 /* Exceptions for "LiveOnWidgetExtension" folder in "Runner" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				LiveOnActivityAttributes.swift,
 			);
 			target = 97C146ED1CF9000F007C117D /* Runner */;
 		};
-		0216556D2EC618CA007889FB /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+		0216556D2EC618CA007889FB /* Exceptions for "LiveOnWidgetExtension" folder in "LiveOnWidgetExtension" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
@@ -107,7 +107,19 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		021EB8CB2EAE699700E3D554 /* LiveOnWidgetExtension */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (0201FF7F2EC77A4400EB47B4 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 0216556D2EC618CA007889FB /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = LiveOnWidgetExtension; sourceTree = "<group>"; };
+		021EB8CB2EAE699700E3D554 /* LiveOnWidgetExtension */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				0201FF7F2EC77A4400EB47B4 /* Exceptions for "LiveOnWidgetExtension" folder in "Runner" target */,
+				0216556D2EC618CA007889FB /* Exceptions for "LiveOnWidgetExtension" folder in "LiveOnWidgetExtension" target */,
+			);
+			explicitFileTypes = {
+			};
+			explicitFolders = (
+			);
+			path = LiveOnWidgetExtension;
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -376,13 +388,9 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Runner/Pods-Runner-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
-			inputPaths = (
-			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Runner/Pods-Runner-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -397,13 +405,9 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Runner/Pods-Runner-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
-			inputPaths = (
-			);
 			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Runner/Pods-Runner-resources-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -659,12 +663,12 @@
 				CODE_SIGN_ENTITLEMENTS = Runner/Runner.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 120;
+				CURRENT_PROJECT_VERSION = 121;
 				DEVELOPMENT_TEAM = YZCR3239M7;
 				ENABLE_BITCODE = NO;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
-				FLUTTER_BUILD_NAME = 3.8.4;
-				FLUTTER_BUILD_NUMBER = 120;
+				FLUTTER_BUILD_NAME = 3.8.5;
+				FLUTTER_BUILD_NUMBER = 121;
 				INFOPLIST_FILE = Runner/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "스노우라이브";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.sports";
@@ -673,7 +677,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 3.8.4;
+				MARKETING_VERSION = 3.8.5;
 				PRODUCT_BUNDLE_IDENTIFIER = com.snowlive;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -809,12 +813,12 @@
 				CODE_SIGN_ENTITLEMENTS = Runner/Runner.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 120;
+				CURRENT_PROJECT_VERSION = 121;
 				DEVELOPMENT_TEAM = YZCR3239M7;
 				ENABLE_BITCODE = NO;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
-				FLUTTER_BUILD_NAME = 3.8.4;
-				FLUTTER_BUILD_NUMBER = 120;
+				FLUTTER_BUILD_NAME = 3.8.5;
+				FLUTTER_BUILD_NUMBER = 121;
 				INFOPLIST_FILE = Runner/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "스노우라이브";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.sports";
@@ -823,7 +827,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 3.8.4;
+				MARKETING_VERSION = 3.8.5;
 				PRODUCT_BUNDLE_IDENTIFIER = com.snowlive;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -851,12 +855,12 @@
 				CODE_SIGN_ENTITLEMENTS = Runner/Runner.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 120;
+				CURRENT_PROJECT_VERSION = 121;
 				DEVELOPMENT_TEAM = YZCR3239M7;
 				ENABLE_BITCODE = NO;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
-				FLUTTER_BUILD_NAME = 3.8.4;
-				FLUTTER_BUILD_NUMBER = 120;
+				FLUTTER_BUILD_NAME = 3.8.5;
+				FLUTTER_BUILD_NUMBER = 121;
 				INFOPLIST_FILE = Runner/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "스노우라이브";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.sports";
@@ -865,7 +869,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 3.8.4;
+				MARKETING_VERSION = 3.8.5;
 				PRODUCT_BUNDLE_IDENTIFIER = com.snowlive;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";

@@ -5,6 +5,7 @@ import 'package:com.snowlive/core/viewmodel/fleamarket/vm_fleamarketCommentDetai
 import 'package:com.snowlive/core/viewmodel/fleamarket/vm_fleamarketAlert.dart';
 import 'package:com.snowlive/web/viewmodel/fleamarket/vm_fleamarketMyActivity_web.dart';
 import 'package:com.snowlive/web/viewmodel/home/vm_home_web.dart';
+import 'package:com.snowlive/web/viewmodel/ranking/vm_snowball_web.dart';
 import 'package:com.snowlive/web/viewmodel/home/vm_openChat_web.dart';
 import 'package:com.snowlive/web/viewmodel/settings/vm_settings_web.dart';
 import 'package:com.snowlive/web/viewmodel/alarm/vm_alarmCenter_web.dart';
@@ -344,6 +345,14 @@ class WebShopBinding extends Bindings {
       () => ShopViewModelWeb(const ApiAffiliateProductRepository()),
       fenix: true,
     );
+  }
+}
+
+/// 눈송이 상점(웹) 바인딩. 홈/상점/브랜드/구매기록이 같은 VM 인스턴스를 공유한다.
+class WebSnowballBinding extends Bindings {
+  @override
+  void dependencies() {
+    Get.lazyPut(() => SnowballShopViewModelWeb(), fenix: true);
   }
 }
 

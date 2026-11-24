@@ -26,6 +26,7 @@ class SlopeCraftViewModelWeb extends GetxController {
   /// 지난 시즌 탭의 시즌 선택지. `2324`는 서버가 거부한다(실측:
   /// `Ranking_record_2324 모델을 찾을 수 없습니다`) → 목업의 세 번째 칩은 만들지 않는다.
   static const List<({String label, String season})> kSeasons = [
+    (label: '26/27', season: '2627'),
     (label: '25/26', season: '2526'),
     (label: '24/25', season: '2425'),
   ];

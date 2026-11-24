@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:com.snowlive/core/service/live_publish_service.dart';
+import 'package:com.snowlive/core/service/app_icon_service.dart';
 import 'package:com.snowlive/core/api/ApiResponse.dart';
 import 'package:com.snowlive/core/api/api_friend.dart';
 import 'package:com.snowlive/core/api/api_ranking.dart';
@@ -188,7 +189,10 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
   DateTime? _lastCountMethodCall;
   DateTime? _lastResetMethodCall;
   DateTime? _lastRespawnMethodCall;
-  DateTime? _lastSnowballMethodCall;
+  // 🟦 눈송이 수집: 한 세션 안에서 '같은 좌표(snowball_id)' 1회만. 세트 순환으로 새 좌표(다른 id)가
+  // 활성화되면 그건 또 수집 가능. 같은 좌표 왕복은 1개.
+  final Set<int> _collectedSnowballIds = <int>{};
+  String? _snowballSessionKey;   // = liveOn 시작시각 ms (세션 식별, 서버 dedup 키)
   bool _respawnSkipLogSent = false; // 스킵 로그 중복 전송 방지
 
   // 로그 버퍼링 관련 변수
@@ -320,6 +324,7 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
         lastSlopeName: data['lastSlopeName'] as String,
         resortName: data['resortName'] as String,
         liveFriendCount: data['liveFriendCount'] as int,
+        snowballCount: _snowballCountForLA(),
       );
       print('📱 [LA] 지연된 Live Activity 시작 완료: $_liveActivityId');
     } catch (e) {
@@ -829,7 +834,14 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
       lastSlopeName: last.isEmpty ? '—' : last,
       lastRideAt: rideAt,
       liveFriendCount: liveFriends,
+      snowballCount: _snowballCountForLA(),
     );
+  }
+
+  /// 라이브액티비티용 눈송이 수. 눈송이 리조트가 아니면 -1(표시 안함).
+  int _snowballCountForLA() {
+    final isSnowballResort = _resort_info.value['snowball'] == true;
+    return isSnowballResort ? _collectedSnowballIds.length : -1;
   }
 
   Future<void> _endLiveActivity(String reason) async {
@@ -1070,7 +1082,7 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
         if (Platform.isIOS) {
           locationSettings = AppleSettings(
             accuracy: LocationAccuracy.high,
-            distanceFilter: 5,
+            distanceFilter: 2, // 카빙 턴 포착·느린 라이더 연속 샘플링(기존 5m는 턴을 잘라먹음)
             activityType: ActivityType.fitness,
             pauseLocationUpdatesAutomatically: false,
             showBackgroundLocationIndicator: true,  // 상태바 파란 표시
@@ -1078,7 +1090,7 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
         } else if (Platform.isAndroid) {
           locationSettings = AndroidSettings(
             accuracy: LocationAccuracy.high,
-            distanceFilter: 5,
+            distanceFilter: 2, // 카빙 턴 포착·느린 라이더 연속 샘플링(기존 5m는 턴을 잘라먹음)
             forceLocationManager: false,
             intervalDuration: const Duration(seconds: 1),
             // foregroundNotificationConfig 제거 - LiveActivityService가 포그라운드 서비스 역할 수행
@@ -1086,7 +1098,7 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
         } else {
           locationSettings = const LocationSettings(
             accuracy: LocationAccuracy.high,
-            distanceFilter: 5,
+            distanceFilter: 2, // 카빙 턴 포착·느린 라이더 연속 샘플링(기존 5m는 턴을 잘라먹음)
           );
         }
 
@@ -1282,13 +1294,12 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
                     if (resort_info['snowball'] == true) {
                       int setNum = passPointInfo['set_num'] ?? 0;
                       bool isGoldenSnowball = setNum >= 91;
-
-                      bool canRegister = isGoldenSnowball ||
-                          _lastSnowballMethodCall == null ||
-                          DateTime.now().difference(_lastSnowballMethodCall!).inSeconds > 300;
-
-                      if (canRegister) {
-                        final snowballId = passPointInfo['id'];
+                      final int? snowballId = passPointInfo['id'] is int
+                          ? passPointInfo['id'] as int
+                          : int.tryParse('${passPointInfo['id']}');
+                      // 세션 내 같은 좌표(snowball_id) 1회만. (세트 순환으로 다른 좌표가 뜨면 그건 또 가능)
+                      if (snowballId != null && !_collectedSnowballIds.contains(snowballId)) {
+                        _collectedSnowballIds.add(snowballId); // 중복 호출 방지(먼저 선점)
                         futures.add(() async {
                           try {
                             final response = await SnowballAPI().createSnowballRecord({
@@ -1296,17 +1307,18 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
                               "snowball_id": snowballId,
                               "coordinates": "POINT (${position.longitude} ${position.latitude})",
                               "event_date": _snowballShopViewModel.eventDate.value,
+                              "session_key": _snowballSessionKey,
                             });
                             if (response.success) {
-                              print('포그라운드 ${isGoldenSnowball ? "황금" : "하얀"}눈송이 기록 성공');
-                              if (!isGoldenSnowball) {
-                                _lastSnowballMethodCall = DateTime.now(); // ✅ 성공 시에만 쿨다운 설정
-                              }
+                              print('포그라운드 ${isGoldenSnowball ? "황금" : "하얀"}눈송이 수집 성공(set $setNum)');
+                              _updateLiveActivity();  // 라이브액티비티 눈송이 수 갱신
                             } else {
                               print('포그라운드 눈송이 기록 실패: ${response.error}');
+                              _collectedSnowballIds.remove(snowballId); // 실패 시 재시도 허용
                             }
                           } catch (e) {
                             print('포그라운드 눈송이 오류: $e');
+                            _collectedSnowballIds.remove(snowballId);
                           }
                         }());
                       }
@@ -1556,7 +1568,7 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
       disableStopDetection: true,            // 🆕 정지 감지 비활성화 (삼성 Doze 대응)
 
       // 🔥 위치 업데이트 튜닝
-      distanceFilter: 5,                     // 5m 이동 시 업데이트 (더 정밀한 추적)
+      distanceFilter: 3,                     // 3m 이동 시 업데이트 (백그라운드 추적, 배터리 균형)
       stationaryRadius: 25,
       elasticityMultiplier: 1.0,             // disableElasticity 쓰지 않음
 
@@ -1838,13 +1850,12 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
               if (resort_info['snowball'] == true) {
                 int setNum = passPointInfo['set_num'] ?? 0;
                 bool isGoldenSnowball = setNum >= 91;
-
-                bool canRegister = isGoldenSnowball ||
-                    _lastSnowballMethodCall == null ||
-                    DateTime.now().difference(_lastSnowballMethodCall!).inSeconds > 300;
-
-                if (canRegister) {
-                  final snowballId = passPointInfo['id'];
+                final int? snowballId = passPointInfo['id'] is int
+                    ? passPointInfo['id'] as int
+                    : int.tryParse('${passPointInfo['id']}');
+                // 세션 내 같은 좌표(snowball_id) 1회만.
+                if (snowballId != null && !_collectedSnowballIds.contains(snowballId)) {
+                  _collectedSnowballIds.add(snowballId);
                   futures.add(() async {
                     try {
                       final response = await SnowballAPI().createSnowballRecord({
@@ -1852,17 +1863,18 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
                         "snowball_id": snowballId,
                         "coordinates": "POINT (${position.longitude} ${position.latitude})",
                         "event_date": _snowballShopViewModel.eventDate.value,
+                        "session_key": _snowballSessionKey,
                       });
                       if (response.success) {
-                        print('백그라운드 ${isGoldenSnowball ? "황금" : "하얀"}눈송이 기록 성공');
-                        if (!isGoldenSnowball) {
-                          _lastSnowballMethodCall = DateTime.now(); // ✅ 성공 시에만 쿨다운 설정
-                        }
+                        print('백그라운드 ${isGoldenSnowball ? "황금" : "하얀"}눈송이 수집 성공(set $setNum)');
+                        _updateLiveActivity();  // 라이브액티비티 눈송이 수 갱신
                       } else {
                         print('백그라운드 눈송이 기록 실패: ${response.error}');
+                        _collectedSnowballIds.remove(snowballId);
                       }
                     } catch (e) {
                       print('백그라운드 눈송이 오류: $e');
+                      _collectedSnowballIds.remove(snowballId);
                     }
                   }());
                 }
@@ -2513,7 +2525,8 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
         _lastActionType = LastActionType.none;
         _lastCountMethodCall = null;
         _lastRespawnMethodCall = null;
-        _lastSnowballMethodCall = null;
+        _collectedSnowballIds.clear();
+        _snowballSessionKey = null;
         _lastResetMethodCall = null;
         _respawnSkipLogSent = false;
         _previousValidPosition = null;
@@ -2634,6 +2647,9 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
         _lastSlopeName = '';
         _lastRideAt = null;
         _previousValidPosition = null; // GPS 보간용 이전 위치 초기화
+        // 🟦 눈송이 세션키/수집집합 초기화 — 이 세션 동안 좌표별 1회 수집.
+        _snowballSessionKey = _liveOnStartedAt!.millisecondsSinceEpoch.toString();
+        _collectedSnowballIds.clear();
 
         // 🔥 플랫폼별 Live Activity 시작 처리
         // - Android: 지오펜스 이벤트에서 ForegroundService 시작 허용 → 항상 시도
@@ -2648,6 +2664,7 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
             lastSlopeName: '—',
             resortName: resortFullname,
             liveFriendCount: _getLiveFriendCount(),
+            snowballCount: _snowballCountForLA(),
           );
           _pendingLiveActivityData = null;
           print('📱 [liveOn] Live Activity 시작 시도 (${Platform.isAndroid ? "Android" : "iOS"})');
@@ -2836,8 +2853,12 @@ class ResortHomeViewModel extends GetxController with WidgetsBindingObserver {
     ApiResponse response = await ResortHomeAPI().fetchResortHomeData(userId);
     await fetchBestFriendList(user_id: _userViewModel.user.user_id);
 
-    if(response.success)
+    if(response.success) {
       _resortHomeModel.value = ResortHomeModel.fromJson(response.data);
+      // 🟦 앱 아이콘 변형 적용(서버 app_icon_variant). 앱 시작 시 리조트인포와 함께 수신.
+      // 내부에서 모든 예외 삼킴 — 아이콘 전환 실패가 앱 동작에 영향 없음.
+      AppIconService.applyFromResponse(response.data);
+    }
     print('리조트홈 패치 완료');
     if(!response.success)
       Get.snackbar('Error', '데이터 로딩 실패');

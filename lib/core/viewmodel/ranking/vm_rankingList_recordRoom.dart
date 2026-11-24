@@ -71,8 +71,8 @@ class RankingListViewModel_recordRoom extends GetxController {
   RxString _dayOrTotal = '누적'.obs;
   RxString _resortOrTotal = '전체스키장'.obs;
   RxString _selectedCategory_resort = '스키장별 랭킹'.obs;
-  RxString _selectedCategory_season = '25/26시즌'.obs;
-  RxString _selectedCategory_season_db = '2526'.obs;
+  RxString _selectedCategory_season = '26/27시즌'.obs;
+  RxString _selectedCategory_season_db = '2627'.obs;
   RxString _selectedCategory_fed = '리그별 랭킹'.obs;
   RxString _myBox_title = '누적 전체 스키장'.obs;
   RxString _myBox_score = '크루 점수'.obs;
@@ -1251,6 +1251,8 @@ class RankingListViewModel_recordRoom extends GetxController {
 
   void changeCategory_season(value) {
     _selectedCategory_season.value = value;
+    if(value=='26/27시즌')
+      _selectedCategory_season_db.value = '2627';
     if(value=='25/26시즌')
       _selectedCategory_season_db.value = '2526';
     if(value=='24/25시즌')
@@ -1275,6 +1277,7 @@ class RankingListViewModel_recordRoom extends GetxController {
 }
 
 enum RankingFilter_season {
+  season2627("26/27시즌", "2627"),
   season2526("25/26시즌", "2526"),
   season2425("24/25시즌", "2425"),
   season2324("23/24시즌", "2324");

@@ -106,6 +106,7 @@ import NidThirdPartyLogin  // 네이버 로그인 복귀 URL 처리
             let lastSlope = args["lastSlopeName"] as? String
             let resortName = args["resortName"] as? String ?? ""
             let liveFriendCount = (args["liveFriendCount"] as? Int) ?? (args["liveFriendCount"] as? NSNumber)?.intValue ?? 0
+            let snowballCount = (args["snowballCount"] as? Int) ?? (args["snowballCount"] as? NSNumber)?.intValue ?? -1
 
             print("📍 [LA] resortName from Flutter: \(resortName)")
 
@@ -132,7 +133,8 @@ import NidThirdPartyLogin  // 네이버 로그인 복귀 URL 처리
               sessionRideCount: _session,
               lastSlopeName: _last,
               lastRideAt: lastRideAt,
-              liveFriendCount: liveFriendCount
+              liveFriendCount: liveFriendCount,
+              snowballCount: snowballCount
             )
 
             do {
@@ -176,13 +178,15 @@ import NidThirdPartyLogin  // 네이버 로그인 복귀 URL 처리
 
           // liveFriendCount 파싱
           let liveFriendCount = (args["liveFriendCount"] as? Int) ?? (args["liveFriendCount"] as? NSNumber)?.intValue ?? 0
+          let snowballCount = (args["snowballCount"] as? Int) ?? (args["snowballCount"] as? NSNumber)?.intValue ?? -1
 
           let state = LiveOnActivityAttributes.ContentState(
             todayRideCount: todayRide,
             sessionRideCount: sessionRide,
             lastSlopeName: lastSlope,
             lastRideAt: lastRideAt,
-            liveFriendCount: liveFriendCount
+            liveFriendCount: liveFriendCount,
+            snowballCount: snowballCount
           )
           Task { await activity.update(using: state) }
           print("🔄 [LA] updated id=\(id), lastSlope=\(lastSlope), liveFriends=\(liveFriendCount)")
@@ -236,6 +240,59 @@ import NidThirdPartyLogin  // 네이버 로그인 복귀 URL 처리
       }
     }
     print("🔌 live_activity channel registered")
+
+    // ============================
+    // 3) App Icon 채널 (대체 아이콘 전환)
+    // ============================
+    // 홈화면 아이콘은 Info.plist의 CFBundleAlternateIcons에 '미리 번들된' 아이콘
+    // 중에서만 전환 가능(임의 서버 이미지 불가). 서버(check-wb) → variant 키 →
+    // UIApplication.setAlternateIconName. 'default'는 nil(기본 아이콘 복귀).
+    // ⚠️ 기본 동작은 "아이콘이 변경되었습니다" 시스템 팝업이 뜬다(Apple 공식 동작).
+    let appIconChannel = FlutterMethodChannel(
+      name: "app_icon",
+      binaryMessenger: controller.binaryMessenger
+    )
+    // variant 키 → Info.plist CFBundleAlternateIcons 키. (default는 nil = 기본 아이콘)
+    let iconNames: [String: String?] = [
+      "default": nil,
+      "xmas": "AppIconXmas",
+      "newyear": "AppIconNewyear",
+    ]
+    appIconChannel.setMethodCallHandler { (call, result) in
+      switch call.method {
+      case "setIcon":
+        guard UIApplication.shared.supportsAlternateIcons else {
+          result(FlutterError(code: "UNSUPPORTED", message: "Alternate icons not supported", details: nil))
+          return
+        }
+        let args = call.arguments as? [String: Any]
+        let variant = (args?["variant"] as? String) ?? "default"
+        let targetName: String? = iconNames[variant] ?? nil
+        // 이미 같은 아이콘이면 호출 생략(불필요한 시스템 팝업 방지).
+        if UIApplication.shared.alternateIconName == targetName {
+          result(true); return
+        }
+        DispatchQueue.main.async {
+          UIApplication.shared.setAlternateIconName(targetName) { error in
+            if let error = error {
+              print("❌ [AppIcon] setAlternateIconName 실패: \(error.localizedDescription)")
+              result(FlutterError(code: "SET_ICON_ERROR", message: error.localizedDescription, details: nil))
+            } else {
+              print("✅ [AppIcon] 아이콘 전환 → \(targetName ?? "default")")
+              result(true)
+            }
+          }
+        }
+      case "currentIcon":
+        let name = UIApplication.shared.alternateIconName
+        // 역매핑: nil → 'default', 그 외 CFBundle 키 → variant.
+        let variant = iconNames.first(where: { $0.value == name })?.key ?? "default"
+        result(variant)
+      default:
+        result(FlutterMethodNotImplemented)
+      }
+    }
+    print("🔌 app_icon channel registered")
   }
 
   // MARK: - Deep Link (URL Scheme) 처리

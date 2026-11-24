@@ -20,6 +20,10 @@ const double _kExtraLineHeight = 18;
 class WebProfileCardData {
   final int? userId;
   final String? avatarUrl;
+
+  /// 공식 계정(공지 작성자 '스노우라이브')처럼 프로필 사진 대신 **앱 로고 에셋**을
+  /// 원형으로 보여줄 때 경로를 준다. 주어지면 avatarUrl보다 우선하고 탭 확대도 없다.
+  final String? logoAsset;
   final String? displayName;
   final String? resortName;
   final String? crewName;
@@ -50,6 +54,7 @@ class WebProfileCardData {
   const WebProfileCardData({
     this.userId,
     this.avatarUrl,
+    this.logoAsset,
     this.displayName,
     this.resortName,
     this.crewName,
@@ -102,6 +107,18 @@ class WebProfileCard extends StatelessWidget {
 
   /// 유저는 원형 아바타, 크루는 라운드 사각 로고. 둘 다 누르면 확대된다.
   Widget _avatar(BuildContext context) {
+    // 공식 로고: 프로필 사진 대신 앱 로고를 사각(앱아이콘 모서리 곡률)으로, 탭 확대 없이.
+    if (data.logoAsset != null) {
+      return ClipRRect(
+        borderRadius: BorderRadius.circular(data.avatarSize * 0.22),
+        child: Image.asset(
+          data.logoAsset!,
+          width: data.avatarSize,
+          height: data.avatarSize,
+          fit: BoxFit.cover,
+        ),
+      );
+    }
     final onTap = (data.avatarUrl?.isNotEmpty ?? false)
         ? () => showWebPhotoViewer(
             context,

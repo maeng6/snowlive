@@ -1040,30 +1040,11 @@ class _RidingCardListViewState extends State<RidingCardListView> {
                   ),
                 ),
               ),
-              // 중앙: 라이더 타이틀 + 총 라이딩
+              // 중앙: 총 라이딩
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    if (card.riderTitle != null && card.riderTitle!.isNotEmpty)
-                      Text(
-                        card.riderTitle!,
-                        style: SDSTextStyle.regular.copyWith(
-                          fontSize: 13,
-                          color: SDSColor.gray500,
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      )
-                    else
-                      Text(
-                        '-',
-                        style: SDSTextStyle.regular.copyWith(
-                          fontSize: 13,
-                          color: SDSColor.gray500,
-                        ),
-                      ),
-                    SizedBox(height: 2),
                     Text(
                       '총 ${card.totalSlopeCount ?? 0}회 라이딩',
                       style: SDSTextStyle.bold.copyWith(

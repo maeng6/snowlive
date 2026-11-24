@@ -762,6 +762,7 @@ class CommunityBulletinListViewModel extends GetxController {
 
 enum Community_Category_sub_bulletin {
   total("전체", "free"),
+  notice("공지", "notice"),
   chat("잡담", "chat"),
   room("시즌방", "deck"),
   crew("단톡방·동호회", "binding");

@@ -22,6 +22,33 @@
 		<string>snowlive</string>
 		<key>CFBundlePackageType</key>
 		<string>APPL</string>
+		<!-- 대체 런처 아이콘. 기본(Primary) 아이콘은 Assets.xcassets의 AppIcon을 유지하고,
+		     변형은 아래 '루스 PNG 파일'(AppIconXmas@2x/@3x 등)로 번들해 setAlternateIconName로 전환.
+		     ⚠️ Xcode에서 이 PNG들을 Runner 타겟 'Copy Bundle Resources'에 추가해야 실제로 번들됨. -->
+		<key>CFBundleIcons</key>
+		<dict>
+			<key>CFBundleAlternateIcons</key>
+			<dict>
+				<key>AppIconXmas</key>
+				<dict>
+					<key>CFBundleIconFiles</key>
+					<array>
+						<string>AppIconXmas</string>
+					</array>
+					<key>UIPrerenderedIcon</key>
+					<false/>
+				</dict>
+				<key>AppIconNewyear</key>
+				<dict>
+					<key>CFBundleIconFiles</key>
+					<array>
+						<string>AppIconNewyear</string>
+					</array>
+					<key>UIPrerenderedIcon</key>
+					<false/>
+				</dict>
+			</dict>
+		</dict>
 		<key>CFBundleShortVersionString</key>
 		<string>$(FLUTTER_BUILD_NAME)</string>
 		<key>CFBundleSignature</key>

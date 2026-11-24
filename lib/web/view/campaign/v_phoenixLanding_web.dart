@@ -625,6 +625,8 @@ int? _asInt(dynamic v) => v is int ? v : int.tryParse('${v ?? ''}');
 bool _canClaim(Map? winner) =>
     winner != null &&
     winner['winner_id'] != null &&
+    // 수상거부/상품미지급 등수(백엔드 claimable==false, 예: 휘팍 1·2등)는 버튼 숨김.
+    winner['claimable'] != false &&
     // QA 데모: 본인 여부 무시하고 버튼 노출(백엔드가 실제 신청은 본인만 허용).
     (kPhoenixClaimDemo || _asInt(winner['user_id']) == _myUserId());
 
@@ -2104,7 +2106,10 @@ class _OpenBreadCardState extends State<_OpenBreadCard> {
     dynamic myWinnerId;
     if (winners != null) {
       for (final w in (winners['open_bread'] as List? ?? const [])) {
-        if (_asInt(w['user_id']) == _myUserId()) myWinnerId = w['winner_id'];
+        // 수상거부 등수(claimable==false)는 본인이어도 상품받기 버튼을 안 띄운다.
+        if (_asInt(w['user_id']) == _myUserId() && w['claimable'] != false) {
+          myWinnerId = w['winner_id'];
+        }
       }
     }
     final ordered = _recentFirst ? list.reversed.toList() : list.toList();

@@ -29,8 +29,8 @@ class RidingCardViewModel extends GetxController {
   // ============================================
   // 시즌 선택 상태
   // ============================================
-  RxString selectedSeason = '25/26시즌'.obs;
-  RxString selectedSeasonDb = '2526'.obs;
+  RxString selectedSeason = '26/27시즌'.obs;
+  RxString selectedSeasonDb = '2627'.obs;
 
   // ============================================
   // 데일리 카드 보기 모드 (grid / list)
@@ -91,6 +91,7 @@ class RidingCardViewModel extends GetxController {
   }
 
   final List<Map<String, String>> seasonList = [
+    {'display': '26/27시즌', 'db': '2627'},
     {'display': '25/26시즌', 'db': '2526'},
   ];
 

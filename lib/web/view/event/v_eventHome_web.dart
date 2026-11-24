@@ -31,7 +31,10 @@ class _EventHomeViewWebState extends State<EventHomeViewWeb> {
   final TextEditingController _searchController = TextEditingController();
   final FocusNode _searchFocus = FocusNode();
 
-  /// 선택된 크롤 계정 필터(기본 '전체 계정').
+  /// 선택된 1차 카테고리 그룹(기본 '전체').
+  EventPrimaryCategory _primary = EventPrimaryCategory.all;
+
+  /// 선택된 2차 크롤 계정 필터(기본 '그룹 전체').
   EventAccountFilter _account = EventAccountFilter.all;
 
   @override
@@ -52,10 +55,20 @@ class _EventHomeViewWebState extends State<EventHomeViewWeb> {
 
   Future<void> _reload() => _vm.loadFirstPage(query: _searchController.text);
 
+  void _onPrimarySelected(EventPrimaryCategory primary) {
+    if (primary == _primary) return;
+    setState(() {
+      _primary = primary;
+      // 1차 그룹이 바뀌면 2차 선택은 '그룹 전체'로 초기화한다.
+      _account = EventAccountFilter.all;
+    });
+    _vm.setPrimaryCategory(primary);
+  }
+
   void _onAccountSelected(EventAccountFilter account) {
     if (account.id == _account.id) return;
     setState(() => _account = account);
-    // 검색어는 유지한 채 계정 필터만 바꿔 다시 조회한다.
+    // 검색어는 유지한 채 2차 계정 필터만 바꿔 다시 조회한다.
     _vm.setCrawlAccount(account.id);
   }
 
@@ -76,23 +89,51 @@ class _EventHomeViewWebState extends State<EventHomeViewWeb> {
       onSubmitted: (_) => _reload(),
       scopeLocked: true,
     );
-    // 크롤 계정 필터 드롭다운. 계정 목록이 비동기로 채워지므로 Obx로 감싼다.
-    // .toList()로 RxList 원소를 실제로 읽어야 Obx가 갱신 대상으로 등록한다
-    // (그냥 참조만 넘기면 "improper use of GetX" 에러가 난다).
-    final accountFilter = Obx(
-      () => FleamarketFilterPill<EventAccountFilter>(
-        label: _account.label,
-        // 커뮤니티 정렬 pill과 동일(bold 14).
-        labelFontSize: 14,
-        isActive: !_account.isAll,
-        title: '계정 필터',
-        showTitleInSheet: true,
-        // 태블릿은 PC식 앵커 드롭다운(커뮤니티 정렬 pill과 동일 규칙).
-        dropdownOnTablet: true,
-        values: _vm.accountFilters.toList(),
-        labelOf: (a) => a.label,
-        onSelected: _onAccountSelected,
-      ),
+    // 1차 카테고리 pill (스키장 / 브랜드). 전체면 기본 상태.
+    final primaryFilter = FleamarketFilterPill<EventPrimaryCategory>(
+      label: _primary.isAll ? '카테고리' : _primary.label,
+      labelFontSize: 14,
+      isActive: !_primary.isAll,
+      title: '카테고리',
+      showTitleInSheet: true,
+      dropdownOnTablet: true,
+      values: EventPrimaryCategory.values,
+      labelOf: (p) => p.label,
+      onSelected: _onPrimarySelected,
+    );
+
+    // 2차 계정 pill. 1차에서 스키장/브랜드를 고른 경우에만 노출한다.
+    // 1차=전체면 Obx로 감싸지 않는다(Obx 안에서 Rx를 하나도 안 읽고 반환하면
+    // "improper use of GetX" 에러가 난다). _primary는 평범한 state라 setState로
+    // 재빌드되므로 조건 분기는 build가 다시 평가한다.
+    final Widget accountFilter = _primary.isAll
+        ? const SizedBox.shrink()
+        // 계정 목록이 비동기로 채워지므로 Obx로 감싼다(accountsFor가 RxList를 읽음).
+        : Obx(() {
+            final values = _vm.accountsFor(_primary);
+            final groupAllLabel = _primary == EventPrimaryCategory.resort
+                ? '스키장 전체'
+                : '브랜드 전체';
+            return Padding(
+              padding: const EdgeInsets.only(left: 8),
+              child: FleamarketFilterPill<EventAccountFilter>(
+                label: _account.isAll ? groupAllLabel : _account.label,
+                labelFontSize: 14,
+                isActive: !_account.isAll,
+                title: _primary == EventPrimaryCategory.resort ? '스키장 선택' : '브랜드 선택',
+                showTitleInSheet: true,
+                dropdownOnTablet: true,
+                values: values,
+                labelOf: (a) => a.label,
+                onSelected: _onAccountSelected,
+              ),
+            );
+          });
+
+    // 두 pill을 한 묶음으로. 오른쪽 정렬 시 함께 움직이도록 Row로 감싼다.
+    final filterRow = Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [primaryFilter, accountFilter],
     );
 
     final content = Column(
@@ -112,7 +153,7 @@ class _EventHomeViewWebState extends State<EventHomeViewWeb> {
           ),
           // 타이틀·검색 영역 ↔ 필터 줄 30 (커뮤니티와 동일).
           const SizedBox(height: 30),
-          Row(children: [const Spacer(), accountFilter]),
+          Row(children: [const Spacer(), filterRow]),
           // 필터 줄 ↔ 목록 20 (커뮤니티와 동일).
           const SizedBox(height: 20),
         ] else ...[
@@ -121,8 +162,8 @@ class _EventHomeViewWebState extends State<EventHomeViewWeb> {
           searchBar,
           // 검색 영역 ↔ 필터 줄: 태블릿 24 / 모바일 20 (커뮤니티와 동일).
           SizedBox(height: webTitleToFilterGap(context)),
-          // 태블릿·모바일: 검색바 아래에 계정 필터를 오른쪽 정렬로 둔다.
-          Align(alignment: Alignment.centerRight, child: accountFilter),
+          // 태블릿·모바일: 검색바 아래에 카테고리/계정 필터를 오른쪽 정렬로 둔다.
+          Align(alignment: Alignment.centerRight, child: filterRow),
           // 필터 줄 ↔ 목록 20 (커뮤니티와 동일).
           const SizedBox(height: 20),
         ],

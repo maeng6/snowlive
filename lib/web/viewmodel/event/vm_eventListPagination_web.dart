@@ -8,12 +8,32 @@ import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-/// 각종소식 크롤 계정 필터 항목. [id]가 null이면 '전체 계정'(필터 해제).
+/// 각종소식 1차 필터(카테고리 그룹). 스키장 / 브랜드 두 그룹과 '전체'.
+enum EventPrimaryCategory {
+  all('전체', null),
+  resort('스키장', '스키장'),
+  // 브랜드 그룹은 '브랜드'+'브랜드/샵' 계정을 모두 포함한다(백엔드 startswith).
+  brand('브랜드', '브랜드');
+
+  const EventPrimaryCategory(this.label, this.apiValue);
+
+  /// 필터 pill에 표시할 이름.
+  final String label;
+
+  /// 백엔드 `account_category` 파라미터로 보낼 값(전체면 null).
+  final String? apiValue;
+
+  bool get isAll => this == EventPrimaryCategory.all;
+}
+
+/// 각종소식 크롤 계정 필터 항목(2차 필터). [id]가 null이면 그룹 '전체'(계정 미지정).
+/// [category]는 계정의 현재 카테고리(스키장/브랜드/브랜드샵 등) — 그룹 분류에 쓴다.
 class EventAccountFilter {
   final int? id;
   final String label;
+  final String? category;
 
-  const EventAccountFilter(this.id, this.label);
+  const EventAccountFilter(this.id, this.label, {this.category});
 
   /// 전체 보기(필터 없음) 기본 항목.
   static const EventAccountFilter all = EventAccountFilter(null, '전체 계정');
@@ -49,13 +69,36 @@ class EventListPaginationViewModelWeb extends GetxController {
   // 번호 이동 시 유지되어야 하므로 Rx가 아닌 평범한 필드.
   String? _searchQuery;
 
-  /// 선택된 크롤 계정 필터(null=전체). 검색과 독립적으로 유지·결합된다.
+  /// 선택된 2차 크롤 계정 필터(null=그룹 전체). 검색과 독립적으로 유지·결합된다.
   int? _crawlAccountId;
+
+  /// 선택된 1차 카테고리 그룹(스키장/브랜드/전체).
+  EventPrimaryCategory _primary = EventPrimaryCategory.all;
+  EventPrimaryCategory get primary => _primary;
 
   /// 필터 드롭다운에 채울 크롤 계정 목록(맨 앞은 '전체 계정'). 이름 가나다 순.
   final RxList<EventAccountFilter> _accountFilters =
       <EventAccountFilter>[EventAccountFilter.all].obs;
   List<EventAccountFilter> get accountFilters => _accountFilters;
+
+  /// 특정 1차 그룹에 속한 계정만 추린 2차 목록. 맨 앞은 '그룹 전체'(계정 미지정).
+  /// 브랜드 그룹은 '브랜드'+'브랜드/샵'을 모두 포함한다.
+  List<EventAccountFilter> accountsFor(EventPrimaryCategory primary) {
+    if (primary.isAll) return const [];
+    bool match(String? c) {
+      final cat = c ?? '';
+      if (primary == EventPrimaryCategory.resort) return cat == '스키장';
+      return cat.startsWith('브랜드'); // 브랜드 + 브랜드/샵
+    }
+
+    // .toList()로 RxList 원소를 먼저 읽어야 Obx가 이 목록을 갱신 대상으로 등록한다.
+    final inGroup = _accountFilters
+        .toList()
+        .where((a) => !a.isAll && match(a.category))
+        .toList();
+    final allLabel = primary == EventPrimaryCategory.resort ? '스키장 전체' : '브랜드 전체';
+    return [EventAccountFilter(null, allLabel), ...inGroup];
+  }
 
   List<EventModel> get items => _items;
   bool get isLoading => _isLoading.value;
@@ -83,7 +126,16 @@ class EventListPaginationViewModelWeb extends GetxController {
     await gotoPage(1);
   }
 
-  /// 크롤 계정 필터 선택(null=전체). 검색어는 유지한 채 1페이지부터 다시 조회한다.
+  /// 1차 카테고리 그룹 선택. 그룹을 바꾸면 2차(계정) 선택은 '그룹 전체'로 초기화한다.
+  /// 검색어는 유지한 채 1페이지부터 다시 조회한다.
+  Future<void> setPrimaryCategory(EventPrimaryCategory primary) async {
+    _primary = primary;
+    _crawlAccountId = null; // 그룹 바뀌면 특정 계정 선택 해제
+    _totalPages.value = 1;
+    await gotoPage(1);
+  }
+
+  /// 2차 크롤 계정 필터 선택(null=그룹 전체). 검색어는 유지한 채 1페이지부터 다시 조회한다.
   Future<void> setCrawlAccount(int? crawlAccountId) async {
     _crawlAccountId = crawlAccountId;
     _totalPages.value = 1;
@@ -102,7 +154,8 @@ class EventListPaginationViewModelWeb extends GetxController {
       // 표시용 이름 우선, 없으면 인스타 아이디(username)로 대체.
       final label = name.isNotEmpty ? name : username;
       if (label.isEmpty) continue;
-      filters.add(EventAccountFilter(id, label));
+      final category = (a['category'] as String?)?.trim();
+      filters.add(EventAccountFilter(id, label, category: category));
     }
     filters.sort((a, b) => a.label.compareTo(b.label)); // 가나다 순
     _accountFilters.value = [EventAccountFilter.all, ...filters];
@@ -131,6 +184,8 @@ class EventListPaginationViewModelWeb extends GetxController {
     try {
       final response = await _api.fetchEventList(
         searchQuery: _searchQuery,
+        // 2차(특정 계정)가 선택되면 그걸로만 보고, 아니면 1차 그룹으로 본다.
+        accountCategory: _crawlAccountId == null ? _primary.apiValue : null,
         crawlAccountId: _crawlAccountId,
         page: page,
       );

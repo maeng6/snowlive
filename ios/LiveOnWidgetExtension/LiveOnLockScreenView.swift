@@ -37,6 +37,19 @@ struct LiveOnLockScreenView: View {
                     }
                     .fixedSize(horizontal: true, vertical: false)
 
+                    // 눈송이 수(눈송이 진행 리조트에서만, snowballCount >= 0)
+                    if context.state.snowballCount >= 0 {
+                        HStack(spacing: 4) {
+                            Image("img_liveactivity_snowball")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 16, height: 16)
+                            Text("\(context.state.snowballCount)")
+                                .font(.system(size: 12, weight: .bold))
+                        }
+                        .fixedSize(horizontal: true, vertical: false)
+                    }
+
                     // 리조트명
                     HStack(spacing: 2) {
                         Image("img_liveactivity_pin")
@@ -127,6 +140,18 @@ struct LiveOnLockScreenView: View {
                         .frame(width: 14, height: 14)
                     Text("\(context.state.liveFriendCount)")
                         .font(.system(size: 11, weight: .bold))
+                }
+
+                // 눈송이 수
+                if context.state.snowballCount >= 0 {
+                    HStack(spacing: 3) {
+                        Image("img_liveactivity_snowball")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 13, height: 13)
+                        Text("\(context.state.snowballCount)")
+                            .font(.system(size: 11, weight: .bold))
+                    }
                 }
 
                 // 리조트명

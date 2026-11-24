@@ -515,55 +515,63 @@ class _CommunityDetailViewWebState extends State<CommunityDetailViewWeb> {
     );
   }
 
+  // 어드민이 올린 공지는 작성자를 '스노우라이브'(앱 로고)로 고정하고, 자주 가는
+  // 스키장/크루 소속은 숨긴다. 로고를 누르면 기존 프로필 팝업(official)을 그대로
+  // 쓰되 로고 + 인스타그램/카카오 채널 바로가기로 바뀐다.
+  static const String _kNoticeSub = '공지';
+  static const String _kOfficialName = '스노우라이브';
+  static const String _kLogoAsset = 'assets/app_icon.png';
+
   Widget _buildAuthorCard(CommunityDetailModel detail) {
+    final bool isNotice = detail.categorySub == _kNoticeSub;
     final info = detail.userInfo;
     final photo = info?.profileImageUrlUser;
-    final subtitle = [
-      if (info?.resortNickname?.isNotEmpty ?? false) info!.resortNickname,
-      if (info?.crewName?.isNotEmpty ?? false) info!.crewName,
-    ].join(' · ');
+    final subtitle = isNotice
+        ? ''
+        : [
+            if (info?.resortNickname?.isNotEmpty ?? false) info!.resortNickname,
+            if (info?.crewName?.isNotEmpty ?? false) info!.crewName,
+          ].join(' · ');
+    final name = isNotice ? _kOfficialName : (info?.displayName ?? '');
+
+    final Widget photoAvatar = ClipOval(
+      child: (photo != null && photo.isNotEmpty)
+          ? WebNetworkImage(url: photo, width: 40, height: 40)
+          : Container(
+              width: 40,
+              height: 40,
+              color: SDSColor.gray100,
+              child: Icon(Icons.person, size: 22, color: SDSColor.gray400),
+            ),
+    );
+    final Widget logoAvatar = ClipRRect(
+      borderRadius: BorderRadius.circular(40 * 0.22),
+      child: Image.asset(_kLogoAsset, width: 40, height: 40, fit: BoxFit.cover),
+    );
+
+    final Widget avatar = WebProfileTap(
+      userId: detail.userId,
+      name: isNotice ? _kOfficialName : info?.displayName,
+      avatarUrl: photo,
+      official: isNotice,
+      child: isNotice ? logoAvatar : photoAvatar,
+    );
 
     return Row(
       children: [
-        WebProfileTap(
-          userId: detail.userId,
-          name: info?.displayName,
-          avatarUrl: photo,
-          // 피그마 64:127550 — 아바타 40, 텍스트와 간격 12.
-          child: ClipOval(
-            child: (photo != null && photo.isNotEmpty)
-                ? WebNetworkImage(url: photo, width: 40, height: 40)
-                : Container(
-                    width: 40,
-                    height: 40,
-                    color: SDSColor.gray100,
-                    child: Icon(
-                      Icons.person,
-                      size: 22,
-                      color: SDSColor.gray400,
-                    ),
-                  ),
-          ),
-        ),
+        avatar,
         const SizedBox(width: 10),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // 피그마 64:127566 — 이름 14 gray900, 간격 2, 소속 13 gray500.
             Text(
-              info?.displayName ?? '',
-              style: SDSTextStyle.regular.copyWith(
-                fontSize: 14,
-                color: SDSColor.gray900,
-              ),
+              name,
+              style: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray900),
             ),
             if (subtitle.isNotEmpty) ...[
               Text(
                 subtitle,
-                style: SDSTextStyle.regular.copyWith(
-                  fontSize: 13,
-                  color: SDSColor.gray500,
-                ),
+                style: SDSTextStyle.regular.copyWith(fontSize: 13, color: SDSColor.gray500),
               ),
             ],
           ],

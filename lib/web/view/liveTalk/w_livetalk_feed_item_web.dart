@@ -37,6 +37,8 @@ double liveTalkFeedItemGap(BuildContext context) =>
 const double kLiveTalkFeedImageMaxRatio = 1.25;
 const double kLiveTalkFeedImageRatio = 1;
 const double kLiveTalkFeedImageRadius = 4;
+// 첨부 이미지 표시 배율 — 열 너비의 2/3만 차지하게 축소(비율 그대로). 좌측 정렬.
+const double kLiveTalkFeedImageScale = 2 / 3;
 
 /// 라이브톡 피드 1건. 세 폭 공용 — 폭에 따라 달라지는 건 바깥 열 너비뿐이다.
 ///
@@ -168,33 +170,33 @@ class LiveTalkFeedItemWeb extends StatelessWidget {
   }
 
   Widget _buildImage() {
-    return ClipRRect(
-      // 라운드 4 (피그마 80:217065).
-      borderRadius: BorderRadius.circular(kLiveTalkFeedImageRadius),
-      child: LayoutBuilder(
-        builder: (context, constraints) => ConstrainedBox(
-          // 상한을 열 너비 기준으로 잡아야 폭이 다른 세 브레이크포인트에서
-          // 같은 비율 규칙이 적용된다.
-          constraints: BoxConstraints(
-            maxHeight: constraints.maxWidth * kLiveTalkFeedImageMaxRatio,
-          ),
-          child: MouseRegion(
-            cursor: SystemMouseCursors.click,
-            child: GestureDetector(
-              onTap: onTapImage,
-              child: WebNetworkImage(
-                url: item.imageUrl,
-                width: double.infinity,
-                // 폭을 항상 채운다 — 상한을 넘는 사진은 위아래가 잘린다(인스타 방식).
-                fit: BoxFit.cover,
-                // 원본 비율로 그리므로 크기를 미리 알 수 없다 — 로딩 동안 1:1로
-                // 자리를 잡아두고, 받으면 원본 비율로 바뀐다(사용자 확정).
-                placeholderAspectRatio: kLiveTalkFeedImageRatio,
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        // 열 너비의 2/3로 축소 표시, 좌측 정렬. 폭만 지정하면 원본 비율대로
+        // 높이가 잡혀 위아래가 잘리지 않는다(cover/높이상한 제거).
+        final imgW = constraints.maxWidth * kLiveTalkFeedImageScale;
+        return Align(
+          alignment: Alignment.centerLeft,
+          child: ClipRRect(
+            // 라운드 4 (피그마 80:217065).
+            borderRadius: BorderRadius.circular(kLiveTalkFeedImageRadius),
+            child: MouseRegion(
+              cursor: SystemMouseCursors.click,
+              child: GestureDetector(
+                onTap: onTapImage,
+                child: WebNetworkImage(
+                  url: item.imageUrl,
+                  width: imgW,
+                  // 폭에 맞춰 원본 비율 그대로(세로 안 잘림).
+                  fit: BoxFit.fitWidth,
+                  // 로딩 동안 1:1로 자리를 잡고, 받으면 원본 비율로 바뀐다.
+                  placeholderAspectRatio: kLiveTalkFeedImageRatio,
+                ),
               ),
             ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 

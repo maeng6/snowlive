@@ -1,4 +1,5 @@
 import 'package:com.snowlive/core/data/snowliveDesignStyle.dart';
+import 'package:com.snowlive/core/util/snowball_images.dart';
 import 'package:com.snowlive/mobile/routes/routes.dart';
 import 'package:com.snowlive/mobile/viewmodel/ranking/vm_snowball.dart';
 import 'package:com.snowlive/mobile/viewmodel/resortHome/vm_resortHome.dart';
@@ -58,11 +59,13 @@ class _Entrance_snowballShop_rankingState extends State<Entrance_snowballShop_ra
       bool isBrandOnly = data['brand_only'] ?? false;
       List<dynamic> crewList = data['crew_list'] ?? [];
       bool isUserInCrewList = _userViewModel.user.crew_id != null && crewList.contains(_userViewModel.user.crew_id);
+      List<dynamic> userList = data['user_list'] ?? [];
+      bool isUserInUserList = userList.contains(_userViewModel.user.user_id);
 
 
 
 
-        if (isOpen == true && (isToEveryone || isUserInCrewList)) {
+        if (isOpen == true && (isToEveryone || isUserInCrewList || isUserInUserList)) {
           return Container(
             decoration: BoxDecoration(
               color: isBrandOnly == false ? Color(0xFF1D242E) : Color(0xFF0C9F1E), // 배경색
@@ -92,12 +95,10 @@ class _Entrance_snowballShop_rankingState extends State<Entrance_snowballShop_ra
                         padding: EdgeInsets.only(top: 2),
                         child:
                         isBrandOnly == false
-                            ? Image.asset(
-                            'assets/imgs/imgs/snowballShop/img_rank_snb_src_1.png',
+                            ? snowImage('assets/imgs/imgs/snowballShop/img_rank_snb_src_1.png',
                             width: 105
                         )
-                            : Image.asset(
-                            'assets/imgs/imgs/snowballShop/img_rank_snb_src_brand_1.png',
+                            : snowImage('assets/imgs/imgs/snowballShop/img_rank_snb_src_brand_1.png',
                             width: 105
                         )
                     ),
@@ -133,12 +134,10 @@ class _Entrance_snowballShop_rankingState extends State<Entrance_snowballShop_ra
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             isBrandOnly == false
-                            ? Image.asset(
-                              'assets/imgs/imgs/snowballShop/img_rank_snb_src_2.png',
+                            ? snowImage('assets/imgs/imgs/snowballShop/img_rank_snb_src_2.png',
                               height: 52,
                             )
-                            : Image.asset(
-                              'assets/imgs/imgs/snowballShop/img_rank_snb_src_brand_2.png',
+                            : snowImage('assets/imgs/imgs/snowballShop/img_rank_snb_src_brand_2.png',
                               height: 52,
                             ),
                             SizedBox(height: 4),
@@ -189,8 +188,7 @@ class _Entrance_snowballShop_rankingState extends State<Entrance_snowballShop_ra
                                           children: [
                                             Row(
                                               children: [
-                                                Image.asset(
-                                                  'assets/imgs/imgs/snowballShop/icon_snowballshop_whiteball.png',
+                                                snowImage('assets/imgs/imgs/snowballShop/icon_snowballshop_whiteball.png',
                                                   height: 14,
                                                 ),
                                                 SizedBox(width: 3),
@@ -206,8 +204,7 @@ class _Entrance_snowballShop_rankingState extends State<Entrance_snowballShop_ra
                                             SizedBox(width: 6),
                                             Row(
                                               children: [
-                                                Image.asset(
-                                                  'assets/imgs/imgs/snowballShop/icon_snowballshop_goldball.png',
+                                                snowImage('assets/imgs/imgs/snowballShop/icon_snowballshop_goldball.png',
                                                   height: 14,
                                                 ),
                                                 SizedBox(width: 3),
@@ -264,8 +261,7 @@ class _Entrance_snowballShop_rankingState extends State<Entrance_snowballShop_ra
                                         ),
                                         Padding(
                                           padding: EdgeInsets.only(left: 6),
-                                          child: Image.asset(
-                                            'assets/imgs/imgs/snowballShop/icon_snowballshop_arrow.png',
+                                          child: snowImage('assets/imgs/imgs/snowballShop/icon_snowballshop_arrow.png',
                                             width: 18,
                                             height: 18,
                                           ),

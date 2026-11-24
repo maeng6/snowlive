@@ -44,6 +44,10 @@ import 'package:com.snowlive/web/view/login/v_login_web.dart';
 import 'package:com.snowlive/web/view/onboarding/v_onboarding_web.dart';
 import 'package:com.snowlive/web/view/ranking/v_rankingArchive_web.dart';
 import 'package:com.snowlive/web/view/ranking/v_rankingHome_web.dart';
+import 'package:com.snowlive/web/view/ranking/v_snowballmarket_web.dart';
+import 'package:com.snowlive/web/view/ranking/v_snowballmarket_shop_web.dart';
+import 'package:com.snowlive/web/view/ranking/v_snowballmarket_brand_web.dart';
+import 'package:com.snowlive/web/view/ranking/v_snowballmarket_buyRecord_web.dart';
 import 'package:com.snowlive/web/view/seasonpass/v_seasonPassHome_web.dart';
 import 'package:com.snowlive/web/view/seasonpass/v_seasonPassResult_web.dart';
 import 'package:com.snowlive/web/view/seasonpass/v_rideDetail_web.dart';
@@ -158,6 +162,14 @@ class WebRoutes {
   // 개장빵 이벤트(전국 스키장 개장빵). URL은 season-open-event.
   static const seasonOpenEvent = '/season-open-event';
   static const phoenixClaim = '/phoenix-claim';
+
+  // 눈송이 상점. 진입점은 메뉴바 배너영역에 추가한 배너 클릭으로 홈(snowballMarket)으로 이동.
+  // 상점/브랜드/구매기록은 형제 최상위 경로(하위 경로면 GetX가 부모로 매칭).
+  static const snowballMarket = '/snowball-market';
+  static const snowballMarketPublic = '/snowball-market-public';
+  static const snowballMarketPremium = '/snowball-market-premium';
+  static const snowballMarketBrand = '/snowball-market-brand';
+  static const snowballMarketBuyRecord = '/snowball-market-buy-record';
 
   static final pages = [
     GetPage(name: seasonOpenEvent, page: () => const PhoenixLandingWeb()),
@@ -449,6 +461,32 @@ class WebRoutes {
       name: crewPermissions,
       page: () => const CrewPermissionsViewWeb(),
       binding: WebCrewSettingBinding(),
+    ),
+    // 눈송이 상점(웹). 홈·일반상점·프리미엄상점·브랜드미션·경품교환목록.
+    GetPage(
+      name: snowballMarket,
+      page: () => const SnowballMarketHomeViewWeb(),
+      binding: WebSnowballBinding(),
+    ),
+    GetPage(
+      name: snowballMarketPublic,
+      page: () => const SnowballMarketShopViewWeb(isPremium: false),
+      binding: WebSnowballBinding(),
+    ),
+    GetPage(
+      name: snowballMarketPremium,
+      page: () => const SnowballMarketShopViewWeb(isPremium: true),
+      binding: WebSnowballBinding(),
+    ),
+    GetPage(
+      name: snowballMarketBrand,
+      page: () => const SnowballMarketBrandViewWeb(),
+      binding: WebSnowballBinding(),
+    ),
+    GetPage(
+      name: snowballMarketBuyRecord,
+      page: () => SnowballMarketBuyRecordViewWeb(),
+      binding: WebSnowballBinding(),
     ),
   ];
 }

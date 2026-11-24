@@ -588,7 +588,8 @@ class CommunityBulletinTotalListView extends StatelessWidget {
                                                           ),
                                                           Row(
                                                             children: [
-                                                              Text('$displayName',
+                                                              // 공지는 작성자를 '스노우라이브'로 표기(웹과 동일).
+                                                              Text(communityData.categorySub == '공지' ? '스노우라이브' : '$displayName',
                                                                 style: SDSTextStyle.regular.copyWith(
                                                                   fontSize: 12,
                                                                   color: SDSColor.gray700,

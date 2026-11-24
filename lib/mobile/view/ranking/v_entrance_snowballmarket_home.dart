@@ -42,9 +42,11 @@ class _Entrance_snowballMarket_HomeState extends State<Entrance_snowballMarket_H
       bool isBrandOnly = data['brand_only'] ?? false;
       List<dynamic> crewList = data['crew_list'] ?? [];
       bool isUserInCrewList = _userViewModel.user.crew_id != null && crewList.contains(_userViewModel.user.crew_id);
+      List<dynamic> userList = data['user_list'] ?? [];
+      bool isUserInUserList = userList.contains(_userViewModel.user.user_id);
       String entranceImage = data['mainImage'] ?? '';
 
-          if (isOpen == true && (isToEveryone || isUserInCrewList) && isBrandOnly == false) {
+          if (isOpen == true && (isToEveryone || isUserInCrewList || isUserInUserList) && isBrandOnly == false) {
             return GestureDetector(
               onTap: () async {
                 _snowballShopViewModel.loadingEntrance = true;

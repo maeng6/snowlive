@@ -69,7 +69,7 @@ CommunityBodyParseResult parseCommunityBody(quill.Document? document) {
 
   var current = <_Piece>[];
   void flush() {
-    // 공백뿐인 문단은 버린다. Quill 문서는 항상 '\n'으로 끝나서 빈 문단이 하나 남는다.
+    // 공백뿐인 문단은 버린다(빈 op·에디터 잔재). 빈 줄은 블록 안의 '\n'으로 유지한다.
     if (current.any((p) => p.text.trim().isNotEmpty)) {
       blocks.add(CommunityTextBlock(List.unmodifiable(current)));
     }
@@ -99,27 +99,50 @@ CommunityBodyParseResult parseCommunityBody(quill.Document? document) {
     final strike = attrs?['strike'] == true;
     final link = attrs?['link'] is String ? attrs!['link'] as String : null;
 
-    final segments = data.split('\n');
-    for (var i = 0; i < segments.length; i++) {
-      if (segments[i].isNotEmpty) {
-        current.add(
-          _Piece(
-            segments[i],
-            bold: bold,
-            italic: italic,
-            underline: underline,
-            strike: strike,
-            link: link,
-          ),
-        );
-      }
-      // 마지막 조각 뒤에는 개행이 없다.
-      if (i < segments.length - 1) flush();
-    }
+    // 개행을 그대로 보존한다 — '\n'으로 문단을 쪼개 20px 간격을 끼우지 않는다.
+    // 블록을 가르는 건 이미지 임베드뿐이고, 줄바꿈·빈 줄은 입력한 그대로 렌더된다.
+    current.add(
+      _Piece(
+        data,
+        bold: bold,
+        italic: italic,
+        underline: underline,
+        strike: strike,
+        link: link,
+      ),
+    );
   }
   flush();
 
+  // Quill 문서는 항상 '\n'으로 끝난다 → 마지막 텍스트 블록의 꼬리 개행 1개를 없애
+  // 본문 끝에 빈 줄이 하나 더 생기지 않게 한다.
+  _trimTrailingNewline(blocks);
+
   return CommunityBodyParseResult(blocks, imageUrls);
+}
+
+/// 마지막 블록이 텍스트면 꼬리 개행 1개를 제거한다(Quill의 종결 '\n' 보정).
+void _trimTrailingNewline(List<CommunityBodyBlock> blocks) {
+  if (blocks.isEmpty) return;
+  final last = blocks.last;
+  if (last is! CommunityTextBlock || last.pieces.isEmpty) return;
+  final pieces = List<_Piece>.of(last.pieces);
+  final lp = pieces.last;
+  if (!lp.text.endsWith('\n')) return;
+  final trimmed = lp.text.substring(0, lp.text.length - 1);
+  if (trimmed.isEmpty) {
+    pieces.removeLast();
+  } else {
+    pieces[pieces.length - 1] = _Piece(
+      trimmed,
+      bold: lp.bold,
+      italic: lp.italic,
+      underline: lp.underline,
+      strike: lp.strike,
+      link: lp.link,
+    );
+  }
+  blocks[blocks.length - 1] = CommunityTextBlock(List.unmodifiable(pieces));
 }
 
 /// 커뮤니티 본문 렌더러.

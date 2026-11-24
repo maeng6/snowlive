@@ -51,8 +51,12 @@ class PolygonRidingController {
     writeLegacy = (cfg['write_legacy'] ?? true) == true;
     final exitTol = (cfg['exit_tolerance'] as num?)?.toInt() ?? 3;
     final band = (cfg['band_meters'] as num?)?.toDouble() ?? 25.0;
+    // 재진입 유예(초) — 짧은 이탈로 한 라이딩이 두 세션으로 쪼개지는 중복 방지.
+    final reentryGraceSec = (cfg['reentry_grace'] as num?)?.toDouble() ?? 8.0;
 
-    final m = PolygonSessionMachine(slopes, exitConfirm: exitTol, bandM: band);
+    final m = PolygonSessionMachine(slopes,
+        exitConfirm: exitTol, bandM: band,
+        reentryGraceMs: (reentryGraceSec * 1000).round());
     m.onLog = (msg) {
       onLog?.call(msg);
     };
@@ -60,7 +64,7 @@ class PolygonRidingController {
       _handleCommit(ev); // fire-and-forget (서버 전송)
     };
     _machine = m;
-    onLog?.call('폴리곤 슬로프 ${slopes.length}개 로드 (exit=$exitTol, band=$band)');
+    onLog?.call('폴리곤 슬로프 ${slopes.length}개 로드 (exit=$exitTol, band=$band, grace=${reentryGraceSec}s)');
   }
 
   /// 위치 스트림에서 매 좌표 호출 (writePolygon일 때만 판별)

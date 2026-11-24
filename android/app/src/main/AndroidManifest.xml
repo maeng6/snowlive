@@ -2,6 +2,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.snowlive">
 
+    <!-- 하드웨어 기능을 '필수'가 아닌 '선택'으로 명시 — 세로고정/플러그인이 자동으로
+         required=true로 선언해 Play 콘솔이 설치 가능 기기를 좁힌다는 경고를 띄운다.
+         wifi 없는 기기/Desktop/XR에도 설치되도록 required=false로 덮어쓴다. -->
+    <uses-feature android:name="android.hardware.wifi" android:required="false" />
+    <uses-feature android:name="android.hardware.screen.portrait" android:required="false" />
+
     <!-- 권한 설정 -->
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY"/>
@@ -70,11 +76,9 @@
                 android:name="io.flutter.embedding.android.NormalTheme"
                 android:resource="@style/NormalTheme" />
 
-            <!-- 앱 실행 인텐트 필터 -->
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-                <category android:name="android.intent.category.LAUNCHER"/>
-            </intent-filter>
+            <!-- 앱 실행(MAIN/LAUNCHER) 필터는 아래 activity-alias(DefaultAlias)로 이동.
+                 → 대체 아이콘 전환을 위해 '런처 역할'을 alias에 두고, 변형별 alias를
+                 enable/disable로 교체한다. (MainActivity 자체는 항상 enabled=target) -->
 
             <!-- Flutter 푸시 알림 클릭 인텐트 필터 -->
             <intent-filter>
@@ -90,6 +94,49 @@
                 <data android:scheme="snowlive" />
             </intent-filter>
         </activity>
+
+        <!-- ── 대체 런처 아이콘(activity-alias) ──
+             홈화면 아이콘은 '빌드에 미리 번들된' 아이콘 중에서만 전환 가능.
+             DefaultAlias(기본)만 enabled=true로 시작하고, 변형(Xmas/Opening)은
+             enabled=false. 서버(check-wb)의 app_icon_variant → MainActivity의
+             'app_icon' 채널이 선택 alias만 enable, 나머지 disable(항상 1개만 켜짐).
+             변형 아이콘(@mipmap/launcher_icon_xmas 등)은 현재 플레이스홀더이며
+             디자이너 아트로 교체 예정. -->
+        <activity-alias
+            android:name=".DefaultAlias"
+            android:enabled="true"
+            android:exported="true"
+            android:icon="@mipmap/launcher_icon"
+            android:targetActivity=".MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity-alias>
+
+        <activity-alias
+            android:name=".XmasAlias"
+            android:enabled="false"
+            android:exported="true"
+            android:icon="@mipmap/launcher_icon_xmas"
+            android:targetActivity=".MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity-alias>
+
+        <activity-alias
+            android:name=".NewyearAlias"
+            android:enabled="false"
+            android:exported="true"
+            android:icon="@mipmap/launcher_icon_newyear"
+            android:targetActivity=".MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity-alias>
 
         <!-- 알림 관련 메타 데이터 -->
         <meta-data

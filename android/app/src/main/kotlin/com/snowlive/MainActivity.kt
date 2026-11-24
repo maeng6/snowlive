@@ -1,7 +1,9 @@
 package com.snowlive
 
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.PowerManager
@@ -14,6 +16,14 @@ import io.flutter.plugin.common.MethodChannel
 class MainActivity: FlutterActivity() {
     private val CHANNEL = "detect_battery_saver"
     private val LIVE_ACTIVITY_CHANNEL = "live_activity"
+    private val APP_ICON_CHANNEL = "app_icon"
+
+    // 서버 변형 키 → activity-alias 컴포넌트명. (매니페스트의 android:name과 일치)
+    private val iconAliases = mapOf(
+        "default" to ".DefaultAlias",
+        "xmas"    to ".XmasAlias",
+        "newyear" to ".NewyearAlias"
+    )
 
     override fun configureFlutterEngine(@NonNull flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
@@ -93,6 +103,7 @@ class MainActivity: FlutterActivity() {
                             val sessionRideCount = call.argument<Int>("sessionRideCount") ?: 0
                             val lastSlopeName = call.argument<String>("lastSlopeName") ?: "-"
                             val liveFriendCount = call.argument<Int>("liveFriendCount") ?: 0
+                            val snowballCount = call.argument<Int>("snowballCount") ?: -1
                             val lastRideAtMs = call.argument<Long>("lastRideAtMs")
                             val resortName = call.argument<String>("resortName") ?: "-"
 
@@ -103,6 +114,7 @@ class MainActivity: FlutterActivity() {
                                 putExtra("sessionRideCount", sessionRideCount)
                                 putExtra("lastSlopeName", lastSlopeName)
                                 putExtra("liveFriendCount", liveFriendCount)
+                                putExtra("snowballCount", snowballCount)
                                 putExtra("resortName", resortName)
                                 lastRideAtMs?.let { putExtra("lastRideAtMs", it) }
                             }
@@ -125,6 +137,7 @@ class MainActivity: FlutterActivity() {
                             val sessionRideCount = call.argument<Int>("sessionRideCount")
                             val lastSlopeName = call.argument<String>("lastSlopeName")
                             val liveFriendCount = call.argument<Int>("liveFriendCount")
+                            val snowballCount = call.argument<Int>("snowballCount")
                             val lastRideAtMs = call.argument<Long>("lastRideAtMs")
 
                             val intent = Intent(this, LiveActivityService::class.java).apply {
@@ -133,6 +146,7 @@ class MainActivity: FlutterActivity() {
                                 sessionRideCount?.let { putExtra("sessionRideCount", it) }
                                 lastSlopeName?.let { putExtra("lastSlopeName", it) }
                                 liveFriendCount?.let { putExtra("liveFriendCount", it) }
+                                snowballCount?.let { putExtra("snowballCount", it) }
                                 lastRideAtMs?.let { putExtra("lastRideAtMs", it) }
                             }
 
@@ -156,5 +170,65 @@ class MainActivity: FlutterActivity() {
                     else -> result.notImplemented()
                 }
             }
+
+        // MethodChannel 설정 - App Icon (대체 런처 아이콘 전환: activity-alias enable/disable)
+        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, APP_ICON_CHANNEL)
+            .setMethodCallHandler { call, result ->
+                when (call.method) {
+                    "setIcon" -> {
+                        try {
+                            val variant = call.argument<String>("variant") ?: "default"
+                            applyIconAlias(variant)
+                            result.success(true)
+                        } catch (e: Exception) {
+                            result.error("SET_ICON_ERROR", e.message, null)
+                        }
+                    }
+                    "currentIcon" -> {
+                        try {
+                            result.success(currentEnabledVariant())
+                        } catch (e: Exception) {
+                            result.error("CURRENT_ICON_ERROR", e.message, null)
+                        }
+                    }
+                    else -> result.notImplemented()
+                }
+            }
+    }
+
+    /// 선택 변형의 alias만 enable, 나머지는 disable (항상 정확히 1개만 켜진다).
+    /// DONT_KILL_APP으로 앱을 죽이지 않고 런처 아이콘만 교체한다.
+    private fun applyIconAlias(variant: String) {
+        val target = if (iconAliases.containsKey(variant)) variant else "default"
+        val pm = packageManager
+        // 1) 먼저 목표 alias를 켠다 (전환 순간 런처에 아이콘이 비는 것을 최소화).
+        iconAliases[target]?.let { alias ->
+            pm.setComponentEnabledSetting(
+                ComponentName(packageName, packageName + alias),
+                PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
+                PackageManager.DONT_KILL_APP
+            )
+        }
+        // 2) 나머지 alias는 끈다.
+        for ((key, alias) in iconAliases) {
+            if (key == target) continue
+            pm.setComponentEnabledSetting(
+                ComponentName(packageName, packageName + alias),
+                PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
+                PackageManager.DONT_KILL_APP
+            )
+        }
+    }
+
+    /// 현재 enabled 상태인 alias의 변형 키를 반환(판별 불가 시 'default').
+    private fun currentEnabledVariant(): String {
+        val pm = packageManager
+        for ((key, alias) in iconAliases) {
+            val state = pm.getComponentEnabledSetting(ComponentName(packageName, packageName + alias))
+            if (state == PackageManager.COMPONENT_ENABLED_STATE_ENABLED) return key
+            // DefaultAlias는 매니페스트 기본 enabled=true라 DEFAULT 상태도 '켜짐'으로 본다.
+            if (key == "default" && state == PackageManager.COMPONENT_ENABLED_STATE_DEFAULT) return "default"
+        }
+        return "default"
     }
 }

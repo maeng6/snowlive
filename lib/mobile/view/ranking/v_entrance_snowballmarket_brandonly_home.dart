@@ -50,9 +50,11 @@ class _Entrance_snowballMarket_brandonly_HomeState extends State<Entrance_snowba
           // crew_list 필드가 리스트인지 확인하고, 유저의 크루가 리스트에 포함되어 있는지 확인
           List<dynamic> crewList = data?['crew_list'] ?? [];
           bool isUserInCrewList = _userViewModel.user.crew_id != null && crewList.contains(_userViewModel.user.crew_id);
+          List<dynamic> userList = data?['user_list'] ?? [];
+          bool isUserInUserList = userList.contains(_userViewModel.user.user_id);
           String entranceImage = data?['mainImage_brand'] ?? '';
 
-          if (isOpen == true && (isToEveryone || isUserInCrewList) && isBrandOnly == true) {
+          if (isOpen == true && (isToEveryone || isUserInCrewList || isUserInUserList) && isBrandOnly == true) {
             return GestureDetector(
               onTap: () async {
                 _snowballShopViewModel.loadingEntrance = true;

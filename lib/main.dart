@@ -4,6 +4,7 @@ import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 import 'package:com.snowlive/firebase_options.dart';
 import 'package:com.snowlive/mobile/util/ride_log_recorder.dart';
 import 'package:com.snowlive/core/util/pushNoitification.dart';
+import 'package:com.snowlive/core/util/snowball_images.dart';
 import 'package:com.snowlive/core/viewmodel/friend/vm_friendDetail.dart';
 import 'package:com.snowlive/mobile/viewmodel/auth/vm_authcheck.dart';
 import 'package:com.snowlive/mobile/viewmodel/vm_notificationController.dart';
@@ -96,6 +97,8 @@ void main() {
   Get.put(UserViewModel(), permanent: true);
   Get.put(DeepLinkService(), permanent: true);
   Get.put(AuthCheckViewModel(), permanent: true);
+  // 눈송이 상점 이미지 오버라이드(어드민 변경분)를 구독. 기본은 비어 있어 번들 에셋만 쓴다.
+  Get.put(SnowballImages(), permanent: true);
 
   HttpOverrides.global = MyHttpOverrides();
 

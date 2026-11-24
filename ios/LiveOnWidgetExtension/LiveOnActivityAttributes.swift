@@ -10,13 +10,15 @@ public struct LiveOnActivityAttributes: ActivityAttributes {
         public var lastSlopeName: String      // 마지막으로 지난 슬로프 이름
         public var lastRideAt: Date?          // 마지막 라이딩 시간
         public var liveFriendCount: Int       // 현재 라이브 중인 친구 수
+        public var snowballCount: Int         // 이번 세션 수집 눈송이 수 (-1 = 눈송이 리조트 아님 → 표시 안함)
 
-        public init(todayRideCount: Int, sessionRideCount: Int, lastSlopeName: String, lastRideAt: Date? = nil, liveFriendCount: Int = 0) {
+        public init(todayRideCount: Int, sessionRideCount: Int, lastSlopeName: String, lastRideAt: Date? = nil, liveFriendCount: Int = 0, snowballCount: Int = -1) {
             self.todayRideCount = todayRideCount
             self.sessionRideCount = sessionRideCount
             self.lastSlopeName = lastSlopeName
             self.lastRideAt = lastRideAt
             self.liveFriendCount = liveFriendCount
+            self.snowballCount = snowballCount
         }
     }
 

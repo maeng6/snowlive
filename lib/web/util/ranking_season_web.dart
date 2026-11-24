@@ -6,7 +6,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 /// 형식은 모바일과 동일하게 "$startDate, $endDate" (쉼표+공백).
 Future<String?> fetchCurrentRankingSeason() async {
   try {
-    final doc = await FirebaseFirestore.instance.collection('seasonInfo').doc('seasonInfo').get();
+    // ⚠️ 일부 네트워크에서 Firestore 첫 get()이 응답 없이 멈추면 이 await가
+    // 영영 끝나지 않아 크루홈 등 호출부가 '로딩 중'에 걸린다 → 타임아웃을 두고,
+    // 못 받으면 null을 돌려 서버가 기본(현재) 시즌으로 처리하게 한다.
+    final doc = await FirebaseFirestore.instance
+        .collection('seasonInfo')
+        .doc('seasonInfo')
+        .get()
+        .timeout(const Duration(seconds: 6));
     final data = doc.data();
     if (data == null) return null;
     final startDate = data['startDate'];

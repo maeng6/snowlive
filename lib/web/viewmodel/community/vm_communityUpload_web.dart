@@ -10,8 +10,10 @@ import 'package:flutter_quill/flutter_quill.dart' as quill;
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 
-/// 게시판 종류(상위) 선택지. 목록 탭 enum을 단일 출처로 삼는다(`전체`는 제외).
+/// 게시판 종류(상위) 선택지. 목록 탭 enum을 단일 출처로 삼는다.
+/// `전체`(null)와 `공지`(열람 전용 — 일반 유저 작성 불가)는 제외한다.
 final List<String> kCommunityCategorySubList = CommunityCategoryTab.values
+    .where((tab) => tab != CommunityCategoryTab.notice)
     .map((tab) => tab.categorySub)
     .whereType<String>()
     .toList();
